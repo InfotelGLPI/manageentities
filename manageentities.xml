@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <name>Entities Management</name>
+   <key>manageentities</key>
+   <state>stable</state>
+   <logo>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/manageentities.png</logo>
+   <description>
+      <short>
+         <fr><![CDATA[Gestion d’entités. Ce plugin vous permet de gérer vos entités. Lier des documents, contacts, contrats. De plus vous pouvez créer des rapports d'interventions, et faire le suivi contrat de vos entités.]]></fr>
+         <en><![CDATA[Entities management. This plugin allows you to manage entities. Link with documents, contacts, contracts. You can also create intervention reports and do contract management of your entities.]]></en>
+      </short>
+      <long>
+         <fr><![CDATA[Ce plugin vous permet de gérer vos entités. Lier des documents, contacts, contrats. De plus vous pouvez créer des rapports d'interventions, et faire le suivi contrat de vos entités. Pour une entité donnée, vous définissez<br />-les contacts associés (ainsi que le responsable),<br />-les contrats associés ( ainsi que celui utilisé par défaut),<br />-le tarif journalier pour un type d'intervention donné,<br />-les documents associés.<br />-Puis dans le détail du contrat, vous définissez le solde initial (nombre de jours x un type d'intervention donné).<br />-Une fois ceci fait, vous pourrez créer des rapports d'intervention et ainsi avoir le décompte du contrat utilisé.<br />-Possibilité de lancement du plugin au démarrage de GLPI]]></fr>
+         <en><![CDATA[This plugin allows you to manage entities. Link with documents, contacts, contracts. You can also create intervention reports and do contract management of your entities. For a given entity, you define :<br />-the associated contacts (and the manager),<br />-the contracts involved (and those used by default),<br />-the daily rate for a given type of intervention,<br />-the associated documents.<br />-Then in the details of the contract, you set the initial balance (number of days x the type of intervention).<br />-Once done, you can create reports of intervention and thus have the breakdown of contract used.<br />-The plugin can be launched when GLPI loading]]></en>
+      </long>
+   </description>
+      <homepage>https://github.com/InfotelGLPI/manageentities</homepage>
+      <download>https://github.com/InfotelGLPI/manageentities/releases</download>
+   <authors>
+      <author>Xavier Caillaud / Infotel</author>
+   </authors>
+   <versions>
+      <version>
+         <num>1.8.1</num>
+         <compatibility>0.83.3</compatibility>
+      </version>
+      <version>
+         <num>1.8.0</num>
+         <compatibility>0.83</compatibility>
+      </version>
+      <version>
+         <num>1.7.0</num>
+         <compatibility>0.80</compatibility>
+      </version>
+      <version>
+         <num>1.6.0</num>
+         <compatibility>0.78</compatibility>
+      </version>
+      <version>
+         <num>1.5.2</num>
+         <compatibility>0.72</compatibility>
+      </version>
+      <version>
+         <num>1.5.1</num>
+         <compatibility>0.72</compatibility>
+      </version>
+      <version>
+         <num>1.5.0</num>
+         <compatibility>0.72</compatibility>
+      </version>
+      <version>
+         <num>1.4</num>
+         <compatibility>0.71</compatibility>
+      </version>
+      <version>
+         <num>1.3</num>
+         <compatibility>0.70</compatibility>
+      </version>
+   </versions>
+   <langs>
+      <lang>fr_FR</lang>
+      <lang>en_GB</lang>
+   </langs>
+   <license><![CDATA[GPL v2+]]></license>
+   <tags>
+         <fr>
+            <tag>Entités</tag>
+            <tag>Contrats</tag>
+            <tag>Intervention</tag>
+            <tag>Gestion</tag>
+         </fr>
+         <en>
+            <tag>Entities</tag>
+            <tag>Contracts</tag>
+            <tag>Interventions</tag>
+            <tag>Management</tag>
+         </en>
+   </tags>
+   <screenshots>
+      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/administrative_data.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/contracts.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/demo_cri.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/followup.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/Liste_cri.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/monthly.png</screenshot>
+   </screenshots>
+</root>
