@@ -1,0 +1,1466 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Manageentities Development Team
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GLPI - Manageentities plugin 2.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-21 09:43+0100\n"
+"PO-Revision-Date: 2016-12-21 09:44+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.5\n"
+
+#: hook.php:44 hook.php:62 hook.php:79
+msgid "Urgent intervention"
+msgstr "Intervention urgente"
+
+#: hook.php:46 hook.php:64 hook.php:81
+msgid "Scheduled intervention"
+msgstr "Intervention planifiée"
+
+#: hook.php:48 hook.php:66 hook.php:83
+msgid "Study and advice"
+msgstr "Étude et conseil"
+
+#: hook.php:524 inc/addelementsview.class.php:1914 inc/cri.class.php:153
+#: inc/cridetail.class.php:192 inc/cridetail.class.php:394
+#: inc/cridetail.class.php:488 inc/cridetail.class.php:869
+#: inc/criprice.class.php:323 inc/critype.class.php:38
+msgid "Intervention type"
+msgid_plural "Intervention types"
+msgstr[0] "Type d'intervention"
+msgstr[1] "Types d'intervention"
+
+#: hook.php:525 inc/addelementsview.class.php:1564 inc/contractday.class.php:97
+#: inc/contractday.class.php:339 inc/contractday.class.php:518
+#: inc/contractstate.class.php:38 inc/followup.class.php:723
+#: inc/followup.class.php:725 inc/followup.class.php:1079
+msgid "State of contract"
+msgid_plural "States of contracts"
+msgstr[0] "Statut du contrat"
+msgstr[1] "Statuts du contrat"
+
+#: setup.php:63 inc/config.class.php:252 inc/cri.class.php:39
+#: inc/cridetail.class.php:292 inc/profile.class.php:100
+msgid "Intervention report"
+msgid_plural "Intervention reports"
+msgstr[0] "Rapport d'intervention"
+msgstr[1] "Rapports d'intervention"
+
+#: setup.php:64 inc/report.class.php:102
+msgid "Report on the movement of technicians"
+msgstr "Rapport concernant l'occupation des techniciens"
+
+#: setup.php:65 inc/report.class.php:203
+msgid "Report concerning the occupation of the technicians"
+msgstr "Rapport concernant les déplacements des techniciens"
+
+#: setup.php:108 front/addelements.form.php:39 front/config.form.php:44
+#: front/cridetail.form.php:45 front/cridetail.form.php:47 front/entity.php:41
+#: front/entity.php:43 front/report.form.php:31 front/report_moving.form.php:31
+#: front/report_occupation.form.php:31 inc/followup.class.php:968
+#: inc/monthly.class.php:548 inc/preference.class.php:74
+#: inc/profile.class.php:41 inc/profile.class.php:96
+#: inc/taskcategory.class.php:54
+msgid "Entities portal"
+msgstr "Portail Clients"
+
+#: setup.php:122
+msgid "This plugin requires GLPI >= 9.1"
+msgstr "Ce plugin nécessite GLPI >= 9.1"
+
+#: ajax/addelements.listener.php:307
+msgid "Please add this contact before adding another."
+msgstr "Merci d'ajouter cet utilisateur avant d'en ajouter un autre."
+
+#: ajax/addelements.listener.php:336
+msgid "Please add this intervention before adding another."
+msgstr "Merci d'ajouter cette prestation avant d'en ajouter une autre."
+
+#: ajax/addelements.listener.php:487 inc/addelementsview.class.php:2390
+msgid "Update all previous elements"
+msgstr "Mettre à jour tous les éléments précedent"
+
+#: ajax/cri.php:60 ajax/cri.php:92 ajax/cri.php:116
+msgid "Thanks to select a intervention type"
+msgstr "Merci de sélectionner un type d'intervention"
+
+#: ajax/interventionskateholderactions.php:57
+msgid "Skatehokder successfully updated."
+msgstr "L'intervenant a bien été ajouté."
+
+#: ajax/interventionskateholderactions.php:66
+#: ajax/interventionskateholderactions.php:83
+msgid "An error happened while saving the datas."
+msgstr "Une erreur est survenue lors de la sauvegarde des données."
+
+#: ajax/interventionskateholderactions.php:75
+msgid "Informations successfully added."
+msgstr "Les informations ont bien été ajoutées."
+
+#: ajax/interventionskateholderactions.php:87
+msgid "All fields are not correctly filled."
+msgstr "Tous les champs ne sont pas correctement remplis."
+
+#: ajax/interventionskateholderactions.php:101
+msgid "Informations successfully deleted."
+msgstr "Les informations ont bien été supprimées"
+
+#: ajax/interventionskateholderactions.php:109
+msgid "An error happened while deleting the datas."
+msgstr "Une erreur est survenue lors de la suppressions des données"
+
+#: ajax/linkactions.php:44
+msgid "Number of hours by day"
+msgstr "Nombre d'heures par jour"
+
+#: ajax/linkactions.php:48
+msgid ""
+"Only ticket accepted are taking into account for consumption calculation"
+msgstr ""
+"Seuls les tickets avec la validation « acceptée » sont concernés pour le "
+"calcul des consommés"
+
+#: front/config.form.php:65
+msgid "Please activate the plugin"
+msgstr "Merci d'activer le plugin"
+
+#: front/cri.form.php:37 inc/cri.class.php:245 inc/cridetail.class.php:302
+msgid "Generation of the intervention report"
+msgstr "Génération du rapport d'intervention"
+
+#: front/entity.form.php:40
+msgid "No picture uploaded"
+msgstr "Pas d'image téléchargée"
+
+#: inc/addelementsmodel.class.php:192
+msgid "All new entity fields are not filled."
+msgstr "Tous les champs de la nouvelle entité ne sont pas remplis."
+
+#: inc/addelementsmodel.class.php:193
+msgid "An error happend while saving the entity."
+msgstr "Une erreur est survenue lors de la sauvegarde de l'entité"
+
+#: inc/addelementsmodel.class.php:194
+msgid "Entity name already exists."
+msgstr "Cette entité éxiste déjà."
+
+#: inc/addelementsmodel.class.php:195
+msgid "An error happend while updating the entity."
+msgstr "Une erreur est survenue lors de la mise à jour de l'entité"
+
+#: inc/addelementsmodel.class.php:196
+msgid "Entity successfully updated."
+msgstr "L'entité a bien été mise à jour."
+
+#: inc/addelementsmodel.class.php:197
+msgid "Entity successfully added."
+msgstr "Entité ajoutée avec succès."
+
+#: inc/addelementsmodel.class.php:198
+msgid "Entity saved in base"
+msgstr "Entité sauvegardée en base de données"
+
+#: inc/addelementsmodel.class.php:199
+msgid "Entity informations not updated in base"
+msgstr "Informations sur l'entité non sauvegardées en base de données"
+
+#: inc/addelementsmodel.class.php:202
+msgid "All new contact fields are not filled."
+msgstr "Tous les champs du nouveau contact ne sont pas remplis."
+
+#: inc/addelementsmodel.class.php:203
+msgid "An error happend while saving the contact."
+msgstr "Une erreur est survenue lors de la sauvegarde du contact"
+
+#: inc/addelementsmodel.class.php:204
+msgid "An error happend while updating the contact."
+msgstr "Une erreur est survenue lors de la mise à jour du contact"
+
+#: inc/addelementsmodel.class.php:205
+msgid "Contact successfully updated."
+msgstr "Le contact a bien été mis à jour."
+
+#: inc/addelementsmodel.class.php:206
+msgid "Contact successfully added."
+msgstr "Le contact a bien été ajouté."
+
+#: inc/addelementsmodel.class.php:207
+msgid "Contact saved in base"
+msgstr "Contact sauvegardé en base de données"
+
+#: inc/addelementsmodel.class.php:208
+msgid "Contact informations not updated in base"
+msgstr "Informations sur le contact  non sauvegardées en base de données"
+
+#: inc/addelementsmodel.class.php:211
+msgid "All new contract fields are not filled."
+msgstr "Tous les champs du nouveau contrat ne sont pas remplis."
+
+#: inc/addelementsmodel.class.php:212
+msgid "An error happend while saving the contract."
+msgstr "Une erreur est survenue lors de la sauvegarde du contrat"
+
+#: inc/addelementsmodel.class.php:213
+msgid "An error happend while uploading the document."
+msgstr "Une erreur est survenue lors de l'envoi du document."
+
+#: inc/addelementsmodel.class.php:214
+msgid "Contract name already exists."
+msgstr "Ce contrat existe déjà."
+
+#: inc/addelementsmodel.class.php:215
+msgid "An error happend while updating the contract."
+msgstr "Une erreur est survenue lors de la mise à jour du contrat"
+
+#: inc/addelementsmodel.class.php:216
+msgid "Contract successfully updated"
+msgstr "Le contrat a bien été mis à jour"
+
+#: inc/addelementsmodel.class.php:217
+msgid "Contract successfully added"
+msgstr "Le contrat a bien été ajouté"
+
+#: inc/addelementsmodel.class.php:218
+msgid "Document successfully added"
+msgstr "Le document a bien été ajouté"
+
+#: inc/addelementsmodel.class.php:219
+msgid "Contract saved in base"
+msgstr "Contrat sauvegardé en base de données"
+
+#: inc/addelementsmodel.class.php:220
+msgid "Contract informations not updated in base"
+msgstr "Informations sur le contrat non sauvegardées en base de données"
+
+#: inc/addelementsmodel.class.php:223
+msgid "All new contract management type fields are not filled."
+msgstr ""
+"Tous les champs du type de gestion nouveau contrat ne sont pas remplis."
+
+#: inc/addelementsmodel.class.php:224
+msgid "An error happend while saving the contract management type."
+msgstr ""
+"Une erreur est survenue lors de la sauvegarde du type de gestion du contrat."
+
+#: inc/addelementsmodel.class.php:225
+msgid "Contract management type name already exists."
+msgstr "Ce type gestion du contrat éxiste déjà."
+
+#: inc/addelementsmodel.class.php:226
+msgid "An error happend while updating the contract management type."
+msgstr ""
+"Une erreur est survenue lors de la mise à jour du type de gestion du contrat."
+
+#: inc/addelementsmodel.class.php:227
+msgid "An error happend while deleting the contract management type."
+msgstr ""
+"Une erreur est survenue lors de la suppression du type gestion du contrat"
+
+#: inc/addelementsmodel.class.php:228
+msgid "Contract management type successfully updated"
+msgstr "Le type de gestion du contrat a bien été mis à jour"
+
+#: inc/addelementsmodel.class.php:229
+msgid "Contract management type successfully added"
+msgstr "Le type de gestion du contrat a bien été ajouté"
+
+#: inc/addelementsmodel.class.php:230
+msgid "Contract management type saved in base"
+msgstr "Type de gestion du contrat sauvegardé en base de données"
+
+#: inc/addelementsmodel.class.php:231
+msgid "Contract management type informations not updated in base"
+msgstr "Type de gestion du contract non sauvegardées en base de données"
+
+#: inc/addelementsmodel.class.php:232
+msgid "Contract management type succesfully deleted."
+msgstr "Le type de gestion du contract a bien été mis à jour."
+
+#: inc/addelementsmodel.class.php:235
+msgid "All new fields are not filled."
+msgstr "Tous les champs ne sont pas remplis."
+
+#: inc/addelementsmodel.class.php:236
+msgid "An error happend while saving the price."
+msgstr "Une erreur est survenue lors de la sauvegarde du tarif"
+
+#: inc/addelementsmodel.class.php:237
+msgid "An error happend while updating the price."
+msgstr "Une erreur est survenue lors de la mise à jour du tarif"
+
+#: inc/addelementsmodel.class.php:238
+msgid "An error happend while deleting the price."
+msgstr "Une erreur est survenue lors de la suppressions du tarif"
+
+#: inc/addelementsmodel.class.php:239
+msgid "Price successfully updated"
+msgstr "Tarif mis à jour avec succès"
+
+#: inc/addelementsmodel.class.php:240
+msgid "Price successfully added"
+msgstr "Tarif ajouté avec succès"
+
+#: inc/addelementsmodel.class.php:241
+msgid "Price saved in base"
+msgstr "Tarif sauvegardé avec succès"
+
+#: inc/addelementsmodel.class.php:242
+msgid "Price succesfully deleted."
+msgstr "Tarif supprimé avec succès"
+
+#: inc/addelementsmodel.class.php:245
+msgid "All new intervention fields are not filled."
+msgstr "Tous les champs de la nouvelle prestation ne sont pas remplis."
+
+#: inc/addelementsmodel.class.php:246
+msgid "An error happend while saving the intervention."
+msgstr "Une erreur est survenue lors de la sauvegarde de la prestation"
+
+#: inc/addelementsmodel.class.php:247
+msgid "An error happend while updating the intervention."
+msgstr "Une erreur est survenue lors de la mise à jour de la prestation."
+
+#: inc/addelementsmodel.class.php:248
+msgid "Intervention successfully updated."
+msgstr "La prestation a bien été mise à jour."
+
+#: inc/addelementsmodel.class.php:249
+msgid "Intervention successfully added."
+msgstr "La prestation a bien été ajoutée."
+
+#: inc/addelementsmodel.class.php:250
+msgid "Intervention saved in base"
+msgstr "Prestation sauvegardée en base de données"
+
+#: inc/addelementsmodel.class.php:251
+msgid "Intervention informations not updated in base"
+msgstr "Informations sur la prestation non sauvegardées en base de données"
+
+#: inc/addelementsmodel.class.php:254
+msgid "All fields are not filled."
+msgstr "Tous les champs ne sont pas remplis."
+
+#: inc/addelementsmodel.class.php:255
+msgid "An error happend while saving the informations."
+msgstr "Une erreur est survenue lors de la sauvegarde des informations."
+
+#: inc/addelementsmodel.class.php:256
+msgid "An error happend while updating the informations."
+msgstr "Une erreur est survenue lors de la mise à jour des informations."
+
+#: inc/addelementsmodel.class.php:257
+msgid "All infomations successfully updated."
+msgstr "Les informations ont bien été mises à jour."
+
+#: inc/addelementsmodel.class.php:258
+msgid "All informations successfully added."
+msgstr "Les informations ont bien été ajoutées."
+
+#: inc/addelementsmodel.class.php:259
+msgid "All informations saved in base"
+msgstr "Toutes les informations sont sauvegardées en base de données"
+
+#: inc/addelementsmodel.class.php:260
+msgid "All informations not updated in base"
+msgstr "Toutes les informations ne sont pas sauvegardées en base de données"
+
+#: inc/addelementsmodel.class.php:262
+msgid "Entity and contact successfully added"
+msgstr "Entité et contact ont bien été ajoutés."
+
+#: inc/addelementsmodel.class.php:263
+msgid "Entity and contract successfully added"
+msgstr "Entité et contrat ont bien été ajoutés."
+
+#: inc/addelementsmodel.class.php:264
+msgid "Entity and intervention successfully added"
+msgstr "Entité et prestation ont bien été ajoutés."
+
+#: inc/addelementsmodel.class.php:265
+msgid "Contract and intervention successfully added"
+msgstr "Contrat et prestation ont bien été ajoutés."
+
+#: inc/addelementsmodel.class.php:266
+msgid "Entity, intervention and contract successfully added"
+msgstr "Entité, prestation et contrat et contact ont bien été ajoutés."
+
+#: inc/addelementsmodel.class.php:270
+msgid "This action is irreversible, Continue ?"
+msgstr "Cette action est irréversible, Continuer ?"
+
+#: inc/addelementsmodel.class.php:310 inc/addelementsmodel.class.php:325
+#: inc/addelementsview.class.php:456
+msgid "Update this entity"
+msgstr "Mettre à jour cette entité"
+
+#: inc/addelementsmodel.class.php:430 inc/addelementsmodel.class.php:448
+#: inc/addelementsview.class.php:1007
+msgid "Update this contract only"
+msgstr "Mettre à jour ce contrat"
+
+#: inc/addelementsmodel.class.php:586 inc/addelementsmodel.class.php:606
+msgid "Update this contact only"
+msgstr "Mettre à jour ce contact"
+
+#: inc/addelementsmodel.class.php:706 inc/addelementsmodel.class.php:760
+msgid "Update this intervention only"
+msgstr "Mettre à jour cette prestation"
+
+#: inc/addelementsmodel.class.php:873 inc/addelementsview.class.php:2047
+#: inc/addelementsview.class.php:2331
+msgid "Update this price"
+msgid_plural "Update these prices"
+msgstr[0] "Mettre à jour ce tarif"
+msgstr[1] "Mettre à jour ces tarifs"
+
+#: inc/addelementsview.class.php:52
+msgid "Add elements form"
+msgstr "Formulaire d'ajout d'éléments"
+
+#: inc/addelementsview.class.php:64 inc/addelementsview.class.php:545
+#: inc/addelementsview.class.php:826 inc/addelementsview.class.php:1467
+msgid "New entity"
+msgstr "Nouvelle entité"
+
+#: inc/addelementsview.class.php:84 inc/addelementsview.class.php:103
+#: inc/addelementsview.class.php:2619
+msgid "New contact"
+msgstr "Nouveau contact"
+
+#: inc/addelementsview.class.php:117 inc/addelementsview.class.php:1500
+#: inc/addelementsview.class.php:2124
+msgid "New contract"
+msgstr "Nouveau contrat"
+
+#: inc/addelementsview.class.php:140 inc/addelementsview.class.php:156
+#: inc/addelementsview.class.php:2623
+msgid "New intervention"
+msgstr "Nouvelle prestation"
+
+#: inc/addelementsview.class.php:458
+msgctxt "button"
+msgid "Add only the entity"
+msgstr "Ajouter cette entité"
+
+#: inc/addelementsview.class.php:556 inc/addelementsview.class.php:562
+#: inc/addelementsview.class.php:836 inc/addelementsview.class.php:1478
+msgid "New entity created previously"
+msgstr "Nouvelle entité créée précedemment"
+
+#: inc/addelementsview.class.php:685
+msgid "Update this contact"
+msgstr "Mettre à jour ce contact"
+
+#: inc/addelementsview.class.php:687
+msgid "Add only the contact"
+msgstr "Ajouter ce contact"
+
+#: inc/addelementsview.class.php:698
+msgid "Add another contact"
+msgstr "Ajouter un autre contact"
+
+#: inc/addelementsview.class.php:1009
+msgid "Add only the contract"
+msgstr "Ajouter le contrat"
+
+#: inc/addelementsview.class.php:1117 inc/addelementsview.class.php:2182
+msgid "Document list"
+msgstr "Liste des documents associés"
+
+#: inc/addelementsview.class.php:1274 inc/contract.class.php:155
+#: inc/entity.class.php:676 inc/followup.class.php:605
+#: inc/followup.class.php:690 inc/gantt.class.php:282
+msgid "Date of signature"
+msgstr "Date de signature"
+
+#: inc/addelementsview.class.php:1279 inc/contract.class.php:158
+#: inc/followup.class.php:607 inc/followup.class.php:697
+#: inc/gantt.class.php:283
+msgid "Date of renewal"
+msgstr "Date de reconduction"
+
+#: inc/addelementsview.class.php:1287 inc/contract.class.php:163
+#: inc/contract.class.php:278 inc/followup.class.php:610
+#: inc/followup.class.php:705 inc/monthly.class.php:400
+msgid "Mode of management"
+msgstr "Mode de gestion"
+
+#: inc/addelementsview.class.php:1290 inc/addelementsview.class.php:1512
+#: inc/contract.class.php:166 inc/contract.class.php:279
+#: inc/contract.class.php:281 inc/contractday.class.php:109
+#: inc/contractday.class.php:296 inc/contractday.class.php:746
+#: inc/followup.class.php:611 inc/followup.class.php:706
+msgid "Type of service contract"
+msgstr "Type de contrat de service"
+
+#: inc/addelementsview.class.php:1296 inc/contract.class.php:172
+msgid "Contract is imported in GLPI"
+msgstr "Le contrat est importé dans GLPI"
+
+#: inc/addelementsview.class.php:1314 inc/contract.class.php:190
+msgid "Refacturable costs"
+msgstr "Frais refacturables"
+
+#: inc/addelementsview.class.php:1326 inc/contract.class.php:202
+msgid "Movement management"
+msgstr "Gestion des déplacements"
+
+#: inc/addelementsview.class.php:1342 inc/contract.class.php:218
+msgid "Duration of moving"
+msgstr "Durée du trajet"
+
+#: inc/addelementsview.class.php:1508
+msgid "New contract created previously"
+msgstr "Nouveau contrat créé précedemment"
+
+#: inc/addelementsview.class.php:1525
+msgid "Period name"
+msgstr "Nom de la prestation"
+
+#: inc/addelementsview.class.php:1533 inc/contractday.class.php:87
+#: inc/contractday.class.php:309 inc/contractday.class.php:521
+msgid "Postponement"
+msgstr "Report"
+
+#: inc/addelementsview.class.php:1554 inc/contractday.class.php:77
+#: inc/contractday.class.php:329 inc/contractday.class.php:516
+#: inc/followup.class.php:735 inc/gantt.class.php:337 inc/monthly.class.php:404
+msgid "Initial credit"
+msgstr "Crédit initial"
+
+#: inc/addelementsview.class.php:1614 inc/contractday.class.php:402
+#: inc/monthly.class.php:266 inc/monthly.class.php:277
+#: inc/monthly.class.php:280
+msgid "Already charged"
+msgstr "Déjà facturé"
+
+#: inc/addelementsview.class.php:1628
+msgid "Update this intervention"
+msgstr "Mettre à jour cette prestation"
+
+#: inc/addelementsview.class.php:1630
+msgid "Add only the intervention"
+msgstr "Ajouter cette prestation"
+
+#: inc/addelementsview.class.php:1641
+msgid "Add another intervention"
+msgstr "Ajouter une autre prestation"
+
+#: inc/addelementsview.class.php:1809 inc/criprice.class.php:281
+msgid "Add a new price"
+msgstr "Ajouter un nouveau tarif"
+
+#: inc/addelementsview.class.php:1918 inc/addelementsview.class.php:2019
+#: inc/criprice.class.php:45 inc/criprice.class.php:75
+#: inc/criprice.class.php:167 inc/criprice.class.php:327
+#: inc/critype.class.php:72 inc/monthly.class.php:408
+msgid "Daily rate"
+msgstr "Tarif journalier"
+
+#: inc/addelementsview.class.php:1920 inc/addelementsview.class.php:2021
+#: inc/criprice.class.php:47 inc/criprice.class.php:77
+#: inc/criprice.class.php:169 inc/criprice.class.php:329
+#: inc/monthly.class.php:410
+msgid "Hourly rate"
+msgstr "Tarif horaire"
+
+#: inc/addelementsview.class.php:1922 inc/addelementsview.class.php:2035
+#: inc/criprice.class.php:181 inc/criprice.class.php:331
+#: inc/criprice.class.php:593
+msgid "Is default"
+msgstr "Utilisé par défaut"
+
+#: inc/addelementsview.class.php:2049 inc/addelementsview.class.php:2328
+msgid "Add this price"
+msgid_plural "Add these prices"
+msgstr[0] "Ajouter ce tarif"
+msgstr[1] "Ajouter ces tarifs"
+
+#: inc/addelementsview.class.php:2055
+msgid "Delete this price"
+msgid_plural "Delete these prices"
+msgstr[0] "Supprimer ce tarif"
+msgstr[1] "Supprimer ces tarifs"
+
+#: inc/addelementsview.class.php:2378
+msgid "Reinitialize forms"
+msgstr "Réinitialiser tous les champs"
+
+#: inc/addelementsview.class.php:2393
+msgid "Add all previous elements"
+msgstr "Ajouter tous les éléments précedent"
+
+#: inc/addelementsview.class.php:2847
+msgid "The previous entity will be added, continue ?"
+msgstr "L'entité précedement créé va être ajoutée, continuer ?"
+
+#: inc/addelementsview.class.php:2850
+msgid "The previous contract will be added, continue ?"
+msgstr "Le contrat précedement créé va être ajouté, continuer ?"
+
+#: inc/addelementsview.class.php:2853
+msgid "The previous entity and contract will be added, continue ?"
+msgstr "L'entité et le contrat précedement créé vont être ajoutés, continuer ?"
+
+#: inc/addelementsview.class.php:2856
+msgid "All previous elements will be added, continue ?"
+msgstr "Tous les éléments précedent vont être ajoutés, continuer ?"
+
+#: inc/addelementsview.class.php:2859
+msgid "All previous elements will be updated, continue ?"
+msgstr "Tous les éléments précedent vont être mis à jour, continuer ?"
+
+#: inc/businesscontact.class.php:87 inc/businesscontact.class.php:137
+msgid "Associated commercial"
+msgid_plural "Associated business"
+msgstr[0] "Commercial associé"
+msgstr[1] "Commerciaux associés"
+
+#: inc/company.class.php:41 inc/config.class.php:222
+#: inc/followup.class.php:1159
+msgid "Company"
+msgid_plural "Companies"
+msgstr[0] "Société"
+msgstr[1] "Sociétés"
+
+#: inc/company.class.php:110 inc/entity.class.php:271
+msgid "Logo (format JPG or JPEG)"
+msgstr "Logo (format JPG ou JPEG)"
+
+#: inc/company.class.php:196 inc/company.class.php:214
+#: inc/entitylogo.class.php:70
+msgid "The format of the image must be in JPG or JPEG"
+msgstr "Le format de l'image doit être en JPG ou JPEG"
+
+#. TRANS: Default document to files attached to tickets : %d is the ticket id
+#: inc/company.class.php:286
+#, php-format
+msgid "Logo %d"
+msgstr "Logo %d"
+
+#: inc/config.class.php:50
+msgid "Options"
+msgstr "Options"
+
+#: inc/config.class.php:52
+msgid "Save reports in glpi"
+msgstr "Sauvegarder les rapports dans glpi"
+
+#: inc/config.class.php:57
+msgid "Rubric by default for reports"
+msgstr "Rubrique par défaut pour les rapports"
+
+#: inc/config.class.php:63
+msgid "Use of price"
+msgstr "Utilisation de la tarification"
+
+#: inc/config.class.php:68
+msgid "Configuration daily or hourly"
+msgstr "Configuration journalière ou horaire"
+
+#: inc/config.class.php:89
+msgid "Only public task are visible on intervention report"
+msgstr "Seules les tâches publiques sont visibles sur le CRI"
+
+#: inc/config.class.php:94
+msgid "Allow periods on the same interval of dates"
+msgstr "Autoriser les interventions sur un même intervalle de date"
+
+#: inc/config.class.php:99
+msgid "Configuring the client side view"
+msgstr "Configuration de la vue coté client"
+
+#: inc/config.class.php:111
+msgid "List of default statuses for general monitoring"
+msgstr "Liste par défaut des statuts pour le suivi général"
+
+#: inc/config.class.php:131
+msgid "Default Business list for general monitoring"
+msgstr "Liste par défaut des commerciaux pour le suivi général"
+
+#: inc/config.class.php:140
+msgid "Display comments from the company in the CRI"
+msgstr "Afficher les commentaires de la société dans le CRI"
+
+#: inc/config.class.php:146
+msgid ""
+"Warning: changing the configuration daily or hourly impacts the types of "
+"contract"
+msgstr ""
+"Attention : le changement de la configuration journalière ou horaire impacte "
+"les types de contrat."
+
+#: inc/config.class.php:215
+msgid "Add a company"
+msgstr "Ajouter une société"
+
+#: inc/config.class.php:248 inc/contract.class.php:430
+#: inc/contract.class.php:460
+msgid "Hourly"
+msgstr "Horaire"
+
+#: inc/config.class.php:253 inc/contractday.class.php:42
+#: inc/entity.class.php:100 inc/followup.class.php:720
+msgid "Period of contract"
+msgid_plural "Periods of contract"
+msgstr[0] "Prestation du contrat"
+msgstr[1] "Prestations de contrat"
+
+#: inc/contract.class.php:52
+msgid "Type of management"
+msgstr "Type de gestion"
+
+#: inc/contract.class.php:90
+msgid "Contract detail"
+msgstr "Détail du contrat"
+
+#: inc/contract.class.php:253 inc/contract.class.php:355
+msgid "Associated assistance contracts"
+msgstr "Contrats d'assistance associés"
+
+#: inc/contract.class.php:283
+msgid "Used by default"
+msgstr "Utilisé par défaut"
+
+#: inc/contract.class.php:385 inc/contract.class.php:409
+msgid "Quarterly"
+msgstr "Trimestriel"
+
+#: inc/contract.class.php:386 inc/contract.class.php:411
+msgid "Annual"
+msgstr "Annuel"
+
+#: inc/contract.class.php:431 inc/contract.class.php:462
+msgid "By intervention"
+msgstr "A l'intervention"
+
+#: inc/contract.class.php:435 inc/contract.class.php:466
+msgid "Technical Assistance"
+msgstr "Assistance Technique"
+
+#: inc/contract.class.php:436 inc/contract.class.php:468
+msgid "Package"
+msgstr "Forfait"
+
+#: inc/contract.class.php:486
+msgid "Intervention"
+msgid_plural "Interventions"
+msgstr[0] "Intervention"
+msgstr[1] "Interventions"
+
+#: inc/contractday.class.php:103
+msgid "Credit remaining"
+msgstr "Crédit restant"
+
+#: inc/contractday.class.php:358 inc/contractday.class.php:523
+#: inc/followup.class.php:736 inc/followup.class.php:908
+#: inc/gantt.class.php:338
+msgid "Total consummated"
+msgstr "Total consommé"
+
+#: inc/contractday.class.php:371 inc/contractday.class.php:526
+#: inc/dashboard.class.php:111 inc/dashboard.class.php:324
+#: inc/followup.class.php:742 inc/followup.class.php:909
+msgid "Total remaining"
+msgstr "Total restant"
+
+#: inc/contractday.class.php:379 inc/contractday.class.php:527
+#: inc/followup.class.php:744 inc/followup.class.php:910
+#: inc/monthly.class.php:421
+msgid "Total exceeding"
+msgstr "Total dépassement"
+
+#: inc/contractday.class.php:393 inc/followup.class.php:749
+msgid "Guaranteed package"
+msgstr "Forfait garanti"
+
+#: inc/contractday.class.php:411 inc/followup.class.php:750
+#: inc/followup.class.php:915
+msgid "Remaining total (amount)"
+msgstr "Total restant (montant)"
+
+#: inc/contractday.class.php:481
+msgid "Add a contract day"
+msgstr "Ajouter une prestation"
+
+#: inc/contractday.class.php:510 inc/followup.class.php:728
+#: inc/monthly.class.php:402
+msgid "Type of contract"
+msgstr "Type de contrat"
+
+#: inc/contractday.class.php:691
+msgid "End date cannot be less than begin date"
+msgstr "La date de début ne peut pas être inférieure à la date de fin"
+
+#: inc/contractday.class.php:721
+#, php-format
+msgid "The contract period %s already exists"
+msgstr "La prestation du contrat %s existe déja"
+
+#: inc/contractstate.class.php:57 inc/contractstate.class.php:77
+msgid "Color"
+msgstr "Couleur"
+
+#: inc/contractstate.class.php:93
+msgid "Color field is not correct"
+msgstr "Le champ de couleur est incorrect"
+
+#: inc/cri.class.php:56 inc/entity.class.php:97
+msgid "Interventions reports"
+msgstr "Rapports d'interventions"
+
+#: inc/cri.class.php:83 inc/cridetail.class.php:1034 inc/cripdf.class.php:391
+msgid "Out of contract"
+msgstr "Hors contrat"
+
+#: inc/cri.class.php:96 inc/cridetail.class.php:190 inc/cridetail.class.php:392
+#: inc/cridetail.class.php:491 inc/cridetail.class.php:873
+#: inc/cridetail.class.php:881 inc/cridetail.class.php:954
+#: inc/report.class.php:206
+msgid "Technicians"
+msgstr "Intervenants"
+
+#: inc/cri.class.php:119
+msgid "Please assign a technician to your tasks"
+msgstr "Merci d'assigner un technicien au ticket"
+
+#: inc/cri.class.php:141
+msgid "Add a technician"
+msgstr "Ajouter un intervenant"
+
+#: inc/cri.class.php:182
+msgid "Number of moving"
+msgstr "Nombres de déplacements"
+
+#: inc/cri.class.php:230
+msgid "Detail of the realized works"
+msgstr "Détail des travaux réalisés"
+
+#: inc/cri.class.php:251 inc/cridetail.class.php:305
+msgid "Regenerate the intervention report"
+msgstr "Regénérer le rapport d'intervention"
+
+#: inc/cri.class.php:258
+msgid "Impossible generation, you didn't create a scheduled task"
+msgstr "Génération impossible, aucune tâche planifiée créée"
+
+#: inc/cri.class.php:260
+msgid "No tasks whose category can be used"
+msgstr "Merci de configurer une catégorie de tâche de ticket avec le plugin"
+
+#: inc/cri.class.php:268
+msgid "No tasks"
+msgstr "Pas de tâches"
+
+#: inc/cri.class.php:455
+msgid "Please fill the contract period begin and end dates."
+msgstr ""
+"Merci de renseigner les dates de début et de fin de la prestation du contrat."
+
+#: inc/cri.class.php:460
+msgid "Please fill the contract period end date."
+msgstr "Merci de renseigner la date de fin de la prestation du contrat."
+
+#: inc/cri.class.php:465
+msgid "Please fill the contract period begin date."
+msgstr "Merci de renseigner la date de début de la prestation du contrat."
+
+#: inc/cri.class.php:760
+msgid "Save the intervention report"
+msgstr "Enregistrer le compte-rendu d'intervention"
+
+#: inc/cridetail.class.php:39
+msgid "Intervention task"
+msgid_plural "Intervention tasks"
+msgstr[0] "Tâche d'intervention"
+msgstr[1] "Tâches d'interventions"
+
+#: inc/cridetail.class.php:48
+msgid "Linked interventions"
+msgstr "Interventions liées"
+
+#: inc/cridetail.class.php:111 inc/cridetail.class.php:136
+msgid "Impossible action as an intervention report exists"
+msgstr "Action impossible car un rapport d'intervention existe"
+
+#: inc/cridetail.class.php:194 inc/cridetail.class.php:396
+#: inc/cridetail.class.php:490 inc/cridetail.class.php:872
+#: inc/cripdf.class.php:404
+msgid "Crossed time (itinerary including)"
+msgstr "Temps passé (trajet inclus)"
+
+#: inc/cridetail.class.php:195 inc/cridetail.class.php:397
+#: inc/cridetail.class.php:1111
+msgid "Intervention with contract"
+msgstr "Intervention sous contrat"
+
+#: inc/cridetail.class.php:197
+msgid "Associated ticket"
+msgstr "Ticket associé"
+
+#: inc/cridetail.class.php:383
+msgid "Associated intervention reports"
+msgstr "Rapports d'intervention associés"
+
+#: inc/cridetail.class.php:387 inc/entity.class.php:401
+msgid "All reports"
+msgstr "Liste complète"
+
+#: inc/cridetail.class.php:398 inc/cripdf.class.php:380
+msgid "Contract number"
+msgstr "N° du contrat"
+
+#: inc/cridetail.class.php:484
+msgid "Intervention of contract"
+msgstr "Intervention des prestations"
+
+#: inc/cridetail.class.php:487 inc/cridetail.class.php:868
+#: inc/cridetail.class.php:953
+msgid "Object of intervention"
+msgstr "Objet de l'intervention"
+
+#: inc/cridetail.class.php:493 inc/cridetail.class.php:875
+msgid "Applied daily rate"
+msgstr "Tarif Journalier appliqué"
+
+#: inc/cridetail.class.php:495 inc/cridetail.class.php:877
+msgid "Applied hourly rate"
+msgstr "Tarif Horaire appliqué"
+
+#: inc/cridetail.class.php:497 inc/cridetail.class.php:884
+msgid "To compute"
+msgstr "Décompte"
+
+#: inc/cridetail.class.php:506 inc/cridetail.class.php:1170
+#: inc/cridetail.class.php:1196
+msgid "Periods of contract"
+msgstr "Prestations du contrat"
+
+#: inc/cridetail.class.php:831 inc/cridetail.class.php:1224
+msgid "Ticket not validated"
+msgstr "Ticket non validé"
+
+#: inc/cridetail.class.php:839 inc/cridetail.class.php:1231
+msgid "Type of service contract missing"
+msgstr "Type de contrat de service manquant"
+
+#: inc/cridetail.class.php:865 inc/cridetail.class.php:950
+msgid "Intervention periods of contract"
+msgstr "Interventions de la prestation du contrat"
+
+#: inc/cridetail.class.php:880 inc/cripdf.class.php:189
+#: inc/cripdf.class.php:429
+msgid "of this intervention"
+msgstr "d'intervention"
+
+#: inc/cridetail.class.php:882
+msgid "Applied rate"
+msgstr "Tarif appliqué"
+
+#: inc/cridetail.class.php:925
+msgid "Total yearly consumption"
+msgstr "Total consommation annuelle"
+
+#: inc/cridetail.class.php:932
+msgid "Estimated number of remaining days"
+msgstr "Estimation Nombre de jours restant"
+
+#: inc/cridetail.class.php:937 inc/cridetail.class.php:968
+msgid "No interventions in the dates of the period"
+msgstr "Aucunes interventions dans les dates de la prestation"
+
+#: inc/cridetail.class.php:955
+msgid "Consumption"
+msgstr "Consommation"
+
+#: inc/cridetail.class.php:1030
+msgid "Associate to a contract"
+msgstr "Associer à un contrat"
+
+#: inc/cridetail.class.php:1034
+msgid "With contrat"
+msgstr "Avec contrat"
+
+#: inc/cridetail.class.php:1149
+msgid "No active contracts"
+msgstr "Aucun contrats en cours"
+
+#: inc/cripdf.class.php:209 inc/cripdf.class.php:213
+msgid "Created by"
+msgstr "Créé le"
+
+#: inc/cripdf.class.php:209 inc/cripdf.class.php:219
+msgid "in"
+msgstr "à"
+
+#: inc/cripdf.class.php:239
+msgid "Request number of associated help"
+msgstr "N° de demande de support associée"
+
+#: inc/cripdf.class.php:255
+msgid "Technician"
+msgid_plural "Technicians"
+msgstr[0] "Intervenant"
+msgstr[1] "Intervenants"
+
+#: inc/cripdf.class.php:269
+msgid "Intervention date"
+msgstr "Date d'intervention"
+
+#: inc/cripdf.class.php:272
+msgid "Year"
+msgstr "Année"
+
+#: inc/cripdf.class.php:286
+msgid "From"
+msgstr "du"
+
+#: inc/cripdf.class.php:290
+msgid "To"
+msgstr "au"
+
+#: inc/cripdf.class.php:320
+msgid "Society name"
+msgstr "Nom de la société"
+
+#: inc/cripdf.class.php:336
+msgid "Person in charge"
+msgstr "Responsable"
+
+#: inc/cripdf.class.php:377
+msgid "Help on contract"
+msgstr "Assistance sur contrat"
+
+#: inc/cripdf.class.php:408
+msgid "Wording of the activities"
+msgstr "Libellé des activités"
+
+#: inc/cripdf.class.php:410 inc/cripdf.class.php:412
+msgid "Date of"
+msgstr "Date de"
+
+#: inc/cripdf.class.php:411 inc/cripdf.class.php:413
+msgid "Hour of"
+msgstr "Heure de"
+
+#: inc/cripdf.class.php:417
+msgid "Crossed time"
+msgstr "Temps passé"
+
+#: inc/cripdf.class.php:432
+msgid "(in days)"
+msgstr "(en jours)"
+
+#: inc/cripdf.class.php:434
+msgid "(in hours)"
+msgstr "(en heures)"
+
+#: inc/cripdf.class.php:477
+msgid "Deplacement (in days)"
+msgstr "Déplacement (en jours)"
+
+#: inc/cripdf.class.php:479
+msgid "Deplacement"
+msgstr "Déplacement"
+
+#: inc/cripdf.class.php:495
+msgid "Total (in days)"
+msgstr "Total (en jours)"
+
+#: inc/cripdf.class.php:497
+msgid "Total (in hours)"
+msgstr "Total (en heures)"
+
+#: inc/cripdf.class.php:558
+msgid "Detail of work done"
+msgstr "Détail des travaux réalisés"
+
+#: inc/cripdf.class.php:614
+msgid "Customer comments"
+msgstr "Observations du client"
+
+#: inc/cripdf.class.php:695
+msgid "Customer stamp"
+msgstr "Cachet client"
+
+#: inc/cripdf.class.php:696
+msgid "Customer Visa"
+msgstr "Visa client"
+
+#: inc/cripdf.class.php:725
+msgid "Page"
+msgstr "Page"
+
+#: inc/cripdf.class.php:725
+msgid "on"
+msgstr "sur"
+
+#: inc/criprice.class.php:191
+msgid "Select an existing price"
+msgstr "Sélectionner un prix existant"
+
+#: inc/dashboard.class.php:46 inc/dashboard.class.php:124
+msgid "Remaining days number by opened client contracts"
+msgstr "Nombre de jours restants par contrat client"
+
+#: inc/dashboard.class.php:47 inc/dashboard.class.php:155
+msgid "Client annuary"
+msgstr "Annuaire client"
+
+#: inc/dashboard.class.php:48 inc/dashboard.class.php:218
+msgid "Tickets without CRI"
+msgstr "Tickets sans CRI"
+
+#: inc/dashboard.class.php:49 inc/dashboard.class.php:267
+msgid "Interventions with old contract"
+msgstr "Interventions sur des contrats terminés"
+
+#: inc/dashboard.class.php:50 inc/dashboard.class.php:337
+msgid "Opened contract prestations without remaining days"
+msgstr "Prestations de contrat en cours sans jours restants"
+
+#: inc/dashboard.class.php:111 inc/dashboard.class.php:324
+msgid "Team"
+msgstr "Equipe"
+
+#: inc/dashboard.class.php:111 inc/dashboard.class.php:181
+#: inc/dashboard.class.php:234 inc/dashboard.class.php:324
+msgid "Prestation"
+msgstr "Prestation"
+
+#: inc/dashboard.class.php:121 inc/dashboard.class.php:153
+#: inc/dashboard.class.php:215 inc/dashboard.class.php:334
+msgid "Plugin is not activated"
+msgstr "Le plugin n'est pas activé"
+
+#: inc/dashboard.class.php:149 inc/dashboard.class.php:181
+#: inc/dashboard.class.php:234 inc/entity.class.php:39
+#: inc/followup.class.php:591 inc/followup.class.php:637
+#: inc/monthly.class.php:395
+msgid "Client"
+msgid_plural "Clients"
+msgstr[0] "Client"
+msgstr[1] "Clients"
+
+#: inc/entity.class.php:70 inc/followup.class.php:968
+#: inc/followup.class.php:1039
+msgid "General follow-up"
+msgstr "Suivi général"
+
+#: inc/entity.class.php:74 inc/monthly.class.php:548 inc/monthly.class.php:596
+msgid "Monthly follow-up"
+msgstr "Suivi mensuel"
+
+#: inc/entity.class.php:81 inc/entity.class.php:241
+msgid "Data administrative"
+msgstr "Données administratives"
+
+#: inc/entity.class.php:90
+msgid "Client planning"
+msgstr "Planning client"
+
+#: inc/entity.class.php:109
+msgid "Web Applications"
+msgstr "Applications Web"
+
+#: inc/entity.class.php:115
+msgid "Accounts"
+msgstr "Comptes"
+
+#: inc/entity.class.php:120 inc/entity.class.php:586
+msgid "References"
+msgstr "References"
+
+#: inc/entity.class.php:228
+msgid "Portal"
+msgstr "Portail"
+
+#: inc/entity.class.php:277
+msgctxt "button"
+msgid "Update logo"
+msgstr "Mise à jour du logo"
+
+#: inc/entity.class.php:360
+msgctxt "button"
+msgid "Update administrative datas"
+msgstr "Mise à jour des données administratives"
+
+#: inc/entity.class.php:377
+msgid "Associated interventions"
+msgstr "Interventions associées"
+
+#: inc/entity.class.php:394
+msgid "Processed interventions"
+msgstr "Interventions traitées"
+
+#: inc/entity.class.php:395
+msgid "To be processed interventions"
+msgstr "Interventions à venir"
+
+#: inc/entitylogo.class.php:154
+msgid "Logo"
+msgstr "Logo"
+
+#: inc/followup.class.php:602 inc/followup.class.php:683
+#: inc/gantt.class.php:281
+msgid "Contract present"
+msgstr "Contrat présent"
+
+#: inc/followup.class.php:746 inc/followup.class.php:752
+msgid "Last visit"
+msgstr "Dernière visite"
+
+#: inc/followup.class.php:856
+msgid "Subtotal"
+msgstr "Sous-total"
+
+#: inc/followup.class.php:907
+msgid "Total initial credit"
+msgstr "Total crédit initial"
+
+#: inc/followup.class.php:914
+msgid "Total Guaranteed package"
+msgstr "Total forfait garanti"
+
+#: inc/followup.class.php:1096 inc/followup.class.php:1101
+#: inc/followup.class.php:1109 inc/followup.class.php:1114
+msgid "of period of contract"
+msgstr "de la prestation de contrat"
+
+#: inc/followup.class.php:1134
+msgid "Business"
+msgstr "Commerciaux"
+
+#: inc/gantt.class.php:58
+msgid "GANTT"
+msgstr "GANTT"
+
+#: inc/gantt.class.php:168
+msgid "Please wait"
+msgstr "Merci de patienter"
+
+#: inc/gantt.class.php:239
+msgid "Nothing to display"
+msgstr "Rien à afficher"
+
+#: inc/interventionskateholder.class.php:38
+msgid "User affected"
+msgid_plural "Users affected"
+msgstr[0] "Utilisateur affecté"
+msgstr[1] "Utilisateurs affectés"
+
+#: inc/interventionskateholder.class.php:140
+#: inc/interventionskateholder.class.php:307
+msgid "No skateholders have been affected yet."
+msgstr "Aucun intervenant n'a encore été ajouté."
+
+#: inc/interventionskateholder.class.php:172
+#: inc/interventionskateholder.class.php:277
+#: inc/interventionskateholder.class.php:390
+msgid "Affected to"
+msgstr "Affecté à"
+
+#: inc/interventionskateholder.class.php:187
+#: inc/interventionskateholder.class.php:285
+msgid "Delete"
+msgstr "Supprimer"
+
+#: inc/interventionskateholder.class.php:192
+#: inc/interventionskateholder.class.php:286
+msgid "This action is irreversible. Continue ?"
+msgstr "Cette action est irréversible, Continuer ?"
+
+#: inc/interventionskateholder.class.php:250
+#: inc/interventionskateholder.class.php:252
+#: inc/interventionskateholder.class.php:256
+#: inc/interventionskateholder.class.php:258 inc/monthly.class.php:414
+#: inc/monthly.class.php:419
+msgid "Current skateholder"
+msgid_plural "Current skateholders"
+msgstr[0] "Intervenant actuel"
+msgstr[1] "Intervenants actuels"
+
+#: inc/interventionskateholder.class.php:379
+msgid "Add skateholders"
+msgstr "Ajouter des intervenants"
+
+#: inc/monthly.class.php:264 inc/monthly.class.php:272
+#: inc/monthly.class.php:282 inc/monthly.class.php:580
+msgid "To present an invoice"
+msgstr "A facturer"
+
+#: inc/monthly.class.php:285
+msgid "In progress"
+msgstr "En cours"
+
+#: inc/monthly.class.php:379
+msgid ""
+"Warning : There are supplementary interventions which depends on  a "
+"prestation with a earlier end date"
+msgstr ""
+"Attention : il y a des interventions qui dépendent d'une prestation ayant "
+"une date antérieure"
+
+#: inc/monthly.class.php:405
+msgid "Remaining on "
+msgstr "Restant au"
+
+#: inc/monthly.class.php:413
+msgid "Production"
+msgstr "Production"
+
+#: inc/monthly.class.php:416
+msgid "Total production"
+msgstr "Total consommation mensuelle"
+
+#: inc/monthly.class.php:418 inc/monthly.class.php:578
+msgid "Exceeding"
+msgstr "Dépassement"
+
+#: inc/monthly.class.php:423
+msgid "State of intervention"
+msgstr "Etat de l'intervention"
+
+#: inc/preference.class.php:105
+msgid "Launch the plugin Entities portal with GLPI launching"
+msgstr "Lancer le plugin Portail entités au démarrage de GLPI"
+
+#: inc/preference.class.php:116
+msgid "Status list contract for the general monitoring"
+msgstr "Liste des statuts du contrat pour le suivi général"
+
+#: inc/preference.class.php:136
+msgid "Default list of Business for the general monitoring"
+msgstr "Liste par défaut des commerciaux pour le suivi général"
+
+#: inc/preference.class.php:144
+msgid "Default list of companies for the general monitoring"
+msgstr "Liste par défaut des sociétés pour le suivi général"
+
+#: inc/preference.class.php:166
+msgid ""
+"Warning : If there are more than one plugin which be loaded at startup, then "
+"only the first will be used"
+msgstr ""
+"Attention : si plusieurs plugins sont lancés au démarrage, seul le premier "
+"sera actif"
+
+#: inc/profile.class.php:36
+msgid "Right management"
+msgid_plural "Rights management"
+msgstr[0] "Gestion des droits"
+msgstr[1] "Gestion des droits"
+
+#: inc/report.class.php:106
+msgid "Total moving package"
+msgstr "Nombre de forfait de déplacement"
+
+#: inc/report.class.php:107
+msgid "Total time of the tasks of a category"
+msgstr "Total temps des tâches d'une catégorie"
+
+#: inc/report.class.php:205
+msgid "Daily schedule"
+msgstr "Temps quotidien"
+
+#: inc/report.class.php:207
+msgid "Time justified"
+msgstr "Temps justifé"
+
+#: inc/report.class.php:216
+#, php-format
+msgid "% of time justified"
+msgstr "% de temps justifié"
+
+#: inc/servicecatalog.class.php:62
+msgid "Manage"
+msgstr "Gérer"
+
+#: inc/servicecatalog.class.php:62
+msgid "your contracts"
+msgstr "vos contrats"
+
+#: inc/servicecatalog.class.php:70
+msgid "Manage your contracts"
+msgstr "Gérer vos contrats"
+
+#: inc/taskcategory.class.php:38 inc/taskcategory.class.php:121
+msgid "Management of task category"
+msgid_plural "Management of task categories"
+msgstr[0] "Gestion des catégories de tâches"
+msgstr[1] "Gestion des catégories de tâches"
+
+#: inc/taskcategory.class.php:127
+msgid "Use for calculation of intervention report"
+msgstr "Utiliser pour le calcul des CRI"
+
+#~ msgid "This plugin requires GLPI >= 0.90"
+#~ msgstr "Ce plugin nécessite GLPI >= 0.90"
+
+#~ msgid "Report"
+#~ msgstr "Rapport"
+
+#~ msgid "(in hour)"
+#~ msgstr "(en heures)"
+
+#~ msgid "Clients"
+#~ msgstr "Clients"
+
+#~ msgid "Detail of configuration"
+#~ msgstr "Détail de la configuration"
+
+#~ msgid "requests number of associated help"
+#~ msgstr "N° de demande de support associée"
+
+#~ msgid "Number of bought days"
+#~ msgstr "Nombre de jours acheté"
+
+#~ msgid "Number of remaining days"
+#~ msgstr "Nombre de jours restant"
+
+#~ msgid "Determination of the initial balance"
+#~ msgstr "Détermination du solde initial"
+
+#~ msgid "Intervention type by default"
+#~ msgstr "Type d'intervention par défaut"
+
+#~ msgid "PDF contract successfully added"
+#~ msgstr "Le contrat PDF a bien été ajouté"
+
+#~ msgid "Add PDF contract"
+#~ msgstr "Ajouter  un contrat PDF"
+
+#~ msgid "Month consumption (amount)"
+#~ msgstr "Consommation du mois (montant)"
+
+#, fuzzy
+#~ msgid "Skatehokder successfully updadted."
+#~ msgstr "L'intervenant a bien été ajouté."
+
+#~ msgid "New period"
+#~ msgstr "Nouvelle période"
+
+#~ msgid "My society address"
+#~ msgstr "Adresse de mon entreprise"
+
+#~ msgid "End of address"
+#~ msgstr "Fin de l'adresse"
+
+#~ msgid ""
+#~ "Link a ticket to a contract without generation of intervention report"
+#~ msgstr "Lier un ticket à un contrat sans générer le CRI"
+
+#~ msgid "Unlimited"
+#~ msgstr "Illimité"
+
+#~ msgid "Preview"
+#~ msgstr "Aperçu"

@@ -32,28 +32,26 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginManageentitiesTaskCategory extends CommonDBTM {
    
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['plugin_manageentities']['taskcategory'][0];
+   static $rightname = 'dropdown';
+   
+   static function getTypeName($nb=0) {
+      return _n('Management of task category', 'Management of task categories', $nb, 'manageentities');
    }
    
-   function canCreate() {
-      return Session::haveRight('dropdown', 'w');
+   static function canView() {
+      return Session::haveRight(self::$rightname, READ);
    }
 
-   function canView() {
-      return Session::haveRight('dropdown', 'r');
+   static function canCreate() {
+      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
    }
    
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
       $config = PluginManageentitiesConfig::getInstance();
 
       if ($item->getType()=='TaskCategory') {
-         if($config->fields['useprice']!='1'){
-            return $LANG['plugin_manageentities']['title'][1];
+         if($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR){
+            return __('Entities portal', 'manageentities');
          }
       }
       return '';
@@ -102,15 +100,13 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
    }
 
    function showForm ($ID, $options=array()) {
-      global $LANG;
-
-      if (!Session::haveRight("dropdown","r")) return false;
+      if (!self::canView()) return false;
 
       $taskCategory = new TaskCategory();
       if ($ID) {
          $this->getFromDBByTaskCategory($ID);
          $taskCategory->getFromDB($ID);
-         $canUpdate = $taskCategory->can($ID,'w');
+         $canUpdate = $taskCategory->can($ID,UPDATE);
       }
 
       $rand=mt_rand();
@@ -122,13 +118,13 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
 
       echo "<tr><th colspan='2'>";
 
-      echo $LANG['plugin_manageentities']['taskcategory'][0]." - ".$taskCategory->fields["name"];
+      echo __('Management of task category', 'manageentities')." - ".$taskCategory->fields["name"];
 
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
 
-      echo "<td>".$LANG['plugin_manageentities']['taskcategory'][1]."</td><td>";
+      echo "<td>".__('Use for calculation of intervention report', 'manageentities')."</td><td>";
       Dropdown::showYesNo("is_usedforcount",$this->fields["is_usedforcount"]);
       echo "</td>";
       echo "</tr>";

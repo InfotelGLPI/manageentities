@@ -26,45 +26,37 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
-   include (GLPI_ROOT . "/inc/includes.php");
-}
+include ('../../../inc/includes.php');
+
 if (!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["contract_id"])) $_GET["contract_id"] = 0;
+if(!isset($_GET["showFromPlugin"])) $_GET["showFromPlugin"] = 0;
 
-$contractday= new PluginManageentitiesContractDay();
-$contract = new Contract();
+$contractday = new PluginManageentitiesContractDay();
 
 if (isset($_POST["add"])) {
-   $contractday->check(-1, 'w');
-   $newID = $contractday->add($_POST);
-
+   $contractday->check(-1, UPDATE);
+   $contractday->add($_POST);
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $contractday->check($_POST["id"], 'w');
+   $contractday->check($_POST["id"], UPDATE);
    $contractday->update($_POST);
-
    Html::back();
 
 } else if (isset($_POST["delete"])) {
    $contracts_id = $_POST["contracts_id"];
-   $contractday->check($_POST["id"], 'w');
+   $contractday->check($_POST["id"], UPDATE);
    $contractday->delete($_POST);
-
    Html::redirect(Toolbox::getItemTypeFormURL('Contract')."?id=".$contracts_id);
 
 } else if (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
-
-   Session::checkRight("contract","w");
+   Session::checkRight("contract",UPDATE);
    $contractday->addNbDay($_POST);
    Html::back();
 
 } else if (isset($_POST["delete_nbday"])) {
-
-   Session::checkRight("contract","w");
-
+   Session::checkRight("contract",UPDATE);
    foreach ($_POST["item_nbday"] as $key => $val) {
       if ($val==1) {
          $contractday->delete(array('id'=>$key));
@@ -73,24 +65,20 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["deleteAll"])) {
-
    foreach ($_POST["item"] as $key => $val) {
       $input = array('id' => $key);
       if ($val==1) {
-         $contractday->check($key,'w');
+         $contractday->check($key,UPDATE);
          $contractday->delete($input);
       }
    }
    Html::back();
 
 } else {
-
-   Html::header($LANG['plugin_manageentities']['title'][5],'',"plugins","manageentities");
-
-   if (Session::haveRight("contract","r")) {
-      $contractday->showform($_GET["id"], array('contract_id'=>$_GET['contract_id']));
+   Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management" ,"pluginmanageentitiesentity", "contractday");
+   if (Session::haveRight("contract", READ)) {
+      $contractday->display($_GET);
    }
-   
    Html::footer();
 }
 

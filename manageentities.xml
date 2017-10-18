@@ -10,18 +10,21 @@
          <en><![CDATA[Entities management. This plugin allows you to manage entities. Link with documents, contacts, contracts. You can also create intervention reports and do contract management of your entities.]]></en>
       </short>
       <long>
-         <fr><![CDATA[Ce plugin vous permet de gérer vos entités. Lier des documents, contacts, contrats. De plus vous pouvez créer des rapports d'interventions, et faire le suivi contrat de vos entités. Pour une entité donnée, vous définissez<br />-les contacts associés (ainsi que le responsable),<br />-les contrats associés ( ainsi que celui utilisé par défaut),<br />-le tarif journalier pour un type d'intervention donné,<br />-les documents associés.<br />-Puis dans le détail du contrat, vous définissez le solde initial (nombre de jours x un type d'intervention donné).<br />-Une fois ceci fait, vous pourrez créer des rapports d'intervention et ainsi avoir le décompte du contrat utilisé.<br />-Possibilité de lancement du plugin au démarrage de GLPI]]></fr>
-         <en><![CDATA[This plugin allows you to manage entities. Link with documents, contacts, contracts. You can also create intervention reports and do contract management of your entities. For a given entity, you define :<br />-the associated contacts (and the manager),<br />-the contracts involved (and those used by default),<br />-the daily rate for a given type of intervention,<br />-the associated documents.<br />-Then in the details of the contract, you set the initial balance (number of days x the type of intervention).<br />-Once done, you can create reports of intervention and thus have the breakdown of contract used.<br />-The plugin can be launched when GLPI loading]]></en>
+         <fr><![CDATA[Ce plugin vous permet de gérer vos entités. Lier des documents, contacts, contrats. De plus vous pouvez créer des rapports d'interventions, et faire le suivi contrat de vos entités. Pour une entité donnée, vous définissez<br />- Les contacts associés (ainsi que le responsable),<br />- Les contrats associés ( ainsi que celui utilisé par défaut),<br />- Le tarif journalier pour un type d'intervention donné,<br />- Les documents associés.<br />- Puis dans le détail du contrat, vous définissez le solde initial (nombre de jours x un type d'intervention donné).<br />- Une fois ceci fait, vous pourrez créer des rapports d'intervention et ainsi avoir le décompte du contrat utilisé.<br />- Possibilité de lancement du plugin au démarrage de GLPI]]></fr>
+         <en><![CDATA[This plugin allows you to manage entities. Link with documents, contacts, contracts. You can also create intervention reports and do contract management of your entities. For a given entity, you define :<br />- The associated contacts (and the manager),<br />- The contracts involved (and those used by default),<br />- The daily rate for a given type of intervention,<br />- The associated documents.<br />- Then in the details of the contract, you set the initial balance (number of days x the type of intervention).<br />- Once done, you can create reports of intervention and thus have the breakdown of contract used.<br />- The plugin can be launched when GLPI loading]]></en>
       </long>
    </description>
       <homepage>https://github.com/InfotelGLPI/manageentities</homepage>
       <download>https://github.com/InfotelGLPI/manageentities/releases</download>
-      <issues>https://github.com/InfotelGLPI/manageentities/issues</issues>
-   <readme>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/README.md</readme>
    <authors>
-      <author>Xavier Caillaud / Infotel</author>
+      <author>Xavier Caillaud</author>
+      <author>Infotel</author>
    </authors>
    <versions>
+      <version>
+         <num>2.1.0</num>
+         <compatibility>0.90</compatibility>
+      </version>
       <version>
          <num>1.8.1</num>
          <compatibility>0.83.3</compatibility>
@@ -62,6 +65,7 @@
    <langs>
       <lang>fr_FR</lang>
       <lang>en_GB</lang>
+      <lang>it_IT</lang>
    </langs>
    <license><![CDATA[GPL v2+]]></license>
    <tags>
@@ -78,12 +82,4 @@
             <tag>Management</tag>
          </en>
    </tags>
-   <screenshots>
-      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/administrative_data.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/contracts.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/demo_cri.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/followup.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/Liste_cri.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/InfotelGLPI/manageentities/master/wiki/monthly.png</screenshot>
-   </screenshots>
 </root>

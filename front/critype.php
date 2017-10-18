@@ -26,9 +26,9 @@
  --------------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
+include ('../../../inc/includes.php');
 
 $dropdown = new PluginManageentitiesCriType();
 include (GLPI_ROOT . "/front/dropdown.common.php");
+
 ?>

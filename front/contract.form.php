@@ -26,59 +26,46 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
-   include (GLPI_ROOT . "/inc/includes.php");
-}
+include ('../../../inc/includes.php');
 
-$contractday= new PluginManageentitiesContractDay();
-$contract = new PluginManageentitiesContract();
+$contractday = new PluginManageentitiesContractDay();
+$contract    = new PluginManageentitiesContract();
 
 if (isset($_POST["addcontract"])) {
-   $contract->check(-1, 'w');
+   $contract->check(-1, UPDATE);
    $newID = $contract->add($_POST);
-
    Html::back();
-
+   
 } else if (isset($_POST["delcontract"])) {
-   $contract->check($_POST["id"], 'w');
+   $contract->check($_POST["id"], UPDATE);
    $contract->delete($_POST);
-
    Html::back();
-
+   
 } else if (isset($_POST["updatecontract"])) {
-   $contract->check($_POST["id"], 'w');
+   $contract->check($_POST["id"], UPDATE);
    $contract->update($_POST);
-
    Html::back();
-
-}else if (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
-
-   Session::checkRight("contract","w");
+   
+} else if (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
+   Session::checkRight("contract", UPDATE);
    $contractday->addNbDay($_POST);
    Html::back();
-
+   
 } else if (isset($_POST["delete_nbday"])) {
-
-   Session::checkRight("contract","w");
-
+   Session::checkRight("contract", UPDATE);
    foreach ($_POST["item_nbday"] as $key => $val) {
-      if ($val==1) {
-         $contractday->delete(array('id'=>$key));
+      if ($val == 1) {
+         $contractday->delete(array('id' => $key));
       }
    }
    Html::back();
-
-} else {
-
-   Html::header($LANG["common"][12],'',"plugins","manageentities");
-
-   if (Session::haveRight("contract","r")) {
-      PluginManageentitiesContractDay::showform_old($CFG_GLPI['root_doc']."/plugins/manageentities/front/contract.form.php",
-         $_POST["id"]);
-   }
    
+} else {
+   $contractday->checkGlobal(READ);
+
+   Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management" ,"pluginmanageentitiesentity", "contractday");
+   $contractday->display($_GET);
+
    Html::footer();
 }
-
 ?>

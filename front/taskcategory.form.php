@@ -26,10 +26,9 @@
  --------------------------------------------------------------------------
 // */
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
+include ('../../../inc/includes.php');
 
-Session::checkRight("dropdown","r");
+Session::checkRight("dropdown",READ);
 
 $taskCategory=new PluginManageentitiesTaskCategory();
 

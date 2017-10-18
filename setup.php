@@ -2,7 +2,7 @@
 /*
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2003-2013 by the Manageentities Development Team.
 
  https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
@@ -28,50 +28,49 @@
 
 // Init the hooks of the plugins -Needed
 function plugin_init_manageentities() {
-   global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
+   global $PLUGIN_HOOKS,$CFG_GLPI;
    
    $PLUGIN_HOOKS['csrf_compliant']['manageentities'] = true;
-   $PLUGIN_HOOKS['change_profile']['manageentities'] = array('PluginManageentitiesProfile','changeProfile');
+   $PLUGIN_HOOKS['change_profile']['manageentities'] = array('PluginManageentitiesProfile','initProfile');
    
-   $PLUGIN_HOOKS['pre_item_purge']['manageentities'] = array('Profile'=>array('PluginManageentitiesProfile', 'purgeProfiles'),
-                                                             'Entity'=>'plugin_pre_item_purge_manageentities',
-                                                             'Ticket'=>'plugin_pre_item_purge_manageentities',
-                                                             'Contract'=>'plugin_pre_item_purge_manageentities',
-                                                             'Contact'=>'plugin_pre_item_purge_manageentities',
-                                                             'Document'=>'plugin_pre_item_purge_manageentities',
-                                                             'TaskCategory'=>'plugin_pre_item_purge_manageentities');
+   $PLUGIN_HOOKS['pre_item_purge']['manageentities'] = array('Entity'       => 'plugin_pre_item_purge_manageentities',
+                                                             'Ticket'       => 'plugin_pre_item_purge_manageentities',
+                                                             'Contract'     => 'plugin_pre_item_purge_manageentities',
+                                                             'Contact'      => 'plugin_pre_item_purge_manageentities',
+                                                             'TaskCategory' => 'plugin_pre_item_purge_manageentities');
+   
    $PLUGIN_HOOKS['pre_item_update']['manageentities'] = array('Document'=>array('PluginManageentitiesEntity', 'preUpdateDocument'));
    $PLUGIN_HOOKS['item_update']['manageentities'] = array('Document'=>array('PluginManageentitiesEntity', 'UpdateDocument'));
 
-   //TODO work in progress
    $PLUGIN_HOOKS['item_transfer']['manageentities'] ='plugin_item_transfer_manageentities';
    
    if (Session::getLoginUserID()) {
-      
-      Plugin::registerClass('PluginManageentitiesProfile',
-                         array('addtabon' => 'Profile'));
-      
-      Plugin::registerClass('PluginManageentitiesPreference',
-                         array('addtabon' => 'Preference'));
+      Plugin::registerClass('PluginManageentitiesProfile', array('addtabon' => 'Profile'));
+      Plugin::registerClass('PluginManageentitiesContract', array('addtabon' => 'Contract'));
+      Plugin::registerClass('PluginManageentitiesCriDetail', array('addtabon' => 'Ticket',
+                                                                     'planning_types' => true));
 
-      Plugin::registerClass('PluginManageentitiesContract',
-                         array('addtabon' => 'Contract'));
       
-      Plugin::registerClass('PluginManageentitiesCriDetail',
-                         array('addtabon' => 'Ticket'));
+      Plugin::registerClass('PluginManageentitiesTaskCategory', array('addtabon' => 'TaskCategory'));
+      Plugin::registerClass('PluginManageentitiesInterventionSkateholder', array('addtabon' => 'PluginManageentitiesContractDay'));
+      Plugin::registerClass('PluginManageentitiesCriPrice', array('addtabon' => 'PluginManageentitiesContractDay'));
 
-      Plugin::registerClass('PluginManageentitiesTaskCategory',
-                         array('addtabon' => 'TaskCategory'));
-                                           
-      // Display a menu entry ?
-      if (plugin_manageentities_haveRight("manageentities","r") || Session::haveRight("config","w")) {
+      if (class_exists('PluginServicecatalogMain')) {
+         $PLUGIN_HOOKS['servicecatalog']['manageentities'] = array ('PluginManageentitiesServicecatalog');
+      }
 
-         $PLUGIN_HOOKS['menu_entry']['manageentities'] = 'front/entity.php';
-         $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = '/front/entity.php';
-         $PLUGIN_HOOKS['submenu_entry']['manageentities']['search'] = 'front/entity.php';
-         $PLUGIN_HOOKS['submenu_entry']['manageentities']['config'] = 'front/config.form.php';
+      if (session::haveRightsOr('plugin_manageentities', array(READ, UPDATE))
+         && !class_exists('PluginServicecatalogMain')) {
+         $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = "/front/entity.php";
+      }
+      if (session::haveRightsOr('plugin_manageentities', array(READ, UPDATE))) {
+         Plugin::registerClass('PluginManageentitiesPreference', array('addtabon' => 'Preference')); //See #413
+         $PLUGIN_HOOKS['menu_toadd']['manageentities'] = array('management' => 'PluginManageentitiesEntity');
+
          // Reports
-         $PLUGIN_HOOKS['reports']['manageentities'] = array('front/report.form.php'=>$LANG['plugin_manageentities']['onglet'][3]);
+         $PLUGIN_HOOKS['reports']['manageentities'] = array('front/report.form.php'=>_n('Intervention report', 'Intervention reports', 2, 'manageentities'),
+                                                            'front/report_moving.form.php'=>__('Report on the movement of technicians', 'manageentities'),
+                                                            'front/report_occupation.form.php'=>__('Report concerning the occupation of the technicians', 'manageentities'));
 
          $plugin = new Plugin();
          if (isset($_SESSION["glpi_plugin_manageentities_loaded"]) 
@@ -79,47 +78,56 @@ function plugin_init_manageentities() {
             && class_exists('PluginManageentitiesContract')
             && $plugin->isActivated("manageentities")) {
             $_SESSION["glpi_plugin_manageentities_loaded"] = 1;
-            Html::redirect(GLPI_ROOT."/plugins/manageentities/front/entity.php");
+            Html::redirect($CFG_GLPI['root_doc']."/plugins/manageentities/front/entity.php");
          }
-     }
+      }
 
-      if (plugin_manageentities_haveRight("manageentities","w") || Session::haveRight("config","w")) {
+      if (Session::haveRight("plugin_manageentities", UPDATE)) {
          $PLUGIN_HOOKS['config_page']['manageentities'] = 'front/config.form.php';
+      }
+      
+      if (class_exists('PluginMydashboardMenu')) {
+         $PLUGIN_HOOKS['mydashboard']['manageentities'] = array ("PluginManageentitiesDashboard");
       }
 
       // Add specific files to add to the header : javascript or css
-      //$PLUGIN_HOOKS['add_javascript']['manageentities']="manageentities.js";
-      $PLUGIN_HOOKS['add_css']['manageentities']="manageentities.css";
-
-      // Config page
-      if (plugin_manageentities_haveRight("manageentities","w") || Session::haveRight("config","w"))
-         $PLUGIN_HOOKS['config_page']['manageentities'] = 'front/config.form.php';
+      $PLUGIN_HOOKS['add_css']['manageentities'] = array("manageentities.css",
+                                                         "style.css");
       
+      $PLUGIN_HOOKS['add_javascript']['manageentities'] = array('scripts/scripts-manageentities.js',
+                                                                'scripts/jquery.form.js',);
+      // Ticket task duplication
+      if (Session::haveRight("task", CommonITILTask::UPDATEALL) 
+            && Session::haveRight("task", CommonITILTask::ADDALLITEM)
+            && strpos($_SERVER['REQUEST_URI'], "ticket.form.php") !== false
+            && strpos($_SERVER['REQUEST_URI'], 'id=') !== false
+            && Session::haveRight("plugin_manageentities", READ)) {
+         
+         $PLUGIN_HOOKS['add_javascript']['manageentities'][] = 'scripts/manageentities_load_scripts.js';
+      }
+      $PLUGIN_HOOKS['post_init']['manageentities'] = 'plugin_manageentities_postinit';
    }
 }
 
 // Get the name and the version of the plugin - Needed
-
 function plugin_version_manageentities() {
-   global $LANG;
 
    return array (
-      'name' => $LANG['plugin_manageentities']['title'][1],
-      'version' => '1.9.0',
+      'name' => __('Entities portal', 'manageentities'),
+      'version' => '2.3.0',
       'oldname' => 'manageentity',
-      'author'=>'Xavier Caillaud, Faustine Crespel',
+      'author'=>'Infotel',
       'license' => 'GPLv2+',
-      'oldname' => 'manageentity',
       'homepage'=>'https://forge.indepnet.net/projects/show/manageentities',
-      'minGlpiVersion' => '0.83.3',// For compatibility / no install in version < 0.83
+      'minGlpiVersion' => '9.2',
    );
 
 }
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_manageentities_check_prerequisites() {
-   if (version_compare(GLPI_VERSION,'0.83.3','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
-      echo "This plugin requires GLPI >= 0.83.3";
+   if (version_compare(GLPI_VERSION, '9.2', 'lt') || version_compare(GLPI_VERSION, '9.3', 'ge')) {
+      echo __('This plugin requires GLPI >= 9.2');
       return false;
    }
    return true;
@@ -128,20 +136,6 @@ function plugin_manageentities_check_prerequisites() {
 // Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
 function plugin_manageentities_check_config() {
    return true;
-}
-
-function plugin_manageentities_haveRight($module,$right) {
-   $matches=array(
-         ""  => array("","r","w"), // ne doit pas arriver normalement
-         "r" => array("r","w"),
-         "w" => array("w"),
-         "1" => array("1"),
-         "0" => array("0","1"), // ne doit pas arriver non plus
-            );
-   if (isset($_SESSION["glpi_plugin_manageentities_profile"][$module])
-      &&in_array($_SESSION["glpi_plugin_manageentities_profile"][$module],$matches[$right]))
-      return true;
-   else return false;
 }
 
 ?>
