@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,61 +27,43 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
-   include (GLPI_ROOT . "/inc/includes.php");
-}
+include('../../../inc/includes.php');
 
 $plugin = new Plugin();
 
+
 if ($plugin->isActivated("manageentities")) {
+   if (Session::haveRight("plugin_manageentities", UPDATE)) {
+      $config = new PluginManageentitiesConfig();
 
-   Session::checkRight("config","w");
+      if (isset($_POST["update_config"])) {
+         Session::checkRight("config", UPDATE);
+         $config->update($_POST);
+         Html::back();
 
-   $config= new PluginManageentitiesConfig();
-   $criprice= new PluginManageentitiesCriPrice();
+      } else {
+         Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
+         $config->GetFromDB(1);
+         $config->showForm();
+         //$config->showDetails();
+         $config->showFormCompany();
 
-   if (isset($_POST["update_config"])) {
-
-      Session::checkRight("config","w");
-      $config->update($_POST);
-      Html::back();
-
-   } else if (isset($_POST["add_price"])) {
-
-      Session::checkRight("contract","w");
-      if (isset($_POST['price']) && isset($_POST['plugin_manageentities_critypes_id'])) {
-         $criprice->addCriPrice($_POST);
+         Html::footer();
       }
-      Html::back();
-
-   } else if (isset($_POST["delete_price"])) {
-
-      Session::checkRight("contract","w");
-
-      foreach ($_POST["item_price"] as $key => $val) {
-         if ($val==1) {
-            $criprice->delete(array('id'=>$key));
-         }
-      }
-      Html::back();
 
    } else {
-
-      Html::header($LANG["common"][12],'',"plugins","manageentities");
-
-      $config->GetFromDB(1);
-      $config->showForm();
-      $config->showDetails();
-
+      Html::header(__('Setup'), '', "config", "plugins");
+      echo "<div align='center'><br><br>";
+      echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt='warning'><br><br>";
+      echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
       Html::footer();
    }
 
 } else {
-   Html::header($LANG["common"][12],'',"config","plugins");
-   echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-   echo "<b>Please activate the plugin</b></div>";
+   Html::header(__('Setup'), '', "config", "plugins");
+   echo "<div align='center'><br><br>";
+   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt='warning'><br><br>";
+   echo "<b>" . __('Please activate the plugin', 'manageentities') . "</b></div>";
    Html::footer();
 }
-
 ?>

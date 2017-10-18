@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -31,54 +32,52 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginManageentitiesTaskCategory extends CommonDBTM {
-   
-   static function getTypeName() {
-      global $LANG;
 
-      return $LANG['plugin_manageentities']['taskcategory'][0];
-   }
-   
-   function canCreate() {
-      return Session::haveRight('dropdown', 'w');
+   static $rightname = 'dropdown';
+
+   static function getTypeName($nb = 0) {
+      return _n('Management of task category', 'Management of task categories', $nb, 'manageentities');
    }
 
-   function canView() {
-      return Session::haveRight('dropdown', 'r');
+   static function canView() {
+      return Session::haveRight(self::$rightname, READ);
    }
-   
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
+   static function canCreate() {
+      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+   }
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $config = PluginManageentitiesConfig::getInstance();
 
-      if ($item->getType()=='TaskCategory') {
-         if($config->fields['useprice']!='1'){
-            return $LANG['plugin_manageentities']['title'][1];
+      if ($item->getType() == 'TaskCategory') {
+         if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+            return __('Entities portal', 'manageentities');
          }
       }
       return '';
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
-      if ($item->getType()=='TaskCategory') {
-         $ID = $item->getField('id');
+      if ($item->getType() == 'TaskCategory') {
+         $ID   = $item->getField('id');
          $self = new self();
-         
+
          if (!$self->getFromDBByTaskCategory($ID)) {
             $self->createAccess($item->getField('id'));
          }
          $self->showForm($item->getField('id'), array('target' =>
-                           $CFG_GLPI["root_doc"]."/plugins/manageentities/front/taskcategory.form.php"));
+                                                         $CFG_GLPI["root_doc"] . "/plugins/manageentities/front/taskcategory.form.php"));
       }
       return true;
    }
 
    function getFromDBByTaskCategory($taskcategories_id) {
       global $DB;
-      
+
       $query = "SELECT * FROM `glpi_plugin_manageentities_taskcategories`
                WHERE `taskcategories_id` = '" . $taskcategories_id . "' ";
       if ($result = $DB->query($query)) {
@@ -98,49 +97,47 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
    function createAccess($ID) {
 
       $this->add(array(
-      'taskcategories_id' => $ID));
+                    'taskcategories_id' => $ID));
    }
 
-   function showForm ($ID, $options=array()) {
-      global $LANG;
-
-      if (!Session::haveRight("dropdown","r")) return false;
+   function showForm($ID, $options = array()) {
+      if (!self::canView()) return false;
 
       $taskCategory = new TaskCategory();
       if ($ID) {
          $this->getFromDBByTaskCategory($ID);
          $taskCategory->getFromDB($ID);
-         $canUpdate = $taskCategory->can($ID,'w');
+         $canUpdate = $taskCategory->can($ID, UPDATE);
       }
 
-      $rand=mt_rand();
+      $rand = mt_rand();
 
       echo "<form name='taskCategory_form$rand' id='taskCategory_form$rand' method='post'
-            action='".$options['target']."'>";
+            action='" . $options['target'] . "'>";
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='2'>";
 
-      echo $LANG['plugin_manageentities']['taskcategory'][0]." - ".$taskCategory->fields["name"];
+      echo __('Management of task category', 'manageentities') . " - " . $taskCategory->fields["name"];
 
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
 
-      echo "<td>".$LANG['plugin_manageentities']['taskcategory'][1]."</td><td>";
-      Dropdown::showYesNo("is_usedforcount",$this->fields["is_usedforcount"]);
+      echo "<td>" . __('Use for calculation of intervention report', 'manageentities') . "</td><td>";
+      Dropdown::showYesNo("is_usedforcount", $this->fields["is_usedforcount"]);
       echo "</td>";
       echo "</tr>";
 
-      echo "<input type='hidden' name='id' value=".$this->fields["id"].">";
+      echo "<input type='hidden' name='id' value=" . $this->fields["id"] . ">";
 
-      $options['canedit']      = false;
+      $options['canedit'] = false;
 
-      if($canUpdate){
+      if ($canUpdate) {
          $options['canedit'] = true;
       }
-      $options['candel'] = false;
+      $options['candel']  = false;
       $options['colspan'] = '1';
       $this->showFormButtons($options);
 

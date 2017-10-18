@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -31,72 +32,66 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginManageentitiesCriType extends CommonDropdown {
-   
-   static function getTypeName() {
-      global $LANG;
 
-      return $LANG['plugin_manageentities'][14];
-   }
-   
-   function canCreate() {
-      return plugin_manageentities_haveRight('manageentities', 'w');
+   static $rightname = 'plugin_manageentities';
+
+   static function getTypeName($nb = 0) {
+      return _n('Intervention type', 'Intervention types', $nb, 'manageentities');
    }
 
-   function canView() {
-      $config=PluginManageentitiesConfig::getInstance();
-      if($config->fields['useprice']=='1'){
-         return plugin_manageentities_haveRight('manageentities', 'r');
+   static function canCreate() {
+      return Session::haveRight(self::$rightname, array(CREATE, UPDATE, DELETE));
+   }
+
+   static function canView() {
+      $config = PluginManageentitiesConfig::getInstance();
+      if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+         return Session::haveRight(self::$rightname, READ);
       }
    }
-   
+
    function getSearchOptions() {
-      global $LANG;
+      //      $tab = array();
+      //      $tab['common']=__('Characteristics');
 
-      $tab = array();
-      $tab['common']=$LANG['common'][32];
+      $tab = parent::getSearchOptions();
 
-      $tab[1]['table'] = $this->getTable();
-      $tab[1]['field'] = 'name';
-      $tab[1]['name'] = $LANG['common'][16];
-      $tab[1]['datatype']='itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      
-      $tab[2]['table'] = 'glpi_plugin_manageentities_criprices';
-      $tab[2]['field'] = 'price';
-      $tab[2]['name'] = $LANG['plugin_manageentities'][15];
-      
-      $tab[30]['table'] = $this->getTable();
-      $tab[30]['field'] = 'id';
-      $tab[30]['name'] = $LANG['common'][2];
-   
+      $tab[12]['table']        = 'glpi_plugin_manageentities_contractdays';
+      $tab[12]['field']        = 'name';
+      $tab[12]['forcegroupby'] = true;
+      $tab[12]['name']         = PluginManageentitiesContractDay::getTypeName();
+      $tab[12]['datatype']     = 'itemlink';
+      $tab[12]['joinparams']   = array('condition' => "AND REFTABLE.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')",
+                                       'beforejoin'
+                                                   => array('table' => 'glpi_plugin_manageentities_criprices', 'joinparams' => array('jointype' => "child"))
+      );
+
+      $tab[13]['table']        = 'glpi_plugin_manageentities_criprices';
+      $tab[13]['field']        = 'price';
+      $tab[13]['datatype']     = 'number';
+      $tab[13]['forcegroupby'] = true;
+      $tab[13]['name']         = __('Daily rate', 'manageentities');
+      $tab[13]['joinparams']   = array('jointype'  => "child",
+                                       'condition' => "AND NEWTABLE.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')");
+
       return $tab;
    }
 
-   function defineTabs($options=array()) {
-
-      $ong = array();
-      $this->addStandardTab(__CLASS__, $ong, $options);
-
-      return $ong;
-   }
-   
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'PluginManageentitiesCriType' :
-               return $LANG['plugin_manageentities'][14];
+               return PluginManageentitiesCriType::getTypeName(1);
          }
       }
       return '';
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
-      if ($item->getType()=='PluginManageentitiesCriType') {
-         PluginManageentitiesCriPrice::showform($item->getID());
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+      $criprice = new PluginManageentitiesCriPrice();
+      if ($item->getType() == 'PluginManageentitiesCriType') {
+         $criprice->showForCriType($item);
       }
       return true;
    }

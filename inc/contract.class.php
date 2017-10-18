@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,266 +33,360 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginManageentitiesContract extends CommonDBTM {
 
-   const MANAGEMENT_NONE = 0;
+   const MANAGEMENT_NONE      = 0;
    const MANAGEMENT_QUARTERLY = 1;
-   const MANAGEMENT_ANNUAL = 2;
+   const MANAGEMENT_ANNUAL    = 2;
 
-   const TYPE_NONE=0;
-   const TYPE_HOUR = 1;
-   const TYPE_INTERVENTION = 2;
-   const TYPE_UNLIMITED = 3;
+   const CONTRACT_TYPE_NULL = 0;
+   //time mode 
+   const CONTRACT_TYPE_HOUR         = 1;
+   const CONTRACT_TYPE_INTERVENTION = 2;
+   const CONTRACT_TYPE_UNLIMITED    = 3;
+   //Daily mode
+   const CONTRACT_TYPE_AT      = 4;
+   const CONTRACT_TYPE_FORFAIT = 5;
 
-   static function getTypeName(){
-      global $LANG;
+   static $rightname = 'plugin_manageentities';
 
-      return $LANG['plugin_manageentities']['title'][4];
+   static function getTypeName($nb = 1) {
+
+      return __('Type of management', 'manageentities');
    }
 
-   function canCreate() {
-      return plugin_manageentities_haveRight("manageentities","w");
+   static function canView() {
+      return Session::haveRight(self::$rightname, READ);
    }
 
-   function canView() {
-      return plugin_manageentities_haveRight("manageentities","r");
+   static function canCreate() {
+      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
    }
-   
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
-      if ($item->getType()=='Contract') {
-         return $LANG['plugin_manageentities']['title'][3];
+   function prepareInputForAdd($input) {
+
+      if (isset($input['date_renewal'])
+          && empty($input['date_renewal']))
+         $input['date_renewal'] = 'NULL';
+      if (isset($input['date_signature'])
+          && empty($input['date_signature']))
+         $input['date_signature'] = 'NULL';
+
+      if (isset($input['contract_added'])
+          && $input['contract_added'] == "on") {
+         $input['contract_added'] = 1;
+      } else {
+         $input['contract_added'] = 0;
+      }
+      if (isset($input['refacturable_costs'])
+          && $input['refacturable_costs'] == "on") {
+         $input['refacturable_costs'] = 1;
+      } else {
+         $input['refacturable_costs'] = 0;
+      }
+
+      return $input;
+   }
+
+   function prepareInputForUpdate($input) {
+
+      if (isset($input['date_renewal'])
+          && empty($input['date_renewal']))
+         $input['date_renewal'] = 'NULL';
+      if (isset($input['date_signature'])
+          && empty($input['date_signature']))
+         $input['date_signature'] = 'NULL';
+
+      if (isset($input['contract_added'])
+          && $input['contract_added'] == "on") {
+         $input['contract_added'] = 1;
+      } else {
+         $input['contract_added'] = 0;
+      }
+      if (isset($input['refacturable_costs'])
+          && $input['refacturable_costs'] == "on") {
+         $input['refacturable_costs'] = 1;
+      } else {
+         $input['refacturable_costs'] = 0;
+      }
+      return $input;
+   }
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      if ($item->getType() == 'Contract'
+          && !isset($withtemplate) || empty($withtemplate)) {
+         return __('Contract detail', 'manageentities');
       }
       return '';
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-      if (get_class($item)=='Contract') {
+      if (get_class($item) == 'Contract') {
 
          self::showForContract($item);
 
-         if(plugin_manageentities_haveRight('manageentities','w')){
-            PluginManageentitiesContractDay::addNewContractDay($item);
-         }
-         if(plugin_manageentities_haveRight('manageentities', 'r')){
+         if (self::canView()) {
             PluginManageentitiesContractDay::showForContract($item);
          }
       }
       return true;
    }
 
-   function addContractByDefault($id,$entities_id) {
+   function addContractByDefault($id, $entities_id) {
       global $DB;
 
-      $query = "SELECT *
-        FROM `".$this->getTable()."`
-        WHERE `entities_id` = '".$entities_id."' ";
+      $query  = "SELECT *
+        FROM `" . $this->getTable() . "`
+        WHERE `entities_id` IN (" . $entities_id . ") ";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
       if ($number) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data = $DB->fetch_array($result)) {
 
-            $query_nodefault = "UPDATE `".$this->getTable()."`
-            SET `is_default` = '0' WHERE `id` = '".$data["id"]."' ";
+            $query_nodefault  = "UPDATE `" . $this->getTable() . "`
+            SET `is_default` = '0' WHERE `id` = '" . $data["id"] . "' ";
             $result_nodefault = $DB->query($query_nodefault);
          }
       }
 
-      $query_default = "UPDATE `".$this->getTable()."`
-        SET `is_default` = '1' WHERE `id` = '".$id."' ";
+      $query_default  = "UPDATE `" . $this->getTable() . "`
+        SET `is_default` = '1' WHERE `id` = '" . $id . "' ";
       $result_default = $DB->query($query_default);
    }
 
-   function addContract($contracts_id,$entities_id) {
+   static function showForContract(Contract $contract) {
+      $rand    = mt_rand();
+      $canView = $contract->can($contract->fields['id'], READ);
+      $canEdit = $contract->can($contract->fields['id'], UPDATE);
+      $config  = PluginManageentitiesConfig::getInstance();
 
-      $this->add(array('contracts_id'=>$contracts_id,'entities_id'=>$entities_id));
+      if (!$canView) return false;
 
-   }
-
-   function deleteContract($ID) {
-
-      $this->delete(array('id'=>$ID));
-   }
-
-
-   static function showForContract(Contract $contract){
-      global $LANG;
-
-      $rand=mt_rand();
-      $canView = $contract->can($contract->fields['id'], 'r');
-      $canEdit = $contract->can($contract->fields['id'], 'w');
-      $config=PluginManageentitiesConfig::getInstance();
-
-      if(!$canView) return false;
-
-      $restrict = "`glpi_plugin_manageentities_contracts`.`entities_id` = '".
-                        $contract->fields['entities_id']."'
-                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '".
-                        $contract->fields['id']."'";
+      $restrict        = "`glpi_plugin_manageentities_contracts`.`entities_id` = '" .
+                         $contract->fields['entities_id'] . "'
+                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '" .
+                         $contract->fields['id'] . "'";
       $pluginContracts = getAllDatasFromTable("glpi_plugin_manageentities_contracts", $restrict);
-      $pluginContract = reset($pluginContracts);
+      $pluginContract  = reset($pluginContracts);
 
-      if($canEdit){
+      if ($canEdit) {
          echo "<form method='post' name='contract_form$rand' id='contract_form$rand'
-               action='".Toolbox::getItemTypeFormURL('PluginManageentitiesContract')."'>";
+               action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesContract') . "'>";
       }
 
       echo "<div align='spaced'><table class='tab_cadre_fixe center'>";
 
-      echo "<tr><th colspan='4'>".PluginManageentitiesContract::getTypeName(0)."</th></tr>";
+      echo "<tr><th colspan='4'>" . PluginManageentitiesContract::getTypeName(0) . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['plugin_manageentities']['contract'][0]."</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Date of signature', 'manageentities') . "</td>";
       echo "<td>";
-      Html::showDateFormItem("date_signature",$pluginContract['date_signature']);
-      echo "</td><td>".$LANG['plugin_manageentities']['contract'][1]."</td><td>";
+      Html::showDateFormItem("date_signature", $pluginContract['date_signature']);
+      echo "</td><td>" . __('Date of renewal', 'manageentities') . "</td><td>";
       Html::showDateFormItem("date_renewal", $pluginContract['date_renewal']);
       echo "</td></tr>";
 
-      if($config->fields['hourorday'] == '1'){
-         echo "<tr class='tab_bg_1'><td>".$LANG['plugin_manageentities']['contract'][2]."</td>";
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+         echo "<tr class='tab_bg_1'><td>" . __('Mode of management', 'manageentities') . "</td>";
          echo "<td>";
          PluginManageentitiesContract::dropdownContractManagement("management", $pluginContract['management']);
-         echo "</td><td>".$LANG['plugin_manageentities']['contract'][3]."</td><td>";
+         echo "</td><td>" . __('Type of service contract', 'manageentities') . "</td><td>";
          PluginManageentitiesContract::dropdownContractType("contract_type", $pluginContract['contract_type']);
          echo "</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<input type='hidden' name='contracts_id' value='".$contract->fields['id']."'>";
-      echo "<input type='hidden' name='entities_id' value='".$contract->fields['entities_id']."'>";
-      echo "<input type='hidden' name='is_default' value='0'>";
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+         echo "<tr class='tab_bg_1'><td>" . __('Contract is imported in GLPI', 'manageentities') . "</td>";
+         echo "<td>";
+         $sel_contract = "";
+         if (isset($pluginContract['contract_added']) && $pluginContract['contract_added'] == "1") {
+            $sel_contract = "checked";
+         }
+         echo "<input type='checkbox' name='contract_added' $sel_contract>";
+         echo "</td><td colspan='2'></td>";
+         echo "</td></tr>";
+      }
 
-      if($canEdit){
-         if(empty($pluginContract)){
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Show on global GANTT') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("show_on_global_gantt", $pluginContract["show_on_global_gantt"]);
+      echo "</td>";
+      echo "<td>" . __('Refacturable costs', 'manageentities') . "</td>";
+      echo "<td>";
+      $sel = "";
+      if (isset($pluginContract['refacturable_costs']) && $pluginContract['refacturable_costs'] == "1") {
+         $sel = "checked";
+      }
+      echo "<input type='checkbox' name='refacturable_costs' $sel>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Movement management', 'manageentities') . "</td>";
+      echo "<td>";
+      $rand = Dropdown::showYesNo("moving_management", $pluginContract["moving_management"], -1, array('on_change' => 'changemovement();'));
+      echo Html::scriptBlock("
+         function changemovement(){
+            if($('#dropdown_moving_management$rand').val() != 0){
+               $('#movementlabel').show();
+               $('#movement').show();
+            } else {
+               $('#movementlabel').hide();
+               $('#movement').hide();
+            }
+         }
+         changemovement();
+      ");
+      echo "</td>";
+      echo "<td><div id='movementlabel'>" . __('Duration of moving', 'manageentities') . "</div></td>";
+
+      echo "<td><div id='movement'>";
+      Dropdown::showTimeStamp('duration_moving', array('value'           => $pluginContract['duration_moving'],
+                                                       'addfirstminutes' => true));
+      echo "</div></td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<input type='hidden' name='contracts_id' value='" . $contract->fields['id'] . "'>";
+      echo "<input type='hidden' name='entities_id' value='" . $contract->fields['entities_id'] . "'>";
+
+      if ($canEdit) {
+         if (empty($pluginContract)) {
             echo "<td class='center' colspan='4'>";
-            echo "<input type='submit' name='addcontract' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "<input type='submit' name='addcontract' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
          } else {
-            echo "<input type='hidden' name='id' value='".$pluginContract['id']."'>";
+            echo "<input type='hidden' name='id' value='" . $pluginContract['id'] . "'>";
             echo "<td class='center' colspan='2'>";
-            echo "<input type='submit' name='updatecontract' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='updatecontract' value='" . _sx('button', 'Update') . "' class='submit'>";
             echo "</td><td class='center' colspan='2'>";
-            echo "<input type='submit' name='delcontract' value='".$LANG['buttons'][6]."' class='submit'>";
+            echo "<input type='submit' name='delcontract' value='" . _sx('button', 'Delete permanently') . "' class='submit'>";
          }
          echo "</td>";
       }
       echo "</tr>";
       echo "</table></div>";
-      if($canEdit){
+      if ($canEdit) {
          Html::closeForm();
       }
    }
 
 
    function showContracts($instID) {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
-      $config = PluginManageentitiesConfig::getInstance();
+      PluginManageentitiesEntity::showManageentitiesHeader(__('Associated assistance contracts', 'manageentities'));
 
-      $query = "SELECT `glpi_contracts`.*,
-                       `".$this->getTable()."`.`contracts_id`,
-                       `".$this->getTable()."`.`management`,
-                       `".$this->getTable()."`.`contract_type`,
-                       `".$this->getTable()."`.`is_default`,
-                       `".$this->getTable()."`.`id` as myid
-        FROM `".$this->getTable()."`, `glpi_contracts`
-        WHERE `".$this->getTable()."`.`contracts_id` = `glpi_contracts`.`id`
-        AND `".$this->getTable()."`.`entities_id` = '$instID'
+      $entitiesID = "'" . implode("', '", $instID) . "'";
+      $config     = PluginManageentitiesConfig::getInstance();
+
+      $query  = "SELECT `glpi_contracts`.*,
+                       `" . $this->getTable() . "`.`contracts_id`,
+                       `" . $this->getTable() . "`.`management`,
+                       `" . $this->getTable() . "`.`contract_type`,
+                       `" . $this->getTable() . "`.`is_default`,
+                       `" . $this->getTable() . "`.`id` as myid
+        FROM `" . $this->getTable() . "`, `glpi_contracts`
+        WHERE `" . $this->getTable() . "`.`contracts_id` = `glpi_contracts`.`id`
+        AND `" . $this->getTable() . "`.`entities_id` IN (" . $entitiesID . ")
         ORDER BY `glpi_contracts`.`begin_date`, `glpi_contracts`.`name`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
       if ($number) {
          echo "<form method='post' action=\"./entity.php\">";
-         echo "<div align='center'><table class='tab_cadre_fixe center'>";
-         echo "<tr><th colspan='7'>".$LANG['plugin_manageentities'][3]."</th></tr>";
-         echo "<tr><th>".$LANG['common'][16]."</th>";
-         echo "<th>".$LANG['financial'][4]."</th>";
-         echo "<th>".$LANG['common'][25]."</th>";
-         if($config->fields['hourorday'] == '1'){
-            echo "<th>".$LANG['plugin_manageentities']['contract'][2]."</th>";
-            echo "<th>".$LANG['plugin_manageentities']['contract'][3]."</th>";
-         } else if($config->fields['hourorday'] == '0' && $config->fields['useprice'] == '1') {
-            echo "<th>".$LANG['plugin_manageentities']['contract'][3]."</th>";
+         echo "<div align='center'><table class='tab_cadrehov center'>";
+         echo "<tr><th>" . __('Name') . "</th>";
+         echo "<th>" . _x('phone', 'Number') . "</th>";
+         echo "<th>" . __('Comments') . "</th>";
+         if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+            echo "<th>" . __('Mode of management', 'manageentities') . "</th>";
+            echo "<th>" . __('Type of service contract', 'manageentities') . "</th>";
+         } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+            echo "<th>" . __('Type of service contract', 'manageentities') . "</th>";
          }
-         echo "<th>".$LANG['plugin_manageentities'][13]."</th>";
-         if ($this->canCreate())
+         echo "<th>" . __('Used by default', 'manageentities') . "</th>";
+         if ($this->canCreate() && sizeof($instID) == 1)
             echo "<th>&nbsp;</th>";
          echo "</tr>";
 
          $used = array();
 
-         while ($data=$DB->fetch_array($result)) {
-            $used[]= $data["contracts_id"];
+         while ($data = $DB->fetch_array($result)) {
+            $used[] = $data["contracts_id"];
 
-            echo "<tr class='tab_bg_1".($data["is_deleted"]=='1'?"_2":"")."'>";
-            echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=".$data["contracts_id"]."\">".$data["name"]."";
-            if ($_SESSION["glpiis_ids_visible"]||empty($data["name"])) echo " (".$data["contracts_id"].")";
-               echo "</a></td>";
-            echo "<td class='center'>".$data["num"]."</td>";
-            echo "<td class='center'>".nl2br($data["comment"])."</td>";
-            if($config->fields['hourorday'] == '1'){
-               echo "<td class='center'>".self::getContractManagement($data["management"])."</td>";
-               echo "<td class='center'>".self::getContractType($data['contract_type'])."</td>";
-            } else if($config->fields['hourorday'] == '0' && $config->fields['useprice'] == '1'){
-               echo "<td class='center'>".self::getContractType($data['contract_type'])."</td>";
+            echo "<tr class='tab_bg_1" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
+            echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/contract.form.php?id=" . $data["contracts_id"] . "\">" . $data["name"] . "";
+            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) echo " (" . $data["contracts_id"] . ")";
+            echo "</a></td>";
+            echo "<td class='center'>" . $data["num"] . "</td>";
+            echo "<td class='center'>" . nl2br($data["comment"]) . "</td>";
+            if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+               echo "<td class='center'>" . self::getContractManagement($data["management"]) . "</td>";
+               echo "<td class='center'>" . self::getContractType($data['contract_type']) . "</td>";
+            } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+               echo "<td class='center'></td>";
+               //               echo "<td class='center'>".self::getContractType($data['contract_type'])."</td>";
             }
             echo "<td class='center'>";
-            if ($data["is_default"]) {
-               echo $LANG['choice'][1];
+            if (sizeof($instID) == 1) {
+               if ($data["is_default"]) {
+                  echo __('Yes');
+               } else {
+                  Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+                                       'contractbydefault',
+                                       __('No'),
+                                       array('myid' => $data["myid"], 'entities_id' => $_SESSION["glpiactive_entity"]));
+               }
             } else {
-               Html::showSimpleForm($CFG_GLPI['root_doc'].'/plugins/manageentities/front/entity.php',
-                                    'contractbydefault',
-                                    $LANG['choice'][0],
-                                    array('myid' => $data["myid"],'entities_id' => $instID));
+               echo Dropdown::getYesNo($data["is_default"]);
             }
             echo "</td>";
-            
-            if ($this->canCreate()) {
+            if ($this->canCreate() && sizeof($instID) == 1) {
                echo "<td class='center' class='tab_bg_2'>";
-               Html::showSimpleForm($CFG_GLPI['root_doc'].'/plugins/manageentities/front/entity.php',
-                                    'deletecontracts',
-                                    $LANG['buttons'][6],
-                                    array('id' => $data["myid"]));
 
+               Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+                                    'deletecontracts',
+                                    _x('button', 'Delete permanently'),
+                                    array('id' => $data["myid"]));
                echo "</td>";
             }
-         
             echo "</tr>";
 
          }
 
-         if ($this->canCreate()) {
-            if($config->fields['hourorday'] == '1'){
+         if ($this->canCreate() && sizeof($instID) == 1) {
+            if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
                echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
-            } else if($config->fields['hourorday'] == '0' && $config->fields['useprice'] == '1'){
+            } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             } else {
                echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
             }
-            echo "<input type='hidden' name='entities_id' value='$instID'>";
+            echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
             Dropdown::show('Contract', array('name' => "contracts_id",
                                              'used' => $used));
-            echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"".$LANG['buttons'][8]."\" class='submit'></td>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><img alt='' title=\"" . _sx('button', 'Add') . "\" src='" . $CFG_GLPI["root_doc"] .
+                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
+            echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'></td>";
             echo "</tr>";
          }
-         echo "</table></div>" ;
+         echo "</table></div>";
          Html::closeForm();
-         
-      }  else {
+
+      } else {
          echo "<form method='post' action=\"./entity.php\">";
-         echo "<div align='center'><table class='tab_cadre_fixe center'>";
-         echo "<tr><th colspan='3'>".$LANG['plugin_manageentities'][3].":</th></tr>";
-         echo "<tr><th>".$LANG['common'][16]."</th>";
-         echo "<th>".$LANG['financial'][4]."</th>";
-         echo "<th>".$LANG['common'][25]."</th>";
+         echo "<div align='center'><table class='tab_cadrehov center'>";
+         echo "<tr><th colspan='3'>" . __('Associated assistance contracts', 'manageentities') . ":</th></tr>";
+         echo "<tr><th>" . __('Name') . "</th>";
+         echo "<th>" . _x('phone', 'Number') . "</th>";
+         echo "<th>" . __('Comments') . "</th>";
 
          echo "</tr>";
          if ($this->canCreate()) {
             echo "<tr class='tab_bg_1'><td class='center'>";
-            echo "<input type='hidden' name='entities_id' value='$instID'>";
+            echo "<input type='hidden' name='entities_id' value=" . $_SESSION["glpiactive_entity"] . ">";
             Dropdown::show('Contract', array('name' => "contracts_id"));
-            echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><img alt='' title=\"" . _sx('button', 'Add') . "\" src='" . $CFG_GLPI["root_doc"] .
+                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
+            echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
             echo "</td><td></td>";
             echo "</tr>";
          }
@@ -300,88 +395,154 @@ class PluginManageentitiesContract extends CommonDBTM {
       }
    }
 
-   static function dropdownContractManagement($name, $value = 0) {
-      global $LANG;
-
-      $contractManagements = array( self::MANAGEMENT_NONE => Dropdown::EMPTY_VALUE,
-                                    self::MANAGEMENT_QUARTERLY=>$LANG['plugin_manageentities'][25],
-                                    self::MANAGEMENT_ANNUAL=>$LANG['plugin_manageentities'][26]);
+   /**
+    * Dropdown list contract management
+    *
+    * @param type $name
+    * @param type $value
+    * @param type $rand
+    *
+    * @return boolean
+    */
+   static function dropdownContractManagement($name, $value = 0, $rand = null) {
+      $contractManagements = array(self::MANAGEMENT_NONE      => Dropdown::EMPTY_VALUE,
+                                   self::MANAGEMENT_QUARTERLY => __('Quarterly', 'manageentities'),
+                                   self::MANAGEMENT_ANNUAL    => __('Annual', 'manageentities'));
 
       if (!empty($contractManagements)) {
-
-         return Dropdown::showFromArray($name, $contractManagements, array('value'  => $value));
+         if ($rand == null) {
+            return Dropdown::showFromArray($name, $contractManagements, array('value' => $value));
+         } else {
+            return Dropdown::showFromArray($name, $contractManagements, array('value' => $value, 'rand' => $rand));
+         }
       } else {
          return false;
       }
    }
 
+   /**
+    * Return the name of contract management
+    *
+    * @param type $value
+    *
+    * @return string
+    */
    static function getContractManagement($value) {
-      global $LANG;
-
       switch ($value) {
          case self::MANAGEMENT_NONE :
             return Dropdown::EMPTY_VALUE;
          case self::MANAGEMENT_QUARTERLY :
-            return $LANG['plugin_manageentities'][25];
+            return __('Quarterly', 'manageentities');
          case self::MANAGEMENT_ANNUAL :
-            return $LANG['plugin_manageentities'][26];
+            return __('Annual', 'manageentities');
          default :
             return "";
       }
    }
 
-   static function dropdownContractType($name, $value = 0) {
-      global $LANG;
+   /**
+    * dropdown list of the types of contract
+    *
+    * @param type $name
+    * @param type $value
+    * @param type $rand
+    * @param type $on_change
+    *
+    * @return boolean
+    */
+   static function dropdownContractType($name, $value = 0, $rand = null) {
+      $config = PluginManageentitiesConfig::getInstance();
 
-      $contractTypes = array( self::TYPE_NONE => Dropdown::EMPTY_VALUE,
-                              self::TYPE_HOUR=>$LANG['plugin_manageentities']['setup'][7],
-                              self::TYPE_INTERVENTION=>$LANG['plugin_manageentities'][8],
-                              self::TYPE_UNLIMITED=>$LANG['plugin_manageentities'][30]);
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+         $contractTypes = array(self::CONTRACT_TYPE_NULL         => Dropdown::EMPTY_VALUE,
+                                self::CONTRACT_TYPE_HOUR         => __('Hourly', 'manageentities'),
+                                self::CONTRACT_TYPE_INTERVENTION => __('By intervention', 'manageentities'),
+                                self::CONTRACT_TYPE_UNLIMITED    => __('Unlimited'));
+      } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+         $contractTypes = array(self::CONTRACT_TYPE_NULL    => Dropdown::EMPTY_VALUE,
+                                self::CONTRACT_TYPE_AT      => __('Technical Assistance', 'manageentities'),
+                                self::CONTRACT_TYPE_FORFAIT => __('Package', 'manageentities'));
+      }
 
       if (!empty($contractTypes)) {
-
-         return Dropdown::showFromArray($name, $contractTypes, array('value'  => $value));
+         if ($rand == null) {
+            return Dropdown::showFromArray($name, $contractTypes, array('value' => $value));
+         } else {
+            return Dropdown::showFromArray($name, $contractTypes, array('value' => $value, 'rand' => $rand));
+         }
       } else {
          return false;
       }
    }
 
+   /**
+    * Returns the name of the type of contract
+    *
+    * @param type $value
+    *
+    * @return string
+    */
    static function getContractType($value) {
-      global $LANG;
-
       switch ($value) {
-         case self::TYPE_NONE :
+         case self::CONTRACT_TYPE_NULL :
             return Dropdown::EMPTY_VALUE;
-         case self::TYPE_HOUR :
-            return $LANG['plugin_manageentities']['setup'][7];
-         case self::TYPE_INTERVENTION :
-            return $LANG['plugin_manageentities'][8];
-         case self::TYPE_UNLIMITED :
-            return $LANG['plugin_manageentities'][30];
+         case self::CONTRACT_TYPE_HOUR :
+            return __('Hourly', 'manageentities');
+         case self::CONTRACT_TYPE_INTERVENTION :
+            return __('By intervention', 'manageentities');
+         case self::CONTRACT_TYPE_UNLIMITED :
+            return __('Unlimited');
+         case self::CONTRACT_TYPE_AT :
+            return __('Technical Assistance', 'manageentities');
+         case self::CONTRACT_TYPE_FORFAIT :
+            return __('Package', 'manageentities');
          default :
             return "";
       }
    }
 
-   static function getUnitContractType($config,$value){
-      global $LANG;
-
-      if($config->fields['hourorday'] == '1'){
+   /**
+    * Return the unit
+    *
+    * @param type $config
+    * @param type $value
+    *
+    * @return type
+    */
+   static function getUnitContractType($config, $value) {
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
          switch ($value) {
-            case self::TYPE_HOUR :
-               return $LANG['plugin_manageentities'][28];
-            case self::TYPE_INTERVENTION :
-               return $LANG['plugin_manageentities'][29];
-            case self::TYPE_UNLIMITED :
-               return $LANG['plugin_manageentities'][30];
+            case self::CONTRACT_TYPE_HOUR :
+               return _n('Hour', 'Hours', 2);
+            case self::CONTRACT_TYPE_INTERVENTION :
+               return _n('Intervention', 'Interventions', 2, 'manageentities');
+            case self::CONTRACT_TYPE_UNLIMITED :
+               return __('Unlimited');
          }
       } else {
-         return $LANG['plugin_manageentities'][17];
+         return _n('Day', 'Days', 2);
       }
 
    }
 
+   static function checkRemainingOpenContractDays($contracts_id) {
+      global $DB;
 
+      $query = "SELECT count(*) AS count
+                FROM `glpi_plugin_manageentities_contractdays`
+                LEFT JOIN `glpi_plugin_manageentities_contractstates`
+                    ON (`glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id` = `glpi_plugin_manageentities_contractstates`.`id`)
+                WHERE `glpi_plugin_manageentities_contractdays`.`contracts_id` = '" . $contracts_id . "' AND `glpi_plugin_manageentities_contractstates`.`is_active` = 1";
+
+      $result = $DB->query($query);
+      while ($data = $DB->fetch_array($result)) {
+         if ($data['count'] > 0) {
+            return true;
+         }
+      }
+
+      return false;
+   }
 
 }
 

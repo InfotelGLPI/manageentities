@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,26 +27,35 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
-   include (GLPI_ROOT . "/inc/includes.php");
-}
+include('../../../inc/includes.php');
 
 if (isset($_GET["file"])) { // for other file
+   $splitter = explode("/", $_GET["file"]);
 
-   $splitter=explode("/",$_GET["file"]);
-    
-   if (count($splitter)==3) {
+   if (count($splitter) == 3) {
 
-      if (file_exists(GLPI_DOC_DIR."/".$_GET["file"])) {
-          
-         Toolbox::sendFile(GLPI_DOC_DIR."/".$_GET["file"],$splitter[2]);
+      if (file_exists(GLPI_DOC_DIR . "/" . $_GET["file"])) {
+         if (!isset($_GET["seefile"])) {
+            Toolbox::sendFile(GLPI_DOC_DIR . "/" . $_GET["file"], $splitter[2]);
+         } else {
+            $doc                     = new Document();
+            $doc->fields['filepath'] = $_GET["file"];
+            $doc->fields['mime']     = 'application/pdf';
+            $doc->fields['filename'] = $splitter[2];
+
+            //Document send method that has changed.
+            //Because of : document.class.php
+            //if (!in_array($extension, array('jpg', 'png', 'gif', 'bmp'))) {
+            //   $attachment = " attachment;";
+            //}
+            $cri = new PluginManageentitiesCri();
+            $cri->send($doc);
+         }
       } else {
-         echo $LANG['document'][45];
+         Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
       }
    } else {
-      echo $LANG['document'][44];
+      Html::displayErrorAndDie(__('Invalid filename'), true);
    }
 }
-
 ?>

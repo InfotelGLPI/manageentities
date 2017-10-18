@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -30,38 +31,42 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-require_once(GLPI_ROOT."/plugins/manageentities/fpdf/fpdf.php");
-require_once(GLPI_ROOT."/plugins/manageentities/fpdf/font/symbol.php");
+require_once(GLPI_ROOT . "/plugins/manageentities/fpdf/fpdf.php");
+require_once(GLPI_ROOT . "/plugins/manageentities/fpdf/font/symbol.php");
 
 class PluginManageentitiesCriPDF extends FPDF {
 
    /* Attributs d'un rapport envoyés par l'utilisateur avant la génération. */
 
-   var $sous_contrat = false;    // Détermine si c'est une intervention sous contrat.
-   var $libelle_activite = "";   // Libellé de l'activité du CRI.
-   var $description_cri = "";    // Description du document (concaténation des suivis non privés).
-   var $no_cri = "";             // Né du document, généré.
+   var $sous_contrat      = false;    // Détermine si c'est une intervention sous contrat.
+   var $deplacement       = false;     // S'il y a la gestion des deplacements dans le contrat
+   var $nombredeplacement = 0;   // Total déplacements
+   var $libelle_activite  = "";   // Libellé de l'activité du CRI.
+   var $description_cri   = "";    // Description du document (concaténation des suivis non privés).
+   var $no_cri            = "";             // Né du document, généré.
 
    /* Autres attributs, récupérés par exemple en base de donnée. */
-   var $demande_associee = "";   // Identifiant du ticket pour lequel on génére le rapport.
-   var $intervenant = "";        // Intervenant du ticket.
+   var $demande_associee  = "";   // Identifiant du ticket pour lequel on génére le rapport.
+   var $intervenant       = "";        // Intervenant du ticket.
    var $date_intervention = null;// Tableau de 3 éléments (0 --> année et mois; 1 --> du; 2 --> au).
-   var $entite = null;           // Tableau de 3 élements : entity, entitydata et contrat.
-   var $temps_passes = null;     // Tableau des temps passés sur l'intervention.
+   var $entite            = null;           // Tableau de 3 élements : entity, entitydata et contrat.
+   var $temps_passes      = null;     // Tableau des temps passés sur l'intervention.
+   var $forfait           = false;         // Type de contrat forfait
+   var $intervention      = false;    //Type de contrat à l'intervention
 
    /* Constantes pour paramétrer certaines données. */
-   var $line_height = 5;         // Hauteur d'une ligne simple.
-   var $pol_def = 'Arial';       // Police par défaut;
-   var $tail_pol_def = 10;       // Taille par défaut de la police.
-   var $tail_titre = 22;         // Taille du titre.
-   var $marge_haut = 5;          // Marge du haut.
-   var $marge_gauche = 15;       // Marge de gauche et de droite accessoirement.
+   var $line_height         = 5;         // Hauteur d'une ligne simple.
+   var $pol_def             = 'Arial';       // Police par défaut;
+   var $tail_pol_def        = 10;       // Taille par défaut de la police.
+   var $tail_titre          = 22;         // Taille du titre.
+   var $marge_haut          = 5;          // Marge du haut.
+   var $marge_gauche        = 15;       // Marge de gauche et de droite accessoirement.
    var $largeur_grande_cell = 190;   // Largeur d'une cellule qui prend toute la page.
-   var $tail_bas_page = 20;      // Hauteur du bas de page.
-   var $nb_carac_ligne = 90;     // Pour le détail des travaux;
+   var $tail_bas_page       = 20;      // Hauteur du bas de page.
+   var $nb_carac_ligne      = 90;     // Pour le détail des travaux;
 
    /* Constantes pour les régles de calcul d'un arrondi de temps avec définition d'un seuil supplémentaire. */
-   var $tranches_seuil = 0.05;
+   var $tranches_seuil   = 0.001;
    var $tranches_arrondi = array(0, 0.25, 0.5, 0.75, 1);
 
    /* ************************************* */
@@ -76,28 +81,33 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /** Positionne la couleur de fond en gris clair. */
    function SetFondClair() {
-      $this->SetFillColor(205, 205, 205);
+      //$this->SetFillColor(205, 205, 205);
+      //$this->SetFillColor(58, 86, 147);
+      $this->SetFillColor(100, 122, 157);
    }
 
    /** Positionne la couleur de fond en gris foncé. */
    function SetFondFonce() {
-      $this->SetFillColor(85, 85, 85);
+      //$this->SetFillColor(85, 85, 85);
+      $this->SetFillColor(205, 205, 205);
    }
 
    /**
     * Positionne la fonte pour un label.
+    *
     * @param $italic Vrai si c'est en italique, faux sinon.
     */
    function SetFontLabel($italic) {
       if ($italic) {
-         $this->SetFont($this->pol_def, 'BI', $this->tail_pol_def);
+         $this->SetFont($this->pol_def, 'I', $this->tail_pol_def);
       } else {
-         $this->SetFont($this->pol_def, 'B', $this->tail_pol_def);
+         $this->SetFont($this->pol_def, '', $this->tail_pol_def);
       }
    }
 
    /**
     * Redéfinit une fonte normale.
+    *
     * @param $souligne Vrai si le texte sera souligné, faux sinon étant la valeur par défaut.
     */
    function SetFontNormale($souligne = false) {
@@ -110,6 +120,7 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /**
     * Permet de dessiner une cellule definissant un label d'une cellule ou plusieurs cellules valeurs.
+    *
     * @param $italic Vrai si le label est en italique, faux sinon.
     * @param $w Largeur de la cellule contenant le label.
     * @param $label Valeur du label.
@@ -125,6 +136,7 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /**
     * Permet de dessiner une cellule dite normale.
+    *
     * @param $w Largeur de la cellule contenant la valeur.
     * @param $valeur Valeur é afficher.
     * @param $align Détermine l'alignement de la cellule.
@@ -139,6 +151,7 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /**
     * Permet de dessinner un cellule vide et grisée foncée.
+    *
     * @param $w Largeur de la cellule.
     */
    function CellVideFoncee($w) {
@@ -154,121 +167,188 @@ class PluginManageentitiesCriPDF extends FPDF {
     * Fonction permettant de dessiner l'entéte du rapport.
     */
    function Header() {
-      global $LANG;
-    
+      global $CFG_GLPI;
+
       /* Constantes pour les largeurs de cellules de l'entéte (doivent étre = $largeur_grande_cell). */
-      $largeur_logo = 40;
-      $largeur_titre = 110;
-      $largeur_date = 40;
+      $largeur_logo  = 50;
+      $largeur_titre = 90;
+      $largeur_date  = 50;
       /* On fixe les marge. */
       $this->SetX($this->marge_gauche);
       $this->SetY($this->marge_haut);
       // Date du jour.
       $aujour_hui = getdate();
 
+      $plugin_company = new PluginManageentitiesCompany();
+      $filepath_logo  = $plugin_company->getLogo($this);
       /* Logo. */
-      $this->Image('../pics/logo.jpg', 15, 10, 30, 9); // x, y, w, h
+      if ($filepath_logo != NULL && file_exists(GLPI_DOC_DIR . "/" . $filepath_logo)) {
+         $this->Image(GLPI_DOC_DIR . "/" . $filepath_logo, 17, 10, 35, 10);
+      }
+
       $this->Cell($largeur_logo, 20, '', 1, 0, 'C');
       /* Titre. */
       $this->SetFont($this->pol_def, 'B', $this->tail_titre);
-      $this->Cell($largeur_titre, $this->line_height * 2, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][35]), 'LTR', 0, 'C');
+      $this->Cell($largeur_titre, $this->line_height * 2, Toolbox::decodeFromUtf8(_n('Report', 'Reports', 1)), 'LTR', 0, 'C');
       $this->SetY($this->GetY() + $this->line_height * 2);
       $this->SetX($largeur_logo + 10);
-      $this->Cell($largeur_titre, $this->line_height * 2, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][36]), 'LRB', 0, 'C');
+      $this->Cell($largeur_titre, $this->line_height * 2, Toolbox::decodeFromUtf8(__('of this intervention', 'manageentities')), 'LRB', 0, 'C');
       $this->SetY($this->GetY() - $this->line_height * 2);
       $this->SetX($largeur_titre + $largeur_logo + 10);
-      /* Date et heure. */
-      $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][1]).' :', 'C', 1, 'LTR', true); // Libellé pour la date.
-      $this->SetY($this->GetY() + $this->line_height);
-      $this->SetX($largeur_titre + $largeur_logo + 10);
-      $this->CellValeur($largeur_date, $this->GetDateFormatee($aujour_hui), 'C', 1, 'LR'); // Date.
-      $this->SetY($this->GetY() + $this->line_height);
-      $this->SetX($largeur_titre + $largeur_logo + 10);
-      $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][2]).' :', 'C', 1, 'LR', true); // Libellé pour l'heure.
-      $this->SetY($this->GetY() + $this->line_height);
-      $this->SetX($largeur_titre + $largeur_logo + 10);
-      $this->CellValeur($largeur_date, $this->GetHeureFormatee($aujour_hui), 'C', 1, 'LRB'); // Heure.
-      $this->SetY($this->GetY() + $this->line_height);
+
+      $client      = new PluginManageentitiesEntityLogo();
+      $client_logo = $client->getLogo($this->entite[0]->fields["id"]);
+
+      if ($client_logo != NULL && file_exists(GLPI_DOC_DIR . "/" . $client_logo)) {
+         $size = self::fctaffichimage(GLPI_DOC_DIR . "/" . $client_logo, 40, 18);
+         if ($size[1] < 15) {
+            $this->Image(GLPI_DOC_DIR . "/" . $client_logo, $largeur_titre + $largeur_logo + 15, $this->line_height * 2, $size[0], $size[1]);
+         } elseif ($size[0] > 20) {
+            $this->Image(GLPI_DOC_DIR . "/" . $client_logo, $largeur_titre + $largeur_logo + 15, $this->line_height + 1, $size[0], $size[1]);
+         } else {
+            $this->Image(GLPI_DOC_DIR . "/" . $client_logo, $largeur_titre + $largeur_logo + 25, $this->line_height + 1, $size[0], $size[1]);
+         }
+         $this->Cell($largeur_logo, 20, '', 1, 0, 'C');
+         $this->SetY($this->GetY() + $this->line_height * 4);
+
+         /* Date et heure. */
+         $this->CellValeur($this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Created by', 'manageentities') . ' : ' . $this->GetDateFormatee($aujour_hui) . " " . __('in', 'manageentities') . " " . $this->GetHeureFormatee($aujour_hui)), 'C', 1, 'LTRB', false); // Libellé pour la date.
+         $this->SetY($this->GetY() + $this->line_height);
+      } else {
+         /* Date et heure. */
+         $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8(__('Created by', 'manageentities')) . ' :', 'C', 1, 'LTR', true); // Libellé pour la date.
+         $this->SetY($this->GetY() + $this->line_height);
+         $this->SetX($largeur_titre + $largeur_logo + 10);
+         $this->CellValeur($largeur_date, $this->GetDateFormatee($aujour_hui), 'C', 1, 'LR'); // Date.
+         $this->SetY($this->GetY() + $this->line_height);
+         $this->SetX($largeur_titre + $largeur_logo + 10);
+         $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8(__('in', 'manageentities')) . ' :', 'C', 1, 'LR', true); // Libellé pour l'heure.
+         $this->SetY($this->GetY() + $this->line_height);
+         $this->SetX($largeur_titre + $largeur_logo + 10);
+         $this->CellValeur($largeur_date, $this->GetHeureFormatee($aujour_hui), 'C', 1, 'LRB'); // Heure.
+         $this->SetY($this->GetY() + $this->line_height);
+      }
+
+
       /* Identifiant de rapport. */
-      $this->Cell($this->largeur_grande_cell, $this->line_height, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][3]).$this->GetNoCri($aujour_hui), 1, 0, 'C');
+      $this->Cell($this->largeur_grande_cell, $this->line_height, Toolbox::decodeFromUtf8("N°") . $this->GetNoCri($aujour_hui), 1, 0, 'C');
       $this->SetY($this->GetY() + $this->line_height);
    }
 
    /**
     * Fonction permettant de dessiner le tableau des informations générales.
-     */
+    */
    function InfosGenerales() {
-      global $LANG;
-
-      /* Né de delande de support associé. */
-      $this->CellLabel(false, $this->largeur_grande_cell / 2, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][4]));
+      /* Num de demande de support associé. */
+      $this->SetTextColor(255, 255, 255);
+      $this->SetFontNormale(false); // Repositionnement de la fonte normale.
+      $this->CellLabel(false, $this->largeur_grande_cell / 2, Toolbox::decodeFromUtf8(__('Request number of associated help', 'manageentities')));
+      $this->SetTextColor(0, 0, 0);
       $this->CellValeur($this->largeur_grande_cell / 2, $this->demande_associee);
+      $this->SetTextColor(255, 255, 255);
       $this->SetY($this->GetY() + $this->line_height);
+
       /* Intervenant. */
-      $this->CellLabel(false, 45, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][5]));
-      $this->CellValeur(145, $this->intervenant);
       $this->SetY($this->GetY() + $this->line_height);
+
+      $intervenants = explode(',', $this->intervenant);
+      if (sizeof($intervenants) > 1) {
+         $plural = 2;
+      } else {
+         $plural = 1;
+      }
+
+      $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8(_n('Technician', 'Technicians', $plural, 'manageentities')), 1, 'C');
+      $this->SetY($this->GetY() + $this->line_height);
+      $this->SetTextColor(0, 0, 0);
+      $this->SetFontNormale(false);
+      foreach ($intervenants as $une_ligne) {
+         $this->TestBasDePageDetailTravaux($une_ligne);
+
+         $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR');
+      }
+      $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
+      $this->SetY($this->GetY() + $this->line_height);
+      $this->SetTextColor(255, 255, 255);
+
       /* Date d'intervention. */
-      $this->CellLabel(false, 60, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][6]), 2);
+      $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(__('Intervention date', 'manageentities')), 2);
+
       /* Année et mois... */
-      $this->CellLabel(true, 20, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][7]));
-      $this->CellValeur(20, $this->date_intervention[0]["year"]);
-      $this->CellLabel(true, 20, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][8]));
-      $this->CellValeur(35, Toolbox::decodeFromUtf8($LANG["calendarM"][$this->date_intervention[0]["mon"] - 1]));
-      $this->CellVideFoncee(35);
+      $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('Year', 'manageentities')));
+      $this->SetTextColor(0, 0, 0);
+      $this->CellValeur(35, Toolbox::decodeFromUtf8($this->date_intervention[0]["year"]));
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('Month')));
+      $monthsarray = Toolbox::getMonthsOfYearArray();
+      $this->SetTextColor(0, 0, 0);
+      $this->CellValeur(35, Toolbox::decodeFromUtf8($monthsarray[$this->date_intervention[0]["mon"]]));
+      $this->CellVideFoncee(40);
       $this->Ln();
+
       /* Du, Au... */
-      $this->SetX($this->GetX() + 60);
-      $this->CellLabel(true, 15, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][9]));
+      $this->SetX($this->GetX() + 40);
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('From', 'manageentities')));
+      $this->SetTextColor(0, 0, 0);
       $this->CellValeur(35, $this->date_intervention[1]);
-      $this->CellLabel(true, 15, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][10]));
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('To', 'manageentities')));
+      $this->SetTextColor(0, 0, 0);
       $this->CellValeur(35, $this->date_intervention[2]);
-      $this->CellVideFoncee(30);
+      $this->CellVideFoncee(40);
       $this->SetY($this->GetY() + $this->line_height);
    }
 
    /**
     * Fonction permettant de dessiner le tableau des informations de l'entité
     * concernée par le rapport.
-     */
+    */
    function InfosEntite() {
-      global $DB,$LANG;;
+      global $DB;
 
-      if (!isset($this->entite[0]->fields["id"])) $this->entite[0]->fields["id"]=0;
-      if (!isset($this->entite[0]->fields["name"])) $this->entite[0]->fields["name"]=$LANG['entity'][2];
+      if (!isset($this->entite[0]->fields["id"])) $this->entite[0]->fields["id"] = 0;
+      if (!isset($this->entite[0]->fields["name"])) $this->entite[0]->fields["name"] = __('Root entity');
       $query = "SELECT *
         FROM `glpi_plugin_manageentities_contacts`
-        WHERE `entities_id` = '".$this->entite[0]->fields["id"]."'
+        WHERE `entities_id` = '" . $this->entite[0]->fields["id"] . "'
         AND `is_default` = '1' ";
 
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data = $DB->fetch_array($result)) {
          $contact = new contact;
          $contact->GetfromDb($data["contacts_id"]);
-         $manager=$contact->fields["firstname"]." ".$contact->fields["name"];
+         $manager = $contact->fields["firstname"] . " " . $contact->fields["name"];
       }
 
       /* Nom de l'entité. */
-      $this->CellLabel(false, 40, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][11]));
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(__('Society name', 'manageentities')));
+      $this->SetTextColor(0, 0, 0);
       $this->CellValeur(150, Toolbox::decodeFromUtf8($this->entite[0]->fields["name"]));
       $this->SetY($this->GetY() + $this->line_height);
       /* Ville. */
-      $this->CellLabel(false, 20, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][12]));
-      if (!isset($this->entite[1]->fields["town"]))
-         $this->entite[1]->fields["town"]="";
-      $this->CellValeur(170, Toolbox::decodeFromUtf8($this->entite[1]->fields["town"]));
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(__('City')));
+      $this->SetTextColor(0, 0, 0);
+      if (!isset($this->entite[0]->fields["town"]))
+         $this->entite[0]->fields["town"] = "";
+      $this->CellValeur(150, Toolbox::decodeFromUtf8($this->entite[0]->fields["town"]));
       $this->SetY($this->GetY() + $this->line_height);
       /* Responsable. */
       if (!isset($manager))
-         $manager="";
-      $this->CellLabel(false, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][13]));
-      $this->CellValeur(160, Toolbox::decodeFromUtf8($manager));
+         $manager = "";
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(__('Person in charge', 'manageentities')));
+      $this->SetTextColor(0, 0, 0);
+      $this->CellValeur(150, Toolbox::decodeFromUtf8($manager));
       $this->SetY($this->GetY() + $this->line_height);
    }
 
    /**
     * Fonction permettant de dessiner un cellule particuliére avec un symbole.
     * La cellule est en réalité composée de 2 cellules
+    *
     * @param $cochee Vrai pour un symbol carré noir, faux pour un carré blanc.
     * @param $w Largeur totale.
     * @param $label Contenu de la seconde sous cellule.
@@ -280,11 +360,11 @@ class PluginManageentitiesCriPDF extends FPDF {
       $this->SetFondClair();
       $this->SetFontLabel(true);
       if ($cochee) {
-          $this->SetFont('Zapfdingbats', '', 6);
-          $this->Cell($largeur_symbol, $this->line_height, chr(110), 'LTB', 0, '', 1);
+         $this->SetFont('Zapfdingbats', '', 6);
+         $this->Cell($largeur_symbol, $this->line_height, chr(110), 'LTB', 0, '', 1);
       } else {
-          $this->SetFont('Zapfdingbats', '', 6);
-          $this->Cell($largeur_symbol, $this->line_height, chr(111), 'LTB', 0, '', 1);
+         $this->SetFont('Zapfdingbats', '', 6);
+         $this->Cell($largeur_symbol, $this->line_height, chr(111), 'LTB', 0, '', 1);
       }
       $this->SetFontLabel(true);
       $this->Cell($w - $largeur_symbol, $this->line_height, $label, 'TRB', 0, '', 1);
@@ -295,105 +375,159 @@ class PluginManageentitiesCriPDF extends FPDF {
     * concernée par le rapport.
     */
    function InfosContrats() {
-    global $LANG;
-    
+
+      $this->SetTextColor(255, 255, 255);
       /* Type de contrat. */
-      $this->CellLabel(false, 35, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][14]), 2);
+      $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(_n('Contract type', 'Contract types', 1)), 2);
       /* Sous contrat. */
-      $this->CellContrat($this->sous_contrat, 50, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][15]));
-      $this->CellLabel(true, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][16]));
-      $this->CellValeur(75, $this->entite[2]);
+
+      $this->CellContrat($this->sous_contrat, 50, Toolbox::decodeFromUtf8(__('Help on contract', 'manageentities')));
+
+      if ($this->sous_contrat) {
+         $this->CellLabel(true, 35, Toolbox::decodeFromUtf8(__('Contract number', 'manageentities')));
+         $this->SetTextColor(0, 0, 0);
+         $this->CellValeur(65, $this->entite[1]);
+      } else {
+         $this->CellVideFoncee(100);
+         $this->SetTextColor(0, 0, 0);
+      }
       $this->Ln();
       /* Hors contrat. */
-      $this->SetX($this->GetX() + 35);
-      $this->CellContrat(!$this->sous_contrat, 35, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][17]));
-      $this->CellVideFoncee(120);
+      $this->SetX($this->GetX() + 40);
+      $this->SetTextColor(255, 255, 255);
+      $this->CellContrat(!$this->sous_contrat, 50, Toolbox::decodeFromUtf8(__('Out of contract', 'manageentities')));
+      $this->CellVideFoncee(100);
+      $this->SetTextColor(0, 0, 0);
       $this->SetY($this->GetY() + $this->line_height);
    }
 
    /** Fonction permettant de dessiner l'entéte du tableau des temps passés. */
    function TempsPassesEntete() {
-    global $LANG;
-
-      $config=PluginManageentitiesConfig::getInstance();
+      $config = PluginManageentitiesConfig::getInstance();
       /* Entéte du tableau des temps passés. */
-      $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][18]), 1, 'C');
+      $width = 0;
+      if ($this->forfait) $width = 15;
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Crossed time (itinerary including)', 'manageentities')), 1, 'C');
+      $this->SetTextColor(0, 0, 0);
       $this->Ln();
-      $this->CellLabel(true, 50, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][19]), 2, 'C');
-      $this->CellLabel(true, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][20]), 1, 'C', 'LTR');
-      $this->CellLabel(true, 25, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][21]), 1, 'C', 'LTR');
-      $this->CellLabel(true, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][20]), 1, 'C', 'LTR');
-      $this->CellLabel(true, 25, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][21]), 1, 'C', 'LTR');
-      $this->CellLabel(true, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][22]), 1, 'C', 'LTR');
-      $this->Ln();
-      $this->SetX($this->GetX() + 50);
-      $this->CellLabel(true, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][23]), 1, 'C', 'LBR');
-      $this->CellLabel(true, 25, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][23]), 1, 'C', 'LBR');
-      $this->CellLabel(true, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][24]), 1, 'C', 'LBR');
-      $this->CellLabel(true, 25, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][24]), 1, 'C', 'LBR');
-      if($config->fields['hourorday'] == 0) {
-         $this->CellLabel(true, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][25]), 1, 'C', 'LBR');
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(true, 95, Toolbox::decodeFromUtf8(__('Wording of the activities', 'manageentities')), 2, 'C');
+
+      $this->CellLabel(true, 20 + $width, Toolbox::decodeFromUtf8(__('Date of', 'manageentities')), 1, 'C', 'LTR');
+      if (!$this->forfait) $this->CellLabel(true, 15, Toolbox::decodeFromUtf8(__('Hour of', 'manageentities')), 1, 'C', 'LTR');
+      $this->CellLabel(true, 20 + $width, Toolbox::decodeFromUtf8(__('Date of', 'manageentities')), 1, 'C', 'LTR');
+      if (!$this->forfait) $this->CellLabel(true, 15, Toolbox::decodeFromUtf8(__('Hour of', 'manageentities')), 1, 'C', 'LTR');
+      if ($this->intervention) {
+         $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(_x('Quantity', 'Number')), 1, 'C', 'LTR');
       } else {
-         $this->CellLabel(true, 30, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][43]), 1, 'C', 'LBR');
+         $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(__('Crossed time', 'manageentities')), 1, 'C', 'LTR');
       }
+      $this->SetTextColor(0, 0, 0);
+
+      $this->Ln();
+      $this->SetX($this->GetX() + 95);
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(true, 20 + $width, Toolbox::decodeFromUtf8(__('Begin')), 1, 'C', 'LBR');
+      if (!$this->forfait) $this->CellLabel(true, 15, Toolbox::decodeFromUtf8(__('Begin')), 1, 'C', 'LBR');
+      $this->CellLabel(true, 20 + $width, Toolbox::decodeFromUtf8(__('End')), 1, 'C', 'LBR');
+      if (!$this->forfait) $this->CellLabel(true, 15, Toolbox::decodeFromUtf8(__('End')), 1, 'C', 'LBR');
+      if ($this->intervention) {
+         $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(__('of this intervention', 'manageentities')), 1, 'C', 'LBR');
+      } else {
+         if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
+            $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(__('(in days)', 'manageentities')), 1, 'C', 'LBR');
+         } else {
+            $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(__('(in hours)', 'manageentities')), 1, 'C', 'LBR');
+         }
+      }
+      $this->SetTextColor(0, 0, 0);
       $this->Ln();
    }
 
    /** Fonction permettant de dessiner la zone des temps passés. */
    function TempsPasses() {
-    global $LANG;
-
       $config = PluginManageentitiesConfig::getInstance();
 
-      $_SESSION["glpi_plugin_manageentities_total"]=0;
+      $_SESSION["glpi_plugin_manageentities_total"] = 0;
       // Entéte du tableau des temps passés.
       $this->TempsPassesEntete();
       /* Les lignes des temps passés. */
       $total_tps = 0;
-      for ($l = 0 ; $l < count($this->temps_passes) ; $l++) {
+      for ($l = 0; $l < count($this->temps_passes); $l++) {
          $this->TestBasDePageTpsPasses(); // Test pour un éventuel saut de page.
-         if($config->fields['useprice']=='1'){
-            $this->CellValeur(50, $this->libelle_activite);
+         if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) {
+            $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
+         } elseif ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+            $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
          } else {
-            $this->CellValeur(50, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
+            $this->CellValeur(95, $this->libelle_activite);
          }
-         $this->CellValeur(30, $this->temps_passes[$l][0], 'C');
-         $this->CellValeur(25, $this->temps_passes[$l][1], 'C');
-         $this->CellValeur(30, $this->temps_passes[$l][2], 'C');
-         $this->CellValeur(25, $this->temps_passes[$l][3], 'C');
-         $this->CellValeur(30, $this->temps_passes[$l][4], 'C');
+
+         $width = 0;
+         if ($this->forfait) $width = 15;
+         $this->CellValeur(20 + $width, $this->temps_passes[$l][0], 'C');
+         if (!$this->forfait) $this->CellValeur(15, $this->temps_passes[$l][1], 'C');
+         $this->CellValeur(20 + $width, $this->temps_passes[$l][2], 'C');
+         if (!$this->forfait) $this->CellValeur(15, $this->temps_passes[$l][3], 'C');
+         $this->CellValeur(25, $this->TotalTpsPassesArrondis($this->temps_passes[$l][4]), 'C');
          $total_tps += $this->temps_passes[$l][4];
          $this->Ln();
       }
+
+      if ($this->deplacement) {
+         /* Déplacement. */
+         $this->Separateur();
+         $this->Cell(115, $this->line_height, '', 0, 0, '');
+         $this->SetTextColor(255, 255, 255);
+         if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
+            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Deplacement (in days)', 'manageentities')));
+         } else {
+            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Deplacement', 'manageentities')));
+         }
+         $this->SetTextColor(0, 0, 0);
+         $this->CellValeur(35, $this->nombredeplacement, 'C');
+      }
+
+      //      $this->Separateur();
+
       /* Le total. */
       $this->Separateur();
-      $this->Cell(120, $this->line_height, '', 0, 0, '');
-      if($config->fields['hourorday'] == 0) {
-         $this->CellLabel(true, 35, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][26]));
+      $this->Cell(115, $this->line_height, '', 0, 0, '');
+      $this->SetTextColor(255, 255, 255);
+      if ($this->intervention) {
+         $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Total')));
       } else {
-         $this->CellLabel(true, 35, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][44]));
+         if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
+            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Total (in days)', 'manageentities')));
+         } else {
+            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Total (in hours)', 'manageentities')));
+         }
       }
-      $this->CellValeur(35, $this->TotalTpsPassesArrondis($total_tps), 'C');
+      $this->SetTextColor(0, 0, 0);
+      $this->CellValeur(35, $this->TotalTpsPassesArrondis($total_tps + $this->nombredeplacement), 'C');
       $this->Separateur();
 
-      $_SESSION["glpi_plugin_manageentities_total"]=$total_tps;
+      $_SESSION["glpi_plugin_manageentities_total"] = ($total_tps + $this->nombredeplacement);
    }
 
    /**
     * Permet d'arrondir le total des temps passés avec les tranches définies en constantes.
     * Peut étre améliorée afin de boucler (while) sur les tranches pour ne pas avoir une suite de if, else if.
+    *
     * @param Total é arrondir.
+    *
     * @return Le total arrondi selon la régle de gestion.
     */
-    function TotalTpsPassesArrondis($a_arrondir) {
+   function TotalTpsPassesArrondis($a_arrondir) {
 
       $result = 0;
 
       $partie_entiere = floor($a_arrondir);
-      $reste = $a_arrondir - $partie_entiere + 10; // Le + 10 permet de pallier é un probléme de comparaison (??) par la suite.
+      $reste          = $a_arrondir - $partie_entiere + 10; // Le + 10 permet de pallier é un probléme de comparaison (??) par la suite.
       /* Initialisation des tranches majorées du seuil supplémentaire. */
       $tranches_majorees = array();
-      for ($i = 0 ; $i < count($this->tranches_arrondi) ; $i++) {
+      for ($i = 0; $i < count($this->tranches_arrondi); $i++) {
          // Le + 10 qui suit permet de pallier é un probléme de comparaison (??) par la suite.
          $tranches_majorees[] = $this->tranches_arrondi[$i] + $this->tranches_seuil + 10;
       }
@@ -417,7 +551,7 @@ class PluginManageentitiesCriPDF extends FPDF {
    }
 
    /** Fonction permettant de gérer un saut de page pour la zone des temps passés. */
-    function TestBasDePageTpsPasses() {
+   function TestBasDePageTpsPasses() {
 
       if ($this->GetSeuilSaut() < $this->line_height) {
          $this->AddPage();
@@ -429,15 +563,16 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /** Fonction permettant de dessiner l'entéte du tableau du détail des travaux réalisés. */
    function DetailTravauxEntete() {
-      global $LANG;
-    
-      $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][27]), 1, 'C');
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Detail of work done', 'manageentities')), 1, 'C');
       $this->SetY($this->GetY() + $this->line_height);
       $this->SetFontNormale(false); // Repositionnement de la fonte normale.
+      $this->SetTextColor(0, 0, 0);
    }
 
    /**
     * Fonction permettant de dessiner la zone détail des travaux réalisés préalablement remplie.
+    *
     * @param $description Texte é afficher dans la zone de détail.
     */
    function DetailTravaux() {
@@ -446,10 +581,10 @@ class PluginManageentitiesCriPDF extends FPDF {
       $this->DetailTravauxEntete();
 
       $decoupage1 = array();
-      $tok = strtok($this->description_cri, "\n");
+      $tok        = strtok($this->description_cri, "\n");
       while ($tok !== false) {
          $decoupage1[] = $tok;
-         $tok = strtok("\n");
+         $tok          = strtok("\n");
       }
       $this->description_cri = $decoupage1;
       foreach ($this->description_cri as $une_ligne) {
@@ -461,9 +596,10 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /**
     * Fonction permettant de gérer un saut de page pour la zone du détail des travaux réalisés.
+    *
     * @param $une_ligne Ligne é tester.
     */
-    function TestBasDePageDetailTravaux($une_ligne) {
+   function TestBasDePageDetailTravaux($une_ligne) {
 
       $nb_lg_necessaires = 1;
       if (strlen($une_ligne) > $this->nb_carac_ligne) {
@@ -480,54 +616,110 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /** Fonction permettant de dessiner la zone pour les observations du client. */
    function Observations() {
-    global $LANG;
-    
-      $tail_zone = 30;
+      $tail_zone    = 30;
       $ligne_points = '...........................................';
 
       // On teste s'il reste de la place.
       $this->TestBasDePageGenerique($tail_zone);
-
-      $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][28]), 1, 'C');
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Customer comments', 'manageentities')), 1, 'C');
+      $this->SetTextColor(0, 0, 0);
       $this->SetY($this->GetY() + $this->line_height);
       $this->CellValeur($this->largeur_grande_cell, '', 'C', 1, 'LTR');
       $this->Ln();
-      $this->CellValeur($this->largeur_grande_cell, $ligne_points.$ligne_points.$ligne_points.$ligne_points, 'C', 0.5, 'LR');
+      $this->CellValeur($this->largeur_grande_cell, $ligne_points . $ligne_points . $ligne_points . $ligne_points, 'C', 0.5, 'LR');
       $this->Ln();
       $this->CellValeur($this->largeur_grande_cell, '', 'C', 1.5, 'LR');
       $this->Ln();
-      $this->CellValeur($this->largeur_grande_cell, $ligne_points.$ligne_points.$ligne_points.$ligne_points, 'C', 0.5, 'LR');
+      $this->CellValeur($this->largeur_grande_cell, $ligne_points . $ligne_points . $ligne_points . $ligne_points, 'C', 0.5, 'LR');
       $this->Ln();
       $this->CellValeur($this->largeur_grande_cell, '', 'C', 1.5, 'LR');
       $this->Ln();
-      $this->CellValeur($this->largeur_grande_cell, $ligne_points.$ligne_points.$ligne_points.$ligne_points, 'C', 0.5, 'LR');
+      $this->CellValeur($this->largeur_grande_cell, $ligne_points . $ligne_points . $ligne_points . $ligne_points, 'C', 0.5, 'LR');
       $this->Ln();
       $this->CellValeur($this->largeur_grande_cell, '', 'C', 0.5, 'LBR');
+      $this->SetTextColor(0, 0, 0);
       $this->Ln();
+   }
+
+   /** Fonction permettant de dessiner l'entéte du tableau des commentaires de la société. */
+   function DetailCommentaires() {
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Comments')), 1, 'C');
+      $this->SetY($this->GetY() + $this->line_height);
+      $this->SetFontNormale(false); // Repositionnement de la fonte normale.
+      $this->SetTextColor(0, 0, 0);
+   }
+
+   /**
+    * Fonction permettant de dessiner la zone détail des commentaires de la société préalablement remplie.
+    *
+    * @param $description Texte é afficher dans la zone de détail.
+    */
+   function Commentaires() {
+
+      $plugin_company = new PluginManageentitiesCompany();
+      $comment        = $plugin_company->getComment($this);
+
+      // Entéte du tableau des temps passés.
+      $this->DetailCommentaires();
+
+      $decoupage1 = array();
+      $tok        = strtok($comment, "\n");
+      while ($tok !== false) {
+         $decoupage1[] = $tok;
+         $tok          = strtok("\n");
+      }
+      $comment = $decoupage1;
+      foreach ($comment as $une_ligne) {
+         $this->TestBasDePageCommentaires(Toolbox::decodeFromUtf8($une_ligne));
+         $this->MultiCell($this->largeur_grande_cell, $this->line_height, Toolbox::decodeFromUtf8($une_ligne), 'LR');
+      }
+      $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
+   }
+
+   /**
+    * Fonction permettant de gérer un saut de page pour la zone du détail des travaux réalisés.
+    *
+    * @param $une_ligne Ligne é tester.
+    */
+   function TestBasDePageCommentaires($une_ligne) {
+
+      $nb_lg_necessaires = 1;
+      if (strlen($une_ligne) > $this->nb_carac_ligne) {
+         $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne);
+      }
+      if (($nb_lg_necessaires * $this->line_height) > $this->GetSeuilSaut()) {
+         $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
+         $this->AddPage();
+         $this->SetY($this->GetY() + $this->line_height);
+         // On redessine l'entéte.
+         $this->DetailCommentaires();
+      }
    }
 
    /** Fonction permettant de dessiner la zone du cachet et du visa du client. */
    function CachetClient() {
-      global $LANG;
-    
       $tail_zone = 32.5;
 
       // On teste s'il reste de la place.
       $this->TestBasDePageGenerique($tail_zone);
-
-      $this->CellLabel(false, $this->largeur_grande_cell / 2, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][29]), 1, 'C');
-      $this->CellLabel(false, $this->largeur_grande_cell / 2, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][30]), 1, 'C');
+      $this->SetTextColor(255, 255, 255);
+      $this->CellLabel(false, $this->largeur_grande_cell / 2, Toolbox::decodeFromUtf8(__('Customer stamp', 'manageentities')), 1, 'C');
+      $this->CellLabel(false, $this->largeur_grande_cell / 2, Toolbox::decodeFromUtf8(__('Customer Visa', 'manageentities')), 1, 'C');
       $this->SetY($this->GetY() + $this->line_height);
       $this->CellValeur($this->largeur_grande_cell / 2, '', '', 5.5); // Cachet client.
       $this->CellValeur($this->largeur_grande_cell / 2, '', '', 5.5); // Visa client.
+      $this->SetTextColor(0, 0, 0);
       $this->Ln();
    }
 
    /**
     * Test s'il reste de la place pour une zone non divisible en bas de page.
+    *
     * @param $tail_zone Taille de la zone pour laquelle on souhaite savoir s'il reste de la place.
     */
-    function TestBasDePageGenerique($tail_zone) {
+   function TestBasDePageGenerique($tail_zone) {
 
       if ($this->GetSeuilSaut() < $tail_zone) {
          $this->AddPage();
@@ -539,20 +731,36 @@ class PluginManageentitiesCriPDF extends FPDF {
     * Fonction permettant de dessiner le pied de page du rapport.
     */
    function Footer() {
-      global $LANG;
-    
       // Positionnement par rapport au bas de la page.
-       $this->SetY(-$this->tail_bas_page);
-       /* Numéro de page. */
-       $this->SetFont($this->pol_def, '', 9);
-       $this->Cell(
-          0, $this->tail_bas_page / 2, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][31]).' '.$this->PageNo().' '.Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][32]).' {nb}', 0, 0, 'C');
-       $this->Ln(10);
-       /* Infos ODAXYS. */
-       $this->SetFont($this->pol_def, 'I', 9);
-       $this->Cell(0, $this->tail_bas_page / 4, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][33]), 0, 0, 'C');
-       $this->Ln(5);
-       $this->Cell(0, $this->tail_bas_page / 4, Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][34]), 0, 0, 'C');
+      $this->SetY(-$this->tail_bas_page);
+      /* Numéro de page. */
+      $this->SetFont($this->pol_def, '', 9);
+      $this->Cell(
+         0, $this->tail_bas_page / 2, Toolbox::decodeFromUtf8(__('Page', 'manageentities')) . ' ' . $this->PageNo() . ' ' . Toolbox::decodeFromUtf8(__('on', 'manageentities')) . ' {nb}', 0, 0, 'C');
+      $this->Ln(10);
+      /* Infos company. */
+      $this->SetFont($this->pol_def, 'I', 9);
+
+      $plugin_company = new PluginManageentitiesCompany();
+      $address        = $plugin_company->getAddress($this);
+
+
+      if (isset($address)) {
+         $strAddress = nl2br($address);
+         $listLines  = explode("<br />", $strAddress);
+         if (sizeof($listLines) > 1) {
+            foreach ($listLines as $line) {
+               $this->Cell(0, $this->tail_bas_page / 4, Toolbox::decodeFromUtf8($line), 0, 0, 'C');
+               $this->Ln();
+            }
+         } else {
+            $this->Cell(0, $this->tail_bas_page / 4, Toolbox::decodeFromUtf8($strAddress), 0, 0, 'C');
+         }
+      } else {
+         $this->Cell(0, $this->tail_bas_page / 4, "", 0, 0, 'C');
+      }
+
+      $this->Ln(5);
    }
 
    /** Fonction permettant de dessiner le rapport partie par partie. */
@@ -562,17 +770,22 @@ class PluginManageentitiesCriPDF extends FPDF {
       $this->AddPage(); // La premiére page.
 
       $this->InfosGenerales();
-         $this->Separateur();
+      $this->Separateur();
       $this->InfosEntite();
-         $this->Separateur();
+      $this->Separateur();
       $this->InfosContrats();
-         $this->Separateur();
+      $this->Separateur();
       $this->TempsPasses();
-         $this->Separateur();
+      $this->Separateur();
       $this->DetailTravaux();
+      $this->Separateur();
+      $config = new PluginManageentitiesConfig();
+      if ($config->isCommentCri()) {
+         $this->Commentaires();
          $this->Separateur();
+      }
       $this->Observations();
-         $this->Separateur();
+      $this->Separateur();
       $this->CachetClient();
    }
 
@@ -582,49 +795,57 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /**
     * Retourne une date donnée formatée dd/mm/yyyy.
+    *
     * @param $une_date Date é formater.
+    *
     * @return La date donnée au format dd/mm/yyyy.
     */
    function GetDateFormatee($une_date) {
 
-      return $this->CompleterAvec0($une_date['mday'], 2)."/".$this->CompleterAvec0($une_date['mon'], 2)."/". $une_date['year'];
+      return $this->CompleterAvec0($une_date['mday'], 2) . "/" . $this->CompleterAvec0($une_date['mon'], 2) . "/" . $une_date['year'];
    }
 
    /**
     * Retourne une heure donnée au format hh:mm.
+    *
     * @param $une_date Date é formater.
+    *
     * @return L'heure donnée au format hh:mm.
     */
    function GetHeureFormatee($une_date) {
 
-      return $this->CompleterAvec0($une_date['hours'], 2).":".$this->CompleterAvec0($une_date['minutes'], 2);
+      return $this->CompleterAvec0($une_date['hours'], 2) . ":" . $this->CompleterAvec0($une_date['minutes'], 2);
    }
 
    /**
     * Génération auto du né du CRI é l'aide d'une date donnée et ne le fait qu'une fois.
+    *
     * @param $une_date Date servant é la génération du né du CRI.
+    *
     * @return Le né de CRI généré.
     */
    function GetNoCri($une_date = "") {
 
       if ($this->no_cri == "" && $une_date != "") {
-         $this->no_cri = substr($une_date['year'], 2).$this->CompleterAvec0($une_date['mon'], 2)
-                        .$this->CompleterAvec0($une_date['mday'], 2)."-".$this->CompleterAvec0($une_date['hours'], 2)
-                        .$this->CompleterAvec0($une_date['minutes'], 2).$this->CompleterAvec0($une_date['seconds'], 2);
+         $this->no_cri = substr($une_date['year'], 2) . $this->CompleterAvec0($une_date['mon'], 2)
+                         . $this->CompleterAvec0($une_date['mday'], 2) . "-" . $this->CompleterAvec0($une_date['hours'], 2)
+                         . $this->CompleterAvec0($une_date['minutes'], 2) . $this->CompleterAvec0($une_date['seconds'], 2);
       }
       return $this->no_cri;
    }
 
    /**
     * Compléte une chaéne donnée avec des '0' suivant la longueur donnée et voulue de la chaéne.
+    *
     * @param $une_chaine Chaéne é compléter.
     * @param $lg Longueur finale souhaitée de la chaéne donnée.
+    *
     * @return La chaéne complétée.
     */
    function CompleterAvec0($une_chaine, $lg) {
 
       while (strlen($une_chaine) != $lg) {
-         $une_chaine = "0".$une_chaine;
+         $une_chaine = "0" . $une_chaine;
       }
 
       return $une_chaine;
@@ -634,30 +855,32 @@ class PluginManageentitiesCriPDF extends FPDF {
    /* Getteurs et setteurs. */
    /* ********************* */
 
-   /*function SetLibellesRapport($les_libelles) {
-    global $LANG;
-    
-      Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'] = $les_libelles;
-      for ($i = 0 ; $i < count(Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'])) ; $i++) {
-        Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][$i] = Toolbox::decodeFromUtf8($LANG['plugin_manageentities']['cri'][$i]);
-      }
-   }*/
-
    function SetSousContrat($sous_contrat) {
       $this->sous_contrat = $sous_contrat;
    }
 
+   function SetDeplacement($deplacement) {
+      $this->deplacement = $deplacement;
+   }
+
+   function SetNombreDeplacement($nombredeplacement) {
+      $this->nombredeplacement = $nombredeplacement;
+   }
+
    function SetLibelleActivite($libelle_activite) {
+
       $config = PluginManageentitiesConfig::getInstance();
 
-      if(is_array($libelle_activite)){
-         
+      if (is_array($libelle_activite)) {
+
          $this->libelle_activite = $libelle_activite;
-         
-      } else {
-         
+
+      } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
+
          $this->libelle_activite = Toolbox::decodeFromUtf8(Dropdown::getDropdownName("glpi_plugin_manageentities_critypes",
-                                                               $libelle_activite));
+                                                                                     $libelle_activite));
+      } else {
+         $this->libelle_activite = Toolbox::decodeFromUtf8($libelle_activite);
       }
    }
 
@@ -679,17 +902,17 @@ class PluginManageentitiesCriPDF extends FPDF {
    }
 
    function SetDateIntervention($date_intervention) {
-      // Les dates sont reéues de la base directement et de la forme yyyy-mm-dd hh:mm.
+      // Les dates sont recues de la base directement et de la forme yyyy-mm-dd hh:mm.
       /* Année et mois de l'intervention. */
       $this->date_intervention[0] = getdate(mktime(0, 0, 0,
-                                 substr($date_intervention[0], 5, 2),
-                                 substr($date_intervention[0], 8, 2),
-                                 substr($date_intervention[0], 0, 4)));
+                                                   substr($date_intervention[0], 5, 2),
+                                                   substr($date_intervention[0], 8, 2),
+                                                   substr($date_intervention[0], 0, 4)));
       /* Du et Au. */
-      $this->date_intervention[1] = substr($date_intervention[1], 8, 2)."/".substr($date_intervention[1], 5, 2)."/"
-            .substr($date_intervention[1], 0, 4);
-      $this->date_intervention[2] = substr($date_intervention[2], 8, 2)."/".substr($date_intervention[2], 5, 2)."/"
-            .substr($date_intervention[2], 0, 4);
+      $this->date_intervention[1] = substr($date_intervention[1], 8, 2) . "/" . substr($date_intervention[1], 5, 2) . "/"
+                                    . substr($date_intervention[1], 0, 4);
+      $this->date_intervention[2] = substr($date_intervention[2], 8, 2) . "/" . substr($date_intervention[2], 5, 2) . "/"
+                                    . substr($date_intervention[2], 0, 4);
    }
 
    function SetEntite($entite) {
@@ -703,5 +926,79 @@ class PluginManageentitiesCriPDF extends FPDF {
    function GetSeuilSaut() {
       return (297 - $this->GetY() - $this->tail_bas_page);
    }
+
+   function setForfait() {
+      $this->forfait = true;
+   }
+
+   function setIntervention() {
+      $this->intervention = true;
+   }
+
+   // ---------------------------------------------------
+   // Fonction de redimensionnement A L'AFFICHAGE
+   // ---------------------------------------------------
+   // La FONCTION : fctaffichimage($img_Src, $W_max, $H_max)
+   // Les paramètres :
+   // - $img_Src : URL (chemin + NOM) de l'image Source
+   // - $W_max : LARGEUR maxi finale ----> ou 0 : largeur libre
+   // - $H_max : HAUTEUR maxi finale ----> ou 0 : hauteur libre
+   // ---------------------
+   // return array(width, height)
+
+   // ---------------------------------------------------
+   function fctaffichimage($img_Src, $W_max, $H_max) {
+
+      if (file_exists($img_Src)) {
+         // ---------------------
+         // Lit les dimensions de l'image source
+         $img_size = getimagesize($img_Src);
+         $W_Src    = $img_size[0]; // largeur source
+         $H_Src    = $img_size[1]; // hauteur source
+         // ---------------------
+         if (!$W_max) {
+            $W_max = 0;
+         }
+         if (!$H_max) {
+            $H_max = 0;
+         }
+         // ---------------------
+         // Teste les dimensions tenant dans la zone
+         $W_test = round($W_Src * ($H_max / $H_Src));
+         $H_test = round($H_Src * ($W_max / $W_Src));
+         // ---------------------
+         // si l'image est plus petite que la zone
+         if ($W_Src < $W_max && $H_Src < $H_max) {
+            $W = $W_Src;
+            $H = $H_Src;
+            // sinon si $W_max et $H_max non definis
+         } elseif ($W_max == 0 && $H_max == 0) {
+            $W = $W_Src;
+            $H = $H_Src;
+            // sinon si $W_max libre
+         } elseif ($W_max == 0) {
+            $W = $W_test;
+            $H = $H_max;
+            // sinon si $H_max libre
+         } elseif ($H_max == 0) {
+            $W = $W_max;
+            $H = $H_test;
+            // sinon les dimensions qui tiennent dans la zone
+         } elseif ($H_test > $H_max) {
+            $W = $W_test;
+            $H = $H_max;
+         } else {
+            $W = $W_max;
+            $H = $H_test;
+         }
+         // ---------------------
+      } else { // si le fichier image n existe pas
+         $W = 0;
+         $H = 0;
+      }
+      return array($W, $H);
+   }
+
 }
+
 ?>

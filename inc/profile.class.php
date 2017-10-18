@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -30,154 +31,229 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesProfile extends CommonDBTM {
-   
-   static function getTypeName() {
-      global $LANG;
+class PluginManageentitiesProfile extends Profile {
 
-      return $LANG['plugin_manageentities']['profile'][0];
-   }
-   
-   function canCreate() {
-      return Session::haveRight('profile', 'w');
+   static function getTypeName($nb = 0) {
+      return _n('Right management', 'Rights management', $nb, 'manageentities');
    }
 
-   function canView() {
-      return Session::haveRight('profile', 'r');
-   }
-   
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
-      if ($item->getType()=='Profile') {
-            return $LANG['plugin_manageentities']['title'][1];
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      if ($item->getType() == 'Profile') {
+         return __('Entities portal', 'manageentities');
       }
       return '';
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $CFG_GLPI;
 
-      if ($item->getType()=='Profile') {
-         $ID = $item->getField('id');
+      if ($item->getType() == 'Profile') {
+         $ID   = $item->getID();
          $prof = new self();
-         
-         if (!$prof->getFromDBByProfile($item->getField('id'))) {
-            $prof->createAccess($item->getField('id'));
-         }
-         $prof->showForm($item->getField('id'), array('target' => 
-                           $CFG_GLPI["root_doc"]."/plugins/manageentities/front/profile.form.php"));
+
+         self::addDefaultProfileInfos($ID,
+                                      array('plugin_manageentities'            => ALLSTANDARDRIGHT,
+                                            'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT));
+         $prof->showForm($ID);
       }
+
       return true;
    }
-   
-   //if profile deleted
-   static function purgeProfiles(Profile $prof) {
-      $plugprof = new self();
-      $plugprof->deleteByCriteria(array('profiles_id' => $prof->getField("id")));
+
+   function showForm($profiles_id = 0, $openform = TRUE, $closeform = TRUE) {
+
+      echo "<div class='firstbloc'>";
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
+          && $openform) {
+         $profile = new Profile();
+         echo "<form method='post' action='" . $profile->getFormURL() . "'>";
+      }
+
+      $profile = new Profile();
+      $profile->getFromDB($profiles_id);
+
+      $rights = $this->getAllRights();
+      $profile->displayRightsChoiceMatrix($rights, array('canedit'       => $canedit,
+                                                         'default_class' => 'tab_bg_2',
+                                                         'title'         => __('General')));
+      if ($canedit
+          && $closeform) {
+         echo "<div class='center'>";
+         echo Html::hidden('id', array('value' => $profiles_id));
+         echo Html::submit(_sx('button', 'Save'), array('name' => 'update'));
+         echo "</div>\n";
+         Html::closeForm();
+      }
+      echo "</div>";
+
+      $this->showLegend();
+
    }
-   
-   function getFromDBByProfile($profiles_id) {
+
+   static function getAllRights($all = false) {
+      $rights = array(
+         array('itemtype' => 'PluginManageentitiesEntity',
+               'label'    => __('Entities portal', 'manageentities'),
+               'field'    => 'plugin_manageentities'
+         ),
+         array('itemtype' => 'PluginManageentitiesCriDetail',
+               'label'    => _n('Intervention report', 'Intervention reports', 1, 'manageentities'),
+               'field'    => 'plugin_manageentities_cri_create'
+         )
+      );
+
+      return $rights;
+   }
+
+   /**
+    * Init profiles
+    *
+    **/
+
+   static function translateARight($old_right) {
+      switch ($old_right) {
+         case '':
+            return 0;
+         case 'r' :
+            return READ;
+         case 'w':
+            return ALLSTANDARDRIGHT;
+         case '0':
+         case '1':
+            return $old_right;
+
+         default :
+            return 0;
+      }
+   }
+
+   /**
+    * @since 0.85
+    * Migration rights from old system to the new one for one profile
+    *
+    * @param $profiles_id the profile ID
+    */
+   static function migrateOneProfile() {
       global $DB;
-      
-      $query = "SELECT * FROM `".$this->getTable()."`
-               WHERE `profiles_id` = '" . $profiles_id . "' ";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
+      //Cannot launch migration if there's nothing to migrate...
+      if (!TableExists('glpi_plugin_manageentities_profiles')) {
+         return true;
+      }
+
+      $datas = getAllDatasFromTable('glpi_plugin_manageentities_profiles');
+
+      foreach ($datas as $profile_data) {
+         $matching = array('manageentities' => 'plugin_manageentities',
+                           'cri_create'     => 'plugin_manageentities_cri_create');
+         // Search existing rights
+         $used           = array();
+         $existingRights = getAllDatasFromTable('glpi_profilerights', "`profiles_id`='" . $profile_data['profiles_id'] . "'");
+         foreach ($existingRights as $right) {
+            $used[$right['profiles_id']][$right['name']] = $right['rights'];
          }
-         $this->fields = $DB->fetch_assoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         } else {
-            return false;
+
+         // Add or update rights
+         foreach ($matching as $old => $new) {
+            if (isset($used[$profile_data['profiles_id']][$new])) {
+               $query = "UPDATE `glpi_profilerights` 
+                         SET `rights`='" . self::translateARight($profile_data[$old]) . "' 
+                         WHERE `name`='$new' AND `profiles_id`='" . $profile_data['profiles_id'] . "'";
+               $DB->query($query);
+            } else {
+               $query = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`, `rights`) VALUES ('" . $profile_data['profiles_id'] . "', '$new', '" . self::translateARight($profile_data[$old]) . "');";
+               $DB->query($query);
+            }
          }
       }
-      return false;
    }
-  
-   static function createFirstAccess($ID) {
-      
-      $myProf = new self();
-      if (!$myProf->getFromDBByProfile($ID)) {
 
-         $myProf->add(array(
-            'profiles_id' => $ID,
-            'manageentities' => 'w',
-            'cri_create' => 'w'));
-            
+   /**
+    * Initialize profiles, and migrate it necessary
+    */
+   static function initProfile() {
+      global $DB;
+      $profile = new self();
+
+      //Add new rights in glpi_profilerights table
+      foreach ($profile->getAllRights(true) as $data) {
+         if (countElementsInTable("glpi_profilerights",
+                                  "`name` = '" . $data['field'] . "'") == 0) {
+            ProfileRight::addProfileRights(array($data['field']));
+         }
+      }
+
+      // Migration old rights in new ones
+      self::migrateOneProfile();
+
+      foreach ($DB->request("SELECT *
+                           FROM `glpi_profilerights` 
+                           WHERE `profiles_id`='" . $_SESSION['glpiactiveprofile']['id'] . "' 
+                              AND `name` LIKE '%plugin_manageentities%'") as $prof) {
+         $_SESSION['glpiactiveprofile'][$prof['name']] = $prof['rights'];
       }
    }
-   
-   function createAccess($ID) {
 
-      $this->add(array(
-      'profiles_id' => $ID));
-   }
-   
+   /**
+    * Initialize profiles, and migrate it necessary
+    */
    static function changeProfile() {
-      
-      $prof = new self();
-      if ($prof->getFromDBByProfile($_SESSION['glpiactiveprofile']['id']))
-         $_SESSION["glpi_plugin_manageentities_profile"]=$prof->fields;
-      else
-         unset($_SESSION["glpi_plugin_manageentities_profile"]);
-      
-      $PluginManageentitiesPreference=new PluginManageentitiesPreference();
-      $pref_ID=$PluginManageentitiesPreference->checkIfPreferenceExists(Session::getLoginUserID());
-      if ($pref_ID) {
-         $pref_value=$PluginManageentitiesPreference->checkPreferenceValue(Session::getLoginUserID());
-         if ($pref_value==1) {
-            $_SESSION["glpi_plugin_manageentities_loaded"]=0;
+      global $DB;
+
+      foreach ($DB->request("SELECT *
+                           FROM `glpi_profilerights` 
+                           WHERE `profiles_id`='" . $_SESSION['glpiactiveprofile']['id'] . "' 
+                              AND `name` LIKE '%plugin_manageentities%'") as $prof) {
+         $_SESSION['glpiactiveprofile'][$prof['name']] = $prof['rights'];
+      }
+
+   }
+
+   static function createFirstAccess($profiles_id) {
+      self::addDefaultProfileInfos($profiles_id,
+                                   array('plugin_manageentities'            => ALLSTANDARDRIGHT,
+                                         'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT), true);
+
+   }
+
+   static function removeRightsFromSession() {
+      foreach (self::getAllRights(true) as $right) {
+         if (isset($_SESSION['glpiactiveprofile'][$right['field']])) {
+            unset($_SESSION['glpiactiveprofile'][$right['field']]);
          }
       }
    }
 
-   function showForm ($ID, $options=array()) {
-      global $LANG;
-
-      if (!Session::haveRight("profile","r")) return false;
-
-      $prof = new Profile();
-      if ($ID) {
-         $this->getFromDBByProfile($ID);
-         $prof->getFromDB($ID);
+   static function removeRightsFromDB() {
+      $plugprof = new ProfileRight();
+      foreach (self::getAllRights(true) as $right) {
+         $plugprof->deleteByCriteria(array('name' => $right['field']));
       }
+   }
 
-      $this->showFormHeader($options);
+   /**
+    * @param $profile
+    **/
+   static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false) {
+      global $DB;
 
-      echo "<tr class='tab_bg_2'>";
+      $profileRight = new ProfileRight();
+      foreach ($rights as $right => $value) {
+         if (countElementsInTable('glpi_profilerights',
+                                  "`profiles_id`='$profiles_id' AND `name`='$right'") && $drop_existing) {
+            $profileRight->deleteByCriteria(array('profiles_id' => $profiles_id, 'name' => $right));
+         }
+         if (!countElementsInTable('glpi_profilerights',
+                                   "`profiles_id`='$profiles_id' AND `name`='$right'")) {
+            $myright['profiles_id'] = $profiles_id;
+            $myright['name']        = $right;
+            $myright['rights']      = $value;
+            $profileRight->add($myright);
 
-      echo "<th colspan='4'>".$LANG['plugin_manageentities']['profile'][0]." ".$prof->fields["name"]."</th>";
-      
-      echo "</tr>";
-      
-      echo "<tr class='tab_bg_2'>";
-      
-      echo "<td>".$LANG['plugin_manageentities']['title'][1].":</td><td>";
-      if ($prof->fields['interface']!='helpdesk') {
-         Profile::dropdownNoneReadWrite("manageentities",$this->fields["manageentities"],1,1,1);
-      } else {
-         Profile::dropdownNoneReadWrite("manageentities",$this->fields["manageentities"],1,1,0);
+            //Add right to the current session
+            $_SESSION['glpiactiveprofile'][$right] = $value;
+         }
       }
-      echo "</td>";
-      
-      echo "<td>".$LANG['plugin_manageentities']['onglet'][3].":</td><td>";
-      if ($prof->fields['interface']!='helpdesk') {
-         Profile::dropdownNoneReadWrite("cri_create",$this->fields["cri_create"],1,1,1);
-      } else {
-         Profile::dropdownNoneReadWrite("cri_create",$this->fields["cri_create"],1,1,0);
-      }
-      echo "</td>";
-      
-      echo "</tr>";
-
-      echo "<input type='hidden' name='id' value=".$this->fields["id"].">";
-      
-      $options['candel'] = false;
-      $this->showFormButtons($options);
-
    }
 }
 

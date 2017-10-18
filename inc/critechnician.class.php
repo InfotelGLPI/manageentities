@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -34,22 +35,75 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
 
    function checkIfTechnicianExists($ID) {
       global $DB;
-    
+
       $result = $DB->query("SELECT `id`
-                FROM `".$this->getTable()."`
-                WHERE `tickets_id` = '".$ID."' ");
+                FROM `" . $this->getTable() . "`
+                WHERE `tickets_id` = '" . $ID . "' ");
       if ($DB->numrows($result) > 0)
-        return $DB->result($result,0,"id");
+         return $DB->result($result, 0, "id");
       else
-        return 0;
+         return 0;
    }
 
-   function addDefaultTechnician($user_id,$ID) {
-  
-      $input["users_id"]=$user_id;
-      $input["tickets_id"]=$ID;
+   function addDefaultTechnician($user_id, $ID) {
+
+      $input["users_id"]   = $user_id;
+      $input["tickets_id"] = $ID;
 
       return $this->add($input);
+   }
+
+   function getTechnicians($tickets_id, $remove_tag = false) {
+      global $DB;
+
+      $techs  = array();
+      $query  = "SELECT `users_id_tech` AS users_id,
+                       `glpi_users`.`name`,
+                       `glpi_users`.`realname`,
+                       `glpi_users`.`firstname`
+               FROM `glpi_tickettasks`
+               LEFT JOIN `glpi_users`
+                 ON(`glpi_users`.`id`=`glpi_tickettasks`.`users_id_tech`)
+               WHERE `tickets_id` = '" . $tickets_id . "'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_array($result)) {
+            if ($data['users_id'] != 0) {
+               if ($remove_tag) {
+                  $techs['notremove'][$data['users_id']] = formatUserName($data["users_id"],
+                                                                          $data["name"], $data["realname"], $data["firstname"]);
+               } else {
+                  $techs[$data['users_id']] = formatUserName($data["users_id"],
+                                                             $data["name"], $data["realname"], $data["firstname"]);
+               }
+            }
+         }
+      }
+
+      $query  = "SELECT `users_id` AS users_id,
+                       `glpi_users`.`name`,
+                       `glpi_users`.`realname`,
+                       `glpi_users`.`firstname`
+               FROM `glpi_plugin_manageentities_critechnicians`
+               LEFT JOIN `glpi_users`
+                 ON(`glpi_users`.`id`=`glpi_plugin_manageentities_critechnicians`.`users_id`)
+               WHERE `tickets_id` = '" . $tickets_id . "' ";
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         while ($data = $DB->fetch_array($result)) {
+            if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {
+               if ($remove_tag) {
+                  $techs['remove'][$data['users_id']] = formatUserName($data["users_id"],
+                                                                       $data["name"], $data["realname"], $data["firstname"]);
+               } else {
+                  $techs[$data['users_id']] = formatUserName($data["users_id"],
+                                                             $data["name"], $data["realname"], $data["firstname"]);
+               }
+            }
+         }
+      }
+
+      return $techs;
    }
 }
 

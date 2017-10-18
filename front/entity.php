@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2016 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,152 +27,114 @@
  --------------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
+include('../../../inc/includes.php');
 
-$PluginManageentitiesContract=new PluginManageentitiesContract();
-$PluginManageentitiesContact=new PluginManageentitiesContact();
-$PluginManageentitiesEntity=new PluginManageentitiesEntity();
-$PluginManageentitiesCri=new PluginManageentitiesCri();
-$followUp = new PluginManageentitiesFollowUp();
+$PluginManageentitiesContract        = new PluginManageentitiesContract();
+$PluginManageentitiesContact         = new PluginManageentitiesContact();
+$PluginManageentitiesEntity          = new PluginManageentitiesEntity();
+$PluginManageentitiesBusinessContact = new PluginManageentitiesBusinessContact();
 
-if (isset($_GET)) $tab = $_GET;
-if (empty($tab) && isset($_POST)) $tab = $_POST;
-if (!isset($tab["id"])) $tab["id"] = "";
-if (!isset($_POST["entities_id"])) $_POST["entities_id"] = "";
+if (!isset($_POST["entities_id"]))
+   $_POST["entities_id"] = "";
 
 if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
-   Html::header($LANG['plugin_manageentities']['title'][1],'',"plugins","manageentities");
+   Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
 } else {
-   Html::helpHeader($LANG['plugin_manageentities']['title'][1]);
+   Html::helpHeader(__('Entities portal', 'manageentities'));
 }
 
-if ($PluginManageentitiesEntity->canView() || Session::haveRight("config","w")) {
+if ($PluginManageentitiesEntity->canView()
+    || Session::haveRight("config", UPDATE)) {
 
    if (isset($_POST["addcontracts"])) {
-
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContract->addContract($_POST["contracts_id"],$_POST["entities_id"]);
+         $PluginManageentitiesContract->add($_POST);
       Html::back();
-   }
-   else if (isset($_POST["deletecontracts"])) {
 
+   } else if (isset($_POST["deletecontracts"])) {
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContract->deleteContract($_POST["id"]);
+         $PluginManageentitiesContract->delete(array('id' => $_POST["id"]));
       Html::back();
 
    } else if (isset($_POST["contractbydefault"])) {
-
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContract->addContractByDefault($_POST["myid"],$_POST["entities_id"]);
+         $PluginManageentitiesContract->addContractByDefault($_POST["myid"], $_POST["entities_id"]);
       Html::back();
-      
+
    } else if (isset($_POST["addcontacts"])) {
-
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContact->addContact($_POST["contacts_id"],$_POST["entities_id"]);
+         $PluginManageentitiesContact->add($_POST);
       Html::back();
-      
-   } else if (isset($_POST["deletecontacts"])) {
 
+   } else if (isset($_POST["deletecontacts"])) {
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContact->deleteContact($_POST["id"]);
+         $PluginManageentitiesContact->delete(array('id' => $_POST["id"]));
+      Html::back();
+
+   } else if (isset($_POST["addbusiness"])) {
+      if ($PluginManageentitiesEntity->canCreate())
+         $PluginManageentitiesBusinessContact->add($_POST);
+      Html::back();
+
+   } else if (isset($_POST["deletebusiness"])) {
+      if ($PluginManageentitiesEntity->canCreate())
+         $PluginManageentitiesBusinessContact->delete(array('id' => $_POST["id"]));
       Html::back();
 
    } else if (isset($_POST["contactbydefault"])) {
-
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContact->addContactByDefault($_POST["contacts_id"],$_POST["entities_id"]);
+         $PluginManageentitiesContact->addContactByDefault($_POST["contacts_id"], $_POST["entities_id"]);
       Html::back();
 
    } else {
-
-   // Manage entity change
+      // Manage entity change
       if (isset($_GET["active_entity"])) {
          if (!isset($_GET["is_recursive"])) {
-            $_GET["is_recursive"]=0;
+            $_GET["is_recursive"] = 0;
          }
-         Session::changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"]);
-         if ($_GET["active_entity"]==$_SESSION["glpiactive_entity"]) {
-            Html::redirect(preg_replace("/entities_id.*/","",$CFG_GLPI["root_doc"]."/plugins/manageentities/front/entity.php"));
+         Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"]);
+         if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
+            Html::redirect(preg_replace("/entities_id.*/", "", $CFG_GLPI["root_doc"] . "/plugins/manageentities/front/entity.php"));
          }
-      } else if (isset($_POST["choice_entity"]) && $_POST["entities_id"]!=0) {
 
-         Html::redirect($CFG_GLPI["root_doc"]."/plugins/manageentities/front/entity.php?active_entity=".$_POST["entities_id"]."");
+      } else if (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
+         Html::redirect($CFG_GLPI["root_doc"] . "/plugins/manageentities/front/entity.php?active_entity=" . $_POST["entities_id"] . "");
 
       } else {
-
-         // show "my view" in first
-         if (!isset($_SESSION['glpi_plugin_manageentities_tab'])) $_SESSION['glpi_plugin_manageentities_tab']="description";
-            if (isset($_GET['onglet'])) {
-               $_SESSION['glpi_plugin_manageentities_tab']=$_GET['onglet'];
-               //      Html::back();
-            }
-         if (isset($_POST["searchcontract"])) {
-
-            $options = "&begin_date=".$_POST['begin_date']."&end_date=".$_POST['end_date'].
-               "&contractstates_id=".$_POST['plugin_manageentities_contractstates_id'].
-               "&entities_id=".$_POST['entities_id'];
-
+         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+            $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 1));
          } else {
-            $options = "&begin_date=NULL&end_date=NULL&contractstates_id=0&entities_id=-1";
+            $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 10));
          }
+         $lastday = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
 
-         $tabs['follow-up']=array('title'=>$LANG['plugin_manageentities']['onglet'][0],
-            'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-            'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=follow-up".$options);
+         if (date("d") == $lastday) {
+            $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+            $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y")));
+         } else {
+            $month   = date("m");
+            $lastday = $month == 1 ? 31 : cal_days_in_month(CAL_GREGORIAN, $month - 1, date("Y"));
+            //$lastday = cal_days_in_month(CAL_GREGORIAN, date("m") - 1, date("Y"));
+            $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
+            $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
+         }
+         $options = array("begin_date_after"  => isset($_POST['begin_date_after']) ? $_POST['begin_date_after'] : $dateYear,
+                          "begin_date_before" => isset($_POST['begin_date_before']) ? $_POST['begin_date_before'] : "NULL",
+                          "begin_date"        => isset($_POST['begin_date']) ? $_POST['begin_date'] : $dateMonthbegin,
+                          "end_date"          => isset($_POST['end_date']) ? $_POST['end_date'] : $dateMonthend,
+                          "end_date_after"    => isset($_POST['end_date_after']) ? $_POST['end_date_after'] : "NULL",
+                          "end_date_before"   => isset($_POST['end_date_before']) ? $_POST['end_date_before'] : "NULL",
+                          "contract_states"   => isset($_POST['contract_states']) ? $_POST['contract_states'] : 0,
+                          "entities_id"       => (isset($_POST['entities_id']) && (!empty($_POST['entities_id']))) ? $_POST['entities_id'] : -1,
+                          "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : 0,
+                          "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
+                          "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0);
 
-         $tabs['description']=array('title'=>$LANG['plugin_manageentities']['onglet'][1],
-         'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-         'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=description");
-
-         if (Session::haveRight("contract","r")) {
-            $tabs['contract']=array('title'=>$LANG['plugin_manageentities']['onglet'][5],
-            'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-            'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=contract");
-         }
-         if (Session::haveRight("show_all_ticket","1")
-            || Session::haveRight("show_assign_ticket","1")
-            || $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-            $tabs['tickets']=array('title'=>$LANG['plugin_manageentities']['onglet'][2],
-            'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-            'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=tickets");
-         }
-         if ($PluginManageentitiesCri->canView()) {
-            $tabs['reports']=array('title'=>$LANG['plugin_manageentities']['onglet'][3],
-            'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-            'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=reports");
-         }
-
-         if (Session::haveRight("document","r")) {
-            $tabs['documents']=array('title'=>$LANG['plugin_manageentities']['onglet'][4],
-            'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-            'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=documents");
-         }
-         $plugin = new Plugin();
-         
-         if ($plugin->isActivated("webapplications") 
-               && plugin_webapplications_haveRight("webapplications","r")) {
-            $tabs['webapplications']=array('title'=>$LANG['plugin_manageentities']['onglet'][6],
-            'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-            'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=webapplications");
-         }
-         if ($plugin->isActivated("accounts") 
-               && plugin_accounts_haveRight("accounts","r")) {
-            $tabs['accounts']=array('title'=>$LANG['plugin_manageentities']['onglet'][7],
-            'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-            'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=accounts");
-         }
-         $tabs['all']=array('title'=>$LANG['common'][66],
-         'url'=>$CFG_GLPI['root_doc']."/plugins/manageentities/ajax/entity.tabs.php",
-         'params'=>"target=".$_SERVER['PHP_SELF']."&plugin_manageentities_tab=all");
-
-         echo "<div id='tabspanel' class='center-h'></div>";
-         Ajax::createTabs('tabspanel','tabcontent',$tabs,'PluginManageentitiesEntity');
-         $PluginManageentitiesEntity->addDivForTabs();
-
+         $entity = new PluginManageentitiesEntity();
+         $entity->display($options);
       }
    }
+
 } else {
    Html::displayRightError();
 }
@@ -181,5 +144,4 @@ if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
 } else {
    Html::helpFooter();
 }
-
 ?>
