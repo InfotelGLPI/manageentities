@@ -3,14 +3,14 @@
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2011 by the manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
-      
- This file is part of manageentities.
+
+ This file is part of Manageentities.
 
  Manageentities is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
-Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management" ,"pluginmanageentitiesentity", "contractday");
+Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
 
 $contractday = new PluginManageentitiesContractday();
 $contractday->checkGlobal(READ);

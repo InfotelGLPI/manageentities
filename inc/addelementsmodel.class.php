@@ -1,36 +1,37 @@
 <?php
-
 /*
-  -------------------------------------------------------------------------
-  Manageentities plugin for GLPI
-  Copyright (C) 2003-2012 by the Manageentities Development Team.
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
+ -------------------------------------------------------------------------
+ Manageentities plugin for GLPI
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
-  https://forge.indepnet.net/projects/manageentities
-  -------------------------------------------------------------------------
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
 
-  LICENSEzda
+ LICENSE
 
-  This file is part of Manageentities.
+ This file is part of Manageentities.
 
-  Manageentities is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
+ Manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-  Manageentities is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+ Manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
-  --------------------------------------------------------------------------
+ You should have received a copy of the GNU General Public License
+ along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
  */
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-include_once ('../common/commonGLPIModel.class.php');
+include_once('../common/commonGLPIModel.class.php');
 
 // Enumeration like for Errors
 class Errors extends CommonGLPIErrors {
@@ -63,7 +64,7 @@ class ElementType extends CommonGLPIElementType {
 
 // Enumeration like for Messages
 class Messages extends CommonGLPIMessages {
-   
+
 }
 
 // Enumeration like for Status
@@ -78,7 +79,7 @@ class Status extends CommonGLPIStatus {
 
 // Enumeration like for Database operations
 class DBOperation extends CommonGLPIDBOperation {
-   
+
 }
 
 // Enumeration like for Action type
@@ -117,25 +118,25 @@ class Action {
 class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
    private static $instance;
-   private $contacts;               // Contact list
-   private $contactManager;         // Id of contact manager (if exist)
-   private $entity;                 // Entity
-   private $contract;               // Contract
-   private $contractManagementType; // Contract mangement type
-   private $contractTemplate;       // Contract template (if used)
-   private $contractdays;           // Intervention list
-   private $nbContact;              // Number of contacts
-   private $nbContractDay;          // Number of interventions
-   private $nbCriPrice;             // Number of criprices
-   private $idContractTemplate;     // id template used for contract
-   private $isContractTemplate;     // If template is used for contract
+   private        $contacts;               // Contact list
+   private        $contactManager;         // Id of contact manager (if exist)
+   private        $entity;                 // Entity
+   private        $contract;               // Contract
+   private        $contractManagementType; // Contract mangement type
+   private        $contractTemplate;       // Contract template (if used)
+   private        $contractdays;           // Intervention list
+   private        $nbContact;              // Number of contacts
+   private        $nbContractDay;          // Number of interventions
+   private        $nbCriPrice;             // Number of criprices
+   private        $idContractTemplate;     // id template used for contract
+   private        $isContractTemplate;     // If template is used for contract
 
    final public static function getInstance() {
-      if (is_null(self::$instance) && !isset($_SESSION[PluginManageentitiesAddElementsModel::getType().'_instance'])) {
-         self::$instance                                                        = new PluginManageentitiesAddElementsModel();
-         $_SESSION[PluginManageentitiesAddElementsModel::getType().'_instance'] = serialize(self::$instance);
+      if (is_null(self::$instance) && !isset($_SESSION[PluginManageentitiesAddElementsModel::getType() . '_instance'])) {
+         self::$instance                                                          = new PluginManageentitiesAddElementsModel();
+         $_SESSION[PluginManageentitiesAddElementsModel::getType() . '_instance'] = serialize(self::$instance);
       } else {
-         self::$instance = unserialize($_SESSION[PluginManageentitiesAddElementsModel::getType().'_instance']);
+         self::$instance = unserialize($_SESSION[PluginManageentitiesAddElementsModel::getType() . '_instance']);
       }
 
       return self::$instance;
@@ -144,13 +145,13 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    private function __construct() {
       global $CFG_GLPI;
 
-      $this->url    = $CFG_GLPI ['root_doc']."/plugins/manageentities/ajax/addelements.listener.php";
+      $this->url    = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/addelements.listener.php";
       $this->errors = array();
 
       $entity = new Entity ();
       $this->setEntity($entity);
 
-      $contact        = new Contact();
+      $contact = new Contact();
       $contact->getEmpty();
       unset($contact->fields['id']);
       $this->contacts = array();
@@ -170,15 +171,15 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
       $this->addContractDay($contractDay, 1);
 
 
-      $contract       = new Contract();
+      $contract = new Contract();
       $contract->getEmpty();
       $this->contract = $contract;
 
-      $contractTemplate       = new Contract();
+      $contractTemplate = new Contract();
       $contractTemplate->getEmpty();
       $this->contractTemplate = $contractTemplate;
 
-      $contractManagementType       = new PluginManageentitiesContract();
+      $contractManagementType = new PluginManageentitiesContract();
       $contractManagementType->getEmpty();
       $this->contractManagementType = $contractManagementType;
 
@@ -188,86 +189,86 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
       $this->nbCriPrice    = 0;
 
       $this->messages = array(
-         ElementType::ENTITY                                                 => array(
-            Errors::ERROR_FIELDS     => "<span class='error'> ".__("All new entity fields are not filled.", "manageentities")."</span>",
-            Errors::ERROR_ADD        => "<span class='error'> ".__("An error happend while saving the entity.", "manageentities")."</span>",
-            Errors::ERROR_NAME_EXIST => "<span class='error'> ".__("Entity name already exists.", "manageentities")."</span>",
-            Errors::ERROR_UPDATE     => "<span class='error'> ".__("An error happend while updating the entity.", "manageentities")."</span>",
+         ElementType::ENTITY                                                     => array(
+            Errors::ERROR_FIELDS     => "<span class='error'> " . __("All new entity fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD        => "<span class='error'> " . __("An error happend while saving the entity.", "manageentities") . "</span>",
+            Errors::ERROR_NAME_EXIST => "<span class='error'> " . __("Entity name already exists.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE     => "<span class='error'> " . __("An error happend while updating the entity.", "manageentities") . "</span>",
             Status::UPDATED          => __("Entity successfully updated.", "manageentities"),
             Status::ADDED            => __("Entity successfully added.", "manageentities"),
             Status::SAVED            => __("Entity saved in base", "manageentities"),
             Status::NOT_SAVED        => __("Entity informations not updated in base", "manageentities")
          ),
-         ElementType::CONTACT                                                => array(
-            Errors::ERROR_FIELDS => "<span class='error'> ".__("All new contact fields are not filled.", "manageentities")."</span>",
-            Errors::ERROR_ADD    => "<span class='error'> ".__("An error happend while saving the contact.", "manageentities")."</span>",
-            Errors::ERROR_UPDATE => "<span class='error'> ".__("An error happend while updating the contact.", "manageentities")."</span>",
+         ElementType::CONTACT                                                    => array(
+            Errors::ERROR_FIELDS => "<span class='error'> " . __("All new contact fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span class='error'> " . __("An error happend while saving the contact.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span class='error'> " . __("An error happend while updating the contact.", "manageentities") . "</span>",
             Status::UPDATED      => __("Contact successfully updated.", "manageentities"),
             Status::ADDED        => __("Contact successfully added.", "manageentities"),
             Status::SAVED        => __("Contact saved in base", "manageentities"),
             Status::NOT_SAVED    => __("Contact informations not updated in base", "manageentities")
          ),
-         ElementType::CONTRACT                                               => array(
-            Errors::ERROR_FIELDS     => "<span class='error'> ".__("All new contract fields are not filled.", "manageentities")."</span>",
-            Errors::ERROR_ADD        => "<span class='error'> ".__("An error happend while saving the contract.", "manageentities")."</span>",
-            Errors::ERROR_ADD_PDF    => "<span class='error'> ".__("An error happend while uploading the document.", "manageentities")."</span>",
-            Errors::ERROR_NAME_EXIST => "<span class='error'> ".__("Contract name already exists.", "manageentities")."</span>",
-            Errors::ERROR_UPDATE     => "<span class='error'> ".__("An error happend while updating the contract.", "manageentities")."</span>",
+         ElementType::CONTRACT                                                   => array(
+            Errors::ERROR_FIELDS     => "<span class='error'> " . __("All new contract fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD        => "<span class='error'> " . __("An error happend while saving the contract.", "manageentities") . "</span>",
+            Errors::ERROR_ADD_PDF    => "<span class='error'> " . __("An error happend while uploading the document.", "manageentities") . "</span>",
+            Errors::ERROR_NAME_EXIST => "<span class='error'> " . __("Contract name already exists.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE     => "<span class='error'> " . __("An error happend while updating the contract.", "manageentities") . "</span>",
             Status::UPDATED          => __("Contract successfully updated", "manageentities"),
             Status::ADDED            => __("Contract successfully added", "manageentities"),
             Status::PDF_ADDED        => __("Document successfully added", "manageentities"),
             Status::SAVED            => __("Contract saved in base", "manageentities"),
             Status::NOT_SAVED        => __("Contract informations not updated in base", "manageentities")
          ),
-         ElementType::CONTRACT_MANAGEMENT_TYPE                               => array(
-            Errors::ERROR_FIELDS     => "<span class='error'> ".__("All new contract management type fields are not filled.", "manageentities")."</span>",
-            Errors::ERROR_ADD        => "<span class='error'> ".__("An error happend while saving the contract management type.", "manageentities")."</span>",
-            Errors::ERROR_NAME_EXIST => "<span class='error'> ".__("Contract management type name already exists.", "manageentities")."</span>",
-            Errors::ERROR_UPDATE     => "<span class='error'> ".__("An error happend while updating the contract management type.", "manageentities")."</span>",
-            Errors::ERROR_DELETE     => "<span class='error'> ".__("An error happend while deleting the contract management type.", "manageentities")."</span>",
+         ElementType::CONTRACT_MANAGEMENT_TYPE                                   => array(
+            Errors::ERROR_FIELDS     => "<span class='error'> " . __("All new contract management type fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD        => "<span class='error'> " . __("An error happend while saving the contract management type.", "manageentities") . "</span>",
+            Errors::ERROR_NAME_EXIST => "<span class='error'> " . __("Contract management type name already exists.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE     => "<span class='error'> " . __("An error happend while updating the contract management type.", "manageentities") . "</span>",
+            Errors::ERROR_DELETE     => "<span class='error'> " . __("An error happend while deleting the contract management type.", "manageentities") . "</span>",
             Status::UPDATED          => __("Contract management type successfully updated", "manageentities"),
             Status::ADDED            => __("Contract management type successfully added", "manageentities"),
             Status::SAVED            => __("Contract management type saved in base", "manageentities"),
             Status::NOT_SAVED        => __("Contract management type informations not updated in base", "manageentities"),
             Status::DELETED          => __("Contract management type succesfully deleted.", "manageentities")
          ),
-         ElementType::CRIPRICE                                               => array(
-            Errors::ERROR_FIELDS => "<span class='error'> ".__("All new fields are not filled.", "manageentities")."</span>",
-            Errors::ERROR_ADD    => "<span class='error'> ".__("An error happend while saving the price.", "manageentities")."</span>",
-            Errors::ERROR_UPDATE => "<span class='error'> ".__("An error happend while updating the price.", "manageentities")."</span>",
-            Errors::ERROR_DELETE => "<span class='error'> ".__("An error happend while deleting the price.", "manageentities")."</span>",
+         ElementType::CRIPRICE                                                   => array(
+            Errors::ERROR_FIELDS => "<span class='error'> " . __("All new fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span class='error'> " . __("An error happend while saving the price.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span class='error'> " . __("An error happend while updating the price.", "manageentities") . "</span>",
+            Errors::ERROR_DELETE => "<span class='error'> " . __("An error happend while deleting the price.", "manageentities") . "</span>",
             Status::UPDATED      => __("Price successfully updated", "manageentities"),
             Status::ADDED        => __("Price successfully added", "manageentities"),
             Status::SAVED        => __("Price saved in base", "manageentities"),
             Status::DELETED      => __("Price succesfully deleted.", "manageentities")
          ),
-         ElementType::INTERVENTION                                           => array(
-            Errors::ERROR_FIELDS => "<span class='error'> ".__("All new intervention fields are not filled.", "manageentities")."</span>",
-            Errors::ERROR_ADD    => "<span class='error'> ".__("An error happend while saving the intervention.", "manageentities")."</span>",
-            Errors::ERROR_UPDATE => "<span class='error'> ".__("An error happend while updating the intervention.", "manageentities")."</span>",
+         ElementType::INTERVENTION                                               => array(
+            Errors::ERROR_FIELDS => "<span class='error'> " . __("All new intervention fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span class='error'> " . __("An error happend while saving the intervention.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span class='error'> " . __("An error happend while updating the intervention.", "manageentities") . "</span>",
             Status::UPDATED      => __("Intervention successfully updated.", "manageentities"),
             Status::ADDED        => __("Intervention successfully added.", "manageentities"),
             Status::SAVED        => __("Intervention saved in base", "manageentities"),
             Status::NOT_SAVED    => __("Intervention informations not updated in base", "manageentities")
          ),
-         ElementType::ALL                                                    => array(
-            Errors::ERROR_FIELDS => "<span class='error'> ".__("All fields are not filled.", "manageentities")."</span>",
-            Errors::ERROR_ADD    => "<span class='error'> ".__("An error happend while saving the informations.", "manageentities")."</span>",
-            Errors::ERROR_UPDATE => "<span class='error'> ".__("An error happend while updating the informations.", "manageentities")."</span>",
+         ElementType::ALL                                                        => array(
+            Errors::ERROR_FIELDS => "<span class='error'> " . __("All fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span class='error'> " . __("An error happend while saving the informations.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span class='error'> " . __("An error happend while updating the informations.", "manageentities") . "</span>",
             Status::UPDATED      => __("All infomations successfully updated.", "manageentities"),
             Status::ADDED        => __("All informations successfully added.", "manageentities"),
             Status::SAVED        => __("All informations saved in base", "manageentities"),
             Status::NOT_SAVED    => __("All informations not updated in base", "manageentities")
          ),
-         ElementType::ENTITY.ElementType::CONTACT                            => array(Status::ADDED => __("Entity and contact successfully added", "manageentities")),
-         ElementType::ENTITY.ElementType::CONTRACT                           => array(Status::ADDED => __("Entity and contract successfully added", "manageentities")),
-         ElementType::ENTITY.ElementType::INTERVENTION                       => array(Status::ADDED => __("Entity and intervention successfully added", "manageentities")),
-         ElementType::CONTRACT.ElementType::INTERVENTION                     => array(Status::ADDED => __("Contract and intervention successfully added", "manageentities")),
-         ElementType::ENTITY.ElementType::CONTRACT.ElementType::INTERVENTION => array(Status::ADDED => __("Entity, intervention and contract successfully added", "manageentities")),
-         "mandatory_field"                                                   => "<span class='error'> * </span>",
-         "message_info"                                                      => _n("Information", "Informations", 1),
-         "message_error"                                                     => __("Warning"),
-         "irreversible_action"                                               => __("This action is irreversible, Continue ?", "manageentities")
+         ElementType::ENTITY . ElementType::CONTACT                              => array(Status::ADDED => __("Entity and contact successfully added", "manageentities")),
+         ElementType::ENTITY . ElementType::CONTRACT                             => array(Status::ADDED => __("Entity and contract successfully added", "manageentities")),
+         ElementType::ENTITY . ElementType::INTERVENTION                         => array(Status::ADDED => __("Entity and intervention successfully added", "manageentities")),
+         ElementType::CONTRACT . ElementType::INTERVENTION                       => array(Status::ADDED => __("Contract and intervention successfully added", "manageentities")),
+         ElementType::ENTITY . ElementType::CONTRACT . ElementType::INTERVENTION => array(Status::ADDED => __("Entity, intervention and contract successfully added", "manageentities")),
+         "mandatory_field"                                                       => "<span class='error'> * </span>",
+         "message_info"                                                          => _n("Information", "Informations", 1),
+         "message_error"                                                         => __("Warning"),
+         "irreversible_action"                                                   => __("This action is irreversible, Continue ?", "manageentities")
       );
 
       $this->idContractTemplate = -1;
@@ -277,9 +278,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    }
 
    public function destroy() {
-      unset($_SESSION[PluginManageentitiesAddElementsModel::getType().'_instance']);
-      self::$instance                                                        = new PluginManageentitiesAddElementsModel();
-      $_SESSION[PluginManageentitiesAddElementsModel::getType().'_instance'] = serialize(self::$instance);
+      unset($_SESSION[PluginManageentitiesAddElementsModel::getType() . '_instance']);
+      self::$instance                                                          = new PluginManageentitiesAddElementsModel();
+      $_SESSION[PluginManageentitiesAddElementsModel::getType() . '_instance'] = serialize(self::$instance);
    }
 
    /* ------------------------------------------------------------------------------------
@@ -287,7 +288,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
     * ------------------------------------------------------------------------------------ */
 
    public function serializeInSession() {
-      $_SESSION[PluginManageentitiesAddElementsModel::getType()."_instance"] = serialize($this);
+      $_SESSION[PluginManageentitiesAddElementsModel::getType() . "_instance"] = serialize($this);
    }
 
    /* ------------------------------------------------------------------------------------
@@ -297,9 +298,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    public function addEntityToBase($pView) {
       $entity = $this->getEntity();
 
-      $childEntity                    = new Entity();
+      $childEntity = new Entity();
       $childEntity->getFromDB($_POST['new_entity_entities_id']);
-      $entity->fields['completename'] = $childEntity->fields['completename']." > ".$entity->fields['name'];
+      $entity->fields['completename'] = $childEntity->fields['completename'] . " > " . $entity->fields['name'];
 
       // If entity already saved
       if (isset($entity->fields['id']) && $entity->fields['id'] > 0) {
@@ -309,7 +310,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $this->setEntity($entity);
             $pView->changeBtnName("btnAddEntity", __("Update this entity", "manageentities"));
             $pView->updateTabTitle(1, $entity->fields['name'], "div#mytabsentity", $entity, $this->getMessage(ElementType::ENTITY, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_".$entity->getType()."1'", $this->getMessage(ElementType::ENTITY, Status::SAVED));
+            $pView->updateImgTabTitle(false, "'img_" . $entity->getType() . "1'", $this->getMessage(ElementType::ENTITY, Status::SAVED));
             $this->deleteError(Errors::ERROR_ENTITY, Errors::ERROR_ADD);
             return array("result" => Status::UPDATED, "message" => $this->getMessage(ElementType::ENTITY, Status::UPDATED));
          } else {
@@ -324,7 +325,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $this->setEntity($entity);
             $pView->changeBtnName("btnAddEntity", __("Update this entity", "manageentities"));
             $pView->updateTabTitle(1, $entity->fields['name'], "div#mytabsentity", $entity, $this->getMessage(ElementType::ENTITY, Status::SAVED), true);
-            $pView->updateImgTabTitle(false, "'img_".$entity->getType()."1'", $this->getMessage(ElementType::ENTITY, Status::SAVED));
+            $pView->updateImgTabTitle(false, "'img_" . $entity->getType() . "1'", $this->getMessage(ElementType::ENTITY, Status::SAVED));
             $this->deleteError(Errors::ERROR_ENTITY, Errors::ERROR_ADD);
             return array("result" => Status::ADDED, "message" => $this->getMessage(ElementType::ENTITY, Status::ADDED));
          } else {
@@ -426,7 +427,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          if (isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") {
             $this->setContract($contract);
             $pView->updateTabTitle(1, $contract->fields['name'], "div#mytabscontract", $contract, $this->getMessage(ElementType::CONTRACT, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_".$contract->getType()."1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED));
+            $pView->updateImgTabTitle(false, "'img_" . $contract->getType() . "1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED));
             $pView->changeBtnName("btnAddContract", __("Update this contract only", "manageentities"));
             $this->deleteError(Errors::ERROR_CONTRACT, Errors::ERROR_UPDATE);
             $this->setIsContractTemplate(0);
@@ -449,7 +450,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $this->setContract($contract);
             $strTitleTab = isset($contract->fields['name']) ? $contract->fields['name'] : "";
             $pView->updateTabTitle(1, $strTitleTab, "div#mytabscontract", $contract, $this->getMessage(ElementType::CONTRACT, Status::SAVED), true);
-            $pView->updateImgTabTitle(false, "'img_".$contract->getType()."1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED));
+            $pView->updateImgTabTitle(false, "'img_" . $contract->getType() . "1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED));
             $this->setIsContractTemplate(0);
             $pView->showFormAddContractMangementType($contract);
             $pView->showFormAddPDFcontract();
@@ -583,7 +584,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
             $pView->updateTabTitle($_POST['fakeid_new_contact'], $strTitleTab, "div#mytabscontacts", $contact, $this->getMessage(ElementType::CONTACT, Status::SAVED));
             //                  $pView->updateImgTabTitle(false,"img_".$contact->getType().$_POST['fakeid_new_contact'],$this->getMessage("contact_saved_db"));
-            $pView->changeBtnName("btnAddContact".$_POST['fakeid_new_contact'], __("Update this contact only", "manageentities"));
+            $pView->changeBtnName("btnAddContact" . $_POST['fakeid_new_contact'], __("Update this contact only", "manageentities"));
             return array("result" => Status::UPDATED, "message" => $this->getMessage(ElementType::CONTACT, Status::UPDATED));
          } else {
             $this->addError(Errors::ERROR_CONTACT, Errors::ERROR_ADD, 'true');
@@ -603,14 +604,14 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $this->manageMEntitiesContacts($contact, DBOperation::ADD, $pView);
 
             if (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true") {
-               $pView->changeBtnName("btnAddContact".$_POST['fakeid_new_contact'], __("Update this contact only", "manageentities"));
+               $pView->changeBtnName("btnAddContact" . $_POST['fakeid_new_contact'], __("Update this contact only", "manageentities"));
 
                $strTitleTab = isset($contact->fields['firstname']) ? $contact->fields['firstname'] : "";
                $strTitleTab .= " ";
                $strTitleTab .= isset($contact->fields['name']) ? $contact->fields['name'] : "";
 
                $pView->updateTabTitle($_POST['fakeid_new_contact'], $strTitleTab, "div#mytabscontacts", $contact, $this->getMessage(ElementType::CONTACT, Status::SAVED), true);
-               $pView->updateImgTabTitle(false, "'img_".$contact->getType().$_POST['fakeid_new_contact']."'", $this->getMessage(ElementType::CONTACT, Status::SAVED));
+               $pView->updateImgTabTitle(false, "'img_" . $contact->getType() . $_POST['fakeid_new_contact'] . "'", $this->getMessage(ElementType::CONTACT, Status::SAVED));
 
                return array("result" => Status::ADDED, "message" => $this->getMessage(ElementType::CONTACT, Status::ADDED));
             } else {
@@ -697,20 +698,20 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $nbIntervention                                   = $this->getNbContractDays();
             $interventions[$_POST['fakeid_new_intervention']] = $intervention;
             $this->setContractDays($interventions);
-            $pView->updateImgTabTitle(false, "'img_".$intervention->getType().$_POST['fakeid_new_intervention']."'", $this->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED));
+            $pView->updateImgTabTitle(false, "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED));
             $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
 
             $pView->updateTabTitle($_POST['fakeid_new_intervention'], $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_".$intervention->getType().$_POST['fakeid_new_intervention']."'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
+            $pView->updateImgTabTitle(false, "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
 
-            $pView->changeBtnName("btnAddIntervention".$_POST['fakeid_new_intervention'], __("Update this intervention only", "manageentities"));
+            $pView->changeBtnName("btnAddIntervention" . $_POST['fakeid_new_intervention'], __("Update this intervention only", "manageentities"));
 
 
             // Update criprices
             if ($price != null && $intervention->fields['id'] <= 0) {
                $cprice = new PluginManageentitiesCriPrice();
                $cprice->getEmpty();
-               $query  = "WHERE `entities_id`=".$intervention->fields['entities_id']." AND `plugin_manageentities_critypes_id`=".$intervention->fields['plugin_manageentities_critypes_id'];
+               $query = "WHERE `entities_id`=" . $intervention->fields['entities_id'] . " AND `plugin_manageentities_critypes_id`=" . $intervention->fields['plugin_manageentities_critypes_id'];
                $cprice->getFromDBByQuery($query);
                if (isset($cprice->fields['id']) && $cprice->fields['id'] > 0) {
                   $typeInsert = DBOperation::UPDATE;
@@ -727,27 +728,27 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             }
 
             if ((isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") ||
-                  (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true")) {
+                (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true")) {
 
                $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
                $interventionSkateholder->displayTabContentForItem($intervention);
                return array("result" => Status::UPDATED, "message" => $this->getMessage(ElementType::INTERVENTION, Status::UPDATED));
-               
+
             } else {
                $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true');
                return array("result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_UPDATE));
             }
-            
+
          } else {
             $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true');
             return array("result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_UPDATE));
          }
-         
+
       } else {
          // Add intervention
          if (isset($intervention->fields['id']))
             unset($intervention->fields['id']);
-         if(empty($intervention->fields['plugin_manageentities_critypes_id'])){
+         if (empty($intervention->fields['plugin_manageentities_critypes_id'])) {
             unset($intervention->fields['plugin_manageentities_critypes_id']);
          }
          $datas = $this->persistData($intervention, DBOperation::ADD);
@@ -757,29 +758,29 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $nbIntervention = $this->getNbContractDays();
             $this->addContractDay($intervention, $nbIntervention);
             $this->deleteError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD);
-            $pView->changeBtnName("btnAddIntervention".$_POST['fakeid_new_intervention'], __("Update this intervention only", "manageentities"));
-            $strTitleTab    = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
+            $pView->changeBtnName("btnAddIntervention" . $_POST['fakeid_new_intervention'], __("Update this intervention only", "manageentities"));
+            $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
             $pView->updateTabTitle($nbIntervention, $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED), true);
             $pView->initCriPricesView($intervention, $nbIntervention);
 
             if (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true") {
                if ((isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") ||
-                     (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true")) {
+                   (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true")) {
 
                   $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
                   $interventionSkateholder->displayTabContentForItem($intervention);
                   return array("result" => Status::ADDED, "message" => $this->getMessage(ElementType::INTERVENTION, Status::ADDED));
-                  
+
                } else {
                   $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
                   return array("result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_ADD));
                }
-               
+
             } else {
                $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, true, $_POST['fakeid_new_intervention']);
                return array("result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_ADD));
             }
-            
+
          } else {
             $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, true, $_POST['fakeid_new_intervention']);
             unset($intervention->fields['id']);
@@ -816,7 +817,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $error = true;
          } else {
             if ($criPrice->deleteFromDB($criPrice->fields)) {
-               $pView->deleteRowOnTable("row_criprice_".$oldId);
+               $pView->deleteRowOnTable("row_criprice_" . $oldId);
                $this->removeCriPrice($tabIdIntervention, $criPrice->fields['plugin_manageentities_critypes_id']);
                $error = false;
             } else {
@@ -847,18 +848,18 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
             $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
             $pView->updateTabTitle($_POST['fakeid_new_intervention'], $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_".$intervention->getType().$_POST['fakeid_new_intervention']."'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
+            $pView->updateImgTabTitle(false, "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
 
             $pView->updateListItems($intervention, $_POST['fakeid_new_intervention'], $criPrice, Status::UPDATED);
 
             $this->deleteError(Errors::ERROR_CRIPRICE, Errors::ERROR_UPDATE);
             return array("result" => Status::UPDATED, "message" => $this->getMessage(ElementType::CRIPRICE, Status::UPDATED));
-            
+
          } else {
             $this->addError(Errors::ERROR_CRIPRICE, Errors::ERROR_ADD, 'true');
             return array("result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::CRIPRICE, Errors::ERROR_UPDATE));
          }
-         
+
       } else {
          // Add criprice
          $datas = $this->persistData($criPrice, DBOperation::ADD);
@@ -869,14 +870,14 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
 
             $pView->updateTabTitle($_POST['fakeid_new_intervention'], $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_PluginManageentitiesContractDay".$_POST['fakeid_new_intervention']."'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
-            $pView->changeBtnName("btn_add_cprice_".$tabIdIntervention, __("Update this price", "manageentities"));
+            $pView->updateImgTabTitle(false, "'img_PluginManageentitiesContractDay" . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
+            $pView->changeBtnName("btn_add_cprice_" . $tabIdIntervention, __("Update this price", "manageentities"));
             $pView->updateCPriceID($criPrice->fields['id']);
             $pView->updateListItems($intervention, $_POST['fakeid_new_intervention'], $criPrice, Status::ADDED);
 
             $this->deleteError(Errors::ERROR_CRIPRICE, Errors::ERROR_ADD);
             return array("result" => Status::ADDED, "message" => $this->getMessage(ElementType::CRIPRICE, Status::ADDED));
-            
+
          } else {
             $this->addError(Errors::ERROR_CRIPRICE, Errors::ERROR_ADD, 'true');
             unset($criPrice->fields['id']);
@@ -892,11 +893,11 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    }
 
    public function deleteContractManagementType($pView) {
-      $restrict        = "`glpi_plugin_manageentities_contracts`.`entities_id` = '".
-            $_POST['entities_id']."'
-                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '".
-            $_POST['contracts_id']."'";
-      $dbu = new DbUtils();
+      $restrict = "`glpi_plugin_manageentities_contracts`.`entities_id` = '" .
+                  $_POST['entities_id'] . "'
+                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '" .
+                  $_POST['contracts_id'] . "'";
+      $dbu      = new DbUtils();
 
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract  = reset($pluginContracts);
@@ -939,7 +940,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
       $linkparam = '';
 
       if (get_class($item) == 'Ticket') {
-         $linkparam = "&amp;tickets_id=".$item->fields['id'];
+         $linkparam = "&amp;tickets_id=" . $item->fields['id'];
       }
 
       $canedit      = $item->canadditem('Document');
@@ -954,7 +955,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
       }
 
       if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
-         $sort = "`".$_POST["sort"]."`";
+         $sort = "`" . $_POST["sort"] . "`";
       } else {
          $sort = "`assocdate`";
       }
@@ -972,7 +973,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                 LEFT JOIN `glpi_documentcategories`
                         ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
                 WHERE `glpi_documents_items`.`items_id` = '$ID'
-                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
+                      AND `glpi_documents_items`.`itemtype` = '" . $item->getType() . "' ";
 
       if (Session::getLoginUserID()) {
          $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
@@ -1003,9 +1004,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $datas                                  = $this->persistData($mEntitiesContact, DBOperation::ADD);
             }
             break;
-            
+
          case DBOperation::UPDATE:
-            $mEntitiesContact->getFromDBByQuery("WHERE `contacts_id`=".$contact->fields['id']);
+            $mEntitiesContact->getFromDBByQuery("WHERE `contacts_id`=" . $contact->fields['id']);
 
             $mEntitiesContact->fields['contacts_id'] = $contact->fields['id'];
             $mEntitiesContact->fields['entities_id'] = $contact->fields['entities_id'];
@@ -1019,10 +1020,10 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $datas                                  = $this->persistData($mEntitiesContact, DBOperation::UPDATE);
             }
             break;
-            
+
          case 'update-allothers':
-            $dbu = new DbUtils();
-            $condition = "`entities_id`=".$contact->fields['entities_id']." AND `contacts_id` != ".$contact->fields['id'];
+            $dbu       = new DbUtils();
+            $condition = "`entities_id`=" . $contact->fields['entities_id'] . " AND `contacts_id` != " . $contact->fields['id'];
             $contacts  = $dbu->getAllDataFromTable(PluginManageentitiesContact::getTable(), $condition);
 
             if (sizeof($contacts) > 0) {
@@ -1034,13 +1035,13 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             }
             $pView->updateDropdownsContactManager();
             break;
-            
+
          case 'update--force-false':
-            $mEntitiesContact->getFromDBByQuery("WHERE `entities_id`=".$contact->fields['entities_id']." AND `contacts_id`=".$contact->fields['id']);
+            $mEntitiesContact->getFromDBByQuery("WHERE `entities_id`=" . $contact->fields['entities_id'] . " AND `contacts_id`=" . $contact->fields['id']);
             $mEntitiesContact->fields['is_default'] = 0;
             $this->persistData($mEntitiesContact, DBOperation::UPDATE);
             break;
-         
+
          default:
             break;
       }
@@ -1052,7 +1053,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             if ($object->getType() == Entity::getType()) {
                $tmpObj = clone $object;
                $tmpObj->getEmpty();
-               $tmpObj->getFromDBByQuery("WHERE `name`='".$object->fields['name']."'");
+               $tmpObj->getFromDBByQuery("WHERE `name`='" . $object->fields['name'] . "'");
 
                if (isset($tmpObj->fields['id']) && $tmpObj->fields['id'] > 0) {
                   return array(Status::NOT_ADDED => false, 'cause' => Errors::ERROR_NAME_EXIST);
@@ -1068,7 +1069,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                return array(Status::NOT_ADDED => true);
             }
             break;
-            
+
          case DBOperation::UPDATE:
             if ($object->update($object->fields)) {
                return array(Status::UPDATED => true);
@@ -1092,7 +1093,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
    public function storeDatasInSession($type, $object) {
       $config = PluginManageentitiesConfig::getInstance();
-      
+
       switch ($type) {
          case ElementType::ENTITY:
             $object->fields['name']        = Html::cleanInputText(isset($_POST['new_entity_name']) ? $_POST['new_entity_name'] : "");
@@ -1110,7 +1111,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
             $this->setEntity($object);
             break;
-         
+
          case ElementType::CONTACT:
             $object->fields['name']            = $_POST['new_contact_name'];
             $object->fields['firstname']       = $_POST['new_contact_firstname'];
@@ -1141,7 +1142,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $this->setContactManager($_POST['fakeid_new_contact']);
             }
             break;
-            
+
          case ElementType::CONTRACT:
             $object->fields['name'] = $_POST['new_contract_name'];
 
@@ -1192,7 +1193,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
             $this->setContract($object);
             break;
-            
+
          case ElementType::INTERVENTION:
             $object->fields['name'] = $_POST['new_intervention_name'];
 
@@ -1207,9 +1208,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $object->fields['end_date'] = null;
             }
             if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
-               $object->fields['contract_type']        = $_POST['contract_type'];
-            }else{
-               $object->fields['contract_type']       = 0;
+               $object->fields['contract_type'] = $_POST['contract_type'];
+            } else {
+               $object->fields['contract_type'] = 0;
             }
             $object->fields['nbday']                                   = $_POST['new_intervention_nbday'];
             $object->fields['report']                                  = $_POST['new_intervention_report'];
@@ -1237,11 +1238,11 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             } else {
                $object->fields['contract_added'] = 0;
             }
-            
+
             if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-               $object->fields['contract_type']        = $_POST['contract_type'];
-            }else{
-               $object->fields['contract_type']       = 0;
+               $object->fields['contract_type'] = $_POST['contract_type'];
+            } else {
+               $object->fields['contract_type'] = 0;
             }
             $object->fields['show_on_global_gantt'] = $_POST['show_on_global_gantt'];
             $object->fields['contracts_id']         = $_POST['contracts_id'];
@@ -1250,16 +1251,16 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $object->fields['management']           = 0;
             $object->fields['moving_management']    = $_POST['moving_management'];
             $object->fields['duration_moving']      = $_POST['duration_moving'];
-            
+
             if (isset($_POST['refacturable_costs']) && $_POST['refacturable_costs'] == "true") {
                $object->fields['refacturable_costs'] = 1;
             } else {
                $object->fields['refacturable_costs'] = 0;
-            } 
-            
+            }
+
             $this->setContractManagementType($object);
             break;
-            
+
          case ElementType::CRIPRICE:
             $object = new PluginManageentitiesCriPrice();
             if (isset($_POST['id_criprice'])) {
@@ -1273,7 +1274,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
             $this->addCriPrice($object, $_POST['fakeid_new_intervention'], $_POST['new_criprice_critypes']);
             break;
-            
+
          default:
             break;
       }
@@ -1281,8 +1282,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
    public function getCriPriceFromType($post) {
       $criPrice = new PluginManageentitiesCriPrice();
-      $criPrice->getFromDBByQuery("WHERE plugin_manageentities_critypes_id=".$post['new_criprice_critype']." AND entities_id=".$post['entities_id'].
-            " AND plugin_manageentities_contractdays_id=".$post['plugin_manageentities_contractdays_id']);
+      $criPrice->getFromDBByQuery("WHERE plugin_manageentities_critypes_id=" . $post['new_criprice_critype'] . " AND entities_id=" . $post['entities_id'] .
+                                  " AND plugin_manageentities_contractdays_id=" . $post['plugin_manageentities_contractdays_id']);
 
       if (isset($criPrice->fields['id']) && $criPrice->fields['id'] > 0) {
          return $criPrice;
@@ -1302,7 +1303,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
    public function getCripriceFromDB($critypeId, $entitiesId) {
       $cprice = new PluginManageentitiesCriPrice();
-      $query  = "WHERE `entities_id`=".$entitiesId." AND `plugin_manageentities_critypes_id`=".$critypeId;
+      $query  = "WHERE `entities_id`=" . $entitiesId . " AND `plugin_manageentities_critypes_id`=" . $critypeId;
       $cprice->getFromDBByQuery($query);
       if (isset($cprice->fields['id']) && $cprice->fields['id'] > 0) {
          return $cprice;
@@ -1337,7 +1338,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
    public function getIconSrcFromExtension($ext) {
       $docType = new DocumentType();
-      $docType->getFromDBByQuery("WHERE `ext` LIKE '".$ext."'");
+      $docType->getFromDBByQuery("WHERE `ext` LIKE '" . $ext . "'");
       if (isset($docType->fields['id']) && $docType->fields['id'] > 0) {
          return $docType->fields['icon'];
       } else {
@@ -1487,7 +1488,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    }
 
    public function getNbCriPrice() {
-//      return sizeof($this->nbContractDay['criprice']);
+      //      return sizeof($this->nbContractDay['criprice']);
       return $this->nbCriPrice;
    }
 

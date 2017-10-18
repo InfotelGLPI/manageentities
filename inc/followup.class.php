@@ -1,30 +1,30 @@
 <?php
-
 /*
-  -------------------------------------------------------------------------
-  Manageentities plugin for GLPI
-  Copyright (C) 2003-2012 by the Manageentities Development Team.
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
+ -------------------------------------------------------------------------
+ Manageentities plugin for GLPI
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
-  https://forge.indepnet.net/projects/manageentities
-  -------------------------------------------------------------------------
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
 
-  LICENSE
+ LICENSE
 
-  This file is part of Manageentities.
+ This file is part of Manageentities.
 
-  Manageentities is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
+ Manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-  Manageentities is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+ Manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
-  --------------------------------------------------------------------------
+ You should have received a copy of the GNU General Public License
+ along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -32,9 +32,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginManageentitiesFollowUp extends CommonDBTM {
-   
+
    static $rightname = 'plugin_manageentities';
-   
+
    static function canView() {
       return Session::haveRight(self::$rightname, READ);
    }
@@ -46,41 +46,40 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
    static function queryFollowUp($instID, $options = array()) {
       global $DB;
       if (isset($options['entities_id']) && $options['entities_id'] != '-1') {
-         $sons = getSonsOf('glpi_entities', $options['entities_id']);
+         $sons     = getSonsOf('glpi_entities', $options['entities_id']);
          $entities = "";
-         $first = true;
+         $first    = true;
          if (is_array($sons)) {
             foreach ($sons as $son) {
                if ($first) {
-                  $entities.="'".$son."'";
-                  $first = false;
+                  $entities .= "'" . $son . "'";
+                  $first    = false;
                } else {
-                  $entities.=",'".$son."'";
+                  $entities .= ",'" . $son . "'";
                }
             }
          }
 
-         $condition = " `glpi_contracts`.`entities_id` IN (".
-                 $entities.") ";
+         $condition = " `glpi_contracts`.`entities_id` IN (" .
+                      $entities . ") ";
       } else {
-          
+
          if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
             $condition = getEntitiesRestrictRequest("", "glpi_contracts");
          } else {
             if (is_array($instID)) {
-               $instID = "'".implode("', '", $instID)."'";
-               $condition = " `glpi_contracts`.`entities_id` IN (".
-                       $instID.") ";
+               $instID    = "'" . implode("', '", $instID) . "'";
+               $condition = " `glpi_contracts`.`entities_id` IN (" .
+                            $instID . ") ";
             } else {
-               $condition = " `glpi_contracts`.`entities_id` = '".
-                       $instID."'";
+               $condition = " `glpi_contracts`.`entities_id` = '" .
+                            $instID . "'";
             }
-                 
+
          }
       }
 
 
-      
       $beginDateAfter         = '';
       $beginDateBefore        = '';
       $endDateAfter           = '';
@@ -105,50 +104,50 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       $nbContratByEntities    = 0;// Count the contracts for all entities
       $contract_depass        = 0;
       $pricecri               = array();
-         
+
       // We configure the type of contract Hourly or Dayly
       $config = PluginManageentitiesConfig::getInstance();
-      if($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR){// Hourly
-         $configHourOrDay = "AND (`glpi_plugin_manageentities_contracts`.`contract_type`='".  PluginManageentitiesContract::CONTRACT_TYPE_NULL."' 
-                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='".  PluginManageentitiesContract::CONTRACT_TYPE_HOUR."'
-                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='".  PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION."'
-                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='".  PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED."')"; 
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Hourly
+         $configHourOrDay = "AND (`glpi_plugin_manageentities_contracts`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_NULL . "' 
+                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_HOUR . "'
+                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION . "'
+                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED . "')";
       } else {// Daily
-         $configHourOrDay = "AND (`glpi_plugin_manageentities_contractdays`.`contract_type`='".  PluginManageentitiesContract::CONTRACT_TYPE_NULL."'
-                             OR `glpi_plugin_manageentities_contractdays`.`contract_type`='".PluginManageentitiesContract::CONTRACT_TYPE_AT."'
-                             OR `glpi_plugin_manageentities_contractdays`.`contract_type`='".PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT."')"; 
+         $configHourOrDay = "AND (`glpi_plugin_manageentities_contractdays`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_NULL . "'
+                             OR `glpi_plugin_manageentities_contractdays`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_AT . "'
+                             OR `glpi_plugin_manageentities_contractdays`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT . "')";
       }
 
       if (isset($options['begin_date_after']) && $options['begin_date_after'] != 'NULL') {
-         $beginDateAfter = " AND (`glpi_plugin_manageentities_contractdays`.`begin_date` >='".
-                 $options['begin_date_after']."' )";
-         $beginDate = $options['begin_date_after'];
+         $beginDateAfter = " AND (`glpi_plugin_manageentities_contractdays`.`begin_date` >='" .
+                           $options['begin_date_after'] . "' )";
+         $beginDate      = $options['begin_date_after'];
       }
 
       if (isset($options['begin_date_before']) && $options['begin_date_before'] != 'NULL') {
-         $beginDateBefore = " AND (`glpi_plugin_manageentities_contractdays`.`begin_date` <= ADDDATE('".
-                 $options['begin_date_before']."', INTERVAL 1 DAY))";
+         $beginDateBefore = " AND (`glpi_plugin_manageentities_contractdays`.`begin_date` <= ADDDATE('" .
+                            $options['begin_date_before'] . "', INTERVAL 1 DAY))";
       }
 
       if (isset($options['end_date_after']) && $options['end_date_after'] != 'NULL') {
-         $endDateAfter = " AND (`glpi_plugin_manageentities_contractdays`.`end_date` >= '".
-                 $options['end_date_after']."' )";
+         $endDateAfter = " AND (`glpi_plugin_manageentities_contractdays`.`end_date` >= '" .
+                         $options['end_date_after'] . "' )";
       }
 
       if (isset($options['end_date_before']) && $options['end_date_before'] != 'NULL') {
-         $endDateBefore = " AND (`glpi_plugin_manageentities_contractdays`.`end_date` <= ADDDATE('".
-                 $options['end_date_before']."', INTERVAL 1 DAY))";
-         $endDate = $options['end_date_before'];
+         $endDateBefore = " AND (`glpi_plugin_manageentities_contractdays`.`end_date` <= ADDDATE('" .
+                          $options['end_date_before'] . "', INTERVAL 1 DAY))";
+         $endDate       = $options['end_date_before'];
       }
 
       $plugin_config = new PluginManageentitiesConfig();
       $config_states = $plugin_config->find();
       $config_states = reset($config_states);
-      
+
       $plugin_pref = new PluginManageentitiesPreference();
-      $preferences = $plugin_pref->find("users_id= ". Session::getLoginUserID());
+      $preferences = $plugin_pref->find("users_id= " . Session::getLoginUserID());
       $preferences = reset($preferences);
-    
+
       if (isset($options['contract_states']) && $options['contract_states'] != '0') {
          $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", $options['contract_states']) . "') ";
       } elseif ($preferences['contract_states'] != NULL) {
@@ -159,7 +158,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
       if (isset($options['business_id']) && $options['business_id'] != '0') {
          $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id` IN ('" . implode("','", $options['business_id']) . "') ";
-      }elseif ($preferences['business_id'] != NULL) {
+      } elseif ($preferences['business_id'] != NULL) {
          $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id` IN ('" . implode("','", json_decode($preferences['business_id'], true)) . "') ";
       } elseif ($config_states['business_id'] != NULL) {
          $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id`  IN ('" . implode("','", json_decode($config_states['business_id'], true)) . "') ";
@@ -169,9 +168,9 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          $temp = 0;
          foreach ($options['company_id'] as $id) {
             $plugin_company = new PluginManageentitiesCompany();
-            $company = $plugin_company->find("id =" . $id);
-            $company = reset($company);
-             $sons = array();
+            $company        = $plugin_company->find("id =" . $id);
+            $company        = reset($company);
+            $sons           = array();
             if ($company['recursive'] == 1) {
                $sons = getSonsOf('glpi_entities', $company['entity_id']);
             } else {
@@ -182,27 +181,27 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             } else {
                $queryCompany .= "OR `glpi_entities`.`id` IN ('" . implode("','", $sons) . "')";
             }
-            $temp ++;
+            $temp++;
          }
          $queryCompany .= ")";
       } elseif ($preferences['companies_id'] != NULL) {
          $temp = 0;
          foreach (json_decode($preferences['companies_id'], true) as $id) {
-            $sons = array();
+            $sons           = array();
             $plugin_company = new PluginManageentitiesCompany();
-            $company = $plugin_company->find("id =" . $id);
-            $company = reset($company);
+            $company        = $plugin_company->find("id =" . $id);
+            $company        = reset($company);
             if ($company['recursive'] == 1) {
                $sons = getSonsOf('glpi_entities', $company['entity_id']);
             } else {
-                $sons[0] = $company['entity_id'];
+               $sons[0] = $company['entity_id'];
             }
-             if ($temp == 0) {
+            if ($temp == 0) {
                $queryCompany .= "AND (`glpi_entities`.`id` IN ('" . implode("','", $sons) . "')";
             } else {
                $queryCompany .= "OR `glpi_entities`.`id` IN ('" . implode("','", $sons) . "')";
             }
-            $temp ++;
+            $temp++;
          }
          $queryCompany .= ")";
       }
@@ -218,12 +217,12 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                WHERE $condition
                AND `glpi_entities`.`name` IS NOT NULL 
                AND `glpi_entities`.`id` IS NOT NULL
-               ".getEntitiesRestrictRequest("AND", "glpi_entities", 'id', "", true)."
+               " . getEntitiesRestrictRequest("AND", "glpi_entities", 'id', "", true) . "
                ORDER BY `glpi_entities`.`name`";
 
-      $resEntity = $DB->query($queryEntity);
+      $resEntity   = $DB->query($queryEntity);
       $nbTotEntity = ($resEntity ? $DB->numrows($resEntity) : 0);
-      
+
       if ($resEntity && $nbTotEntity > 0) {
          while ($dataEntity = $DB->fetch_array($resEntity)) {
             $queryContract = "SELECT `glpi_contracts`.`id` AS contracts_id,
@@ -238,24 +237,24 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                                      `glpi_plugin_manageentities_contracts`.`date_renewal` AS date_renewal,
                                      `glpi_plugin_manageentities_contracts`.`contract_added` AS contract_added,
                                      `glpi_plugin_manageentities_contracts`.`show_on_global_gantt` AS show_on_global_gantt";
-            if($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR){// Hourly    
+            if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Hourly
                $queryContract .= ", `glpi_plugin_manageentities_contracts`.`contract_type` AS contract_type";
-            }                         
+            }
             $queryContract .= " FROM `glpi_contracts`
                         
                         LEFT JOIN `glpi_plugin_manageentities_contracts`
                            ON (`glpi_contracts`.`id`
                            = `glpi_plugin_manageentities_contracts`.`contracts_id`)
                         
-                        WHERE `glpi_contracts`.`entities_id`='".$dataEntity['entities_id']."'
+                        WHERE `glpi_contracts`.`entities_id`='" . $dataEntity['entities_id'] . "'
                            
                         AND `glpi_contracts`.`is_deleted` != 1 ";
-            
-            if($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR){// Hourly            
+
+            if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Hourly
                $queryContract .= $configHourOrDay;
             }
-                           
-         $queryContract .= "GROUP BY `glpi_contracts`.`id`
+
+            $queryContract .= "GROUP BY `glpi_contracts`.`id`
                         ORDER BY `glpi_plugin_manageentities_contracts`.`date_signature` ASC,
                                  `glpi_contracts`.`name`";
 
@@ -270,10 +269,10 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                                            `glpi_plugin_manageentities_contractdays`.`begin_date` AS begin_date,
                                            `glpi_plugin_manageentities_contractstates`.`is_closed` AS is_closed,
                                            `glpi_plugin_manageentities_contractstates`.`color`";
-               if($config->fields['hourorday'] == PluginManageentitiesConfig::DAY){// Daily    
+               if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {// Daily
                   $queryContractDay .= ", `glpi_plugin_manageentities_contractdays`.`contract_type` AS contract_type";
                }
-                                           
+
                $queryContractDay .= " FROM `glpi_plugin_manageentities_contractdays`
                        
                        LEFT JOIN `glpi_contracts`
@@ -290,40 +289,40 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                       LEFT JOIN `glpi_entities`
                           ON (`glpi_entities`.`id` = `glpi_plugin_manageentities_contractdays`.`entities_id`)
 
-                       WHERE `glpi_contracts`.`entities_id`='".$dataEntity['entities_id']."'
+                       WHERE `glpi_contracts`.`entities_id`='" . $dataEntity['entities_id'] . "'
                           $beginDateAfter $beginDateBefore $endDateAfter $endDateBefore $contractState $queryBusiness $queryCompany";
-                             
-               if($config->fields['hourorday'] == PluginManageentitiesConfig::DAY){// Daily            
+
+               if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {// Daily
                   $queryContractDay .= $configHourOrDay;
                }
-                             
-               $queryContractDay .= "AND `glpi_plugin_manageentities_contractdays`.`contracts_id` = '".
-                          $dataContract["contracts_id"]."'
+
+               $queryContractDay .= "AND `glpi_plugin_manageentities_contractdays`.`contracts_id` = '" .
+                                    $dataContract["contracts_id"] . "'
                              
                        GROUP BY `glpi_plugin_manageentities_contractdays`.`id`
                        ORDER BY `glpi_plugin_manageentities_contractdays`.`end_date` ASC";
 
                $requestContractDay = $DB->query($queryContractDay);
-               $nbContractDay = ($requestContractDay ? $DB->numrows($requestContractDay) : 0);
+               $nbContractDay      = ($requestContractDay ? $DB->numrows($requestContractDay) : 0);
 
                if ($requestContractDay && $nbContractDay > 0) {
-                  $nbContratByEntities++;  
+                  $nbContratByEntities++;
                   $contract_reste = 0;
                   $name_contract  = "";
-                  
+
                   if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
                      $link_contract = Toolbox::getItemTypeFormURL("Contract");
-                     $name_contract.= "<a href='".$link_contract."?id=".$dataContract["contracts_id"]."'>";
+                     $name_contract .= "<a href='" . $link_contract . "?id=" . $dataContract["contracts_id"] . "'>";
                   }
                   if ($dataContract["name"] == NULL) {
-                     $name = "(".$dataContract["contracts_id"].")";
+                     $name = "(" . $dataContract["contracts_id"] . ")";
                   } else {
                      $name = $dataContract["name"];
                   }
                   if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
-                     $name_contract.=$name."</a>";
+                     $name_contract .= $name . "</a>";
                   }
-                  
+
                   $list[$num]['entities_name']        = $dataEntity['entities_name'];
                   $list[$num]['entities_id']          = $dataEntity['entities_id'];
                   $list[$num]['contract_name']        = $name_contract;
@@ -338,27 +337,27 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   $list[$num]['duration']             = $dataContract['duration'];
                   $list[$num]['contracts_id']         = $dataContract['contracts_id'];
                   $list[$num]['show_on_global_gantt'] = $dataContract['show_on_global_gantt'];
-                  
+
                   for ($i = 0; $dataContractDay = $DB->fetch_assoc($requestContractDay); $i++) {
                      $name_period = "";
-                     if($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR){// Daily    
-                        $dataContractDay["contract_type"]     = $dataContract["contract_type"];
+                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Daily
+                        $dataContractDay["contract_type"] = $dataContract["contract_type"];
                      }
-                     
+
                      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
                         $link_period = Toolbox::getItemTypeFormURL("PluginManageentitiesContractDay");
-                        $name_period = "<a class='ganttWhite' href='".$link_period."?id=".$dataContractDay["contractdays_id"]."&showFromPlugin=1'>";
+                        $name_period = "<a class='ganttWhite' href='" . $link_period . "?id=" . $dataContractDay["contractdays_id"] . "&showFromPlugin=1'>";
                      } else {
                         $name_period = $dataContractDay["name_contractdays"];
                      }
 
                      if ($dataContractDay["name_contractdays"] == NULL) {
-                        $nameperiod = "(".$dataContractDay["contractdays_id"].")";
+                        $nameperiod = "(" . $dataContractDay["contractdays_id"] . ")";
                      } else {
                         $nameperiod = $dataContractDay["name_contractdays"];
                      }
                      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
-                        $name_period.=$nameperiod."</a>";
+                        $name_period .= $nameperiod . "</a>";
                      }
 
                      // We get all cri details
@@ -367,18 +366,18 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      $dataContractDay['contracts_id']      = $dataContract['contracts_id'];
                      $dataContractDay['entities_id']       = $dataContract['entities_id'];
                      $dataContractDay['contractdays_id']   = $dataContractDay["contractdays_id"];
-                     
-                     $resultCriDetail = PluginManageentitiesCriDetail::getCriDetailData($dataContractDay,array("contract_type_id" => $dataContractDay["contract_type"]));
+
+                     $resultCriDetail = PluginManageentitiesCriDetail::getCriDetailData($dataContractDay, array("contract_type_id" => $dataContractDay["contract_type"]));
 
                      $tot_amount = 0;
                      $forfait    = $resultCriDetail['resultOther']['forfait'];
                      $depass     = 0;
                      $conso      = 0;
-                     
-                     foreach($resultCriDetail['result'] as $dataCriDetail){
+
+                     foreach ($resultCriDetail['result'] as $dataCriDetail) {
                         $conso      += $dataCriDetail['conso'];
                         $tot_amount += $dataCriDetail['conso_amount'];
-                        
+
                         $pricecri[$dataCriDetail['plugin_manageentities_critypes_id']] = $dataCriDetail['pricecri'];
                      }
 
@@ -386,18 +385,18 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      $reste = ($dataContractDay["nbday"] + $dataContractDay["report"]) - $conso;
                      if ($reste < 0) {
                         $depass = abs($reste);
-                        $reste = 0;
+                        $reste  = 0;
                      }
 
                      //Rest amount
                      $reste_montant = $resultCriDetail['resultOther']['reste_montant'];
-                     
+
                      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'
-                             && $dataContractDay["contract_type"] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
+                         && $dataContractDay["contract_type"] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
                         $credit = PluginManageentitiesContract::getContractType($dataContractDay["contract_type"]);
-                        
+
                      } else {
-                        $credit      = $dataContractDay['nbday'] + $dataContractDay['report'];
+                        $credit     = $dataContractDay['nbday'] + $dataContractDay['report'];
                         $tot_credit += $credit;
                         $tot_reste  += $resultCriDetail['resultOther']['reste'];
                         $tot_depass += $resultCriDetail['resultOther']['depass'];
@@ -411,53 +410,52 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      $contract_reste_montant += $reste_montant;
 
                      $and = "";
-                     
+
                      if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) {
-                        
-                        if (!empty($dataContractDay['begin_date'])) 
-                           $and.= " AND `glpi_tickets`.`date` >= '".$dataContractDay['begin_date']."' ";
-                        
-                        if (!empty($dataContractDay['end_date'])) 
-                           $and.= " AND `glpi_tickets`.`date` <= ADDDATE('".$dataContractDay['end_date']."', INTERVAL 1 DAY) ";              
-                        
+
+                        if (!empty($dataContractDay['begin_date']))
+                           $and .= " AND `glpi_tickets`.`date` >= '" . $dataContractDay['begin_date'] . "' ";
+
+                        if (!empty($dataContractDay['end_date']))
+                           $and .= " AND `glpi_tickets`.`date` <= ADDDATE('" . $dataContractDay['end_date'] . "', INTERVAL 1 DAY) ";
+
                         $queryTicket = "SELECT `glpi_tickets`.`date`
                                FROM `glpi_tickets`
-                               WHERE `entities_id` = '".$dataEntity['entities_id']."'
+                               WHERE `entities_id` = '" . $dataEntity['entities_id'] . "'
                                $and 
                                AND `glpi_tickets`.`is_deleted` = 0 
                                ORDER BY `date` DESC
                                LIMIT 1";
-                        
+
                      } else {
-                        if (!empty($dataContractDay['begin_date'])) 
-                           $and.= " AND `glpi_plugin_manageentities_cridetails`.`date` >= '".$dataContractDay['begin_date']."' ";
-                        
-                        if (!empty($dataContractDay['end_date'])) 
-                           $and.= " AND `glpi_plugin_manageentities_cridetails`.`date` <= ADDDATE('".$dataContractDay['end_date']."', INTERVAL 1 DAY) ";  
-                        
+                        if (!empty($dataContractDay['begin_date']))
+                           $and .= " AND `glpi_plugin_manageentities_cridetails`.`date` >= '" . $dataContractDay['begin_date'] . "' ";
+
+                        if (!empty($dataContractDay['end_date']))
+                           $and .= " AND `glpi_plugin_manageentities_cridetails`.`date` <= ADDDATE('" . $dataContractDay['end_date'] . "', INTERVAL 1 DAY) ";
+
                         $queryTicket = "SELECT `glpi_plugin_manageentities_cridetails`.`date`
                                FROM `glpi_plugin_manageentities_cridetails`
                                LEFT JOIN `glpi_tickets`
                                  ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickets`.`id`)
-                               WHERE `glpi_plugin_manageentities_cridetails`.`entities_id` = '".$dataEntity['entities_id']."'
+                               WHERE `glpi_plugin_manageentities_cridetails`.`entities_id` = '" . $dataEntity['entities_id'] . "'
                                $and 
                                AND `glpi_tickets`.`is_deleted` = 0 
                                ORDER BY `glpi_plugin_manageentities_cridetails`.`date` DESC
                                LIMIT 1";
                      }
                      $resTicket = $DB->query($queryTicket);
-                     $date = NULL;
+                     $date      = NULL;
                      for ($j = 0; $dataTicket = $DB->fetch_assoc($resTicket); $j++) {
                         $date = Html::convDate($dataTicket['date']);
                      }
-                     
-                     
-                     
+
+
                      $queryColor = "SELECT `glpi_plugin_manageentities_contractstates`.`color`
                                FROM `glpi_plugin_manageentities_contractstates`
-                               WHERE `glpi_plugin_manageentities_contractstates`.`id` = '".$dataContractDay['contractstates_id']."'";
-                     $color = $DB->result($DB->query($queryColor), 0, "color");
-                     
+                               WHERE `glpi_plugin_manageentities_contractstates`.`id` = '" . $dataContractDay['contractstates_id'] . "'";
+                     $color      = $DB->result($DB->query($queryColor), 0, "color");
+
                      $list[$num]['days'][$i]['contract_is_closed']   = $dataContractDay['is_closed'];
                      $list[$num]['days'][$i]['contractday_name']     = $name_period;
                      $list[$num]['days'][$i]['contractdayname']      = $nameperiod;
@@ -476,16 +474,16 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      $list[$num]['days'][$i]['contractdays_id']      = $dataContractDay["contractdays_id"];
                      $list[$num]['days'][$i]['contract_type']        = $dataContractDay["contract_type"];
                      $list[$num]['days'][$i]['contracts_id']         = $dataContractDay['contracts_id'];
-                     
+
                      $contract_reste  += $resultCriDetail['resultOther']['reste'];
                      $contract_depass += $resultCriDetail['resultOther']['depass'];
                   }
 
-                  
+
                   if ($contract_reste < 0) {
                      $contract_depass = abs($contract_reste);
-                     $contract_reste = 0;
-                  } 
+                     $contract_reste  = 0;
+                  }
 
                   $list[$num]['contract_tot']['contract_credit']        = $contract_credit;
                   $list[$num]['contract_tot']['contract_conso']         = $contract_conso;
@@ -512,7 +510,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             $list['tot']['tot_reste_montant'] = $tot_reste_montant;
          }
       }
-      
+
       return $list;
    }
 
@@ -543,32 +541,32 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
       $contract_states = NULL;
       if (isset($values['contract_states']) && $values['contract_states'] != '0') {
-         foreach($values['contract_states'] as $key => $contract_state){
+         foreach ($values['contract_states'] as $key => $contract_state) {
             $contract_states .= "&amp;contract_states[$key]=$contract_state";
          }
-      }else{
+      } else {
          $contract_states .= "&amp;contract_states=0";
       }
 
       $business_ids = null;
       if (isset($values['business_id']) && $values['business_id'] != '0') {
-         foreach($values['business_id'] as $key => $id){
+         foreach ($values['business_id'] as $key => $id) {
             $business_ids .= "&amp;business_id[$key]=$id";
          }
       }
-      
+
       $company_ids = null;
       if (isset($values['company_id']) && $values['company_id'] != '0') {
-         foreach($values['company_id'] as $key => $id){
+         foreach ($values['company_id'] as $key => $id) {
             $company_ids .= "&amp;company_id[$key]=$id";
          }
       }
-      
-      $parameters = "begin_date_after=".$values['begin_date_after']."&amp;begin_date_before=".
-              $values['begin_date_before']."&amp;end_date_after=".$values['end_date_after'].
-              "&amp;end_date_before=".$values['end_date_before']
-              .$contract_states."&amp;entities_id=".$values['entities_id']."&amp;".$business_ids.$company_ids;
-      
+
+      $parameters = "begin_date_after=" . $values['begin_date_after'] . "&amp;begin_date_before=" .
+                    $values['begin_date_before'] . "&amp;end_date_after=" . $values['end_date_after'] .
+                    "&amp;end_date_before=" . $values['end_date_before']
+                    . $contract_states . "&amp;entities_id=" . $values['entities_id'] . "&amp;" . $business_ids . $company_ids;
+
       // Colspan
       $colspan = '2';
       if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
@@ -589,23 +587,23 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          if ($output_type != Search::HTML_OUTPUT) {
             if ($_SESSION['glpiactiveprofile']['interface'] == 'central')
                echo Search::showHeaderItem($output_type, _n('Client', 'Clients', 1, 'manageentities'), $item_num);
-            
-            echo Search::showHeaderItem($output_type, __('Contract'), $item_num, "", 0, "", "colspan='".$colspan_contract."'");
+
+            echo Search::showHeaderItem($output_type, __('Contract'), $item_num, "", 0, "", "colspan='" . $colspan_contract . "'");
             echo Search::showHeaderItem($output_type, '', $item_num);
             echo Search::showHeaderItem($output_type, '', $item_num);
-            echo Search::showHeaderItem($output_type, _x('phone', 'Number'), $item_num, "", 0, "", "colspan='".$colspan."'");
+            echo Search::showHeaderItem($output_type, _x('phone', 'Number'), $item_num, "", 0, "", "colspan='" . $colspan . "'");
             echo Search::showHeaderItem($output_type, '', $item_num);
          }
-         
+
          if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
             if ($output_type != Search::HTML_OUTPUT) {
-               if($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showHeaderItem($output_type, __('Contract present', 'manageentities'), $item_num, "", 0, "", "colspan='2'");
+               if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showHeaderItem($output_type, __('Contract present', 'manageentities'), $item_num, "", 0, "", "colspan='2'");
                else echo Search::showHeaderItem($output_type, '', $item_num);
                echo Search::showHeaderItem($output_type, '', $item_num);
                echo Search::showHeaderItem($output_type, __('Date of signature', 'manageentities'), $item_num, "", 0, "", "colspan='2'");
                echo Search::showHeaderItem($output_type, '', $item_num);
                echo Search::showHeaderItem($output_type, __('Date of renewal', 'manageentities'), $item_num, "", 0, "", "colspan='2'");
-//               echo Search::showHeaderItem($output_type, '', $item_num);
+               //               echo Search::showHeaderItem($output_type, '', $item_num);
                if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
                   echo Search::showHeaderItem($output_type, __('Mode of management', 'manageentities'), $item_num);
                   echo Search::showHeaderItem($output_type, __('Type of service contract', 'manageentities'), $item_num);
@@ -617,84 +615,84 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo Search::showEndHeader($output_type);
 
          $entity_id = 0;
-         $first = true;
+         $first     = true;
 
          foreach ($list as $v => $contract) {
-            if($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) $colspanNoprice = "colspan='2'";else $colspanNoprice = "";
+            if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) $colspanNoprice = "colspan='2'"; else $colspanNoprice = "";
 
             if (is_numeric($v)) {
                $first = false;// First entity ?
-               
+
                // Display Entity
                if ($output_type == Search::HTML_OUTPUT && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
                   if ($entity_id != $contract['entities_id']) {
                      $row_num++;
                      $item_num = 0;
-            
+
                      echo Search::showNewLine($output_type);
-                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) $colspanContract = "colspan = '13'";else $colspanContract = "colspan = '12'";
-                     if(empty($contract['contract_name'])) $contract['contract_name'] = $contract['name'];
-                     echo Search::showHeaderItem($output_type, '<b>'._n('Client', 'Clients', 1, 'manageentities').' : </b>'.$contract['entities_name'], $item_num, '', 0, '', $colspanContract." style='".PluginManageentitiesMonthly::$style[0]."' ");
+                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) $colspanContract = "colspan = '13'"; else $colspanContract = "colspan = '12'";
+                     if (empty($contract['contract_name'])) $contract['contract_name'] = $contract['name'];
+                     echo Search::showHeaderItem($output_type, '<b>' . _n('Client', 'Clients', 1, 'manageentities') . ' : </b>' . $contract['entities_name'], $item_num, '', 0, '', $colspanContract . " style='" . PluginManageentitiesMonthly::$style[0] . "' ");
                      echo Search::showEndLine($output_type);
                   }
                }
-               
+
                $row_num++;
                $item_num = 0;
-               
+
                echo Search::showNewLine($output_type);
                // Display Entity
                if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
                   if ($entity_id != $contract['entities_id']) {
-                     if($output_type != Search::HTML_OUTPUT) echo Search::showItem($output_type, $contract['entities_name'], $item_num, $row_num);
+                     if ($output_type != Search::HTML_OUTPUT) echo Search::showItem($output_type, $contract['entities_name'], $item_num, $row_num);
                   } else {
-                     if($output_type != Search::HTML_OUTPUT) echo Search::showItem($output_type, '', $item_num, $row_num);
+                     if ($output_type != Search::HTML_OUTPUT) echo Search::showItem($output_type, '', $item_num, $row_num);
                   }
                   $entity_id = $contract['entities_id'];
                }
-               
+
                // Display Contract title
-               if(empty($contract['contract_name'])) $contract['contract_name'] = $contract['name'];
+               if (empty($contract['contract_name'])) $contract['contract_name'] = $contract['name'];
                if ($output_type != Search::HTML_OUTPUT) {
                   echo Search::showItem($output_type, $contract['contract_name'], $item_num, $row_num);
                   echo Search::showItem($output_type, '', $item_num, $row_num);
                   echo Search::showItem($output_type, '', $item_num, $row_num);
                } else {
                   $colspanContractName = "colspan='4'";
-                  
-                  echo Search::showItem($output_type, '<b>'.__('Contract').' : </b>'.$contract['contract_name'], $item_num, $row_num, $colspanContractName);
+
+                  echo Search::showItem($output_type, '<b>' . __('Contract') . ' : </b>' . $contract['contract_name'], $item_num, $row_num, $colspanContractName);
                }
-               
+
                // Display contract Num
                if ($output_type != Search::HTML_OUTPUT) {
-                  echo Search::showItem($output_type, $contract['contract_num'], $item_num, $row_num, "colspan='".$colspan."'");
+                  echo Search::showItem($output_type, $contract['contract_num'], $item_num, $row_num, "colspan='" . $colspan . "'");
                   echo Search::showItem($output_type, '', $item_num, $row_num);
                } else {
-                  echo Search::showItem($output_type, '<b>'._x('phone', 'Number').' : </b>'.$contract['contract_num'], $item_num, $row_num, "colspan='".$colspan."'");
+                  echo Search::showItem($output_type, '<b>' . _x('phone', 'Number') . ' : </b>' . $contract['contract_num'], $item_num, $row_num, "colspan='" . $colspan . "'");
                }
 
                if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
                   // Display contract added
                   if ($output_type != Search::HTML_OUTPUT) {
-                     if($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showItem($output_type, $contract['contract_added'], $item_num, $row_num, "colspan='2'");
+                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showItem($output_type, $contract['contract_added'], $item_num, $row_num, "colspan='2'");
                      else echo Search::showItem($output_type, '', $item_num, $row_num);
                      echo Search::showItem($output_type, '', $item_num, $row_num);
                   } else {
-                     if($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showItem($output_type, '<b>'.__('Contract present', 'manageentities').' : </b>'.$contract['contract_added'], $item_num, $row_num, "colspan='2'");
+                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showItem($output_type, '<b>' . __('Contract present', 'manageentities') . ' : </b>' . $contract['contract_added'], $item_num, $row_num, "colspan='2'");
                   }
                   // Display Signature
                   if ($output_type != Search::HTML_OUTPUT) {
                      echo Search::showItem($output_type, $contract['date_signature'], $item_num, $row_num, "colspan='2'");
                      echo Search::showItem($output_type, '', $item_num, $row_num);
                   } else {
-                     echo Search::showItem($output_type, '<b>'.__('Date of signature', 'manageentities').' : </b>'.$contract['date_signature'], $item_num, $row_num, "colspan='2'");
+                     echo Search::showItem($output_type, '<b>' . __('Date of signature', 'manageentities') . ' : </b>' . $contract['date_signature'], $item_num, $row_num, "colspan='2'");
                   }
                   // Display reconduction
                   if ($output_type != Search::HTML_OUTPUT) {
                      echo Search::showItem($output_type, $contract['date_renewal'], $item_num, $row_num, "colspan='2'");
-//                     echo Search::showItem($output_type, '', $item_num, $row_num);
+                     //                     echo Search::showItem($output_type, '', $item_num, $row_num);
                   } else {
-                     echo Search::showItem($output_type, '<b>'.__('Date of renewal', 'manageentities').' : </b>'.$contract['date_renewal'], $item_num, $row_num, "colspan='2'");
+                     echo Search::showItem($output_type, '<b>' . __('Date of renewal', 'manageentities') . ' : </b>' . $contract['date_renewal'], $item_num, $row_num, "colspan='2'");
                   }
                   // Display contract Type and contract mode
                   if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
@@ -702,8 +700,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                         echo Search::showItem($output_type, $contract['management'], $item_num, $row_num);
                         echo Search::showItem($output_type, PluginManageentitiesContract::getContractType($contract['contract_type']), $item_num, $row_num);
                      } else {
-                        echo Search::showItem($output_type, '<b>'.__('Mode of management', 'manageentities').' : </b>'.$contract['management'], $item_num, $row_num);
-                        echo Search::showItem($output_type, '<b>'.__('Type of service contract', 'manageentities').' : </b>'.PluginManageentitiesContract::getContractType($contract['contract_type']), $item_num, $row_num);
+                        echo Search::showItem($output_type, '<b>' . __('Mode of management', 'manageentities') . ' : </b>' . $contract['management'], $item_num, $row_num);
+                        echo Search::showItem($output_type, '<b>' . __('Type of service contract', 'manageentities') . ' : </b>' . PluginManageentitiesContract::getContractType($contract['contract_type']), $item_num, $row_num);
                      }
                   }
                }
@@ -712,55 +710,55 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                // Contract details headers
                $row_num++;
                $item_num = 0;
-               
+
                echo Search::showNewLine($output_type);
                if ($_SESSION['glpiactiveprofile']['interface'] == 'central' && $output_type != Search::HTML_OUTPUT) {
-                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                }
-               echo Search::showHeaderItem($output_type, __('Period of contract', 'manageentities'), $item_num, '', 0, '', " $colspanNoprice style='".PluginManageentitiesMonthly::$style[1]."'");
-               
+               echo Search::showHeaderItem($output_type, __('Period of contract', 'manageentities'), $item_num, '', 0, '', " $colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
+
                if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR)// Coslpan if type = Hourly
-                  echo Search::showHeaderItem($output_type, __('State of contract', 'manageentities'), $item_num, '', 0, '', "colspan='2' style='".PluginManageentitiesMonthly::$style[1]."'");
-               else 
-                  echo Search::showHeaderItem($output_type, __('State of contract', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-               
+                  echo Search::showHeaderItem($output_type, __('State of contract', 'manageentities'), $item_num, '', 0, '', "colspan='2' style='" . PluginManageentitiesMonthly::$style[1] . "'");
+               else
+                  echo Search::showHeaderItem($output_type, __('State of contract', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+
                if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY)
-                  echo Search::showHeaderItem($output_type, __('Type of contract', 'manageentities'), $item_num, '', 0, '', "colspan='2' style='".PluginManageentitiesMonthly::$style[1]."'");
-               
+                  echo Search::showHeaderItem($output_type, __('Type of contract', 'manageentities'), $item_num, '', 0, '', "colspan='2' style='" . PluginManageentitiesMonthly::$style[1] . "'");
+
                if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR)// Coslpan if type = Hourly
                   echo Search::showHeaderItem($output_type, __('End date'), $item_num, '', 0, '', "colspan='2'");
-               else 
+               else
                   echo Search::showHeaderItem($output_type, __('End date'), $item_num, '');
-               
-               echo Search::showHeaderItem($output_type, __('Initial credit', 'manageentities'), $item_num, '', 0, '', "$colspanNoprice style='".PluginManageentitiesMonthly::$style[1]."'");
-               echo Search::showHeaderItem($output_type, __('Total consummated', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+
+               echo Search::showHeaderItem($output_type, __('Initial credit', 'manageentities'), $item_num, '', 0, '', "$colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
+               echo Search::showHeaderItem($output_type, __('Total consummated', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'
-                       && ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $contract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
-                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                   && ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $contract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
+                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                } else {
-                  echo Search::showHeaderItem($output_type, __('Total remaining', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                  echo Search::showHeaderItem($output_type, __('Total remaining', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                   if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
-                     echo Search::showHeaderItem($output_type, __('Total exceeding', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                     echo Search::showHeaderItem($output_type, __('Total exceeding', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                      if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
-                        echo Search::showHeaderItem($output_type, __('Last visit', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-//                        if($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showItem($output_type, __('Applied daily rate', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-//                        else echo Search::showHeaderItem($output_type, __('Applied hourly rate', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                        echo Search::showHeaderItem($output_type, __('Guaranteed package', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                        echo Search::showHeaderItem($output_type, __('Remaining total (amount)', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                        echo Search::showHeaderItem($output_type, __('Last visit', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                        //                        if($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showItem($output_type, __('Applied daily rate', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                        //                        else echo Search::showHeaderItem($output_type, __('Applied hourly rate', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                        echo Search::showHeaderItem($output_type, __('Guaranteed package', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                        echo Search::showHeaderItem($output_type, __('Remaining total (amount)', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                      } else {
-                        echo Search::showHeaderItem($output_type, __('Last visit', 'manageentities'), $item_num, '', 0, '', " colspan='2' style='".PluginManageentitiesMonthly::$style[1]."'");
-                        if($output_type != Search::HTML_OUTPUT){
-//                           echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                           echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                           echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                        echo Search::showHeaderItem($output_type, __('Last visit', 'manageentities'), $item_num, '', 0, '', " colspan='2' style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                        if ($output_type != Search::HTML_OUTPUT) {
+                           //                           echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                           echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                           echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                         }
                      }
                   }
                }
-               if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR  && $output_type != Search::HTML_OUTPUT) {
-                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+               if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $output_type != Search::HTML_OUTPUT) {
+                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                }
                echo Search::showEndLine($output_type);
 
@@ -772,65 +770,65 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   if ($_SESSION['glpiactiveprofile']['interface'] == 'central' && $output_type != Search::HTML_OUTPUT)
                      echo Search::showItem($output_type, '', $item_num, $row_num);
                   echo Search::showItem($output_type, $day['contractday_name'], $item_num, $row_num, " $colspanNoprice ");
-                  
+
                   if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR)// Coslpan if type = Hourly
                      echo Search::showItem($output_type, $day['contractstates'], $item_num, $row_num, "colspan='2' ");
                   else
                      echo Search::showItem($output_type, $day['contractstates'], $item_num, $row_num, "");
-                  
+
                   if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY)
                      echo Search::showItem($output_type, PluginManageentitiesContract::getContractType($day['contract_type']), $item_num, $row_num, "colspan='2' ");
-                  
+
                   if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR)// Coslpan if type = Hourly
                      echo Search::showItem($output_type, $day['end_date'], $item_num, $row_num, "colspan='2' ");
-                  else 
-                     echo Search::showItem($output_type, $day['end_date'], $item_num, $row_num , "");
-                  
-                  if (($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' && 
-                     ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $day['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT )) ||
-                     ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $day['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
+                  else
+                     echo Search::showItem($output_type, $day['end_date'], $item_num, $row_num, "");
+
+                  if (($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' &&
+                       ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $day['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT)) ||
+                      ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $day['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
                      echo Search::showItem($output_type, Dropdown::EMPTY_VALUE, $item_num, $row_num, "$colspanNoprice ");
                   } else {
                      echo Search::showItem($output_type, Html::formatNumber($day['credit'], 0, 2), $item_num, $row_num, "$colspanNoprice ");
                   }
-                  
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central' ||  
-                     ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT )){
-                     if($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' && 
-                        ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED && $day['conso'] > $day['credit'])){
+
+                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central' ||
+                      ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT)) {
+                     if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' &&
+                         ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED && $day['conso'] > $day['credit'])) {
                         echo Search::showItem($output_type, Html::formatNumber($day['credit'], 0, 2), $item_num, $row_num, "");
                      } else {
                         echo Search::showItem($output_type, Html::formatNumber($day['conso'], 0, 2), $item_num, $row_num, "");
                      }
-                  }else{
-                     echo  Search::showItem($output_type, Dropdown::EMPTY_VALUE, $item_num, $row_num, "");
+                  } else {
+                     echo Search::showItem($output_type, Dropdown::EMPTY_VALUE, $item_num, $row_num, "");
                   }
                   if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'
-                          && ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $contract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
+                      && ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $contract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
                      echo Search::showItem($output_type, '', $item_num, $row_num, "");
                      echo Search::showItem($output_type, '', $item_num, $row_num, "");
                   } else {
-                     if ($_SESSION['glpiactiveprofile']['interface'] == 'central' || $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT){
+                     if ($_SESSION['glpiactiveprofile']['interface'] == 'central' || $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT) {
                         echo Search::showItem($output_type, Html::formatNumber($day['reste'], 0, 2), $item_num, $row_num, "");
-                     }else  {
-                        echo  Search::showItem($output_type, Dropdown::EMPTY_VALUE, $item_num, $row_num, "");
+                     } else {
+                        echo Search::showItem($output_type, Dropdown::EMPTY_VALUE, $item_num, $row_num, "");
                      }
-                    if ($_SESSION['glpiactiveprofile']['interface'] == 'central' ){
+                     if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
                         echo Search::showItem($output_type, Html::formatNumber($day['depass'], 0, 2), $item_num, $row_num, "");
                      }
                   }
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {   
+                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
                      if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                         echo Search::showItem($output_type, $day['last_visit'], $item_num, $row_num, "");
-//                        echo Search::showItem($output_type, Html::formatNumber($day['price'], 0, 2), $item_num, $row_num, "");
+                        //                        echo Search::showItem($output_type, Html::formatNumber($day['price'], 0, 2), $item_num, $row_num, "");
                         echo Search::showItem($output_type, $day['forfait'], $item_num, $row_num, "");
                         echo Search::showItem($output_type, $day['reste_montant'], $item_num, $row_num, "");
                      } else {
-                        echo Search::showItem($output_type, $day['last_visit'], $item_num, $row_num,"colspan='2' ");
-                        if($output_type != Search::HTML_OUTPUT){
-//                           echo Search::showItem($output_type, '', $item_num, $row_num, "");
+                        echo Search::showItem($output_type, $day['last_visit'], $item_num, $row_num, "colspan='2' ");
+                        if ($output_type != Search::HTML_OUTPUT) {
+                           //                           echo Search::showItem($output_type, '', $item_num, $row_num, "");
                            echo Search::showItem($output_type, '', $item_num, $row_num, "");
-                           echo Search::showItem($output_type, '', $item_num, $row_num); 
+                           echo Search::showItem($output_type, '', $item_num, $row_num);
                         }
                      }
                      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $output_type != Search::HTML_OUTPUT) {
@@ -846,50 +844,50 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   $item_num = 0;
 
                   echo Search::showNewLine($output_type);
-                  if($output_type != Search::HTML_OUTPUT) 
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                  
-                  echo Search::showHeaderItem($output_type, '', $item_num, $row_num, 0, '', " $colspanNoprice style='".PluginManageentitiesMonthly::$style[1]."'");
+                  if ($output_type != Search::HTML_OUTPUT)
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+
+                  echo Search::showHeaderItem($output_type, '', $item_num, $row_num, 0, '', " $colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
 
                   echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "colspan='2' style='" . PluginManageentitiesMonthly::$style[1] . "'");
 
                   echo Search::showHeaderItem($output_type, __('Subtotal', 'manageentities'), $item_num, '', 0, '', "colspan='2' style='" . PluginManageentitiesMonthly::$style[1] . "'");
 
-                  echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_credit'], 0,2), $item_num, '', 0, '', "$colspanNoprice style='".PluginManageentitiesMonthly::$style[1]."'");
-                  echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_conso'], 0,2), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                  echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_reste'], 0,2), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                  echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_depass'], 0,2), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                  echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_credit'], 0, 2), $item_num, '', 0, '', "$colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_conso'], 0, 2), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_reste'], 0, 2), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_depass'], 0, 2), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
 
                   if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
 
-                     echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_forfait'], 0,2), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                     echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_reste_montant'], 0, 2), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                     echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_forfait'], 0, 2), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                     echo Search::showHeaderItem($output_type, Html::formatNumber($contract['contract_tot']['contract_reste_montant'], 0, 2), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                   } else {
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', " $colspanNoprice style='".PluginManageentitiesMonthly::$style[1]."'");
-                     if($output_type != Search::HTML_OUTPUT){
-                        echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                        echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', " $colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                     if ($output_type != Search::HTML_OUTPUT) {
+                        echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                        echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                      }
                   }
                   if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $output_type != Search::HTML_OUTPUT) {
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                   }
                   echo Search::showEndLine($output_type);
                }
-            } else {  
+            } else {
                //line total
                if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
 
                   if ($output_type == Search::HTML_OUTPUT) {
                      $row_num++;
                      $item_num = 0;
-                     
-                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) $colspanTotal = "colspan = '14'";else $colspanTotal = "colspan = '13'";
+
+                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) $colspanTotal = "colspan = '14'"; else $colspanTotal = "colspan = '13'";
 
                      echo Search::showNewLine($output_type);
-                     echo Search::showItem($output_type, '', $item_num, $row_num, "$colspanTotal style='".PluginManageentitiesMonthly::$style[0]."'");
+                     echo Search::showItem($output_type, '', $item_num, $row_num, "$colspanTotal style='" . PluginManageentitiesMonthly::$style[0] . "'");
                      echo Search::showEndLine($output_type);
                   }
 
@@ -897,59 +895,59 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   $item_num = 0;
 
                   echo Search::showNewLine($output_type);
-                  if($output_type != Search::HTML_OUTPUT) echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', " $colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  if ($output_type != Search::HTML_OUTPUT) echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', " $colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
 
                   echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "colspan ='2' style='" . PluginManageentitiesMonthly::$style[1] . "'");
 
                   echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "colspan ='2' style='" . PluginManageentitiesMonthly::$style[1] . "'");
 
                   echo Search::showHeaderItem($output_type, __('Total initial credit', 'manageentities'), $item_num, '', 0, '', "$colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
-                  echo Search::showHeaderItem($output_type, __('Total consummated', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                  echo Search::showHeaderItem($output_type, __('Total remaining', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                  echo Search::showHeaderItem($output_type, __('Total exceeding', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                  
+                  echo Search::showHeaderItem($output_type, __('Total consummated', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  echo Search::showHeaderItem($output_type, __('Total remaining', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                  echo Search::showHeaderItem($output_type, __('Total exceeding', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+
                   if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                     echo Search::showHeaderItem($output_type, __('Total Guaranteed package', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                     echo Search::showHeaderItem($output_type, __('Remaining total (amount)', 'manageentities'), $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                     echo Search::showHeaderItem($output_type, __('Total Guaranteed package', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                     echo Search::showHeaderItem($output_type, __('Remaining total (amount)', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                   } else {
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', " $colspanNoprice style='".PluginManageentitiesMonthly::$style[1]."'");
-                     if($output_type != Search::HTML_OUTPUT){
-                        echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                        echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', " $colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                     if ($output_type != Search::HTML_OUTPUT) {
+                        echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                        echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                      }
                   }
                   if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $output_type != Search::HTML_OUTPUT) {
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
-                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='".PluginManageentitiesMonthly::$style[1]."'");
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
+                     echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                   }
                   echo Search::showEndLine($output_type);
 
                   $row_num++;
                   $item_num = 0;
-                  
-                  echo Search::showNewLine($output_type);
-                  if($output_type != Search::HTML_OUTPUT) echo Search::showItem($output_type, '', $item_num, $row_num);
-                  echo Search::showItem($output_type, '', $item_num, $row_num, " $colspanNoprice "); 
-                 
-                  echo Search::showItem($output_type, '', $item_num, $row_num,"colspan='2'");
 
-                  echo Search::showItem($output_type, '', $item_num, $row_num,"colspan='2' ");
-                  
-                  echo Search::showItem($output_type, Html::formatNumber($contract['tot_credit'], 0,2), $item_num, $row_num, "$colspanNoprice ");
-                  echo Search::showItem($output_type, Html::formatNumber($contract['tot_conso'], 0,2), $item_num, $row_num, "");
-                  echo Search::showItem($output_type, Html::formatNumber($contract['tot_reste'], 0,2), $item_num, $row_num, "");
-                  echo Search::showItem($output_type, Html::formatNumber($contract['tot_depass'], 0,2), $item_num, $row_num, "");
-                  
+                  echo Search::showNewLine($output_type);
+                  if ($output_type != Search::HTML_OUTPUT) echo Search::showItem($output_type, '', $item_num, $row_num);
+                  echo Search::showItem($output_type, '', $item_num, $row_num, " $colspanNoprice ");
+
+                  echo Search::showItem($output_type, '', $item_num, $row_num, "colspan='2'");
+
+                  echo Search::showItem($output_type, '', $item_num, $row_num, "colspan='2' ");
+
+                  echo Search::showItem($output_type, Html::formatNumber($contract['tot_credit'], 0, 2), $item_num, $row_num, "$colspanNoprice ");
+                  echo Search::showItem($output_type, Html::formatNumber($contract['tot_conso'], 0, 2), $item_num, $row_num, "");
+                  echo Search::showItem($output_type, Html::formatNumber($contract['tot_reste'], 0, 2), $item_num, $row_num, "");
+                  echo Search::showItem($output_type, Html::formatNumber($contract['tot_depass'], 0, 2), $item_num, $row_num, "");
+
                   echo Search::showItem($output_type, '', $item_num, $row_num, " ");
 
                   if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
-                     echo Search::showItem($output_type, Html::formatNumber($contract['tot_forfait'], 0,2), $item_num, $row_num, "");
-                     echo Search::showItem($output_type, Html::formatNumber($contract['tot_reste_montant'], 0,2), $item_num, $row_num, "");
+                     echo Search::showItem($output_type, Html::formatNumber($contract['tot_forfait'], 0, 2), $item_num, $row_num, "");
+                     echo Search::showItem($output_type, Html::formatNumber($contract['tot_reste_montant'], 0, 2), $item_num, $row_num, "");
                   } else {
                      echo Search::showItem($output_type, '', $item_num, $row_num, " $colspanNoprice ");
-                     if($output_type != Search::HTML_OUTPUT){
+                     if ($output_type != Search::HTML_OUTPUT) {
                         echo Search::showItem($output_type, '', $item_num, $row_num, "");
                      }
                   }
@@ -965,13 +963,13 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             Html::closeForm();
          }
          // Display footer
-         echo Search::showFooter($output_type, __('Entities portal', 'manageentities').  " - ".__('General follow-up', 'manageentities'));
+         echo Search::showFooter($output_type, __('Entities portal', 'manageentities') . " - " . __('General follow-up', 'manageentities'));
       } else {
          echo Search::showError($output_type);
       }
    }
-   
-   
+
+
    /**
     * Print generic new line
     *
@@ -982,8 +980,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
     *
     * @return string to display
     **/
-   static function showNewLine($type, $odd=false, $is_deleted=false,$color="") {
-   
+   static function showNewLine($type, $odd = false, $is_deleted = false, $color = "") {
+
       $out = "";
       switch ($type) {
          case Search::PDF_OUTPUT_LANDSCAPE : //pdf
@@ -1014,20 +1012,20 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       }
       return $out;
    }
-   
-   static function showLegendary(){
+
+   static function showLegendary() {
       $contractstate = new PluginManageentitiesContractState();
-      $contracts = $contractstate->find();
-      $nb = count($contracts);
+      $contracts     = $contractstate->find();
+      $nb            = count($contracts);
       echo "<div align='center'>";
-      echo "<table class='tab_cadre'><tr><th colspan='20'>".__('Caption')."</th></tr>";
+      echo "<table class='tab_cadre'><tr><th colspan='20'>" . __('Caption') . "</th></tr>";
       $i = 0;
-      foreach ($contracts as $contract){
-         if($i == 10){
+      foreach ($contracts as $contract) {
+         if ($i == 10) {
             echo "</tr><tr>";
          }
-         echo "<td width=10px style='background-color:".$contract['color']."'> </td>";
-         echo "<td> ".$contract['name']."</td>";
+         echo "<td width=10px style='background-color:" . $contract['color'] . "'> </td>";
+         echo "<td> " . $contract['name'] . "</td>";
          $i = $i + 1;
       }
       echo "</tr></table></br>";
@@ -1049,10 +1047,10 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          if ((isset($_SESSION['glpiactive_entity_recursive'])
-                 && $_SESSION['glpiactive_entity_recursive'])
-                 || (isset($_SESSION['glpishowallentities'])
+              && $_SESSION['glpiactive_entity_recursive'])
+             || (isset($_SESSION['glpishowallentities'])
                  && $_SESSION['glpishowallentities'])) {
-            echo "<td>".__('Entity')."</td>";
+            echo "<td>" . __('Entity') . "</td>";
             echo "<td>";
             Dropdown::show('Entity', array('value' => $options['entities_id']));
             echo "</td>";
@@ -1067,33 +1065,33 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          $config_states = reset($config_states);
 
          $plugin_pref = new PluginManageentitiesPreference();
-         $preferences = $plugin_pref->find("users_id = ". Session::getLoginUserID() );
+         $preferences = $plugin_pref->find("users_id = " . Session::getLoginUserID());
          $preferences = reset($preferences);
 
-         $contractstate = new PluginManageentitiesContractState();
+         $contractstate  = new PluginManageentitiesContractState();
          $contractstates = $contractstate->find();
-         $states = array();
+         $states         = array();
          foreach ($contractstates as $key => $val) {
             $states[$key] = $val['name'];
          }
          echo "<td class='left' colspan='$colspan'>" . _n('State of contract', 'States of contract', 2, 'manageentities') . "</td>";
          echo "<td class='left' colspan='$colspan'>";
-         
+
          if (isset($options['contract_states']) && $options['contract_states'] != '0') {
             Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => $options['contract_states']));
-         }elseif ($preferences['contract_states'] != NULL) {
+         } elseif ($preferences['contract_states'] != NULL) {
             $options['contract_states'] = json_decode($preferences['contract_states'], true);
             Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => $options['contract_states']));
-         }elseif ($config_states['contract_states'] != NULL) {
+         } elseif ($config_states['contract_states'] != NULL) {
             $options['contract_states'] = json_decode($config_states['contract_states'], true);
             Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => $options['contract_states']));
-         }else{
+         } else {
             Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'value' => "contract_states"));
          }
          echo "</td></tr><tr class='tab_bg_1'>";
-         
-         echo "<td class='left'>".__('Begin date')." ".
-         __('of period of contract', 'manageentities').", ".__('after')."</td>";
+
+         echo "<td class='left'>" . __('Begin date') . " " .
+              __('of period of contract', 'manageentities') . ", " . __('after') . "</td>";
          echo "<td class='left'>";
          Html::showDateField("begin_date_after", ['value' => $options['begin_date_after']]);
          echo "</td>";
@@ -1117,14 +1115,14 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
 
-        
-         $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` as users_id
+
+         $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` AS users_id
                   FROM `glpi_plugin_manageentities_businesscontacts`, `glpi_users`
                   WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
                   GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
 
          $result = $DB->query($query);
-         $users = array();
+         $users  = array();
          while ($data = $DB->fetch_assoc($result)) {
             $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
          }
@@ -1134,22 +1132,22 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo __('Business', 'manageentities');
          echo "</td>";
          echo "<td class='left'>";
-       
+
          if (isset($options['business_id']) && $options['business_id'] != '0') {
             Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'values' => $options['business_id']));
-         }elseif ($preferences['business_id'] != NULL) {
+         } elseif ($preferences['business_id'] != NULL) {
             $options['business_id'] = json_decode($preferences['business_id'], true);
             Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'values' => $options['business_id']));
          } elseif ($config_states['business_id'] != NULL) {
             $options['business_id'] = json_decode($config_states['business_id'], true);
             Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'values' => $options['business_id']));
-         }else{
+         } else {
             Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'value' => 'name'));
          }
 
          $plugin_company = new PluginManageentitiesCompany();
-         $result = $plugin_company->find();
-         
+         $result         = $plugin_company->find();
+
          $company = array();
          foreach ($result as $data) {
             $company[$data['id']] = $data['name'];
@@ -1164,7 +1162,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             Dropdown::showFromArray("company_id", $company, array('multiple' => true, 'width' => 200, 'values' => $options['company_id']));
          } elseif ($preferences['companies_id'] != NULL) {
             $options['company_id'] = json_decode($preferences['companies_id'], true);
-            Dropdown::showFromArray("company_id", $company, array('multiple' => true, 'width' => 200, 'values' =>  $options['company_id']));
+            Dropdown::showFromArray("company_id", $company, array('multiple' => true, 'width' => 200, 'values' => $options['company_id']));
          } else {
             Dropdown::showFromArray("company_id", $company, array('multiple' => true, 'width' => 200, 'value' => 'name'));
          }
@@ -1172,12 +1170,12 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center' colspan='4'>";
-         echo "<input type='submit' name='searchcontract' value='"._sx('button', 'Search')."' class='submit'>";
-         echo "<input type='hidden' name='begin_date' value='".$options['begin_date']."'>";
-         echo "<input type='hidden' name='end_date' value='".$options['end_date']."'>";
+         echo "<input type='submit' name='searchcontract' value='" . _sx('button', 'Search') . "' class='submit'>";
+         echo "<input type='hidden' name='begin_date' value='" . $options['begin_date'] . "'>";
+         echo "<input type='hidden' name='end_date' value='" . $options['end_date'] . "'>";
          echo "</td></tr>";
-         
-         
+
+
          echo "</table></div>";
 
          Html::closeForm();
@@ -1212,35 +1210,35 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
       // Print it
 
-      echo "<form method='GET' action=\"".$CFG_GLPI["root_doc"].
-      "/front/report.dynamic.php\" target='_blank'>\n";
+      echo "<form method='GET' action=\"" . $CFG_GLPI["root_doc"] .
+           "/front/report.dynamic.php\" target='_blank'>\n";
 
       echo "<table class='tab_cadre_pager'>\n";
       echo "<tr>\n";
 
       if (isset($_SESSION["glpiactiveprofile"])
-              && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
+          && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
          echo "<td class='tab_bg_2' width='30%'>";
 
-         echo "<input type='hidden' name='item_type' value='".$item_type_output."'>";
+         echo "<input type='hidden' name='item_type' value='" . $item_type_output . "'>";
          if ($item_type_output_param != 0)
-            echo "<input type='hidden' name='item_type_param' value='".
-            serialize($item_type_output_param)."'>";
+            echo "<input type='hidden' name='item_type_param' value='" .
+                 serialize($item_type_output_param) . "'>";
 
          $explode = explode("&amp;", $parameters);
          for ($i = 0; $i < count($explode); $i++) {
             $pos = strpos($explode[$i], '=');
-            echo "<input type='hidden' name=\"".substr($explode[$i], 0, $pos)."\" value=\"".
-            substr($explode[$i], $pos + 1)."\">";
+            echo "<input type='hidden' name=\"" . substr($explode[$i], 0, $pos) . "\" value=\"" .
+                 substr($explode[$i], $pos + 1) . "\">";
          }
          echo "<select name='display_type'>";
-         echo "<option value='".Search::PDF_OUTPUT_LANDSCAPE."'>".__('Current page in landscape PDF')."</option>";
-         echo "<option value='".Search::PDF_OUTPUT_PORTRAIT."'>".__('Current page in portrait PDF')."</option>";
-         echo "<option value='".Search::SYLK_OUTPUT."'>".__('Current page in SLK')."</option>";
-         echo "<option value='".Search::CSV_OUTPUT."'>".__('Current page in CSV')."</option>";
+         echo "<option value='" . Search::PDF_OUTPUT_LANDSCAPE . "'>" . __('Current page in landscape PDF') . "</option>";
+         echo "<option value='" . Search::PDF_OUTPUT_PORTRAIT . "'>" . __('Current page in portrait PDF') . "</option>";
+         echo "<option value='" . Search::SYLK_OUTPUT . "'>" . __('Current page in SLK') . "</option>";
+         echo "<option value='" . Search::CSV_OUTPUT . "'>" . __('Current page in CSV') . "</option>";
          echo "</select>&nbsp;";
-         echo "<input type='image' name='export'  src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
-                title=\"".__('Export')."\" value=\"".__('Export')."\">";
+         echo "<input type='image' name='export'  src='" . $CFG_GLPI["root_doc"] . "/pics/greenbutton.png'
+                title=\"" . __('Export') . "\" value=\"" . __('Export') . "\">";
          echo "</td>";
       }
 

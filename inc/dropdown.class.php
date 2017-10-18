@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,21 +27,18 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesDropdown extends Dropdown{
+class PluginManageentitiesDropdown extends Dropdown {
 
    static $rightname = 'plugin_manageentities';
-   
+
    //Empty value displayed in a dropdown
    const EMPTY_VALUE = '-----';
-/**
+
+   /**
     * Dropdown numbers
     *
     * @since version 0.84
@@ -58,8 +56,8 @@ class PluginManageentitiesDropdown extends Dropdown{
     *     - width              specific width needed (default 80%)
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
-   **/
-   static function showNumber($myname, $options=array()) {
+    **/
+   static function showNumber($myname, $options = array()) {
       global $CFG_GLPI;
 
       $p['value']     = 0;
@@ -83,26 +81,26 @@ class PluginManageentitiesDropdown extends Dropdown{
          $p['value'] = $p['min'];
       }
 
-      $field_id = Html::cleanId("dropdown_".$myname.$p['rand']);
+      $field_id = Html::cleanId("dropdown_" . $myname . $p['rand']);
       if (!isset($p['toadd'][$p['value']])) {
-         $valuename = self::getValueWithUnit($p['value'],$p['unit']);
+         $valuename = self::getValueWithUnit($p['value'], $p['unit']);
       } else {
          $valuename = $p['toadd'][$p['value']];
       }
-      $param = array('value'               => $p['value'],
-                     'valuename'           => $valuename,
-                     'width'               => $p['width'],
-                     'on_change'           => $p['on_change'],
-                     'used'                => $p['used'],
-                     'unit'                => $p['unit'],
-                     'min'                 => $p['min'],
-                     'max'                 => $p['max'],
-                     'step'                => $p['step'],
-                     'toadd'               => $p['toadd']);
+      $param = array('value'     => $p['value'],
+                     'valuename' => $valuename,
+                     'width'     => $p['width'],
+                     'on_change' => $p['on_change'],
+                     'used'      => $p['used'],
+                     'unit'      => $p['unit'],
+                     'min'       => $p['min'],
+                     'max'       => $p['max'],
+                     'step'      => $p['step'],
+                     'toadd'     => $p['toadd']);
 
-      $out   = Html::jsAjaxDropdown($myname, $field_id,
-                                    $CFG_GLPI['root_doc']."/plugins/manageentities/ajax/getDropdownNumber.php",
-                                    $param);
+      $out = Html::jsAjaxDropdown($myname, $field_id,
+                                  $CFG_GLPI['root_doc'] . "/plugins/manageentities/ajax/getDropdownNumber.php",
+                                  $param);
 
       if ($p['display']) {
          echo $out;

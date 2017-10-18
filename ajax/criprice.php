@@ -1,31 +1,35 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2013 by the manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
 
- This file is part of manageentities.
+ This file is part of Manageentities.
 
- manageentities is free software; you can redistribute it and/or modify
+ Manageentities is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
- manageentities is distributed in the hope that it will be useful,
+ Manageentities is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- -------------------------------------------------------------------------- 
-*/
-include ('../../../inc/includes.php');
+ along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ */
 
-Html::header_nocache ();
+include('../../../inc/includes.php');
+
+Html::header_nocache();
 Session::checkLoginUser();
 
 switch ($_POST['action']) {

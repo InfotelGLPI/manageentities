@@ -1,30 +1,30 @@
 <?php
-
 /*
-  -------------------------------------------------------------------------
-  Manageentities plugin for GLPI
-  Copyright (C) 2003-2012 by the Manageentities Development Team.
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
+ -------------------------------------------------------------------------
+ Manageentities plugin for GLPI
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
-  https://forge.indepnet.net/projects/manageentities
-  -------------------------------------------------------------------------
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
 
-  LICENSE
+ LICENSE
 
-  This file is part of Manageentities.
+ This file is part of Manageentities.
 
-  Manageentities is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
+ Manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-  Manageentities is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+ Manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
-  --------------------------------------------------------------------------
+ You should have received a copy of the GNU General Public License
+ along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -43,19 +43,19 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
    function getSearchOptions() {
       $tab = parent::getSearchOptions();
-      
+
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
       $tab[2]['datatype']      = 'number';
-      
+
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'address';
       $tab[3]['name']          = __('Address');
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'text';
-      
+
       return $tab;
    }
 
@@ -98,7 +98,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
       echo "<textarea cols='40' rows='5' name='address'>" . $this->fields["address"] . "</textarea>";
       echo "</td>";
       echo "<td></td><td></td></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Comments') . "</td>";
       echo "<td>";
@@ -130,7 +130,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
       Entity::dropdown(array('name' => 'entity_id', 'value' => $this->fields['entity_id'], 'right' => 'all'));
       echo "&nbsp;" . __('Recursive') . "&nbsp";
-      Dropdown::showYesNo("recursive",$this->fields["recursive"]);
+      Dropdown::showYesNo("recursive", $this->fields["recursive"]);
       echo "</td>";
       echo "<td></td><td></td></tr>";
 
@@ -141,6 +141,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
    /**
     * Menu with button add new company
+    *
     * @param type $options
     */
    static function addNewCompany($options = array()) {
@@ -187,10 +188,10 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
       if (isset($input["_filename"])) {
          $plugin_company = new PluginManageentitiesCompany();
-         $company = $plugin_company->find("id =" . $input['id']);
-         $company = reset($company);
+         $company        = $plugin_company->find("id =" . $input['id']);
+         $company        = reset($company);
 
-         $tmp = explode(".", $input["_filename"][0]);
+         $tmp       = explode(".", $input["_filename"][0]);
          $extension = array_pop($tmp);
          if (!in_array($extension, array('jpg', 'jpeg'))) {
             Session::addMessageAfterRedirect(__('The format of the image must be in JPG or JPEG', 'manageentities'), false, ERROR);
@@ -208,7 +209,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       if (isset($input["_filename"])) {
-         $tmp = explode(".", $input["_filename"][0]);
+         $tmp       = explode(".", $input["_filename"][0]);
          $extension = array_pop($tmp);
          if (!in_array($extension, array('jpg', 'jpeg'))) {
             Session::addMessageAfterRedirect(__('The format of the image must be in JPG or JPEG', 'manageentities'), false, ERROR);
@@ -235,10 +236,12 @@ class PluginManageentitiesCompany extends CommonDBTM {
    }
 
    /**
-    * 
+    *
     * @global type $CFG_GLPI
-    * @param int $donotif
-    * @param type $disablenotif
+    *
+    * @param int   $donotif
+    * @param type  $disablenotif
+    *
     * @return int
     */
    function addFiles(array $input, $options = []) {
@@ -248,7 +251,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
          'force_update'  => false,
          'content_field' => 'content',
       ];
-      $options = array_merge($default_options, $options);
+      $options         = array_merge($default_options, $options);
 
       if (!isset($input['_filename'])
           || (count($input['_filename']) == 0)) {
@@ -260,11 +263,11 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
 
       foreach ($this->input['_filename'] as $key => $file) {
-         $doc = new Document();
-         $docitem = new Document_Item();
-         $docID = 0;
+         $doc      = new Document();
+         $docitem  = new Document_Item();
+         $docID    = 0;
          $filename = GLPI_TMP_DIR . "/" . $file;
-         $input2 = array();
+         $input2   = array();
 
          // Crop/Resize image file if needed
          if (isset($this->input['_coordinates']) && !empty($this->input['_coordinates'][$key])) {
@@ -296,7 +299,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
                 && isset($input[$options['content_field']])) {
 
                $input[$options['content_field']]
-                                        = preg_replace('/'.Document::getImageTag($input['_tag'][$key]).'/',
+                                        = preg_replace('/' . Document::getImageTag($input['_tag'][$key]) . '/',
                                                        Document::getImageTag($doc->fields["tag"]),
                                                        $input[$options['content_field']]);
                $docadded[$docID]['tag'] = $doc->fields["tag"];
@@ -304,20 +307,20 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
          } else {
             //TRANS: Default document to files attached to tickets : %d is the ticket id
-            $input2["name"] = addslashes(sprintf(__('Logo %d', 'manageentities'), $this->getID()));
-            $input2["entity_id"] = $this->fields["entity_id"];
+            $input2["name"]                    = addslashes(sprintf(__('Logo %d', 'manageentities'), $this->getID()));
+            $input2["entity_id"]               = $this->fields["entity_id"];
             $input2["_only_if_upload_succeed"] = 1;
-            $input2["_filename"] = array($file);
-            $input2["is_recursive"] = 1;
-            $docID = $doc->add($input2);
+            $input2["_filename"]               = array($file);
+            $input2["is_recursive"]            = 1;
+            $docID                             = $doc->add($input2);
          }
 
          if ($docID > 0) {
-            if ($docitem->add(array('documents_id' => $docID,
-                  '_do_notif' => $donotif,
-                  '_disablenotif' => $disablenotif,
-                  'itemtype' => $this->getType(),
-                  'items_id' => $this->getID()))) {
+            if ($docitem->add(array('documents_id'  => $docID,
+                                    '_do_notif'     => $donotif,
+                                    '_disablenotif' => $disablenotif,
+                                    'itemtype'      => $this->getType(),
+                                    'items_id'      => $this->getID()))) {
                $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]), stripslashes($doc->fields["filename"]));
 
                if (isset($input2["tag"])) {
@@ -338,20 +341,22 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
    /**
     * Returns the company's address
+    *
     * @param type $obj
+    *
     * @return string address
     */
    static function getAddress($obj) {
       $plugin_company = new PluginManageentitiesCompany();
-      $company = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
-      $company = reset($company);
+      $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
+      $company        = reset($company);
       if ($company == false) {
          $companies = $plugin_company->find();
-         foreach ($companies as $data){
-            if($data['recursive'] == 1){
+         foreach ($companies as $data) {
+            if ($data['recursive'] == 1) {
                $sons = getSonsOf("glpi_entities", $data['entity_id']);
-               foreach ($sons as $son){
-                  if($son == $obj->entite[0]->fields['id']){
+               foreach ($sons as $son) {
+                  if ($son == $obj->entite[0]->fields['id']) {
                      return $data['address'];
                   }
                }
@@ -364,54 +369,58 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
    /**
     * Returns the company logo
+    *
     * @param type $obj
+    *
     * @return type
     */
    static function getLogo($obj) {
       $plugin_company = new PluginManageentitiesCompany();
-      $company = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
-      $company = reset($company);
-      $doc = new Document();
+      $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
+      $company        = reset($company);
+      $doc            = new Document();
       if ($company == false) {
          $companies = $plugin_company->find();
-         foreach ($companies as $data){
-            if($data['recursive'] == 1){
+         foreach ($companies as $data) {
+            if ($data['recursive'] == 1) {
                $sons = getSonsOf("glpi_entities", $data['entity_id']);
-               foreach ($sons as $son){
-                  if($son == $obj->entite[0]->fields['id']){
-                     if($doc->getFromDB($data["logo_id"])){
+               foreach ($sons as $son) {
+                  if ($son == $obj->entite[0]->fields['id']) {
+                     if ($doc->getFromDB($data["logo_id"])) {
                         return $doc->fields['filepath'];
                      }
                   }
                }
             }
          }
-         
+
       } else {
-         if($company["logo_id"] !=0){
+         if ($company["logo_id"] != 0) {
             $doc->getFromDB($company["logo_id"]);
             return $doc->fields['filepath'];
          }
       }
       return null;
    }
-   
+
    /**
     * Returns company comments
+    *
     * @param type $obj
+    *
     * @return type
     */
    static function getComment($obj) {
       $plugin_company = new PluginManageentitiesCompany();
-      $company = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
-      $company = reset($company);
+      $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
+      $company        = reset($company);
       if ($company == false) {
          $companies = $plugin_company->find();
-         foreach ($companies as $data){
-            if($data['recursive'] == 1){
+         foreach ($companies as $data) {
+            if ($data['recursive'] == 1) {
                $sons = getSonsOf("glpi_entities", $data['entity_id']);
-               foreach ($sons as $son){
-                  if($son == $obj->entite[0]->fields['id']){
+               foreach ($sons as $son) {
+                  if ($son == $obj->entite[0]->fields['id']) {
                      return $data['comment'];
                   }
                }

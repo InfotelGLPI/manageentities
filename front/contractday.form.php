@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,11 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 if (!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["contract_id"])) $_GET["contract_id"] = 0;
-if(!isset($_GET["showFromPlugin"])) $_GET["showFromPlugin"] = 0;
+if (!isset($_GET["contract_id"])) $_GET["contract_id"] = 0;
+if (!isset($_GET["showFromPlugin"])) $_GET["showFromPlugin"] = 0;
 
 $contractday = new PluginManageentitiesContractDay();
 
@@ -48,18 +49,18 @@ if (isset($_POST["add"])) {
    $contracts_id = $_POST["contracts_id"];
    $contractday->check($_POST["id"], UPDATE);
    $contractday->delete($_POST);
-   Html::redirect(Toolbox::getItemTypeFormURL('Contract')."?id=".$contracts_id);
+   Html::redirect(Toolbox::getItemTypeFormURL('Contract') . "?id=" . $contracts_id);
 
 } else if (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
-   Session::checkRight("contract",UPDATE);
+   Session::checkRight("contract", UPDATE);
    $contractday->addNbDay($_POST);
    Html::back();
 
 } else if (isset($_POST["delete_nbday"])) {
-   Session::checkRight("contract",UPDATE);
+   Session::checkRight("contract", UPDATE);
    foreach ($_POST["item_nbday"] as $key => $val) {
-      if ($val==1) {
-         $contractday->delete(array('id'=>$key));
+      if ($val == 1) {
+         $contractday->delete(array('id' => $key));
       }
    }
    Html::back();
@@ -67,15 +68,15 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["deleteAll"])) {
    foreach ($_POST["item"] as $key => $val) {
       $input = array('id' => $key);
-      if ($val==1) {
-         $contractday->check($key,UPDATE);
+      if ($val == 1) {
+         $contractday->check($key, UPDATE);
          $contractday->delete($input);
       }
    }
    Html::back();
 
 } else {
-   Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management" ,"pluginmanageentitiesentity", "contractday");
+   Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
    if (Session::haveRight("contract", READ)) {
       $contractday->display($_GET);
    }

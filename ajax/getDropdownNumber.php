@@ -1,47 +1,37 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
- GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Manageentities plugin for GLPI
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- http://glpi-project.org
-
- based on GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
 
- This file is part of GLPI.
+ This file is part of Manageentities.
 
- GLPI is free software; you can redistribute it and/or modify
+ Manageentities is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
- GLPI is distributed in the hope that it will be useful,
+ Manageentities is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-* @since version 0.85
-*/
+include('../../../inc/includes.php');
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
-// Direct access to file
-   include ('../../../inc/includes.php');
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
-
-   if (!defined('GLPI_ROOT')) {
+if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
@@ -90,23 +80,23 @@ if ($_POST['page'] == 1) {
 
 $values = array();
 if (!empty($_POST['searchText'])) {
-   for ($i=$_POST['min'] ; $i<=$_POST['max'] ; $i+=$_POST['step']) {
+   for ($i = $_POST['min']; $i <= $_POST['max']; $i += $_POST['step']) {
       if (strstr($i, $_POST['searchText'])) {
          $values[$i] = $i;
       }
    }
 } else {
-   for ($i=$_POST['min'] ; $i<=$_POST['max'] ; $i+=$_POST['step']) {
+   for ($i = $_POST['min']; $i <= $_POST['max']; $i += $_POST['step']) {
       $values[] = $i;
    }
 }
 if ($one_item < 0 && count($values)) {
-   $start  = ($_POST['page']-1)*$_POST['page_limit'];
-   $tosend = array_splice($values,$start, $_POST['page_limit']);
+   $start  = ($_POST['page'] - 1) * $_POST['page_limit'];
+   $tosend = array_splice($values, $start, $_POST['page_limit']);
    foreach ($tosend as $i) {
       $txt = $i;
       if (isset($_POST['unit'])) {
-         $txt = Dropdown::getValueWithUnit($i,$_POST['unit']);
+         $txt = Dropdown::getValueWithUnit($i, $_POST['unit']);
       }
       array_push($datas, array('id'   => $i,
                                'text' => strval($txt)));
@@ -116,7 +106,7 @@ if ($one_item < 0 && count($values)) {
 } else {
    if (!isset($toadd[$one_item])) {
       if (isset($_POST['unit'])) {
-         $txt = Dropdown::getValueWithUnit($one_item,$_POST['unit']);
+         $txt = Dropdown::getValueWithUnit($one_item, $_POST['unit']);
       }
       array_push($datas, array('id'   => $one_item,
                                'text' => strval(stripslashes($txt))));

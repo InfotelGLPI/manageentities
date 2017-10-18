@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -24,104 +25,104 @@
  You should have received a copy of the GNU General Public License
  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
-*/
+ */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
-Html::header(__('Entities portal', 'manageentities'),'',"plugins","manageentities");
+Html::header(__('Entities portal', 'manageentities'), '', "plugins", "manageentities");
 
 if (isset($_GET)) $tab = $_GET;
 if (empty($tab) && isset($_POST)) $tab = $_POST;
-if (empty($_POST["date1"]) && empty($_POST["date2"])){ 
+if (empty($_POST["date1"]) && empty($_POST["date2"])) {
    $lastday = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
    if (date("d") == $lastday) {
       $_POST["date2"] = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
       $_POST["date1"] = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y")));
    } else {
-      $month = date("m");
-      $lastday = $month==1?31:cal_days_in_month(CAL_GREGORIAN,$month - 1, date("Y"));
+      $month          = date("m");
+      $lastday        = $month == 1 ? 31 : cal_days_in_month(CAL_GREGORIAN, $month - 1, date("Y"));
       $_POST["date2"] = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
       $_POST["date1"] = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
    }
 }
 if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_POST["date1"]) < 0) {
-   $tmp=$_POST["date1"];
-   $_POST["date1"]=$_POST["date2"];
-   $_POST["date2"]=$tmp;
+   $tmp            = $_POST["date1"];
+   $_POST["date1"] = $_POST["date2"];
+   $_POST["date2"] = $tmp;
 }
 
 Report::title();
 $PluginManageentitiesEntity = new PluginManageentitiesEntity();
-if ($PluginManageentitiesEntity->canView() || Session::haveRight("config",UPDATE)) {
+if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDATE)) {
 
    if (isset($_POST["send"])) {
       echo "<div align='center'><form action=\"report_occupation.form.php\" method=\"post\">";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
-      echo __('Start date')." :</td><td>";
+      echo __('Start date') . " :</td><td>";
       Html::showDateField("date1", ['value' => $_POST["date1"]]);
       echo "<td class='right'>" . __('End date') . " :</td><td>";
       Html::showDateField("date2", ['value' => $_POST["date2"]]);
       echo "</td></tr>";
-      
-      $user = new User();
-      $users = $user->find("`is_deleted` = 0 AND `entities_id` IN (".implode(',', $_SESSION['glpiactiveentities']).")");
+
+      $user  = new User();
+      $users = $user->find("`is_deleted` = 0 AND `entities_id` IN (" . implode(',', $_SESSION['glpiactiveentities']) . ")");
       $techs = array();
-      foreach ($users as $data){
+      foreach ($users as $data) {
          $techs[$data['id']] = getUserName($data['id']);
       }
-      
+
       echo "<tr><td class='tab_bg_2 center'>";
-      echo __('Technician')." :</td><td class='tab_bg_2 center' colspan='3' >";
-      if(isset($_POST['techs'])){
+      echo __('Technician') . " :</td><td class='tab_bg_2 center' colspan='3' >";
+      if (isset($_POST['techs'])) {
          Dropdown::showFromArray('techs', $techs, array('multiple' => true, 'values' => $_POST['techs']));
-      }else{
+      } else {
          Dropdown::showFromArray('techs', $techs, array('multiple' => true));
       }
-      
+
       echo "</td></tr>";
-      if(isset($_POST['techs'])){
+      if (isset($_POST['techs'])) {
          echo "<tr class='tab_bg_2'><td colspan='4'></td></tr>";
       }
-      echo "<tr class='tab_bg_2'><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"". _sx('button', 'Post') ."\" /></td></tr>";
-     
+      echo "<tr class='tab_bg_2'><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
+
       echo "</table>";
       Html::closeForm();
       echo "</div>";
-      
-      if(isset($_POST['techs'])){
+
+      if (isset($_POST['techs'])) {
          $report = new PluginManageentitiesReport();
-         $report->showOccupationReports($_POST['techs'],$_POST["date1"],$_POST["date2"]);
+         $report->showOccupationReports($_POST['techs'], $_POST["date1"], $_POST["date2"]);
       }
 
    } else {
 
       echo "<div align='center'><form action=\"report_occupation.form.php\" method=\"post\">";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
-      echo __('Start date')." :</td><td>";
+      echo __('Start date') . " :</td><td>";
       Html::showDateField("date1", ['value' => $_POST["date1"]]);
       echo "<td class='right'>" . __('End date') . " :</td><td>";
       Html::showDateField("date2", ['value' => $_POST["date2"]]);
       echo "</td></tr>";
       //stats Users
-      
-      $user = new User();
-      $users = $user->find("`is_deleted` = 0 AND `entities_id` IN (".implode(',', $_SESSION['glpiactiveentities']).")");
+
+      $user  = new User();
+      $users = $user->find("`is_deleted` = 0 AND `entities_id` IN (" . implode(',', $_SESSION['glpiactiveentities']) . ")");
       $techs = array();
-      foreach ($users as $data){
+      foreach ($users as $data) {
          $techs[$data['id']] = getUserName($data['id']);
       }
-      
+
       echo "<tr><td class='tab_bg_2 center'>";
-      echo __('Technician')." :</td><td class='tab_bg_2 center' colspan='3' >";
+      echo __('Technician') . " :</td><td class='tab_bg_2 center' colspan='3' >";
       Dropdown::showFromArray('techs', $techs, array('multiple' => true));
       echo "</td></tr>";
-      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"". _sx('button', 'Post') ."\" /></td></tr>";
-     
+      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
+
       echo "</table>";
       Html::closeForm();
       echo "</div>";
 
-      }
+   }
 
 } else {
    Html::displayRightError();

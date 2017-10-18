@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -24,9 +25,9 @@
  You should have received a copy of the GNU General Public License
  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
-// */
+ */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 require("../fpdf/font/symbol.php");
 
@@ -36,40 +37,40 @@ if (!isset($_GET["action"])) $_GET["action"] = "";
 
 Html::popHeader(__('Generation of the intervention report', 'manageentities'));
 
-$PluginManageentitiesCri = new PluginManageentitiesCri();
+$PluginManageentitiesCri           = new PluginManageentitiesCri();
 $PluginManageentitiesCriTechnician = new PluginManageentitiesCriTechnician();
-$criDetail = new PluginManageentitiesCriDetail();
+$criDetail                         = new PluginManageentitiesCriDetail();
 
 if (isset($_POST["addcridetail"])) {
    if ($PluginManageentitiesCri->canCreate()) {
       $criDetail->add($_POST);
    }
    Html::back();
-   
+
 } else if (isset($_POST["updatecridetail"])) {
    if ($PluginManageentitiesCri->canCreate()) {
-      if(isset($_POST['withcontract']) && !$_POST['withcontract']){
-         $_POST['contracts_id'] = 0;
+      if (isset($_POST['withcontract']) && !$_POST['withcontract']) {
+         $_POST['contracts_id']                          = 0;
          $_POST['plugin_manageentities_contractdays_id'] = 0;
       }
       $criDetail->update($_POST);
    }
    Html::back();
-   
+
 } else if (isset($_POST["delcridetail"])) {
-   if($PluginManageentitiesCri->canCreate()){
+   if ($PluginManageentitiesCri->canCreate()) {
       $criDetail->delete($_POST);
    }
    Html::back();
-   
+
 } else if (isset($_POST["purgedoc"])) {
-   $doc = new Document();
+   $doc         = new Document();
    $input['id'] = $_POST['documents_id'];
    if ($doc->delete($input, 1)) {
-      Event::log($input['id'], "documents", 4, "document", $_SESSION["glpiname"]." ".__('Delete permanently'));
+      Event::log($input['id'], "documents", 4, "document", $_SESSION["glpiname"] . " " . __('Delete permanently'));
    }
    Html::back();
-   
+
 } else {
    $PluginManageentitiesCri->showForm($_GET["job"], array('action' => $_GET["action"]));
 }

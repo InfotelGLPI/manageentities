@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 $contractday = new PluginManageentitiesContractDay();
 $contract    = new PluginManageentitiesContract();
@@ -35,22 +36,22 @@ if (isset($_POST["addcontract"])) {
    $contract->check(-1, UPDATE);
    $newID = $contract->add($_POST);
    Html::back();
-   
+
 } else if (isset($_POST["delcontract"])) {
    $contract->check($_POST["id"], UPDATE);
    $contract->delete($_POST);
    Html::back();
-   
+
 } else if (isset($_POST["updatecontract"])) {
    $contract->check($_POST["id"], UPDATE);
    $contract->update($_POST);
    Html::back();
-   
+
 } else if (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
    Session::checkRight("contract", UPDATE);
    $contractday->addNbDay($_POST);
    Html::back();
-   
+
 } else if (isset($_POST["delete_nbday"])) {
    Session::checkRight("contract", UPDATE);
    foreach ($_POST["item_nbday"] as $key => $val) {
@@ -59,11 +60,11 @@ if (isset($_POST["addcontract"])) {
       }
    }
    Html::back();
-   
+
 } else {
    $contractday->checkGlobal(READ);
 
-   Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management" ,"pluginmanageentitiesentity", "contractday");
+   Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
    $contractday->display($_GET);
 
    Html::footer();

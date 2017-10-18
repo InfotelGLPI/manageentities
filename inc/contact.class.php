@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -31,9 +32,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginManageentitiesContact extends CommonDBTM {
-   
+
    static $rightname = 'plugin_manageentities';
-   
+
    static function canView() {
       return Session::haveRight(self::$rightname, READ);
    }
@@ -41,51 +42,53 @@ class PluginManageentitiesContact extends CommonDBTM {
    static function canCreate() {
       return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
    }
-   
+
    /**
     * Add a contact ba default
     * @global type $DB
-    * @param type $contacts_id
-    * @param type $entities_id
+    *
+    * @param type  $contacts_id
+    * @param type  $entities_id
     */
-   function addContactByDefault($contacts_id,$entities_id) {
+   function addContactByDefault($contacts_id, $entities_id) {
 
       global $DB;
 
-      $query = "SELECT *
-        FROM `".$this->getTable()."`
-        WHERE `entities_id` = '".$entities_id."' ";
+      $query  = "SELECT *
+        FROM `" . $this->getTable() . "`
+        WHERE `entities_id` = '" . $entities_id . "' ";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
       if ($number) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data = $DB->fetch_array($result)) {
 
-            $query_nodefault = "UPDATE `".$this->getTable()."`
-            SET `is_default` = '0' WHERE `id` = '".$data["id"]."' ";
+            $query_nodefault  = "UPDATE `" . $this->getTable() . "`
+            SET `is_default` = '0' WHERE `id` = '" . $data["id"] . "' ";
             $result_nodefault = $DB->query($query_nodefault);
          }
       }
 
-      $query_default = "UPDATE `".$this->getTable()."`
-        SET `is_default` = '1' WHERE `id` ='".$contacts_id."' ";
+      $query_default  = "UPDATE `" . $this->getTable() . "`
+        SET `is_default` = '1' WHERE `id` ='" . $contacts_id . "' ";
       $result_default = $DB->query($query_default);
    }
 
    /**
-    * 
+    *
     * @global type $DB
     * @global type $CFG_GLPI
-    * @param type $instID
+    *
+    * @param type  $instID
     */
    function showContacts($instID) {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
-      $entitiesId = "'".implode("', '", $instID)."'";
-      $query = "SELECT `glpi_contacts`.*, `".$this->getTable()."`.`id` as contacts_id, `".$this->getTable()."`.`is_default`
-        FROM `".$this->getTable()."`, `glpi_contacts`
-        WHERE `".$this->getTable()."`.`contacts_id`=`glpi_contacts`.`id`
-        AND `".$this->getTable()."`.`entities_id` IN ($entitiesId)
+      $entitiesId = "'" . implode("', '", $instID) . "'";
+      $query      = "SELECT `glpi_contacts`.*, `" . $this->getTable() . "`.`id` as contacts_id, `" . $this->getTable() . "`.`is_default`
+        FROM `" . $this->getTable() . "`, `glpi_contacts`
+        WHERE `" . $this->getTable() . "`.`contacts_id`=`glpi_contacts`.`id`
+        AND `" . $this->getTable() . "`.`entities_id` IN ($entitiesId)
         ORDER BY `glpi_contacts`.`name`";
 
       $result = $DB->query($query);
@@ -94,33 +97,33 @@ class PluginManageentitiesContact extends CommonDBTM {
       if ($number) {
          echo "<form method='post' action=\"./entity.php\">";
          echo "<div align='center'><table class='tab_cadre center'>";
-         echo "<tr><th colspan='6'>"._n('Associated contact', 'Associated contacts', 1)."</th></tr>";
-         echo "<tr><th>".__('Name')."</th>";
-         echo "<th>".__('Phone')."</th>";
-         echo "<th>".__('Mobile phone')."</th>";
-         echo "<th>".__('Email address')."</th>";
-         echo "<th>".__('Type')."</th>";
+         echo "<tr><th colspan='6'>" . _n('Associated contact', 'Associated contacts', 1) . "</th></tr>";
+         echo "<tr><th>" . __('Name') . "</th>";
+         echo "<th>" . __('Phone') . "</th>";
+         echo "<th>" . __('Mobile phone') . "</th>";
+         echo "<th>" . __('Email address') . "</th>";
+         echo "<th>" . __('Type') . "</th>";
          if ($this->canCreate() && sizeof($instID) == 1)
             echo "<th>&nbsp;</th>";
          echo "</tr>";
 
-         while ($data=$DB->fetch_array($result)) {
-            $ID=$data["contacts_id"];
+         while ($data = $DB->fetch_array($result)) {
+            $ID = $data["contacts_id"];
             echo "<tr class='tab_bg_1'>";
-            echo "<td class='left'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
-            echo "<td class='center'>".$data["phone"]."</td>";
-            echo "<td class='center'>".$data["mobile"]."</td>";
-            echo "<td class='center'><a href='mailto:".$data["email"]."'>".$data["email"]."</a></td>";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_contacttypes",$data["contacttypes_id"])."<br>";
-            if(sizeof($instID) == 1
-                  && $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'){
+            echo "<td class='left'><a href='" . $CFG_GLPI["root_doc"] . "/front/contact.form.php?id=" . $data["id"] . "'>" . $data["name"] . " " . $data["firstname"] . "</a></td>";
+            echo "<td class='center'>" . $data["phone"] . "</td>";
+            echo "<td class='center'>" . $data["mobile"] . "</td>";
+            echo "<td class='center'><a href='mailto:" . $data["email"] . "'>" . $data["email"] . "</a></td>";
+            echo "<td class='center'>" . Dropdown::getDropdownName("glpi_contacttypes", $data["contacttypes_id"]) . "<br>";
+            if (sizeof($instID) == 1
+                && $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
                if ($data["is_default"]) {
                   echo __('Manager');
                } else {
-                  Html::showSimpleForm($CFG_GLPI['root_doc'].'/plugins/manageentities/front/entity.php',
+                  Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                                        'contactbydefault',
                                        __('Manager'),
-                                       array('contacts_id' => $ID,'entities_id' => $_SESSION["glpiactive_entity"]));
+                                       array('contacts_id' => $ID, 'entities_id' => $_SESSION["glpiactive_entity"]));
                }
             } else {
                if ($data["is_default"]) {
@@ -131,7 +134,7 @@ class PluginManageentitiesContact extends CommonDBTM {
 
             if ($this->canCreate() && sizeof($instID) == 1) {
                echo "<td class='center' class='tab_bg_2'>";
-               Html::showSimpleForm($CFG_GLPI['root_doc'].'/plugins/manageentities/front/entity.php',
+               Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                                     'deletecontacts',
                                     _x('button', 'Delete permanently'),
                                     array('id' => $ID),
@@ -141,32 +144,32 @@ class PluginManageentitiesContact extends CommonDBTM {
             echo "</tr>";
 
          }
-         
+
          if ($this->canCreate() && sizeof($instID) == 1) {
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
-            echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
+            echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
             $rand = Dropdown::show('Contact', array('name' => "contacts_id"));
-            echo "<a href='".$CFG_GLPI['root_doc']."/front/contact.form.php' target='_blank'><img alt='' title=\""._x('button', 'Add')."\" src='".$CFG_GLPI["root_doc"].
-                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
-            echo "</td><td class='center'><input type='submit' name='addcontacts' value=\""._x('button', 'Add')."\" class='submit'></td>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'><img alt='' title=\"" . _x('button', 'Add') . "\" src='" . $CFG_GLPI["root_doc"] .
+                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
+            echo "</td><td class='center'><input type='submit' name='addcontacts' value=\"" . _x('button', 'Add') . "\" class='submit'></td>";
             echo "</tr>";
          }
          echo "</table></div>";
          Html::closeForm();
-         
+
       } else {
 
          if ($this->canCreate() && sizeof($instID) == 1) {
             echo "<form method='post' action=\"./entity.php\">";
             echo "<table class='tab_cadrehov center' width='95%'>";
 
-            echo "<tr class='tab_bg_1'><th colspan='2'>"._n('Associated contact', 'Associated contacts', 1)."</tr><tr><td class='tab_bg_2 center'>";
-            echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>" . _n('Associated contact', 'Associated contacts', 1) . "</tr><tr><td class='tab_bg_2 center'>";
+            echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
             Dropdown::show('Contact', array('name' => "contacts_id"));
-            echo "<a href='".$CFG_GLPI['root_doc']."/front/contact.form.php' target='_blank'><img alt='' title=\""._x('button', 'Add')."\" src='".$CFG_GLPI["root_doc"].
-                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'><img alt='' title=\"" . _x('button', 'Add') . "\" src='" . $CFG_GLPI["root_doc"] .
+                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
             echo "</td><td class='center tab_bg_2'>";
-            echo "<input type='submit' name='addcontacts' value=\""._x('button', 'Add')."\" class='submit'>";
+            echo "<input type='submit' name='addcontacts' value=\"" . _x('button', 'Add') . "\" class='submit'>";
             echo "</td></tr>";
 
             echo "</table></div>";

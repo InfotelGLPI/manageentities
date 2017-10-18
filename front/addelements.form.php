@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,26 +27,26 @@
  --------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 $plugin = new Plugin();
 
-if ($plugin->isActivated("manageentities") 
-      && Session::haveRight('plugin_manageentities', UPDATE)) {
+if ($plugin->isActivated("manageentities")
+    && Session::haveRight('plugin_manageentities', UPDATE)) {
 
    $addElementsView = new PluginManageentitiesAddElementsView();
-   
-   
+
+
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
    $addElementsView->showForm();
-   Html::footer ();
-   
+   Html::footer();
+
 } else {
-   
+
    Html::header(__('Setup'), '', "config", "plugins");
    echo "<div align='center'><br><br>";
-   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt='warning'><br><br>";
-   echo "<b>".__("You don't have permission to perform this action.")."</b></div>";
+   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt='warning'><br><br>";
+   echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
    Html::footer();
 }
 

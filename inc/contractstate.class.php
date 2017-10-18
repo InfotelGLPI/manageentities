@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -33,11 +34,11 @@ if (!defined('GLPI_ROOT')) {
 class PluginManageentitiesContractState extends CommonDropdown {
 
    static $rightname = 'plugin_manageentities';
-   
-   static function getTypeName($nb=0) {
+
+   static function getTypeName($nb = 0) {
       return _n('State of contract', 'States of contracts', $nb, 'manageentities');
    }
-   
+
    static function canView() {
       return Session::haveRight(self::$rightname, READ);
    }
@@ -47,65 +48,65 @@ class PluginManageentitiesContractState extends CommonDropdown {
    }
 
    function getAdditionalFields() {
-      return array( array( 'name'  => 'is_active',
-                           'label' => __('Active'),
-                           'type'  => 'bool'),
-                    array( 'name'  => 'is_closed',
-                           'label' => __('Closed'),
-                           'type'  => 'bool'),
-                    array( 'name'  => 'color',
-                           'label' => __('Color','manageentities'),
-                           'type'  => 'text'),
+      return array(array('name'  => 'is_active',
+                         'label' => __('Active'),
+                         'type'  => 'bool'),
+                   array('name'  => 'is_closed',
+                         'label' => __('Closed'),
+                         'type'  => 'bool'),
+                   array('name'  => 'color',
+                         'label' => __('Color', 'manageentities'),
+                         'type'  => 'text'),
       );
    }
 
    function getSearchOptions() {
       $tab = parent::getSearchOptions();
 
-      $tab[14]['table']         = $this->getTable();
-      $tab[14]['field']         = 'is_active';
-      $tab[14]['name']          = __('Active');
-      $tab[14]['datatype']      = 'bool';
+      $tab[14]['table']    = $this->getTable();
+      $tab[14]['field']    = 'is_active';
+      $tab[14]['name']     = __('Active');
+      $tab[14]['datatype'] = 'bool';
 
-      $tab[15]['table']         = $this->getTable();
-      $tab[15]['field']         = 'is_closed';
-      $tab[15]['name']          = __('Closed');
-      $tab[15]['datatype']      = 'bool';
-      
-      $tab[16]['table']         = $this->getTable();
-      $tab[16]['field']         = 'color';
-      $tab[16]['name']          = __('Color','manageentities');
-      $tab[16]['datatype']      = 'string';
+      $tab[15]['table']    = $this->getTable();
+      $tab[15]['field']    = 'is_closed';
+      $tab[15]['name']     = __('Closed');
+      $tab[15]['datatype'] = 'bool';
+
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'color';
+      $tab[16]['name']     = __('Color', 'manageentities');
+      $tab[16]['datatype'] = 'string';
 
       return $tab;
    }
-   
+
    public function prepareInputForAdd($input) {
       return $this->checkColor($input);
    }
-   
+
    public function prepareInputForUpdate($input) {
       return $this->checkColor($input);
    }
-   
-   function checkColor($input){
-      if(!preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $input['color'])){
+
+   function checkColor($input) {
+      if (!preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $input['color'])) {
          Session::addMessageAfterRedirect(__('Color field is not correct', 'manageentities'), true, ERROR);
          return array();
       }
-      return  $input;
+      return $input;
    }
-   
-   static function getOpenedStates(){
-      $out = array();
-      $dbu = new DbUtils();
+
+   static function getOpenedStates() {
+      $out  = array();
+      $dbu  = new DbUtils();
       $data = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractstates', "`is_active` = 1");
-      if(!empty($data)){
-         foreach($data as $val){
+      if (!empty($data)) {
+         foreach ($data as $val) {
             $out[] = $val['id'];
          }
       }
-      
+
       return $out;
    }
 }

@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -30,11 +31,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
+class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
    static $rightname = 'plugin_manageentities';
-   
-   static function getTypeName($nb=0) {
+
+   static function getTypeName($nb = 0) {
       return _n('User affected', 'Users affected', $nb, 'manageentities');
    }
 
@@ -49,10 +50,10 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_plugin_manageentities_interventionskateholders',
-         "`plugin_manageentities_contractdays_id`='".$item->fields['id']."'");
+                                  "`plugin_manageentities_contractdays_id`='" . $item->fields['id'] . "'");
    }
 
-   function defineTabs($options=array()) {
+   function defineTabs($options = array()) {
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -60,14 +61,14 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
       return $ong;
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'PluginManageentitiesContractDay' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(PluginManageentitiesInterventionSkateholder::getTypeName(self::countForItem($item)), self::countForItem($item));
-               }else{
+               } else {
                   return PluginManageentitiesInterventionSkateholder::getTypeName(countForItem($item));
                }
          }
@@ -76,32 +77,32 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
-      if ($item->getType()=='PluginManageentitiesContractDay') {
+      if ($item->getType() == 'PluginManageentitiesContractDay') {
          $options = array();
-         if (isset($item->fields['id']) && $item->fields['id'] > 0){
-            $options['rand'] = $item->fields['id'];
+         if (isset($item->fields['id']) && $item->fields['id'] > 0) {
+            $options['rand']                               = $item->fields['id'];
             $_SESSION['glpi_plugin_manageentities_nbdays'] = $item->fields['nbday'];
-         }else{
-            $options['rand'] = 0;
+         } else {
+            $options['rand']                               = 0;
             $_SESSION['glpi_plugin_manageentities_nbdays'] = 0;
          }
-         $interventionSkateholder->showForm($item,$options);
-         echo "<div id='divAjaxDisplay".$item->fields['id']."'></div>";
+         $interventionSkateholder->showForm($item, $options);
+         echo "<div id='divAjaxDisplay" . $item->fields['id'] . "'></div>";
       }
       return true;
    }
 
-    
-   public function reinitValuesNbDays($idDpNbdays,$contractdaysId){
+
+   public function reinitValuesNbDays($idDpNbdays, $contractdaysId) {
       $nbDays = $this->getNbAvailiableDay($contractdaysId);
 
       $this->showHeaderJS();
-      for ($i = 0; $i <= $nbDays; $i+=0.5) {
+      for ($i = 0; $i <= $nbDays; $i += 0.5) {
          $data[] = array('id' => $i, 'text' => "$i");
       }
-      echo "$('input[name=\"nb_days\"]').select2({width : '100', data:".json_encode($data)."});";
+      echo "$('input[name=\"nb_days\"]').select2({width : '100', data:" . json_encode($data) . "});";
       $this->closeFormJS();
    }
 
@@ -110,48 +111,48 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
 
       if ($item->getType() == PluginManageentitiesInterventionSkateholder::getType()) {
          $idToUse   = $item->fields['plugin_manageentities_contractdays_id'];
-         $idDivAjax = "divAjaxDisplay".$item->fields['plugin_manageentities_contractdays_id'];
+         $idDivAjax = "divAjaxDisplay" . $item->fields['plugin_manageentities_contractdays_id'];
       } else {
          $idToUse   = $item->fields['id'];
-         $idDivAjax = "divAjaxDisplay".$item->fields['id'];
+         $idDivAjax = "divAjaxDisplay" . $item->fields['id'];
       }
 
-      $user      = new User();
+      $user = new User();
       $user->getFromDB($item->fields['users_id']);
-      $condition = "`plugin_manageentities_contractdays_id`=".$item->fields['plugin_manageentities_contractdays_id'];
-      
+      $condition = "`plugin_manageentities_contractdays_id`=" . $item->fields['plugin_manageentities_contractdays_id'];
+
       $this->showHeaderJS();
 
-      echo "var tbl = document.getElementById('list_skateholders".$idToUse."');\n";
+      echo "var tbl = document.getElementById('list_skateholders" . $idToUse . "');\n";
 
       $dbu = new DbUtils();
       if ($toDelete) {
-         echo "var row = document.getElementById('row_".$item->fields['id']."');";
+         echo "var row = document.getElementById('row_" . $item->fields['id'] . "');";
          echo "row.parentNode.removeChild(row);";
          $cd = $dbu->getAllDataFromTable($this->getTable(), $condition);
          if (sizeof($cd) == 0) {
-            echo "if(document.getElementById('empty_skateholders".$idToUse."') != null){";
+            echo "if(document.getElementById('empty_skateholders" . $idToUse . "') != null){";
             echo "   tbl.deleteRow(-1);";
             echo "}else{";
             echo "   row=tbl.insertRow(-1);\n";
             echo "   row=tbl.insertRow(-1);\n";
             echo "   row.setAttribute('class','tab_bg_1');\n";
-            echo "   row.id='empty_skateholders".$idToUse."';";
+            echo "   row.id='empty_skateholders" . $idToUse . "';";
             echo "   var tmpCell=row.insertCell(0);\n";
-            echo "   tmpCell.innerHTML=\"".__("No skateholders have been affected yet.", "manageentities")."\";";
+            echo "   tmpCell.innerHTML=\"" . __("No skateholders have been affected yet.", "manageentities") . "\";";
             echo "}";
          }
-         
+
       } else {
-         echo "if (document.getElementById('td_user_id".$item->fields['id']."') != null){\n";
-         echo "   document.getElementById('td_user_id".$item->fields['id']."').innerHTML = '".$item->fields['number_affected_days']." "._n("Day", "Days", 2)."';\n";
+         echo "if (document.getElementById('td_user_id" . $item->fields['id'] . "') != null){\n";
+         echo "   document.getElementById('td_user_id" . $item->fields['id'] . "').innerHTML = '" . $item->fields['number_affected_days'] . " " . _n("Day", "Days", 2) . "';\n";
          echo "}else{\n";
-         echo "   if (document.getElementById('empty_skateholders".$idToUse."') != null){";
+         echo "   if (document.getElementById('empty_skateholders" . $idToUse . "') != null){";
          echo "      tbl.deleteRow(-1);";
          echo "   }";
 
          echo "row=tbl.insertRow(-1);\n";
-         echo "row.id='row_".$item->fields['id']."';\n";
+         echo "row.id='row_" . $item->fields['id'] . "';\n";
          echo "row.setAttribute('class','tab_bg_1');\n";
 
          // UserTitle
@@ -164,7 +165,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
          // User name
          echo "tmpCell=row.insertCell(1);";
          echo "tmpCell.innerHTML=\"";
-         echo "<a href='".$link."' target='_blank'>".formatUserName($user->fields['id'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname'])."</a>";
+         echo "<a href='" . $link . "' target='_blank'>" . formatUserName($user->fields['id'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']) . "</a>";
          echo "\";";
 
          // NbDays title
@@ -176,21 +177,21 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
 
          // NbDays
          echo "tmpCell=row.insertCell(3);";
-         echo "tmpCell.id='td_user_id".$item->fields['id']."';";
+         echo "tmpCell.id='td_user_id" . $item->fields['id'] . "';";
          echo "tmpCell.innerHTML=\"";
-         echo $item->fields['number_affected_days']."&nbsp;"._n("Day", "Days", 2);
+         echo $item->fields['number_affected_days'] . "&nbsp;" . _n("Day", "Days", 2);
          echo "\";";
 
          // Delete
          echo "tmpCell=row.insertCell(4);";
          echo "tmpCell.innerHTML=\"";
          echo "<span class='pointer'>";
-         echo "   <img src='../../../pics/delete.png' title='".__("Delete", "manageentities")."' id='delete_".$user->fields['id']."' />";
+         echo "   <img src='../../../pics/delete.png' title='" . __("Delete", "manageentities") . "' id='delete_" . $user->fields['id'] . "' />";
          echo "</span>";
          echo "\";";
          echo "}";
 
-         echo "document.getElementById('delete_".$user->fields['id']."').onclick= function () {if (confirm('".__("This action is irreversible. Continue ?", 'manageentities')."')){deleteSkateholder".$idToUse.$item->fields['id']."();}};";
+         echo "document.getElementById('delete_" . $user->fields['id'] . "').onclick= function () {if (confirm('" . __("This action is irreversible. Continue ?", 'manageentities') . "')){deleteSkateholder" . $idToUse . $item->fields['id'] . "();}};";
       }
 
       $this->closeFormJS();
@@ -198,12 +199,12 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
       if (!$toDelete) {
          $params['action']          = "delete_user_datas";
          $params['id_div_ajax']     = $idDivAjax;
-         $params['id_dp_nbdays']    = "nb_days".$item->fields['plugin_manageentities_contractdays_id'];
+         $params['id_dp_nbdays']    = "nb_days" . $item->fields['plugin_manageentities_contractdays_id'];
          $params['contractdays_id'] = $item->fields['plugin_manageentities_contractdays_id'];
          $params['skateholder_id']  = $item->fields['id'];
-         $url                       = $CFG_GLPI ['root_doc']."/plugins/manageentities/ajax/interventionskateholderactions.php";
+         $url                       = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
 
-         $this->showJSfunction("deleteSkateholder".$idToUse.$item->fields['id'], $idDivAjax, $url, array(), $params);
+         $this->showJSfunction("deleteSkateholder" . $idToUse . $item->fields['id'], $idDivAjax, $url, array(), $params);
       }
 
       if ($idDpNbdays != null) {
@@ -211,121 +212,121 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
       }
    }
 
-   private function listSkateholders($item, $options = array()){
+   private function listSkateholders($item, $options = array()) {
       global $CFG_GLPI;
       $ID = $item->fields['id'];
 
-      if ($item->getType() == PluginManageentitiesInterventionSkateholder::getType()){
-         $idToUse = $item->fields['plugin_manageentities_contractdays_id'];
-         $idDivAjax = "divAjaxDisplay".$item->fields['plugin_manageentities_contractdays_id'];
-      }else{
-         $idToUse = $item->fields['id'];
-         $idDivAjax = "divAjaxDisplay".$item->fields['id'];
+      if ($item->getType() == PluginManageentitiesInterventionSkateholder::getType()) {
+         $idToUse   = $item->fields['plugin_manageentities_contractdays_id'];
+         $idDivAjax = "divAjaxDisplay" . $item->fields['plugin_manageentities_contractdays_id'];
+      } else {
+         $idToUse   = $item->fields['id'];
+         $idDivAjax = "divAjaxDisplay" . $item->fields['id'];
       }
-                  
+
       $contractday = new PluginManageentitiesContractDay();
 
       if ($ID > 0) {
          $contractday->getFromDB($ID);
       } else {
          // Create iteml
-         $canedit = $contractday->can($item->fields['id'],UPDATE);
+         $canedit = $contractday->can($item->fields['id'], UPDATE);
          $contractday->getEmpty();
          $this->getEmpty();
          $this->fields["plugin_manageentities_contractdays_id"] = $item->fields['id'];
       }
 
 
-      if ($item->fields['id'] > 0){
-         $condition = "`plugin_manageentities_contractdays_id`=".$item->fields['id'];
-         $dbu = new DbUtils();
-         $listSkateholders = $dbu->getAllDataFromTable($this->getTable(),$condition);
+      if ($item->fields['id'] > 0) {
+         $condition        = "`plugin_manageentities_contractdays_id`=" . $item->fields['id'];
+         $dbu              = new DbUtils();
+         $listSkateholders = $dbu->getAllDataFromTable($this->getTable(), $condition);
          echo "<div class='center first-bloc'>";
-         echo "<table class='tab_cadre_fixe' id='list_skateholders".$idToUse."'>";
-//         echo "<input type='hidden' name='skateholder_id' id='skateholder_id' value='-1' />";
-          
+         echo "<table class='tab_cadre_fixe' id='list_skateholders" . $idToUse . "'>";
+         //         echo "<input type='hidden' name='skateholder_id' id='skateholder_id' value='-1' />";
+
          echo "<tr class='tab_bg_1'>";
-          
-         if (sizeof($listSkateholders) > 1){
+
+         if (sizeof($listSkateholders) > 1) {
             if ($this->canCreate()) {
-               echo "<th colspan='5'>" . _n('Current skateholder','Current skateholders',2, 'manageentities') ."</th>";
-            }else{
-               echo "<th colspan='4'>" . _n('Current skateholder','Current skateholders',2, 'manageentities') ."</th>";
+               echo "<th colspan='5'>" . _n('Current skateholder', 'Current skateholders', 2, 'manageentities') . "</th>";
+            } else {
+               echo "<th colspan='4'>" . _n('Current skateholder', 'Current skateholders', 2, 'manageentities') . "</th>";
             }
-         }else{
+         } else {
             if ($this->canCreate()) {
-               echo "<th colspan='5'>" . _n('Current skateholder','Current skateholders',1, 'manageentities') ."</th>";
-            }else{
-               echo "<th colspan='4'>" . _n('Current skateholder','Current skateholders',1, 'manageentities') ."</th>";
+               echo "<th colspan='5'>" . _n('Current skateholder', 'Current skateholders', 1, 'manageentities') . "</th>";
+            } else {
+               echo "<th colspan='4'>" . _n('Current skateholder', 'Current skateholders', 1, 'manageentities') . "</th>";
             }
          }
          echo "</tr>";
 
-         if (sizeof($listSkateholders) > 0){
+         if (sizeof($listSkateholders) > 0) {
 
-            foreach ($listSkateholders as $skateholder){
+            foreach ($listSkateholders as $skateholder) {
                $user = new User();
 
                $user->getFromDB($skateholder['users_id']);
-               if (isset($user->fields['id'])){
+               if (isset($user->fields['id'])) {
                   $link = $user->getLinkURL();
-                  echo "<tr class='tab_bg_1' id='row_".$skateholder['id']."'>";
-                  echo "<td>".__("User")."</td>";
+                  echo "<tr class='tab_bg_1' id='row_" . $skateholder['id'] . "'>";
+                  echo "<td>" . __("User") . "</td>";
                   echo "<td>";
-                  echo "<a href='".$link."' target='_blank'>".formatUserName($user->fields['id'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname'])."</a>";
+                  echo "<a href='" . $link . "' target='_blank'>" . formatUserName($user->fields['id'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']) . "</a>";
                   echo "</td>";
 
-                  echo "<td>".__("Affected to","manageentities")."</td>";
-                  echo "<td id='td_user_id".$skateholder['id']."'>";
-                  echo $skateholder['number_affected_days']."&nbsp;"._n("Day","Days",2);
+                  echo "<td>" . __("Affected to", "manageentities") . "</td>";
+                  echo "<td id='td_user_id" . $skateholder['id'] . "'>";
+                  echo $skateholder['number_affected_days'] . "&nbsp;" . _n("Day", "Days", 2);
                   echo "</td>";
 
                   if ($this->canCreate()) {
                      echo "<td>";
                      echo "<span class='pointer'>";
-                     echo "<img src='../../../pics/delete.png' title='".__("Delete","manageentities")."' id='delete_".$user->fields['id']."'";
-                     echo " onclick=\"javascript:if (confirm('".__("This action is irreversible. Continue ?",'manageentities')."')){deleteSkateholder".$idToUse.$skateholder['id']."();}\" ";
+                     echo "<img src='../../../pics/delete.png' title='" . __("Delete", "manageentities") . "' id='delete_" . $user->fields['id'] . "'";
+                     echo " onclick=\"javascript:if (confirm('" . __("This action is irreversible. Continue ?", 'manageentities') . "')){deleteSkateholder" . $idToUse . $skateholder['id'] . "();}\" ";
                      echo "/>";
-   
+
                      echo "&nbsp;</span>";
                      echo "</td>";
                   }
                   echo "</tr>";
-                  
-                  
-                  $params['action'] = "delete_user_datas";
-                  $params['id_div_ajax']  = $idDivAjax;
-                  $params['id_dp_nbdays']  = "nb_days".$skateholder['plugin_manageentities_contractdays_id'];
+
+
+                  $params['action']          = "delete_user_datas";
+                  $params['id_div_ajax']     = $idDivAjax;
+                  $params['id_dp_nbdays']    = "nb_days" . $skateholder['plugin_manageentities_contractdays_id'];
                   $params['contractdays_id'] = $item->fields['id'];
-                  $params['skateholder_id'] = $skateholder['id'];
-                  $url =  $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
-                  
-                  $this->showJSfunction("deleteSkateholder".$idToUse.$skateholder['id'] ,$idDivAjax,$url,array(),$params);
-                  
+                  $params['skateholder_id']  = $skateholder['id'];
+                  $url                       = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
+
+                  $this->showJSfunction("deleteSkateholder" . $idToUse . $skateholder['id'], $idDivAjax, $url, array(), $params);
+
                }
             }
-         }else{
-            echo "<tr class='tab_bg_1' id='empty_skateholders".$idToUse."'><td>".__("No skateholders have been affected yet.","manageentities")."</td></tr>";
+         } else {
+            echo "<tr class='tab_bg_1' id='empty_skateholders" . $idToUse . "'><td>" . __("No skateholders have been affected yet.", "manageentities") . "</td></tr>";
          }
          echo "</table>";
          echo "</div>";
       }
    }
 
-   
-   public function hideAddForm($idToUse){
+
+   public function hideAddForm($idToUse) {
       $this->showHeaderJS();
-      echo "var tbl = $('#global_form_content".$idToUse."').hide();";
+      echo "var tbl = $('#global_form_content" . $idToUse . "').hide();";
       $this->closeFormJS();
    }
-   
-      public function showAddForm($idToUse){
+
+   public function showAddForm($idToUse) {
       $this->showHeaderJS();
-      echo "var tbl = $('#global_form_content".$idToUse."').show();";
+      echo "var tbl = $('#global_form_content" . $idToUse . "').show();";
       $this->closeFormJS();
    }
-   
-   
+
+
    /**
     * Print the field form
     *
@@ -341,27 +342,27 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
 
       if ($item->getType() == PluginManageentitiesInterventionSkateholder::getType()) {
          $idToUse   = $item->fields['plugin_manageentities_contractdays_id'];
-         $idDivAjax = "tabskateholderajax".$item->fields['plugin_manageentities_contractdays_id'];
+         $idDivAjax = "tabskateholderajax" . $item->fields['plugin_manageentities_contractdays_id'];
       } else {
          $idToUse   = $item->fields['id'];
-         $idDivAjax = "tabskateholderajax".$item->fields['id'];
+         $idDivAjax = "tabskateholderajax" . $item->fields['id'];
       }
 
       if (!isset($options['display_list']) || $options['display_list'] != "false") {
          $this->listSkateholders($item);
       }
-      
+
       if ($this->canCreate()) {
          $rand = 0;
          if (isset($options['rand'])) {
             $rand = $options['rand'];
          }
 
-         $ID          = $item->fields['id'];
-         $contractday = new PluginManageentitiesContractDay();
-         $nbDays      = $this->getNbAvailiableDay($item->fields['id']);
-         $url         = $CFG_GLPI ['root_doc']."/plugins/manageentities/ajax/interventionskateholderactions.php";
-         $_SESSION['glpi_plugin_manageentities_nbdays']-=$nbDays;
+         $ID                                            = $item->fields['id'];
+         $contractday                                   = new PluginManageentitiesContractDay();
+         $nbDays                                        = $this->getNbAvailiableDay($item->fields['id']);
+         $url                                           = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
+         $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDays;
 
          if ($ID > 0) {
             $contractday->getFromDB($ID);
@@ -372,61 +373,61 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
             $this->fields["plugin_manageentities_contractdays_id"] = $item->fields['id'];
          }
 
-         echo "<div class='center first-bloc' ".(($nbDays > 0) ? "" : "style='display:none")." id='global_form_content".$idToUse."'>";
-         echo "<table class='tab_cadre_fixe' id='tbl_add_skateholder".$idToUse."'>";
+         echo "<div class='center first-bloc' " . (($nbDays > 0) ? "" : "style='display:none") . " id='global_form_content" . $idToUse . "'>";
+         echo "<table class='tab_cadre_fixe' id='tbl_add_skateholder" . $idToUse . "'>";
          echo "<input type='hidden' name='action' id='action' value='add_user_datas' />";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='6'>".__('Add skateholders', 'manageentities')."</th>";
+         echo "<th colspan='6'>" . __('Add skateholders', 'manageentities') . "</th>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
          // User
-         echo "<td>".__('User')."<span class='red'>&nbsp;*&nbsp;</span></td>";
+         echo "<td>" . __('User') . "<span class='red'>&nbsp;*&nbsp;</span></td>";
          echo "<td>";
-         $idUser = User::dropdown(array('name'  => 'users_id_tech'.$idToUse,
-                  'right' => 'interface'));
+         $idUser = User::dropdown(array('name'  => 'users_id_tech' . $idToUse,
+                                        'right' => 'interface'));
          echo "</td>";
          // Nb days
-         echo "<td>".__('Affected to', 'manageentities')."<span class='red'>&nbsp;*&nbsp;</span></td>";
+         echo "<td>" . __('Affected to', 'manageentities') . "<span class='red'>&nbsp;*&nbsp;</span></td>";
          echo "<td id='nb_days_container'>";
          PluginManageentitiesDropdown::showNumber("nb_days", array("width" => 100, "min" => 0, "max" => $nbDays, "step" => "0.5", "rand" => $rand));
-         $config       = PluginManageentitiesConfig::getInstance();
+         $config = PluginManageentitiesConfig::getInstance();
          if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
-            echo "&nbsp;"._n("Day", "Days", 2);
-         }else{
-            echo "&nbsp;"._n("Hour", "Hours", 2);
+            echo "&nbsp;" . _n("Day", "Days", 2);
+         } else {
+            echo "&nbsp;" . _n("Hour", "Hours", 2);
          }
          echo "</td>";
 
          echo "<td>";
-         echo "<input type='hidden' name='id_user' id='id_user' value='dropdown_users_id_tech".$idUser."' />";
-         echo "<input type='button' class='submit' name='add_skateholder' id='add_skateholder' value='"._sx("button", "Add")."' onclick='addSkateholder".$idToUse."();' />";
+         echo "<input type='hidden' name='id_user' id='id_user' value='dropdown_users_id_tech" . $idUser . "' />";
+         echo "<input type='button' class='submit' name='add_skateholder' id='add_skateholder' value='" . _sx("button", "Add") . "' onclick='addSkateholder" . $idToUse . "();' />";
          echo "</td>";
          echo "</tr>";
          echo "</table>";
-         echo "<div id='".$idDivAjax."' style='text-align:center;'></div>";
+         echo "<div id='" . $idDivAjax . "' style='text-align:center;'></div>";
          echo "</div>";
 
          $listIds = array(
-            "dropdown_nb_days".$idToUse               => array("dropdown", "nb_days"),
-            "dropdown_users_id_tech".$idToUse.$idUser => array("dropdown", "users_id_tech"),
+            "dropdown_nb_days" . $idToUse                 => array("dropdown", "nb_days"),
+            "dropdown_users_id_tech" . $idToUse . $idUser => array("dropdown", "users_id_tech"),
          );
 
          $params = array(
             'action'          => "add_user_datas",
-            'id_dp_nbdays'    => "dropdown_nb_days".$idToUse,
+            'id_dp_nbdays'    => "dropdown_nb_days" . $idToUse,
             'id_div_ajax'     => $idDivAjax,
             "contractdays_id" => $item->fields['id']
          );
 
-         $this->showJSfunction("addSkateholder".$idToUse, $idDivAjax, $url, $listIds, $params);
+         $this->showJSfunction("addSkateholder" . $idToUse, $idDivAjax, $url, $listIds, $params);
       }
    }
 
-   public function showJSfunction($functionName,$idDivAjax,$url,$listId, $params,$additionalDiv=null){
+   public function showJSfunction($functionName, $idDivAjax, $url, $listId, $params, $additionalDiv = null) {
       $this->showHeaderJS();
-      echo "function ".$functionName. "() {\n";
+      echo "function " . $functionName . "() {\n";
 
       $divReturned = "";
       if ($additionalDiv != null) {
@@ -435,8 +436,8 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
          $divReturned = $idDivAjax;
       }
 
-      echo Html::jsGetElementbyID($divReturned).".load(\n
-            '".$url."'\n";
+      echo Html::jsGetElementbyID($divReturned) . ".load(\n
+            '" . $url . "'\n";
 
       echo ",{";
       $first = true;
@@ -448,14 +449,14 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
          }
          switch ($val[0]) {
             case "checkbox":
-               echo $val[1].":".Html::jsGetElementbyID(Html::cleanId($key)).".is(':checked')";
+               echo $val[1] . ":" . Html::jsGetElementbyID(Html::cleanId($key)) . ".is(':checked')";
                break;
             case "dropdown":
-               echo $val[1].":".Html::jsGetElementbyID(Html::cleanId($key)).".val()";
+               echo $val[1] . ":" . Html::jsGetElementbyID(Html::cleanId($key)) . ".val()";
                break;
             case "text":
             default:
-               echo $val[1].":".Html::jsGetElementbyID(Html::cleanId($key)).".val()";
+               echo $val[1] . ":" . Html::jsGetElementbyID(Html::cleanId($key)) . ".val()";
                break;
          }
       }
@@ -466,7 +467,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
          } else {
             echo ",";
          }
-         echo $key.":'".$val."'";
+         echo $key . ":'" . $val . "'";
       }
       echo "}\n";
       echo ");";
@@ -475,39 +476,37 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
    }
 
 
-
-   public function getNbAvailiableDay($contractdays_id){
+   public function getNbAvailiableDay($contractdays_id) {
       $contractDay = new PluginManageentitiesContractDay();
       $contractDay->getFromDB($contractdays_id);
       $nbMaxDays = $contractDay->fields['nbday'];
 
-      $condition = "plugin_manageentities_contractdays_id=".$contractdays_id;
+      $condition = "plugin_manageentities_contractdays_id=" . $contractdays_id;
 
-      $listInterventionDays = $dbu->getAllDataFromTable($this->getTable(),$condition);
-      
-      if (sizeof($listInterventionDays) == 0){
+      $listInterventionDays = $dbu->getAllDataFromTable($this->getTable(), $condition);
+
+      if (sizeof($listInterventionDays) == 0) {
          return $nbMaxDays;
-      }else{
+      } else {
          foreach ($listInterventionDays as $intervention) {
             $nbMaxDays -= $intervention['number_affected_days'];
          }
       }
       return $nbMaxDays;
    }
-    
-    
-    
-   public function showMessage($message,$messageType,$with=-1,$height=-1){
-      $srcImg = "";
+
+
+   public function showMessage($message, $messageType, $with = -1, $height = -1) {
+      $srcImg     = "";
       $alertTitle = "";
       switch ($messageType) {
          case ERROR:
-            $srcImg = "../../../pics/warning.png";
-            $alertTitle = _n("Information","Informations",1);
+            $srcImg     = "../../../pics/warning.png";
+            $alertTitle = _n("Information", "Informations", 1);
             break;
          case INFO:
          default:
-            $srcImg = "../pics/info.png";
+            $srcImg     = "../pics/info.png";
             $alertTitle = __("Warning");
             break;
       }
@@ -518,14 +517,14 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
             }";
       $this->closeFormJS();
 
-      echo "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>".$message."</div>";
+      echo "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>" . $message . "</div>";
 
       $this->showHeaderJS();
-      echo "var mTitle =  \"<img src='".$srcImg."' width=16 height=16 />&nbsp;".$alertTitle." \";";
+      echo "var mTitle =  \"<img src='" . $srcImg . "' width=16 height=16 />&nbsp;" . $alertTitle . " \";";
       echo "$( '#alert-message' ).dialog({
         autoOpen: false,
-        height: ".($height>0?$height:150).",
-        width: ".($with>0?$with:250).",
+        height: " . ($height > 0 ? $height : 150) . ",
+        width: " . ($with > 0 ? $with : 250) . ",
         modal: true,
         open: function (){
          $(this)
@@ -553,11 +552,11 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM{
 
    }
 
-   private function showHeaderJS(){
+   private function showHeaderJS() {
       echo "\n<script type='text/javascript'>\n";
    }
 
-   private function closeFormJS(){
+   private function closeFormJS() {
       echo "</script>\n";
    }
 

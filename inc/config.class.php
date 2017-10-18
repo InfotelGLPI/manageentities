@@ -1,10 +1,11 @@
 <?php
 /*
+ * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2003-2012 by the Manageentities Development Team.
+ Copyright (C) 2014-2017 by the Manageentities Development Team.
 
- https://forge.indepnet.net/projects/manageentities
+ https://github.com/InfotelGLPI/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -34,99 +35,99 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
    private static $instance;
 
-   const DAY = 0;
-   const HOUR = 1;
-   const NOPRICE = 0;
-   const PRICE = 1;
+   const DAY                 = 0;
+   const HOUR                = 1;
+   const NOPRICE             = 0;
+   const PRICE               = 1;
    const REPORT_INTERVENTION = 0;
    const PERIOD_INTERVENTION = 1;
-   
-   function showForm () {
+
+   function showForm() {
       global $DB, $CFG_GLPI;
-      echo "<form name='form' method='post' action='".
-         Toolbox::getItemTypeFormURL('PluginManageentitiesConfig')."'>";
+      echo "<form name='form' method='post' action='" .
+           Toolbox::getItemTypeFormURL('PluginManageentitiesConfig') . "'>";
 
       echo "<div align='center'><table class='tab_cadre_fixe'  cellspacing='2' cellpadding='2'>";
-      echo "<tr><th colspan='2'>".__('Options', 'manageentities')."</th></tr>";
+      echo "<tr><th colspan='2'>" . __('Options', 'manageentities') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>".__('Save reports in glpi', 'manageentities')."</td>";
+      echo "<tr class='tab_bg_1 top'><td>" . __('Save reports in glpi', 'manageentities') . "</td>";
       echo "<td>";
-      Dropdown::showYesNo("backup",$this->fields["backup"]);
+      Dropdown::showYesNo("backup", $this->fields["backup"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>".__('Rubric by default for reports', 'manageentities')."</td>";
+      echo "<tr class='tab_bg_1 top'><td>" . __('Rubric by default for reports', 'manageentities') . "</td>";
       echo "<td>";
-      Dropdown::show('DocumentCategory', array('name' => "documentcategories_id",
+      Dropdown::show('DocumentCategory', array('name'  => "documentcategories_id",
                                                'value' => $this->fields["documentcategories_id"]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>".__('Use of price', 'manageentities')."</td>";
+      echo "<tr class='tab_bg_1 top'><td>" . __('Use of price', 'manageentities') . "</td>";
       echo "<td>";
-      Dropdown::showYesNo("useprice",$this->fields["useprice"]);
+      Dropdown::showYesNo("useprice", $this->fields["useprice"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>".__('Configuration daily or hourly', 'manageentities')."</td>";
+      echo "<tr class='tab_bg_1 top'><td>" . __('Configuration daily or hourly', 'manageentities') . "</td>";
       echo "<td>";
-      $rand = Dropdown::showFromArray('hourorday', self::getConfigType(), array('value'  => $this->fields["hourorday"]));
-      
+      $rand = Dropdown::showFromArray('hourorday', self::getConfigType(), array('value' => $this->fields["hourorday"]));
+
       echo "<tr class='tab_bg_1 top'>";
       echo "<td><span id='title_show_hourorday'></span></td>";
       echo "<td><span id='value_show_hourorday'></span></td>";
       echo "</tr>";
-      
+
       //js for load configuration
-       Ajax::updateItem("title_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php", 
-            array('hourorday' => $this->fields["hourorday"], 'action'   => 'title_show_hourorday'), "dropdown_hourorday$rand");
-      Ajax::updateItem("value_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php", 
-            array('hourorday' => $this->fields["hourorday"], 'action'   => 'value_show_hourorday'), "dropdown_hourorday$rand");
+      Ajax::updateItem("title_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       array('hourorday' => $this->fields["hourorday"], 'action' => 'title_show_hourorday'), "dropdown_hourorday$rand");
+      Ajax::updateItem("value_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       array('hourorday' => $this->fields["hourorday"], 'action' => 'value_show_hourorday'), "dropdown_hourorday$rand");
       //js for change configuration
-      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php", 
-            array('hourorday' => '__VALUE__', 'action'   => 'title_show_hourorday'));
-      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php", 
-            array('hourorday' => '__VALUE__', 'action'   => 'value_show_hourorday'));
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    array('hourorday' => '__VALUE__', 'action' => 'title_show_hourorday'));
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    array('hourorday' => '__VALUE__', 'action' => 'value_show_hourorday'));
       echo "</td></tr>";
-      
-      echo "<tr class='tab_bg_1 top'><td>".__('Only public task are visible on intervention report', 'manageentities')."</td>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('Only public task are visible on intervention report', 'manageentities') . "</td>";
       echo "<td>";
-      Dropdown::showYesNo("use_publictask",$this->fields["use_publictask"]);
+      Dropdown::showYesNo("use_publictask", $this->fields["use_publictask"]);
       echo "</td></tr>";
-      
-      echo "<tr class='tab_bg_1 top'><td>".__('Allow periods on the same interval of dates', 'manageentities')."</td>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('Allow periods on the same interval of dates', 'manageentities') . "</td>";
       echo "<td>";
-      Dropdown::showYesNo("allow_same_periods",$this->fields["allow_same_periods"]);
+      Dropdown::showYesNo("allow_same_periods", $this->fields["allow_same_periods"]);
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_1 top'><td>" . __('Configuring the client side view', 'manageentities') . "</td>";
       echo "<td>";
       self::dropdownConfigChoiceIntervention("choice_intervention", $this->fields["choice_intervention"]);
       echo "</td></tr>";
 
-      $contractstate = new PluginManageentitiesContractState();
+      $contractstate  = new PluginManageentitiesContractState();
       $contractstates = $contractstate->find();
-      $states = array();
-      foreach ($contractstates as $key => $val){
+      $states         = array();
+      foreach ($contractstates as $key => $val) {
          $states[$key] = $val['name'];
       }
-      
-      echo "<tr class='tab_bg_1 top'><td>".__('List of default statuses for general monitoring', 'manageentities')."</td>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('List of default statuses for general monitoring', 'manageentities') . "</td>";
       echo "<td>";
-      if($this->fields["contract_states"] == NULL){
-         Dropdown::showFromArray("contract_states",  $states, array('multiple' => true, 'width' => 200, 'value' => $this->fields["contract_states"]));
+      if ($this->fields["contract_states"] == NULL) {
+         Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'value' => $this->fields["contract_states"]));
       } else {
          Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => json_decode($this->fields["contract_states"], true)));
       }
       echo "</td></tr>";
 
-      $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` as users_id
+      $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` AS users_id
         FROM `glpi_plugin_manageentities_businesscontacts`, `glpi_users`
         WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
         GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
 
       $result = $DB->query($query);
-      
+
       $users = array();
       while ($data = $DB->fetch_assoc($result)) {
-         $users[$data['id']] = $data['realname']." ".$data['firstname'];
+         $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
       }
       echo "<tr class='tab_bg_1 top'><td>" . __('Default Business list for general monitoring', 'manageentities') . "</td>";
       echo "<td>";
@@ -137,34 +138,34 @@ class PluginManageentitiesConfig extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>".__('Display comments from the company in the CRI', 'manageentities')."</td>";
+      echo "<tr class='tab_bg_1 top'><td>" . __('Display comments from the company in the CRI', 'manageentities') . "</td>";
       echo "<td>";
-      Dropdown::showYesNo("comment",$this->fields["comment"]);
+      Dropdown::showYesNo("comment", $this->fields["comment"]);
       echo "</td></tr>";
-      
+
       echo "<input type='hidden' name='id' value='1'>";
-      echo "<tr class='tab_bg_1 center'><td colspan='2'><font color='red'>".__('Warning: changing the configuration daily or hourly impacts the types of contract', 'manageentities')."</td></font></tr>";
+      echo "<tr class='tab_bg_1 center'><td colspan='2'><font color='red'>" . __('Warning: changing the configuration daily or hourly impacts the types of contract', 'manageentities') . "</td></font></tr>";
       echo "<tr class='tab_bg_2 center'><td colspan='2'><input type=\"submit\" name=\"update_config\" class=\"submit\"
-         value=\""._sx('button', 'Save')."\" ></td></tr>";
+         value=\"" . _sx('button', 'Save') . "\" ></td></tr>";
 
       echo "</table></div>";
       Html::closeForm();
    }
 
    function prepareInputForUpdate($input) {
-         if (isset($input['contract_states'])) {
-            $input['contract_states'] = json_encode($input['contract_states']);
-         } else {
-            $input['contract_states'] = 'NULL';
-         }
-          if (isset($input['business_id'])) {
-            $input['business_id'] = json_encode($input['business_id']);
-         } else {
-            $input['business_id'] = 'NULL';
-         }
+      if (isset($input['contract_states'])) {
+         $input['contract_states'] = json_encode($input['contract_states']);
+      } else {
+         $input['contract_states'] = 'NULL';
+      }
+      if (isset($input['business_id'])) {
+         $input['business_id'] = json_encode($input['business_id']);
+      } else {
+         $input['business_id'] = 'NULL';
+      }
       return $input;
    }
-   
+
    /*function showDetails() {
       echo "<form name='form' method='post' action='".
          Toolbox::getItemTypeFormURL('PluginManageentitiesConfig')."'>";
@@ -209,14 +210,14 @@ class PluginManageentitiesConfig extends CommonDBTM {
       echo "</table></div>";
       Html::closeForm();
    }*/
-   
+
    function showFormCompany() {
       //add a company
       PluginManageentitiesCompany::addNewCompany(array('title' => __('Add a company', 'manageentities')));
       Html::closeForm();
 
       $plugin_company = new PluginManageentitiesCompany();
-      $result = $plugin_company->find();
+      $result         = $plugin_company->find();
       echo "<div align='center'>";
       echo "<table class='tab_cadre_fixe' cellpadding='5'>";
       echo "<tr><th colspan='2'>" . _n('Company', 'Companies', 2, 'manageentities') . "</th></tr>";
@@ -225,9 +226,9 @@ class PluginManageentitiesConfig extends CommonDBTM {
          echo "<tr>";
          echo "<td>";
          $link_period = Toolbox::getItemTypeFormURL("PluginManageentitiesCompany");
-         echo "<a class='ganttWhite' href='".$link_period."?id=".$data["id"]."'>";
+         echo "<a class='ganttWhite' href='" . $link_period . "?id=" . $data["id"] . "'>";
          $plugin_company->getFromDB($data["id"]);
-         echo $plugin_company->getNameID()."</a>";
+         echo $plugin_company->getNameID() . "</a>";
          echo "</td>";
          echo "</tr>";
       }
@@ -236,21 +237,21 @@ class PluginManageentitiesConfig extends CommonDBTM {
       echo "</table>";
       echo "</div>";
    }
-   
-   function isCommentCri(){
+
+   function isCommentCri() {
       $config = new PluginManageentitiesConfig();
       $config->GetFromDB(1);
       return $config->fields['comment'];
    }
 
    function getConfigType() {
-      return(array(self::DAY => _x('periodicity', 'Daily'),
-         self::HOUR => __('Hourly', 'manageentities')));
+      return (array(self::DAY  => _x('periodicity', 'Daily'),
+                    self::HOUR => __('Hourly', 'manageentities')));
    }
-   
+
    function dropdownConfigChoiceIntervention($name, $value = 0) {
       $configTypes = array(self::REPORT_INTERVENTION => _n('Intervention report', 'Intervention reports', 2, 'manageentities'),
-         self::PERIOD_INTERVENTION => _n('Period of contract', 'Periods of contract', 2, 'manageentities'));
+                           self::PERIOD_INTERVENTION => _n('Period of contract', 'Periods of contract', 2, 'manageentities'));
 
       if (!empty($configTypes)) {
          return Dropdown::showFromArray($name, $configTypes, array('value' => $value));
@@ -259,8 +260,8 @@ class PluginManageentitiesConfig extends CommonDBTM {
       }
    }
 
-   public static function getInstance(){
-      if(!isset(self::$instance)){
+   public static function getInstance() {
+      if (!isset(self::$instance)) {
          $temp = new PluginManageentitiesConfig();
          $temp->getFromDB('1');
          self::$instance = $temp;
@@ -268,7 +269,7 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
       return self::$instance;
    }
-   
+
 }
 
 ?>
