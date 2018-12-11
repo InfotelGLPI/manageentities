@@ -56,8 +56,9 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
    function getTechnicians($tickets_id, $remove_tag = false) {
       global $DB;
 
+      $dbu    = new DbUtils();
       $techs  = array();
-      $query  = "SELECT `users_id_tech` AS users_id,
+      $query  = "SELECT `users_id_tech` as users_id,
                        `glpi_users`.`name`,
                        `glpi_users`.`realname`,
                        `glpi_users`.`firstname`
@@ -70,17 +71,17 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
          while ($data = $DB->fetch_array($result)) {
             if ($data['users_id'] != 0) {
                if ($remove_tag) {
-                  $techs['notremove'][$data['users_id']] = formatUserName($data["users_id"],
-                                                                          $data["name"], $data["realname"], $data["firstname"]);
+                  $techs['notremove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
+                                                                                $data["name"], $data["realname"], $data["firstname"]);
                } else {
-                  $techs[$data['users_id']] = formatUserName($data["users_id"],
-                                                             $data["name"], $data["realname"], $data["firstname"]);
+                  $techs[$data['users_id']] = $dbu->formatUserName($data["users_id"],
+                                                                   $data["name"], $data["realname"], $data["firstname"]);
                }
             }
          }
       }
 
-      $query  = "SELECT `users_id` AS users_id,
+      $query  = "SELECT `users_id` as users_id,
                        `glpi_users`.`name`,
                        `glpi_users`.`realname`,
                        `glpi_users`.`firstname`
@@ -93,11 +94,11 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
          while ($data = $DB->fetch_array($result)) {
             if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {
                if ($remove_tag) {
-                  $techs['remove'][$data['users_id']] = formatUserName($data["users_id"],
-                                                                       $data["name"], $data["realname"], $data["firstname"]);
+                  $techs['remove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
+                                                                             $data["name"], $data["realname"], $data["firstname"]);
                } else {
-                  $techs[$data['users_id']] = formatUserName($data["users_id"],
-                                                             $data["name"], $data["realname"], $data["firstname"]);
+                  $techs[$data['users_id']] = $dbu->formatUserName($data["users_id"],
+                                                                   $data["name"], $data["realname"], $data["firstname"]);
                }
             }
          }
@@ -106,5 +107,3 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
       return $techs;
    }
 }
-
-?>

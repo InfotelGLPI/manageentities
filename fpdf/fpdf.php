@@ -923,7 +923,7 @@ if (!class_exists('FPDF'))
                            $type=substr($file,$pos+1);
                    }
                    $type=Toolbox::strtolower($type);
-                   $mqr=Toolbox::get_magic_quotes_runtime();
+                   $mqr=get_magic_quotes_runtime();
                    ini_set("magic_quotes_runtime",0);
                    if ($type=='jpg' || $type=='jpeg')
                            $info=$this->_parsejpg($file);
@@ -1178,7 +1178,7 @@ if (!class_exists('FPDF'))
                    $this->_out('<</Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences ['.$diff.']>>');
                    $this->_out('endobj');
            }
-           $mqr=Toolbox::get_magic_quotes_runtime();
+           $mqr=get_magic_quotes_runtime();
            ini_set("magic_quotes_runtime",0);
            foreach($this->FontFiles as $file=>$info)
            {
@@ -1289,7 +1289,7 @@ if (!class_exists('FPDF'))
    {
            $filter=($this->compress) ? '/Filter /FlateDecode ' : '';
            reset($this->images);
-           while(list($file,$info)=each($this->images))
+           foreach($this->images as $file => $info)
            {
                    $this->_newobj();
                    $this->images[$file]['n']=$this->n;

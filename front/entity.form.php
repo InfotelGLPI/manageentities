@@ -48,5 +48,3 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"] . "/front/entity.form.php?id=" . $_POST["entities_id"] . "&amps&forcetab=EntityData$1");
 
 }
-
-?>

@@ -35,5 +35,3 @@ if (isset ($_POST['update_user_preferences_manageentities'])) {
    $pref->update($_POST);
    Html::back();
 }
-
-?>

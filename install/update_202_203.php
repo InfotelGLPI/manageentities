@@ -44,7 +44,7 @@ function update202to203() {
    $migration->executeMigration();
 
    // UPDATE glpi_plugin_manageentities_criprices
-   
+
    $check = array();
 
    // Default Cri type
@@ -67,7 +67,7 @@ function update202to203() {
             }
             $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
                             (`entities_id` ,`plugin_manageentities_critypes_id` ,`price` ,`plugin_manageentities_contractdays_id`, `is_default`)
-                            VALUES ('".$data['entities_id']."', '".$data['critypes_id']."', '".$data['price']."', '".$data['contractdays_id']."', '1')";
+                            VALUES ('" . $data['entities_id'] . "', '" . $data['critypes_id'] . "', '" . $data['price'] . "', '" . $data['contractdays_id'] . "', '1')";
             $DB->query($query);
             $check[$data['contractdays_id']][] = $data['critypes_id'];
          }
@@ -75,7 +75,7 @@ function update202to203() {
    }
 
    $check2 = array();
-   
+
    // Cridetail cri type
    $query = "SELECT DISTINCT `glpi_plugin_manageentities_criprices`.`id` as criprices_id, 
                     `glpi_plugin_manageentities_criprices`.`price`, 
@@ -99,7 +99,7 @@ function update202to203() {
             }
             $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
                       (`entities_id` ,`plugin_manageentities_critypes_id` ,`price` ,`plugin_manageentities_contractdays_id`, `is_default`)
-                      VALUES ('".$data['entities_id']."', '".$data['critypes_id']."', '".$data['price']."', '".$data['contractdays_id']."', '0')";
+                      VALUES ('" . $data['entities_id'] . "', '" . $data['critypes_id'] . "', '" . $data['price'] . "', '" . $data['contractdays_id'] . "', '0')";
             $DB->query($query);
             $check2[$data['contractdays_id']][] = $data['critypes_id'];
          }
@@ -112,5 +112,3 @@ function update202to203() {
 
    return true;
 }
-
-?>

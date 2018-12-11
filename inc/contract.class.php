@@ -143,15 +143,15 @@ class PluginManageentitiesContract extends CommonDBTM {
       if ($number) {
          while ($data = $DB->fetch_array($result)) {
 
-            $query_nodefault  = "UPDATE `" . $this->getTable() . "`
-            SET `is_default` = '0' WHERE `id` = '" . $data["id"] . "' ";
-            $result_nodefault = $DB->query($query_nodefault);
+            $query_nodefault = "UPDATE `" . $this->getTable() . "`
+            SET `is_default` = 0 WHERE `id` = " . $data["id"];
+            $DB->query($query_nodefault);
          }
       }
 
-      $query_default  = "UPDATE `" . $this->getTable() . "`
-        SET `is_default` = '1' WHERE `id` = '" . $id . "' ";
-      $result_default = $DB->query($query_default);
+      $query_default = "UPDATE `" . $this->getTable() . "`
+        SET `is_default` = 1 WHERE `id` = $id";
+      $DB->query($query_default);
    }
 
    static function showForContract(Contract $contract) {
@@ -162,10 +162,8 @@ class PluginManageentitiesContract extends CommonDBTM {
 
       if (!$canView) return false;
 
-      $restrict        = "`glpi_plugin_manageentities_contracts`.`entities_id` = '" .
-                         $contract->fields['entities_id'] . "'
-                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '" .
-                         $contract->fields['id'] . "'";
+      $restrict        = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contract->fields['entities_id'],
+                          "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']];
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract  = reset($pluginContracts);
@@ -529,11 +527,12 @@ class PluginManageentitiesContract extends CommonDBTM {
    static function checkRemainingOpenContractDays($contracts_id) {
       global $DB;
 
-      $query = "SELECT count(*) AS count
+      $query = "SELECT count(*) as count
                 FROM `glpi_plugin_manageentities_contractdays`
                 LEFT JOIN `glpi_plugin_manageentities_contractstates`
                     ON (`glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id` = `glpi_plugin_manageentities_contractstates`.`id`)
-                WHERE `glpi_plugin_manageentities_contractdays`.`contracts_id` = '" . $contracts_id . "' AND `glpi_plugin_manageentities_contractstates`.`is_active` = 1";
+                WHERE `glpi_plugin_manageentities_contractdays`.`contracts_id` = " . $contracts_id . " 
+                AND `glpi_plugin_manageentities_contractstates`.`is_active` = 1";
 
       $result = $DB->query($query);
       while ($data = $DB->fetch_array($result)) {
@@ -546,5 +545,3 @@ class PluginManageentitiesContract extends CommonDBTM {
    }
 
 }
-
-?>

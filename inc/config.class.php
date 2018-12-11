@@ -118,7 +118,7 @@ class PluginManageentitiesConfig extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` AS users_id
+      $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` as users_id
         FROM `glpi_plugin_manageentities_businesscontacts`, `glpi_users`
         WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
         GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
@@ -271,5 +271,3 @@ class PluginManageentitiesConfig extends CommonDBTM {
    }
 
 }
-
-?>

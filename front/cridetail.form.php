@@ -42,7 +42,7 @@ $cri = new TicketTask();
 
 $cri->checkGlobal(READ);
 
-if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
 } else {
    Html::helpHeader(__('Entities portal', 'manageentities'));
@@ -50,11 +50,8 @@ if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
 
 $cri->display($_GET);
 
-if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+if (Session::getCurrentInterface() == 'central') {
    Html::footer();
 } else {
    Html::helpFooter();
 }
-
-
-?>

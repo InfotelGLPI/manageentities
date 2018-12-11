@@ -711,8 +711,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             if ($price != null && $intervention->fields['id'] <= 0) {
                $cprice = new PluginManageentitiesCriPrice();
                $cprice->getEmpty();
-               $query = "WHERE `entities_id`=" . $intervention->fields['entities_id'] . " AND `plugin_manageentities_critypes_id`=" . $intervention->fields['plugin_manageentities_critypes_id'];
-               $cprice->getFromDBByQuery($query);
+               $cprice->getFromDBByCrit(['entities_id'                       => $intervention->fields['entities_id'],
+                                         'plugin_manageentities_critypes_id' => $intervention->fields['plugin_manageentities_critypes_id']]);
+
                if (isset($cprice->fields['id']) && $cprice->fields['id'] > 0) {
                   $typeInsert = DBOperation::UPDATE;
                } else {
@@ -893,10 +894,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    }
 
    public function deleteContractManagementType($pView) {
-      $restrict = "`glpi_plugin_manageentities_contracts`.`entities_id` = '" .
-                  $_POST['entities_id'] . "'
-                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '" .
-                  $_POST['contracts_id'] . "'";
+      $restrict = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $_POST['entities_id'],
+                   "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $_POST['contracts_id']];
       $dbu      = new DbUtils();
 
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
@@ -921,7 +920,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    }
 
    public function getQueryForDFContract($item) {
-      $ID = $item->getField('id');
+      $dbu = new DbUtils();
+      $ID  = $item->getField('id');
 
       if ($item->isNewID($ID)) {
          return false;
@@ -976,7 +976,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                       AND `glpi_documents_items`.`itemtype` = '" . $item->getType() . "' ";
 
       if (Session::getLoginUserID()) {
-         $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
+         $query .= $dbu->getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
       } else {
          // Anonymous access from FAQ
          $query .= " AND `glpi_documents`.`entities_id`= '0' ";
@@ -1006,8 +1006,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             break;
 
          case DBOperation::UPDATE:
-            $mEntitiesContact->getFromDBByQuery("WHERE `contacts_id`=" . $contact->fields['id']);
-
+            $mEntitiesContact->getFromDBByCrit(['contacts_id' => $contact->fields['id']]);
             $mEntitiesContact->fields['contacts_id'] = $contact->fields['id'];
             $mEntitiesContact->fields['entities_id'] = $contact->fields['entities_id'];
 
@@ -1023,7 +1022,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
          case 'update-allothers':
             $dbu       = new DbUtils();
-            $condition = "`entities_id`=" . $contact->fields['entities_id'] . " AND `contacts_id` != " . $contact->fields['id'];
+            $condition = ["`entities_id`" => $contact->fields['entities_id'],
+                          'NOT'           => ["`contacts_id`" => $contact->fields['id']]];
             $contacts  = $dbu->getAllDataFromTable(PluginManageentitiesContact::getTable(), $condition);
 
             if (sizeof($contacts) > 0) {
@@ -1037,7 +1037,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             break;
 
          case 'update--force-false':
-            $mEntitiesContact->getFromDBByQuery("WHERE `entities_id`=" . $contact->fields['entities_id'] . " AND `contacts_id`=" . $contact->fields['id']);
+            $mEntitiesContact->getFromDBByCrit(['contacts_id' => $contact->fields['id'],
+                                                'entities_id' => $contact->fields['entities_id']]);
             $mEntitiesContact->fields['is_default'] = 0;
             $this->persistData($mEntitiesContact, DBOperation::UPDATE);
             break;
@@ -1053,8 +1054,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             if ($object->getType() == Entity::getType()) {
                $tmpObj = clone $object;
                $tmpObj->getEmpty();
-               $tmpObj->getFromDBByQuery("WHERE `name`='" . $object->fields['name'] . "'");
-
+               $tmpObj->getFromDBByCrit(['name' => $object->fields['name']]);
                if (isset($tmpObj->fields['id']) && $tmpObj->fields['id'] > 0) {
                   return array(Status::NOT_ADDED => false, 'cause' => Errors::ERROR_NAME_EXIST);
                }
@@ -1096,17 +1096,17 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
       switch ($type) {
          case ElementType::ENTITY:
-            $object->fields['name']        = Html::cleanInputText(isset($_POST['new_entity_name']) ? $_POST['new_entity_name'] : "");
-            $object->fields['comment']     = Html::cleanInputText(isset($_POST['new_entity_comment']) ? $_POST['new_entity_comment'] : "");
-            $object->fields['phonenumber'] = Html::cleanInputText(isset($_POST['new_entity_phone']) ? $_POST['new_entity_phone'] : "");
-            $object->fields['fax']         = Html::cleanInputText(isset($_POST['new_entity_fax']) ? $_POST['new_entity_fax'] : "");
-            $object->fields['website']     = Html::cleanInputText(isset($_POST['new_entity_website']) ? $_POST['new_entity_website'] : "");
-            $object->fields['email']       = Html::cleanInputText(isset($_POST['new_entity_email']) ? $_POST['new_entity_email'] : "");
-            $object->fields['postcode']    = Html::cleanInputText(isset($_POST['new_entity_postcode']) ? $_POST['new_entity_postcode'] : "");
-            $object->fields['state']       = Html::cleanInputText(isset($_POST['new_entity_state']) ? $_POST['new_entity_state'] : "");
-            $object->fields['country']     = Html::cleanInputText(isset($_POST['new_entity_country']) ? $_POST['new_entity_country'] : "");
-            $object->fields['town']        = Html::cleanInputText(isset($_POST['new_entity_city']) ? $_POST['new_entity_city'] : "");
-            $object->fields['address']     = Html::cleanInputText(isset($_POST['new_entity_address']) ? $_POST['new_entity_address'] : "");
+            $object->fields['name']        = isset($_POST['new_entity_name']) ? $_POST['new_entity_name'] : "";
+            $object->fields['comment']     = isset($_POST['new_entity_comment']) ? $_POST['new_entity_comment'] : "";
+            $object->fields['phonenumber'] = isset($_POST['new_entity_phone']) ? $_POST['new_entity_phone'] : "";
+            $object->fields['fax']         = isset($_POST['new_entity_fax']) ? $_POST['new_entity_fax'] : "";
+            $object->fields['website']     = isset($_POST['new_entity_website']) ? $_POST['new_entity_website'] : "";
+            $object->fields['email']       = isset($_POST['new_entity_email']) ? $_POST['new_entity_email'] : "";
+            $object->fields['postcode']    = isset($_POST['new_entity_postcode']) ? $_POST['new_entity_postcode'] : "";
+            $object->fields['state']       = isset($_POST['new_entity_state']) ? $_POST['new_entity_state'] : "";
+            $object->fields['country']     = isset($_POST['new_entity_country']) ? $_POST['new_entity_country'] : "";
+            $object->fields['town']        = isset($_POST['new_entity_city']) ? $_POST['new_entity_city'] : "";
+            $object->fields['address']     = isset($_POST['new_entity_address']) ? $_POST['new_entity_address'] : "";
             $object->fields['entities_id'] = isset($_POST['new_entity_entities_id']) ? $_POST['new_entity_entities_id'] : "";
 
             $this->setEntity($object);
@@ -1282,9 +1282,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
    public function getCriPriceFromType($post) {
       $criPrice = new PluginManageentitiesCriPrice();
-      $criPrice->getFromDBByQuery("WHERE plugin_manageentities_critypes_id=" . $post['new_criprice_critype'] . " AND entities_id=" . $post['entities_id'] .
-                                  " AND plugin_manageentities_contractdays_id=" . $post['plugin_manageentities_contractdays_id']);
-
+      $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id'     => $post['new_criprice_critype'],
+                                  'entities_id'                           => $post['entities_id'],
+                                  'plugin_manageentities_contractdays_id' => $post['plugin_manageentities_contractdays_id']]);
       if (isset($criPrice->fields['id']) && $criPrice->fields['id'] > 0) {
          return $criPrice;
       } else {
@@ -1303,8 +1303,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
    public function getCripriceFromDB($critypeId, $entitiesId) {
       $cprice = new PluginManageentitiesCriPrice();
-      $query  = "WHERE `entities_id`=" . $entitiesId . " AND `plugin_manageentities_critypes_id`=" . $critypeId;
-      $cprice->getFromDBByQuery($query);
+      $cprice->getFromDBByCrit(['entities_id'                       => $entitiesId,
+                                'plugin_manageentities_critypes_id' => $critypeId]);
       if (isset($cprice->fields['id']) && $cprice->fields['id'] > 0) {
          return $cprice;
       } else {
@@ -1338,7 +1338,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
    public function getIconSrcFromExtension($ext) {
       $docType = new DocumentType();
-      $docType->getFromDBByQuery("WHERE `ext` LIKE '" . $ext . "'");
+      $docType->getFromDBByCrit(['ext' => $ext]);
       if (isset($docType->fields['id']) && $docType->fields['id'] > 0) {
          return $docType->fields['icon'];
       } else {
@@ -1529,5 +1529,3 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    }
 
 }
-
-?>

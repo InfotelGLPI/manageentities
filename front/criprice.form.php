@@ -58,5 +58,3 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
    echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
    Html::footer();
 }
-
-?>

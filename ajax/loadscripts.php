@@ -40,7 +40,7 @@ if (isset($_POST['action'])) {
              && Session::haveRight("task", CommonITILTask::ADDALLITEM)
              && strpos($_SERVER['HTTP_REFERER'], "ticket.form.php") !== false
              && strpos($_SERVER['HTTP_REFERER'], 'id=') !== false
-             && $_SESSION['glpiactiveprofile']['interface'] == "central"
+             && Session::getCurrentInterface() == "central"
              && Session::haveRight("plugin_manageentities", READ)) {
 
             echo "<script type='text/javascript'>showCloneTicketTask(" . json_encode(array('root_doc' => $CFG_GLPI['root_doc'])) . ");</script>";
@@ -48,5 +48,3 @@ if (isset($_POST['action'])) {
          break;
    }
 }
-
-?>

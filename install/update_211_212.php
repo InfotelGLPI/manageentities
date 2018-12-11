@@ -44,10 +44,8 @@ function update211to212() {
    PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
    $DB->queryOrDie($query, "ADD glpi_plugin_manageentities_entitylogos");
-   
+
    $migration->executeMigration();
 
    return true;
 }
-
-?>

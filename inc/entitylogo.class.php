@@ -81,7 +81,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
             $doc          = new Document();
             $img          = array("id" => $this->fields["logos_id"]);
             $doc->delete($img, 1);
-            $logo = $this->addFiles(0, -1, $values);
+            $logo = $this->addFilesCRI(0, -1, $values);
             foreach ($logo as $key => $name) {
                $this->add(array('entities_id' => $values["entities_id"],
                                 'logos_id'    => $key));
@@ -89,7 +89,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
 
          } else {
 
-            $logo = $this->addFiles(0, -1, $values);
+            $logo = $this->addFilesCRI(0, -1, $values);
 
             foreach ($logo as $key => $name) {
 
@@ -109,7 +109,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
       );
    }
 
-   function addFiles($donotif = 0, $disablenotif = 1, $values) {
+   function addFilesCRI($donotif = 0, $disablenotif = 1, $values) {
       global $CFG_GLPI;
 
       if (!isset($values['_filename']) || (count($values['_filename']) == 0)) {
@@ -197,10 +197,10 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
     */
    function getLogo($entities_id) {
 
-      $logo = $this->find("entities_id = " . $entities_id);
+      $logo = $this->find(['entities_id' => $entities_id]);
       $logo = reset($logo);
       $doc  = new Document();
-      if (count($logo) > 0) {
+      if (is_array($logo) && count($logo) > 0) {
          if ($doc->getFromDB($logo["logos_id"])) {
             return $doc->fields['filepath'];
          }
@@ -208,6 +208,3 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
       return false;
    }
 }
-
-
-?>

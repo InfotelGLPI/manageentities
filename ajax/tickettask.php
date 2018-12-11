@@ -81,5 +81,3 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
          break;
    }
 }
-
-?>

@@ -69,4 +69,3 @@ if (isset($_POST["addcontract"])) {
 
    Html::footer();
 }
-?>

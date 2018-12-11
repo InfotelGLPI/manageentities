@@ -347,7 +347,8 @@ switch ($_POST ['action']) {
       if (isset($_POST['selected_template']) && $_POST['selected_template'] > 0) {
          $idTemplate = $_POST['selected_template'];
          $template   = new Contract();
-         $template->getFromDBByQuery("WHERE id=" . $idTemplate . " AND is_template=1");
+         $template->getFromDBByCrit(['users_id'    => $idTemplate,
+                                     'is_template' => 1]);
 
          $oldContract               = $pModel->getContract();
          $oldContract->fields       = $template->fields;
@@ -514,5 +515,3 @@ switch ($_POST ['action']) {
    default :
       break;
 }
-
-?>

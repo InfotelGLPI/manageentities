@@ -58,4 +58,3 @@ if (isset($_GET["file"])) { // for other file
       Html::displayErrorAndDie(__('Invalid filename'), true);
    }
 }
-?>

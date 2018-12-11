@@ -50,76 +50,112 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
    }
 
-   function getSearchOptions() {
+   function rawSearchOptions() {
       $config = PluginManageentitiesConfig::getInstance();
 
-      $tab           = array();
-      $tab['common'] = PluginManageentitiesContractDay::getTypeName(1);
+      $tab = [];
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
+      $tab[] = [
+         'id'   => 'common',
+         'name' => PluginManageentitiesContractDay::getTypeName(1)
+      ];
 
-      $tab[2]['table']    = $this->getTable();
-      $tab[2]['field']    = 'begin_date';
-      $tab[2]['name']     = __('Start date');
-      $tab[2]['datatype'] = 'date';
+      $tab[] = [
+         'id'            => '1',
+         'table'         => $this->getTable(),
+         'field'         => 'name',
+         'name'          => __('Name'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => $this->getType()
+      ];
 
-      $tab[3]['table']    = $this->getTable();
-      $tab[3]['field']    = 'end_date';
-      $tab[3]['name']     = __('End date');
-      $tab[3]['datatype'] = 'date';
+      $tab[] = [
+         'id'       => '2',
+         'table'    => $this->getTable(),
+         'field'    => 'begin_date',
+         'name'     => __('Start date'),
+         'datatype' => 'date'
+      ];
 
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['field']    = 'nbday';
-      $tab[4]['name']     = __('Initial credit', 'manageentities');
-      $tab[4]['datatype'] = 'decimal';
+      $tab[] = [
+         'id'       => '3',
+         'table'    => $this->getTable(),
+         'field'    => 'end_date',
+         'name'     => __('End date'),
+         'datatype' => 'date'
+      ];
+
+      $tab[] = [
+         'id'       => '4',
+         'table'    => $this->getTable(),
+         'field'    => 'nbday',
+         'name'     => __('Initial credit', 'manageentities'),
+         'datatype' => 'decimal'
+      ];
 
       //      $tab[5]['table']    = 'glpi_plugin_manageentities_critypes';
       //      $tab[5]['field']    = 'name';
       //      $tab[5]['name']     = __('Intervention type', 'manageentities');
       //      $tab[5]['datatype'] = 'dropdown';
 
-      $tab[6]['table']    = $this->getTable();
-      $tab[6]['field']    = 'report';
-      $tab[6]['name']     = __('Postponement', 'manageentities');
-      $tab[6]['datatype'] = 'decimal';
+      $tab[] = [
+         'id'       => '6',
+         'table'    => $this->getTable(),
+         'field'    => 'report',
+         'name'     => __('Postponement', 'manageentities'),
+         'datatype' => 'decimal'
+      ];
 
-      $tab[7]['table']    = 'glpi_contracts';
-      $tab[7]['field']    = 'name';
-      $tab[7]['name']     = __('Contract');
-      $tab[7]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'       => '7',
+         'table'    => 'glpi_contracts',
+         'field'    => 'name',
+         'name'     => __('Contract'),
+         'datatype' => 'dropdown'
+      ];
 
-      $tab[8]['table']    = 'glpi_plugin_manageentities_contractstates';
-      $tab[8]['field']    = 'name';
-      $tab[8]['name']     = __('State of contract', 'manageentities');
-      $tab[8]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'       => '8',
+         'table'    => 'glpi_plugin_manageentities_contractstates',
+         'field'    => 'name',
+         'name'     => __('State of contract', 'manageentities'),
+         'datatype' => 'dropdown'
+      ];
 
-      $tab[9]['table']            = $this->getTable();
-      $tab[9]['field']            = 'id';
-      $tab[9]['credit_remaining'] = true;
-      $tab[9]['name']             = __('Credit remaining', 'manageentities');
-      $tab[9]['datatype']         = 'specific';
+      $tab[] = [
+         'id'               => '9',
+         'table'            => $this->getTable(),
+         'field'            => 'id',
+         'credit_remaining' => true,
+         'name'             => __('Credit remaining', 'manageentities'),
+         'datatype'         => 'specific'
+      ];
 
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
-         $tab[10]['table']    = $this->getTable();
-         $tab[10]['field']    = 'contract_type';
-         $tab[10]['name']     = __('Type of service contract', 'manageentities');
-         $tab[10]['datatype'] = 'specific';
+         $tab[] = [
+            'id'       => '10',
+            'table'    => $this->getTable(),
+            'field'    => 'contract_type',
+            'name'     => __('Type of service contract', 'manageentities'),
+            'datatype' => 'specific'
+         ];
       }
 
+      $tab[] = [
+         'id'    => '30',
+         'table' => $this->getTable(),
+         'field' => 'id',
+         'name'  => __('ID')
+      ];
 
-      $tab[30]['table'] = $this->getTable();
-      $tab[30]['field'] = 'id';
-      $tab[30]['name']  = __('ID');
-
-      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
-         $tab[80]['table']    = 'glpi_entities';
-         $tab[80]['field']    = 'completename';
-         $tab[80]['name']     = _n('Entity', 'Entities', 1);
-         $tab[80]['datatype'] = 'dropdown';
+      if (Session::getCurrentInterface() == 'central') {
+         $tab[] = [
+            'id'       => '80',
+            'table'    => 'glpi_entities',
+            'field'    => 'completename',
+            'name'     => _n('Entity', 'Entities', 1),
+            'datatype' => 'dropdown'
+         ];
       }
 
       return $tab;
@@ -138,7 +174,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
          case 'id':
             if (isset($options['searchopt']['credit_remaining']) && $options['searchopt']['credit_remaining']) {
                $contractDay                 = new self();
-               $contract                    = $contractDay->find("`id` = " . $values['id']);
+               $contract                    = $contractDay->find(['id' => $values['id']]);
                $contract                    = reset($contract);
                $contract['contractdays_id'] = $values['id'];
                $resultCriDetail             = PluginManageentitiesCriDetail::getCriDetailData($contract);
@@ -269,6 +305,14 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       // Set session saved if exists
       $this->setSessionValues();
 
+      //init values
+      if (empty($this->fields['nbday'])) {
+         $this->fields['nbday'] = 0;
+      }
+      if (empty($this->fields['report'])) {
+         $this->fields['report'] = 0;
+      }
+
       // Fix to get contract navigate list when comming from followup or monthly
       if (isset($options['showFromPlugin']) && $options['showFromPlugin']) {
          $_SERVER['REQUEST_URI'] = $CFG_GLPI["root_doc"] . "/front/contract.form.php?id=" . $contract_id;
@@ -276,10 +320,8 @@ class PluginManageentitiesContractDay extends CommonDBTM {
          Session::addToNavigateListItems("PluginManageentitiesContractDay", $ID);
       }
 
-      $restrict        = "`glpi_plugin_manageentities_contracts`.`entities_id` = '" .
-                         $contract->fields['entities_id'] . "'
-                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '" .
-                         $contract->fields['id'] . "'";
+      $restrict        = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contract->fields['entities_id'],
+                          "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']];
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract  = reset($pluginContracts);
@@ -486,8 +528,8 @@ class PluginManageentitiesContractDay extends CommonDBTM {
          self::addNewContractDay($contract, array('title' => __('Add a contract day', 'manageentities')));
       }
 
-      $restrict = "`entities_id` = '" . $contract->fields['entities_id'] . "'
-                  AND `contracts_id` = '" . $contract->fields['id'] . "'";
+      $restrict = ["`entities_id`"  => $contract->fields['entities_id'],
+                   "`contracts_id`" => $contract->fields['id']];
 
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
@@ -598,7 +640,9 @@ class PluginManageentitiesContractDay extends CommonDBTM {
             echo "</td>";
             $criprice = new PluginManageentitiesCriPrice();
             echo "</td><td class='center'>";
-            if ($criprice->getFromDBByQuery("WHERE `is_default` = 1 AND `plugin_manageentities_contractdays_id` = " . $contractDay->fields['id'])) {
+
+            if ($criprice->getFromDBByCrit(['plugin_manageentities_contractdays_id' => $contractDay->fields['id'],
+                                            'is_default'                            => 1])) {
                echo Html::formatNumber($criprice->fields["price"], false);
             }
             echo "</td>";
@@ -774,5 +818,3 @@ class PluginManageentitiesContractDay extends CommonDBTM {
    }
 
 }
-
-?>

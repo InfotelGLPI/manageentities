@@ -60,23 +60,32 @@ class PluginManageentitiesContractState extends CommonDropdown {
       );
    }
 
-   function getSearchOptions() {
-      $tab = parent::getSearchOptions();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
-      $tab[14]['table']    = $this->getTable();
-      $tab[14]['field']    = 'is_active';
-      $tab[14]['name']     = __('Active');
-      $tab[14]['datatype'] = 'bool';
+      $tab[] = [
+         'id'       => '14',
+         'table'    => $this->getTable(),
+         'field'    => 'is_active',
+         'name'     => __('Active'),
+         'datatype' => 'bool'
+      ];
 
-      $tab[15]['table']    = $this->getTable();
-      $tab[15]['field']    = 'is_closed';
-      $tab[15]['name']     = __('Closed');
-      $tab[15]['datatype'] = 'bool';
+      $tab[] = [
+         'id'       => '15',
+         'table'    => $this->getTable(),
+         'field'    => 'is_closed',
+         'name'     => __('Closed'),
+         'datatype' => 'bool'
+      ];
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'color';
-      $tab[16]['name']     = __('Color', 'manageentities');
-      $tab[16]['datatype'] = 'string';
+      $tab[] = [
+         'id'       => '16',
+         'table'    => $this->getTable(),
+         'field'    => 'color',
+         'name'     => __('Color', 'manageentities'),
+         'datatype' => 'bool'
+      ];
 
       return $tab;
    }
@@ -100,7 +109,7 @@ class PluginManageentitiesContractState extends CommonDropdown {
    static function getOpenedStates() {
       $out  = array();
       $dbu  = new DbUtils();
-      $data = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractstates', "`is_active` = 1");
+      $data = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractstates', ["`is_active`" => 1]);
       if (!empty($data)) {
          foreach ($data as $val) {
             $out[] = $val['id'];
@@ -110,5 +119,3 @@ class PluginManageentitiesContractState extends CommonDropdown {
       return $out;
    }
 }
-
-?>

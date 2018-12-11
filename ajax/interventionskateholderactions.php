@@ -44,7 +44,8 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
             $idContractdays = $_POST['contractdays_id'];
             $nbDays         = $_POST['nb_days'];
 
-            $interventionSkateholder->getFromDBByQuery("WHERE `users_id`=" . $idUser . " AND `plugin_manageentities_contractdays_id`=" . $idContractdays);
+            $interventionSkateholder->getFromDBByCrit(['users_id'                              => $idUser,
+                                                       'plugin_manageentities_contractdays_id' => $idContractdays]);
 
             if (isset($interventionSkateholder->fields['id']) && $interventionSkateholder->fields['id'] > 0) {
                $interventionSkateholder->fields['number_affected_days'] += $_POST['nb_days'];

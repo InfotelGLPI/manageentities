@@ -66,4 +66,3 @@ if ($plugin->isActivated("manageentities")) {
    echo "<b>" . __('Please activate the plugin', 'manageentities') . "</b></div>";
    Html::footer();
 }
-?>

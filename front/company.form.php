@@ -52,4 +52,3 @@ if (isset($_POST["add"])) {
    $company->display($_GET);
    Html::footer();
 }
-?>

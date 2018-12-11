@@ -49,8 +49,9 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
    static function countForItem(CommonDBTM $item) {
 
-      return countElementsInTable('glpi_plugin_manageentities_interventionskateholders',
-                                  "`plugin_manageentities_contractdays_id`='" . $item->fields['id'] . "'");
+      $dbu = new DbUtils();
+      return $dbu->countElementsInTable('glpi_plugin_manageentities_interventionskateholders',
+                                        ["`plugin_manageentities_contractdays_id`" => $item->fields['id']]);
    }
 
    function defineTabs($options = array()) {
@@ -69,7 +70,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(PluginManageentitiesInterventionSkateholder::getTypeName(self::countForItem($item)), self::countForItem($item));
                } else {
-                  return PluginManageentitiesInterventionSkateholder::getTypeName(countForItem($item));
+                  return PluginManageentitiesInterventionSkateholder::getTypeName($item);
                }
          }
       }
@@ -119,7 +120,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
       $user = new User();
       $user->getFromDB($item->fields['users_id']);
-      $condition = "`plugin_manageentities_contractdays_id`=" . $item->fields['plugin_manageentities_contractdays_id'];
+      $condition = ["`plugin_manageentities_contractdays_id`" => $item->fields['plugin_manageentities_contractdays_id']];
 
       $this->showHeaderJS();
 
@@ -165,7 +166,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          // User name
          echo "tmpCell=row.insertCell(1);";
          echo "tmpCell.innerHTML=\"";
-         echo "<a href='" . $link . "' target='_blank'>" . formatUserName($user->fields['id'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']) . "</a>";
+         echo "<a href='" . $link . "' target='_blank'>" . $dbu->formatUserName($user->fields['id'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']) . "</a>";
          echo "\";";
 
          // NbDays title
@@ -238,7 +239,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
 
       if ($item->fields['id'] > 0) {
-         $condition        = "`plugin_manageentities_contractdays_id`=" . $item->fields['id'];
+         $condition        = ["`plugin_manageentities_contractdays_id`" => $item->fields['id']];
          $dbu              = new DbUtils();
          $listSkateholders = $dbu->getAllDataFromTable($this->getTable(), $condition);
          echo "<div class='center first-bloc'>";
@@ -273,7 +274,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
                   echo "<tr class='tab_bg_1' id='row_" . $skateholder['id'] . "'>";
                   echo "<td>" . __("User") . "</td>";
                   echo "<td>";
-                  echo "<a href='" . $link . "' target='_blank'>" . formatUserName($user->fields['id'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']) . "</a>";
+                  echo "<a href='" . $link . "' target='_blank'>" . $dbu->formatUserName($user->fields['id'], $user->fields['name'], $user->fields['realname'], $user->fields['firstname']) . "</a>";
                   echo "</td>";
 
                   echo "<td>" . __("Affected to", "manageentities") . "</td>";
@@ -481,8 +482,8 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
       $contractDay->getFromDB($contractdays_id);
       $nbMaxDays = $contractDay->fields['nbday'];
 
-      $condition = "plugin_manageentities_contractdays_id=" . $contractdays_id;
-
+      $condition            = ["plugin_manageentities_contractdays_id" => $contractdays_id];
+      $dbu                  = new DbUtils();
       $listInterventionDays = $dbu->getAllDataFromTable($this->getTable(), $condition);
 
       if (sizeof($listInterventionDays) == 0) {
@@ -561,5 +562,3 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
    }
 
 }
-
-?>

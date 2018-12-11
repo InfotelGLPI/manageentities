@@ -70,7 +70,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
             $tabs[1] = __('General follow-up', 'manageentities');
          }
 
-         if ($monthly->canView() && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if ($monthly->canView() && Session::getCurrentInterface() == 'central') {
             $tabs[2] = __('Monthly follow-up', 'manageentities');
          }
 
@@ -86,17 +86,17 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
          if (!Session::haveRight("ticket", Ticket::READALL)
              && !Session::haveRight("ticket", Ticket::READASSIGN)
-             && $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+             && Session::getCurrentInterface() != 'helpdesk') {
             $tabs[6] = __('Client planning', 'manageentities');
          }
 
          // ajout de la configuration du plugin
          $config = PluginManageentitiesConfig::getInstance();
-         if (($_SESSION['glpiactiveprofile']['interface'] == 'central') || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
+         if ((Session::getCurrentInterface() == 'central') || (Session::getCurrentInterface() == 'helpdesk' && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
             if ($PluginManageentitiesCri->canView()) {
                $tabs[7] = __('Interventions reports', 'manageentities');
             }
-         } elseif ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
+         } elseif (Session::getCurrentInterface() == 'helpdesk' && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
             $tabs[7] = _n('Period of contract', 'Periods of contract', 2, 'manageentities');
          }
 
@@ -116,7 +116,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
             }
          }
 
-         if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk' && $this->canview()) {
+         if (Session::getCurrentInterface() != 'helpdesk' && $this->canview()) {
             $tabs[11] = __('References', 'manageentities');
          }
          return $tabs;
@@ -161,9 +161,12 @@ class PluginManageentitiesEntity extends CommonGLPI {
                break;
             case 7:
                $config = PluginManageentitiesConfig::getInstance();
-               if (($_SESSION['glpiactiveprofile']['interface'] == 'central') || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
+               if ((Session::getCurrentInterface() == 'central')
+                   || (Session::getCurrentInterface() == 'helpdesk'
+                       && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
                   $PluginManageentitiesCriDetail->showReports(0, 0, $_SESSION["glpiactiveentities"], array('condition' => "`glpi_plugin_manageentities_contractstates`.`is_closed` != 1 "));
-               } elseif ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
+               } elseif (Session::getCurrentInterface() == 'helpdesk'
+                         && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
                   $PluginManageentitiesCriDetail->showPeriod(0, 0, $_SESSION["glpiactiveentities"]);
                }
 
@@ -266,7 +269,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
 
       if (sizeof($instID) == 1
-          && $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+          && Session::getCurrentInterface() != 'helpdesk') {
          echo "<td style='padding-top:16px;'>";
          echo __('Logo (format JPG or JPEG)', 'manageentities');
          echo Html::file();
@@ -353,7 +356,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
          echo $entity->fields["country"];
       echo "</td></tr>";
       if (sizeof($instID) == 1
-          && $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+          && Session::getCurrentInterface() != 'helpdesk') {
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='" . $entity->fields["id"] . "'>";
@@ -380,7 +383,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
       if (!Session::haveRight("ticket", Ticket::READALL)
           && !Session::haveRight("ticket", Ticket::READASSIGN)
-          && $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+          && Session::getCurrentInterface() != 'helpdesk') {
          return false;
       }
 
@@ -396,7 +399,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
       if (Session::haveRight("ticket", Ticket::READALL)
           || Session::haveRight("ticket", Ticket::READASSIGN)
-          || $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+          || Session::getCurrentInterface() == 'helpdesk') {
          echo " <a href='" . $CFG_GLPI["root_doc"] . "/front/ticket.php?is_deleted=0&field[0]=12&searchtype[0]=equals&contains[0]=notold&itemtype=Ticket&start=0'>";
          echo __('All reports', 'manageentities') . "</a>";
       }
@@ -413,7 +416,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                      = `glpi_tickets`.`id`)
         WHERE `glpi_tickets`.`entities_id` IN (" . $instID . ")
         AND (`status` = '" . Ticket::SOLVED . "' OR `status` = '" . Ticket::CLOSED . "')
-        AND `glpi_tickets`.`is_deleted` = '0'
+        AND `glpi_tickets`.`is_deleted` = 0
          $and
         GROUP BY `id`
         ORDER BY date DESC
@@ -452,7 +455,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
             OR `status` = '" . Ticket::PLANNED . "' 
             OR `status` = '" . Ticket::ASSIGNED . "' 
             OR `status` = '" . Ticket::WAITING . "')
-        AND `is_deleted` = '0'
+        AND `is_deleted` = 0
         
         ORDER BY date DESC
         LIMIT 10";
@@ -484,6 +487,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
    function showJobVeryShort($ID) {
       global $CFG_GLPI;
 
+      $dbu = new DbUtils();
       // Prints a job in short form
       // Should be called in a <table>-segment
       // Print links or not in case of user view
@@ -505,7 +509,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
          $users = $job->getUsers(CommonItilActor::REQUESTER);
          if (count($users)) {
             foreach ($users as $d) {
-               $userdata = getUserName($d['users_id'], 2);
+               $userdata = $dbu->getUserName($d['users_id'], 2);
                echo "<strong>" . $userdata['name'] . "</strong>&nbsp;";
                if ($viewusers) {
                   Html::showToolTip($userdata["comment"], array('link' => $userdata["link"]));
@@ -605,7 +609,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
          foreach ($logos as $logo) {
             $ID = $logo["entities_id"];
 
-            $contracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", "entities_id ='" . $ID . "'");
+            $contracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", ["entities_id" => $ID]);
 
             if (count($contracts) > 0) {
                foreach ($contracts as $contract) {
@@ -691,14 +695,17 @@ class PluginManageentitiesEntity extends CommonGLPI {
             echo "</tr>";
 
          }*/
+         $result   = $DB->query("SELECT entities_id FROM `glpi_plugin_manageentities_entitylogos`");
+         $entities = [];
+         if ($DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $entities[] = $data['entities_id'];
+            }
+         }
 
-         $clients = array();
-         $clients = $dbu->getAllDataFromTable("glpi_entities", "id NOT IN (SELECT entities_id
-                         FROM `glpi_plugin_manageentities_entitylogos`) AND entities_id ='57' ORDER BY id");
-
-         //glpi_plugin_manageentities_contracts
-         //$query = "SELECT * 
-         //          FROM `glpi_plugin_manageentities_entitylogos`;";
+         $clients = $dbu->getAllDataFromTable("glpi_entities",
+                                              ["NOT" => ["id" => $entities],
+                                               "entities_id" => 57], false, "id");
 
          $cpt = count($clients);
 
@@ -714,7 +721,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                echo "<td>" . $entity->getName() . "</td>";
 
                $contracts = array();
-               $contracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", "entities_id ='" . $ID . "'");
+               $contracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", ["entities_id" => $ID]);
                echo "<td>";
                if (count($contracts) > 0) {
                   foreach ($contracts as $contract) {
@@ -729,5 +736,3 @@ class PluginManageentitiesEntity extends CommonGLPI {
       }
    }
 }
-
-?>

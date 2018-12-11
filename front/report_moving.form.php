@@ -73,7 +73,8 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
 
       $entity = new Entity();
       $data   = array(Dropdown::EMPTY_VALUE);
-      $data   = $entity->find('`id` IN (' . implode(',', $_SESSION['glpiactiveentities']) . ")");
+      $condition  = ['id' => $_SESSION["glpiactiveentities"]];
+      $data   = $entity->find($condition);
 
 
       foreach ($data as $val) {
@@ -108,7 +109,8 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
 
       $entity = new Entity();
       $data   = array(Dropdown::EMPTY_VALUE);
-      $data   = $entity->find('`id` IN (' . implode(',', $_SESSION['glpiactiveentities']) . ")");
+      $condition  = ['id' => $_SESSION["glpiactiveentities"]];
+      $data   = $entity->find($condition);
 
 
       foreach ($data as $val) {
@@ -132,5 +134,3 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
 }
 
 Html::footer();
-
-?>

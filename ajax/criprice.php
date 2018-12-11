@@ -38,5 +38,3 @@ switch ($_POST['action']) {
       $criprice->showSelectPriceDropdown($_POST['critypes_id'], $_POST['entities_id']);
       break;
 }
-
-?>

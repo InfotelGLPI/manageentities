@@ -112,5 +112,3 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
 }
 
 Html::footer();
-
-?>

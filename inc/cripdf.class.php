@@ -119,12 +119,14 @@ class PluginManageentitiesCriPDF extends FPDF {
    }
 
    /**
-    * Permet de dessiner une cellule definissant un label d'une cellule ou plusieurs cellules valeurs.
+    * Permet de dessiner une cellule definissant un label d'une cellule ou plusieurs cellules
+    * valeurs.
     *
     * @param $italic Vrai si le label est en italique, faux sinon.
     * @param $w Largeur de la cellule contenant le label.
     * @param $label Valeur du label.
-    * @param $multH Multiplicateur de la hauteur de la cellule, par défaut vaut 1, par augmenté donc.
+    * @param $multH Multiplicateur de la hauteur de la cellule, par défaut vaut 1, par augmenté
+    *    donc.
     * @param $align Détermine l'alignement du texte dans la cellule.
     * @param $bordure Détermine les bordures é positionner, par défaut, toutes.
     */
@@ -140,7 +142,8 @@ class PluginManageentitiesCriPDF extends FPDF {
     * @param $w Largeur de la cellule contenant la valeur.
     * @param $valeur Valeur é afficher.
     * @param $align Détermine l'alignement de la cellule.
-    * @param $multH Multiplicateur de la hauteur de la cellule, par défaut vaut 1, par augmenté donc.
+    * @param $multH Multiplicateur de la hauteur de la cellule, par défaut vaut 1, par augmenté
+    *    donc.
     * @param $bordure Détermine les bordures é positionner, par défaut, toutes.
     * @param $souligne Détermine si le contenu de la cellule est souligné.
     */
@@ -311,8 +314,8 @@ class PluginManageentitiesCriPDF extends FPDF {
       if (!isset($this->entite[0]->fields["name"])) $this->entite[0]->fields["name"] = __('Root entity');
       $query = "SELECT *
         FROM `glpi_plugin_manageentities_contacts`
-        WHERE `entities_id` = '" . $this->entite[0]->fields["id"] . "'
-        AND `is_default` = '1' ";
+        WHERE `entities_id` = " . $this->entite[0]->fields["id"] . "
+        AND `is_default` = 1";
 
       $result = $DB->query($query);
       while ($data = $DB->fetch_array($result)) {
@@ -513,7 +516,8 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /**
     * Permet d'arrondir le total des temps passés avec les tranches définies en constantes.
-    * Peut étre améliorée afin de boucler (while) sur les tranches pour ne pas avoir une suite de if, else if.
+    * Peut étre améliorée afin de boucler (while) sur les tranches pour ne pas avoir une suite de
+    * if, else if.
     *
     * @param Total é arrondir.
     *
@@ -652,7 +656,8 @@ class PluginManageentitiesCriPDF extends FPDF {
    }
 
    /**
-    * Fonction permettant de dessiner la zone détail des commentaires de la société préalablement remplie.
+    * Fonction permettant de dessiner la zone détail des commentaires de la société préalablement
+    * remplie.
     *
     * @param $description Texte é afficher dans la zone de détail.
     */
@@ -1000,5 +1005,3 @@ class PluginManageentitiesCriPDF extends FPDF {
    }
 
 }
-
-?>

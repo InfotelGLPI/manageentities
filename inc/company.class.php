@@ -41,20 +41,25 @@ class PluginManageentitiesCompany extends CommonDBTM {
       return _n('Company', 'Companies', $nb, 'manageentities');
    }
 
-   function getSearchOptions() {
-      $tab = parent::getSearchOptions();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'number';
+      $tab[] = [
+         'id'       => '2',
+         'table'    => $this->getTable(),
+         'field'    => 'id',
+         'name'     => __('ID'),
+         'datatype' => 'number'
+      ];
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'address';
-      $tab[3]['name']          = __('Address');
-      $tab[3]['massiveaction'] = false;
-      $tab[3]['datatype']      = 'text';
+      $tab[] = [
+         'id'            => '9',
+         'table'         => $this->getTable(),
+         'field'         => 'address',
+         'name'          => __('Address'),
+         'massiveaction' => false,
+         'datatype'      => 'text'
+      ];
 
       return $tab;
    }
@@ -188,7 +193,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
       if (isset($input["_filename"])) {
          $plugin_company = new PluginManageentitiesCompany();
-         $company        = $plugin_company->find("id =" . $input['id']);
+         $company        = $plugin_company->find(['id' => $input['id']]);
          $company        = reset($company);
 
          $tmp       = explode(".", $input["_filename"][0]);
@@ -198,7 +203,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
             unset($input);
          } elseif ($company['logo_id'] != 0) {
             $doc = new Document();
-            $img = $doc->find("id=" . $company["logo_id"]);
+            $img = $doc->find(['id' => $company["logo_id"]]);
             $img = reset($img);
             $doc->delete($img, 1);
          }
@@ -348,13 +353,14 @@ class PluginManageentitiesCompany extends CommonDBTM {
     */
    static function getAddress($obj) {
       $plugin_company = new PluginManageentitiesCompany();
-      $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
+      $company        = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
       $company        = reset($company);
+      $dbu            = new DbUtils();
       if ($company == false) {
          $companies = $plugin_company->find();
          foreach ($companies as $data) {
             if ($data['recursive'] == 1) {
-               $sons = getSonsOf("glpi_entities", $data['entity_id']);
+               $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                foreach ($sons as $son) {
                   if ($son == $obj->entite[0]->fields['id']) {
                      return $data['address'];
@@ -376,14 +382,15 @@ class PluginManageentitiesCompany extends CommonDBTM {
     */
    static function getLogo($obj) {
       $plugin_company = new PluginManageentitiesCompany();
-      $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
+      $company        = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
       $company        = reset($company);
       $doc            = new Document();
+      $dbu            = new DbUtils();
       if ($company == false) {
          $companies = $plugin_company->find();
          foreach ($companies as $data) {
             if ($data['recursive'] == 1) {
-               $sons = getSonsOf("glpi_entities", $data['entity_id']);
+               $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                foreach ($sons as $son) {
                   if ($son == $obj->entite[0]->fields['id']) {
                      if ($doc->getFromDB($data["logo_id"])) {
@@ -412,13 +419,14 @@ class PluginManageentitiesCompany extends CommonDBTM {
     */
    static function getComment($obj) {
       $plugin_company = new PluginManageentitiesCompany();
-      $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
+      $company        = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
       $company        = reset($company);
+      $dbu            = new DbUtils();
       if ($company == false) {
          $companies = $plugin_company->find();
          foreach ($companies as $data) {
             if ($data['recursive'] == 1) {
-               $sons = getSonsOf("glpi_entities", $data['entity_id']);
+               $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                foreach ($sons as $son) {
                   if ($son == $obj->entite[0]->fields['id']) {
                      return $data['comment'];
@@ -433,5 +441,3 @@ class PluginManageentitiesCompany extends CommonDBTM {
    }
 
 }
-
-?>

@@ -367,5 +367,3 @@ class PluginManageentitiesGantt extends CommonDBTM {
    }
 
 }
-
-?>

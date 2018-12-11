@@ -46,8 +46,7 @@ class PluginManageentitiesServicecatalog extends CommonGLPI {
    static function getMenuLogo() {
       global $CFG_GLPI;
 
-      return "<a href='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/entity.php'>
-      <img class=\"bt-img-responsive\" src=\"" . $CFG_GLPI['root_doc'] . "/plugins/servicecatalog/img/contracts.png\" alt=\"Advanced request\" width=\"190\" height=\"100\"></a>";
+      return "<a class='bt-interface bt-contracts' href='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/entity.php'></a>";
 
    }
 
@@ -62,7 +61,7 @@ class PluginManageentitiesServicecatalog extends CommonGLPI {
 
    static function getMenuComment() {
 
-      echo __('Manage your contracts', 'manageentities');
+      return __('Manage your contracts', 'manageentities');
    }
 
    static function getLinkList() {

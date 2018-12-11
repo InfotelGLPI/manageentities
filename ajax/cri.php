@@ -76,7 +76,7 @@ switch ($_POST['action']) {
          if ($input->REPORT_ACTIVITE) {
             // Purge cri 
             $criDetail           = new PluginManageentitiesCriDetail();
-            $data_criDetail      = $criDetail->find('tickets_id = ' . $input->REPORT_ID);
+            $data_criDetail      = $criDetail->find(['tickets_id' => $input->REPORT_ID]);
             $data_criDetail      = reset($data_criDetail);
             $input->documents_id = $data_criDetail['documents_id'];
             // Generate a new cri
@@ -153,5 +153,3 @@ switch ($_POST['action']) {
       }
       break;
 }
-
-?>

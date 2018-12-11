@@ -50,21 +50,38 @@ class PluginManageentitiesCriType extends CommonDropdown {
       }
    }
 
-   function getSearchOptions() {
-      //      $tab = array();
-      //      $tab['common']=__('Characteristics');
+   function rawSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab = parent::rawSearchOptions();
 
-      $tab[12]['table']        = 'glpi_plugin_manageentities_contractdays';
-      $tab[12]['field']        = 'name';
-      $tab[12]['forcegroupby'] = true;
-      $tab[12]['name']         = PluginManageentitiesContractDay::getTypeName();
-      $tab[12]['datatype']     = 'itemlink';
-      $tab[12]['joinparams']   = array('condition' => "AND REFTABLE.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')",
-                                       'beforejoin'
-                                                   => array('table' => 'glpi_plugin_manageentities_criprices', 'joinparams' => array('jointype' => "child"))
-      );
+      $tab[] = [
+         'id'           => '12',
+         'table'        => 'glpi_plugin_manageentities_contractdays',
+         'field'        => 'name',
+         'forcegroupby' => true,
+         'name'         => PluginManageentitiesContractDay::getTypeName(),
+         'datatype'     => 'itemlink',
+         'joinparams'   => ['condition'  =>
+                               "AND REFTABLE.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')",
+                            'beforejoin' =>
+                               ['table'      => 'glpi_plugin_manageentities_criprices',
+                                'joinparams' => ['jointype' => "child"]
+                               ]
+         ]
+      ];
+
+      //TODO : Problème de table non unique : comment ajouter un allias ?
+      $tab[] = [
+         'id'           => '13',
+         'table'        => 'glpi_plugin_manageentities_criprices',
+         'field'        => 'price',
+         'datatype'     => 'number',
+         'forcegroupby' => true,
+         'name'         => __('Daily rate', 'manageentities'),
+         /*'joinparams'   =>  ['jointype'  => "child",
+                             'condition' => "AND NEWTABLE.`entities_id` IN ('".implode("','", $_SESSION["glpiactiveentities"])."')"]*/
+      ];
+      /* OLD :
 
       $tab[13]['table']        = 'glpi_plugin_manageentities_criprices';
       $tab[13]['field']        = 'price';
@@ -72,7 +89,8 @@ class PluginManageentitiesCriType extends CommonDropdown {
       $tab[13]['forcegroupby'] = true;
       $tab[13]['name']         = __('Daily rate', 'manageentities');
       $tab[13]['joinparams']   = array('jointype'  => "child",
-                                       'condition' => "AND NEWTABLE.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')");
+                                       'condition' => "AND NEWTABLE.`entities_id` IN ('".implode("','", $_SESSION["glpiactiveentities"])."')");
+      */
 
       return $tab;
    }
@@ -96,5 +114,3 @@ class PluginManageentitiesCriType extends CommonDropdown {
       return true;
    }
 }
-
-?>

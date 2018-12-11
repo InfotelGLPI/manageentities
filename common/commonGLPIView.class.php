@@ -52,8 +52,8 @@ abstract class CommonGLPIView {
     * This function allows to add an AJAX function to the page.
     *
     * @param String $functionName : name of the function to be created
-    * @param String $idDivAjax : ID of the div (or other) used for ajax purpose (where the result of treatment shoud be
-    *    shown)
+    * @param String $idDivAjax : ID of the div (or other) used for ajax purpose (where the result
+    *    of treatment shoud be shown)
     * @param String $url : URL of the listener
     * @param array  $listId : list of ids of input element which have to be sent to the controller
     * @param array  $params : additionnal paramters
@@ -214,7 +214,8 @@ abstract class CommonGLPIView {
     *
     * @param String  $htmlInput : id of the HTML input
     * @param boolean $error : true to draw red borders, false tio reinitiate borders.
-    * @param boolean $onJS : true if the calling method has not already sent header JS, false otherwise
+    * @param boolean $onJS : true if the calling method has not already sent header JS, false
+    *    otherwise
     */
    public function bordersOnError($htmlInput, $error, $onJS = true) {
       if ($htmlInput != "") {

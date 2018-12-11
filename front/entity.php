@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
@@ -37,7 +38,7 @@ $PluginManageentitiesBusinessContact = new PluginManageentitiesBusinessContact()
 if (!isset($_POST["entities_id"]))
    $_POST["entities_id"] = "";
 
-if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
 } else {
    Html::helpHeader(__('Entities portal', 'manageentities'));
@@ -101,7 +102,7 @@ if ($PluginManageentitiesEntity->canView()
          Html::redirect($CFG_GLPI["root_doc"] . "/plugins/manageentities/front/entity.php?active_entity=" . $_POST["entities_id"] . "");
 
       } else {
-         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if (Session::getCurrentInterface() == 'central') {
             $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 1));
          } else {
             $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 10));
@@ -139,9 +140,8 @@ if ($PluginManageentitiesEntity->canView()
    Html::displayRightError();
 }
 
-if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+if (Session::getCurrentInterface() == 'central') {
    Html::footer();
 } else {
    Html::helpFooter();
 }
-?>

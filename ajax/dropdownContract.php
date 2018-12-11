@@ -48,9 +48,15 @@ if (isset($_POST["contracts_id"])) {
 
    if ($contractdays_id == 0) {
       $contractday = new PluginManageentitiesContractDay();
-      $datas       = $contractday->find("`entities_id` = '" . $contract->fields['entities_id'] . "' "
-                                        . " AND `contracts_id` = '" . $_POST["contracts_id"] . "' "
-                                        . " AND (`plugin_manageentities_contractstates_id` IN ('" . implode("','", PluginManageentitiesContractState::getOpenedStates()) . "') OR `id` = '$contractdays_id')");
+      $restrict = ['entities_id' => $contract->fields['entities_id'],
+                   'contracts_id' => $_POST["contracts_id"],
+                   [
+                      'OR' => [
+                         'plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates(),
+                         'id' => $contractdays_id
+                      ]
+                   ]];
+      $datas       = $contractday->find($restrict);
       //if a single contractday
       if (count($datas) == 1) {
          $datas = reset($datas);
@@ -58,12 +64,17 @@ if (isset($_POST["contracts_id"])) {
          $contractdays_id = $datas['id'];
       }
    }
-   $restrict = "`entities_id` = '" . $contract->fields['entities_id'] . "' "
-               . " AND `contracts_id` = '" . $_POST["contracts_id"] . "' "
-               . " AND (`plugin_manageentities_contractstates_id` IN ('" . implode("','", PluginManageentitiesContractState::getOpenedStates()) . "') OR `id` = '$contractdays_id')";
+   $restrict = ['entities_id' => $contract->fields['entities_id'],
+                'contracts_id' => $_POST["contracts_id"],
+                [
+                   'OR' => [
+                      'plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates(),
+                      'id' => $contractdays_id
+                   ]
+                ]];
+
    Dropdown::show('PluginManageentitiesContractDay', array('name'      => 'plugin_manageentities_contractdays_id',
                                                            'value'     => $contractdays_id,
                                                            'condition' => $restrict,
                                                            'width'     => $_POST['width']));
 }
-?>

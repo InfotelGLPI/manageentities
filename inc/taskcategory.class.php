@@ -143,5 +143,3 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
 
    }
 }
-
-?>

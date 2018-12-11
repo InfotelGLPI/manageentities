@@ -27,6 +27,8 @@
  --------------------------------------------------------------------------
  */
 
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.0');
+
 // Init the hooks of the plugins -Needed
 function plugin_init_manageentities() {
    global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -115,20 +117,28 @@ function plugin_version_manageentities() {
 
    return array(
       'name'           => __('Entities portal', 'manageentities'),
-      'version'        => '2.3.0',
+      'version'        => PLUGIN_MANAGEENTITIES_VERSION,
       'oldname'        => 'manageentity',
       'author'         => 'Infotel',
       'license'        => 'GPLv2+',
       'homepage'       => 'https://github.com/InfotelGLPI/manageentities',
-      'minGlpiVersion' => '9.2',
+      'requirements'   => [
+         'glpi' => [
+            'min' => '9.4',
+            'dev' => false
+         ]
+      ]
    );
 
 }
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_manageentities_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '9.2', 'lt') || version_compare(GLPI_VERSION, '9.3', 'ge')) {
-      echo __('This plugin requires GLPI >= 9.2');
+   if (version_compare(GLPI_VERSION, '9.4', 'lt') 
+         || version_compare(GLPI_VERSION, '9.5', 'ge')) {
+      if (method_exists('Plugin', 'messageIncompatible')) {
+         echo Plugin::messageIncompatible('core', '9.4');
+      }
       return false;
    }
    return true;
@@ -138,5 +148,3 @@ function plugin_manageentities_check_prerequisites() {
 function plugin_manageentities_check_config() {
    return true;
 }
-
-?>

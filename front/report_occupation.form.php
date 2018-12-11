@@ -50,7 +50,7 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
    $_POST["date1"] = $_POST["date2"];
    $_POST["date2"] = $tmp;
 }
-
+$dbu = new DbUtils();
 Report::title();
 $PluginManageentitiesEntity = new PluginManageentitiesEntity();
 if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDATE)) {
@@ -65,10 +65,12 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "</td></tr>";
 
       $user  = new User();
-      $users = $user->find("`is_deleted` = 0 AND `entities_id` IN (" . implode(',', $_SESSION['glpiactiveentities']) . ")");
+      $condition  = ['is_deleted' => 0,
+                       'entities_id' => $_SESSION["glpiactiveentities"]];
+      $users = $user->find($condition);
       $techs = array();
       foreach ($users as $data) {
-         $techs[$data['id']] = getUserName($data['id']);
+         $techs[$data['id']] = $dbu->getUserName($data['id']);
       }
 
       echo "<tr><td class='tab_bg_2 center'>";
@@ -104,12 +106,14 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       Html::showDateField("date2", ['value' => $_POST["date2"]]);
       echo "</td></tr>";
       //stats Users
-
+      $dbu   = new DbUtils();
       $user  = new User();
-      $users = $user->find("`is_deleted` = 0 AND `entities_id` IN (" . implode(',', $_SESSION['glpiactiveentities']) . ")");
+      $condition  = ['is_deleted' => 0,
+                     'entities_id' => $_SESSION["glpiactiveentities"]];
+      $users = $user->find($condition);
       $techs = array();
       foreach ($users as $data) {
-         $techs[$data['id']] = getUserName($data['id']);
+         $techs[$data['id']] = $dbu->getUserName($data['id']);
       }
 
       echo "<tr><td class='tab_bg_2 center'>";
@@ -129,5 +133,3 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
 }
 
 Html::footer();
-
-?>

@@ -38,5 +38,3 @@ if (isset ($_POST['update'])) {
    $taskCategory->update($_POST);
    Html::back();
 }
-
-?>

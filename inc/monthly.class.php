@@ -60,7 +60,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       $tot_conso_amount  = 0;
       $tot_credit        = 0;
       $taskCount         = 0;
-
+      $dbu               = new DbUtils();
       // We configure the type of contract Hourly or Dayly
       $config = PluginManageentitiesConfig::getInstance();
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Hourly
@@ -76,7 +76,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       }
 
       //      $condition = getEntitiesRestrictRequest("", "glpi_plugin_manageentities_contractdays");
-      $condition = " " . getEntitiesRestrictRequest("", "glpi_entities");
+      $condition = " " . $dbu->getEntitiesRestrictRequest("", "glpi_entities");
 
       $queryEntity = "SELECT DISTINCT(`glpi_entities`.`id`) AS entities_id,
                         `glpi_entities`.`name` AS entities_name
@@ -363,6 +363,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       $start          = 0;
       $count_tasks    = 0;
       $nbColumn       = 14;
+      $dbu            = new DbUtils();
       if ($config->fields['useprice'] != PluginManageentitiesConfig::PRICE) {
          $nbColumn = $nbColumn - 3;
       }
@@ -427,8 +428,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       // We get all datas for monthly display
       foreach ($results as $dataEntity) {
          $firstEntity = true;
-
-         if (sizeof($dataEntity) > 2) {
+         if (is_array($dataEntity) && sizeof($dataEntity) > 2) {
             Session::initNavigateListItems("PluginManageentitiesContractDay");
 
             foreach ($dataEntity as $idContractDay => $dataContractDay) {
@@ -480,7 +480,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
                            // Conso
                            $message_body .= Search::showItem($output_type, self::checkValue($conso['conso'], $output_type), $num, $row_num, $depassClass);
                            // Stakeholder
-                           $message_body .= Search::showItem($output_type, getUserName($users_id), $num, $row_num, $depassClass);
+                           $message_body .= Search::showItem($output_type, $dbu->getUserName($users_id), $num, $row_num, $depassClass);
                            // Total conso
                            if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                               $message_body .= Search::showItem($output_type, Html::formatNumber($conso['conso_amount'], 0, 2), $num, $row_num, $depassClass);
@@ -489,7 +489,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
                            if (!empty($conso['depass'])) {
                               $message_body .= Search::showItem($output_type, self::checkValue($conso['depass'], $output_type), $num, $row_num, $depassClass);
                               // Stakeholder
-                              $message_body .= Search::showItem($output_type, getUserName($users_id), $num, $row_num, $depassClass);
+                              $message_body .= Search::showItem($output_type, $dbu->getUserName($users_id), $num, $row_num, $depassClass);
                               // Total depass
                               if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                                  $message_body .= Search::showItem($output_type, Html::formatNumber($conso['depass_amount'], 0, 2), $num, $row_num, $depassClass);
@@ -555,7 +555,9 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       } else {
          echo Search::showError($output_type);
       }
-      self::showLegendary();
+      if ($output_type == search::HTML_OUTPUT) {
+         self::showLegendary();
+      }
    }
 
    static function showLegendary() {
@@ -640,5 +642,3 @@ class PluginManageentitiesMonthly extends CommonDBTM {
    }
 
 }
-
-?>

@@ -49,5 +49,3 @@ if ($plugin->isActivated("manageentities")
    echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
    Html::footer();
 }
-
-?>

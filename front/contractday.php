@@ -42,5 +42,3 @@ if ($contractday->canView()) {
 }
 
 Html::footer();
-
-?>

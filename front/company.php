@@ -42,5 +42,3 @@ if ($company->canView()) {
 }
 
 Html::footer();
-
-?>

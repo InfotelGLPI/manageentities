@@ -76,5 +76,3 @@ if (isset($_POST["addcridetail"])) {
 }
 
 Html::popFooter();
-
-?>
