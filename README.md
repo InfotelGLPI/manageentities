@@ -1,6 +1,13 @@
 # manageentities
 Plugin manageentities pour GLPI
 
+Ce plugin est sur Transifex - Aidez-nous à le traduire :
+https://www.transifex.com/tsmr/GLPI_manageentities/
+
+This plugin is on Transifex - Help us to translate :
+https://www.transifex.com/tsmr/GLPI_manageentities/
+
+
 Ce plugin vous permet de gérer vos entités. Lier des documents, contacts, contrats. De plus vous pouvez créer des rapports d'interventions, et faire le suivi contrat de vos entités.
 * Pour une entité donnée, vous définissez
 

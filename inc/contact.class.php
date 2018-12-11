@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -64,13 +63,13 @@ class PluginManageentitiesContact extends CommonDBTM {
          while ($data = $DB->fetch_array($result)) {
 
             $query_nodefault  = "UPDATE `" . $this->getTable() . "`
-            SET `is_default` = '0' WHERE `id` = '" . $data["id"] . "' ";
+            SET `is_default` = 0 WHERE `id` = '" . $data["id"] . "' ";
             $result_nodefault = $DB->query($query_nodefault);
          }
       }
 
       $query_default  = "UPDATE `" . $this->getTable() . "`
-        SET `is_default` = '1' WHERE `id` ='" . $contacts_id . "' ";
+        SET `is_default` = 1 WHERE `id` ='" . $contacts_id . "' ";
       $result_default = $DB->query($query_default);
    }
 
@@ -116,7 +115,7 @@ class PluginManageentitiesContact extends CommonDBTM {
             echo "<td class='center'><a href='mailto:" . $data["email"] . "'>" . $data["email"] . "</a></td>";
             echo "<td class='center'>" . Dropdown::getDropdownName("glpi_contacttypes", $data["contacttypes_id"]) . "<br>";
             if (sizeof($instID) == 1
-                && $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+                && Session::getCurrentInterface() != 'helpdesk') {
                if ($data["is_default"]) {
                   echo __('Manager');
                } else {
@@ -178,5 +177,3 @@ class PluginManageentitiesContact extends CommonDBTM {
       }
    }
 }
-
-?>

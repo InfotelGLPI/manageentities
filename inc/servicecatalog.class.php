@@ -1,30 +1,30 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -46,8 +46,7 @@ class PluginManageentitiesServicecatalog extends CommonGLPI {
    static function getMenuLogo() {
       global $CFG_GLPI;
 
-      return "<a href='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/entity.php'>
-      <img class=\"bt-img-responsive\" src=\"" . $CFG_GLPI['root_doc'] . "/plugins/servicecatalog/img/contracts.png\" alt=\"Advanced request\" width=\"190\" height=\"100\"></a>";
+      return "<a class='bt-interface bt-contracts' href='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/entity.php'></a>";
 
    }
 
@@ -62,7 +61,7 @@ class PluginManageentitiesServicecatalog extends CommonGLPI {
 
    static function getMenuComment() {
 
-      echo __('Manage your contracts', 'manageentities');
+      return __('Manage your contracts', 'manageentities');
    }
 
    static function getLinkList() {

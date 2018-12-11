@@ -1,31 +1,32 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
+
 
 include('../../../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
@@ -44,7 +45,8 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
             $idContractdays = $_POST['contractdays_id'];
             $nbDays         = $_POST['nb_days'];
 
-            $interventionSkateholder->getFromDBByQuery("WHERE `users_id`=" . $idUser . " AND `plugin_manageentities_contractdays_id`=" . $idContractdays);
+            $interventionSkateholder->getFromDBByCrit(['users_id'                              => $idUser,
+                                                       'plugin_manageentities_contractdays_id' => $idContractdays]);
 
             if (isset($interventionSkateholder->fields['id']) && $interventionSkateholder->fields['id'] > 0) {
                $interventionSkateholder->fields['number_affected_days'] += $_POST['nb_days'];

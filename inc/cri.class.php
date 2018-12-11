@@ -1,30 +1,30 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -71,8 +71,8 @@ class PluginManageentitiesCri extends CommonDBTM {
       echo _n('Contract', 'Contracts', 1);
       echo "</th>";
       echo "<td colspan='2'>";
-      $restrict   = "`glpi_plugin_manageentities_cridetails`.`entities_id` = '" . $job->fields['entities_id'] . "'
-                     AND `glpi_plugin_manageentities_cridetails`.`tickets_id` = '" . $job->fields['id'] . "'";
+      $restrict   = ["`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'],
+                     "`glpi_plugin_manageentities_cridetails`.`tickets_id`"  => $job->fields['id']];
       $dbu        = new DbUtils();
       $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
       $cridetail  = reset($cridetails);
@@ -176,7 +176,7 @@ class PluginManageentitiesCri extends CommonDBTM {
          }
 
          $contract = new PluginManageentitiesContract();
-         if ($contract->getFromDBByQuery("WHERE `contracts_id` = " . $contractSelected['contractSelected'])) {
+         if ($contract->getFromDBByCrit(['contracts_id' => $contractSelected['contractSelected']])) {
             if ($contract->fields['moving_management']) {
                echo "<tr class='tab_bg_1'>";
                echo "<th>";
@@ -212,7 +212,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             $query = "SELECT `content`, `begin`, `end`
                    FROM `glpi_tickettasks` $join
                    WHERE `tickets_id` = '" . $ID . "'
-                   AND `is_private` = false $and";
+                   AND `is_private` = 0 $and";
          } else {
             $query = "SELECT `content`, `begin`, `end`
                    FROM `glpi_tickettasks` $join
@@ -243,13 +243,15 @@ class PluginManageentitiesCri extends CommonDBTM {
             if (empty($options['action'])) {
                if (!empty($technicians_id)) {
                   echo "<input type='button' name='add_cri' value=\"" .
-                       __('Generation of the intervention report', 'manageentities') . "\" class='submit' onClick='manageentities_loadCriForm(\"addCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
+                       __('Generation of the intervention report', 'manageentities') . "\" class='submit' 
+                  onClick='manageentities_loadCriForm(\"addCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
                }
                // action not empty : update cri
             } elseif ($options['action'] == 'update_cri') {
                if (!empty($technicians_id)) {
-                  echo "<input type='button' name='update_cri' value=\"" .
-                       __('Regenerate the intervention report', 'manageentities') . "\" class='submit' onClick='manageentities_loadCriForm(\"updateCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
+                  echo "<input type='button' name='update_cri' class='manageentities_button' value=\"" .
+                       __('Regenerate the intervention report', 'manageentities') . "\" 
+                  onClick='manageentities_loadCriForm(\"updateCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
                }
             }
          } else {
@@ -287,7 +289,8 @@ class PluginManageentitiesCri extends CommonDBTM {
    }
 
    /**
-    * Récupération des données et génération du document. Il sera enregistré suivant le paramétre enregistrement.
+    * Récupération des données et génération du document. Il sera enregistré suivant le paramétre
+    * enregistrement.
     * @global PluginManageentitiesCriPDF $PDF
     * @global type                       $DB
     * @global type                       $CFG_GLPI
@@ -357,7 +360,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             $join  = "";
 
             if ($config->fields['use_publictask'] == '1') {
-               $where = " AND `is_private` = false";
+               $where = " AND `is_private` = 0";
             }
 
             $join = " LEFT JOIN `glpi_plugin_manageentities_taskcategories`
@@ -483,7 +486,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                $join  = "";
 
                if ($config->fields['use_publictask'] == '1') {
-                  $where = " AND `is_private` = false";
+                  $where = " AND `is_private` = 0";
                }
 
                $join = " LEFT JOIN `glpi_plugin_manageentities_taskcategories`
@@ -663,7 +666,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       $name         = "CRI - " . $PDF->GetNoCri();
       $filename     = $name . ".pdf";
-      $savepath     = GLPI_UPLOAD_DIR . "/";
+      $savepath     = GLPI_TMP_DIR . "/";
       $seepath      = GLPI_PLUGIN_DOC_DIR . "/manageentities/";
       $savefilepath = $savepath . $filename;
       $seefilepath  = $seepath . $filename;
@@ -711,8 +714,8 @@ class PluginManageentitiesCri extends CommonDBTM {
          $values["tickets_id"]                        = $p['REPORT_ID'];
          $values["number_moving"]                     = $p['number_moving'];
 
-         $restrict   = "`glpi_plugin_manageentities_cridetails`.`entities_id` = '" . $job->fields['entities_id'] . "'
-                        AND `glpi_plugin_manageentities_cridetails`.`tickets_id` = '" . $job->fields['id'] . "'";
+         $restrict   = ["`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'],
+                        "`glpi_plugin_manageentities_cridetails`.`tickets_id`"  => $job->fields['id']];
          $dbu        = new DbUtils();
          $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
          $cridetail  = reset($cridetails);
@@ -867,5 +870,3 @@ class PluginManageentitiesCri extends CommonDBTM {
    }
 
 }
-
-?>

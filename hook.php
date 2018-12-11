@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -35,11 +34,12 @@ function plugin_manageentities_install() {
    include_once(GLPI_ROOT . "/plugins/manageentities/inc/config.class.php");
    include_once(GLPI_ROOT . "/plugins/manageentities/inc/cridetail.class.php");
 
+   $dbu       = new DbUtils();
    $update    = false;
    $update190 = false;
    if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-2.1.5.sql");
+      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-3.0.0.sql");
 
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
@@ -160,7 +160,7 @@ function plugin_manageentities_install() {
 
       foreach ($index as $oldname => $newnames) {
          foreach ($newnames as $table) {
-            if (isIndex($table, $oldname)) {
+            if ($dbu->isIndex($table, $oldname)) {
                $query  = "ALTER TABLE `$table` DROP INDEX `$oldname`;";
                $result = $DB->query($query);
             }
@@ -321,15 +321,33 @@ function plugin_manageentities_forceGroupBy($type) {
 }
 
 function plugin_manageentities_giveItem($type, $ID, $data, $num) {
+   global $DB;
 
    $searchopt =& Search::getOptions($type);
    $table     = $searchopt[$ID]["table"];
    $field     = $searchopt[$ID]["field"];
-
    switch ($type) {
       case 'PluginManageentitiesCriType':
          switch ($table . '.' . $field) {
             case "glpi_plugin_manageentities_criprices.price" :
+               //               $manageentitiesCritypes = new PluginManageentitiesCriType();
+               //               $manageentitiesCritypes->getFromDBByCrit(["id = $table.plugin_manageentities_critypes_id
+               //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
+
+               $query = "SELECT * 
+                       FROM $table 
+                       WHERE  id = $table.plugin_manageentities_critypes_id 
+                       AND entities_id IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')";
+
+               $result = $DB->query($query);
+               if ($DB->numrows($result)) {
+                  while ($datas = $DB->fetch_assoc($result)) {
+                     $data["ITEM_4"] = $datas['price'];
+                  }
+               } else {
+                  $data["ITEM_4"] = 0;
+               }
+
                $out = Html::formatnumber($data["ITEM_$num"], 2);
                return $out;
                break;
@@ -402,7 +420,7 @@ function plugin_item_transfer_manageentities($parm) {
          $contract->getFromDB($parm['id']);
          $pluginContract     = new PluginManageentitiesContract();
          $old_entity         = '';
-         $restrict           = "`glpi_plugin_manageentities_contracts`.`contracts_id` = '" . $parm['id'] . "'";
+         $restrict           = ["`glpi_plugin_manageentities_contracts`.`contracts_id`" => $parm['id']];
          $allPluginContracts = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contracts', $restrict);
          if (!empty($allPluginContracts)) {
             foreach ($allPluginContracts as $onePluginContract) {
@@ -415,14 +433,14 @@ function plugin_item_transfer_manageentities($parm) {
          }
 
          $contractDay           = new PluginManageentitiesContractDay();
-         $condition             = "`glpi_plugin_manageentities_contractdays`.`contracts_id` = '" . $parm['id'] . "'";
+         $condition             = ["`glpi_plugin_manageentities_contractdays`.`contracts_id`" => $parm['id']];
          $allPluginContractDays = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractdays', $condition);
          if (!empty($allPluginContractDays)) {
             foreach ($allPluginContractDays as $onePluginContractDays) {
                $criPrice  = new PluginManageentitiesCriPrice();
-               $cond      = "`glpi_plugin_manageentities_criprices`.`entities_id` = '" . $old_entity . "'
-                     AND `glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id` = '" .
-                            $onePluginContractDays['plugin_manageentities_critypes_id'] . "'";
+               $cond      = ["`glpi_plugin_manageentities_criprices`.`entities_id`"                       => $old_entity,
+                             "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`" =>
+                                $onePluginContractDays['plugin_manageentities_critypes_id']];
                $allPrices = $dbu->getAllDataFromTable('glpi_plugin_manageentities_criprices', $cond);
                if (!empty($allPrices)) {
                   foreach ($allPrices as $onePrice) {
@@ -444,14 +462,14 @@ function plugin_item_transfer_manageentities($parm) {
          }
 
          $criDetail           = new PluginManageentitiesCriDetail();
-         $restr               = "`glpi_plugin_manageentities_cridetails`.`contracts_id` = '" . $parm['id'] . "'";
+         $restr               = ["`glpi_plugin_manageentities_cridetails`.`contracts_id`" => $parm['id']];
          $allPluginCriDetails = $dbu->getAllDataFromTable('glpi_plugin_manageentities_cridetails', $restr);
          if (!empty($allPluginCriDetails)) {
             foreach ($allPluginCriDetails as $onePluginCriDetail) {
                $criPrice  = new PluginManageentitiesCriPrice();
-               $cond      = "`glpi_plugin_manageentities_criprices`.`entities_id` = '" . $old_entity . "'
-                     AND `glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id` = '" .
-                            $onePluginCriDetail['plugin_manageentities_critypes_id'] . "'";
+               $cond      = ["`glpi_plugin_manageentities_criprices`.`entities_id`"                       => $old_entity,
+                             "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`" =>
+                                $onePluginCriDetail['plugin_manageentities_critypes_id']];
                $allPrices = $dbu->getAllDataFromTable('glpi_plugin_manageentities_criprices', $cond);
                if (!empty($allPrices)) {
                   foreach ($allPrices as $onePrice) {
@@ -611,5 +629,3 @@ function plugin_manageentities_displayConfigItem($type, $ID, $data, $num) {
    }
    return "";
 }
-
-?>

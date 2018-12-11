@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -136,15 +135,17 @@ abstract class CommonGLPIModel {
    }
 
    /**
-    * This function allows to know the current state (error or not) of the model in terms of an error type.
-    * It checks from the array variable errors if is set the error in temrs of the error type. For instance :
+    * This function allows to know the current state (error or not) of the model in terms of an
+    * error type. It checks from the array variable errors if is set the error in temrs of the
+    * error type. For instance :
     *    $errors = array(
-    *       CommonGLPIErrors::ERROR_ENTITY   => CommonGLPIErrors::ERROR_ADD,                       // In case of an
-    * error when trying to insert a new entity CommonGLPIErrors::ERROR_CONTRACT => CommonGLPIErrors::ERROR_UPDATE,
-    *               // In case of an error when trying to update a contract CommonGLPIErrors::ERROR_PERIOD   => array
-    * (CommonGLPIErrors::ERROR_UPDATE => 2),       // In case of an error when trying to update the period
-    *                                                                                              // identified by the
-    * id number 2
+    *       CommonGLPIErrors::ERROR_ENTITY   => CommonGLPIErrors::ERROR_ADD,
+    * // In case of an error when trying to insert a new entity CommonGLPIErrors::ERROR_CONTRACT =>
+    * CommonGLPIErrors::ERROR_UPDATE,                    // In case of an error when trying to
+    * update a contract CommonGLPIErrors::ERROR_PERIOD   => array (CommonGLPIErrors::ERROR_UPDATE
+    * => 2),       // In case of an error when trying to update the period
+    *                                                                                              //
+    * identified by the id number 2
     *    )
     *
     *
@@ -188,7 +189,8 @@ abstract class CommonGLPIModel {
     * @param CommonGLPIError $id : the error to add
     * @param CommonGLPIError $type : the type of error to add
     * @param boolean         $val : the value (true for an error, otherwise false)
-    * @param int             $opt : if set, used to specified an error on a special element identified by the id $opt
+    * @param int             $opt : if set, used to specified an error on a special element
+    *    identified by the id $opt
     */
    public function addError($id, $type, $val, $opt = null) {
       $this->errors = array();
@@ -206,7 +208,8 @@ abstract class CommonGLPIModel {
     *
     * @param CommonGLPIError $id : the error to delete
     * @param CommonGLPIError $type : the error type to delete
-    * @param int             $opt : if set, delete the error of the special element identified by the id $opt
+    * @param int             $opt : if set, delete the error of the special element identified by
+    *    the id $opt
     */
    public function deleteError($id, $type, $opt = null) {
       if (isset($this->errors[$id][$type])) {
@@ -276,7 +279,8 @@ abstract class CommonGLPIModel {
 
    /**
     * This function allows to set the array of messages of the model.
-    * Moreover this function store the new array of messages in session using the function serializeInSession()
+    * Moreover this function store the new array of messages in session using the function
+    * serializeInSession()
     *
     * @param array $value : the array of messages
     */

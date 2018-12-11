@@ -1,30 +1,30 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -50,6 +50,8 @@ class PluginManageentitiesReport extends CommonDBTM {
       $config = PluginManageentitiesConfig::getInstance();
 
       $resultat = array();
+      $dbu      = new DbUtils();
+
       foreach ($entities_id as $entity_id) {
 
          $query = "SELECT `glpi_tickets`.`id` as tickets_id, `glpi_plugin_manageentities_cridetails`.`number_moving`, `glpi_plugin_manageentities_contracts`.`duration_moving` "
@@ -65,7 +67,7 @@ class PluginManageentitiesReport extends CommonDBTM {
                   . " AND `glpi_plugin_manageentities_contracts`.`moving_management` = 1 "
 
                   . " AND `glpi_tickets`.`entities_id` = " . $entity_id;
-         $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
+         $query .= $dbu->getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
 
          $query .= " GROUP BY `glpi_documents`.`tickets_id` ";
          $query .= "ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
@@ -142,6 +144,7 @@ class PluginManageentitiesReport extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $days = self::getDatesBetween2Dates($date1, $date2);
+      $dbu  = new DbUtils();
 
       $resultat = array();
       foreach ($days as $key => $day) {
@@ -178,7 +181,7 @@ class PluginManageentitiesReport extends CommonDBTM {
                          . " LEFT JOIN `glpi_tickets` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)"
                          . " WHERE (`glpi_tickettasks`.`begin` >= '" . $date_begin . "' 
                   AND `glpi_tickettasks`.`end` <= '" . $date_end . "') "
-                         . " AND NOT `glpi_tickets`.`is_deleted` "
+                         . " AND `glpi_tickets`.`is_deleted` = 0"
                          . " AND `glpi_tickettasks`.`users_id_tech` = $tech "
                          . " AND `glpi_tickettasks`.`actiontime` != 0";
                $result = $DB->query($query);
@@ -212,7 +215,7 @@ class PluginManageentitiesReport extends CommonDBTM {
          echo "<tr>";
          echo "<th>" . __('Date') . "</th>";
          foreach ($techs as $tech) {
-            echo "<th>" . getUserName($tech) . "</th>";
+            echo "<th>" . $dbu->getUserName($tech) . "</th>";
          }
          echo "<th>" . __('Total') . "</th>";
          echo "<th>" . __('% of time justified', 'manageentities') . "</th>";
@@ -305,5 +308,3 @@ class PluginManageentitiesReport extends CommonDBTM {
    }
 
 }
-
-?>

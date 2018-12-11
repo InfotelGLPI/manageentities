@@ -1,30 +1,30 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -80,7 +80,8 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
 
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $dbu = new DbUtils();
-                  return self::createTabEntry($name, $dbu->countElementsInTable($this->getTable(), "`plugin_manageentities_contractdays_id` = '" . $item->getID() . "'"));
+                  return self::createTabEntry($name, $dbu->countElementsInTable($this->getTable(),
+                                                                                ["`plugin_manageentities_contractdays_id`" => $item->getID()]));
                }
 
                return $name;
@@ -524,7 +525,8 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
    static function getJSEdition($toupdate, $function_name, $itemtype, $items_id, $parenttype, $parents_id) {
       global $CFG_GLPI;
 
-      $parent = getItemForItemtype($parenttype);
+      $dbu    = new DbUtils();
+      $parent = $dbu->getItemForItemtype($parenttype);
 
       echo "\n<script type='text/javascript' >\n";
       echo "function $function_name() {\n";
@@ -590,29 +592,34 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       return true;
    }
 
-   function getSearchOptions() {
+   function rawSearchOptions() {
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'price';
-      $tab[11]['name']          = self::getTypeName();
-      $tab[11]['massiveaction'] = true;
-      $tab[11]['datatype']      = 'decimal';
+      $tab[] = [
+         'id'       => '11',
+         'table'    => $this->getTable(),
+         'field'    => 'price',
+         'name'     => self::getTypeName(),
+         'datatype' => 'decimal'
+      ];
 
-      $tab[12]['table']         = 'glpi_plugin_manageentities_critypes';
-      $tab[12]['field']         = 'name';
-      $tab[12]['name']          = PluginManageentitiesCriType::getTypeName();
-      $tab[12]['datatype']      = 'dropdown';
-      $tab[12]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => '12',
+         'table'         => 'glpi_plugin_manageentities_critypes',
+         'field'         => 'name',
+         'name'          => PluginManageentitiesCriType::getTypeName(),
+         'datatype'      => 'dropdown',
+         'massiveaction' => false
+      ];
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'is_default';
-      $tab[13]['name']          = __('Is default', 'manageentities');
-      $tab[13]['datatype']      = 'bool';
-      $tab[13]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => '13',
+         'table'         => $this->getTable(),
+         'field'         => 'is_default',
+         'name'          => __('Is default', 'manageentities'),
+         'datatype'      => 'bool',
+         'massiveaction' => false
+      ];
 
       return $tab;
    }
-
 }
-
-?>

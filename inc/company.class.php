@@ -1,30 +1,30 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -41,20 +41,25 @@ class PluginManageentitiesCompany extends CommonDBTM {
       return _n('Company', 'Companies', $nb, 'manageentities');
    }
 
-   function getSearchOptions() {
-      $tab = parent::getSearchOptions();
+   function rawSearchOptions() {
+      $tab = parent::rawSearchOptions();
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'number';
+      $tab[] = [
+         'id'       => '2',
+         'table'    => $this->getTable(),
+         'field'    => 'id',
+         'name'     => __('ID'),
+         'datatype' => 'number'
+      ];
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'address';
-      $tab[3]['name']          = __('Address');
-      $tab[3]['massiveaction'] = false;
-      $tab[3]['datatype']      = 'text';
+      $tab[] = [
+         'id'            => '9',
+         'table'         => $this->getTable(),
+         'field'         => 'address',
+         'name'          => __('Address'),
+         'massiveaction' => false,
+         'datatype'      => 'text'
+      ];
 
       return $tab;
    }
@@ -350,11 +355,12 @@ class PluginManageentitiesCompany extends CommonDBTM {
       $plugin_company = new PluginManageentitiesCompany();
       $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
       $company        = reset($company);
+      $dbu            = new DbUtils();
       if ($company == false) {
          $companies = $plugin_company->find();
          foreach ($companies as $data) {
             if ($data['recursive'] == 1) {
-               $sons = getSonsOf("glpi_entities", $data['entity_id']);
+               $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                foreach ($sons as $son) {
                   if ($son == $obj->entite[0]->fields['id']) {
                      return $data['address'];
@@ -379,11 +385,12 @@ class PluginManageentitiesCompany extends CommonDBTM {
       $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
       $company        = reset($company);
       $doc            = new Document();
+      $dbu            = new DbUtils();
       if ($company == false) {
          $companies = $plugin_company->find();
          foreach ($companies as $data) {
             if ($data['recursive'] == 1) {
-               $sons = getSonsOf("glpi_entities", $data['entity_id']);
+               $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                foreach ($sons as $son) {
                   if ($son == $obj->entite[0]->fields['id']) {
                      if ($doc->getFromDB($data["logo_id"])) {
@@ -414,11 +421,12 @@ class PluginManageentitiesCompany extends CommonDBTM {
       $plugin_company = new PluginManageentitiesCompany();
       $company        = $plugin_company->find("entity_id=" . $obj->entite[0]->fields['id']);
       $company        = reset($company);
+      $dbu            = new DbUtils();
       if ($company == false) {
          $companies = $plugin_company->find();
          foreach ($companies as $data) {
             if ($data['recursive'] == 1) {
-               $sons = getSonsOf("glpi_entities", $data['entity_id']);
+               $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                foreach ($sons as $son) {
                   if ($son == $obj->entite[0]->fields['id']) {
                      return $data['comment'];
@@ -433,5 +441,3 @@ class PluginManageentitiesCompany extends CommonDBTM {
    }
 
 }
-
-?>

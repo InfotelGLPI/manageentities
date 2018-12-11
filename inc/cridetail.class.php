@@ -1,30 +1,30 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -51,9 +51,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    }
 
    static function countForContract($item) {
-
-      return countElementsInTable('glpi_plugin_manageentities_cridetails',
-                                  " `plugin_manageentities_contractdays_id` = '" . $item->getID() . "'");
+      $dbu = new DbUtils();
+      return $dbu->countElementsInTable('glpi_plugin_manageentities_cridetails',
+                                        ["`plugin_manageentities_contractdays_id`" => $item->getID()]);
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
@@ -65,7 +65,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
       if ($item->getType() == 'Ticket') {
          if ($config->fields['use_publictask'] == '1') {
-            $and = " AND `is_private` = false ";
+            $and = " AND `is_private` = 0 ";
          }
 
          if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) {
@@ -85,7 +85,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             $cpt = $data["cpt"];
          }
          //if ($cpt != 0) {
-         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if (Session::getCurrentInterface() == 'central') {
             //               if($config->fields['linktocontract']=='1'){
             self::showForTicket($item);
             //               }
@@ -146,6 +146,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    function showHelpdeskReports($usertype, $technum, $date1, $date2) {
       global $DB, $CFG_GLPI;
 
+      $dbu = new DbUtils();
       // ajout de la configuration du plugin
       $config = PluginManageentitiesConfig::getInstance();
 
@@ -161,7 +162,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       if ($usertype != "group")
          $query .= " AND (`glpi_tickets_users`.`users_id` ='" . $technum . "' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $technum . "') ";
 
-      $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
+      $query .= $dbu->getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
 
       //if ($usertype=="group")
       $query .= " GROUP BY `glpi_documents`.`tickets_id` ";
@@ -182,7 +183,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          echo "<div align='center'><table class='tab_cadre center' width='95%'>";
          echo "<tr><th colspan='" . (12 + $colsup) . "'>" . PluginManageentitiesCri::getTypeName(2) . "&nbsp;";
          if ($usertype != "group")
-            echo " -" . getusername($technum) . "&nbsp;";
+            echo " -" . $dbu->getusername($technum) . "&nbsp;";
          printf(__('From %1$s to %2$s :'), Html::convdate($date1), Html::convdate($date2)) . "</th></tr>";
          echo "<tr>";
          if (Session::isMultiEntitiesMode())
@@ -256,8 +257,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          $modal = $options['modal'];
       }
 
-      $restrict   = "`glpi_plugin_manageentities_cridetails`.`entities_id` = '" . $ticket->fields['entities_id'] . "'
-                  AND `glpi_plugin_manageentities_cridetails`.`tickets_id` = '" . $ticket->fields['id'] . "'";
+      $restrict   = ["`glpi_plugin_manageentities_cridetails`.`entities_id`" => $ticket->fields['entities_id'],
+                     "`glpi_plugin_manageentities_cridetails`.`tickets_id`"  => $ticket->fields['id']];
       $dbu        = new DbUtils();
       $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
       $cridetail  = reset($cridetails);
@@ -315,7 +316,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                          'toupdate'   => "showCriDetail$rand",
                          'width'      => 1000,
                          'height'     => 550);
-         echo "<input type='button' name='submit' value=\"" . $title . "\" class='submit' onClick='manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");'>";
+         echo "<input type='submit' name='submit' value=\"" . $title . "\" class='submit' 
+         onClick='manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");'>";
          if (!isset($options['modal'])) {
             echo "<div id=\"$modal\" title=\"" . $title . "\" style=\"display:none;text-align:center\"></div>";
          }
@@ -516,7 +518,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                         echo "<td>" . $dataCriDetail['plugin_manageentities_critypes_name'] . "</td>";
                         $doc = new Document();
                         $doc->getFromDB($dataCriDetail["documents_id"]);
-                        if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                        if (Session::getCurrentInterface() == 'central') {
                            echo "<td class='center'  width='100px'>" . $doc->getDownloadLink() . "</td>";
                         } else {
                            echo "<td class='center'  width='100px'>" . $doc->getName() . "</td>";
@@ -651,9 +653,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       $resultCriDetail = $DB->query($queryCriDetail);
       $numberCriDetail = $DB->numrows($resultCriDetail);
 
-      $restrict        = "`glpi_plugin_manageentities_contracts`.`entities_id` = '" .
-                         $contractDayValues["entities_id"] . "' AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '" .
-                         $contractDayValues["contracts_id"] . "'";
+      $restrict        = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contractDayValues["entities_id"],
+                          "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"]];
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract  = reset($pluginContracts);
@@ -852,8 +853,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       $PDF     = new PluginManageentitiesCriPDF('P', 'mm', 'A4');
 
       $manageentities_contract = new PluginManageentitiesContract();
-      $manageentities_contract->getFromDBByQuery('WHERE `contracts_id`=' . $contractDay->fields['contracts_id']);
-
+      $manageentities_contract->getFromDBByCrit(['contracts_id' => $contractDay->fields['contracts_id']]);
       // We get all cri detail data
       $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
       $resultCriDetail                        = self::getCriDetailData($contractDay->fields);
@@ -1016,10 +1016,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          }
       }
 
-      $restrict = "`glpi_plugin_manageentities_cridetails`.`entities_id` = '" .
-                  $ticket->fields['entities_id'] . "'
-                  AND `glpi_plugin_manageentities_cridetails`.`tickets_id` = '" .
-                  $ticket->fields['id'] . "'";
+      $restrict = ["`glpi_plugin_manageentities_cridetails`.`entities_id`" => $ticket->fields['entities_id'],
+                   "`glpi_plugin_manageentities_cridetails`.`tickets_id`"  => $ticket->fields['id']];
 
       $dbu        = new DbUtils();
       $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
@@ -1095,8 +1093,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                        `glpi_contracts`.`name`,
                        `glpi_contracts`.`num`,
                        `glpi_plugin_manageentities_contracts`.`contracts_id`,
-                       `glpi_plugin_manageentities_contracts`.`id` AS ID_us,
-                       `glpi_plugin_manageentities_contracts`.`is_default` AS is_default
+                       `glpi_plugin_manageentities_contracts`.`id` as ID_us,
+                       `glpi_plugin_manageentities_contracts`.`is_default` as is_default
                FROM `glpi_contracts`
                LEFT JOIN `glpi_plugin_manageentities_contracts`
                     ON (`glpi_plugin_manageentities_contracts`.`contracts_id` = `glpi_contracts`.`id`)
@@ -1245,6 +1243,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    static function populatePlanning($options = array()) {
       global $DB, $CFG_GLPI;
 
+      $dbu             = new DbUtils();
       $default_options = array(
          'color'               => '',
          'event_type_color'    => '',
@@ -1292,10 +1291,10 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                . " LEFT JOIN `glpi_plugin_manageentities_critechnicians` ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_plugin_manageentities_critechnicians`.`tickets_id`) "
                . " WHERE (`glpi_tickettasks`.`begin` >= '" . $begin . "' 
                   AND `glpi_tickettasks`.`end` <= '" . $end . "') "
-               . " AND NOT `glpi_tickets`.`is_deleted` "
+               . " AND `glpi_tickets`.`is_deleted` = 0"
                . " AND (`glpi_tickettasks`.`users_id_tech` ='" . $who . "' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $who . "') ";
-      $query .= getEntitiesRestrictRequest("AND", "glpi_tickets", '',
-                                           $_SESSION["glpiactiveentities"], false);
+      $query .= $dbu->getEntitiesRestrictRequest("AND", "glpi_tickets", '',
+                                                 $_SESSION["glpiactiveentities"], false);
       $query .= " AND `glpi_tickettasks`.`actiontime` != 0";
       $query .= " GROUP BY `glpi_tickettasks`.`id` ";
       //$query.= " ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
@@ -1363,6 +1362,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
       $html = "";
       $rand = mt_rand();
+      $dbu  = new DbUtils();
       if ($complete) {
 
          if ($val["entities_name"]) {
@@ -1373,7 +1373,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             $html .= "<strong>" . __('End date') . "</strong> : " . Html::convdatetime($val["end"]) . "<br>";
          }
          if ($val["users_id"] && $who != 0) {
-            $html .= "<strong>" . __('User') . "</strong> : " . getUserName($val["users_id"]) . "<br>";
+            $html .= "<strong>" . __('User') . "</strong> : " . $dbu->getUserName($val["users_id"]) . "<br>";
          }
          if ($val["actiontime"]) {
             $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString($val['actiontime'], false) . "<br>";
@@ -1401,5 +1401,3 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    }
 
 }
-
-?>

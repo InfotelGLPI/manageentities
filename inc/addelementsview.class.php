@@ -1,32 +1,31 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSEzda
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -174,14 +173,17 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
    }
 
    /**
-    * L'id�e globale, c'est que chacun des param�tres de la fonction initJSFunctions contient au minimum :
+    * L'id�e globale, c'est que chacun des param�tres de la fonction initJSFunctions contient au
+    * minimum :
     *    - ['listId'] : la liste des id des diff�rents input o� les donn�es � sauvegarder sont
     *    - ['idDivAjax'] : l'id de la div o� les r�sultats du traitement seront  affich�s
-    *    - ['params'] : diff�rent param�tres (dont le 'action' qui d�finit quel traitement doit �tre
+    *    - ['params'] : diff�rent param�tres (dont le 'action' qui d�finit quel traitement doit
+    * �tre
     *                   effectu� depuis le controlleur)
     *
     * Pour contact et intervention, il contiennent en plus :
-    *    - ['paramsAddNewContact'] : l'action / l'id de la div sont diff�rentes d'un ajout de contact / intervention
+    *    - ['paramsAddNewContact'] : l'action / l'id de la div sont diff�rentes d'un ajout de
+    * contact / intervention
     *
     * @param $entityContent
     * @param $contactContent
@@ -385,12 +387,12 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td>" . __("As child of") . "</td>";
       echo "<td colspan='3'>";
 
-
-      $condition     = getEntitiesRestrictRequest("", "glpi_entities", "", "", true);
-      $idEntityChild = Dropdown::show(getItemTypeForTable(Entity::getTable()), array(
+      $dbu           = new DbUtils();
+      $condition     = $dbu->getEntitiesRestrictRequest("", "glpi_entities", "", "", true);
+      $idEntityChild = Dropdown::show($dbu->getItemTypeForTable(Entity::getTable()), array(
          'value'     => $currentEntity->fields [$field ['name']],
          'name'      => $field ['name'],
-         'used'      => ($ID > 0 ? getSonsOf($currentEntity->getTable(), $ID) : array()),
+         'used'      => ($ID > 0 ? $dbu->getSonsOf($currentEntity->getTable(), $ID) : array()),
          'condition' => $condition
       ));
 
@@ -514,6 +516,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       $contacts       = $this->pModel->getContacts();
       $currentContact = $contacts[$idContact];
+      $dbu            = new DbUtils();
 
       // Onchange for img purpose
       echo "   <div id='tabs-" . ($idContact) . "' style='padding:0px;' onchange=\"javascript:";
@@ -534,9 +537,9 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       echo ">";
 
-      $condition = getEntitiesRestrictRequest("", "glpi_entities");
+      $condition = $dbu->getEntitiesRestrictRequest("", "glpi_entities");
 
-      $idDpEntity = Dropdown::show(getItemTypeForTable(Entity::getTable()), array(
+      $idDpEntity = Dropdown::show($dbu->getItemTypeForTable(Entity::getTable()), array(
          'name'       => 'contact_entities_id',
          'value'      => isset($currentContact->fields['entities_id']) ? $currentContact->fields ['entities_id'] : 0,
          'emptylabel' => __("New entity", "manageentities"),
@@ -779,7 +782,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
          echo "<td colspan='3'>";
 
          // Liste des templates
-         $query        = "`is_template`=1";
+         $query        = ["`is_template`" => 1];
          $dbu          = new DbUtils();
          $listTemplate = $dbu->getAllDataFromTable($currentContract->getTable(), $query, false, "name ASC");
          $listOptions  = array("-1" => __("Blank Template"));
@@ -810,14 +813,14 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td>";
       echo "<div id='div_select_entity_for_contract' ";
 
-      $condition = getEntitiesRestrictRequest("", "glpi_entities");
+      $condition = $dbu->getEntitiesRestrictRequest("", "glpi_entities");
 
       if (isset($currentContract->fields['entities_id']) && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0 && $currentContract->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "") && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)) {
          echo " style='visibility:hidden;' ";
       }
       echo " >";
 
-      $idDpEntity = Dropdown::show(getItemTypeForTable($this->pModel->getEntity()->getTable()), array(
+      $idDpEntity = Dropdown::show($dbu->getItemTypeForTable($this->pModel->getEntity()->getTable()), array(
          'name'       => 'contract_entities_id',
          'value'      => isset($currentContract->fields['entities_id']) ? $currentContract->fields ['entities_id'] : 0,
          'emptylabel' => __("New entity", "manageentities"),
@@ -1193,6 +1196,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
    }
 
    private function initFormAddPDFContract() {
+      $dbu          = new DbUtils();
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
 
       echo "<div id='form-add-contract' style='display: none;'>";
@@ -1203,7 +1207,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td>" . __("Heading") . "</td>";
       echo "<td>";
       if (isset($this->pModel->getContract()->fields['entities_id']) && $this->pModel->getContract()->fields['entities_id'] > 0) {
-         $idDpDocCategory = DocumentCategory::dropdown(array('entity' => getSonsOf(Entity::getTable(), $this->pModel->getContract()->fields['entities_id'])));
+         $idDpDocCategory = DocumentCategory::dropdown(array('entity' => $dbu->getSonsOf(Entity::getTable(), $this->pModel->getContract()->fields['entities_id'])));
       } else {
          $idDpDocCategory = DocumentCategory::dropdown();
       }
@@ -1270,10 +1274,8 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       if (!$canView)
          return false;
 
-      $restrict         = "`glpi_plugin_manageentities_contracts`.`entities_id` = '" .
-                          $contract->fields['entities_id'] . "'
-                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '" .
-                          $contract->fields['id'] . "'";
+      $restrict         = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contract->fields['entities_id'],
+                           "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']];
       $dbu              = new DbUtils();
       $pluginContracts  = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract   = reset($pluginContracts);
@@ -1440,10 +1442,8 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       $ID      = 0;
       $options = array("contract_id" => "");
 
-      $restrict = "`glpi_plugin_manageentities_contracts`.`entities_id` = '" .
-                  $contract->fields['entities_id'] . "'
-                  AND `glpi_plugin_manageentities_contracts`.`contracts_id` = '" .
-                  $contract->fields['id'] . "'";
+      $restrict = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contract->fields['entities_id'],
+                   "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']];
 
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
@@ -1473,8 +1473,8 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       echo " >";
 
-      $condition  = getEntitiesRestrictRequest("", "glpi_entities");
-      $idDpEntity = Dropdown::show(getItemTypeForTable("glpi_entities"), array(
+      $condition  = $dbu->getEntitiesRestrictRequest("", "glpi_entities");
+      $idDpEntity = Dropdown::show($dbu->getItemTypeForTable("glpi_entities"), array(
          'name'       => 'intervention_entities_id',
          'value'      => isset($currentContractday->fields['entities_id']) ? $currentContractday->fields ['entities_id'] : 0,
          'emptylabel' => __("New entity", "manageentities"),
@@ -1506,8 +1506,8 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       echo " >";
 
-      $condition    = getEntitiesRestrictRequest("", "glpi_contracts", "entities_id");
-      $idDpContract = Dropdown::show(getItemTypeForTable("glpi_contracts"), array(
+      $condition    = $dbu->getEntitiesRestrictRequest("", "glpi_contracts", "entities_id");
+      $idDpContract = Dropdown::show($dbu->getItemTypeForTable("glpi_contracts"), array(
          'name'       => 'intervention_contracts_id',
          'value'      => isset($currentContractday->fields['contracts_id']) ? $currentContractday->fields ['contracts_id'] : 'name',
          'emptylabel' => __("New contract", "manageentities")
@@ -1979,7 +1979,8 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       $rand         = $fakeIdIntervention;
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
       $item         = new PluginManageentitiesCriPrice();
-      $parent       = getItemForItemtype($options['parent']);
+      $dbu          = new DbUtils();
+      $parent       = $dbu->getItemForItemtype($options['parent']);
       if ($idIntervention != -1) {
          $parent->getFromDB($idIntervention);
       }
@@ -2124,10 +2125,11 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
    public function changeContractList($entitiesId, $previousEntity, $idIntervention) {
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
       $realRand     = mt_rand();
-      $ids          = getSonsOf("glpi_entities", $entitiesId);
-      $condition    = str_ireplace(array("\r\n", "\r", "\n"), "", getEntitiesRestrictRequest("", "glpi_contracts", "entities_id", $ids, true));
+      $dbu          = new DbUtils();
+      $ids          = $dbu->getSonsOf("glpi_entities", $entitiesId);
+      $condition    = str_ireplace(array("\r\n", "\r", "\n"), "", $dbu->getEntitiesRestrictRequest("", "glpi_contracts", "entities_id", $ids, true));
 
-      $idDpContract = Dropdown::show(getItemTypeForTable(Contract::getTable()), array(
+      $idDpContract = Dropdown::show($dbu->getItemTypeForTable(Contract::getTable()), array(
          'name'       => 'intervention_contracts_id',
          'emptylabel' => __("New contract", "manageentities"),
          'condition'  => $condition,
@@ -2160,7 +2162,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
 
       $docItem = new Document_Item();
-      $docItem->getFromDBByQuery("WHERE `documents_id`=" . $doc->fields['id']);
+      $docItem->getFromDBByCrit(['documents_id' => $doc->fields['id']]);
 
       $docCategory = new DocumentCategory();
       $docCategory->getFromDB($doc->fields['documentcategories_id']);
@@ -2951,5 +2953,3 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
    }
 
 }
-
-?>

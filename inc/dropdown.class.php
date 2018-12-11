@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -25,6 +24,10 @@
  You should have received a copy of the GNU General Public License
  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
+ */
+
+/** @file
+ * @brief
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -109,5 +112,3 @@ class PluginManageentitiesDropdown extends Dropdown {
       return $out;
    }
 }
-
-?>

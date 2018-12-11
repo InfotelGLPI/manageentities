@@ -1,30 +1,30 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
 
 /**
@@ -44,7 +44,7 @@ function update202to203() {
    $migration->executeMigration();
 
    // UPDATE glpi_plugin_manageentities_criprices
-   
+
    $check = array();
 
    // Default Cri type
@@ -67,7 +67,7 @@ function update202to203() {
             }
             $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
                             (`entities_id` ,`plugin_manageentities_critypes_id` ,`price` ,`plugin_manageentities_contractdays_id`, `is_default`)
-                            VALUES ('".$data['entities_id']."', '".$data['critypes_id']."', '".$data['price']."', '".$data['contractdays_id']."', '1')";
+                            VALUES ('" . $data['entities_id'] . "', '" . $data['critypes_id'] . "', '" . $data['price'] . "', '" . $data['contractdays_id'] . "', '1')";
             $DB->query($query);
             $check[$data['contractdays_id']][] = $data['critypes_id'];
          }
@@ -75,7 +75,7 @@ function update202to203() {
    }
 
    $check2 = array();
-   
+
    // Cridetail cri type
    $query = "SELECT DISTINCT `glpi_plugin_manageentities_criprices`.`id` as criprices_id, 
                     `glpi_plugin_manageentities_criprices`.`price`, 
@@ -99,7 +99,7 @@ function update202to203() {
             }
             $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
                       (`entities_id` ,`plugin_manageentities_critypes_id` ,`price` ,`plugin_manageentities_contractdays_id`, `is_default`)
-                      VALUES ('".$data['entities_id']."', '".$data['critypes_id']."', '".$data['price']."', '".$data['contractdays_id']."', '0')";
+                      VALUES ('" . $data['entities_id'] . "', '" . $data['critypes_id'] . "', '" . $data['price'] . "', '" . $data['contractdays_id'] . "', '0')";
             $DB->query($query);
             $check2[$data['contractdays_id']][] = $data['critypes_id'];
          }
@@ -112,5 +112,3 @@ function update202to203() {
 
    return true;
 }
-
-?>

@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -52,4 +51,3 @@ if (isset($_POST["add"])) {
    $company->display($_GET);
    Html::footer();
 }
-?>

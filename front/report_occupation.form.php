@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
- */
+*/
 
 include('../../../inc/includes.php');
 
@@ -50,7 +49,7 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
    $_POST["date1"] = $_POST["date2"];
    $_POST["date2"] = $tmp;
 }
-
+$dbu = new DbUtils();
 Report::title();
 $PluginManageentitiesEntity = new PluginManageentitiesEntity();
 if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDATE)) {
@@ -68,7 +67,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       $users = $user->find("`is_deleted` = 0 AND `entities_id` IN (" . implode(',', $_SESSION['glpiactiveentities']) . ")");
       $techs = array();
       foreach ($users as $data) {
-         $techs[$data['id']] = getUserName($data['id']);
+         $techs[$data['id']] = $dbu->getUserName($data['id']);
       }
 
       echo "<tr><td class='tab_bg_2 center'>";
@@ -104,12 +103,12 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       Html::showDateField("date2", ['value' => $_POST["date2"]]);
       echo "</td></tr>";
       //stats Users
-
+      $dbu   = new DbUtils();
       $user  = new User();
       $users = $user->find("`is_deleted` = 0 AND `entities_id` IN (" . implode(',', $_SESSION['glpiactiveentities']) . ")");
       $techs = array();
       foreach ($users as $data) {
-         $techs[$data['id']] = getUserName($data['id']);
+         $techs[$data['id']] = $dbu->getUserName($data['id']);
       }
 
       echo "<tr><td class='tab_bg_2 center'>";
@@ -129,5 +128,3 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
 }
 
 Html::footer();
-
-?>

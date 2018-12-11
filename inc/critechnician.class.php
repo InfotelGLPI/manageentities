@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -56,8 +55,9 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
    function getTechnicians($tickets_id, $remove_tag = false) {
       global $DB;
 
+      $dbu    = new DbUtils();
       $techs  = array();
-      $query  = "SELECT `users_id_tech` AS users_id,
+      $query  = "SELECT `users_id_tech` as users_id,
                        `glpi_users`.`name`,
                        `glpi_users`.`realname`,
                        `glpi_users`.`firstname`
@@ -70,17 +70,17 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
          while ($data = $DB->fetch_array($result)) {
             if ($data['users_id'] != 0) {
                if ($remove_tag) {
-                  $techs['notremove'][$data['users_id']] = formatUserName($data["users_id"],
-                                                                          $data["name"], $data["realname"], $data["firstname"]);
+                  $techs['notremove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
+                                                                                $data["name"], $data["realname"], $data["firstname"]);
                } else {
-                  $techs[$data['users_id']] = formatUserName($data["users_id"],
-                                                             $data["name"], $data["realname"], $data["firstname"]);
+                  $techs[$data['users_id']] = $dbu->formatUserName($data["users_id"],
+                                                                   $data["name"], $data["realname"], $data["firstname"]);
                }
             }
          }
       }
 
-      $query  = "SELECT `users_id` AS users_id,
+      $query  = "SELECT `users_id` as users_id,
                        `glpi_users`.`name`,
                        `glpi_users`.`realname`,
                        `glpi_users`.`firstname`
@@ -93,11 +93,11 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
          while ($data = $DB->fetch_array($result)) {
             if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {
                if ($remove_tag) {
-                  $techs['remove'][$data['users_id']] = formatUserName($data["users_id"],
-                                                                       $data["name"], $data["realname"], $data["firstname"]);
+                  $techs['remove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
+                                                                             $data["name"], $data["realname"], $data["firstname"]);
                } else {
-                  $techs[$data['users_id']] = formatUserName($data["users_id"],
-                                                             $data["name"], $data["realname"], $data["firstname"]);
+                  $techs[$data['users_id']] = $dbu->formatUserName($data["users_id"],
+                                                                   $data["name"], $data["realname"], $data["firstname"]);
                }
             }
          }
@@ -106,5 +106,3 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
       return $techs;
    }
 }
-
-?>

@@ -1,30 +1,30 @@
 <?php
+
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
- -------------------------------------------------------------------------
- Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+  -------------------------------------------------------------------------
+  Manageentities plugin for GLPI
+  Copyright (C) 2003-2012 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
+  https://forge.indepnet.net/projects/manageentities
+  -------------------------------------------------------------------------
 
- LICENSE
+  LICENSE
 
- This file is part of Manageentities.
+  This file is part of Manageentities.
 
- Manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+  Manageentities is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
- Manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+  Manageentities is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+  You should have received a copy of the GNU General Public License
+  along with Manageentities. If not, see <http://www.gnu.org/licenses/>.
+  --------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -45,8 +45,10 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
    static function queryFollowUp($instID, $options = array()) {
       global $DB;
+
+      $dbu = new DbUtils();
       if (isset($options['entities_id']) && $options['entities_id'] != '-1') {
-         $sons     = getSonsOf('glpi_entities', $options['entities_id']);
+         $sons     = $dbu->getSonsOf('glpi_entities', $options['entities_id']);
          $entities = "";
          $first    = true;
          if (is_array($sons)) {
@@ -64,8 +66,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                       $entities . ") ";
       } else {
 
-         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
-            $condition = getEntitiesRestrictRequest("", "glpi_contracts");
+         if (Session::getCurrentInterface() == 'central') {
+            $condition = $dbu->getEntitiesRestrictRequest("", "glpi_contracts");
          } else {
             if (is_array($instID)) {
                $instID    = "'" . implode("', '", $instID) . "'";
@@ -172,7 +174,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             $company        = reset($company);
             $sons           = array();
             if ($company['recursive'] == 1) {
-               $sons = getSonsOf('glpi_entities', $company['entity_id']);
+               $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
             } else {
                $sons[0] = $company['entity_id'];
             }
@@ -192,7 +194,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             $company        = $plugin_company->find("id =" . $id);
             $company        = reset($company);
             if ($company['recursive'] == 1) {
-               $sons = getSonsOf('glpi_entities', $company['entity_id']);
+               $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
             } else {
                $sons[0] = $company['entity_id'];
             }
@@ -217,7 +219,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                WHERE $condition
                AND `glpi_entities`.`name` IS NOT NULL 
                AND `glpi_entities`.`id` IS NOT NULL
-               " . getEntitiesRestrictRequest("AND", "glpi_entities", 'id', "", true) . "
+               " . $dbu->getEntitiesRestrictRequest("AND", "glpi_entities", 'id', "", true) . "
                ORDER BY `glpi_entities`.`name`";
 
       $resEntity   = $DB->query($queryEntity);
@@ -310,7 +312,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   $contract_reste = 0;
                   $name_contract  = "";
 
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                  if (Session::getCurrentInterface() == 'central') {
                      $link_contract = Toolbox::getItemTypeFormURL("Contract");
                      $name_contract .= "<a href='" . $link_contract . "?id=" . $dataContract["contracts_id"] . "'>";
                   }
@@ -319,7 +321,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   } else {
                      $name = $dataContract["name"];
                   }
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                  if (Session::getCurrentInterface() == 'central') {
                      $name_contract .= $name . "</a>";
                   }
 
@@ -344,7 +346,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                         $dataContractDay["contract_type"] = $dataContract["contract_type"];
                      }
 
-                     if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                     if (Session::getCurrentInterface() == 'central') {
                         $link_period = Toolbox::getItemTypeFormURL("PluginManageentitiesContractDay");
                         $name_period = "<a class='ganttWhite' href='" . $link_period . "?id=" . $dataContractDay["contractdays_id"] . "&showFromPlugin=1'>";
                      } else {
@@ -356,7 +358,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      } else {
                         $nameperiod = $dataContractDay["name_contractdays"];
                      }
-                     if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                     if (Session::getCurrentInterface() == 'central') {
                         $name_period .= $nameperiod . "</a>";
                      }
 
@@ -391,7 +393,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      //Rest amount
                      $reste_montant = $resultCriDetail['resultOther']['reste_montant'];
 
-                     if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'
+                     if (Session::getCurrentInterface() == 'helpdesk'
                          && $dataContractDay["contract_type"] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
                         $credit = PluginManageentitiesContract::getContractType($dataContractDay["contract_type"]);
 
@@ -569,13 +571,13 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
       // Colspan
       $colspan = '2';
-      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+      if (Session::getCurrentInterface() == 'helpdesk') {
          $colspan = '6';
       }
       $colspan_contract = $colspan + 1;
 
       if (!empty($list)) {
-         if ($output_type == Search::HTML_OUTPUT && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if ($output_type == Search::HTML_OUTPUT && Session::getCurrentInterface() == 'central') {
             self::showLegendary();
             self::printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters, "PluginManageentitiesFollowUp");
          }
@@ -585,7 +587,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          $item_num = 0;
          echo Search::showNewLine($output_type);
          if ($output_type != Search::HTML_OUTPUT) {
-            if ($_SESSION['glpiactiveprofile']['interface'] == 'central')
+            if (Session::getCurrentInterface() == 'central')
                echo Search::showHeaderItem($output_type, _n('Client', 'Clients', 1, 'manageentities'), $item_num);
 
             echo Search::showHeaderItem($output_type, __('Contract'), $item_num, "", 0, "", "colspan='" . $colspan_contract . "'");
@@ -595,7 +597,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             echo Search::showHeaderItem($output_type, '', $item_num);
          }
 
-         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         if (Session::getCurrentInterface() == 'central') {
             if ($output_type != Search::HTML_OUTPUT) {
                if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showHeaderItem($output_type, __('Contract present', 'manageentities'), $item_num, "", 0, "", "colspan='2'");
                else echo Search::showHeaderItem($output_type, '', $item_num);
@@ -624,7 +626,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                $first = false;// First entity ?
 
                // Display Entity
-               if ($output_type == Search::HTML_OUTPUT && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+               if ($output_type == Search::HTML_OUTPUT && Session::getCurrentInterface() == 'central') {
                   if ($entity_id != $contract['entities_id']) {
                      $row_num++;
                      $item_num = 0;
@@ -642,7 +644,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
                echo Search::showNewLine($output_type);
                // Display Entity
-               if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+               if (Session::getCurrentInterface() == 'central') {
                   if ($entity_id != $contract['entities_id']) {
                      if ($output_type != Search::HTML_OUTPUT) echo Search::showItem($output_type, $contract['entities_name'], $item_num, $row_num);
                   } else {
@@ -671,7 +673,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   echo Search::showItem($output_type, '<b>' . _x('phone', 'Number') . ' : </b>' . $contract['contract_num'], $item_num, $row_num, "colspan='" . $colspan . "'");
                }
 
-               if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+               if (Session::getCurrentInterface() == 'central') {
                   // Display contract added
                   if ($output_type != Search::HTML_OUTPUT) {
                      if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) echo Search::showItem($output_type, $contract['contract_added'], $item_num, $row_num, "colspan='2'");
@@ -712,7 +714,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                $item_num = 0;
 
                echo Search::showNewLine($output_type);
-               if ($_SESSION['glpiactiveprofile']['interface'] == 'central' && $output_type != Search::HTML_OUTPUT) {
+               if (Session::getCurrentInterface() == 'central' && $output_type != Search::HTML_OUTPUT) {
                   echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                }
                echo Search::showHeaderItem($output_type, __('Period of contract', 'manageentities'), $item_num, '', 0, '', " $colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
@@ -732,13 +734,13 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
                echo Search::showHeaderItem($output_type, __('Initial credit', 'manageentities'), $item_num, '', 0, '', "$colspanNoprice style='" . PluginManageentitiesMonthly::$style[1] . "'");
                echo Search::showHeaderItem($output_type, __('Total consummated', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
-               if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'
+               if (Session::getCurrentInterface() == 'helpdesk'
                    && ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $contract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
                   echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                   echo Search::showHeaderItem($output_type, '', $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                } else {
                   echo Search::showHeaderItem($output_type, __('Total remaining', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                  if (Session::getCurrentInterface() == 'central') {
                      echo Search::showHeaderItem($output_type, __('Total exceeding', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
                      if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                         echo Search::showHeaderItem($output_type, __('Last visit', 'manageentities'), $item_num, '', 0, '', "style='" . PluginManageentitiesMonthly::$style[1] . "'");
@@ -767,7 +769,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   $item_num = 0;
 
                   echo PluginManageentitiesFollowUp::showNewLine($output_type, false, $day['contract_is_closed'], $day['contractstates_color']);
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central' && $output_type != Search::HTML_OUTPUT)
+                  if (Session::getCurrentInterface() == 'central' && $output_type != Search::HTML_OUTPUT)
                      echo Search::showItem($output_type, '', $item_num, $row_num);
                   echo Search::showItem($output_type, $day['contractday_name'], $item_num, $row_num, " $colspanNoprice ");
 
@@ -784,7 +786,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   else
                      echo Search::showItem($output_type, $day['end_date'], $item_num, $row_num, "");
 
-                  if (($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' &&
+                  if ((Session::getCurrentInterface() == 'helpdesk' &&
                        ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $day['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT)) ||
                       ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $day['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
                      echo Search::showItem($output_type, Dropdown::EMPTY_VALUE, $item_num, $row_num, "$colspanNoprice ");
@@ -792,9 +794,9 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      echo Search::showItem($output_type, Html::formatNumber($day['credit'], 0, 2), $item_num, $row_num, "$colspanNoprice ");
                   }
 
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central' ||
+                  if (Session::getCurrentInterface() == 'central' ||
                       ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT)) {
-                     if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk' &&
+                     if (Session::getCurrentInterface() == 'helpdesk' &&
                          ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED && $day['conso'] > $day['credit'])) {
                         echo Search::showItem($output_type, Html::formatNumber($day['credit'], 0, 2), $item_num, $row_num, "");
                      } else {
@@ -803,21 +805,21 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   } else {
                      echo Search::showItem($output_type, Dropdown::EMPTY_VALUE, $item_num, $row_num, "");
                   }
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'
+                  if (Session::getCurrentInterface() == 'helpdesk'
                       && ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $contract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
                      echo Search::showItem($output_type, '', $item_num, $row_num, "");
                      echo Search::showItem($output_type, '', $item_num, $row_num, "");
                   } else {
-                     if ($_SESSION['glpiactiveprofile']['interface'] == 'central' || $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT) {
+                     if (Session::getCurrentInterface() == 'central' || $day['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT) {
                         echo Search::showItem($output_type, Html::formatNumber($day['reste'], 0, 2), $item_num, $row_num, "");
                      } else {
                         echo Search::showItem($output_type, Dropdown::EMPTY_VALUE, $item_num, $row_num, "");
                      }
-                     if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                     if (Session::getCurrentInterface() == 'central') {
                         echo Search::showItem($output_type, Html::formatNumber($day['depass'], 0, 2), $item_num, $row_num, "");
                      }
                   }
-                  if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                  if (Session::getCurrentInterface() == 'central') {
                      if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                         echo Search::showItem($output_type, $day['last_visit'], $item_num, $row_num, "");
                         //                        echo Search::showItem($output_type, Html::formatNumber($day['price'], 0, 2), $item_num, $row_num, "");
@@ -839,7 +841,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   echo Search::showEndLine($output_type);
                }
 
-               if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+               if (Session::getCurrentInterface() == 'central') {
                   $row_num++;
                   $item_num = 0;
 
@@ -878,7 +880,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                }
             } else {
                //line total
-               if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+               if (Session::getCurrentInterface() == 'central') {
 
                   if ($output_type == Search::HTML_OUTPUT) {
                      $row_num++;
@@ -1036,7 +1038,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       global $DB;
       PluginManageentitiesEntity::showManageentitiesHeader(__('General follow-up', 'manageentities'));
 
-      if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+      if (Session::getCurrentInterface() == 'central') {
 
          $rand = mt_rand();
 
@@ -1116,7 +1118,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "</tr>";
 
 
-         $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` AS users_id
+         $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` as users_id
                   FROM `glpi_plugin_manageentities_businesscontacts`, `glpi_users`
                   WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
                   GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
@@ -1216,8 +1218,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       echo "<table class='tab_cadre_pager'>\n";
       echo "<tr>\n";
 
-      if (isset($_SESSION["glpiactiveprofile"])
-          && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
+      if (Session::getCurrentInterface()
+          && Session::getCurrentInterface()) {
          echo "<td class='tab_bg_2' width='30%'>";
 
          echo "<input type='hidden' name='item_type' value='" . $item_type_output . "'>";
@@ -1248,5 +1250,3 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
    }
 
 }
-
-?>

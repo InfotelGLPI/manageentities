@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2013 by the Manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
@@ -115,20 +114,21 @@ function plugin_version_manageentities() {
 
    return array(
       'name'           => __('Entities portal', 'manageentities'),
-      'version'        => '2.3.0',
+      'version'        => '3.0.0',
       'oldname'        => 'manageentity',
       'author'         => 'Infotel',
       'license'        => 'GPLv2+',
       'homepage'       => 'https://github.com/InfotelGLPI/manageentities',
-      'minGlpiVersion' => '9.2',
+      'minGlpiVersion' => '9.3',
    );
 
 }
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_manageentities_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '9.2', 'lt') || version_compare(GLPI_VERSION, '9.3', 'ge')) {
-      echo __('This plugin requires GLPI >= 9.2');
+   if (version_compare(GLPI_VERSION, '9.3', 'lt')
+       || version_compare(GLPI_VERSION, '9.4', 'ge')) {
+      echo __('This plugin requires GLPI >= 9.3');
       return false;
    }
    return true;
@@ -138,5 +138,3 @@ function plugin_manageentities_check_prerequisites() {
 function plugin_manageentities_check_config() {
    return true;
 }
-
-?>

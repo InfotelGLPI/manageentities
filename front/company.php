@@ -3,14 +3,14 @@
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
  Manageentities plugin for GLPI
- Copyright (C) 2014-2017 by the Manageentities Development Team.
+ Copyright (C) 2003-2011 by the manageentities Development Team.
 
- https://github.com/InfotelGLPI/manageentities
+ https://forge.indepnet.net/projects/manageentities
  -------------------------------------------------------------------------
 
  LICENSE
-
- This file is part of Manageentities.
+      
+ This file is part of manageentities.
 
  Manageentities is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -42,5 +42,3 @@ if ($company->canView()) {
 }
 
 Html::footer();
-
-?>
