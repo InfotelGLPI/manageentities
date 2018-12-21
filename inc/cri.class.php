@@ -117,7 +117,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             }
             echo implode('<br>', $techs);
          } else {
-            echo "<font color='red'>" . __('Please assign a technician to your tasks', 'manageentities') . "</font>";
+            echo "<span style=\"font-weight:bold; color:red\">" . __('Please assign a technician to your tasks', 'manageentities') . "</span>";
          }
       }
 

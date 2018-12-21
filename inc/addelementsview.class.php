@@ -389,7 +389,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td colspan='3'>";
 
       $dbu           = new DbUtils();
-      $condition     = $dbu->getEntitiesRestrictRequest("", "glpi_entities", "", "", true);
+      $condition     = $dbu->getEntitiesRestrictCriteria("glpi_entities", "", "", true);
       $idEntityChild = Dropdown::show($dbu->getItemTypeForTable(Entity::getTable()), array(
          'value'     => $currentEntity->fields [$field ['name']],
          'name'      => $field ['name'],
@@ -538,7 +538,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       echo ">";
 
-      $condition = $dbu->getEntitiesRestrictRequest("", "glpi_entities");
+      $condition = $dbu->getEntitiesRestrictCriteria("glpi_entities");
 
       $idDpEntity = Dropdown::show($dbu->getItemTypeForTable(Entity::getTable()), array(
          'name'       => 'contact_entities_id',
@@ -814,7 +814,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td>";
       echo "<div id='div_select_entity_for_contract' ";
 
-      $condition = $dbu->getEntitiesRestrictRequest("", "glpi_entities");
+      $condition = $dbu->getEntitiesRestrictCriteria("glpi_entities");
 
       if (isset($currentContract->fields['entities_id']) && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0 && $currentContract->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "") && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)) {
          echo " style='visibility:hidden;' ";
@@ -1474,7 +1474,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       echo " >";
 
-      $condition  = $dbu->getEntitiesRestrictRequest("", "glpi_entities");
+      $condition  = $dbu->getEntitiesRestrictCriteria("glpi_entities");
       $idDpEntity = Dropdown::show($dbu->getItemTypeForTable("glpi_entities"), array(
          'name'       => 'intervention_entities_id',
          'value'      => isset($currentContractday->fields['entities_id']) ? $currentContractday->fields ['entities_id'] : 0,
@@ -1507,7 +1507,6 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       echo " >";
 
-      $condition    = $dbu->getEntitiesRestrictRequest("", "glpi_contracts", "entities_id");
       $idDpContract = Dropdown::show($dbu->getItemTypeForTable("glpi_contracts"), array(
          'name'       => 'intervention_contracts_id',
          'value'      => isset($currentContractday->fields['contracts_id']) ? $currentContractday->fields ['contracts_id'] : 'name',

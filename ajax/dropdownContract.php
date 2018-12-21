@@ -52,8 +52,8 @@ if (isset($_POST["contracts_id"])) {
                    'contracts_id' => $_POST["contracts_id"],
                    [
                       'OR' => [
-                         'plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates(),
-                         'id' => $contractdays_id
+                         ['plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates()],
+                         ['id' => $contractdays_id]
                       ]
                    ]];
       $datas       = $contractday->find($restrict);
@@ -68,8 +68,8 @@ if (isset($_POST["contracts_id"])) {
                 'contracts_id' => $_POST["contracts_id"],
                 [
                    'OR' => [
-                      'plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates(),
-                      'id' => $contractdays_id
+                      ['plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates()],
+                      ['id' => $contractdays_id]
                    ]
                 ]];
 

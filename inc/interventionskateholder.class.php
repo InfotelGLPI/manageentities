@@ -51,7 +51,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
       $dbu = new DbUtils();
       return $dbu->countElementsInTable('glpi_plugin_manageentities_interventionskateholders',
-                                        ["`plugin_manageentities_contractdays_id`" => $item->fields['id']]);
+                                        ["plugin_manageentities_contractdays_id" => $item->fields['id']]);
    }
 
    function defineTabs($options = array()) {
