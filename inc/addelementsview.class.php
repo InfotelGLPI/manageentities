@@ -2127,7 +2127,8 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       $realRand     = mt_rand();
       $dbu          = new DbUtils();
       $ids          = $dbu->getSonsOf("glpi_entities", $entitiesId);
-      $condition    = str_ireplace(array("\r\n", "\r", "\n"), "", $dbu->getEntitiesRestrictRequest("", "glpi_contracts", "entities_id", $ids, true));
+
+      $condition    = $dbu->getEntitiesRestrictCriteria("glpi_contracts", "entities_id", $ids, true);
 
       $idDpContract = Dropdown::show($dbu->getItemTypeForTable(Contract::getTable()), array(
          'name'       => 'intervention_contracts_id',
