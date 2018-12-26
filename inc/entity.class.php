@@ -360,7 +360,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='" . $entity->fields["id"] . "'>";
-         echo "<input type='submit' name='update' value='" . _sx('button', 'Update administrative datas', 'manageentities') . "' class='submit'>";
+         echo "<input type='submit' name='update' value='" . _sx('button', 'Update administrative data', 'manageentities') . "' class='submit'>";
          echo "</td></tr>";
       }
       echo "</table>";

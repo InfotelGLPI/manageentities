@@ -63,7 +63,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                   }
 
                } else {
-                  $interventionSkateholder->showMessage(__("An error happened while saving the datas.", "manageentities"), ERROR);
+                  $interventionSkateholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
                }
 
             } else {
@@ -80,7 +80,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                      $interventionSkateholder->hideAddForm($_POST['contractdays_id']);
                   }
                } else {
-                  $interventionSkateholder->showMessage(__("An error happened while saving the datas.", "manageentities"), ERROR);
+                  $interventionSkateholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
                }
             }
          } else {
@@ -106,7 +106,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                }
 
             } else {
-               $interventionSkateholder->showMessage(__("An error happened while deleting the datas.", "manageentities"), ERROR);
+               $interventionSkateholder->showMessage(__("An error happened while deleting the data.", "manageentities"), ERROR);
             }
          }
          break;
