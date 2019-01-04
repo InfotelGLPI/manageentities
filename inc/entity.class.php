@@ -589,83 +589,64 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
       self::showManageentitiesHeader(__('References', 'manageentities'));
 
-      //echo "<div align='center'><table width='100%'><tr><td colspan='2'>";
-
       echo "<table class='tab_cadre' width='60%'>";
 
-      $logos = array();
-      $dbu   = new DbUtils();
-      $logos = $dbu->getAllDataFromTable("glpi_plugin_manageentities_entitylogos");
+      $result = $DB->request("SELECT `entities_id`, min(`date_signature`) as signature, YEAR(`date_signature`) as year
+                  FROM `glpi_plugin_manageentities_contracts` 
+                  WHERE `date_signature` IS NOT NULL 
+                  AND `entities_id` IN (".implode(",", $instID).")
+                  GROUP BY `entities_id`
+                  ORDER BY year DESC");
 
-      //glpi_plugin_manageentities_contracts
-      //$query = "SELECT * 
-      //          FROM `glpi_plugin_manageentities_entitylogos`;";
+      $year = "";
+      $debug = [];
+      $entity_logo = new PluginManageentitiesEntityLogo();
+      $entity = new Entity();
+      $i  = 0;
 
-      $cpt = count($logos);
+      while($data = $result->next()) {
 
-      $dates = array();
-      $grp   = array();
-      if ($cpt > 0) {
-         foreach ($logos as $logo) {
-            $ID = $logo["entities_id"];
+         if ($entity->getFromDB($data['entities_id'])) {
+            $debug[$data['entities_id']] = ['name'      => $entity->getName(),
+                                            'signature' => $data['signature']];
 
-            $contracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", ["entities_id" => $ID]);
-
-            if (count($contracts) > 0) {
-               foreach ($contracts as $contract) {
-                  $dates[$ID][] = $contract["date_signature"];
-               }
-            }
-         }
-      }
-
-      if ($cpt > 0) {
-         $grp = $logos;
-         foreach ($logos as $logo) {
-            $ID = $logo["entities_id"];
-
-            $grp[$logo["id"]]["date_signature"] = (isset($dates[$ID][0]) ? date("Y", strtotime($dates[$ID][0])) : null);
-         }
-      }
-      $years = array();
-      if (count($grp) > 0) {
-         foreach ($grp as $k => $v) {
-            $years[$v['date_signature']][$k] = $v;
-         }
-      }
-      krsort($years);
-      if (count($years) > 0) {
-
-         foreach ($years as $name => $year) {
-            $i  = 0;
-            $ct = count($year);
-            echo "<tr>";
-            echo "<th colspan='4'>" . $name . "</th>";
-            echo "</tr>";
-            foreach ($year as $client) {
-               $ID     = $client["entities_id"];
-               $entity = new Entity();
-               $entity->getFromDB($ID);
-               if ($i % 2 == 0 && $ct > 1) {
-                  echo "<tr>";
-               }
-               if ($ct == 1) {
-                  echo "<tr>";
-               }
-
-               echo "<td>" . $entity->getName() . "</td>";
-               echo "<td><img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $client["logos_id"] . "'></td>";
-
-               $i++;
-               if (($i == $ct)
-                   && ($ct % 2 != 0)
-                   && $ct > 1) {
-                  echo "<td>&nbsp;</td>";
-                  echo "<td>&nbsp;</td>";
+            if (empty($year) || $year != $data['year']) {
+               $year = $data['year'];
+               if ($i % 2 != 0) {
+                  echo "<td colspan='2'></td>";
                   echo "</tr>";
                }
+
+               $i    = 0;
+
+               echo "<tr>";
+               echo "<th colspan='4'>" . $data['year'] . "</th>";
+               echo "</tr>";
+            }
+
+            if ($i % 2 == 0) {
+               echo "<tr>";
+            }
+
+            echo "<td>" . $entity->getName() . "</td>";
+
+            if ($entity_logo->getFromDBByCrit(['entities_id' => $data['entities_id']])) {
+
+               echo "<td><img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $entity_logo->fields["logos_id"] . "'></td>";
+            } else {
+               echo "<td></td>";
+            }
+
+            $i++;
+            if ($i % 2 == 0) {
+               echo "</tr>";
             }
          }
+
+      }
+      if ($i % 2 != 0) {
+         echo "<td colspan='2'></td>";
+         echo "</tr>";
       }
       echo "</table>";
 
@@ -679,56 +660,15 @@ class PluginManageentitiesEntity extends CommonGLPI {
          echo "<th>" . __('Entity') . "</th>";
          echo "<th>" . __('Date of signature', 'manageentities') . "</th>";
          echo "</tr>";
-         /*$query = "SELECT *
-                         FROM `glpi_plugin_timelineticket_assigngroups`
-                         WHERE `tickets_id` = '".$ticket->getID()."'";
 
-         $result    = $DB->query($query);
-         while ($data = $DB->fetch_assoc($result)) {
 
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".$data['id']."</td>";
-            echo "<td>".Html::convDateTime($data['date'])."</td>";
-            echo "<td>".Dropdown::getDropdownName("glpi_groups", $data['groups_id'])."</td>";
-            echo "<td>".Html::timestampToString($data['begin'])."</td>";
-            echo "<td>".Html::timestampToString($data['delay'])."</td>";
-            echo "</tr>";
+         if (count($debug) > 0) {
+            foreach ($debug as $client) {
 
-         }*/
-         $result   = $DB->query("SELECT entities_id FROM `glpi_plugin_manageentities_entitylogos`");
-         $entities = [];
-         if ($DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $entities[] = $data['entities_id'];
-            }
-         }
-
-         $clients = $dbu->getAllDataFromTable("glpi_entities",
-                                              ["NOT" => ["id" => $entities],
-                                               "entities_id" => 57], false, "id");
-
-         $cpt = count($clients);
-
-         $dates = array();
-         $grp   = array();
-         if ($cpt > 0) {
-            foreach ($clients as $client) {
-
-               $ID     = $client["id"];
-               $entity = new Entity();
-               $entity->getFromDB($ID);
                echo "<tr class='tab_bg_1'>";
-               echo "<td>" . $entity->getName() . "</td>";
+               echo "<td>" . $client['name'] . "</td>";
 
-               $contracts = array();
-               $contracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", ["entities_id" => $ID]);
-               echo "<td>";
-               if (count($contracts) > 0) {
-                  foreach ($contracts as $contract) {
-                     echo Html::convDateTime($contract["date_signature"]) . "<br>";
-                  }
-               }
-               echo "</td>";
+               echo "<td>" . Html::convDate($client['signature']) . "</td>";
                echo "</tr>";
             }
          }

@@ -80,7 +80,7 @@ class PluginManageentitiesContractState extends CommonDropdown {
       ];
 
       $tab[] = [
-         'id'       => '16',
+         'id'       => '17',
          'table'    => $this->getTable(),
          'field'    => 'color',
          'name'     => __('Color', 'manageentities'),
