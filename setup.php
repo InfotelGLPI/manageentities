@@ -114,7 +114,7 @@ function plugin_version_manageentities() {
 
    return array(
       'name'           => __('Entities portal', 'manageentities'),
-      'version'        => '3.0.0',
+      'version'        => '3.0.1',
       'oldname'        => 'manageentity',
       'author'         => 'Infotel',
       'license'        => 'GPLv2+',
