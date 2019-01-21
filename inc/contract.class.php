@@ -70,7 +70,7 @@ class PluginManageentitiesContract extends CommonDBTM {
          $input['date_signature'] = 'NULL';
 
       if (isset($input['contract_added'])
-          && $input['contract_added'] == "on") {
+          && ($input['contract_added'] == "on" || $input['contract_added'])) {
          $input['contract_added'] = 1;
       } else {
          $input['contract_added'] = 0;

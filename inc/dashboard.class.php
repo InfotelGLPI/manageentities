@@ -74,8 +74,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                   foreach ($contracts as $key => $contract_data) {
                      if (is_integer($key)) {
 
-                        if (!is_null($contract_data['contract_begin_date'])
-                            && $contract_data['show_on_global_gantt'] > 0) {
+                        if (!is_null($contract_data['contract_begin_date'])) {
 
                            foreach ($contract_data['days'] as $key => $days) {
                               if ($days['contract_is_closed']) {

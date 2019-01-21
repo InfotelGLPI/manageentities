@@ -753,7 +753,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                   $conso += $PDF->TotalTpsPassesArrondis(round($tmp, 2));
 
                   // Set depass per techs
+                  if(is_numeric(self::computeInDays($dataTask['actiontime'], $config, $dataCriDetail, $pluginContract, 1))){
                   $left -= self::computeInDays($dataTask['actiontime'], $config, $dataCriDetail, $pluginContract, 1);
+                  }
                   if ($left <= 0) {
                      $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] += abs($PDF->TotalTpsPassesArrondis($left));
                      $left                                                                               = 0;
@@ -796,10 +798,12 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       // If depass on contract day set depass on last tech of last ticket of last intervention
       if ($tabOther['depass'] > 0) {
          $lastIntervention = end($tabResults);
-         if (count($lastIntervention['conso_per_tech']) > 0) {
-            $lastTicket = end($lastIntervention['conso_per_tech']);
-            end($lastTicket);
-            $tabResults[key($tabResults)]['conso_per_tech'][key($lastIntervention['conso_per_tech'])][key($lastTicket)]['depass'] = $tabOther['depass'];
+         if(is_array($lastIntervention['conso_per_tech'])){
+            if (count($lastIntervention['conso_per_tech']) > 0) {
+               $lastTicket = end($lastIntervention['conso_per_tech']);
+               end($lastTicket);
+               $tabResults[key($tabResults)]['conso_per_tech'][key($lastIntervention['conso_per_tech'])][key($lastTicket)]['depass'] = $tabOther['depass'];
+            }
          }
          reset($tabResults);
       }
