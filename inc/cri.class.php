@@ -678,6 +678,7 @@ class PluginManageentitiesCri extends CommonDBTM {
          $input["entities_id"]           = $job->fields["entities_id"];
          $input["name"]                  = addslashes($name);
          $input["filename"]              = addslashes($filename);
+         $input["_filename"][0]          = addslashes($filename);
          $input["upload_file"]           = $filename;
          $input["documentcategories_id"] = $config->fields["documentcategories_id"];
          $input["mime"]                  = "application/pdf";

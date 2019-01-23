@@ -67,7 +67,7 @@ if (isset($_POST["addcridetail"])) {
    $doc         = new Document();
    $input['id'] = $_POST['documents_id'];
    if ($doc->delete($input, 1)) {
-      Event::log($input['id'], "documents", 4, "document", $_SESSION["glpiname"] . " " . __('Delete permanently'));
+      \Glpi\Event::log($input['id'], "documents", 4, "document", $_SESSION["glpiname"] . " " . __('Delete permanently'));
    }
    Html::back();
 
