@@ -81,7 +81,7 @@ function showDialog(img, textTitle, btnName, message) {
 }
 
 function alertCreateEntity(btnYes, btnNo, textTitle, txtFunction) {
-    var mTitle = "<img src='../../../pics/warning.png' width=16 height=16 />&nbsp;" + textTitle + " ! ";
+    var mTitle = "<i class='fas fa-exclamation-triangle fa-2x' style='color:orange'></i>&nbsp;" + textTitle + " ! ";
     $("#alert-create-entity").dialog({
         autoOpen: false,
         height: 200,

@@ -54,7 +54,7 @@ if ($plugin->isActivated("manageentities")) {
    } else {
       Html::header(__('Setup'), '', "config", "plugins");
       echo "<div align='center'><br><br>";
-      echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt='warning'><br><br>";
+      echo "<i class='fas fa-exclamation-triangle fa-4x' style='color:orange'></i><br><br>";
       echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
       Html::footer();
    }
@@ -62,7 +62,7 @@ if ($plugin->isActivated("manageentities")) {
 } else {
    Html::header(__('Setup'), '', "config", "plugins");
    echo "<div align='center'><br><br>";
-   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt='warning'><br><br>";
+   echo "<i class='fas fa-exclamation-triangle fa-4x' style='color:orange'></i><br><br>";
    echo "<b>" . __('Please activate the plugin', 'manageentities') . "</b></div>";
    Html::footer();
 }

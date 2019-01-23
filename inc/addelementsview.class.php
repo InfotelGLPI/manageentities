@@ -2128,7 +2128,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       $dbu          = new DbUtils();
       $ids          = $dbu->getSonsOf("glpi_entities", $entitiesId);
 
-      $condition    = $dbu->getEntitiesRestrictCriteria("glpi_contracts", "entities_id", $ids, true);
+      $condition = $dbu->getEntitiesRestrictCriteria("glpi_contracts", "entities_id", $ids, true);
 
       $idDpContract = Dropdown::show($dbu->getItemTypeForTable(Contract::getTable()), array(
          'name'       => 'intervention_contracts_id',
@@ -2436,12 +2436,14 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       $alertTitle = "";
       switch ($messageType) {
          case Messages::MESSAGE_ERROR:
-            $srcImg     = "../../../pics/warning.png";
+            $srcImg     = "fas fa-exclamation-triangle";
+            $color      = "orange";
             $alertTitle = $this->pModel->getMessage("message_error");
             break;
          case Messages::MESSAGE_INFO:
          default:
-            $srcImg     = "../pics/info.png";
+            $srcImg     = "fas fa-info-circle";
+            $color      = "forestgreen";
             $alertTitle = $this->pModel->getMessage("message_info");
             break;
       }
@@ -2455,7 +2457,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>" . $message . "</div>";
 
       $this->showHeaderJS();
-      echo "var mTitle =  \"<img src='" . $srcImg . "' width=16 height=16 />&nbsp;" . $alertTitle . " \";";
+      echo "var mTitle =  \"<i class='" . $srcImg . " fa-1x' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";";
       echo "$( '#alert-message' ).dialog({
         autoOpen: false,
         height: " . ($height > 0 ? $height : 150) . ",

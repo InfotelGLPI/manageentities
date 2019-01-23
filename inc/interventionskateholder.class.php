@@ -502,13 +502,15 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
       $alertTitle = "";
       switch ($messageType) {
          case ERROR:
-            $srcImg     = "../../../pics/warning.png";
-            $alertTitle = _n("Information", "Informations", 1);
+            $srcImg     = "fas fa-exclamation-triangle";
+            $color      = "orange";
+            $alertTitle = __("Warning");
             break;
          case INFO:
          default:
-            $srcImg     = "../pics/info.png";
-            $alertTitle = __("Warning");
+            $srcImg = "fas fa-info-circle";
+            $color  = "forestgreen";
+            $alertTitle = _n("Information", "Informations", 1);
             break;
       }
 
@@ -521,7 +523,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
       echo "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>" . $message . "</div>";
 
       $this->showHeaderJS();
-      echo "var mTitle =  \"<img src='" . $srcImg . "' width=16 height=16 />&nbsp;" . $alertTitle . " \";";
+      echo "var mTitle =  \"<i class='" . $srcImg . " fa-1x' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";";
       echo "$( '#alert-message' ).dialog({
         autoOpen: false,
         height: " . ($height > 0 ? $height : 150) . ",
