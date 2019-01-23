@@ -362,8 +362,7 @@ class PluginManageentitiesContract extends CommonDBTM {
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
             Dropdown::show('Contract', array('name' => "contracts_id",
                                              'used' => $used));
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><img alt='' title=\"" . _sx('button', 'Add') . "\" src='" . $CFG_GLPI["root_doc"] .
-                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'></td>";
             echo "</tr>";
          }
@@ -383,8 +382,8 @@ class PluginManageentitiesContract extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='entities_id' value=" . $_SESSION["glpiactive_entity"] . ">";
             Dropdown::show('Contract', array('name' => "contracts_id"));
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><img alt='' title=\"" . _sx('button', 'Add') . "\" src='" . $CFG_GLPI["root_doc"] .
-                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>
+            <i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
             echo "</td><td></td>";
             echo "</tr>";

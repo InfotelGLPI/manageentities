@@ -371,7 +371,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $doc->check(-1, UPDATE, $input);
 
             if ($newID = $doc->add($input)) {
-               $pView->showDialog("info.png", _n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Status::PDF_ADDED));
+               $pView->showDialog(_n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Status::PDF_ADDED));
 
                $item = $this->getContract();
                $arr  = $this->getQueryForDFContract($item);
@@ -391,11 +391,11 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                   $pView->addPDFContractToView($doc, true);
                }
             } else {
-               $pView->showDialog("info.png", _n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Errors::ERROR_ADD_PDF));
+               $pView->showDialog( _n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Errors::ERROR_ADD_PDF));
             }
          }
       } else {
-         $pView->showDialog("info.png", _n("Information", "Informations", 1), $this->getMessage(ElementType::ALL, Errors::ERROR_FIELDS));
+         $pView->showDialog( _n("Information", "Informations", 1), $this->getMessage(ElementType::ALL, Errors::ERROR_FIELDS));
       }
       unset($_SESSION['MESSAGE_AFTER_REDIRECT']);
    }

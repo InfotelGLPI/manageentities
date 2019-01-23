@@ -24,7 +24,7 @@ function showResponse(responseText, statusText, xhr, $form) {
 
 
 function showFormAddPDFContract(textTitle, btnYes, btnNo) {
-    var mTitle = "<img src='../pics/info.png' width=16 height=16 />&nbsp;" + textTitle;
+    var mTitle = "<i class='fas fa-info-circle fa-1x'></i>&nbsp;" + textTitle;
     $("#form-add-contract").dialog({
         autoOpen: false,
         height: 200,
@@ -55,8 +55,8 @@ function showFormAddPDFContract(textTitle, btnYes, btnNo) {
 
 }
 
-function showDialog(img, textTitle, btnName, message) {
-    var mTitle = "<img src='../pics/info.png' width=16 height=16 />&nbsp;" + textTitle;
+function showDialog(textTitle, btnName, message) {
+    var mTitle = "<i class='fas fa-info-circle fa-1x'></i>&nbsp;" + textTitle;
     $("#custom-dialog").dialog({
         autoOpen: false,
         height: 200,

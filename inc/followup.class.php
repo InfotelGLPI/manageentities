@@ -1239,8 +1239,9 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "<option value='" . Search::SYLK_OUTPUT . "'>" . __('Current page in SLK') . "</option>";
          echo "<option value='" . Search::CSV_OUTPUT . "'>" . __('Current page in CSV') . "</option>";
          echo "</select>&nbsp;";
-         echo "<input type='image' name='export'  src='" . $CFG_GLPI["root_doc"] . "/pics/greenbutton.png'
-                title=\"" . __('Export') . "\" value=\"" . __('Export') . "\">";
+         echo "<button type='submit' name='export' class='unstyled pointer' ".
+              " title=\"" . _sx('button', 'Export') . "\">" .
+              "<i class='far fa-save'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
          echo "</td>";
       }
 

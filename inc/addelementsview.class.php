@@ -1038,7 +1038,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo __("Add a document");
       echo "</td>";
       echo "<td colspan='5'>";
-      echo "<a onclick=\"showFormAddPDFContract('" . __("Add a document") . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'><img src='../pics/add.png' alt='add' />" . __("Add a document") . "</a>";
+      echo "<a onclick=\"showFormAddPDFContract('" . __("Add a document") . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'><i class=\"far fa-plus-square\"></i>" . __("Add a document") . "</a>";
       echo "</td>";
       echo "</tr>";
       $this->showListPDFcontract();
@@ -2284,7 +2284,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
 
    private function showImgSaved($object, $text, $fakeId) {
       if (isset($object->fields['id']) && $object->fields['id'] > 0) {
-         return "&nbsp;&nbsp;<img src='../pics/database_save.png' id='img_" . $object->getType() . ($fakeId) . "' title='" . $text . "' width='12' height='12' />";
+         return "&nbsp;&nbsp;<i class=\"fas fa-save\" id='img_" . $object->getType() . ($fakeId) . "' title='" . $text . "'></i>";
       } else {
          return "";
       }
@@ -2491,7 +2491,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
       $this->closeFormJS();
    }
 
-   public function showDialog($img, $title, $text) {
+   public function showDialog($title, $text) {
       global $CFG_GLPI;
 
       echo "<table id='custom-dialog' class='tab_cadre_navigation_center' style='display:none;' >";
@@ -2505,7 +2505,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
 
 
       $this->showHeaderJS();
-      echo "showDialog(\"" . $img . "\",\"" . $title . "\", \"" . __("OK") . "\",\"" . $text . "\");";
+      echo "showDialog(,\"" . $title . "\", \"" . __("OK") . "\",\"" . $text . "\");";
       $this->closeFormJS();
    }
 

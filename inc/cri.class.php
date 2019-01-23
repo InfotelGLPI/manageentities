@@ -108,7 +108,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                      $params['tech_id'] = $users_id;
                      $techs[]           = $users_name . "&nbsp;" .
                                           "<a class='pointer' onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>
-                  <img src='" . $CFG_GLPI["root_doc"] . "/pics/delete.png' title=\"" . _sx('button', 'Delete permanently') . "\" alt=\"" . _sx('button', 'Delete permanently') . "\">
+                  <i class=\"far fa-trash-alt\" title=\"" . _sx('button', 'Delete permanently') . "\"></i>
                   </a>";
                   } else {
                      $techs[] = $users_name;

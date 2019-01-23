@@ -187,7 +187,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          echo "tmpCell=row.insertCell(4);";
          echo "tmpCell.innerHTML=\"";
          echo "<span class='pointer'>";
-         echo "   <img src='../../../pics/delete.png' title='" . __("Delete", "manageentities") . "' id='delete_" . $user->fields['id'] . "' />";
+         echo "<i title=\"" . __("Delete", "manageentities") . "\" class=\"far fa-trash-alt\" id='delete_" . $user->fields['id'] . "'></i>";
          echo "</span>";
          echo "\";";
          echo "}";
@@ -285,10 +285,8 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
                   if ($this->canCreate()) {
                      echo "<td>";
                      echo "<span class='pointer'>";
-                     echo "<img src='../../../pics/delete.png' title='" . __("Delete", "manageentities") . "' id='delete_" . $user->fields['id'] . "'";
-                     echo " onclick=\"javascript:if (confirm('" . __("This action is irreversible. Continue ?", 'manageentities') . "')){deleteSkateholder" . $idToUse . $skateholder['id'] . "();}\" ";
-                     echo "/>";
-
+                     echo "<i title=\"" . __("Delete", "manageentities") . "\" class=\"far fa-trash-alt\" id='delete_" . $user->fields['id'] . "' 
+                     onclick=\"javascript:if (confirm('" . __("This action is irreversible. Continue ?", 'manageentities') . "')){deleteSkateholder" . $idToUse . $skateholder['id'] . "();}\"></i>";
                      echo "&nbsp;</span>";
                      echo "</td>";
                   }

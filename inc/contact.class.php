@@ -149,8 +149,7 @@ class PluginManageentitiesContact extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
             $rand = Dropdown::show('Contact', array('name' => "contacts_id"));
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'><img alt='' title=\"" . _x('button', 'Add') . "\" src='" . $CFG_GLPI["root_doc"] .
-                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center'><input type='submit' name='addcontacts' value=\"" . _x('button', 'Add') . "\" class='submit'></td>";
             echo "</tr>";
          }
@@ -166,8 +165,7 @@ class PluginManageentitiesContact extends CommonDBTM {
             echo "<tr class='tab_bg_1'><th colspan='2'>" . _n('Associated contact', 'Associated contacts', 1) . "</tr><tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
             Dropdown::show('Contact', array('name' => "contacts_id"));
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'><img alt='' title=\"" . _x('button', 'Add') . "\" src='" . $CFG_GLPI["root_doc"] .
-                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'></a>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center tab_bg_2'>";
             echo "<input type='submit' name='addcontacts' value=\"" . _x('button', 'Add') . "\" class='submit'>";
             echo "</td></tr>";
