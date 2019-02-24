@@ -11,18 +11,18 @@ $password = $ARGV[1];
 
 opendir(DIRHANDLE,'locales')||die "ERROR: can not read current directory\n"; 
 foreach (readdir(DIRHANDLE)){ 
-	if ($_ ne '..' && $_ ne '.'){
+   if ($_ ne '..' && $_ ne '.'){
 
             if(!(-l "$dir/$_")){
                      if (index($_,".po",0)==length($_)-3) {
                         $lang=$_;
                         $lang=~s/\.po//;
                         
-                        `wget --user=$user --password=$password --output-document=locales/$_ http://www.transifex.net/api/2/project/GLPI_manageentities/resource/glpi/translation/$lang/?file=$_`;
+                        `wget --user=$user --password=$password --output-document=locales/$_ http://www.transifex.com/api/2/project/GLPI_manageentities/resource/glpipot/translation/$lang/?file=$_`;
                      }
             }
 
-	}
+   }
 }
 closedir DIRHANDLE; 
 
