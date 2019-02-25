@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.0');
+define('PLUGIN_MANAGEENTITIES_VERSION', '3.1.0');
 
 // Init the hooks of the plugins -Needed
 function plugin_init_manageentities() {
@@ -119,7 +119,7 @@ function plugin_version_manageentities() {
       'name'           => __('Entities portal', 'manageentities'),
       'version'        => PLUGIN_MANAGEENTITIES_VERSION,
       'oldname'        => 'manageentity',
-      'author'         => 'Infotel',
+      'author'         => "<a href='http://blogglpi.infotel.com'>Infotel</a>",
       'license'        => 'GPLv2+',
       'homepage'       => 'https://github.com/InfotelGLPI/manageentities',
       'requirements'   => [
