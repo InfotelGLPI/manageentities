@@ -39,8 +39,9 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
    switch ($_POST ['action']) {
       case "showCloneTicketTask" :
          $rand = mt_rand();
-         echo '<tr class="tab_bg_1"><td colspan="2"></td>';
+         echo '<tr class="tab_bg_1"><td colspan="3"></td>';
          echo '<td style="padding-left:0px">';
+         echo "<div class='fa-label'>";
          $value = $tickettask->fields['date'];
          if (!empty($tickettask->fields['begin'])) {
             $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
@@ -49,14 +50,17 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
                                                                'rand'    => $rand,
                                                                'mintime' => $CFG_GLPI["planning_begin"],
                                                                'maxtime' => $CFG_GLPI["planning_end"]));
-         echo '</td>';
-         echo '<td>';
          $params        = json_encode(array('root_doc'       => $CFG_GLPI['root_doc'],
                                             'new_date_id'    => 'showdate' . $randDate,
                                             'tickets_id'     => $_POST['tickets_id'],
                                             'tickettasks_id' => $_POST['tickettasks_id']));
          $tickettask_id = $_POST['tickettasks_id'];
-         echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);' class=\"vsubmit\">" . _sx('button', 'Duplicate') . "</span>";
+         echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);'>";
+         echo "<i class='far fa-clone fa-fw pointer'
+            title='" . _sx('button', 'Duplicate') . "'></i>";
+
+         echo "</span>";
+         echo '</div>';
          echo '</td></tr>';
          break;
 

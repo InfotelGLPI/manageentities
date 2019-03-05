@@ -1265,16 +1265,37 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       $begin     = $options['begin'];
       $end       = $options['end'];
 
-      //$ASSIGN = "";
+      $ASSIGN = "";
+      
+      if (count($_SESSION["glpigroups"])) {
+            $groups = implode("','", $_SESSION['glpigroups']);
+            $ASSIGN = "(`glpi_tickettasks`.`users_id_tech`
+                           IN (SELECT DISTINCT `users_id`
+                               FROM `glpi_groups_users`
+                               INNER JOIN `glpi_groups`
+                                  ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
+                               WHERE `glpi_groups_users`.`groups_id` IN ('$groups')
+                                     AND `glpi_groups`.`is_assign`))
+                      OR (`glpi_plugin_manageentities_critechnicians`.`users_id`
+                           IN (SELECT DISTINCT `users_id`
+                               FROM `glpi_groups_users`
+                               INNER JOIN `glpi_groups`
+                                  ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
+                               WHERE `glpi_groups_users`.`groups_id` IN ('$groups')
+                                     AND `glpi_groups`.`is_assign`))";
+      } else { // Only personal ones
+         $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='".$who."' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='".$who."'";
+      }
+      
       //if ($who > 0) {
-      //   $ASSIGN = " AND (`users_id` = '$who')";
+      //   $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='".$who."' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='".$who."'";
       //}
       //if ($who_group>0) {
       //   $ASSIGN =" AND `users_id` IN (SELECT `users_id`
       //                           FROM `glpi_groups_users`
       //                           WHERE `groups_id` = '$who_group')";
       //}
-
+      
       $query = "SELECT `glpi_tickettasks`.`users_id_tech`,
                        `glpi_tickettasks`.`begin`,
                        `glpi_tickettasks`.`end`,
@@ -1284,20 +1305,20 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                        `glpi_tickets`.`name`,
                        `glpi_entities`.`name` AS entities_name,
                        `glpi_tickets`.`id`AS tickets_id "
-               . " FROM `glpi_plugin_manageentities_cridetails` "
-               . " LEFT JOIN `glpi_tickets` ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickets`.`id`)"
-               . " LEFT JOIN `glpi_entities` ON (`glpi_tickets`.`entities_id` = `glpi_entities`.`id`)"
-               . " LEFT JOIN `glpi_tickets_users` ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`)"
-               . " LEFT JOIN `glpi_tickettasks` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)"
-               . " LEFT JOIN `glpi_plugin_manageentities_critechnicians` ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_plugin_manageentities_critechnicians`.`tickets_id`) "
-               . " WHERE (`glpi_tickettasks`.`begin` >= '" . $begin . "' 
-                  AND `glpi_tickettasks`.`end` <= '" . $end . "') "
-               . " AND `glpi_tickets`.`is_deleted` = 0"
-               . " AND (`glpi_tickettasks`.`users_id_tech` ='" . $who . "' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $who . "') ";
-      $query .= $dbu->getEntitiesRestrictRequest("AND", "glpi_tickets", '',
-                                                 $_SESSION["glpiactiveentities"], false);
-      $query .= " AND `glpi_tickettasks`.`actiontime` != 0";
-      $query .= " GROUP BY `glpi_tickettasks`.`id` ";
+         ." FROM `glpi_plugin_manageentities_cridetails` "
+         ." LEFT JOIN `glpi_tickets` ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickets`.`id`)"
+         ." LEFT JOIN `glpi_entities` ON (`glpi_tickets`.`entities_id` = `glpi_entities`.`id`)"
+         ." LEFT JOIN `glpi_tickets_users` ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`)"
+         ." LEFT JOIN `glpi_tickettasks` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)"
+         ." LEFT JOIN `glpi_plugin_manageentities_critechnicians` ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_plugin_manageentities_critechnicians`.`tickets_id`) "
+         ." WHERE (`glpi_tickettasks`.`begin` >= '".$begin."' 
+                  AND `glpi_tickettasks`.`end` <= '".$end."') "
+         ." AND NOT `glpi_tickets`.`is_deleted` "
+         ." AND $ASSIGN ";
+      $query.= $dbu->getEntitiesRestrictRequest("AND", "glpi_tickets", '',
+                                             $_SESSION["glpiactiveentities"],false);
+      $query.= " AND `glpi_tickettasks`.`actiontime` != 0";
+      $query.= " GROUP BY `glpi_tickettasks`.`id` ";
       //$query.= " ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
 
       $result = $DB->query($query);

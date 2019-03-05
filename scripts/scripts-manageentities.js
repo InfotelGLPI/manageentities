@@ -198,7 +198,7 @@ function showCloneTicketTask(options) {
                                         'action': 'showCloneTicketTask'
                                     },
                                     success: function (response, opts) {
-                                        var taskForm = $("input[value='"+tid+"']").prev("tr");
+                                        var taskForm = $("input[value='"+tid+"']").next("tr");
                                         if ($("span[name='duplicate_"+tid+"']").length == 0) {
                                             $(response).insertBefore(taskForm);
                                         }
