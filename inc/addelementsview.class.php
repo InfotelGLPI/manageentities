@@ -2284,7 +2284,7 @@ class PluginManageentitiesAddElementsView extends CommonGLPIView {
 
    private function showImgSaved($object, $text, $fakeId) {
       if (isset($object->fields['id']) && $object->fields['id'] > 0) {
-         return "&nbsp;&nbsp;<i class=\"fas fa-save\" id='img_" . $object->getType() . ($fakeId) . "' title='" . $text . "'></i>";
+         return "&nbsp;&nbsp;<i class='fas fa-save' id='img_" . $object->getType() . ($fakeId) . "' title='" . $text . "'></i>";
       } else {
          return "";
       }
