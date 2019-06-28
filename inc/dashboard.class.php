@@ -101,7 +101,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                                  $data["days"]      = $name_contract_day;
                                  $data["reste"]     = $day_data['reste'];
                                  $data["total"]     = $day_data['credit'];
-
+                                 $data["end_date"] = Html::convDate($day_data['end_date']);
                                  $datas[] = $data;
                               }
                            }
@@ -110,7 +110,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                   }
                }
 
-               $headers = array(__('Team', 'manageentities'), __('Entity'), __('Contract'), __('Prestation', 'manageentities'), __('Total remaining', 'manageentities'), __('Total'));
+               $headers = array(__('Team', 'manageentities'), __('Entity'), __('Contract'), __('Prestation', 'manageentities'), __('Total remaining', 'manageentities'), __('Total'), __('End date'));
 
                $widget = new PluginMydashboardDatatable();
 
@@ -284,8 +284,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                   foreach ($contracts as $key => $contract_data) {
                      if (is_integer($key)) {
 
-                        if (!is_null($contract_data['contract_begin_date'])
-                            && $contract_data['show_on_global_gantt'] > 0) {
+                        if (!is_null($contract_data['contract_begin_date'])) {
 
                            foreach ($contract_data['days'] as $key => $days) {
                               if ($days['contract_is_closed']) {
@@ -454,7 +453,8 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                                            `glpi_plugin_manageentities_contractdays`.`report` AS report,
                                            `glpi_plugin_manageentities_contractdays`.`nbday` AS nbday,
                                            `glpi_plugin_manageentities_contractstates`.`is_closed` AS is_closed,
-                                           `glpi_plugin_manageentities_contractdays`.`begin_date` AS begin_date";
+                                           `glpi_plugin_manageentities_contractdays`.`begin_date` AS begin_date,
+                                           `glpi_plugin_manageentities_contractdays`.`end_date` AS end_date";
                if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {// Daily
                   $queryContractDay .= ", `glpi_plugin_manageentities_contractdays`.`contract_type` AS contract_type";
                }
@@ -542,6 +542,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                      $list[$num]['days'][$i]['contract_is_closed'] = $dataContractDay['is_closed'];
                      $list[$num]['days'][$i]['contractdayname']    = $nameperiod;
                      $list[$num]['days'][$i]['credit']             = $credit;
+                     $list[$num]['days'][$i]['end_date']           = $dataContractDay['end_date'];
                      $list[$num]['days'][$i]['reste']              = $resultCriDetail['resultOther']['reste'];
                      $list[$num]['days'][$i]['depass']             = $resultCriDetail['resultOther']['depass'];
                      $list[$num]['days'][$i]['contractdays_id']    = $dataContractDay["contractdays_id"];
