@@ -542,7 +542,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $plugin_page = "/plugins/manageentities/front/entity.php";
       $menu        = array();
       //Menu entry in tools
-      $menu['title']           = self::getTypeName();
+      $menu['title']           = self::getTypeName(2);
       $menu['page']            = $plugin_page;
       $menu['links']['search'] = $plugin_page;
       if (Session::haveRightsOr("plugin_manageentities", array(CREATE, UPDATE)) || Session::haveRight("config", UPDATE)) {
