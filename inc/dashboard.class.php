@@ -239,7 +239,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
             $result = $DB->query($query);
             $nb     = $DB->numrows($result);
 
-            $datas = array();
+            $datas = [];
             $i     = 0;
             if ($nb) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -264,7 +264,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
             }
 
             $widget->setTabDatas($datas);
-            $widget->setOption("bSort", false);
+            //$widget->setOption("bSort", false);
             $widget->toggleWidgetRefresh();
             $widget->setWidgetTitle(__("Interventions with old contract", "manageentities"));
 
