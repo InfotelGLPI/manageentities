@@ -891,6 +891,7 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    function SetDescriptionCri($description_cri) {
       $this->description_cri = $description_cri;
+      $this->description_cri = Html::clean($this->description_cri);
       $this->description_cri = stripcslashes($this->description_cri);
       $this->description_cri = str_replace("\\\\", "\\", $this->description_cri);
       $this->description_cri = str_replace("\\'", "'", $this->description_cri);

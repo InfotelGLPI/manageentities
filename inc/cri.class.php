@@ -232,7 +232,19 @@ class PluginManageentitiesCri extends CommonDBTM {
             echo "</th>";
 
             echo "<td colspan='2'>";
-            echo "<textarea name=\"REPORT_DESCRIPTION\" cols='120' rows='22'>$desc</textarea>";
+            //echo "<textarea name=\"REPORT_DESCRIPTION\" cols='120' rows='22'>$desc</textarea>";
+            $rand_text  = mt_rand();
+            $content_id = "comment$rand_text";
+            $cols       = 120;
+            $rows       = 22;
+            Html::textarea(['name'            => 'REPORT_DESCRIPTION',
+                            'value'           => $desc,
+                            'rand'            => $rand_text,
+                            'editor_id'       => $content_id,
+                            'enable_richtext' => true,
+                            'cols'            => $cols,
+                            'rows'            => $rows]);
+                      
             echo "</td>";
             echo "</tr>";
 
