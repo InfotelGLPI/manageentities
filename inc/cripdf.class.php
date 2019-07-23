@@ -282,7 +282,7 @@ class PluginManageentitiesCriPDF extends FPDF {
       $this->SetTextColor(0, 0, 0);
       $this->CellValeur(35, Toolbox::decodeFromUtf8($this->date_intervention[0]["year"]));
       $this->SetTextColor(255, 255, 255);
-      $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('Month')));
+      $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('month')));
       $monthsarray = Toolbox::getMonthsOfYearArray();
       $this->SetTextColor(0, 0, 0);
       $this->CellValeur(35, Toolbox::decodeFromUtf8($monthsarray[$this->date_intervention[0]["mon"]]));
