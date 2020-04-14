@@ -264,22 +264,22 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       $cridetail  = reset($cridetails);
 
       $generation_ok = false;
-      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (empty($cridetail) || $cridetail['documents_id'] == 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
+      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (empty($cridetail) || (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) == 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
 
          $generation_ok = true;
       }
       //switch withoutcontract
-      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (empty($cridetail) || $cridetail['documents_id'] == 0) && !$cridetail['withcontract']) {
+      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (empty($cridetail) || (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) == 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
          $generation_ok = true;
       }
 
       $regeneration_ok = false;
-      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (!empty($cridetail) || $cridetail['documents_id'] != 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
+      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (!empty($cridetail) || (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
 
          $regeneration_ok = true;
       }
       //switch withoutcontract
-      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (!empty($cridetail) || $cridetail['documents_id'] != 0) && !$cridetail['withcontract']) {
+      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (!empty($cridetail) || (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
 
          $regeneration_ok = true;
       }
@@ -324,7 +324,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       }
 
       // DELETE
-      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && $cridetail['documents_id'] != 0) {
+      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) {
          echo "<form method='post' name='cridetail_form$rand' id='cridetail_form$rand'
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesCri') . "' style='display:inline'>";
          echo "<input type='submit' name='purgedoc' value=\"" . _sx('button', 'Delete permanently') . "\" class='submit' style='margin-left:50px;'>";
@@ -1117,7 +1117,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             $elements = array(Dropdown::EMPTY_VALUE);
             $value    = 0;
             while ($data = $DB->fetch_array($result)) {
-               if ($cridetail['contracts_id'] == $data["id"]) {
+               if ((isset($cridetail['contracts_id']) ? $cridetail['contracts_id'] : 0) == $data["id"]) {
                   $selected            = true;
                   $contractSelected    = $cridetail['contracts_id'];
                   $contractdaySelected = $cridetail["plugin_manageentities_contractdays_id"];
@@ -1127,7 +1127,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                   $value            = $data["id"];
                }
 
-               if (PluginManageentitiesContract::checkRemainingOpenContractDays($data["id"]) || $cridetail['contracts_id'] == $data["id"]) {
+               if (PluginManageentitiesContract::checkRemainingOpenContractDays($data["id"]) || (isset($cridetail['contracts_id']) ? $cridetail['contracts_id'] : 0) == $data["id"]) {
                   $elements[$data["id"]] = $data["name"] . " - " . $data["num"];
                }
             }
