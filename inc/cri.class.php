@@ -745,7 +745,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       } else {
          //Sauvegarde du PDF dans le fichier 
-         $PDF->Output($seefilepath);
+         $PDF->Output($seefilepath, 'F');
 
          if ($config->fields["backup"] == 1) {
             echo "<form method='post' name='formReport'>";
