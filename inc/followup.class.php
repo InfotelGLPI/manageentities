@@ -152,17 +152,17 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
       if (isset($options['contract_states']) && $options['contract_states'] != '0') {
          $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", $options['contract_states']) . "') ";
-      } elseif ($preferences['contract_states'] != NULL) {
+      } elseif (isset($preferences['contract_states']) && $preferences['contract_states'] != NULL) {
          $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", json_decode($preferences['contract_states'], true)) . "') ";
-      } elseif ($config_states['contract_states'] != NULL) {
+      } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != NULL) {
          $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", json_decode($config_states['contract_states'], true)) . "') ";
       }
 
       if (isset($options['business_id']) && $options['business_id'] != '0') {
          $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id` IN ('" . implode("','", $options['business_id']) . "') ";
-      } elseif ($preferences['business_id'] != NULL) {
+      } elseif (isset($preferences['business_id']) && $preferences['business_id'] != NULL) {
          $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id` IN ('" . implode("','", json_decode($preferences['business_id'], true)) . "') ";
-      } elseif ($config_states['business_id'] != NULL) {
+      } elseif (isset($config_states['business_id']) && $config_states['business_id'] != NULL) {
          $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id`  IN ('" . implode("','", json_decode($config_states['business_id'], true)) . "') ";
       }
 
@@ -186,7 +186,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             $temp++;
          }
          $queryCompany .= ")";
-      } elseif ($preferences['companies_id'] != NULL) {
+      } elseif (isset($preferences['companies_id']) && $preferences['companies_id'] != NULL) {
          $temp = 0;
          foreach (json_decode($preferences['companies_id'], true) as $id) {
             $sons           = array();
