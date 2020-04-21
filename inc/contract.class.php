@@ -179,9 +179,11 @@ class PluginManageentitiesContract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Date of signature', 'manageentities') . "</td>";
       echo "<td>";
-      Html::showDateField("date_signature", ['value' => $pluginContract['date_signature']]);
+      $sign = (isset($pluginContract['date_signature'])?$pluginContract['date_signature']:NULL);
+      Html::showDateField("date_signature", ['value' => $sign]);
       echo "</td><td>" . __('Date of renewal', 'manageentities') . "</td><td>";
-      Html::showDateField("date_renewal", ['value' => $pluginContract['date_renewal']]);
+      $ren = (isset($pluginContract['date_renewal'])?$pluginContract['date_renewal']:NULL);
+      Html::showDateField("date_renewal", ['value' => $ren]);
       echo "</td></tr>";
 
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
@@ -208,7 +210,8 @@ class PluginManageentitiesContract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Show on global GANTT') . "</td>";
       echo "<td>";
-      Dropdown::showYesNo("show_on_global_gantt", $pluginContract["show_on_global_gantt"]);
+      $gantt = (isset($pluginContract['show_on_global_gantt'])?$pluginContract['show_on_global_gantt']:0);
+      Dropdown::showYesNo("show_on_global_gantt", $gantt);
       echo "</td>";
       echo "<td>" . __('Refacturable costs', 'manageentities') . "</td>";
       echo "<td>";
@@ -222,7 +225,8 @@ class PluginManageentitiesContract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Movement management', 'manageentities') . "</td>";
       echo "<td>";
-      $rand = Dropdown::showYesNo("moving_management", $pluginContract["moving_management"], -1, array('on_change' => 'changemovement();'));
+      $mov = (isset($pluginContract['moving_management'])?$pluginContract['moving_management']:0);
+      $rand = Dropdown::showYesNo("moving_management", $mov, -1, array('on_change' => 'changemovement();'));
       echo Html::scriptBlock("
          function changemovement(){
             if($('#dropdown_moving_management$rand').val() != 0){
@@ -239,7 +243,8 @@ class PluginManageentitiesContract extends CommonDBTM {
       echo "<td><div id='movementlabel'>" . __('Duration of moving', 'manageentities') . "</div></td>";
 
       echo "<td><div id='movement'>";
-      Dropdown::showTimeStamp('duration_moving', array('value'           => $pluginContract['duration_moving'],
+      $duration = (isset($pluginContract['duration_moving'])?$pluginContract['duration_moving']:NULL);
+      Dropdown::showTimeStamp('duration_moving', array('value'           => $duration,
                                                        'addfirstminutes' => true));
       echo "</div></td></tr>";
 
