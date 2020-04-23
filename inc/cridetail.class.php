@@ -1287,14 +1287,14 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='".$who."' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='".$who."'";
       }
       
-      //if ($who > 0) {
-      //   $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='".$who."' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='".$who."'";
-      //}
-      //if ($who_group>0) {
-      //   $ASSIGN =" AND `users_id` IN (SELECT `users_id`
-      //                           FROM `glpi_groups_users`
-      //                           WHERE `groups_id` = '$who_group')";
-      //}
+      if ($who > 0) {
+         $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='".$who."' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='".$who."'";
+      }
+      if ($who_group>0) {
+         $ASSIGN =" AND `users_id` IN (SELECT `users_id`
+                                 FROM `glpi_groups_users`
+                                 WHERE `groups_id` = '$who_group')";
+      }
       
       $query = "SELECT `glpi_tickettasks`.`users_id_tech`,
                        `glpi_tickettasks`.`begin`,
