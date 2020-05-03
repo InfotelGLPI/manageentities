@@ -46,15 +46,14 @@ class PluginManageentitiesProfile extends Profile {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      global $CFG_GLPI;
 
       if ($item->getType() == 'Profile') {
          $ID   = $item->getID();
          $prof = new self();
 
          self::addDefaultProfileInfos($ID,
-                                      array('plugin_manageentities'            => ALLSTANDARDRIGHT,
-                                            'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT));
+                                      ['plugin_manageentities'            => ALLSTANDARDRIGHT,
+                                       'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT]);
          $prof->showForm($ID);
       }
 
@@ -64,7 +63,7 @@ class PluginManageentitiesProfile extends Profile {
    function showForm($profiles_id = 0, $openform = TRUE, $closeform = TRUE) {
 
       echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
+      if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
           && $openform) {
          $profile = new Profile();
          echo "<form method='post' action='" . $profile->getFormURL() . "'>";
@@ -74,14 +73,14 @@ class PluginManageentitiesProfile extends Profile {
       $profile->getFromDB($profiles_id);
 
       $rights = $this->getAllRights();
-      $profile->displayRightsChoiceMatrix($rights, array('canedit'       => $canedit,
-                                                         'default_class' => 'tab_bg_2',
-                                                         'title'         => __('General')));
+      $profile->displayRightsChoiceMatrix($rights, ['canedit'       => $canedit,
+                                                    'default_class' => 'tab_bg_2',
+                                                    'title'         => __('General')]);
       if ($canedit
           && $closeform) {
          echo "<div class='center'>";
-         echo Html::hidden('id', array('value' => $profiles_id));
-         echo Html::submit(_sx('button', 'Save'), array('name' => 'update'));
+         echo Html::hidden('id', ['value' => $profiles_id]);
+         echo Html::submit(_sx('button', 'Save'), ['name' => 'update']);
          echo "</div>\n";
          Html::closeForm();
       }
@@ -92,16 +91,16 @@ class PluginManageentitiesProfile extends Profile {
    }
 
    static function getAllRights($all = false) {
-      $rights = array(
-         array('itemtype' => 'PluginManageentitiesEntity',
-               'label'    => __('Entities portal', 'manageentities'),
-               'field'    => 'plugin_manageentities'
-         ),
-         array('itemtype' => 'PluginManageentitiesCriDetail',
-               'label'    => _n('Intervention report', 'Intervention reports', 1, 'manageentities'),
-               'field'    => 'plugin_manageentities_cri_create'
-         )
-      );
+      $rights = [
+         ['itemtype' => 'PluginManageentitiesEntity',
+          'label'    => __('Entities portal', 'manageentities'),
+          'field'    => 'plugin_manageentities'
+         ],
+         ['itemtype' => 'PluginManageentitiesCriDetail',
+          'label'    => _n('Intervention report', 'Intervention reports', 1, 'manageentities'),
+          'field'    => 'plugin_manageentities_cri_create'
+         ]
+      ];
 
       return $rights;
    }
@@ -129,10 +128,11 @@ class PluginManageentitiesProfile extends Profile {
    }
 
    /**
+    * @param $profiles_id the profile ID
+    *
     * @since 0.85
     * Migration rights from old system to the new one for one profile
     *
-    * @param $profiles_id the profile ID
     */
    static function migrateOneProfile() {
       global $DB;
@@ -144,10 +144,10 @@ class PluginManageentitiesProfile extends Profile {
       $datas = $dbu->getAllDataFromTable('glpi_plugin_manageentities_profiles');
 
       foreach ($datas as $profile_data) {
-         $matching = array('manageentities' => 'plugin_manageentities',
-                           'cri_create'     => 'plugin_manageentities_cri_create');
+         $matching = ['manageentities' => 'plugin_manageentities',
+                      'cri_create'     => 'plugin_manageentities_cri_create'];
          // Search existing rights
-         $used           = array();
+         $used           = [];
          $existingRights = $dbu->getAllDataFromTable('glpi_profilerights', ["`profiles_id`" => $profile_data['profiles_id']]);
          foreach ($existingRights as $right) {
             $used[$right['profiles_id']][$right['name']] = $right['rights'];
@@ -180,7 +180,7 @@ class PluginManageentitiesProfile extends Profile {
       foreach ($profile->getAllRights(true) as $data) {
          if ($dbu->countElementsInTable("glpi_profilerights",
                                         ["name" => $data['field']]) == 0) {
-            ProfileRight::addProfileRights(array($data['field']));
+            ProfileRight::addProfileRights([$data['field']]);
          }
       }
 
@@ -212,8 +212,8 @@ class PluginManageentitiesProfile extends Profile {
 
    static function createFirstAccess($profiles_id) {
       self::addDefaultProfileInfos($profiles_id,
-                                   array('plugin_manageentities'            => ALLSTANDARDRIGHT,
-                                         'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT), true);
+                                   ['plugin_manageentities'            => ALLSTANDARDRIGHT,
+                                    'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT], true);
 
    }
 
@@ -228,7 +228,7 @@ class PluginManageentitiesProfile extends Profile {
    static function removeRightsFromDB() {
       $plugprof = new ProfileRight();
       foreach (self::getAllRights(true) as $right) {
-         $plugprof->deleteByCriteria(array('name' => $right['field']));
+         $plugprof->deleteByCriteria(['name' => $right['field']]);
       }
    }
 
@@ -236,7 +236,6 @@ class PluginManageentitiesProfile extends Profile {
     * @param $profile
     **/
    static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false) {
-      global $DB;
 
       $profileRight = new ProfileRight();
       $dbu          = new DbUtils();
@@ -245,7 +244,7 @@ class PluginManageentitiesProfile extends Profile {
          if ($dbu->countElementsInTable('glpi_profilerights',
                                         ["profiles_id" => $profiles_id,
                                          "name"        => $right]) && $drop_existing) {
-            $profileRight->deleteByCriteria(array('profiles_id' => $profiles_id, 'name' => $right));
+            $profileRight->deleteByCriteria(['profiles_id' => $profiles_id, 'name' => $right]);
          }
          if (!$dbu->countElementsInTable('glpi_profilerights',
                                          ["profiles_id" => $profiles_id,

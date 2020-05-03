@@ -150,20 +150,20 @@ function plugin_manageentities_install() {
    }
 
    if ($update) {
-      $index = array(
-         'FK_contracts'   => array('glpi_plugin_manageentities_contracts'),
-         'FK_contracts_2' => array('glpi_plugin_manageentities_contracts'),
-         'FK_entities'    => array('glpi_plugin_manageentities_contracts', 'glpi_plugin_manageentities_contacts'),
-         'FK_entity'      => array('glpi_plugin_manageentities_contracts', 'glpi_plugin_manageentities_contacts'),
-         'FK_contacts'    => array('glpi_plugin_manageentities_contacts'),
-         'FK_contacts_2'  => array('glpi_plugin_manageentities_contacts'));
+      $index = [
+         'FK_contracts'   => ['glpi_plugin_manageentities_contracts'],
+         'FK_contracts_2' => ['glpi_plugin_manageentities_contracts'],
+         'FK_entities'    => ['glpi_plugin_manageentities_contracts', 'glpi_plugin_manageentities_contacts'],
+         'FK_entity'      => ['glpi_plugin_manageentities_contracts', 'glpi_plugin_manageentities_contacts'],
+         'FK_contacts'    => ['glpi_plugin_manageentities_contacts'],
+         'FK_contacts_2'  => ['glpi_plugin_manageentities_contacts']];
 
 
       foreach ($index as $oldname => $newnames) {
          foreach ($newnames as $table) {
             if ($dbu->isIndex($table, $oldname)) {
                $query  = "ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $result = $DB->query($query);
+               $DB->query($query);
             }
          }
       }
@@ -177,14 +177,14 @@ function plugin_manageentities_install() {
             $query  = "UPDATE `glpi_plugin_manageentities_profiles`
                   SET `profiles_id` = '" . $data["id"] . "'
                   WHERE `id` = '" . $data["id"] . "';";
-            $result = $DB->query($query);
+            $DB->query($query);
 
          }
       }
 
       $query  = "ALTER TABLE `glpi_plugin_manageentities_profiles`
                DROP `name` ;";
-      $result = $DB->query($query);
+      $DB->query($query);
    }
 
    if ($update190) {
@@ -209,8 +209,8 @@ function plugin_manageentities_install() {
          if ($number != "0") {
             while ($data = $DB->fetch_array($result)) {
                if ($data['cri_tickets_id'] == '0') {
-                  $criDetail->update(array('id'         => $data['cri_id'],
-                                           'tickets_id' => $data['doc_tickets_id']));
+                  $criDetail->update(['id'         => $data['cri_id'],
+                                           'tickets_id' => $data['doc_tickets_id']]);
                }
             }
          }
@@ -251,7 +251,7 @@ function plugin_manageentities_install() {
 function plugin_manageentities_uninstall() {
    global $DB;
 
-   $tables = array("glpi_plugin_manageentities_contracts",
+   $tables = ["glpi_plugin_manageentities_contracts",
                    "glpi_plugin_manageentities_contacts",
                    "glpi_plugin_manageentities_preferences",
                    "glpi_plugin_manageentities_configs",
@@ -265,13 +265,13 @@ function plugin_manageentities_uninstall() {
                    "glpi_plugin_manageentities_businesscontacts",
                    "glpi_plugin_manageentities_companies",
                    "glpi_plugin_manageentities_entitylogos",
-                   "glpi_plugin_manageentities_interventionskateholders");
+                   "glpi_plugin_manageentities_interventionskateholders"];
 
    foreach ($tables as $table)
       $DB->query("DROP TABLE IF EXISTS `$table`;");
 
    //old versions   
-   $tables = array("glpi_plugin_manageentity_contracts",
+   $tables = ["glpi_plugin_manageentity_contracts",
                    "glpi_plugin_manageentity_documents",
                    "glpi_plugin_manageentity_contacts",
                    "glpi_plugin_manageentity_profiles",
@@ -281,7 +281,7 @@ function plugin_manageentities_uninstall() {
                    "glpi_plugin_manageentity_criprice",
                    "glpi_plugin_manageentity_dayforcontract",
                    "glpi_plugin_manageentity_critechnicians",
-                   "glpi_plugin_manageentity_cridetails");
+                   "glpi_plugin_manageentity_cridetails"];
 
    foreach ($tables as $table)
       $DB->query("DROP TABLE IF EXISTS `$table`;");
@@ -370,44 +370,44 @@ function plugin_pre_item_purge_manageentities($item) {
    switch (get_class($item)) {
       case 'Entity' :
          $temp = new PluginManageentitiesContract();
-         $temp->deleteByCriteria(array('entities_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
 
          $temp = new PluginManageentitiesContact();
-         $temp->deleteByCriteria(array('entities_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
 
          $temp = new PluginManageentitiesCriPrice();
-         $temp->deleteByCriteria(array('entities_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
 
          $temp = new PluginManageentitiesContractDay();
-         $temp->deleteByCriteria(array('entities_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
 
          $temp = new PluginManageentitiesCriDetail();
-         $temp->deleteByCriteria(array('entities_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
          break;
       case 'Ticket' :
          $temp = new PluginManageentitiesCriTechnician();
-         $temp->deleteByCriteria(array('tickets_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['tickets_id' => $item->getField('id')]);
 
          $temp = new PluginManageentitiesCriDetail();
-         $temp->deleteByCriteria(array('tickets_id' => $item->getField("id")));
+         $temp->deleteByCriteria(['tickets_id' => $item->getField('id')]);
          break;
       case 'Contract' :
          $temp = new PluginManageentitiesContract();
-         $temp->deleteByCriteria(array('contracts_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
 
          $temp = new PluginManageentitiesContractDay();
-         $temp->deleteByCriteria(array('contracts_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
 
          $temp = new PluginManageentitiesCriDetail();
-         $temp->deleteByCriteria(array('contracts_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
          break;
       case 'Contact' :
          $temp = new PluginManageentitiesContact();
-         $temp->deleteByCriteria(array('contacts_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['contacts_id' => $item->getField('id')]);
          break;
       case 'TaskCategory' :
          $temp = new PluginManageentitiesTaskCategory();
-         $temp->deleteByCriteria(array('taskcategories_id' => $item->getField('id')));
+         $temp->deleteByCriteria(['taskcategories_id' => $item->getField('id')]);
          break;
    }
 }
@@ -427,9 +427,9 @@ function plugin_item_transfer_manageentities($parm) {
          if (!empty($allPluginContracts)) {
             foreach ($allPluginContracts as $onePluginContract) {
                $old_entity = $onePluginContract['entities_id'];
-               $pluginContract->update(array('id'           => $onePluginContract['id'],
-                                             'contracts_id' => $contract->fields['id'],
-                                             'entities_id'  => $contract->fields['entities_id']));
+               $pluginContract->update(['id'           => $onePluginContract['id'],
+                                        'contracts_id' => $contract->fields['id'],
+                                        'entities_id'  => $contract->fields['entities_id']]);
 
             }
          }
@@ -450,15 +450,15 @@ function plugin_item_transfer_manageentities($parm) {
                      $newPrice = $criPrice->getFromDBbyType($onePluginContractDays['plugin_manageentities_critypes_id'],
                                                             $contract->fields['entities_id']);
                      if (!$newPrice) {
-                        $criPrice->add(array('entities_id'                       => $contract->fields['entities_id'],
-                                             'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
-                                             'price'                             => $onePrice['price']));
+                        $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
+                                        'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
+                                        'price'                             => $onePrice['price']]);
                      }
                   }
                }
-               $contractDay->update(array('id'           => $onePluginContractDays['id'],
-                                          'contracts_id' => $contract->fields['id'],
-                                          'entities_id'  => $contract->fields['entities_id']));
+               $contractDay->update(['id'           => $onePluginContractDays['id'],
+                                     'contracts_id' => $contract->fields['id'],
+                                     'entities_id'  => $contract->fields['entities_id']]);
 
             }
          }
@@ -479,26 +479,26 @@ function plugin_item_transfer_manageentities($parm) {
                      $newPrice = $criPrice->getFromDBbyType($onePluginCriDetail['plugin_manageentities_critypes_id'],
                                                             $contract->fields['entities_id']);
                      if (!$newPrice) {
-                        $criPrice->add(array('entities_id'                       => $contract->fields['entities_id'],
-                                             'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
-                                             'price'                             => $onePrice['price']));
+                        $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
+                                        'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
+                                        'price'                             => $onePrice['price']]);
                      }
                   }
                }
 
                $document = new Document();
                $document->getFromDB($onePluginCriDetail['documents_id']);
-               $document->update(array('id'          => $onePluginCriDetail['documents_id'],
-                                       'entities_id' => $contract->fields['entities_id']));
+               $document->update(['id'          => $onePluginCriDetail['documents_id'],
+                                  'entities_id' => $contract->fields['entities_id']]);
 
                $ticket = new Ticket();
                $ticket->getFromDB($onePluginCriDetail['tickets_id']);
-               $ticket->update(array('id'          => $onePluginCriDetail['tickets_id'],
-                                     'entities_id' => $contract->fields['entities_id']));
+               $ticket->update(['id'          => $onePluginCriDetail['tickets_id'],
+                                'entities_id' => $contract->fields['entities_id']]);
 
-               $criDetail->update(array('id'           => $onePluginCriDetail['id'],
-                                        'contracts_id' => $contract->fields['id'],
-                                        'entities_id'  => $contract->fields['entities_id']));
+               $criDetail->update(['id'           => $onePluginCriDetail['id'],
+                                   'contracts_id' => $contract->fields['id'],
+                                   'entities_id'  => $contract->fields['entities_id']]);
             }
          }
          break;
@@ -511,30 +511,30 @@ function plugin_manageentities_getDatabaseRelations() {
    $plugin = new Plugin();
 
    if ($plugin->isActivated("manageentities"))
-      return array("glpi_plugin_manageentities_critypes"       => array("glpi_plugin_manageentities_criprices"    => "plugin_manageentities_critypes_id",
-                                                                        "glpi_plugin_manageentities_cridetails"   => "plugin_manageentities_critypes_id",
-                                                                        "glpi_plugin_manageentities_contractdays" => "plugin_manageentities_critypes_id"),
-                   "glpi_contracts"                            => array("glpi_plugin_manageentities_contracts"    => "contracts_id",
-                                                                        "glpi_plugin_manageentities_contractdays" => "contracts_id",
-                                                                        "glpi_plugin_manageentities_cridetails"   => "contracts_id"),
-                   "glpi_contacts"                             => array("glpi_plugin_manageentities_contacts" => "contacts_id"),
-                   "glpi_users"                                => array("glpi_plugin_manageentities_preferences"    => "users_id",
-                                                                        "glpi_plugin_manageentities_critechnicians" => "users_id"),
-                   "glpi_documents"                            => array("glpi_plugin_manageentities_cridetails" => "documents_id",
-                                                                        "glpi_plugin_manageentities_companies"  => "logo_id"),
-                   "glpi_documentcategories"                   => array("glpi_plugin_manageentities_configs" => "documentcategories_id"),
-                   "glpi_tickets"                              => array("glpi_plugin_manageentities_critechnicians" => "tickets_id",
-                                                                        "glpi_plugin_manageentities_cridetails"     => "tickets_id"),
-                   "glpi_entities"                             => array("glpi_plugin_manageentities_contracts"    => "entities_id",
-                                                                        "glpi_plugin_manageentities_contacts"     => "entities_id",
-                                                                        "glpi_plugin_manageentities_criprices"    => "entities_id",
-                                                                        "glpi_plugin_manageentities_contractdays" => "entities_id",
-                                                                        "glpi_plugin_manageentities_cridetails"   => "entities_id",
-                                                                        "glpi_plugin_manageentities_entitylogos"  => "entities_id"),
-                   "glpi_plugin_manageentities_contractstates" => array("glpi_plugin_manageentities_contractdays" => "plugin_manageentities_contractstates_id"),
-                   "glpi_taskcategories"                       => array("glpi_plugin_manageentities_taskcategories" => "taskcategories_id"));
+      return ["glpi_plugin_manageentities_critypes"       => ["glpi_plugin_manageentities_criprices"    => "plugin_manageentities_critypes_id",
+                                                              "glpi_plugin_manageentities_cridetails"   => "plugin_manageentities_critypes_id",
+                                                              "glpi_plugin_manageentities_contractdays" => "plugin_manageentities_critypes_id"],
+              "glpi_contracts"                            => ["glpi_plugin_manageentities_contracts"    => "contracts_id",
+                                                              "glpi_plugin_manageentities_contractdays" => "contracts_id",
+                                                              "glpi_plugin_manageentities_cridetails"   => "contracts_id"],
+              "glpi_contacts"                             => ["glpi_plugin_manageentities_contacts" => "contacts_id"],
+              "glpi_users"                                => ["glpi_plugin_manageentities_preferences"    => "users_id",
+                                                              "glpi_plugin_manageentities_critechnicians" => "users_id"],
+              "glpi_documents"                            => ["glpi_plugin_manageentities_cridetails" => "documents_id",
+                                                              "glpi_plugin_manageentities_companies"  => "logo_id"],
+              "glpi_documentcategories"                   => ["glpi_plugin_manageentities_configs" => "documentcategories_id"],
+              "glpi_tickets"                              => ["glpi_plugin_manageentities_critechnicians" => "tickets_id",
+                                                              "glpi_plugin_manageentities_cridetails"     => "tickets_id"],
+              "glpi_entities"                             => ["glpi_plugin_manageentities_contracts"    => "entities_id",
+                                                              "glpi_plugin_manageentities_contacts"     => "entities_id",
+                                                              "glpi_plugin_manageentities_criprices"    => "entities_id",
+                                                              "glpi_plugin_manageentities_contractdays" => "entities_id",
+                                                              "glpi_plugin_manageentities_cridetails"   => "entities_id",
+                                                              "glpi_plugin_manageentities_entitylogos"  => "entities_id"],
+              "glpi_plugin_manageentities_contractstates" => ["glpi_plugin_manageentities_contractdays" => "plugin_manageentities_contractstates_id"],
+              "glpi_taskcategories"                       => ["glpi_plugin_manageentities_taskcategories" => "taskcategories_id"]];
    else
-      return array();
+      return [];
 }
 
 // Define Dropdown tables to be manage in GLPI :
@@ -542,10 +542,10 @@ function plugin_manageentities_getDropdown() {
    $plugin = new Plugin();
 
    if ($plugin->isActivated("manageentities"))
-      return array('PluginManageentitiesCriType'       => __('Intervention type', 'manageentities'),
-                   'PluginManageentitiesContractState' => __('State of contract', 'manageentities'));
+      return ['PluginManageentitiesCriType'       => __('Intervention type', 'manageentities'),
+                   'PluginManageentitiesContractState' => __('State of contract', 'manageentities')];
    else
-      return array();
+      return [];
 }
 
 // Do special actions for dynamic report
@@ -572,7 +572,7 @@ function plugin_manageentities_dynamicReport($parm) {
 ////// SEARCH FUNCTIONS ///////
 // Define search option for types of the plugins
 function plugin_manageentities_getAddSearchOptions($itemtype) {
-   $sopt = array();
+   $sopt = [];
 
    if ($itemtype == "Ticket") {
       if (Session::haveRight("plugin_manageentities", READ)) {
@@ -584,9 +584,9 @@ function plugin_manageentities_getAddSearchOptions($itemtype) {
          $sopt[4455]['itemlink_type'] = 'Contract';
          $sopt[4455]['forcegroupby']  = true;
          $sopt[4455]['massiveaction'] = false;
-         $sopt[4455]['joinparams']    = array('beforejoin'
-                                              => array('table'      => 'glpi_plugin_manageentities_cridetails',
-                                                       'joinparams' => array('jointype' => 'child')));
+         $sopt[4455]['joinparams']    = ['beforejoin'
+                                              => ['table'      => 'glpi_plugin_manageentities_cridetails',
+                                                       'joinparams' => ['jointype' => 'child']]];
       }
    }
    return $sopt;
@@ -596,7 +596,7 @@ function plugin_manageentities_postinit() {
    global $PLUGIN_HOOKS;
 
    $plugin = 'manageentities';
-   foreach (array('add_css', 'add_javascript') as $type) {
+   foreach (['add_css', 'add_javascript'] as $type) {
       foreach ($PLUGIN_HOOKS[$type][$plugin] as $data) {
          if (!empty($PLUGIN_HOOKS[$type])) {
             foreach ($PLUGIN_HOOKS[$type] as $key => $plugins_data) {
@@ -613,8 +613,7 @@ function plugin_manageentities_postinit() {
    }
 
    $PLUGIN_HOOKS['item_purge']['manageentities']["Document"]
-      = array('PluginManageentitiesEntityLogo', 'cleanForItem'
-   );
+      = ['PluginManageentitiesEntityLogo', 'cleanForItem'];
 }
 
 function plugin_manageentities_displayConfigItem($type, $ID, $data, $num) {

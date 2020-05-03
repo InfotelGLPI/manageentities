@@ -44,12 +44,12 @@ class PluginManageentitiesEntity extends CommonGLPI {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
-   function defineTabs($options = array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
 
       return $ong;
@@ -164,7 +164,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                if ((Session::getCurrentInterface() == 'central')
                    || (Session::getCurrentInterface() == 'helpdesk'
                        && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
-                  $PluginManageentitiesCriDetail->showReports(0, 0, $_SESSION["glpiactiveentities"], array('condition' => "`glpi_plugin_manageentities_contractstates`.`is_closed` != 1 "));
+                  $PluginManageentitiesCriDetail->showReports(0, 0, $_SESSION["glpiactiveentities"], ['condition' => "`glpi_plugin_manageentities_contractstates`.`is_closed` != 1 "]);
                } elseif (Session::getCurrentInterface() == 'helpdesk'
                          && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
                   $PluginManageentitiesCriDetail->showPeriod(0, 0, $_SESSION["glpiactiveentities"]);
@@ -512,7 +512,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                $userdata = $dbu->getUserName($d['users_id'], 2);
                echo "<strong>" . $userdata['name'] . "</strong>&nbsp;";
                if ($viewusers) {
-                  Html::showToolTip($userdata["comment"], array('link' => $userdata["link"]));
+                  Html::showToolTip($userdata["comment"], ['link' => $userdata["link"]]);
                }
                echo "<br>";
             }
@@ -540,12 +540,12 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
    static function getMenuContent() {
       $plugin_page = "/plugins/manageentities/front/entity.php";
-      $menu        = array();
+      $menu        = [];
       //Menu entry in tools
       $menu['title']           = self::getTypeName(2);
       $menu['page']            = $plugin_page;
       $menu['links']['search'] = $plugin_page;
-      if (Session::haveRightsOr("plugin_manageentities", array(CREATE, UPDATE)) || Session::haveRight("config", UPDATE)) {
+      if (Session::haveRightsOr("plugin_manageentities", [CREATE, UPDATE]) || Session::haveRight("config", UPDATE)) {
          //Entry icon in breadcrumb
          $menu['links']['config'] = PluginManageentitiesConfig::getFormURL(false);
          //Link to config page in admin plugins list
@@ -572,11 +572,11 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
    function getRights($interface = 'central') {
 
-      $values = array(CREATE => __('Create'),
-                      READ   => __('Read'),
-                      UPDATE => __('Update'),
-                      PURGE  => array('short' => __('Purge'),
-                                      'long'  => _x('button', 'Delete permanently')));
+      $values = [CREATE => __('Create'),
+                 READ   => __('Read'),
+                 UPDATE => __('Update'),
+                 PURGE  => ['short' => __('Purge'),
+                            'long'  => _x('button', 'Delete permanently')]];
 
       return $values;
    }
@@ -594,17 +594,17 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $result = $DB->request("SELECT `entities_id`, min(`date_signature`) as signature, YEAR(`date_signature`) as year
                   FROM `glpi_plugin_manageentities_contracts` 
                   WHERE `date_signature` IS NOT NULL 
-                  AND `entities_id` IN (".implode(",", $instID).")
+                  AND `entities_id` IN (" . implode(",", $instID) . ")
                   GROUP BY `entities_id`
                   ORDER BY year DESC");
 
-      $year = "";
-      $debug = [];
+      $year        = "";
+      $debug       = [];
       $entity_logo = new PluginManageentitiesEntityLogo();
-      $entity = new Entity();
-      $i  = 0;
+      $entity      = new Entity();
+      $i           = 0;
 
-      while($data = $result->next()) {
+      while ($data = $result->next()) {
 
          if ($entity->getFromDB($data['entities_id'])) {
             $debug[$data['entities_id']] = ['name'      => $entity->getName(),
@@ -617,7 +617,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                   echo "</tr>";
                }
 
-               $i    = 0;
+               $i = 0;
 
                echo "<tr>";
                echo "<th colspan='4'>" . $data['year'] . "</th>";

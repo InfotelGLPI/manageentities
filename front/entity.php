@@ -54,7 +54,7 @@ if ($PluginManageentitiesEntity->canView()
 
    } else if (isset($_POST["deletecontracts"])) {
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContract->delete(array('id' => $_POST["id"]));
+         $PluginManageentitiesContract->delete(['id' => $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["contractbydefault"])) {
@@ -69,7 +69,7 @@ if ($PluginManageentitiesEntity->canView()
 
    } else if (isset($_POST["deletecontacts"])) {
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContact->delete(array('id' => $_POST["id"]));
+         $PluginManageentitiesContact->delete(['id' => $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["addbusiness"])) {
@@ -79,7 +79,7 @@ if ($PluginManageentitiesEntity->canView()
 
    } else if (isset($_POST["deletebusiness"])) {
       if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesBusinessContact->delete(array('id' => $_POST["id"]));
+         $PluginManageentitiesBusinessContact->delete(['id' => $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["contactbydefault"])) {
@@ -119,17 +119,17 @@ if ($PluginManageentitiesEntity->canView()
             $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
             $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
          }
-         $options = array("begin_date_after"  => isset($_POST['begin_date_after']) ? $_POST['begin_date_after'] : $dateYear,
-                          "begin_date_before" => isset($_POST['begin_date_before']) ? $_POST['begin_date_before'] : "NULL",
-                          "begin_date"        => isset($_POST['begin_date']) ? $_POST['begin_date'] : $dateMonthbegin,
-                          "end_date"          => isset($_POST['end_date']) ? $_POST['end_date'] : $dateMonthend,
-                          "end_date_after"    => isset($_POST['end_date_after']) ? $_POST['end_date_after'] : "NULL",
-                          "end_date_before"   => isset($_POST['end_date_before']) ? $_POST['end_date_before'] : "NULL",
-                          "contract_states"   => isset($_POST['contract_states']) ? $_POST['contract_states'] : 0,
-                          "entities_id"       => (isset($_POST['entities_id']) && (!empty($_POST['entities_id']))) ? $_POST['entities_id'] : -1,
-                          "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : 0,
-                          "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
-                          "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0);
+         $options = ["begin_date_after"  => isset($_POST['begin_date_after']) ? $_POST['begin_date_after'] : $dateYear,
+                     "begin_date_before" => isset($_POST['begin_date_before']) ? $_POST['begin_date_before'] : "NULL",
+                     "begin_date"        => isset($_POST['begin_date']) ? $_POST['begin_date'] : $dateMonthbegin,
+                     "end_date"          => isset($_POST['end_date']) ? $_POST['end_date'] : $dateMonthend,
+                     "end_date_after"    => isset($_POST['end_date_after']) ? $_POST['end_date_after'] : "NULL",
+                     "end_date_before"   => isset($_POST['end_date_before']) ? $_POST['end_date_before'] : "NULL",
+                     "contract_states"   => isset($_POST['contract_states']) ? $_POST['contract_states'] : 0,
+                     "entities_id"       => (isset($_POST['entities_id']) && (!empty($_POST['entities_id']))) ? $_POST['entities_id'] : -1,
+                     "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : 0,
+                     "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
+                     "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0];
          Html::requireJs('gantt');
          $entity = new PluginManageentitiesEntity();
          $entity->display($options);

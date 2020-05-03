@@ -40,10 +40,10 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(READ, CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [READ, CREATE, UPDATE, DELETE]);
    }
 
-   static function queryFollowUp($instID, $options = array()) {
+   static function queryFollowUp($instID, $options = []) {
       global $DB;
 
       $dbu = new DbUtils();
@@ -92,7 +92,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       $queryBusiness          = '';
       $queryCompany           = '';
       $num                    = 0;
-      $list                   = array();
+      $list                   = [];
       $tot_credit             = 0;
       $contract_credit        = 0;
       $tot_conso              = 0;
@@ -105,7 +105,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       $contract_reste_montant = 0;
       $nbContratByEntities    = 0;// Count the contracts for all entities
       $contract_depass        = 0;
-      $pricecri               = array();
+      $pricecri               = [];
 
       // We configure the type of contract Hourly or Dayly
       $config = PluginManageentitiesConfig::getInstance();
@@ -172,7 +172,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             $plugin_company = new PluginManageentitiesCompany();
             $company        = $plugin_company->find(['id' => $id]);
             $company        = reset($company);
-            $sons           = array();
+            $sons           = [];
             if ($company['recursive'] == 1) {
                $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
             } else {
@@ -189,7 +189,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       } elseif (isset($preferences['companies_id']) && $preferences['companies_id'] != NULL) {
          $temp = 0;
          foreach (json_decode($preferences['companies_id'], true) as $id) {
-            $sons           = array();
+            $sons           = [];
             $plugin_company = new PluginManageentitiesCompany();
             $company        = $plugin_company->find(['id' => $id]);
             $company        = reset($company);
@@ -369,7 +369,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      $dataContractDay['entities_id']       = $dataContract['entities_id'];
                      $dataContractDay['contractdays_id']   = $dataContractDay["contractdays_id"];
 
-                     $resultCriDetail = PluginManageentitiesCriDetail::getCriDetailData($dataContractDay, array("contract_type_id" => $dataContractDay["contract_type"]));
+                     $resultCriDetail = PluginManageentitiesCriDetail::getCriDetailData($dataContractDay, ["contract_type_id" => $dataContractDay["contract_type"]]);
 
                      $tot_amount = 0;
                      $forfait    = $resultCriDetail['resultOther']['forfait'];
@@ -1034,7 +1034,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       echo "</div>";
    }
 
-   function showCriteriasForm($options = array()) {
+   function showCriteriasForm($options = []) {
       global $DB;
       PluginManageentitiesEntity::showManageentitiesHeader(__('General follow-up', 'manageentities'));
 
@@ -1054,7 +1054,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                  && $_SESSION['glpishowallentities'])) {
             echo "<td>" . __('Entity') . "</td>";
             echo "<td>";
-            Dropdown::show('Entity', array('value' => $options['entities_id']));
+            Dropdown::show('Entity', ['value' => $options['entities_id']]);
             echo "</td>";
             $colspan = '1';
          } else {
@@ -1072,7 +1072,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
          $contractstate  = new PluginManageentitiesContractState();
          $contractstates = $contractstate->find();
-         $states         = array();
+         $states         = [];
          foreach ($contractstates as $key => $val) {
             $states[$key] = $val['name'];
          }
@@ -1080,15 +1080,23 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "<td class='left' colspan='$colspan'>";
 
          if (isset($options['contract_states']) && $options['contract_states'] != '0') {
-            Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => $options['contract_states']));
+            Dropdown::showFromArray("contract_states", $states, ['multiple' => true,
+                                                                 'width'    => 200,
+                                                                 'values'   => $options['contract_states']]);
          } elseif ($preferences['contract_states'] != NULL) {
             $options['contract_states'] = json_decode($preferences['contract_states'], true);
-            Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => $options['contract_states']));
+            Dropdown::showFromArray("contract_states", $states, ['multiple' => true,
+                                                                 'width'    => 200,
+                                                                 'values'   => $options['contract_states']]);
          } elseif ($config_states['contract_states'] != NULL) {
             $options['contract_states'] = json_decode($config_states['contract_states'], true);
-            Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => $options['contract_states']));
+            Dropdown::showFromArray("contract_states", $states, ['multiple' => true,
+                                                                 'width'    => 200,
+                                                                 'values'   => $options['contract_states']]);
          } else {
-            Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'value' => "contract_states"));
+            Dropdown::showFromArray("contract_states", $states, ['multiple' => true,
+                                                                 'width'    => 200,
+                                                                 'value'    => "contract_states"]);
          }
          echo "</td></tr><tr class='tab_bg_1'>";
 
@@ -1124,7 +1132,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
 
          $result = $DB->query($query);
-         $users  = array();
+         $users  = [];
          while ($data = $DB->fetch_assoc($result)) {
             $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
          }
@@ -1136,21 +1144,29 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "<td class='left'>";
 
          if (isset($options['business_id']) && $options['business_id'] != '0') {
-            Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'values' => $options['business_id']));
+            Dropdown::showFromArray("business_id", $users, ['multiple' => true,
+                                                            'width'    => 200,
+                                                            'values'   => $options['business_id']]);
          } elseif ($preferences['business_id'] != NULL) {
             $options['business_id'] = json_decode($preferences['business_id'], true);
-            Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'values' => $options['business_id']));
+            Dropdown::showFromArray("business_id", $users, ['multiple' => true,
+                                                            'width'    => 200,
+                                                            'values'   => $options['business_id']]);
          } elseif ($config_states['business_id'] != NULL) {
             $options['business_id'] = json_decode($config_states['business_id'], true);
-            Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'values' => $options['business_id']));
+            Dropdown::showFromArray("business_id", $users, ['multiple' => true,
+                                                            'width'    => 200,
+                                                            'values'   => $options['business_id']]);
          } else {
-            Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'value' => 'name'));
+            Dropdown::showFromArray("business_id", $users, ['multiple' => true,
+                                                            'width'    => 200,
+                                                            'value'    => 'name']);
          }
 
          $plugin_company = new PluginManageentitiesCompany();
          $result         = $plugin_company->find();
 
-         $company = array();
+         $company = [];
          foreach ($result as $data) {
             $company[$data['id']] = $data['name'];
          }
@@ -1161,12 +1177,18 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "<td class='left'>";
 
          if (isset($options['company_id']) && $options['company_id'] != '0') {
-            Dropdown::showFromArray("company_id", $company, array('multiple' => true, 'width' => 200, 'values' => $options['company_id']));
+            Dropdown::showFromArray("company_id", $company, ['multiple' => true,
+                                                             'width'    => 200,
+                                                             'values'   => $options['company_id']]);
          } elseif ($preferences['companies_id'] != NULL) {
             $options['company_id'] = json_decode($preferences['companies_id'], true);
-            Dropdown::showFromArray("company_id", $company, array('multiple' => true, 'width' => 200, 'values' => $options['company_id']));
+            Dropdown::showFromArray("company_id", $company, ['multiple' => true,
+                                                             'width'    => 200,
+                                                             'values'   => $options['company_id']]);
          } else {
-            Dropdown::showFromArray("company_id", $company, array('multiple' => true, 'width' => 200, 'value' => 'name'));
+            Dropdown::showFromArray("company_id", $company, ['multiple' => true,
+                                                             'width'    => 200,
+                                                             'value'    => 'name']);
          }
          echo "</td></tr>";
 
@@ -1239,9 +1261,9 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "<option value='" . Search::SYLK_OUTPUT . "'>" . __('Current page in SLK') . "</option>";
          echo "<option value='" . Search::CSV_OUTPUT . "'>" . __('Current page in CSV') . "</option>";
          echo "</select>&nbsp;";
-         echo "<button type='submit' name='export' class='unstyled pointer' ".
+         echo "<button type='submit' name='export' class='unstyled pointer' " .
               " title=\"" . _sx('button', 'Export') . "\">" .
-              "<i class='far fa-save'></i><span class='sr-only'>"._sx('button', 'Export')."<span>";
+              "<i class='far fa-save'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
          echo "</td>";
       }
 

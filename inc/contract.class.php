@@ -58,7 +58,7 @@ class PluginManageentitiesContract extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    function prepareInputForAdd($input) {
@@ -113,6 +113,14 @@ class PluginManageentitiesContract extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType() == 'Contract'
           && !isset($withtemplate) || empty($withtemplate)) {
+
+         $dbu                = new DbUtils();
+         $restrict           = ["`entities_id`"  => $item->fields['entities_id'],
+                                "`contracts_id`" => $item->fields['id']];
+         $pluginContractDays = $dbu->countElementsInTable("glpi_plugin_manageentities_contractdays", $restrict);
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(__('Contract detail', 'manageentities'), $pluginContractDays);
+         }
          return __('Contract detail', 'manageentities');
       }
       return '';
@@ -179,10 +187,10 @@ class PluginManageentitiesContract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Date of signature', 'manageentities') . "</td>";
       echo "<td>";
-      $sign = (isset($pluginContract['date_signature'])?$pluginContract['date_signature']:NULL);
+      $sign = (isset($pluginContract['date_signature']) ? $pluginContract['date_signature'] : NULL);
       Html::showDateField("date_signature", ['value' => $sign]);
       echo "</td><td>" . __('Date of renewal', 'manageentities') . "</td><td>";
-      $ren = (isset($pluginContract['date_renewal'])?$pluginContract['date_renewal']:NULL);
+      $ren = (isset($pluginContract['date_renewal']) ? $pluginContract['date_renewal'] : NULL);
       Html::showDateField("date_renewal", ['value' => $ren]);
       echo "</td></tr>";
 
@@ -210,7 +218,7 @@ class PluginManageentitiesContract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Show on global GANTT') . "</td>";
       echo "<td>";
-      $gantt = (isset($pluginContract['show_on_global_gantt'])?$pluginContract['show_on_global_gantt']:0);
+      $gantt = (isset($pluginContract['show_on_global_gantt']) ? $pluginContract['show_on_global_gantt'] : 0);
       Dropdown::showYesNo("show_on_global_gantt", $gantt);
       echo "</td>";
       echo "<td>" . __('Refacturable costs', 'manageentities') . "</td>";
@@ -225,8 +233,8 @@ class PluginManageentitiesContract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Movement management', 'manageentities') . "</td>";
       echo "<td>";
-      $mov = (isset($pluginContract['moving_management'])?$pluginContract['moving_management']:0);
-      $rand = Dropdown::showYesNo("moving_management", $mov, -1, array('on_change' => 'changemovement();'));
+      $mov  = (isset($pluginContract['moving_management']) ? $pluginContract['moving_management'] : 0);
+      $rand = Dropdown::showYesNo("moving_management", $mov, -1, ['on_change' => 'changemovement();']);
       echo Html::scriptBlock("
          function changemovement(){
             if($('#dropdown_moving_management$rand').val() != 0){
@@ -243,9 +251,9 @@ class PluginManageentitiesContract extends CommonDBTM {
       echo "<td><div id='movementlabel'>" . __('Duration of moving', 'manageentities') . "</div></td>";
 
       echo "<td><div id='movement'>";
-      $duration = (isset($pluginContract['duration_moving'])?$pluginContract['duration_moving']:NULL);
-      Dropdown::showTimeStamp('duration_moving', array('value'           => $duration,
-                                                       'addfirstminutes' => true));
+      $duration = (isset($pluginContract['duration_moving']) ? $pluginContract['duration_moving'] : NULL);
+      Dropdown::showTimeStamp('duration_moving', ['value'           => $duration,
+                                                  'addfirstminutes' => true]);
       echo "</div></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -311,7 +319,7 @@ class PluginManageentitiesContract extends CommonDBTM {
             echo "<th>&nbsp;</th>";
          echo "</tr>";
 
-         $used = array();
+         $used = [];
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data["contracts_id"];
@@ -337,7 +345,7 @@ class PluginManageentitiesContract extends CommonDBTM {
                   Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                                        'contractbydefault',
                                        __('No'),
-                                       array('myid' => $data["myid"], 'entities_id' => $_SESSION["glpiactive_entity"]));
+                                       ['myid' => $data["myid"], 'entities_id' => $_SESSION["glpiactive_entity"]]);
                }
             } else {
                echo Dropdown::getYesNo($data["is_default"]);
@@ -349,7 +357,7 @@ class PluginManageentitiesContract extends CommonDBTM {
                Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                                     'deletecontracts',
                                     _x('button', 'Delete permanently'),
-                                    array('id' => $data["myid"]));
+                                    ['id' => $data["myid"]]);
                echo "</td>";
             }
             echo "</tr>";
@@ -365,8 +373,8 @@ class PluginManageentitiesContract extends CommonDBTM {
                echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
             }
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
-            Dropdown::show('Contract', array('name' => "contracts_id",
-                                             'used' => $used));
+            Dropdown::show('Contract', ['name' => "contracts_id",
+                                        'used' => $used]);
             echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'></td>";
             echo "</tr>";
@@ -386,7 +394,7 @@ class PluginManageentitiesContract extends CommonDBTM {
          if ($this->canCreate()) {
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='entities_id' value=" . $_SESSION["glpiactive_entity"] . ">";
-            Dropdown::show('Contract', array('name' => "contracts_id"));
+            Dropdown::show('Contract', ['name' => "contracts_id"]);
             echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>
             <i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
@@ -408,15 +416,15 @@ class PluginManageentitiesContract extends CommonDBTM {
     * @return boolean
     */
    static function dropdownContractManagement($name, $value = 0, $rand = null) {
-      $contractManagements = array(self::MANAGEMENT_NONE      => Dropdown::EMPTY_VALUE,
-                                   self::MANAGEMENT_QUARTERLY => __('Quarterly', 'manageentities'),
-                                   self::MANAGEMENT_ANNUAL    => __('Annual', 'manageentities'));
+      $contractManagements = [self::MANAGEMENT_NONE      => Dropdown::EMPTY_VALUE,
+                              self::MANAGEMENT_QUARTERLY => __('Quarterly', 'manageentities'),
+                              self::MANAGEMENT_ANNUAL    => __('Annual', 'manageentities')];
 
       if (!empty($contractManagements)) {
          if ($rand == null) {
-            return Dropdown::showFromArray($name, $contractManagements, array('value' => $value));
+            return Dropdown::showFromArray($name, $contractManagements, ['value' => $value]);
          } else {
-            return Dropdown::showFromArray($name, $contractManagements, array('value' => $value, 'rand' => $rand));
+            return Dropdown::showFromArray($name, $contractManagements, ['value' => $value, 'rand' => $rand]);
          }
       } else {
          return false;
@@ -457,21 +465,21 @@ class PluginManageentitiesContract extends CommonDBTM {
       $config = PluginManageentitiesConfig::getInstance();
 
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-         $contractTypes = array(self::CONTRACT_TYPE_NULL         => Dropdown::EMPTY_VALUE,
-                                self::CONTRACT_TYPE_HOUR         => __('Hourly', 'manageentities'),
-                                self::CONTRACT_TYPE_INTERVENTION => __('By intervention', 'manageentities'),
-                                self::CONTRACT_TYPE_UNLIMITED    => __('Unlimited'));
+         $contractTypes = [self::CONTRACT_TYPE_NULL         => Dropdown::EMPTY_VALUE,
+                           self::CONTRACT_TYPE_HOUR         => __('Hourly', 'manageentities'),
+                           self::CONTRACT_TYPE_INTERVENTION => __('By intervention', 'manageentities'),
+                           self::CONTRACT_TYPE_UNLIMITED    => __('Unlimited')];
       } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
-         $contractTypes = array(self::CONTRACT_TYPE_NULL    => Dropdown::EMPTY_VALUE,
-                                self::CONTRACT_TYPE_AT      => __('Technical Assistance', 'manageentities'),
-                                self::CONTRACT_TYPE_FORFAIT => __('Package', 'manageentities'));
+         $contractTypes = [self::CONTRACT_TYPE_NULL    => Dropdown::EMPTY_VALUE,
+                           self::CONTRACT_TYPE_AT      => __('Technical Assistance', 'manageentities'),
+                           self::CONTRACT_TYPE_FORFAIT => __('Package', 'manageentities')];
       }
 
       if (!empty($contractTypes)) {
          if ($rand == null) {
-            return Dropdown::showFromArray($name, $contractTypes, array('value' => $value));
+            return Dropdown::showFromArray($name, $contractTypes, ['value' => $value]);
          } else {
-            return Dropdown::showFromArray($name, $contractTypes, array('value' => $value, 'rand' => $rand));
+            return Dropdown::showFromArray($name, $contractTypes, ['value' => $value, 'rand' => $rand]);
          }
       } else {
          return false;

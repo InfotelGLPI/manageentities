@@ -64,11 +64,11 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       Html::showDateField("date2", ['value' => $_POST["date2"]]);
       echo "</td></tr>";
 
-      $user  = new User();
-      $condition  = ['is_deleted' => 0,
-                       'entities_id' => $_SESSION["glpiactiveentities"]];
-      $users = $user->find($condition);
-      $techs = array();
+      $user      = new User();
+      $condition = ['is_deleted'  => 0,
+                    'entities_id' => $_SESSION["glpiactiveentities"]];
+      $users     = $user->find($condition);
+      $techs     = [];
       foreach ($users as $data) {
          $techs[$data['id']] = $dbu->getUserName($data['id']);
       }
@@ -76,9 +76,9 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "<tr><td class='tab_bg_2 center'>";
       echo __('Technician') . " :</td><td class='tab_bg_2 center' colspan='3' >";
       if (isset($_POST['techs'])) {
-         Dropdown::showFromArray('techs', $techs, array('multiple' => true, 'values' => $_POST['techs']));
+         Dropdown::showFromArray('techs', $techs, ['multiple' => true, 'values' => $_POST['techs']]);
       } else {
-         Dropdown::showFromArray('techs', $techs, array('multiple' => true));
+         Dropdown::showFromArray('techs', $techs, ['multiple' => true]);
       }
 
       echo "</td></tr>";
@@ -106,19 +106,19 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       Html::showDateField("date2", ['value' => $_POST["date2"]]);
       echo "</td></tr>";
       //stats Users
-      $dbu   = new DbUtils();
-      $user  = new User();
-      $condition  = ['is_deleted' => 0,
-                     'entities_id' => $_SESSION["glpiactiveentities"]];
-      $users = $user->find($condition);
-      $techs = array();
+      $dbu       = new DbUtils();
+      $user      = new User();
+      $condition = ['is_deleted'  => 0,
+                    'entities_id' => $_SESSION["glpiactiveentities"]];
+      $users     = $user->find($condition);
+      $techs     = [];
       foreach ($users as $data) {
          $techs[$data['id']] = $dbu->getUserName($data['id']);
       }
 
       echo "<tr><td class='tab_bg_2 center'>";
       echo __('Technician') . " :</td><td class='tab_bg_2 center' colspan='3' >";
-      Dropdown::showFromArray('techs', $techs, array('multiple' => true));
+      Dropdown::showFromArray('techs', $techs, ['multiple' => true]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
 

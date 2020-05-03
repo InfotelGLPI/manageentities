@@ -77,7 +77,7 @@ function GetInfoFromTrueType($file, $embed, $subset, $map)
 			Error('Font license does not allow embedding');
 		if($subset)
 		{
-			$chars = array();
+			$chars = [];
 			foreach($map as $v)
 			{
 				if($v['name']!='.notdef')
@@ -297,7 +297,7 @@ function MakeFontEncoding($map)
 function MakeUnicodeArray($map)
 {
 	// Build mapping to Unicode values
-	$ranges = array();
+	$ranges = [];
 	foreach($map as $c=>$v)
 	{
 		$uv = $v['uv'];

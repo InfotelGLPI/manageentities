@@ -47,7 +47,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    function rawSearchOptions() {
@@ -166,9 +166,9 @@ class PluginManageentitiesContractDay extends CommonDBTM {
     * @param $values
     * @param $options   array
     **/
-   static function getSpecificValueToDisplay($field, $values, array $options = array()) {
+   static function getSpecificValueToDisplay($field, $values, $options = []) {
       if (!is_array($values)) {
-         $values = array($field => $values);
+         $values = [$field => $values];
       }
       switch ($field) {
          case 'id':
@@ -195,9 +195,9 @@ class PluginManageentitiesContractDay extends CommonDBTM {
    /**
     * Display tab for each contractDay
     * */
-   function defineTabs($options = array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('PluginManageentitiesCriDetail', $ong, $options);
       $this->addStandardTab('PluginManageentitiesCriPrice', $ong, $options);
@@ -210,13 +210,13 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
    /**
     *
-    * @global type $DB
-    *
     * @param type  $plugin_manageentities_critypes_id
     * @param type  $contracts_id
     * @param type  $entities_id
     *
     * @return boolean
+    * @global type $DB
+    *
     */
    function getFromDBbyTypeAndContract($plugin_manageentities_critypes_id, $contracts_id, $entities_id) {
       global $DB;
@@ -249,17 +249,17 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
       if ($this->getFromDBbyTypeAndContract($values["plugin_manageentities_critypes_id"], $values["contracts_id"], $values["entities_id"])) {
 
-         $this->update(array(
+         $this->update([
                           'id'          => $this->fields['id'],
                           'nbday'       => $values["nbday"],
-                          'entities_id' => $values["entities_id"]));
+                          'entities_id' => $values["entities_id"]]);
       } else {
 
-         $this->add(array(
+         $this->add([
                        'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
                        'contracts_id'                      => $values["contracts_id"],
                        'nbday'                             => $values["nbday"],
-                       'entities_id'                       => $values["entities_id"]));
+                       'entities_id'                       => $values["entities_id"]]);
       }
    }
 
@@ -273,7 +273,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
     *
     * @return boolean item found
     * */
-   function showForm($ID, $options = array("")) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       //validation des droits
@@ -296,7 +296,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
       } else {
          // Create item
-         $input = array('contract_id' => $contract_id);
+         $input = ['contract_id' => $contract_id];
          $this->check(-1, UPDATE, $input);
          $contract->getFromDB($contract_id);
          $options['entities_id'] = $contract->fields['entities_id'];
@@ -348,7 +348,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . PluginManageentitiesContractDay::getTypeName(1) . "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
+      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
       echo "</td>";
 
       if (($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) || ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $pluginContract['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
@@ -383,8 +383,8 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo "&nbsp;" . $unit;
       echo "</td>";
       echo "<td>" . __('State of contract', 'manageentities') . "<span class='red'>&nbsp;*&nbsp;</span></td><td>";
-      Dropdown::show('PluginManageentitiesContractState', array('value'  => $this->fields['plugin_manageentities_contractstates_id'],
-                                                                'entity' => $this->fields["entities_id"]));
+      Dropdown::show('PluginManageentitiesContractState', ['value'  => $this->fields['plugin_manageentities_contractstates_id'],
+                                                           'entity' => $this->fields["entities_id"]]);
       echo "</td></tr>";
 
       echo "<input type='hidden' name='contracts_id' value='" . $contract_id . "'>";
@@ -432,8 +432,8 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
          //         echo "<td>".__('Intervention type by default', 'manageentities')."</td>";
          //         echo "<td>";
-         //         Dropdown::show('PluginManageentitiesCriType', array('value' => $this->fields['plugin_manageentities_critypes_id'],
-         //             'entity' => $this->fields["entities_id"]));
+         //         Dropdown::show('PluginManageentitiesCriType', ['value' => $this->fields['plugin_manageentities_critypes_id'],
+         //             'entity' => $this->fields["entities_id"]]);
          //         echo "</td>";
 
          echo "<td>" . __('Guaranteed package', 'manageentities') . "</td>";
@@ -480,7 +480,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
     * @param Contract $contract
     * @param type     $options
     */
-   static function addNewContractDay(Contract $contract, $options = array()) {
+   static function addNewContractDay(Contract $contract, $options = []) {
       $contract_id = $contract->fields['id'];
       $canEdit     = $contract->can($contract_id, UPDATE);
       $addButton   = "";
@@ -525,7 +525,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       }
 
       if ($canCreate) {
-         self::addNewContractDay($contract, array('title' => __('Add a contract day', 'manageentities')));
+         self::addNewContractDay($contract, ['title' => __('Add a contract day', 'manageentities')]);
       }
 
       $restrict = ["`entities_id`"  => $contract->fields['entities_id'],
@@ -540,7 +540,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
          echo "<div class='center'>";
          if ($canEdit) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = array('item' => __CLASS__, 'container' => 'mass' . __CLASS__ . $rand);
+            $massiveactionparams = ['item' => __CLASS__, 'container' => 'mass' . __CLASS__ . $rand];
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
@@ -728,11 +728,11 @@ class PluginManageentitiesContractDay extends CommonDBTM {
    /**
     * checkPeriod : Check if a period allready exists, to avoid 2 same periods on a contract
     *
-    * @global type $DB
-    *
     * @param type  $input
     *
     * @return boolean
+    * @global type $DB
+    *
     */
    public function checkPeriod($input) {
       global $DB;
@@ -748,7 +748,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
          $contract = new Contract();
          $contract->getFromDB($input['contracts_id']);
 
-         $output = array();
+         $output = [];
 
          $queryCheck = "SELECT `glpi_plugin_manageentities_contractdays`.`begin_date`,`glpi_plugin_manageentities_contractdays`.`end_date`
                            FROM `glpi_plugin_manageentities_contractdays`
@@ -788,13 +788,13 @@ class PluginManageentitiesContractDay extends CommonDBTM {
     * @return boolean
     */
    function checkMandatoryFields($input) {
-      $msg     = array();
+      $msg     = [];
       $checkKo = false;
 
       $config = PluginManageentitiesConfig::getInstance();
 
-      $mandatory_fields = array('plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getTypeName(),
-                                'begin_date'                              => __('Begin date'));
+      $mandatory_fields = ['plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getTypeName(),
+                           'begin_date'                              => __('Begin date')];
 
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
          $mandatory_fields['contract_type'] = __('Type of service contract', 'manageentities');

@@ -40,7 +40,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    function addContactByDefault($users_id, $entities_id) {
@@ -109,7 +109,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
                Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                                     'deletebusiness',
                                     _x('button', 'Delete permanently'),
-                                    array('id' => $ID),
+                                    ['id' => $ID],
                                     "../../../pics/delete.png");
                echo "</td>";
             }
@@ -120,7 +120,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
          if ($this->canCreate() && sizeof($instID) == 1) {
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
-            $rand = User::dropdown(array('right' => 'interface'));
+            $rand = User::dropdown(['right' => 'interface']);
             echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center'><input type='submit' name='addbusiness' value=\"" . _x('button', 'Add') . "\" class='submit'></td>";
             echo "</tr>";
@@ -136,7 +136,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'><th colspan='2'>" . _n('Associated commercial', 'Associated business', 2, 'manageentities') . "</tr><tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
-            $rand = User::dropdown(array('right' => 'interface'));
+            $rand = User::dropdown(['right' => 'interface']);
             echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center tab_bg_2'>";
             echo "<input type='submit' name='addbusiness' value=\"" . _x('button', 'Add') . "\" class='submit'>";

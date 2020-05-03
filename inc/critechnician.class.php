@@ -57,7 +57,7 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
       global $DB;
 
       $dbu    = new DbUtils();
-      $techs  = array();
+      $techs  = [];
       $query  = "SELECT `users_id_tech` as users_id,
                        `glpi_users`.`name`,
                        `glpi_users`.`realname`,

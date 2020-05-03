@@ -45,7 +45,7 @@ function update202to203() {
 
    // UPDATE glpi_plugin_manageentities_criprices
 
-   $check = array();
+   $check = [];
 
    // Default Cri type
    $query = "SELECT DISTINCT `glpi_plugin_manageentities_criprices`.`id` as criprices_id, 
@@ -74,7 +74,7 @@ function update202to203() {
       }
    }
 
-   $check2 = array();
+   $check2 = [];
 
    // Cridetail cri type
    $query = "SELECT DISTINCT `glpi_plugin_manageentities_criprices`.`id` as criprices_id, 

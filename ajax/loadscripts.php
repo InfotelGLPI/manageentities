@@ -43,7 +43,7 @@ if (isset($_POST['action'])) {
              && Session::getCurrentInterface() == "central"
              && Session::haveRight("plugin_manageentities", READ)) {
 
-            echo "<script type='text/javascript'>showCloneTicketTask(" . json_encode(array('root_doc' => $CFG_GLPI['root_doc'])) . ");</script>";
+            echo "<script type='text/javascript'>showCloneTicketTask(" . json_encode(['root_doc' => $CFG_GLPI['root_doc']]) . ");</script>";
          }
          break;
    }

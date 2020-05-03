@@ -71,10 +71,10 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "<tr class='tab_bg_2'><td class='right'>";
       echo __('Entity') . " :</td><td>";
 
-      $entity = new Entity();
-      $data   = array(Dropdown::EMPTY_VALUE);
-      $condition  = ['id' => $_SESSION["glpiactiveentities"]];
-      $data   = $entity->find($condition);
+      $entity    = new Entity();
+      $data      = [Dropdown::EMPTY_VALUE];
+      $condition = ['id' => $_SESSION["glpiactiveentities"]];
+      $data      = $entity->find($condition);
 
 
       foreach ($data as $val) {
@@ -82,10 +82,10 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       }
 
       Dropdown::showFromArray('entities_id', $elements,
-                              array('values' => isset($_POST['entities_id']) ? $_POST['entities_id'] : array(), 'multiple' => true, 'entity' => $_SESSION['glpiactiveentities']));
+                              ['values' => isset($_POST['entities_id']) ? $_POST['entities_id'] : [], 'multiple' => true, 'entity' => $_SESSION['glpiactiveentities']]);
 
       echo "<td class='right'>" . __('Task category') . " :</td><td>";
-      TaskCategory::dropdown(array('name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0));
+      TaskCategory::dropdown(['name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
       echo "</table>";
@@ -107,20 +107,20 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "<tr class='tab_bg_2'><td class='right'>";
       echo __('Entity') . " :</td><td>";
 
-      $entity = new Entity();
-      $data   = array(Dropdown::EMPTY_VALUE);
-      $condition  = ['id' => $_SESSION["glpiactiveentities"]];
-      $data   = $entity->find($condition);
+      $entity    = new Entity();
+      $data      = [Dropdown::EMPTY_VALUE];
+      $condition = ['id' => $_SESSION["glpiactiveentities"]];
+      $data      = $entity->find($condition);
 
 
       foreach ($data as $val) {
          $elements[$val['entities_id']] = Dropdown::getDropdownName("glpi_entities", $val['entities_id']);
       }
       Dropdown::showFromArray('entities_id', $elements,
-                              array('multiple' => true, 'entity' => $_SESSION['glpiactiveentities']));
+                              ['multiple' => true, 'entity' => $_SESSION['glpiactiveentities']]);
 
       echo "<td class='right'>" . __('Task category') . " :</td><td>";
-      TaskCategory::dropdown(array('name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0));
+      TaskCategory::dropdown(['name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
       echo "</table>";

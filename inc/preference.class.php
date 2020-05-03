@@ -110,16 +110,20 @@ class PluginManageentitiesPreference extends CommonDBTM {
 
       $contractstate  = new PluginManageentitiesContractState();
       $contractstates = $contractstate->find();
-      $states         = array();
+      $states         = [];
       foreach ($contractstates as $key => $val) {
          $states[$key] = $val['name'];
       }
       echo "<tr class='tab_bg_1 center'><td>" . __('Status list contract for the general monitoring', 'manageentities') . "</td>";
       echo "<td>";
       if ($self->fields["contract_states"] == NULL) {
-         Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'value' => $self->fields["contract_states"]));
+         Dropdown::showFromArray("contract_states", $states, ['multiple' => true,
+                                                              'width'    => 200,
+                                                              'value'    => $self->fields["contract_states"]]);
       } else {
-         Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => json_decode($self->fields["contract_states"], true)));
+         Dropdown::showFromArray("contract_states", $states, ['multiple' => true,
+                                                              'width'    => 200,
+                                                              'values'   => json_decode($self->fields["contract_states"], true)]);
       }
       echo "</td></tr>";
 
@@ -130,16 +134,20 @@ class PluginManageentitiesPreference extends CommonDBTM {
                GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
 
       $result = $DB->query($query);
-      $users  = array();
+      $users  = [];
       while ($data = $DB->fetch_assoc($result)) {
          $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
       }
       echo "<tr class='tab_bg_1 center'><td>" . __('Default list of Business for the general monitoring', 'manageentities') . "</td>";
       echo "<td>";
       if ($self->fields["business_id"] == NULL) {
-         Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'value' => $self->fields["business_id"]));
+         Dropdown::showFromArray("business_id", $users, ['multiple' => true,
+                                                         'width'    => 200,
+                                                         'value'    => $self->fields["business_id"]]);
       } else {
-         Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'values' => json_decode($self->fields["business_id"], true)));
+         Dropdown::showFromArray("business_id", $users, ['multiple' => true,
+                                                         'width'    => 200,
+                                                         'values'   => json_decode($self->fields["business_id"], true)]);
       }
       echo "</td></tr>";
       echo "<tr class='tab_bg_1 center'><td>" . __('Default list of companies for the general monitoring', 'manageentities') . "</td>";
@@ -147,14 +155,18 @@ class PluginManageentitiesPreference extends CommonDBTM {
       $plugin_company = new PluginManageentitiesCompany();
       $result         = $plugin_company->find();
 
-      $company = array();
+      $company = [];
       foreach ($result as $data) {
          $company[$data['id']] = $data['name'];
       }
       if ($self->fields['companies_id'] == NULL) {
-         Dropdown::showFromArray("companies_id", $company, array('multiple' => true, 'width' => 200, 'value' => $self->fields["companies_id"]));
+         Dropdown::showFromArray("companies_id", $company, ['multiple' => true,
+                                                            'width'    => 200,
+                                                            'value'    => $self->fields["companies_id"]]);
       } else {
-         Dropdown::showFromArray("companies_id", $company, array('multiple' => true, 'width' => 200, 'values' => json_decode($self->fields["companies_id"], true)));
+         Dropdown::showFromArray("companies_id", $company, ['multiple' => true,
+                                                            'width'    => 200,
+                                                            'values'   => json_decode($self->fields["companies_id"], true)]);
       }
       echo "</td></tr>";
 

@@ -194,7 +194,7 @@ abstract class CommonGLPIModel {
     *    identified by the id $opt
     */
    public function addError($id, $type, $val, $opt = null) {
-      $this->errors = array();
+      $this->errors = [];
       if ($opt == null) {
          $this->errors[$id][$type] = $val;
       } else {

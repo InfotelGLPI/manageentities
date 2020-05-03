@@ -67,7 +67,7 @@ class PluginManageentitiesCriPDF extends FPDF {
 
    /* Constantes pour les régles de calcul d'un arrondi de temps avec définition d'un seuil supplémentaire. */
    var $tranches_seuil   = 0.001;
-   var $tranches_arrondi = array(0, 0.25, 0.5, 0.75, 1);
+   var $tranches_arrondi = [0, 0.25, 0.5, 0.75, 1];
 
    /* ************************************* */
    /* Methodes génériques de mise en forme. */
@@ -530,7 +530,7 @@ class PluginManageentitiesCriPDF extends FPDF {
       $partie_entiere = floor($a_arrondir);
       $reste          = $a_arrondir - $partie_entiere + 10; // Le + 10 permet de pallier é un probléme de comparaison (??) par la suite.
       /* Initialisation des tranches majorées du seuil supplémentaire. */
-      $tranches_majorees = array();
+      $tranches_majorees = [];
       for ($i = 0; $i < count($this->tranches_arrondi); $i++) {
          // Le + 10 qui suit permet de pallier é un probléme de comparaison (??) par la suite.
          $tranches_majorees[] = $this->tranches_arrondi[$i] + $this->tranches_seuil + 10;
@@ -584,7 +584,7 @@ class PluginManageentitiesCriPDF extends FPDF {
       // Entéte du tableau des temps passés.
       $this->DetailTravauxEntete();
 
-      $decoupage1 = array();
+      $decoupage1 = [];
       $tok        = strtok($this->description_cri, "\n");
       while ($tok !== false) {
          $decoupage1[] = $tok;
@@ -669,7 +669,7 @@ class PluginManageentitiesCriPDF extends FPDF {
       // Entéte du tableau des temps passés.
       $this->DetailCommentaires();
 
-      $decoupage1 = array();
+      $decoupage1 = [];
       $tok        = strtok($comment, "\n");
       while ($tok !== false) {
          $decoupage1[] = $tok;
@@ -1002,7 +1002,7 @@ class PluginManageentitiesCriPDF extends FPDF {
          $W = 0;
          $H = 0;
       }
-      return array($W, $H);
+      return [$W, $H];
    }
 
 }

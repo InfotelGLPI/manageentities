@@ -46,14 +46,14 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
          if (!empty($tickettask->fields['begin'])) {
             $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
          }
-         $randDate = Html::showDateTimeField('new_date', array('value'   => $value,
+         $randDate      = Html::showDateTimeField('new_date', ['value'   => $value,
                                                                'rand'    => $rand,
                                                                'mintime' => $CFG_GLPI["planning_begin"],
-                                                               'maxtime' => $CFG_GLPI["planning_end"]));
-         $params        = json_encode(array('root_doc'       => $CFG_GLPI['root_doc'],
-                                            'new_date_id'    => 'showdate' . $randDate,
-                                            'tickets_id'     => $_POST['tickets_id'],
-                                            'tickettasks_id' => $_POST['tickettasks_id']));
+                                                               'maxtime' => $CFG_GLPI["planning_end"]]);
+         $params        = json_encode(['root_doc'       => $CFG_GLPI['root_doc'],
+                                       'new_date_id'    => 'showdate' . $randDate,
+                                       'tickets_id'     => $_POST['tickets_id'],
+                                       'tickettasks_id' => $_POST['tickettasks_id']]);
          $tickettask_id = $_POST['tickettasks_id'];
          echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);'>";
          echo "<i class='far fa-clone fa-fw pointer'
@@ -75,12 +75,12 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
          unset($tickettask->fields['id']);
          $tickettask->fields['date']    = date("Y-m-d H:i:s ", time());
          $tickettask->fields['content'] = addslashes($tickettask->fields['content']);
-         $tickettask->fields['plan']    = array('begin'     => date("Y-m-d H:i:s ", strtotime($tickettask->fields['begin'])),
-                                                '_duration' => $tickettask->fields['actiontime'],
-                                                'users_id'  => $tickettask->fields['users_id_tech']);
+         $tickettask->fields['plan']    = ['begin'     => date("Y-m-d H:i:s ", strtotime($tickettask->fields['begin'])),
+                                           '_duration' => $tickettask->fields['actiontime'],
+                                           'users_id'  => $tickettask->fields['users_id_tech']];
 
          if ($id = $tickettask->add($tickettask->fields)) {
-            echo json_encode(array('tickettasks_id' => $id));
+            echo json_encode(['tickettasks_id' => $id]);
          }
          break;
    }

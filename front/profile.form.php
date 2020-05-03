@@ -27,11 +27,11 @@
 // */
 
 define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
+include(GLPI_ROOT . "/inc/includes.php");
 
-Session::checkRight("profile","r");
+Session::checkRight("profile", "r");
 
-$prof=new PluginManageentitiesProfile();
+$prof = new PluginManageentitiesProfile();
 
 //Save profile
 if (isset ($_POST['update'])) {

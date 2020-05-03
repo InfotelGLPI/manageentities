@@ -75,7 +75,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "<input type='radio' id='radio_group' name='usertype' value='group' " . ($_POST["usertype"] == "group" ? "checked" : "") . ">Tous";
       echo "<hr>";
       echo "<input type='radio' id='radio_alluser' name='usertype' value='user' " . ($_POST["usertype"] == "user" ? "checked" : "") . ">";
-      User::dropdown(array('name' => "tech_num", 'value' => $owner, 'entity' => $_SESSION["glpiactive_entity"], 'right' => 'all'));
+      User::dropdown(['name' => "tech_num", 'value' => $owner, 'entity' => $_SESSION["glpiactive_entity"], 'right' => 'all']);
       echo "</td></tr>";
       echo "</table>";
       Html::closeForm();
@@ -98,7 +98,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "<input type='radio' id='radio_group' name='usertype' value='group' " . ($_GET["usertype"] == "group" ? "checked" : "") . ">" . __('All');
       echo "<hr>";
       echo "<input type='radio' id='radio_alluser' name='usertype' value='user' " . ($_GET["usertype"] == "user" ? "checked" : "") . ">";
-      User::dropdown(array('name' => "tech_num", 'value' => $owner, 'entity' => $_SESSION["glpiactive_entity"], 'right' => 'all'));
+      User::dropdown(['name' => "tech_num", 'value' => $owner, 'entity' => $_SESSION["glpiactive_entity"], 'right' => 'all']);
 
       echo "</td></tr>";
       echo "</table>";

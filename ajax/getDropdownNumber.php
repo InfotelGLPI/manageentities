@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
-$used = array();
+$used = [];
 
 if (isset($_POST['used'])) {
    $used = $_POST['used'];
@@ -60,10 +60,10 @@ if (!isset($_POST['page'])) {
 if (isset($_POST['toadd'])) {
    $toadd = $_POST['toadd'];
 } else {
-   $toadd = array();
+   $toadd = [];
 }
 
-$datas = array();
+$datas = [];
 // Count real items returned
 $count = 0;
 
@@ -71,14 +71,14 @@ if ($_POST['page'] == 1) {
    if (count($toadd)) {
       foreach ($toadd as $key => $val) {
          if (($one_item < 0) || ($one_item == $key)) {
-            array_push($datas, array('id'   => $key,
-                                     'text' => strval(stripslashes($val))));
+            array_push($datas, ['id'   => $key,
+                                'text' => strval(stripslashes($val))]);
          }
       }
    }
 }
 
-$values = array();
+$values = [];
 if (!empty($_POST['searchText'])) {
    for ($i = $_POST['min']; $i <= $_POST['max']; $i += $_POST['step']) {
       if (strstr($i, $_POST['searchText'])) {
@@ -98,8 +98,8 @@ if ($one_item < 0 && count($values)) {
       if (isset($_POST['unit'])) {
          $txt = Dropdown::getValueWithUnit($i, $_POST['unit']);
       }
-      array_push($datas, array('id'   => $i,
-                               'text' => strval($txt)));
+      array_push($datas, ['id'   => $i,
+                          'text' => strval($txt)]);
       $count++;
    }
 
@@ -108,8 +108,8 @@ if ($one_item < 0 && count($values)) {
       if (isset($_POST['unit'])) {
          $txt = Dropdown::getValueWithUnit($one_item, $_POST['unit']);
       }
-      array_push($datas, array('id'   => $one_item,
-                               'text' => strval(stripslashes($txt))));
+      array_push($datas, ['id'   => $one_item,
+                          'text' => strval(stripslashes($txt))]);
       $count++;
    }
 }

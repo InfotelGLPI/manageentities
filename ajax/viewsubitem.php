@@ -46,7 +46,7 @@ if (($item = $dbu->getItemForItemtype($_POST['type']))
    if (isset($_POST[$parent->getForeignKeyField()])
        && isset($_POST["id"])
        && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
-      $item->showForm($_POST["id"], array('parent' => $parent));
+      $item->showForm($_POST["id"], ['parent' => $parent]);
 
    } else {
       echo __('Access denied');

@@ -72,7 +72,7 @@ if (isset($_POST["addcridetail"])) {
    Html::back();
 
 } else {
-   $PluginManageentitiesCri->showForm($_GET["job"], array('action' => $_GET["action"]));
+   $PluginManageentitiesCri->showForm($_GET["job"], ['action' => $_GET["action"]]);
 }
 
 Html::popFooter();

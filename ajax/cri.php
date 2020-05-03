@@ -37,9 +37,9 @@ switch ($_POST['action']) {
       $PluginManageentitiesCri = new PluginManageentitiesCri();
       $params                  = $_POST["params"];
 
-      $PluginManageentitiesCri->showForm($params["job"], array('action'   => $params["pdf_action"],
-                                                               'modal'    => $_POST["modal"],
-                                                               'toupdate' => $params["toupdate"]));
+      $PluginManageentitiesCri->showForm($params["job"], ['action'   => $params["pdf_action"],
+                                                          'modal'    => $_POST["modal"],
+                                                          'toupdate' => $params["toupdate"]]);
       break;
 
    case 'addCri':
@@ -50,18 +50,18 @@ switch ($_POST['action']) {
          $input->enregistrement = false;
          if (isset($input->REPORT_ACTIVITE) && $input->REPORT_ACTIVITE) {
             $PluginManageentitiesCri->generatePdf($input,
-                                                  array('modal'    => $_POST["modal"],
-                                                        'toupdate' => $params["toupdate"]));
+                                                  ['modal'    => $_POST["modal"],
+                                                   'toupdate' => $params["toupdate"]]);
          } elseif (isset($input->WITHOUTCONTRACT) && $input->WITHOUTCONTRACT) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
             $input->REPORT_ACTIVITE = $ticket->fields['name'];
             $PluginManageentitiesCri->generatePdf($input,
-                                                  array('modal'    => $_POST["modal"],
-                                                        'toupdate' => $params["toupdate"]));
+                                                  ['modal'    => $_POST["modal"],
+                                                   'toupdate' => $params["toupdate"]]);
          } else {
-            echo json_encode(array('success' => false,
-                                   'message' => __('Thanks to select a intervention type', 'manageentities')));
+            echo json_encode(['success' => false,
+                              'message' => __('Thanks to select a intervention type', 'manageentities')]);
          }
       }
       break;
@@ -81,19 +81,19 @@ switch ($_POST['action']) {
             $input->documents_id = $data_criDetail['documents_id'];
             // Generate a new cri
             $PluginManageentitiesCri->generatePdf($input,
-                                                  array('modal'    => $_POST["modal"],
-                                                        'toupdate' => $params["toupdate"]));
+                                                  ['modal'    => $_POST["modal"],
+                                                   'toupdate' => $params["toupdate"]]);
 
          } elseif (isset($input->WITHOUTCONTRACT) && $input->WITHOUTCONTRACT) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
             $input->REPORT_ACTIVITE = $ticket->fields['name'];
             $PluginManageentitiesCri->generatePdf($input,
-                                                  array('modal'    => $_POST["modal"],
-                                                        'toupdate' => $params["toupdate"]));
+                                                  ['modal'    => $_POST["modal"],
+                                                   'toupdate' => $params["toupdate"]]);
          } else {
-            echo json_encode(array('success' => false,
-                                   'message' => __('Thanks to select a intervention type', 'manageentities')));
+            echo json_encode(['success' => false,
+                              'message' => __('Thanks to select a intervention type', 'manageentities')]);
          }
       }
       break;
@@ -106,18 +106,18 @@ switch ($_POST['action']) {
          $input->enregistrement = true;
          if ($input->REPORT_ACTIVITE) {
             $PluginManageentitiesCri->generatePdf($input,
-                                                  array('modal'    => $_POST["modal"],
-                                                        'toupdate' => $params["toupdate"]));
+                                                  ['modal'    => $_POST["modal"],
+                                                   'toupdate' => $params["toupdate"]]);
          } elseif (isset($input->WITHOUTCONTRACT) && $input->WITHOUTCONTRACT) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
             $input->REPORT_ACTIVITE = $ticket->fields['name'];
             $PluginManageentitiesCri->generatePdf($input,
-                                                  array('modal'    => $_POST["modal"],
-                                                        'toupdate' => $params["toupdate"]));
+                                                  ['modal'    => $_POST["modal"],
+                                                   'toupdate' => $params["toupdate"]]);
          } else {
-            echo json_encode(array('success' => false,
-                                   'message' => __('Thanks to select a intervention type', 'manageentities')));
+            echo json_encode(['success' => false,
+                              'message' => __('Thanks to select a intervention type', 'manageentities')]);
          }
       }
       break;
@@ -128,11 +128,11 @@ switch ($_POST['action']) {
          $input                             = json_decode(stripslashes($_POST["formInput"]));
          $params                            = $_POST["params"];
          $PluginManageentitiesCriTechnician = new PluginManageentitiesCriTechnician();
-         $PluginManageentitiesCriTechnician->deleteByCriteria(array('users_id' => $params['tech_id']));
+         $PluginManageentitiesCriTechnician->deleteByCriteria(['users_id' => $params['tech_id']]);
 
-         $PluginManageentitiesCri->showForm($params["job"], array('action'   => $params["pdf_action"],
-                                                                  'modal'    => $_POST["modal"],
-                                                                  'toupdate' => $params["toupdate"]));
+         $PluginManageentitiesCri->showForm($params["job"], ['action'   => $params["pdf_action"],
+                                                             'modal'    => $_POST["modal"],
+                                                             'toupdate' => $params["toupdate"]]);
       }
       break;
 
@@ -147,9 +147,9 @@ switch ($_POST['action']) {
          $PluginManageentitiesCriTechnician = new PluginManageentitiesCriTechnician();
          $PluginManageentitiesCriTechnician->add($toadd);
 
-         $PluginManageentitiesCri->showForm($params["job"], array('action'   => $params["pdf_action"],
-                                                                  'modal'    => $_POST["modal"],
-                                                                  'toupdate' => $params["toupdate"]));
+         $PluginManageentitiesCri->showForm($params["job"], ['action'   => $params["pdf_action"],
+                                                             'modal'    => $_POST["modal"],
+                                                             'toupdate' => $params["toupdate"]]);
       }
       break;
 }

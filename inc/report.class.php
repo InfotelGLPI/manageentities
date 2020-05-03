@@ -36,20 +36,22 @@ class PluginManageentitiesReport extends CommonDBTM {
 
    /**
     * Report on the movement of technicians
-    * @global type $DB
-    * @global type $CFG_GLPI
     *
     * @param type  $entities_id
     * @param type  $category_id
     * @param type  $date1
     * @param type  $date2
+    *
+    * @global type $DB
+    * @global type $CFG_GLPI
+    *
     */
    function showMovingReports($entities_id, $category_id, $date1, $date2) {
       global $DB, $CFG_GLPI;
 
       $config = PluginManageentitiesConfig::getInstance();
 
-      $resultat = array();
+      $resultat = [];
       $dbu      = new DbUtils();
 
       foreach ($entities_id as $entity_id) {
@@ -75,7 +77,7 @@ class PluginManageentitiesReport extends CommonDBTM {
          $result = $DB->query($query);
 
          $total_depl  = 0;
-         $tickets_ids = array();
+         $tickets_ids = [];
          while ($data = $DB->fetch_array($result)) {
             //time moving
             $total_depl                       += ($data['duration_moving'] * $data['number_moving']) / HOUR_TIMESTAMP;
@@ -133,12 +135,14 @@ class PluginManageentitiesReport extends CommonDBTM {
 
    /**
     * Report concerning the occupation of the technicians
-    * @global type $DB
-    * @global type $CFG_GLPI
     *
     * @param type  $techs
     * @param type  $date1
     * @param type  $date2
+    *
+    * @global type $CFG_GLPI
+    *
+    * @global type $DB
     */
    function showOccupationReports($techs, $date1, $date2) {
       global $DB, $CFG_GLPI;
@@ -146,7 +150,7 @@ class PluginManageentitiesReport extends CommonDBTM {
       $days = self::getDatesBetween2Dates($date1, $date2);
       $dbu  = new DbUtils();
 
-      $resultat = array();
+      $resultat = [];
       foreach ($days as $key => $day) {
          $total_actiontime = 0;
 
@@ -168,7 +172,7 @@ class PluginManageentitiesReport extends CommonDBTM {
          }
 
          if ($hour != 0) {
-            $resultat[$day['date']] = array();
+            $resultat[$day['date']] = [];
             foreach ($techs as $tech) {
                $actiontime = 0;
                $tickettask = new TicketTask();
@@ -258,7 +262,7 @@ class PluginManageentitiesReport extends CommonDBTM {
       $startTime = strtotime($startTime);
       $endTime   = strtotime($endTime);
       $numDays   = round(($endTime - $startTime) / $day) + 1;
-      $days      = array();
+      $days      = [];
 
 
       for ($i = 0; $i < $numDays; $i++) {

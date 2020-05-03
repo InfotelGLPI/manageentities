@@ -300,7 +300,7 @@ function manageentities_loadCriForm(action, modal, params) {
 }
 
 function getManageentitiesFormData(form) {
-    var unindexed_array = form.serializeArray();
+    var unindexed_array = form.serialize[];
     var indexed_array = {};
 
     $.map(unindexed_array, function (n, i) {

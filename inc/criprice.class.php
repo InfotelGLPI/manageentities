@@ -54,7 +54,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::HaveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
 
@@ -119,7 +119,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
     * */
-   function showForm($ID, $options = array()) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI;
 
       if ($ID > 0) {
@@ -134,7 +134,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
 
       $data = $this->getItems($options['parent']->getField('id'));
 
-      $used_critypes = array();
+      $used_critypes = [];
       if (!empty($data)) {
          foreach ($data as $field) {
             $used_critypes[] = $field['plugin_manageentities_critypes_id'];
@@ -148,18 +148,18 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       echo PluginManageentitiesCriType::getTypeName() . '&nbsp;';
       echo "</td>";
       echo "<td>";
-      $rand = Dropdown::show('PluginManageentitiesCriType', array('name'      => 'plugin_manageentities_critypes_id',
-                                                                  'value'     => $this->fields['plugin_manageentities_critypes_id'],
-                                                                  'entity'    => $options['parent']->getField('entities_id'),
-                                                                  'used'      => $used_critypes,
-                                                                  'on_change' => 'manageentities_loadSelectPrice();'));
+      $rand = Dropdown::show('PluginManageentitiesCriType', ['name'      => 'plugin_manageentities_critypes_id',
+                                                             'value'     => $this->fields['plugin_manageentities_critypes_id'],
+                                                             'entity'    => $options['parent']->getField('entities_id'),
+                                                             'used'      => $used_critypes,
+                                                             'on_change' => 'manageentities_loadSelectPrice();']);
       echo "<script type='text/javascript'>";
       echo "function manageentities_loadSelectPrice(){";
       Ajax::updateItemJsCode('manageentities_loadPrice',
                              $CFG_GLPI['root_doc'] . "/plugins/manageentities/ajax/criprice.php",
-                             array('action'      => 'loadPrice',
-                                   'critypes_id' => '__VALUE__',
-                                   'entities_id' => $options['parent']->getField('entities_id')),
+                             ['action'      => 'loadPrice',
+                              'critypes_id' => '__VALUE__',
+                              'entities_id' => $options['parent']->getField('entities_id')],
                              'dropdown_plugin_manageentities_critypes_id' . $rand);
       echo "}";
       echo "</script>";
@@ -216,7 +216,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
     * @return boolean
     */
    function showSelectPriceDropdown($critypes_id, $entities_id) {
-      $data = array(Dropdown::EMPTY_VALUE);
+      $data = [Dropdown::EMPTY_VALUE];
       if (!empty($critypes_id)) {
          $dataForEntity = $this->getItems(0, 0, "`" . $this->getTable() . "`.`plugin_manageentities_critypes_id`=" . $critypes_id . " AND `" . $this->getTable() . "`.`entities_id`=" . $entities_id);
          if (!empty($dataForEntity)) {
@@ -225,7 +225,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
             }
          }
       }
-      Dropdown::showFromArray('select_critype', $data, array('on_change' => "manageentities_loadPrice(this.value)"));
+      Dropdown::showFromArray('select_critype', $data, ['on_change' => "manageentities_loadPrice(this.value)"]);
    }
 
    /**
@@ -298,12 +298,13 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
    /**
     * List items for contract days
     *
-    * @global type $CFG_GLPI
-    *
     * @param type  $ID
     * @param type  $data
     * @param type  $canedit
     * @param type  $rand
+    *
+    * @global type $CFG_GLPI
+    *
     */
    public function listItems($ID, $data, $canedit, $rand) {
       global $CFG_GLPI;
@@ -313,7 +314,9 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       echo "<div class='center'>";
       if ($canedit) {
          Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-         $massiveactionparams = array('item' => __CLASS__, 'container' => 'mass' . __CLASS__ . $rand);
+         $massiveactionparams = ['item'      => __CLASS__,
+                                 'container' =>
+                                    'mass' . __CLASS__ . $rand];
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -364,7 +367,9 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       }
 
       if ($canedit) {
-         $massiveactionparams = array('item' => __CLASS__, 'ontop' => false, 'container' => 'mass' . __CLASS__ . $rand);
+         $massiveactionparams = ['item'      => __CLASS__,
+                                 'ontop'     => false,
+                                 'container' => 'mass' . __CLASS__ . $rand];
          Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
@@ -374,18 +379,18 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
    /**
     * get items
     *
-    * @global type  $DB
-    *
     * @param int    $contractdays_id
     * @param int    $cri_types_id
     * @param string $condition
     *
     * @return type
+    * @global type  $DB
+    *
     */
    function getItems($contractdays_id = 0, $cri_types_id = 0, $condition = '') {
       global $DB;
 
-      $output = array();
+      $output = [];
 
       $query = "SELECT `" . $this->getTable() . "`.`id`,
                        `" . $this->getTable() . "`.`price`,
@@ -431,12 +436,12 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
    /**
     * Get price data for cri types
     *
-    * @global type $DB
-    *
     * @param type  $plugin_manageentities_critypes_id
     * @param type  $entities_id
     *
     * @return boolean
+    * @global type $DB
+    *
     */
    function getFromDBbyType($plugin_manageentities_critypes_id, $entities_id) {
       global $DB;
@@ -468,25 +473,23 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
    function addCriPrice($values) {
 
       if ($this->getFromDBbyType($values["plugin_manageentities_critypes_id"], $values["entities_id"])) {
-         $this->update(array(
-                          'id'    => $this->fields['id'],
-                          'price' => $values["price"]));
+         $this->update(['id'    => $this->fields['id'],
+                        'price' => $values["price"]]);
 
       } else {
-         $this->add(array(
-                       'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
-                       'price'                             => $values["price"]));
+         $this->add(['plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
+                     'price'                             => $values["price"]]);
       }
    }
 
    /**
     * Set default price for contract days
     *
-    * @global type $DB
-    *
     * @param type  $input
     *
     * @return type
+    * @global type $DB
+    *
     */
    function setDefault($input) {
       global $DB;
@@ -513,14 +516,15 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
    /**
     * Manage AJAX showForm display
     *
-    * @global type $CFG_GLPI
-    *
     * @param type  $toupdate
     * @param type  $function_name
     * @param type  $itemtype
     * @param type  $items_id
     * @param type  $parenttype
     * @param type  $parents_id
+    *
+    * @global type $CFG_GLPI
+    *
     */
    static function getJSEdition($toupdate, $function_name, $itemtype, $items_id, $parenttype, $parents_id) {
       global $CFG_GLPI;
@@ -530,10 +534,10 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
 
       echo "\n<script type='text/javascript' >\n";
       echo "function $function_name() {\n";
-      $params = array('type'                        => $itemtype,
+      $params = ['type'                        => $itemtype,
                       'parenttype'                  => $parenttype,
                       $parent->getForeignKeyField() => $parents_id,
-                      'id'                          => $items_id);
+                      'id'                          => $items_id];
       Ajax::updateItemJsCode($toupdate,
                              $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/viewsubitem.php", $params);
       echo "};";
@@ -570,11 +574,11 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
     * @return boolean
     */
    function checkMandatoryFields($input) {
-      $msg     = array();
+      $msg     = [];
       $checkKo = false;
 
-      $mandatory_fields = array('price'                             => self::getTypeName(),
-                                'plugin_manageentities_critypes_id' => PluginManageentitiesCriType::getTypeName());
+      $mandatory_fields = ['price'                             => self::getTypeName(),
+                                'plugin_manageentities_critypes_id' => PluginManageentitiesCriType::getTypeName()];
 
       foreach ($input as $key => $value) {
          if (array_key_exists($key, $mandatory_fields)) {

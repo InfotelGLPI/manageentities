@@ -60,14 +60,14 @@ if (isset($_POST["add"])) {
    Session::checkRight("contract", UPDATE);
    foreach ($_POST["item_nbday"] as $key => $val) {
       if ($val == 1) {
-         $contractday->delete(array('id' => $key));
+         $contractday->delete(['id' => $key]);
       }
    }
    Html::back();
 
 } else if (isset($_POST["deleteAll"])) {
    foreach ($_POST["item"] as $key => $val) {
-      $input = array('id' => $key);
+      $input = ['id' => $key];
       if ($val == 1) {
          $contractday->check($key, UPDATE);
          $contractday->delete($input);

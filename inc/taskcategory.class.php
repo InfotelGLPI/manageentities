@@ -44,7 +44,7 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -69,8 +69,8 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
          if (!$self->getFromDBByTaskCategory($ID)) {
             $self->createAccess($item->getField('id'));
          }
-         $self->showForm($item->getField('id'), array('target' =>
-                                                         $CFG_GLPI["root_doc"] . "/plugins/manageentities/front/taskcategory.form.php"));
+         $self->showForm($item->getField('id'), ['target' =>
+                                                    $CFG_GLPI["root_doc"] . "/plugins/manageentities/front/taskcategory.form.php"]);
       }
       return true;
    }
@@ -96,11 +96,11 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
 
    function createAccess($ID) {
 
-      $this->add(array(
-                    'taskcategories_id' => $ID));
+      $this->add([
+                    'taskcategories_id' => $ID]);
    }
 
-   function showForm($ID, $options = array()) {
+   function showForm($ID, $options = []) {
       if (!self::canView()) return false;
 
       $taskCategory = new TaskCategory();

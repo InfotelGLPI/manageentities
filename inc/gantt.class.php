@@ -40,7 +40,7 @@ class PluginManageentitiesGantt extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    static function datediffInWeeks($date1, $date2) {
@@ -54,7 +54,7 @@ class PluginManageentitiesGantt extends CommonDBTM {
     *
     * @param $ID ID of the project or -1 for all projects
     */
-   static function showGantt($values = array()) {
+   static function showGantt($values = []) {
 
       Html::requireJs('gantt');
 
@@ -62,15 +62,15 @@ class PluginManageentitiesGantt extends CommonDBTM {
 
       $todisplay = static::getDataToDisplayOnGantt($_SESSION["glpiactiveentities"], true);
 
-      $bsize   = array();
+      $bsize   = [];
       $colSize = 24;
 
       if (count($todisplay)) {
 
          // Prepare for display
-         $data = array();
+         $data = [];
          foreach ($todisplay as $key => $val) {
-            $temp = array();
+            $temp = [];
 
             $color = 'ganttGreen';
 
@@ -95,21 +95,20 @@ class PluginManageentitiesGantt extends CommonDBTM {
             switch ($val['type']) {
                case 'contract' :
                   $color = 'ganttBlue';
-                  $temp  = array('name' => $val['name'],
-                                 'desc' => $val['desc'],
-
-                                 'values' => array(array(
-                                                      'id' => $val['id'], 'from'
-                                                           => "/Date(" . strtotime($val['from']) . "000)/",
-                                                      'to'
-                                                           => "/Date(" . strtotime($val['to']) . "000)/",
-                                                      'desc'
-                                                           => $val['desc'],
-                                                      'label'
-                                                           => $val['label'],//$val['link']
-                                                      'customClass'
-                                                           => $color))
-                  );
+                  $temp  = ['name'   => $val['name'],
+                            'desc'   => $val['desc'],
+                            'values' => [[
+                                            'id' => $val['id'], 'from'
+                                                 => "/Date(" . strtotime($val['from']) . "000)/",
+                                            'to'
+                                                 => "/Date(" . strtotime($val['to']) . "000)/",
+                                            'desc'
+                                                 => $val['desc'],
+                                            'label'
+                                                 => $val['label'],//$val['link']
+                                            'customClass'
+                                                 => $color]]
+                  ];
                   break;
 
                case 'contractday' :
@@ -135,39 +134,36 @@ class PluginManageentitiesGantt extends CommonDBTM {
                   //ADD XACA
                   //$color = 'ganttMilestone';*/
 
-                  $temp = array('name' => ' ',
-
-                                'desc'   => $val['link'],
-                                'values' => array(array('id'  => 't' . $val['id'],
-                                                        'from'
-                                                              => "/Date(" . (strtotime($val['from']) * 1000) . ")/",
-                                                        'to'
-                                                              => "/Date(" . (strtotime($val['to']) * 1000) . ")/",
-                                                        'desc'
-                                                              => $val['desc'],
-                                                        'label'
-                                                              => $val['label'],//$val['link']
-                                                        'dep' => $val['dep'],
-                                                        'customClass'
-                                                              => $color
-                                                  ))
-                  );
+                  $temp = ['name'   => ' ',
+                           'desc'   => $val['link'],
+                           'values' => [['id'  => 't' . $val['id'],
+                                         'from'
+                                               => "/Date(" . (strtotime($val['from']) * 1000) . ")/",
+                                         'to'
+                                               => "/Date(" . (strtotime($val['to']) * 1000) . ")/",
+                                         'desc'
+                                               => $val['desc'],
+                                         'label'
+                                               => $val['label'],//$val['link']
+                                         'dep' => $val['dep'],
+                                         'customClass'
+                                               => $color
+                                        ]]
+                  ];
                   break;
             }
 
             $data[] = $temp;
          }
-         //       Html::printCleanArray($data);
 
-         //       exit();
-         $months   = array(__('January'), __('February'), __('March'), __('April'), __('May'),
-                           __('June'), __('July'), __('August'), __('September'),
-                           __('October'), __('November'), __('December'));
-         $dow      = array(substr(__('Sunday'), 0, 1), substr(__('Monday'), 0, 1),
-                           substr(__('Tuesday'), 0, 1), substr(__('Wednesday'), 0, 1),
-                           substr(__('Thursday'), 0, 1), substr(__('Friday'), 0, 1),
-                           substr(__('Saturday'), 0, 1)
-         );
+         $months   = [__('January'), __('February'), __('March'), __('April'), __('May'),
+                      __('June'), __('July'), __('August'), __('September'),
+                      __('October'), __('November'), __('December')];
+         $dow      = [substr(__('Sunday'), 0, 1), substr(__('Monday'), 0, 1),
+                      substr(__('Tuesday'), 0, 1), substr(__('Wednesday'), 0, 1),
+                      substr(__('Thursday'), 0, 1), substr(__('Friday'), 0, 1),
+                      substr(__('Saturday'), 0, 1)
+         ];
          $langwait = __('Please wait', 'manageentities');
          echo "<div class='gantt'></div>";
          $js = "
@@ -250,8 +246,8 @@ class PluginManageentitiesGantt extends CommonDBTM {
     */
    static function getDataToDisplayOnGantt($entity, $showall = true) {
 
-      $contracts = PluginManageentitiesFollowUp::queryFollowUp($entity, array());
-      $todisplay = array();
+      $contracts = PluginManageentitiesFollowUp::queryFollowUp($entity, []);
+      $todisplay = [];
 
       if (!empty($contracts)) {
          foreach ($contracts as $key => $contract_data) {
@@ -288,16 +284,16 @@ class PluginManageentitiesGantt extends CommonDBTM {
                      //Add current contract
                      //print_r($real_end);
                      $todisplay[$real_begin . '#' . $real_end . '#task' . $contract_data['contracts_id']]
-                        = array('name'    => $contract_data['entities_name'],
-                                'id'      => $contract_data['contracts_id'],
-                                'link'    => $name,//name_contract
-                                'label'   => $contract_data['entities_name'],
-                                'desc'    => $contract_data['name'],
-                                'percent' => 0,
-                                'type'    => 'contract',
-                                'from'    => $real_begin . ' 00:00:00',
-                                'to'      => $real_end . ' 00:00:00',
-                                'dep'     => $dep);
+                        = ['name'    => $contract_data['entities_name'],
+                           'id'      => $contract_data['contracts_id'],
+                           'link'    => $name,//name_contract
+                           'label'   => $contract_data['entities_name'],
+                           'desc'    => $contract_data['name'],
+                           'percent' => 0,
+                           'type'    => 'contract',
+                           'from'    => $real_begin . ' 00:00:00',
+                           'to'      => $real_end . ' 00:00:00',
+                           'dep'     => $dep];
 
                      if ($showall) {
                         //Add current tasks
@@ -317,7 +313,7 @@ class PluginManageentitiesGantt extends CommonDBTM {
     * @param $ID ID of the project task
     */
    static function getDataToDisplayOnGanttForContract($days) {
-      $todisplay = array();
+      $todisplay = [];
 
       if (!empty($days)) {
          foreach ($days as $day_data) {
@@ -348,17 +344,17 @@ class PluginManageentitiesGantt extends CommonDBTM {
             $percentview = Html::formatNumber($percent, 2) . ' %';
             // Add current task
             $todisplay[$real_begin . '#' . $real_end . '#task' . $day_data['contractdays_id']]
-               = array('name'             => $day_data['contractdayname'],
-                       'id'               => $day_data['contractdays_id'],
-                       'label'            => $percentview,
-                       'desc'             => $desc,
-                       'dep'              => $day_data['contracts_id'],
-                       'link'             => $day_data['contractday_name'],
-                       'type'             => 'contractday',
-                       'percent'          => $percent,
-                       'from'             => $real_begin,
-                       'to'               => $real_end,
-                       'contractdaycolor' => $day_data['contract_is_closed']);
+               = ['name'             => $day_data['contractdayname'],
+                  'id'               => $day_data['contractdays_id'],
+                  'label'            => $percentview,
+                  'desc'             => $desc,
+                  'dep'              => $day_data['contracts_id'],
+                  'link'             => $day_data['contractday_name'],
+                  'type'             => 'contractday',
+                  'percent'          => $percent,
+                  'from'             => $real_begin,
+                  'to'               => $real_end,
+                  'contractdaycolor' => $day_data['contract_is_closed']];
             //}
          }
       }

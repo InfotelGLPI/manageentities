@@ -39,7 +39,7 @@ class PluginManageentitiesCri extends CommonDBTM {
       return _n('Intervention report', 'Intervention reports', $nb, 'manageentities');
    }
 
-   function showForm($ID, $options = array()) {
+   function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
 
       $config = PluginManageentitiesConfig::getInstance();
@@ -47,11 +47,11 @@ class PluginManageentitiesCri extends CommonDBTM {
       $job    = new Ticket();
       $job->getfromDB($ID);
 
-      $params = array('job'        => $ID,
-                      'form'       => 'formReport',
-                      'root_doc'   => $CFG_GLPI['root_doc'],
-                      'toupdate'   => $options['toupdate'],
-                      'pdf_action' => $options['action']);
+      $params = ['job'        => $ID,
+                 'form'       => 'formReport',
+                 'root_doc'   => $CFG_GLPI['root_doc'],
+                 'toupdate'   => $options['toupdate'],
+                 'pdf_action' => $options['action']];
 
       PluginManageentitiesEntity::showManageentitiesHeader(__('Interventions reports', 'manageentities'));
 
@@ -83,7 +83,9 @@ class PluginManageentitiesCri extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<th>" . __('Out of contract', 'manageentities') . "</th>";
          echo "</tr></table>";
-         $contractSelected = array('contractSelected' => 0, 'contractdaySelected' => 0, 'is_contract' => 0);
+         $contractSelected = ['contractSelected' => 0,
+                              'contractdaySelected' => 0,
+                              'is_contract' => 0];
       }
       echo "</td>";
       echo "</tr>";
@@ -101,7 +103,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       if (self::isTask($ID)) {
          if (!empty($technicians_id)) {
-            $techs = array();
+            $techs = [];
             foreach ($technicians_id as $remove => $data) {
                foreach ($data as $users_id => $users_name) {
                   if ($remove == 'remove') {
@@ -123,7 +125,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       echo "</td>";
       echo "<td>";
-      $used = array();
+      $used = [];
       if (!empty($technicians_id)) {
          foreach ($technicians_id as $data) {
             foreach ($data as $users_id => $users_name) {
@@ -132,11 +134,11 @@ class PluginManageentitiesCri extends CommonDBTM {
          }
       }
 
-      $userRand = User::dropdown(array('name'   => "users_id",
+      $userRand = User::dropdown(['name'   => "users_id",
                                        'entity' => $job->fields["entities_id"],
                                        'used'   => $used,
                                        'right'  => 'all',
-                                       'width'  => $width));
+                                       'width'  => $width]);
 
       echo "&nbsp;<input type='button' name='add_tech' value=\"" .
            __('Add a technician', 'manageentities') . "\" class='submit' onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
@@ -157,7 +159,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             echo "<td colspan='2'>";
             $PluginManageentitiesCriPrice = new PluginManageentitiesCriPrice();
             $critypes                     = $PluginManageentitiesCriPrice->getItems($contractSelected['contractdaySelected']);
-            $critypes_data                = array(Dropdown::EMPTY_VALUE);
+            $critypes_data                = [Dropdown::EMPTY_VALUE];
             $critypes_default             = 0;
             foreach ($critypes as $value) {
                $critypes_data[$value['plugin_manageentities_critypes_id']] = $value['critypes_name'];
@@ -166,7 +168,8 @@ class PluginManageentitiesCri extends CommonDBTM {
                }
             }
 
-            Dropdown::showFromArray('REPORT_ACTIVITE', $critypes_data, array('value' => $critypes_default, 'width' => $width));
+            Dropdown::showFromArray('REPORT_ACTIVITE', $critypes_data, ['value' => $critypes_default,
+                                                                        'width' => $width]);
             echo "</td>";
             echo "</tr>";
 
@@ -183,7 +186,8 @@ class PluginManageentitiesCri extends CommonDBTM {
                echo __('Number of moving', 'manageentities');
                echo "</th>";
                echo "<td colspan='2'>";
-               Dropdown::showNumber('number_moving', array('value' => $cridetail['number_moving'], 'width' => $width));
+               Dropdown::showNumber('number_moving', ['value' => $cridetail['number_moving'],
+                                                      'width' => $width]);
                echo "</td>";
                echo "</tr>";
             }
@@ -244,7 +248,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                             'enable_richtext' => true,
                             'cols'            => $cols,
                             'rows'            => $rows]);
-                      
+
             echo "</td>";
             echo "</tr>";
 
@@ -303,16 +307,17 @@ class PluginManageentitiesCri extends CommonDBTM {
    /**
     * Récupération des données et génération du document. Il sera enregistré suivant le paramétre
     * enregistrement.
-    * @global PluginManageentitiesCriPDF $PDF
-    * @global type                       $DB
-    * @global type                       $CFG_GLPI
     *
     * @param type                        $params
     * @param type                        $options
     *
     * @return boolean
+    * @global PluginManageentitiesCriPDF $PDF
+    * @global type                       $DB
+    * @global type                       $CFG_GLPI
+    *
     */
-   function generatePdf($params, $options = array()) {
+   function generatePdf($params, $options = []) {
       global $PDF, $DB, $CFG_GLPI;
 
       $p['CONTRACTDAY']     = 0;
@@ -333,7 +338,7 @@ class PluginManageentitiesCri extends CommonDBTM {
       /* Initialisation du document avec les informations saisies par l'utilisateur. */
       $criType_id = $p['REPORT_ACTIVITE'];
       if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE || $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-         $p['REPORT_ACTIVITE'] = array();
+         $p['REPORT_ACTIVITE'] = [];
          $criType_id           = 0;
       }
       //$PDF->SetDescriptionCri(Toolbox::unclean_cross_side_scripting_deep($p['REPORT_DESCRIPTION']));
@@ -356,14 +361,14 @@ class PluginManageentitiesCri extends CommonDBTM {
             $PDF->SetSousContrat(0);
 
             /* Information de l'entité active et son contrat. */
-            $infos_entite = array();
+            $infos_entite = [];
             $entite       = new Entity();
             $entite->getFromDB($job->fields["entities_id"]);
             $infos_entite[0] = $entite;
             $PDF->SetEntite($infos_entite);
 
             /* Année et mois de l'intervention (post du ticket). */
-            $infos_date    = array();
+            $infos_date    = [];
             $infos_date[0] = $job->fields["date"];
 
             /* Du ... au ... */
@@ -402,7 +407,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
             // Forfait
 
-            $temps_passes = array();
+            $temps_passes = [];
             //configuration by day
             if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
                $nbhour    = $config->fields["hourbyday"];
@@ -415,7 +420,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             $result  = self::getTempsPasses($join, $where, $p, $condition, $nbhour);
             $cpt_tps = 0;
             while ($data = $DB->fetch_array($result)) {
-               $un_temps_passe = array();
+               $un_temps_passe = [];
 
                if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                   // If the category of the task is not used and is hourly for count we set value to 0
@@ -486,7 +491,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             }
 
             /* Année et mois de l'intervention (post du ticket). */
-            $infos_date    = array();
+            $infos_date    = [];
             $infos_date[0] = $job->fields["date"];
 
             // Not Forfait
@@ -536,7 +541,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             }
 
             /* Information de l'entité active et son contrat. */
-            $infos_entite = array();
+            $infos_entite = [];
             $entite       = new Entity();
             $entite->getFromDB($job->fields["entities_id"]);
             $infos_entite[0] = $entite;
@@ -574,10 +579,10 @@ class PluginManageentitiesCri extends CommonDBTM {
             if (($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) ||
                 (isset($contract_days->fields['contract_type']) && $contract_days->fields['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT)) {
                $result       = self::getTempsPasses($join, $where, $p, $condition, $nbhour);
-               $temps_passes = array();
+               $temps_passes = [];
                $cpt_tps      = 0;
                while ($data = $DB->fetch_array($result)) {
-                  $un_temps_passe = array();
+                  $un_temps_passe = [];
                   if (($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) && (isset($manageentities_contract_data['contract_type']) && $manageentities_contract_data['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION)) {
                      $un_temps_passe[4] = 1;
                   } else {
@@ -686,7 +691,7 @@ class PluginManageentitiesCri extends CommonDBTM {
       if ($config->fields["backup"] == 1 && $p['enregistrement']) {
          $PDF->Output($savefilepath, 'F');
 
-         $input                          = array();
+         $input                          = [];
          $input["entities_id"]           = $job->fields["entities_id"];
          $input["name"]                  = addslashes($name);
          $input["filename"]              = addslashes($filename);
@@ -715,7 +720,7 @@ class PluginManageentitiesCri extends CommonDBTM {
          if ($sous_contrat == true)
             $withcontract = 1;
 
-         $values                                      = array();
+         $values                                      = [];
          $values["entities_id"]                       = $job->fields["entities_id"];
          $values["date"]                              = $infos_date[2];
          $values["documents_id"]                      = $newdoc;
@@ -772,10 +777,10 @@ class PluginManageentitiesCri extends CommonDBTM {
             echo "<input type='hidden' name='WITHOUTCONTRACT' value='" . $p['WITHOUTCONTRACT'] . "' >";
             echo "<input type='hidden' name='number_moving' value='" . $p['number_moving'] . "' >";
 
-            $params = array('job'      => $job->fields['id'],
+            $params = ['job'      => $job->fields['id'],
                             'form'     => 'formReport',
                             'root_doc' => $CFG_GLPI['root_doc'],
-                            'toupdate' => $options['toupdate']);
+                            'toupdate' => $options['toupdate']];
             echo "<p><input type='button' name='save_cri' value=\"" .
                  __('Save the intervention report', 'manageentities') . "\" class='submit' onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'></p>";
             Html::closeForm();
@@ -794,12 +799,14 @@ class PluginManageentitiesCri extends CommonDBTM {
 
    /**
     * Request: task with time spent
-    * @global type $DB
     *
     * @param type  $join
     * @param type  $where
     * @param type  $p
     * @param type  $config
+    *
+    * @global type $DB
+    *
     */
    function getTempsPasses($join, $where, $p, $condition, $nbhour) {
       global $DB;

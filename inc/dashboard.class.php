@@ -29,11 +29,11 @@
 
 class PluginManageentitiesDashboard extends CommonGLPI {
 
-   public  $widgets = array();
+   public  $widgets = [];
    private $options;
    private $datas, $form;
 
-   function __construct($options = array()) {
+   function __construct($options = []) {
       $this->options = $options;
    }
 
@@ -43,14 +43,13 @@ class PluginManageentitiesDashboard extends CommonGLPI {
    }
 
    function getWidgetsForItem() {
-      return array(
+      return [
          $this->getType() . "1" => __("Remaining days number by opened client contracts", "manageentities"),//Nombre de jours restants par contrat client
          $this->getType() . "2" => __("Client annuary", "manageentities"),
          $this->getType() . "3" => __("Tickets without CRI", "manageentities"),
          $this->getType() . "4" => __("Interventions with old contract", "manageentities"),
          $this->getType() . "5" => __("Opened contract prestations without remaining days", "manageentities"),
-
-      );
+      ];
    }
 
    function getWidgetContentForItem($widgetId) {
@@ -68,9 +67,9 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                $link_contract     = Toolbox::getItemTypeFormURL("Contract");
                $link_contract_day = Toolbox::getItemTypeFormURL("PluginManageentitiesContractDay");
                $entity            = new Entity();
-               $contracts         = self::queryFollowUpSimplified($_SESSION['glpiactiveentities'], array());
+               $contracts         = self::queryFollowUpSimplified($_SESSION['glpiactiveentities'], []);
                //               Toolbox::logDebug($contracts);
-               $datas = array();
+               $datas = [];
                if (!empty($contracts)) {
                   foreach ($contracts as $key => $contract_data) {
                      if (is_integer($key)) {
@@ -101,8 +100,8 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                                  $data["days"]      = $name_contract_day;
                                  $data["reste"]     = $day_data['reste'];
                                  $data["total"]     = $day_data['credit'];
-                                 $data["end_date"] = Html::convDate($day_data['end_date']);
-                                 $datas[] = $data;
+                                 $data["end_date"]  = Html::convDate($day_data['end_date']);
+                                 $datas[]           = $data;
                               }
                            }
                         }
@@ -110,7 +109,12 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                   }
                }
 
-               $headers = array(__('Team', 'manageentities'), __('Entity'), __('Contract'), __('Prestation', 'manageentities'), __('Total remaining', 'manageentities'), __('Total'), __('End date'));
+               $headers = [__('Team', 'manageentities'),
+                           __('Entity'), __('Contract'),
+                           __('Prestation', 'manageentities'),
+                           __('Total remaining', 'manageentities'),
+                           __('Total'),
+                           __('End date')];
 
                $widget = new PluginMydashboardDatatable();
 
@@ -148,7 +152,11 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                            ORDER BY `glpi_entities`.`name`,`glpi_contacts`.`name`, `glpi_contacts`.`firstname` ASC";
 
                $widget  = PluginMydashboardHelper::getWidgetsFromDBQuery('table', $query);
-               $headers = array(_n('Client', 'Clients', 1, 'manageentities'), __('First name'), __('Name'), __('Phone'), __('Mobile phone'));
+               $headers = [_n('Client', 'Clients', 1, 'manageentities'),
+                           __('First name'),
+                           __('Name'),
+                           __('Phone'),
+                           __('Mobile phone')];
                $widget->setTabNames($headers);
                $widget->toggleWidgetRefresh();
             } else {
@@ -180,13 +188,16 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                            ORDER BY `glpi_tickets`.`date` DESC";
 
                $widget  = PluginMydashboardHelper::getWidgetsFromDBQuery('table', $query);
-               $headers = array(__('Opening date'), _n('Client', 'Clients', 1, 'manageentities'), __('Title'), __('Prestation', 'manageentities'));
+               $headers = [__('Opening date'),
+                           _n('Client', 'Clients', 1, 'manageentities'),
+                           __('Title'),
+                           __('Prestation', 'manageentities')];
                $widget->setTabNames($headers);
 
                $result = $DB->query($query);
                $nb     = $DB->numrows($result);
 
-               $datas = array();
+               $datas = [];
                $i     = 0;
                if ($nb) {
                   while ($data = $DB->fetch_assoc($result)) {
@@ -233,7 +244,11 @@ class PluginManageentitiesDashboard extends CommonGLPI {
             $query = PluginManageentitiesContractDay::queryOldContractDaywithInterventions($date);
 
             $widget  = PluginMydashboardHelper::getWidgetsFromDBQuery('table', $query);
-            $headers = array(__('Creation date'), _n('Client', 'Clients', 1, 'manageentities'), __('Ticket'), __('Prestation', 'manageentities'), __('End date'));
+            $headers = [__('Creation date'),
+                        _n('Client', 'Clients', 1, 'manageentities'),
+                        __('Ticket'),
+                        __('Prestation', 'manageentities'),
+                        __('End date')];
             $widget->setTabNames($headers);
 
             $result = $DB->query($query);
@@ -278,8 +293,8 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                $link_contract     = Toolbox::getItemTypeFormURL("Contract");
                $link_contract_day = Toolbox::getItemTypeFormURL("PluginManageentitiesContractDay");
                $entity            = new Entity();
-               $contracts         = self::queryFollowUpSimplified($_SESSION['glpiactiveentities'], array());
-               $datas             = array();
+               $contracts         = self::queryFollowUpSimplified($_SESSION['glpiactiveentities'], []);
+               $datas             = [];
                if (!empty($contracts)) {
                   foreach ($contracts as $key => $contract_data) {
                      if (is_integer($key)) {
@@ -296,7 +311,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                            }
 
                            if (!empty($contract_data['days'])) {
-                              $data = array();
+                              $data = [];
                               foreach ($contract_data['days'] as $day_data) {
 
                                  $entity->getFromDB($contract_data['entities_id']);
@@ -321,7 +336,11 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                   }
                }
 
-               $headers = array(__('Team', 'manageentities'), __('Entity'), __('Contract'), __('Prestation', 'manageentities'), __('Total remaining', 'manageentities'), __('Total'));
+               $headers = [__('Team', 'manageentities'),
+                           __('Entity'), __('Contract'),
+                           __('Prestation', 'manageentities'),
+                           __('Total remaining', 'manageentities'),
+                           __('Total')];
 
                $widget = new PluginMydashboardDatatable();
 
@@ -341,7 +360,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
       }
    }
 
-   static function queryFollowUpSimplified($instID, $options = array()) {
+   static function queryFollowUpSimplified($instID, $options = []) {
       global $DB;
 
       $dbu = new DbUtils();
@@ -367,7 +386,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
       $contractState       = '';
       $queryCompany        = '';
       $num                 = 0;
-      $list                = array();
+      $list                = [];
       $nbContratByEntities = 0;// Count the contracts for all entities
 
       // We configure the type of contract Hourly or Dayly
@@ -529,7 +548,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                      $dataContractDay['contractdays_id']   = $dataContractDay["contractdays_id"];
 
                      $resultCriDetail = self::getCriDetailDataSimplified($dataContractDay,
-                                                                         array("contract_type_id" => $dataContractDay["contract_type"]));
+                                                                         ["contract_type_id" => $dataContractDay["contract_type"]]);
 
                      if (Session::getCurrentInterface() == 'helpdesk'
                          && $dataContractDay["contract_type"] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
@@ -558,7 +577,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
       return $list;
    }
 
-   static function getCriDetailDataSimplified($contractDayValues = array(), $options = array()) {
+   static function getCriDetailDataSimplified($contractDayValues = [], $options = []) {
       global $DB;
       $params['condition'] = '1';
 
@@ -572,8 +591,8 @@ class PluginManageentitiesDashboard extends CommonGLPI {
 
       $PDF = new PluginManageentitiesCriPDF('P', 'mm', 'A4');
 
-      $tabOther = array('depass' => 0,
-                        'reste'  => 0);
+      $tabOther = ['depass' => 0,
+                   'reste'  => 0];
 
       $queryCriDetail = "SELECT `glpi_plugin_manageentities_cridetails`.`tickets_id`,
                                 `glpi_plugin_manageentities_cridetails`.`id` AS cridetails_id,
@@ -658,7 +677,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
          $tabOther['reste']  = 0;
       }
 
-      return array('resultOther' => $tabOther);
+      return ['resultOther' => $tabOther];
    }
 
 

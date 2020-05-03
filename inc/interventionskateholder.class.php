@@ -44,7 +44,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    static function countForItem(CommonDBTM $item) {
@@ -54,9 +54,9 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
                                         ["plugin_manageentities_contractdays_id" => $item->fields['id']]);
    }
 
-   function defineTabs($options = array()) {
+   function defineTabs($options = []) {
 
-      $ong = array();
+      $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
 
       return $ong;
@@ -81,7 +81,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
       if ($item->getType() == 'PluginManageentitiesContractDay') {
-         $options = array();
+         $options = [];
          if (isset($item->fields['id']) && $item->fields['id'] > 0) {
             $options['rand']                               = $item->fields['id'];
             $_SESSION['glpi_plugin_manageentities_nbdays'] = $item->fields['nbday'];
@@ -101,7 +101,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
       $this->showHeaderJS();
       for ($i = 0; $i <= $nbDays; $i += 0.5) {
-         $data[] = array('id' => $i, 'text' => "$i");
+         $data[] = ['id' => $i, 'text' => "$i"];
       }
       echo "$('input[name=\"nb_days\"]').select2({width : '100', data:" . json_encode($data) . "});";
       $this->closeFormJS();
@@ -205,7 +205,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          $params['skateholder_id']  = $item->fields['id'];
          $url                       = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
 
-         $this->showJSfunction("deleteSkateholder" . $idToUse . $item->fields['id'], $idDivAjax, $url, array(), $params);
+         $this->showJSfunction("deleteSkateholder" . $idToUse . $item->fields['id'], $idDivAjax, $url, [], $params);
       }
 
       if ($idDpNbdays != null) {
@@ -213,7 +213,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
       }
    }
 
-   private function listSkateholders($item, $options = array()) {
+   private function listSkateholders($item, $options = []) {
       global $CFG_GLPI;
       $ID = $item->fields['id'];
 
@@ -300,7 +300,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
                   $params['skateholder_id']  = $skateholder['id'];
                   $url                       = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
 
-                  $this->showJSfunction("deleteSkateholder" . $idToUse . $skateholder['id'], $idDivAjax, $url, array(), $params);
+                  $this->showJSfunction("deleteSkateholder" . $idToUse . $skateholder['id'], $idDivAjax, $url, [], $params);
 
                }
             }
@@ -336,7 +336,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
     *
     * @return Nothing (display)
     */
-   public function showForm($item = array(), $options = array("")) {
+   public function showForm($item = [], $options = []) {
       global $CFG_GLPI;
 
       if ($item->getType() == PluginManageentitiesInterventionSkateholder::getType()) {
@@ -384,13 +384,13 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          // User
          echo "<td>" . __('User') . "<span class='red'>&nbsp;*&nbsp;</span></td>";
          echo "<td>";
-         $idUser = User::dropdown(array('name'  => 'users_id_tech' . $idToUse,
-                                        'right' => 'interface'));
+         $idUser = User::dropdown(['name'  => 'users_id_tech' . $idToUse,
+                                   'right' => 'interface']);
          echo "</td>";
          // Nb days
          echo "<td>" . __('Affected to', 'manageentities') . "<span class='red'>&nbsp;*&nbsp;</span></td>";
          echo "<td id='nb_days_container'>";
-         PluginManageentitiesDropdown::showNumber("nb_days", array("width" => 100, "min" => 0, "max" => $nbDays, "step" => "0.5", "rand" => $rand));
+         PluginManageentitiesDropdown::showNumber("nb_days", ["width" => 100, "min" => 0, "max" => $nbDays, "step" => "0.5", "rand" => $rand]);
          $config = PluginManageentitiesConfig::getInstance();
          if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
             echo "&nbsp;" . _n("Day", "Days", 2);
@@ -408,17 +408,17 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          echo "<div id='" . $idDivAjax . "' style='text-align:center;'></div>";
          echo "</div>";
 
-         $listIds = array(
-            "dropdown_nb_days" . $idToUse                 => array("dropdown", "nb_days"),
-            "dropdown_users_id_tech" . $idToUse . $idUser => array("dropdown", "users_id_tech"),
-         );
+         $listIds = [
+            "dropdown_nb_days" . $idToUse                 => ["dropdown", "nb_days"],
+            "dropdown_users_id_tech" . $idToUse . $idUser => ["dropdown", "users_id_tech"],
+         ];
 
-         $params = array(
+         $params = [
             'action'          => "add_user_datas",
             'id_dp_nbdays'    => "dropdown_nb_days" . $idToUse,
             'id_div_ajax'     => $idDivAjax,
             "contractdays_id" => $item->fields['id']
-         );
+         ];
 
          $this->showJSfunction("addSkateholder" . $idToUse, $idDivAjax, $url, $listIds, $params);
       }
@@ -506,8 +506,8 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
             break;
          case INFO:
          default:
-            $srcImg = "fas fa-info-circle";
-            $color  = "forestgreen";
+            $srcImg     = "fas fa-info-circle";
+            $color      = "forestgreen";
             $alertTitle = _n("Information", "Informations", 1);
             break;
       }

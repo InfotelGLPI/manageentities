@@ -79,13 +79,20 @@ switch ($_POST ['action']) {
       if ($pView->checkFields(ElementType::INTERVENTION, $pModel)) {
          $pModel->deleteError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, $_POST['fakeid_new_intervention']);
          $addInterventionOK = $pModel->addInterventionToBase($pView);
+         //         INFOTEL : MODIFICATION PRESALES
+         $interventions  = $pModel->getContractDays();
+         $nbIntervention = $pModel->getNbContractDays();
+         if ($_POST["presales"] && isset($interventions[$nbIntervention + 1])) {
+            $pModel->setNbContractDays($nbIntervention + 1);
+         }
+         //		INFOTEL
          $pView->showResults($addInterventionOK);
       }
       break;
 
 
    case Action::SHOW_FORM_CRI_PRICE:
-      $pView->showFormCriPrice($_POST['id_criprice'], $_POST['id_intervention'], $_POST['fakeid_new_intervention'], array("parent" => $_POST['parent']));
+      $pView->showFormCriPrice($_POST['id_criprice'], $_POST['id_intervention'], $_POST['fakeid_new_intervention'], ["parent" => $_POST['parent']]);
       break;
 
    case Action::ADD_CRI_PRICE:
@@ -325,8 +332,14 @@ switch ($_POST ['action']) {
          $intervention = new PluginManageentitiesContractDay();
          $intervention->getEmpty();
          $pModel->addContractDay($intervention, $nbIntervention);
-         $pView        = new PluginManageentitiesAddElementsView();
-         $intervention = $pView->showFormAddInterventions($nbIntervention);
+         $pView = new PluginManageentitiesAddElementsView();
+         //         INFOTEL : MODIFICATION PRESALES
+         $params = [];
+         if (isset($_POST["presales"])) {
+            $params = ["presales" => $_POST["presales"], "contracts_id" => $_POST["new_intervention_contract_id"]];
+         }
+         $intervention = $pView->showFormAddInterventions($nbIntervention, $params);
+         //        INFOTEL
          //            $pView->showFormCriPrice(-1,$nbIntervention+1,array('parent' => "PluginManageentitiesContractDay"));
          //            $pView->initCriPricesView($intervention,$nbIntervention);
          $pView->updateTabs($nbIntervention, $_POST['id_div_ajax'], "div#mytabsinterventions", ElementType::INTERVENTION);
@@ -347,7 +360,7 @@ switch ($_POST ['action']) {
       if (isset($_POST['selected_template']) && $_POST['selected_template'] > 0) {
          $idTemplate = $_POST['selected_template'];
          $template   = new Contract();
-         $template->getFromDBByCrit(['id'    => $idTemplate,
+         $template->getFromDBByCrit(['id'          => $idTemplate,
                                      'is_template' => 1]);
 
          $oldContract               = $pModel->getContract();
@@ -356,7 +369,9 @@ switch ($_POST ['action']) {
          $pModel->setIdContractTemplate($idTemplate);
          $pModel->setIsContractTemplate(1);
          $pModel->setContract($oldContract);
-         $contractContent                     = $pView->showFormAddContract();
+         //         INFOTEL : MODIFICATION PRESALES
+         $contractContent = $pView->showFormAddContract(["presales" => $_POST["paramshide"]]);
+         //        INFOTEL
          $contractContent['params']['action'] = Action::ADD_ONLY_CONTRACT;
          $pView->showJSfunction("addOnlyContract" . $contractContent['params']['rand'], $contractContent['idDivAjax'], $pModel->getUrl(), $contractContent['listIds'], $contractContent['params']);
 
@@ -366,7 +381,9 @@ switch ($_POST ['action']) {
          $pModel->setIdContractTemplate(-1);
          $pModel->setIsContractTemplate(0);
          $pModel->setContract($oldContract);
-         $pView->showFormAddContract();
+         //         INFOTEL : MODIFICATION PRESALES
+         $pView->showFormAddContract(["presales" => $_POST["paramshide"]]);
+         //        INFOTEL
       }
       break;
 
@@ -422,10 +439,10 @@ switch ($_POST ['action']) {
    // -- Not used currently --   
 
    case Action::CONFIRM_ADD_ALL_ELEMENT:
-      $pView->showResults(array('result' => Status::ADD_ALL));
+      $pView->showResults(['result' => Status::ADD_ALL]);
       break;
    case Action::CONFIRM_UPDATE_ALL_ELEMENT:
-      $pView->showResults(array('result' => Status::UPDATE_ALL));
+      $pView->showResults(['result' => Status::UPDATE_ALL]);
       break;
    case Action::ADD_ALL_ELEMENT :
    case Action::UPDATE_ALL_ELEMENT :

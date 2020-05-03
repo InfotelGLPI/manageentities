@@ -69,7 +69,7 @@ class TTFParser
 			$this->Error('Unrecognized file format');
 		$numTables = $this->ReadUShort();
 		$this->Skip(3*2); // searchRange, entrySelector, rangeShift
-		$this->tables = array();
+		$this->tables = [];
 		for($i=0;$i<$numTables;$i++)
 		{
 			$tag = $this->Read(4);
@@ -115,7 +115,7 @@ class TTFParser
 	function ParseHmtx()
 	{
 		$this->Seek('hmtx');
-		$this->glyphs = array();
+		$this->glyphs = [];
 		for($i=0;$i<$this->numberOfHMetrics;$i++)
 		{
 			$advanceWidth = $this->ReadUShort();
@@ -132,7 +132,7 @@ class TTFParser
 	function ParseLoca()
 	{
 		$this->Seek('loca');
-		$offsets = array();
+		$offsets = [];
 		if($this->indexToLocFormat==0)
 		{
 			// Short format
@@ -165,7 +165,7 @@ class TTFParser
 					// Composite glyph
 					$this->Skip(4*2); // xMin, yMin, xMax, yMax
 					$offset = 5*2;
-					$a = array();
+					$a = [];
 					do
 					{
 						$flags = $this->ReadUShort();
@@ -208,11 +208,11 @@ class TTFParser
 		if($offset31==0)
 			$this->Error('No Unicode encoding found');
 
-		$startCount = array();
-		$endCount = array();
-		$idDelta = array();
-		$idRangeOffset = array();
-		$this->chars = array();
+		$startCount = [];
+		$endCount = [];
+		$idDelta = [];
+		$idRangeOffset = [];
+		$this->chars = [];
 		fseek($this->f, $this->tables['cmap']['offset']+$offset31, SEEK_SET);
 		$format = $this->ReadUShort();
 		if($format!=4)
@@ -324,8 +324,8 @@ class TTFParser
 			// Extract glyph names
 			$this->Skip(4*4); // min/max usage
 			$this->Skip(2); // numberOfGlyphs
-			$glyphNameIndex = array();
-			$names = array();
+			$glyphNameIndex = [];
+			$names = [];
 			$numNames = 0;
 			for($i=0;$i<$this->numGlyphs;$i++)
 			{
@@ -356,7 +356,7 @@ class TTFParser
 	{
 /*		$chars = array_keys($this->chars);
 		$this->subsettedChars = $chars;
-		$this->subsettedGlyphs = array();
+		$this->subsettedGlyphs = [];
 		for($i=0;$i<$this->numGlyphs;$i++)
 		{
 			$this->subsettedGlyphs[] = $i;
@@ -364,7 +364,7 @@ class TTFParser
 		}*/
 
 		$this->AddGlyph(0);
-		$this->subsettedChars = array();
+		$this->subsettedChars = [];
 		foreach($chars as $char)
 		{
 			if(isset($this->chars[$char]))
@@ -409,7 +409,7 @@ class TTFParser
 		// Divide charset in contiguous segments
 		$chars = $this->subsettedChars;
 		sort($chars);
-		$segments = array();
+		$segments = [];
 		$segment = array($chars[0], $chars[0]);
 		for($i=1;$i<count($chars);$i++)
 		{
@@ -426,10 +426,10 @@ class TTFParser
 		$segCount = count($segments);
 
 		// Build a Format 4 subtable
-		$startCount = array();
-		$endCount = array();
-		$idDelta = array();
-		$idRangeOffset = array();
+		$startCount = [];
+		$endCount = [];
+		$idDelta = [];
+		$idRangeOffset = [];
 		$glyphIdArray = '';
 		for($i=0;$i<$segCount;$i++)
 		{
@@ -592,7 +592,7 @@ class TTFParser
 
 	function BuildFont()
 	{
-		$tags = array();
+		$tags = [];
 		foreach(array('cmap', 'cvt ', 'fpgm', 'glyf', 'head', 'hhea', 'hmtx', 'loca', 'maxp', 'name', 'post', 'prep') as $tag)
 		{
 			if(isset($this->tables[$tag]))

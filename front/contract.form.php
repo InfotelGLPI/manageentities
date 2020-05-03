@@ -56,7 +56,7 @@ if (isset($_POST["addcontract"])) {
    Session::checkRight("contract", UPDATE);
    foreach ($_POST["item_nbday"] as $key => $val) {
       if ($val == 1) {
-         $contractday->delete(array('id' => $key));
+         $contractday->delete(['id' => $key]);
       }
    }
    Html::back();

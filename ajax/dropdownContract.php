@@ -48,14 +48,14 @@ if (isset($_POST["contracts_id"])) {
 
    if ($contractdays_id == 0) {
       $contractday = new PluginManageentitiesContractDay();
-      $restrict = ['entities_id' => $contract->fields['entities_id'],
-                   'contracts_id' => $_POST["contracts_id"],
-                   [
-                      'OR' => [
-                         ['plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates()],
-                         ['id' => $contractdays_id]
-                      ]
-                   ]];
+      $restrict    = ['entities_id'  => $contract->fields['entities_id'],
+                      'contracts_id' => $_POST["contracts_id"],
+                      [
+                         'OR' => [
+                            ['plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates()],
+                            ['id' => $contractdays_id]
+                         ]
+                      ]];
       $datas       = $contractday->find($restrict);
       //if a single contractday
       if (count($datas) == 1) {
@@ -64,7 +64,12 @@ if (isset($_POST["contracts_id"])) {
          $contractdays_id = $datas['id'];
       }
    }
-   $restrict = ['entities_id' => $contract->fields['entities_id'],
+   if (isset($contract->fields['states_id']) && $contract->fields['states_id'] > 0) {
+      echo __('Status') . " : " . Dropdown::getDropdownName("glpi_states", $contract->fields['states_id']);
+      echo "<br><br>";
+   }
+
+   $restrict = ['entities_id'  => $contract->fields['entities_id'],
                 'contracts_id' => $_POST["contracts_id"],
                 [
                    'OR' => [
@@ -73,8 +78,8 @@ if (isset($_POST["contracts_id"])) {
                    ]
                 ]];
 
-   Dropdown::show('PluginManageentitiesContractDay', array('name'      => 'plugin_manageentities_contractdays_id',
-                                                           'value'     => $contractdays_id,
-                                                           'condition' => $restrict,
-                                                           'width'     => $_POST['width']));
+   Dropdown::show('PluginManageentitiesContractDay', ['name'      => 'plugin_manageentities_contractdays_id',
+                                                      'value'     => $contractdays_id,
+                                                      'condition' => $restrict,
+                                                      'width'     => $_POST['width']]);
 }

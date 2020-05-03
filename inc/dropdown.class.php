@@ -45,8 +45,6 @@ class PluginManageentitiesDropdown extends Dropdown {
    /**
     * Dropdown numbers
     *
-    * @since version 0.84
-    *
     * @param $myname          select name
     * @param $options   array of additionnal options :
     *     - value              default value (default 0)
@@ -60,8 +58,10 @@ class PluginManageentitiesDropdown extends Dropdown {
     *     - width              specific width needed (default 80%)
     *     - on_change string / value to transmit to "onChange"
     *     - used      array / Already used items ID: not to display in dropdown (default empty)
-    **/
-   static function showNumber($myname, $options = array()) {
+    **@since version 0.84
+    *
+    */
+   static function showNumber($myname, $options = []) {
       global $CFG_GLPI;
 
       $p['value']     = 0;
@@ -69,12 +69,12 @@ class PluginManageentitiesDropdown extends Dropdown {
       $p['min']       = 0;
       $p['max']       = 100;
       $p['step']      = 1;
-      $p['toadd']     = array();
+      $p['toadd']     = [];
       $p['unit']      = '';
       $p['display']   = true;
       $p['width']     = '';
       $p['on_change'] = '';
-      $p['used']      = array();
+      $p['used']      = [];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -91,16 +91,16 @@ class PluginManageentitiesDropdown extends Dropdown {
       } else {
          $valuename = $p['toadd'][$p['value']];
       }
-      $param = array('value'     => $p['value'],
-                     'valuename' => $valuename,
-                     'width'     => $p['width'],
-                     'on_change' => $p['on_change'],
-                     'used'      => $p['used'],
-                     'unit'      => $p['unit'],
-                     'min'       => $p['min'],
-                     'max'       => $p['max'],
-                     'step'      => $p['step'],
-                     'toadd'     => $p['toadd']);
+      $param = ['value'     => $p['value'],
+                'valuename' => $valuename,
+                'width'     => $p['width'],
+                'on_change' => $p['on_change'],
+                'used'      => $p['used'],
+                'unit'      => $p['unit'],
+                'min'       => $p['min'],
+                'max'       => $p['max'],
+                'step'      => $p['step'],
+                'toadd'     => $p['toadd']];
 
       $out = Html::jsAjaxDropdown($myname, $field_id,
                                   $CFG_GLPI['root_doc'] . "/plugins/manageentities/ajax/getDropdownNumber.php",

@@ -34,46 +34,46 @@ function plugin_init_manageentities() {
    global $PLUGIN_HOOKS, $CFG_GLPI;
 
    $PLUGIN_HOOKS['csrf_compliant']['manageentities'] = true;
-   $PLUGIN_HOOKS['change_profile']['manageentities'] = array('PluginManageentitiesProfile', 'initProfile');
+   $PLUGIN_HOOKS['change_profile']['manageentities'] = ['PluginManageentitiesProfile', 'initProfile'];
 
-   $PLUGIN_HOOKS['pre_item_purge']['manageentities'] = array('Entity'       => 'plugin_pre_item_purge_manageentities',
+   $PLUGIN_HOOKS['pre_item_purge']['manageentities'] = ['Entity'       => 'plugin_pre_item_purge_manageentities',
                                                              'Ticket'       => 'plugin_pre_item_purge_manageentities',
                                                              'Contract'     => 'plugin_pre_item_purge_manageentities',
                                                              'Contact'      => 'plugin_pre_item_purge_manageentities',
-                                                             'TaskCategory' => 'plugin_pre_item_purge_manageentities');
+                                                             'TaskCategory' => 'plugin_pre_item_purge_manageentities'];
 
-   $PLUGIN_HOOKS['pre_item_update']['manageentities'] = array('Document' => array('PluginManageentitiesEntity', 'preUpdateDocument'));
-   $PLUGIN_HOOKS['item_update']['manageentities']     = array('Document' => array('PluginManageentitiesEntity', 'UpdateDocument'));
+   $PLUGIN_HOOKS['pre_item_update']['manageentities'] = ['Document' => ['PluginManageentitiesEntity', 'preUpdateDocument']];
+   $PLUGIN_HOOKS['item_update']['manageentities']     = ['Document' => ['PluginManageentitiesEntity', 'UpdateDocument']];
 
    $PLUGIN_HOOKS['item_transfer']['manageentities'] = 'plugin_item_transfer_manageentities';
 
    if (Session::getLoginUserID()) {
-      Plugin::registerClass('PluginManageentitiesProfile', array('addtabon' => 'Profile'));
-      Plugin::registerClass('PluginManageentitiesContract', array('addtabon' => 'Contract'));
-      Plugin::registerClass('PluginManageentitiesCriDetail', array('addtabon'       => 'Ticket',
-                                                                   'planning_types' => true));
+      Plugin::registerClass('PluginManageentitiesProfile', ['addtabon' => 'Profile']);
+      Plugin::registerClass('PluginManageentitiesContract', ['addtabon' => 'Contract']);
+      Plugin::registerClass('PluginManageentitiesCriDetail', ['addtabon'       => 'Ticket',
+                                                                   'planning_types' => true]);
 
 
-      Plugin::registerClass('PluginManageentitiesTaskCategory', array('addtabon' => 'TaskCategory'));
-      Plugin::registerClass('PluginManageentitiesInterventionSkateholder', array('addtabon' => 'PluginManageentitiesContractDay'));
-      Plugin::registerClass('PluginManageentitiesCriPrice', array('addtabon' => 'PluginManageentitiesContractDay'));
+      Plugin::registerClass('PluginManageentitiesTaskCategory', ['addtabon' => 'TaskCategory']);
+      Plugin::registerClass('PluginManageentitiesInterventionSkateholder', ['addtabon' => 'PluginManageentitiesContractDay']);
+      Plugin::registerClass('PluginManageentitiesCriPrice', ['addtabon' => 'PluginManageentitiesContractDay']);
 
       if (class_exists('PluginServicecatalogMain')) {
-         $PLUGIN_HOOKS['servicecatalog']['manageentities'] = array('PluginManageentitiesServicecatalog');
+         $PLUGIN_HOOKS['servicecatalog']['manageentities'] = ['PluginManageentitiesServicecatalog'];
       }
 
-      if (session::haveRightsOr('plugin_manageentities', array(READ, UPDATE))
+      if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
           && !class_exists('PluginServicecatalogMain')) {
          $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = "/front/entity.php";
       }
-      if (session::haveRightsOr('plugin_manageentities', array(READ, UPDATE))) {
-         Plugin::registerClass('PluginManageentitiesPreference', array('addtabon' => 'Preference')); //See #413
-         $PLUGIN_HOOKS['menu_toadd']['manageentities'] = array('management' => 'PluginManageentitiesEntity');
+      if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
+         Plugin::registerClass('PluginManageentitiesPreference',['addtabon' => 'Preference']); //See #413
+         $PLUGIN_HOOKS['menu_toadd']['manageentities'] = ['management' => 'PluginManageentitiesEntity'];
 
          // Reports
-         $PLUGIN_HOOKS['reports']['manageentities'] = array('front/report.form.php'            => _n('Intervention report', 'Intervention reports', 2, 'manageentities'),
+         $PLUGIN_HOOKS['reports']['manageentities'] = ['front/report.form.php'            => _n('Intervention report', 'Intervention reports', 2, 'manageentities'),
                                                             'front/report_moving.form.php'     => __('Report on the movement of technicians', 'manageentities'),
-                                                            'front/report_occupation.form.php' => __('Report concerning the occupation of the technicians', 'manageentities'));
+                                                            'front/report_occupation.form.php' => __('Report concerning the occupation of the technicians', 'manageentities')];
 
          $plugin = new Plugin();
          if (isset($_SESSION["glpi_plugin_manageentities_loaded"])
@@ -90,15 +90,15 @@ function plugin_init_manageentities() {
       }
 
       if (class_exists('PluginMydashboardMenu')) {
-         $PLUGIN_HOOKS['mydashboard']['manageentities'] = array("PluginManageentitiesDashboard");
+         $PLUGIN_HOOKS['mydashboard']['manageentities'] = ["PluginManageentitiesDashboard"];
       }
 
       // Add specific files to add to the header : javascript or css
-      $PLUGIN_HOOKS['add_css']['manageentities'] = array("manageentities.css",
-                                                         "style.css");
+      $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css",
+                                                         "style.css"];
 
-      $PLUGIN_HOOKS['add_javascript']['manageentities'] = array('scripts/scripts-manageentities.js',
-                                                                'scripts/jquery.form.js',);
+      $PLUGIN_HOOKS['add_javascript']['manageentities'] = ['scripts/scripts-manageentities.js',
+                                                                'scripts/jquery.form.js'];
       // Ticket task duplication
       if (Session::haveRight("task", CommonITILTask::UPDATEALL)
           && Session::haveRight("task", CommonITILTask::ADDALLITEM)
@@ -115,7 +115,7 @@ function plugin_init_manageentities() {
 // Get the name and the version of the plugin - Needed
 function plugin_version_manageentities() {
 
-   return array(
+   return [
       'name'           => __('Entities portal', 'manageentities'),
       'version'        => PLUGIN_MANAGEENTITIES_VERSION,
       'oldname'        => 'manageentity',
@@ -128,7 +128,7 @@ function plugin_version_manageentities() {
             'dev' => false
          ]
       ]
-   );
+   ];
 
 }
 

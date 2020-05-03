@@ -44,20 +44,20 @@ class PluginManageentitiesContractState extends CommonDropdown {
    }
 
    static function canCreate() {
-      return Session::HaveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    function getAdditionalFields() {
-      return array(array('name'  => 'is_active',
-                         'label' => __('Active'),
-                         'type'  => 'bool'),
-                   array('name'  => 'is_closed',
-                         'label' => __('Closed'),
-                         'type'  => 'bool'),
-                   array('name'  => 'color',
-                         'label' => __('Color', 'manageentities'),
-                         'type'  => 'text'),
-      );
+      return [['name'  => 'is_active',
+               'label' => __('Active'),
+               'type'  => 'bool'],
+              ['name'  => 'is_closed',
+               'label' => __('Closed'),
+               'type'  => 'bool'],
+              ['name'  => 'color',
+               'label' => __('Color', 'manageentities'),
+               'type'  => 'text'],
+      ];
    }
 
    function rawSearchOptions() {
@@ -101,13 +101,13 @@ class PluginManageentitiesContractState extends CommonDropdown {
    function checkColor($input) {
       if (!preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $input['color'])) {
          Session::addMessageAfterRedirect(__('Color field is not correct', 'manageentities'), true, ERROR);
-         return array();
+         return [];
       }
       return $input;
    }
 
    static function getOpenedStates() {
-      $out  = array();
+      $out  = [];
       $dbu  = new DbUtils();
       $data = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractstates', ["`is_active`" => 1]);
       if (!empty($data)) {

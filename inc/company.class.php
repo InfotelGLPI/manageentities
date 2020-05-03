@@ -74,7 +74,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
     *
     * @return boolean item found
     * */
-   function showForm($ID, $options = array("")) {
+   function showForm($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
       if ($ID > 0) {
@@ -93,7 +93,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . PluginManageentitiesCompany::getTypeName(1) . "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
+      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
       echo "</td>";
       echo "<td></td><td></td></tr>";
 
@@ -120,7 +120,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
          echo "</div></td>";
       }
       echo "<td>";
-      echo Html::file(array('multiple' => false, 'onlyimages' => true));
+      echo Html::file(['multiple' => false, 'onlyimages' => true]);
       echo "</td>";
       if ($this->fields["logo_id"] == 0) {
          echo "<td></td>";
@@ -133,7 +133,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
       echo "<td>";
 
 
-      Entity::dropdown(array('name' => 'entity_id', 'value' => $this->fields['entity_id'], 'right' => 'all'));
+      Entity::dropdown(['name' => 'entity_id', 'value' => $this->fields['entity_id'], 'right' => 'all']);
       echo "&nbsp;" . __('Recursive') . "&nbsp";
       Dropdown::showYesNo("recursive", $this->fields["recursive"]);
       echo "</td>";
@@ -149,7 +149,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
     *
     * @param type $options
     */
-   static function addNewCompany($options = array()) {
+   static function addNewCompany($options = []) {
 
       $addButton = "";
 
@@ -198,7 +198,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
          $tmp       = explode(".", $input["_filename"][0]);
          $extension = array_pop($tmp);
-         if (!in_array($extension, array('jpg', 'jpeg'))) {
+         if (!in_array($extension, ['jpg', 'jpeg'])) {
             Session::addMessageAfterRedirect(__('The format of the image must be in JPG or JPEG', 'manageentities'), false, ERROR);
             unset($input);
          } elseif ($company['logo_id'] != 0) {
@@ -216,9 +216,9 @@ class PluginManageentitiesCompany extends CommonDBTM {
       if (isset($input["_filename"])) {
          $tmp       = explode(".", $input["_filename"][0]);
          $extension = array_pop($tmp);
-         if (!in_array($extension, array('jpg', 'jpeg'))) {
+         if (!in_array($extension, ['jpg', 'jpeg'])) {
             Session::addMessageAfterRedirect(__('The format of the image must be in JPG or JPEG', 'manageentities'), false, ERROR);
-            return array();
+            return [];
          }
       }
       return $input;
@@ -228,7 +228,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
       $img = $this->addFiles($this->input);
       foreach ($img as $key => $name) {
          $this->fields['logo_id'] = $key;
-         $this->updateInDB(array('logo_id'));
+         $this->updateInDB(['logo_id']);
       }
    }
 
@@ -236,18 +236,18 @@ class PluginManageentitiesCompany extends CommonDBTM {
       $img = $this->addFiles($this->input);
       foreach ($img as $key => $name) {
          $this->fields['logo_id'] = $key;
-         $this->updateInDB(array('logo_id'));
+         $this->updateInDB(['logo_id']);
       }
    }
 
    /**
     *
-    * @global type $CFG_GLPI
-    *
     * @param int   $donotif
     * @param type  $disablenotif
     *
     * @return int
+    * @global type $CFG_GLPI
+    *
     */
    function addFiles(array $input, $options = []) {
       global $CFG_GLPI;
@@ -272,7 +272,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
          $docitem  = new Document_Item();
          $docID    = 0;
          $filename = GLPI_TMP_DIR . "/" . $file;
-         $input2   = array();
+         $input2   = [];
 
          // Crop/Resize image file if needed
          if (isset($this->input['_coordinates']) && !empty($this->input['_coordinates'][$key])) {
@@ -315,17 +315,17 @@ class PluginManageentitiesCompany extends CommonDBTM {
             $input2["name"]                    = addslashes(sprintf(__('Logo %d', 'manageentities'), $this->getID()));
             $input2["entity_id"]               = $this->fields["entity_id"];
             $input2["_only_if_upload_succeed"] = 1;
-            $input2["_filename"]               = array($file);
+            $input2["_filename"]               = [$file];
             $input2["is_recursive"]            = 1;
             $docID                             = $doc->add($input2);
          }
 
          if ($docID > 0) {
-            if ($docitem->add(array('documents_id'  => $docID,
-                                    '_do_notif'     => $donotif,
-                                    '_disablenotif' => $disablenotif,
-                                    'itemtype'      => $this->getType(),
-                                    'items_id'      => $this->getID()))) {
+            if ($docitem->add(['documents_id'  => $docID,
+                               '_do_notif'     => $donotif,
+                               '_disablenotif' => $disablenotif,
+                               'itemtype'      => $this->getType(),
+                               'items_id'      => $this->getID()])) {
                $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]), stripslashes($doc->fields["filename"]));
 
                if (isset($input2["tag"])) {

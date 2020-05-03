@@ -36,24 +36,24 @@ class PluginManageentitiesMonthly extends CommonDBTM {
    static $rightname = 'plugin_manageentities';
 
    // Css styles/class
-   static $style = array('background-color: #FEC95C;color:#000',
-                         'text-align:left',
-                         'background-color: #FA6B6B;',
-                         'background-color:#FFBA3B');
-   static $class = array('styleItemTitle', 'styleContractTitle');
+   static $style = ['background-color: #FEC95C;color:#000',
+                    'text-align:left',
+                    'background-color: #FA6B6B;',
+                    'background-color:#FFBA3B'];
+   static $class = ['styleItemTitle', 'styleContractTitle'];
 
    static function canView() {
       return Session::haveRight(self::$rightname, READ);
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
-   static function queryMonthly($values = array()) {
+   static function queryMonthly($values = []) {
       global $DB;
 
-      $tabResults        = array();
+      $tabResults        = [];
       $tot_conso         = 0;
       $tot_depass        = 0;
       $tot_depass_amount = 0;
@@ -189,12 +189,12 @@ class PluginManageentitiesMonthly extends CommonDBTM {
 
                   // We get all cri details
                   $resultCriDetail             = PluginManageentitiesCriDetail::getCriDetailData($dataContractDay,
-                                                                                                 array('contract_type_id' => $dataContractDay['contract_type'],
-                                                                                                       'begin_date'       => $values['begin_date'],
-                                                                                                       'end_date'         => $values['end_date']));
+                                                                                                 ['contract_type_id' => $dataContractDay['contract_type'],
+                                                                                                  'begin_date'       => $values['begin_date'],
+                                                                                                  'end_date'         => $values['end_date']]);
                   $resultCriDetail_beforeMonth = PluginManageentitiesCriDetail::getCriDetailData($dataContractDay,
-                                                                                                 array('contract_type_id' => $dataContractDay['contract_type'],
-                                                                                                       'end_date'         => date('Y-m-d', strtotime($values['begin_date'] . ' - 1 DAY'))));
+                                                                                                 ['contract_type_id' => $dataContractDay['contract_type'],
+                                                                                                  'end_date'         => date('Y-m-d', strtotime($values['begin_date'] . ' - 1 DAY'))]);
 
                   $remaining = $lastMonthRemaining = $resultCriDetail_beforeMonth['resultOther']['reste'];
 
@@ -224,7 +224,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
                         $taskCount++;
 
                         // Conso per tech
-                        $conso_per_tech = array();
+                        $conso_per_tech = [];
                         $contract_conso = 0;
                         foreach ($dataCriDetail['conso_per_tech'] as $tickets) {
                            foreach ($tickets as $users_id => $time) {
@@ -346,7 +346,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       return $out;
    }
 
-   static function showMonthly($values = array()) {
+   static function showMonthly($values = []) {
       global $PDF, $DB;
 
       $results = self::queryMonthly($values);
@@ -594,7 +594,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       return html::formatNumber($value, 0, 2);
    }
 
-   function showHeader($options = array()) {
+   function showHeader($options = []) {
       PluginManageentitiesEntity::showManageentitiesHeader(__('Monthly follow-up', 'manageentities'));
 
       $rand = mt_rand();

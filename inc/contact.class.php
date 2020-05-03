@@ -40,15 +40,17 @@ class PluginManageentitiesContact extends CommonDBTM {
    }
 
    static function canCreate() {
-      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, DELETE));
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    /**
     * Add a contact ba default
-    * @global type $DB
     *
     * @param type  $contacts_id
     * @param type  $entities_id
+    *
+    * @global type $DB
+    *
     */
    function addContactByDefault($contacts_id, $entities_id) {
 
@@ -76,10 +78,11 @@ class PluginManageentitiesContact extends CommonDBTM {
 
    /**
     *
-    * @global type $DB
+    * @param type  $instID
+    *
     * @global type $CFG_GLPI
     *
-    * @param type  $instID
+    * @global type $DB
     */
    function showContacts($instID) {
       global $DB, $CFG_GLPI;
@@ -123,7 +126,7 @@ class PluginManageentitiesContact extends CommonDBTM {
                   Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                                        'contactbydefault',
                                        __('Manager'),
-                                       array('contacts_id' => $ID, 'entities_id' => $_SESSION["glpiactive_entity"]));
+                                       ['contacts_id' => $ID, 'entities_id' => $_SESSION["glpiactive_entity"]]);
                }
             } else {
                if ($data["is_default"]) {
@@ -137,7 +140,7 @@ class PluginManageentitiesContact extends CommonDBTM {
                Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                                     'deletecontacts',
                                     _x('button', 'Delete permanently'),
-                                    array('id' => $ID),
+                                    ['id' => $ID],
                                     "../../../pics/delete.png");
                echo "</td>";
             }
@@ -148,7 +151,7 @@ class PluginManageentitiesContact extends CommonDBTM {
          if ($this->canCreate() && sizeof($instID) == 1) {
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
-            $rand = Dropdown::show('Contact', array('name' => "contacts_id"));
+            $rand = Dropdown::show('Contact', ['name' => "contacts_id"]);
             echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center'><input type='submit' name='addcontacts' value=\"" . _x('button', 'Add') . "\" class='submit'></td>";
             echo "</tr>";
@@ -164,7 +167,7 @@ class PluginManageentitiesContact extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'><th colspan='2'>" . _n('Associated contact', 'Associated contacts', 1) . "</tr><tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
-            Dropdown::show('Contact', array('name' => "contacts_id"));
+            Dropdown::show('Contact', ['name' => "contacts_id"]);
             echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
             echo "</td><td class='center tab_bg_2'>";
             echo "<input type='submit' name='addcontacts' value=\"" . _x('button', 'Add') . "\" class='submit'>";

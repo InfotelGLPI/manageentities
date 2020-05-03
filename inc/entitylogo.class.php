@@ -68,7 +68,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
       if (isset($values["_filename"])) {
          $tmp       = explode(".", $values["_filename"][0]);
          $extension = array_pop($tmp);
-         if (!in_array($extension, array('jpg', 'jpeg'))) {
+         if (!in_array($extension, ['jpg', 'jpeg'])) {
             Session::addMessageAfterRedirect(__('The format of the image must be in JPG or JPEG', 'manageentities'), false, ERROR);
             return false;
          }
@@ -79,12 +79,12 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
 
             $values['id'] = $this->fields['id'];
             $doc          = new Document();
-            $img          = array("id" => $this->fields["logos_id"]);
+            $img          = ["id" => $this->fields["logos_id"]];
             $doc->delete($img, 1);
             $logo = $this->addFilesCRI(0, -1, $values);
             foreach ($logo as $key => $name) {
-               $this->add(array('entities_id' => $values["entities_id"],
-                                'logos_id'    => $key));
+               $this->add(['entities_id' => $values["entities_id"],
+                           'logos_id'    => $key]);
             }
 
          } else {
@@ -93,8 +93,8 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
 
             foreach ($logo as $key => $name) {
 
-               $this->add(array('entities_id' => $values["entities_id"],
-                                'logos_id'    => $key));
+               $this->add(['entities_id' => $values["entities_id"],
+                           'logos_id'    => $key]);
 
             }
          }
@@ -105,7 +105,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
 
       $temp = new self();
       $temp->deleteByCriteria(
-         array('logos_id' => $item->getField('id'))
+         ['logos_id' => $item->getField('id')]
       );
    }
 
@@ -113,9 +113,9 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!isset($values['_filename']) || (count($values['_filename']) == 0)) {
-         return array();
+         return [];
       }
-      $docadded = array();
+      $docadded = [];
 
 
       foreach ($values['_filename'] as $key => $file) {
@@ -124,7 +124,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
 
          $docID    = 0;
          $filename = GLPI_TMP_DIR . "/" . $file;
-         $input2   = array();
+         $input2   = [];
 
          // Crop/Resize image file if needed
          if (isset($values['_coordinates']) && !empty($values['_coordinates'][$key])) {
@@ -159,17 +159,17 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
 
             $input2["entities_id"]             = $values['entities_id'];
             $input2["_only_if_upload_succeed"] = 1;
-            $input2["_filename"]               = array($file);
+            $input2["_filename"]               = [$file];
 
             $docID = $doc->add($input2);
          }
 
          if ($docID > 0) {
-            if ($docitem->add(array('documents_id'  => $docID,
-                                    '_do_notif'     => $donotif,
-                                    '_disablenotif' => $disablenotif,
-                                    'itemtype'      => 'Entity',
-                                    'items_id'      => $values['entities_id']))) {
+            if ($docitem->add(['documents_id'  => $docID,
+                               '_do_notif'     => $donotif,
+                               '_disablenotif' => $disablenotif,
+                               'itemtype'      => 'Entity',
+                               'items_id'      => $values['entities_id']])) {
                $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]), stripslashes($doc->fields["filename"]));
 
                if (isset($input2["tag"])) {

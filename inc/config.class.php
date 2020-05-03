@@ -57,8 +57,8 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_1 top'><td>" . __('Rubric by default for reports', 'manageentities') . "</td>";
       echo "<td>";
-      Dropdown::show('DocumentCategory', array('name'  => "documentcategories_id",
-                                               'value' => $this->fields["documentcategories_id"]));
+      Dropdown::show('DocumentCategory', ['name'  => "documentcategories_id",
+                                          'value' => $this->fields["documentcategories_id"]]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1 top'><td>" . __('Use of price', 'manageentities') . "</td>";
@@ -68,7 +68,7 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_1 top'><td>" . __('Configuration daily or hourly', 'manageentities') . "</td>";
       echo "<td>";
-      $rand = Dropdown::showFromArray('hourorday', self::getConfigType(), array('value' => $this->fields["hourorday"]));
+      $rand = Dropdown::showFromArray('hourorday', self::getConfigType(), ['value' => $this->fields["hourorday"]]);
 
       echo "<tr class='tab_bg_1 top'>";
       echo "<td><span id='title_show_hourorday'></span></td>";
@@ -77,14 +77,14 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
       //js for load configuration
       Ajax::updateItem("title_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
-                       array('hourorday' => $this->fields["hourorday"], 'action' => 'title_show_hourorday'), "dropdown_hourorday$rand");
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'title_show_hourorday'], "dropdown_hourorday$rand");
       Ajax::updateItem("value_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
-                       array('hourorday' => $this->fields["hourorday"], 'action' => 'value_show_hourorday'), "dropdown_hourorday$rand");
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'value_show_hourorday'], "dropdown_hourorday$rand");
       //js for change configuration
       Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
-                                    array('hourorday' => '__VALUE__', 'action' => 'title_show_hourorday'));
+                                    ['hourorday' => '__VALUE__', 'action' => 'title_show_hourorday']);
       Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
-                                    array('hourorday' => '__VALUE__', 'action' => 'value_show_hourorday'));
+                                    ['hourorday' => '__VALUE__', 'action' => 'value_show_hourorday']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1 top'><td>" . __('Only public task are visible on intervention report', 'manageentities') . "</td>";
@@ -104,7 +104,7 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
       $contractstate  = new PluginManageentitiesContractState();
       $contractstates = $contractstate->find();
-      $states         = array();
+      $states         = [];
       foreach ($contractstates as $key => $val) {
          $states[$key] = $val['name'];
       }
@@ -112,9 +112,9 @@ class PluginManageentitiesConfig extends CommonDBTM {
       echo "<tr class='tab_bg_1 top'><td>" . __('List of default statuses for general monitoring', 'manageentities') . "</td>";
       echo "<td>";
       if ($this->fields["contract_states"] == NULL) {
-         Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'value' => $this->fields["contract_states"]));
+         Dropdown::showFromArray("contract_states", $states, ['multiple' => true, 'width' => 200, 'value' => $this->fields["contract_states"]]);
       } else {
-         Dropdown::showFromArray("contract_states", $states, array('multiple' => true, 'width' => 200, 'values' => json_decode($this->fields["contract_states"], true)));
+         Dropdown::showFromArray("contract_states", $states, ['multiple' => true, 'width' => 200, 'values' => json_decode($this->fields["contract_states"], true)]);
       }
       echo "</td></tr>";
 
@@ -125,16 +125,16 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
       $result = $DB->query($query);
 
-      $users = array();
+      $users = [];
       while ($data = $DB->fetch_assoc($result)) {
          $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
       }
       echo "<tr class='tab_bg_1 top'><td>" . __('Default Business list for general monitoring', 'manageentities') . "</td>";
       echo "<td>";
       if ($this->fields["business_id"] == NULL) {
-         Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'value' => $this->fields["business_id"]));
+         Dropdown::showFromArray("business_id", $users, ['multiple' => true, 'width' => 200, 'value' => $this->fields["business_id"]]);
       } else {
-         Dropdown::showFromArray("business_id", $users, array('multiple' => true, 'width' => 200, 'values' => json_decode($this->fields["business_id"], true)));
+         Dropdown::showFromArray("business_id", $users, ['multiple' => true, 'width' => 200, 'values' => json_decode($this->fields["business_id"], true)]);
       }
       echo "</td></tr>";
 
@@ -214,7 +214,7 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
    function showFormCompany() {
       //add a company
-      PluginManageentitiesCompany::addNewCompany(array('title' => __('Add a company', 'manageentities')));
+      PluginManageentitiesCompany::addNewCompany(['title' => __('Add a company', 'manageentities')]);
       Html::closeForm();
 
       $plugin_company = new PluginManageentitiesCompany();
@@ -246,16 +246,16 @@ class PluginManageentitiesConfig extends CommonDBTM {
    }
 
    function getConfigType() {
-      return (array(self::DAY  => _x('periodicity', 'Daily'),
-                    self::HOUR => __('Hourly', 'manageentities')));
+      return ([self::DAY  => _x('periodicity', 'Daily'),
+               self::HOUR => __('Hourly', 'manageentities')]);
    }
 
    function dropdownConfigChoiceIntervention($name, $value = 0) {
-      $configTypes = array(self::REPORT_INTERVENTION => _n('Intervention report', 'Intervention reports', 2, 'manageentities'),
-                           self::PERIOD_INTERVENTION => _n('Period of contract', 'Periods of contract', 2, 'manageentities'));
+      $configTypes = [self::REPORT_INTERVENTION => _n('Intervention report', 'Intervention reports', 2, 'manageentities'),
+                      self::PERIOD_INTERVENTION => _n('Period of contract', 'Periods of contract', 2, 'manageentities')];
 
       if (!empty($configTypes)) {
-         return Dropdown::showFromArray($name, $configTypes, array('value' => $value));
+         return Dropdown::showFromArray($name, $configTypes, ['value' => $value]);
       } else {
          return false;
       }
