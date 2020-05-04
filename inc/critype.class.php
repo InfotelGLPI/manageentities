@@ -88,8 +88,8 @@ class PluginManageentitiesCriType extends CommonDropdown {
       $tab[13]['datatype']     = 'number';
       $tab[13]['forcegroupby'] = true;
       $tab[13]['name']         = __('Daily rate', 'manageentities');
-      $tab[13]['joinparams']   = array('jointype'  => "child",
-                                       'condition' => "AND NEWTABLE.`entities_id` IN ('".implode("','", $_SESSION["glpiactiveentities"])."')");
+      $tab[13]['joinparams']   = ['jointype'  => "child",
+                                       'condition' => "AND NEWTABLE.`entities_id` IN ('".implode("','", $_SESSION["glpiactiveentities"])."')"];
       */
 
       return $tab;

@@ -82,7 +82,7 @@ switch ($_POST ['action']) {
          //         INFOTEL : MODIFICATION PRESALES
          $interventions  = $pModel->getContractDays();
          $nbIntervention = $pModel->getNbContractDays();
-         if ($_POST["presales"] && isset($interventions[$nbIntervention + 1])) {
+         if (isset($_POST["presales"]) && isset($interventions[$nbIntervention + 1])) {
             $pModel->setNbContractDays($nbIntervention + 1);
          }
          //		INFOTEL
@@ -382,6 +382,9 @@ switch ($_POST ['action']) {
          $pModel->setIsContractTemplate(0);
          $pModel->setContract($oldContract);
          //         INFOTEL : MODIFICATION PRESALES
+         if (!isset($_POST["paramshide"])) {
+            $_POST["paramshide"] = false;
+         }
          $pView->showFormAddContract(["presales" => $_POST["paramshide"]]);
          //        INFOTEL
       }

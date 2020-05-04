@@ -950,7 +950,7 @@ class PluginManageentitiesCriPDF extends FPDF {
    // - $W_max : LARGEUR maxi finale ----> ou 0 : largeur libre
    // - $H_max : HAUTEUR maxi finale ----> ou 0 : hauteur libre
    // ---------------------
-   // return array(width, height)
+   // return [width, height]
 
    // ---------------------------------------------------
    function fctaffichimage($img_Src, $W_max, $H_max) {

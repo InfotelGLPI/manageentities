@@ -190,30 +190,30 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
       $this->messages = [
          ElementType::ENTITY                                                     => [
-            Errors::ERROR_FIELDS     => "<span class='error'> " . __("All new entity fields are not filled.", "manageentities") . "</span>",
-            Errors::ERROR_ADD        => "<span class='error'> " . __("An error happend while saving the entity.", "manageentities") . "</span>",
-            Errors::ERROR_NAME_EXIST => "<span class='error'> " . __("Entity name already exists.", "manageentities") . "</span>",
-            Errors::ERROR_UPDATE     => "<span class='error'> " . __("An error happend while updating the entity.", "manageentities") . "</span>",
+            Errors::ERROR_FIELDS     => "<span class='red'> " . __("All new entity fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD        => "<span class='red'> " . __("An error happend while saving the entity.", "manageentities") . "</span>",
+            Errors::ERROR_NAME_EXIST => "<span class='red'> " . __("Entity name already exists.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE     => "<span class='red'> " . __("An error happend while updating the entity.", "manageentities") . "</span>",
             Status::UPDATED          => __("Entity successfully updated.", "manageentities"),
             Status::ADDED            => __("Entity successfully added.", "manageentities"),
             Status::SAVED            => __("Entity saved in base", "manageentities"),
             Status::NOT_SAVED        => __("Entity informations not updated in base", "manageentities")
          ],
          ElementType::CONTACT                                                    => [
-            Errors::ERROR_FIELDS => "<span class='error'> " . __("All new contact fields are not filled.", "manageentities") . "</span>",
-            Errors::ERROR_ADD    => "<span class='error'> " . __("An error happend while saving the contact.", "manageentities") . "</span>",
-            Errors::ERROR_UPDATE => "<span class='error'> " . __("An error happend while updating the contact.", "manageentities") . "</span>",
+            Errors::ERROR_FIELDS => "<span class='red'> " . __("All new contact fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span class='red'> " . __("An error happend while saving the contact.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span class='red'> " . __("An error happend while updating the contact.", "manageentities") . "</span>",
             Status::UPDATED      => __("Contact successfully updated.", "manageentities"),
             Status::ADDED        => __("Contact successfully added.", "manageentities"),
             Status::SAVED        => __("Contact saved in base", "manageentities"),
             Status::NOT_SAVED    => __("Contact informations not updated in base", "manageentities")
          ],
          ElementType::CONTRACT                                                   => [
-            Errors::ERROR_FIELDS     => "<span class='error'> " . __("All new contract fields are not filled.", "manageentities") . "</span>",
-            Errors::ERROR_ADD        => "<span class='error'> " . __("An error happend while saving the contract.", "manageentities") . "</span>",
-            Errors::ERROR_ADD_PDF    => "<span class='error'> " . __("An error happend while uploading the document.", "manageentities") . "</span>",
-            Errors::ERROR_NAME_EXIST => "<span class='error'> " . __("Contract name already exists.", "manageentities") . "</span>",
-            Errors::ERROR_UPDATE     => "<span class='error'> " . __("An error happend while updating the contract.", "manageentities") . "</span>",
+            Errors::ERROR_FIELDS     => "<span class='red'> " . __("All new contract fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD        => "<span class='red'> " . __("An error happend while saving the contract.", "manageentities") . "</span>",
+            Errors::ERROR_ADD_PDF    => "<span class='red'> " . __("An error happend while uploading the document.", "manageentities") . "</span>",
+            Errors::ERROR_NAME_EXIST => "<span class='red'> " . __("Contract name already exists.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE     => "<span class='red'> " . __("An error happend while updating the contract.", "manageentities") . "</span>",
             Status::UPDATED          => __("Contract successfully updated", "manageentities"),
             Status::ADDED            => __("Contract successfully added", "manageentities"),
             Status::PDF_ADDED        => __("Document successfully added", "manageentities"),
@@ -221,11 +221,11 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             Status::NOT_SAVED        => __("Contract informations not updated in base", "manageentities")
          ],
          ElementType::CONTRACT_MANAGEMENT_TYPE                                   => [
-            Errors::ERROR_FIELDS     => "<span class='error'> " . __("All new contract management type fields are not filled.", "manageentities") . "</span>",
-            Errors::ERROR_ADD        => "<span class='error'> " . __("An error happend while saving the contract management type.", "manageentities") . "</span>",
-            Errors::ERROR_NAME_EXIST => "<span class='error'> " . __("Contract management type name already exists.", "manageentities") . "</span>",
-            Errors::ERROR_UPDATE     => "<span class='error'> " . __("An error happend while updating the contract management type.", "manageentities") . "</span>",
-            Errors::ERROR_DELETE     => "<span class='error'> " . __("An error happend while deleting the contract management type.", "manageentities") . "</span>",
+            Errors::ERROR_FIELDS     => "<span class='red'> " . __("All new contract management type fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD        => "<span class='red'> " . __("An error happend while saving the contract management type.", "manageentities") . "</span>",
+            Errors::ERROR_NAME_EXIST => "<span class='red'> " . __("Contract management type name already exists.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE     => "<span class='red'> " . __("An error happend while updating the contract management type.", "manageentities") . "</span>",
+            Errors::ERROR_DELETE     => "<span class='red'> " . __("An error happend while deleting the contract management type.", "manageentities") . "</span>",
             Status::UPDATED          => __("Contract management type successfully updated", "manageentities"),
             Status::ADDED            => __("Contract management type successfully added", "manageentities"),
             Status::SAVED            => __("Contract management type saved in base", "manageentities"),
@@ -233,28 +233,28 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             Status::DELETED          => __("Contract management type succesfully deleted.", "manageentities")
          ],
          ElementType::CRIPRICE                                                   => [
-            Errors::ERROR_FIELDS => "<span class='error'> " . __("All new fields are not filled.", "manageentities") . "</span>",
-            Errors::ERROR_ADD    => "<span class='error'> " . __("An error happend while saving the price.", "manageentities") . "</span>",
-            Errors::ERROR_UPDATE => "<span class='error'> " . __("An error happend while updating the price.", "manageentities") . "</span>",
-            Errors::ERROR_DELETE => "<span class='error'> " . __("An error happend while deleting the price.", "manageentities") . "</span>",
+            Errors::ERROR_FIELDS => "<span class='red'> " . __("All new fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span class='red'> " . __("An error happend while saving the price.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span class='red'> " . __("An error happend while updating the price.", "manageentities") . "</span>",
+            Errors::ERROR_DELETE => "<span class='red'> " . __("An error happend while deleting the price.", "manageentities") . "</span>",
             Status::UPDATED      => __("Price successfully updated", "manageentities"),
             Status::ADDED        => __("Price successfully added", "manageentities"),
             Status::SAVED        => __("Price saved in base", "manageentities"),
             Status::DELETED      => __("Price succesfully deleted.", "manageentities")
          ],
          ElementType::INTERVENTION                                               => [
-            Errors::ERROR_FIELDS => "<span class='error'> " . __("All new intervention fields are not filled.", "manageentities") . "</span>",
-            Errors::ERROR_ADD    => "<span class='error'> " . __("An error happend while saving the intervention.", "manageentities") . "</span>",
-            Errors::ERROR_UPDATE => "<span class='error'> " . __("An error happend while updating the intervention.", "manageentities") . "</span>",
+            Errors::ERROR_FIELDS => "<span class='red'> " . __("All new intervention fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span class='red'> " . __("An error happend while saving the intervention.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span class='red'> " . __("An error happend while updating the intervention.", "manageentities") . "</span>",
             Status::UPDATED      => __("Intervention successfully updated.", "manageentities"),
             Status::ADDED        => __("Intervention successfully added.", "manageentities"),
             Status::SAVED        => __("Intervention saved in base", "manageentities"),
             Status::NOT_SAVED    => __("Intervention informations not updated in base", "manageentities")
          ],
          ElementType::ALL                                                        => [
-            Errors::ERROR_FIELDS => "<span class='error'> " . __("All fields are not filled.", "manageentities") . "</span>",
-            Errors::ERROR_ADD    => "<span class='error'> " . __("An error happend while saving the informations.", "manageentities") . "</span>",
-            Errors::ERROR_UPDATE => "<span class='error'> " . __("An error happend while updating the informations.", "manageentities") . "</span>",
+            Errors::ERROR_FIELDS => "<span class='red'> " . __("All fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span class='red'> " . __("An error happend while saving the informations.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span class='red'> " . __("An error happend while updating the informations.", "manageentities") . "</span>",
             Status::UPDATED      => __("All infomations successfully updated.", "manageentities"),
             Status::ADDED        => __("All informations successfully added.", "manageentities"),
             Status::SAVED        => __("All informations saved in base", "manageentities"),
@@ -265,7 +265,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          ElementType::ENTITY . ElementType::INTERVENTION                         => [Status::ADDED => __("Entity and intervention successfully added", "manageentities")],
          ElementType::CONTRACT . ElementType::INTERVENTION                       => [Status::ADDED => __("Contract and intervention successfully added", "manageentities")],
          ElementType::ENTITY . ElementType::CONTRACT . ElementType::INTERVENTION => [Status::ADDED => __("Entity, intervention and contract successfully added", "manageentities")],
-         "mandatory_field"                                                       => "<span class='error'> * </span>",
+         "mandatory_field"                                                       => "<span class='red'> * </span>",
          "message_info"                                                          => _n("Information", "Informations", 1),
          "message_error"                                                         => __("Warning"),
          "irreversible_action"                                                   => __("This action is irreversible, Continue ?", "manageentities")
@@ -312,10 +312,12 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $pView->updateTabTitle(1, $entity->fields['name'], "div#mytabsentity", $entity, $this->getMessage(ElementType::ENTITY, Status::SAVED));
             $pView->updateImgTabTitle(false, "'img_" . $entity->getType() . "1'", $this->getMessage(ElementType::ENTITY, Status::SAVED));
             $this->deleteError(Errors::ERROR_ENTITY, Errors::ERROR_ADD);
-            return ["result" => Status::UPDATED, "message" => $this->getMessage(ElementType::ENTITY, Status::UPDATED)];
+            return ["result" => Status::UPDATED,
+                    "message" => $this->getMessage(ElementType::ENTITY, Status::UPDATED)];
          } else {
             $this->addError(Errors::ERROR_ENTITY, Errors::ERROR_UPDATE, 'true');
-            return ["result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_UPDATE)];
+            return ["result" => Status::NOT_UPDATED,
+                    "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_UPDATE)];
          }
       } else {
          // Add entity
@@ -327,12 +329,14 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $pView->updateTabTitle(1, $entity->fields['name'], "div#mytabsentity", $entity, $this->getMessage(ElementType::ENTITY, Status::SAVED), true);
             $pView->updateImgTabTitle(false, "'img_" . $entity->getType() . "1'", $this->getMessage(ElementType::ENTITY, Status::SAVED));
             $this->deleteError(Errors::ERROR_ENTITY, Errors::ERROR_ADD);
-            return ["result" => Status::ADDED, "message" => $this->getMessage(ElementType::ENTITY, Status::ADDED)];
+            return ["result" => Status::ADDED,
+                    "message" => $this->getMessage(ElementType::ENTITY, Status::ADDED)];
          } else {
             $this->addError(Errors::ERROR_ENTITY, Errors::ERROR_ADD, 'true');
             unset($entity->fields['id']);
             if (isset($datas['cause'])) {
-               $arrayRes = ["result" => Status::NOT_ADDED, "cause" => $datas['cause']];
+               $arrayRes = ["result" => Status::NOT_ADDED,
+                            "cause" => $datas['cause']];
                switch ($datas['cause']) {
                   case Errors::ERROR_NAME_EXIST:
                      $arrayRes['message'] = $this->getMessage(ElementType::ENTITY, Errors::ERROR_NAME_EXIST);
@@ -343,7 +347,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                }
                return $arrayRes;
             } else {
-               return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_ADD)];
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_ADD)];
             }
          }
       }
@@ -368,9 +373,10 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                "_tag_filename"         => $_POST['_tag_filename']
             ];
 
-            $doc->check(-1, UPDATE, $input);
+            $doc->check(-1, CREATE, $input);
 
             if ($newID = $doc->add($input)) {
+
                $pView->showDialog(_n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Status::PDF_ADDED));
 
                $item = $this->getContract();
@@ -410,13 +416,15 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          if (isset($entity->fields['id']) && $entity->fields['id'] != "") {
             $contract->fields['entities_id'] = $entity->fields['id'];
          } else {
-            return ["result" => Action::ADD_ONLY_ENTITY, "from" => $contract->getType()];
+            return ["result" => Action::ADD_ONLY_ENTITY,
+                    "from" => $contract->getType()];
          }
       } else {
          if (isset($_POST['new_contract_entity_id'])) {
             $contract->fields['entities_id'] = $_POST['new_contract_entity_id'];
          } else {
-            return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_ENTITY)];
+            return ["result" => Status::NOT_ADDED,
+                    "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_ENTITY)];
          }
       }
 
@@ -431,11 +439,13 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $pView->changeBtnName("btnAddContract", __("Update this contract only", "manageentities"));
             $this->deleteError(Errors::ERROR_CONTRACT, Errors::ERROR_UPDATE);
             $this->setIsContractTemplate(0);
-            $pView->showFormAddContractMangementType($contract);
-            return ["result" => Status::UPDATED, "message" => $this->getMessage(ElementType::CONTRACT, Status::UPDATED)];
+            $pView->showFormAddContractManagementType($contract);
+            return ["result" => Status::UPDATED,
+                    "message" => $this->getMessage(ElementType::CONTRACT, Status::UPDATED)];
          } else {
             $this->addError(Errors::ERROR_CONTRACT, Errors::ERROR_ADD, 'true');
-            return ["result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::CONTRACT, Errors::ERROR_UPDATE)];
+            return ["result" => Status::NOT_UPDATED,
+                    "message" => $this->getMessage(ElementType::CONTRACT, Errors::ERROR_UPDATE)];
          }
       } else {
          // Add contract
@@ -452,17 +462,19 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $pView->updateTabTitle(1, $strTitleTab, "div#mytabscontract", $contract, $this->getMessage(ElementType::CONTRACT, Status::SAVED), true);
             $pView->updateImgTabTitle(false, "'img_" . $contract->getType() . "1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED));
             $this->setIsContractTemplate(0);
-            $pView->showFormAddContractMangementType($contract);
+            $pView->showFormAddContractManagementType($contract);
             $pView->showFormAddPDFcontract();
             $pView->removeElementFromView("row_contract_template");
 
-            return ["result" => Status::ADDED, "message" => $this->getMessage(ElementType::CONTRACT, Status::ADDED)];
+            return ["result" => Status::ADDED,
+                    "message" => $this->getMessage(ElementType::CONTRACT, Status::ADDED)];
          } else {
             unset($contract->fields['id']);
             $this->addError(Errors::ERROR_CONTRACT, Errors::ERROR_ADD, 'true');
 
             if (isset($datas['cause'])) {
-               $arrayRes = ["result" => Status::NOT_ADDED, "cause" => $datas['cause']];
+               $arrayRes = ["result" => Status::NOT_ADDED,
+                            "cause" => $datas['cause']];
                switch ($datas['cause']) {
                   case Errors::ERROR_NAME_EXIST:
                      $arrayRes['message'] = $this->getMessage(ElementType::CONTRACT, Errors::ERROR_NAME_EXIST);
@@ -473,7 +485,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                }
                return $arrayRes;
             } else {
-               return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::CONTRACT, Errors::ERROR_ADD)];
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::CONTRACT, Errors::ERROR_ADD)];
             }
          }
       }
@@ -493,10 +506,12 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $pView->changeElementVisibility("btnDeleteContractManagementType", true);
             $pView->updateTabTitle(1, $contract->fields['name'], "div#mytabscontract", $contract, $this->getMessage(ElementType::CONTRACT, Status::SAVED));
             $this->deleteError(Errors::ERROR_CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_UPDATE);
-            return ["result" => Status::UPDATED, "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Status::UPDATED)];
+            return ["result" => Status::UPDATED,
+                    "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Status::UPDATED)];
          } else {
             $this->addError(Errors::ERROR_CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_UPDATE, 'true');
-            return ["result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_UPDATE)];
+            return ["result" => Status::NOT_UPDATED,
+                    "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_UPDATE)];
          }
       } else {
          // Add contract managment type
@@ -514,13 +529,15 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
             $pView->updateTabTitle(1, $contract->fields['name'], "div#mytabscontract", $contract, $this->getMessage(ElementType::CONTRACT, Status::SAVED));
 
-            return ["result" => Status::ADDED, "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Status::ADDED)];
+            return ["result" => Status::ADDED,
+                    "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Status::ADDED)];
          } else {
             unset($contractManagementType->fields['id']);
             $this->addError(Errors::ERROR_CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_ADD, 'true');
 
             if (isset($datas['cause'])) {
-               $arrayRes = ["result" => Status::NOT_ADDED, "cause" => $datas['cause']];
+               $arrayRes = ["result" => Status::NOT_ADDED,
+                            "cause" => $datas['cause']];
                switch ($datas['cause']) {
                   case Errors::ERROR_NAME_EXIST:
                      $arrayRes['message'] = $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_NAME_EXIST);
@@ -531,7 +548,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                }
                return $arrayRes;
             } else {
-               return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_ADD)];
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_ADD)];
             }
          }
       }
@@ -555,13 +573,15 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          if (isset($entity->fields['id']) && $entity->fields['id'] != "") {
             $contact->fields['entities_id'] = $entity->fields['id'];
          } else {
-            return ["result" => Action::ADD_ONLY_ENTITY, "from" => $contact->getType()];
+            return ["result" => Action::ADD_ONLY_ENTITY,
+                    "from" => $contact->getType()];
          }
       } else {
          if (isset($_POST['new_contact_entity_id'])) {
             $contact->fields['entities_id'] = $_POST['new_contact_entity_id'];
          } else {
-            return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::CONTACT, Errors::ERROR_ENTITY)];
+            return ["result" => Status::NOT_ADDED,
+                    "message" => $this->getMessage(ElementType::CONTACT, Errors::ERROR_ENTITY)];
          }
       }
 
@@ -585,10 +605,12 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $pView->updateTabTitle($_POST['fakeid_new_contact'], $strTitleTab, "div#mytabscontacts", $contact, $this->getMessage(ElementType::CONTACT, Status::SAVED));
             //                  $pView->updateImgTabTitle(false,"img_".$contact->getType().$_POST['fakeid_new_contact'],$this->getMessage("contact_saved_db"));
             $pView->changeBtnName("btnAddContact" . $_POST['fakeid_new_contact'], __("Update this contact only", "manageentities"));
-            return ["result" => Status::UPDATED, "message" => $this->getMessage(ElementType::CONTACT, Status::UPDATED)];
+            return ["result" => Status::UPDATED,
+                    "message" => $this->getMessage(ElementType::CONTACT, Status::UPDATED)];
          } else {
             $this->addError(Errors::ERROR_CONTACT, Errors::ERROR_ADD, 'true');
-            return ["result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::CONTACT, Errors::ERROR_UPDATE)];
+            return ["result" => Status::NOT_UPDATED,
+                    "message" => $this->getMessage(ElementType::CONTACT, Errors::ERROR_UPDATE)];
          }
       } else {
          // Add contact
@@ -613,16 +635,19 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $pView->updateTabTitle($_POST['fakeid_new_contact'], $strTitleTab, "div#mytabscontacts", $contact, $this->getMessage(ElementType::CONTACT, Status::SAVED), true);
                $pView->updateImgTabTitle(false, "'img_" . $contact->getType() . $_POST['fakeid_new_contact'] . "'", $this->getMessage(ElementType::CONTACT, Status::SAVED));
 
-               return ["result" => Status::ADDED, "message" => $this->getMessage(ElementType::CONTACT, Status::ADDED)];
+               return ["result" => Status::ADDED,
+                       "message" => $this->getMessage(ElementType::CONTACT, Status::ADDED)];
             } else {
                unset($contact->fields['id']);
                $this->addError(Errors::ERROR_CONTACT, Errors::ERROR_ADD, 'true');
-               return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::CONTACT, Errors::ERROR_ADD)];
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::CONTACT, Errors::ERROR_ADD)];
             }
          } else {
             unset($contact->fields['id']);
             $this->addError(Errors::ERROR_CONTACT, Errors::ERROR_ADD, 'true');
-            return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::CONTACT, Errors::ERROR_ADD)];
+            return ["result" => Status::NOT_ADDED,
+                    "message" => $this->getMessage(ElementType::CONTACT, Errors::ERROR_ADD)];
          }
       }
    }
@@ -653,7 +678,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          if (isset($_POST['new_intervention_entity_id'])) {
             $intervention->fields['entities_id'] = $_POST['new_intervention_entity_id'];
          } else {
-            return ["result" => Errors::ERROR_FIELDS, "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_FIELDS)];
+            return ["result" => Errors::ERROR_FIELDS,
+                    "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_FIELDS)];
          }
       }
 
@@ -670,12 +696,14 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          if (isset($_POST['new_intervention_contract_id']) && $_POST['new_intervention_contract_id'] > 0) {
             $intervention->fields['contracts_id'] = $_POST['new_intervention_contract_id'];
          } else {
-            return ["result" => Errors::ERROR_FIELDS, "message" => $this->getMessage(ElementType::CONTRACT, Errors::ERROR_FIELDS)];
+            return ["result" => Errors::ERROR_FIELDS,
+                    "message" => $this->getMessage(ElementType::CONTRACT, Errors::ERROR_FIELDS)];
          }
       }
 
       if ($cpt == 2) {
-         return ["result" => Action::ADD_ENTITY_AND_CONTRACT, "from" => $intervention->getType()];
+         return ["result" => Action::ADD_ENTITY_AND_CONTRACT,
+                 "from" => $intervention->getType()];
       } else if ($cpt == 1) {
          $arrayRes["from"] = $intervention->getType();
          return $arrayRes;
@@ -733,16 +761,19 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
                $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
                $interventionSkateholder->displayTabContentForItem($intervention);
-               return ["result" => Status::UPDATED, "message" => $this->getMessage(ElementType::INTERVENTION, Status::UPDATED)];
+               return ["result" => Status::UPDATED,
+                       "message" => $this->getMessage(ElementType::INTERVENTION, Status::UPDATED)];
 
             } else {
                $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true');
-               return ["result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_UPDATE)];
+               return ["result" => Status::NOT_UPDATED,
+                       "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_UPDATE)];
             }
 
          } else {
             $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true');
-            return ["result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_UPDATE)];
+            return ["result" => Status::NOT_UPDATED,
+                    "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_UPDATE)];
          }
 
       } else {
@@ -770,23 +801,27 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
                   $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
                   $interventionSkateholder->displayTabContentForItem($intervention);
-                  return ["result" => Status::ADDED, "message" => $this->getMessage(ElementType::INTERVENTION, Status::ADDED)];
+                  return ["result" => Status::ADDED,
+                          "message" => $this->getMessage(ElementType::INTERVENTION, Status::ADDED)];
 
                } else {
                   $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
-                  return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_ADD)];
+                  return ["result" => Status::NOT_ADDED,
+                          "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_ADD)];
                }
 
             } else {
                $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, true, $_POST['fakeid_new_intervention']);
-               return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_ADD)];
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_ADD)];
             }
 
          } else {
             $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, true, $_POST['fakeid_new_intervention']);
             unset($intervention->fields['id']);
             if (isset($datas['cause'])) {
-               $arrayRes = ["result" => Status::NOT_ADDED, "cause" => $datas['cause']];
+               $arrayRes = ["result" => Status::NOT_ADDED,
+                            "cause" => $datas['cause']];
                switch ($datas['cause']) {
                   case Errors::ERROR_NAME_EXIST:
                      $arrayRes['message'] = $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_NAME_EXIST);
@@ -797,7 +832,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                }
                return $arrayRes;
             } else {
-               return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_ADD)];
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::INTERVENTION, Errors::ERROR_ADD)];
             }
          }
       }
@@ -829,9 +865,11 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
       if ($error) {
          $this->addError(Errors::ERROR_CRIPRICE, Errors::ERROR_DELETE, 'true');
-         return ["result" => Status::NOT_DELETED, "message" => $this->getMessage(ElementType::CRIPRICE, Errors::ERROR_DELETE)];
+         return ["result" => Status::NOT_DELETED,
+                 "message" => $this->getMessage(ElementType::CRIPRICE, Errors::ERROR_DELETE)];
       } else {
-         return ["result" => Status::DELETED, "message" => $this->getMessage(ElementType::CRIPRICE, Status::DELETED)];
+         return ["result" => Status::DELETED,
+                 "message" => $this->getMessage(ElementType::CRIPRICE, Status::DELETED)];
       }
    }
 
@@ -854,11 +892,13 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $pView->updateListItems($intervention, $_POST['fakeid_new_intervention'], $criPrice, Status::UPDATED);
 
             $this->deleteError(Errors::ERROR_CRIPRICE, Errors::ERROR_UPDATE);
-            return ["result" => Status::UPDATED, "message" => $this->getMessage(ElementType::CRIPRICE, Status::UPDATED)];
+            return ["result" => Status::UPDATED,
+                    "message" => $this->getMessage(ElementType::CRIPRICE, Status::UPDATED)];
 
          } else {
             $this->addError(Errors::ERROR_CRIPRICE, Errors::ERROR_ADD, 'true');
-            return ["result" => Status::NOT_UPDATED, "message" => $this->getMessage(ElementType::CRIPRICE, Errors::ERROR_UPDATE)];
+            return ["result" => Status::NOT_UPDATED,
+                    "message" => $this->getMessage(ElementType::CRIPRICE, Errors::ERROR_UPDATE)];
          }
 
       } else {
@@ -877,17 +917,20 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $pView->updateListItems($intervention, $_POST['fakeid_new_intervention'], $criPrice, Status::ADDED);
 
             $this->deleteError(Errors::ERROR_CRIPRICE, Errors::ERROR_ADD);
-            return ["result" => Status::ADDED, "message" => $this->getMessage(ElementType::CRIPRICE, Status::ADDED)];
+            return ["result" => Status::ADDED,
+                    "message" => $this->getMessage(ElementType::CRIPRICE, Status::ADDED)];
 
          } else {
             $this->addError(Errors::ERROR_CRIPRICE, Errors::ERROR_ADD, 'true');
             unset($criPrice->fields['id']);
             if (isset($datas['cause'])) {
-               $arrayRes            = ["result" => Status::NOT_ADDED, "cause" => $datas['cause']];
+               $arrayRes            = ["result" => Status::NOT_ADDED,
+                                       "cause" => $datas['cause']];
                $arrayRes['message'] = $this->getMessage(ElementType::CRIPRICE, Errors::ERROR_ADD);
                return $arrayRes;
             } else {
-               return ["result" => Status::NOT_ADDED, "message" => $this->getMessage(ElementType::CRIPRICE, Errors::ERROR_ADD)];
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::CRIPRICE, Errors::ERROR_ADD)];
             }
          }
       }
@@ -912,10 +955,12 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          $this->setContractManagementType($objContractType);
          $pView->reinitContractManagementType(ElementType::CONTRACT_MANAGEMENT_TYPE);
          $this->deleteError(Errors::ERROR_CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_DELETE);
-         return ["result" => Status::DELETED, "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Status::DELETED)];
+         return ["result" => Status::DELETED,
+                 "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Status::DELETED)];
       } else {
          $this->addError(Errors::ERROR_CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_DELETE, 'true');
-         return ["result" => Status::NOT_DELETED, "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_DELETE)];
+         return ["result" => Status::NOT_DELETED,
+                 "message" => $this->getMessage(ElementType::CONTRACT_MANAGEMENT_TYPE, Errors::ERROR_DELETE)];
       }
    }
 
@@ -926,7 +971,10 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
       if ($item->isNewID($ID)) {
          return false;
       }
-      if (($item->getType() != 'Ticket') && ($item->getType() != 'KnowbaseItem') && ($item->getType() != 'Reminder') && !Session::haveRight('document', READ)) {
+      if (($item->getType() != 'Ticket')
+          && ($item->getType() != 'KnowbaseItem')
+          && ($item->getType() != 'Reminder')
+          && !Session::haveRight('document', READ)) {
          return false;
       }
 
