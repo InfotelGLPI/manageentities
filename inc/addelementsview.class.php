@@ -1259,9 +1259,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       return $contractContent;
    }
 
-   private function showListPDFcontract() {
+   function showListPDFcontract($display = true) {
       global $DB;
-
+      $ret = "";
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
       $item         = $this->pModel->getContract();
 
@@ -1290,14 +1290,14 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       if ($number) {
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='6' class='center'>";
-         echo __("Document list", "manageentities");
-         echo "</th>";
-         echo "</tr>";
+         $ret.= "<tr class='tab_bg_1'>";
+         $ret.= "<th colspan='6' class='center'>";
+         $ret.= __("Document list", "manageentities");
+         $ret.= "</th>";
+         $ret.= "</tr>";
 
 
-         echo "<tr class='tab_bg_1' >";
+         $ret.= "<tr class='tab_bg_1' >";
 
          $columns = ['name'      => __('Name'),
                      'entity'    => __('Entity'),
@@ -1307,9 +1307,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
                      'assocdate' => __('Date')];
 
          foreach ($columns as $key => $val) {
-            echo "<td style='font-weight:bold;width:16%' class='center'>" . $val . "</td>";
+            $ret.= "<td style='font-weight:bold;width:16%' class='center'>" . $val . "</td>";
          }
-         echo "</tr>";
+         $ret.= "</tr>";
          $used = [];
 
          // Don't use this for document associated to document
@@ -1337,18 +1337,23 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
             }
             $used[$docID] = $docID;
 
-            echo "<tr class='tab_bg_1" . ($data["is_deleted"] ? "_2" : "") . "'>";
-            echo "<td class='center'>$link</td>";
-            echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entityID']);
-            echo "</td>";
-            echo "<td class='left'>$downloadlink</td>";
-            echo "<td class='center'>" . Dropdown::getDropdownName("glpi_documentcategories", $data["documentcategories_id"]);
-            echo "</td>";
-            echo "<td class='center'>" . $data["mime"] . "</td>";
-            echo "<td class='center'>" . Html::convDateTime($data["assocdate"]) . "</td>";
-            echo "</tr>";
+            $ret.= "<tr class='tab_bg_1" . ($data["is_deleted"] ? "_2" : "") . "'>";
+            $ret.= "<td class='center'>$link</td>";
+            $ret.= "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entityID']);
+            $ret.= "</td>";
+            $ret.= "<td class='left'>$downloadlink</td>";
+            $ret.= "<td class='center'>" . Dropdown::getDropdownName("glpi_documentcategories", $data["documentcategories_id"]);
+            $ret.= "</td>";
+            $ret.= "<td class='center'>" . $data["mime"] . "</td>";
+            $ret.= "<td class='center'>" . Html::convDateTime($data["assocdate"]) . "</td>";
+            $ret.= "</tr>";
             $i++;
          }
+      }
+      if($display){
+         echo $ret;
+      }else{
+         return $ret;
       }
    }
 

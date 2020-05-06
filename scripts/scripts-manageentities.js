@@ -41,7 +41,23 @@ function showFormAddPDFContract(textTitle, btnYes, btnNo) {
                         text: btnYes,
                         click: function () {
                             $('#add-form-contract').submit();
+                        
                             $(this).dialog("close");
+                            $.ajax({
+                                method: 'GET',
+                                url: ("../ajax/" + "updateDocumentList.php"),
+
+                                data: {
+                                    action: "refresh",
+                                },
+
+                            }).done(function (data) {
+                                $("#tbl_list_pdf_contract").html(data);
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                window.console.log(textStatus);
+                                window.console.log(errorThrown);
+                            });
+
                         }
                     }, {
                         text: btnNo,
@@ -50,7 +66,6 @@ function showFormAddPDFContract(textTitle, btnYes, btnNo) {
                         }
                     }]
     });
-
     $('#form-add-contract').dialog('open');
 
 }

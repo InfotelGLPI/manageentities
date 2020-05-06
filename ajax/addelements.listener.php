@@ -429,7 +429,9 @@ switch ($_POST ['action']) {
 
 
    case Action::ADD_NEW_CONTRACT_PDF:
-      $pModel->addPDFContractToBase($pView);
+      $addContractOK = $pModel->addPDFContractToBase($pView);
+      $_SESSION["manageentities"]["add_doc_status"] = $addContractOK;
+
       break;
 
    case Action::REINIT_FORMS:
