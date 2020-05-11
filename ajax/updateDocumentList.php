@@ -115,7 +115,6 @@ $( '#alert-message' ).dialog({
             return false;
       }
     });
-    console.log('ça passe');
     $('#alert-message').dialog('open');");
 
 
