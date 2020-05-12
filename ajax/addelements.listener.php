@@ -370,6 +370,9 @@ switch ($_POST ['action']) {
          $pModel->setIsContractTemplate(1);
          $pModel->setContract($oldContract);
          //         INFOTEL : MODIFICATION PRESALES
+         if (!isset($_POST["paramshide"])) {
+            $_POST["paramshide"] = false;
+         }
          $contractContent = $pView->showFormAddContract(["presales" => $_POST["paramshide"]]);
          //        INFOTEL
          $contractContent['params']['action'] = Action::ADD_ONLY_CONTRACT;

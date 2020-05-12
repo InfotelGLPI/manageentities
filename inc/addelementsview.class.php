@@ -1297,7 +1297,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          $ret.= "</tr>";
 
 
-         $ret.= "<tr class='tab_bg_1' >";
+         $ret.= "<tr class='tab_bg_1'>";
 
          $columns = ['name'      => __('Name'),
                      'entity'    => __('Entity'),
@@ -1307,7 +1307,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
                      'assocdate' => __('Date')];
 
          foreach ($columns as $key => $val) {
-            $ret.= "<td style='font-weight:bold;width:16%' class='center'>" . $val . "</td>";
+            $ret.= "<th>" . $val . "</th>";
          }
          $ret.= "</tr>";
          $used = [];
