@@ -376,8 +376,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $doc->check(-1, CREATE, $input);
 
             if ($newID = $doc->add($input)) {
-
-               $pView->showDialog(_n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Status::PDF_ADDED));
+               $vals=  ["result" => Status::ADDED,
+                  "message" => $this->getMessage(ElementType::CONTRACT, Status::PDF_ADDED)];
+//               $pView->showResult(_n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Status::PDF_ADDED));
 
                $item = $this->getContract();
                $arr  = $this->getQueryForDFContract($item);
@@ -391,19 +392,24 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                   $number = false;
                }
 
-               if ($number && $number > 1) {
-                  $pView->addPDFContractToView($doc, false);
-               } else {
-                  $pView->addPDFContractToView($doc, true);
-               }
+//               if ($number && $number > 1) {
+//                  $pView->addPDFContractToView($doc, false);
+//               } else {
+//                  $pView->addPDFContractToView($doc, true);
+//               }
             } else {
-               $pView->showDialog(_n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Errors::ERROR_ADD_PDF));
+               $vals=  ["result" => Status::NOT_ADDED,
+                  "message" => $this->getMessage(ElementType::CONTRACT, Errors::ERROR_ADD_PDF)];
+//               $pView->showDialog(_n("Information", "Informations", 1), $this->getMessage(ElementType::CONTRACT, Errors::ERROR_ADD_PDF));
             }
          }
       } else {
-         $pView->showDialog(_n("Information", "Informations", 1), $this->getMessage(ElementType::ALL, Errors::ERROR_FIELDS));
+         $vals=  ["result" => Status::NOT_ADDED,
+            "message" => $this->getMessage(ElementType::ALL, Status::ERROR_FIELDS)];
+//         $pView->showDialog(_n("Information", "Informations", 1), $this->getMessage(ElementType::ALL, Errors::ERROR_FIELDS));
       }
       unset($_SESSION['MESSAGE_AFTER_REDIRECT']);
+      return $vals;
    }
 
    public function addContractToBase($pView) {
