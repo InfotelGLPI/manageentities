@@ -72,10 +72,10 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
             if ($data['users_id'] != 0) {
                if ($remove_tag) {
                   $techs['notremove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
-                                                                                $data["name"], $data["realname"], $data["firstname"]);
+                                                                                $data["name"], $data["realname"], $data["firstname"], 0);
                } else {
                   $techs[$data['users_id']] = $dbu->formatUserName($data["users_id"],
-                                                                   $data["name"], $data["realname"], $data["firstname"]);
+                                                                   $data["name"], $data["realname"], $data["firstname"], 0);
                }
             }
          }
@@ -95,10 +95,10 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
             if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {
                if ($remove_tag) {
                   $techs['remove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
-                                                                             $data["name"], $data["realname"], $data["firstname"]);
+                                                                             $data["name"], $data["realname"], $data["firstname"], 0);
                } else {
                   $techs[$data['users_id']] = $dbu->formatUserName($data["users_id"],
-                                                                   $data["name"], $data["realname"], $data["firstname"]);
+                                                                   $data["name"], $data["realname"], $data["firstname"], 0);
                }
             }
          }
