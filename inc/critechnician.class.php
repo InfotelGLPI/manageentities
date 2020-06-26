@@ -68,7 +68,7 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
                WHERE `tickets_id` = '" . $tickets_id . "'";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             if ($data['users_id'] != 0) {
                if ($remove_tag) {
                   $techs['notremove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
@@ -91,7 +91,7 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
                WHERE `tickets_id` = '" . $tickets_id . "' ";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {
                if ($remove_tag) {
                   $techs['remove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],

@@ -135,7 +135,7 @@ class PluginManageentitiesPreference extends CommonDBTM {
 
       $result = $DB->query($query);
       $users  = [];
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $DB->fetchAssoc($result)) {
          $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
       }
       echo "<tr class='tab_bg_1 center'><td>" . __('Default list of Business for the general monitoring', 'manageentities') . "</td>";

@@ -260,7 +260,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
       if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);
          if ($number != 0) {
-            while ($ligne = $DB->fetch_assoc($result)) {
+            while ($ligne = $DB->fetchAssoc($result)) {
                echo "<img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $ligne["logos_id"] . "'>";
             }
          }
@@ -566,8 +566,13 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $menu['options']['company']['links']['add']    = '/plugins/manageentities/front/company.form.php';
       $menu['options']['company']['search']          = '/plugins/manageentities/front/company.php';
       $menu['options']['company']['links']['search'] = '/plugins/manageentities/front/company.php';
+      $menu['icon']                                  = self::getIcon();
 
       return $menu;
+   }
+
+   static function getIcon() {
+      return "fas fa-user-tie";
    }
 
    function getRights($interface = 'central') {

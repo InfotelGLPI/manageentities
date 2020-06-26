@@ -230,7 +230,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
          if ($DB->numrows($result) != 1) {
             return false;
          }
-         $this->fields = $DB->fetch_assoc($result);
+         $this->fields = $DB->fetchAssoc($result);
          if (is_array($this->fields) && count($this->fields)) {
             return true;
          } else {
@@ -761,7 +761,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
          if ($resultCheck = $DB->query($queryCheck)) {
             if ($DB->numrows($resultCheck) != 0) {// If the period exists return false
-               while ($data = $DB->fetch_assoc($resultCheck)) {
+               while ($data = $DB->fetchAssoc($resultCheck)) {
                   $output[] = $data;
                }
             }

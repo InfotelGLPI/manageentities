@@ -149,7 +149,7 @@ class PluginManageentitiesContract extends CommonDBTM {
       $number = $DB->numrows($result);
 
       if ($number) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
 
             $query_nodefault = "UPDATE `" . $this->getTable() . "`
             SET `is_default` = 0 WHERE `id` = " . $data["id"];
@@ -321,7 +321,7 @@ class PluginManageentitiesContract extends CommonDBTM {
 
          $used = [];
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $used[] = $data["contracts_id"];
 
             echo "<tr class='tab_bg_1" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
@@ -547,7 +547,7 @@ class PluginManageentitiesContract extends CommonDBTM {
                 AND `glpi_plugin_manageentities_contractstates`.`is_active` = 1";
 
       $result = $DB->query($query);
-      while ($data = $DB->fetch_array($result)) {
+      while ($data = $DB->fetchArray($result)) {
          if ($data['count'] > 0) {
             return true;
          }
