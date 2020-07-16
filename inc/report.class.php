@@ -78,7 +78,7 @@ class PluginManageentitiesReport extends CommonDBTM {
 
          $total_depl  = 0;
          $tickets_ids = [];
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             //time moving
             $total_depl                       += ($data['duration_moving'] * $data['number_moving']) / HOUR_TIMESTAMP;
             $tickets_ids[$data['tickets_id']] = $data['tickets_id'];
@@ -190,7 +190,7 @@ class PluginManageentitiesReport extends CommonDBTM {
                          . " AND `glpi_tickettasks`.`actiontime` != 0";
                $result = $DB->query($query);
 
-               while ($task = $DB->fetch_array($result)) {
+               while ($task = $DB->fetchArray($result)) {
                   $actiontime       += $task['actiontime'];
                   $total_actiontime += $task['actiontime'];
                }

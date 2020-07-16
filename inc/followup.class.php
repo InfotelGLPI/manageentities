@@ -226,7 +226,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       $nbTotEntity = ($resEntity ? $DB->numrows($resEntity) : 0);
 
       if ($resEntity && $nbTotEntity > 0) {
-         while ($dataEntity = $DB->fetch_array($resEntity)) {
+         while ($dataEntity = $DB->fetchArray($resEntity)) {
             $queryContract = "SELECT `glpi_contracts`.`id` AS contracts_id,
                                      `glpi_contracts`.`name` AS name,
                                      `glpi_contracts`.`num` AS num,
@@ -340,7 +340,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   $list[$num]['contracts_id']         = $dataContract['contracts_id'];
                   $list[$num]['show_on_global_gantt'] = $dataContract['show_on_global_gantt'];
 
-                  for ($i = 0; $dataContractDay = $DB->fetch_assoc($requestContractDay); $i++) {
+                  for ($i = 0; $dataContractDay = $DB->fetchAssoc($requestContractDay); $i++) {
                      $name_period = "";
                      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Daily
                         $dataContractDay["contract_type"] = $dataContract["contract_type"];
@@ -448,7 +448,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      }
                      $resTicket = $DB->query($queryTicket);
                      $date      = NULL;
-                     for ($j = 0; $dataTicket = $DB->fetch_assoc($resTicket); $j++) {
+                     for ($j = 0; $dataTicket = $DB->fetchAssoc($resTicket); $j++) {
                         $date = Html::convDate($dataTicket['date']);
                      }
 
@@ -1133,7 +1133,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
          $result = $DB->query($query);
          $users  = [];
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
          }
 

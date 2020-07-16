@@ -61,7 +61,7 @@ function update202to203() {
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             if (isset($check[$data['contractdays_id']]) && in_array($data['critypes_id'], $check[$data['contractdays_id']])) {
                continue;
             }
@@ -90,7 +90,7 @@ function update202to203() {
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
             if (isset($check[$data['contractdays_id']]) && in_array($data['critypes_id'], $check[$data['contractdays_id']])) {
                continue;
             }

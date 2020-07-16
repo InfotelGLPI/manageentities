@@ -1278,7 +1278,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          $documents = [];
          $used      = [];
          if ($numrows = $DB->numrows($result)) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = $DB->fetchAssoc($result)) {
                $documents[$data['assocID']] = $data;
                $used[$data['id']]           = $data['id'];
             }

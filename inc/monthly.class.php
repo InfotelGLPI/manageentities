@@ -106,7 +106,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
 
       //We get entities datas
       if ($resEntity && $nbTotEntity > 0) {
-         while ($dataEntity = $DB->fetch_array($resEntity)) {
+         while ($dataEntity = $DB->fetchArray($resEntity)) {
             $tabResults[$dataEntity['entities_id']]['entities_name'] = $dataEntity['entities_name'];
             $tabResults[$dataEntity['entities_id']]['entities_id']   = $dataEntity['entities_id'];
 
@@ -184,7 +184,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
 
             // We get contract days datas
             if ($resContractDay && $nbTotContractDay > 0) {
-               while ($dataContractDay = $DB->fetch_assoc($resContractDay)) {
+               while ($dataContractDay = $DB->fetchAssoc($resContractDay)) {
                   $contract_credit = 0;
 
                   // We get all cri details
@@ -380,7 +380,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
          echo "<div class = 'center red b'>" . __('Warning : There are supplementary interventions which depends on  a prestation with a earlier end date', 'manageentities') . "</div>";
          echo _n('Ticket', 'Tickets', $nb);
          echo " : ";
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $ticket = new Ticket();
             $ticket->getFromDB($data["tickets_id"]);
             echo $ticket->getLink() . "<br>";

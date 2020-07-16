@@ -173,7 +173,7 @@ function plugin_manageentities_install() {
       $result_ = $DB->query($query_);
       if ($DB->numrows($result_) > 0) {
 
-         while ($data = $DB->fetch_array($result_)) {
+         while ($data = $DB->fetchArray($result_)) {
             $query  = "UPDATE `glpi_plugin_manageentities_profiles`
                   SET `profiles_id` = '" . $data["id"] . "'
                   WHERE `id` = '" . $data["id"] . "';";
@@ -207,7 +207,7 @@ function plugin_manageentities_install() {
          $number = $DB->numrows($result);
 
          if ($number != "0") {
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                if ($data['cri_tickets_id'] == '0') {
                   $criDetail->update(['id'         => $data['cri_id'],
                                            'tickets_id' => $data['doc_tickets_id']]);
@@ -343,7 +343,7 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num) {
 
                $result = $DB->query($query);
                if ($DB->numrows($result)) {
-                  while ($datas = $DB->fetch_assoc($result)) {
+                  while ($datas = $DB->fetchAssoc($result)) {
                      $data["ITEM_4"] = $datas['price'];
                   }
                } else {

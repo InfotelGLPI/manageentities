@@ -42,12 +42,12 @@ function update214to215() {
    $query  = " SELECT * FROM `glpi_plugin_manageentities_contracts`";
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetchAssoc($result)) {
 
             $query_contractdays  = "SELECT * FROM `glpi_plugin_manageentities_contractdays` WHERE `contracts_id` = " . $data['contracts_id'].";";
             if ($result_contractdays = $DB->query($query_contractdays)) {
                if ($DB->numrows($result_contractdays) > 0) {
-                  while ($data_contractdays = $DB->fetch_assoc($result_contractdays)) {
+                  while ($data_contractdays = $DB->fetchAssoc($result_contractdays)) {
                      $query = "UPDATE `glpi_plugin_manageentities_contractdays` SET `contract_type` = " . $data['contract_type'].";";
                      $DB->query($query);
                   }

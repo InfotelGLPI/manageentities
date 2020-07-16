@@ -81,7 +81,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                   FROM `glpi_tickettasks` $join
                   WHERE `glpi_tickettasks`.`tickets_id` = '" . $item->getField('id') . "' $and";
          $result = $DB->query($query);
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $cpt = $data["cpt"];
          }
          //if ($cpt != 0) {
@@ -201,7 +201,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          echo "<th width='100px'>" . __('File') . "</th>";
          echo "</tr>";
          $i = 0;
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $i++;
             $class = " class='tab_bg_2 ";
             if ($i % 2) {
@@ -404,7 +404,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             echo "<th width='100px'>" . __('File') . "</th>";
             echo "</tr>";
 
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                echo "<tr class='tab_bg_1" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
                echo "<td class='center'>" . Html::convdate($data["date"]) . "</td>";
                echo "<td class='center'>" . $data["technicians"] . "</td>";
@@ -469,7 +469,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
       $result_contracts = $DB->query($query_contracts);
 
-      while ($data_contract = $DB->fetch_array($result_contracts)) {
+      while ($data_contract = $DB->fetchArray($result_contracts)) {
          $query = "SELECT `glpi_plugin_manageentities_contractdays`.*
           FROM `glpi_plugin_manageentities_contractdays`
           LEFT JOIN `glpi_plugin_manageentities_contractstates` ON `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id` = `glpi_plugin_manageentities_contractstates`.`id`
@@ -500,7 +500,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             }
             echo "<th>" . __('To compute', 'manageentities') . "</th>";
             echo "</tr>";
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
 
                $data['contractdays_id'] = $data['id'];
                $options['sorting_date'] = true;
@@ -676,7 +676,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       if ($numberCriDetail != 0) {
          $taskCount++;
 
-         while ($dataCriDetail = $DB->fetch_array($resultCriDetail)) {
+         while ($dataCriDetail = $DB->fetchArray($resultCriDetail)) {
             // Get cridetail Cri Price if exists
             $price         = 0;
             $critypes_name = '';
@@ -735,7 +735,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             if ($numberTask != 0) {
                $left = $contractDayValues["nbday"];
                $tech = implode('<br/>', $critechnicians->getTechnicians($dataCriDetail['tickets_id']));
-               while ($dataTask = $DB->fetch_array($resultTask)) {
+               while ($dataTask = $DB->fetchArray($resultTask)) {
                   // Init depass
                   if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'])) {
                      $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] = 0;
@@ -1007,7 +1007,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          $number = $DB->numrows($result);
 
          if ($number != 0) {
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                if ($data['cri_tickets_id'] == '0') {
                   $criDetail->update(['id'         => $data['cri_id'],
                                       'tickets_id' => $data['doc_tickets_id']]);
@@ -1116,7 +1116,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          if ($type == 'ticket') {
             $elements = [Dropdown::EMPTY_VALUE];
             $value    = 0;
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                if ((isset($cridetail['contracts_id']) ? $cridetail['contracts_id'] : 0) == $data["id"]) {
                   $selected            = true;
                   $contractSelected    = $cridetail['contracts_id'];
@@ -1137,7 +1137,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             }
             $rand = Dropdown::showFromArray('contracts_id', $elements, ['value' => $value, 'width' => $width]);
          } else {
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                if ($cridetail['contracts_id'] == $data["id"]) {
                   $contractSelected    = $cridetail['contracts_id'];
                   $contractdaySelected = $cridetail["plugin_manageentities_contractdays_id"];
@@ -1326,7 +1326,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
       if ($DB->numrows($result) > 0) {
 
-         for ($i = 0; $data = $DB->fetch_array($result); $i++) {
+         for ($i = 0; $data = $DB->fetchArray($result); $i++) {
 
             $key = $data["begin"] . "$$" . "PluginManageentitiesCriDetail" . $data["id"];
 

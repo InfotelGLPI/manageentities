@@ -200,7 +200,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                $datas = [];
                $i     = 0;
                if ($nb) {
-                  while ($data = $DB->fetch_assoc($result)) {
+                  while ($data = $DB->fetchAssoc($result)) {
 
 
                      $datas[$i]["date"] = Html::convDateTime($data['date']);
@@ -257,7 +257,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
             $datas = [];
             $i     = 0;
             if ($nb) {
-               while ($data = $DB->fetch_assoc($result)) {
+               while ($data = $DB->fetchAssoc($result)) {
 
 
                   $datas[$i]["date"] = Html::convDateTime($data['cridetails_date']);
@@ -437,7 +437,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
       $nbTotEntity = ($resEntity ? $DB->numrows($resEntity) : 0);
 
       if ($resEntity && $nbTotEntity > 0) {
-         while ($dataEntity = $DB->fetch_array($resEntity)) {
+         while ($dataEntity = $DB->fetchArray($resEntity)) {
             $queryContract = "SELECT `glpi_contracts`.`id` AS contracts_id,
                                      `glpi_contracts`.`name` AS name,
                                      `glpi_contracts`.`num` AS num,
@@ -530,7 +530,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
                   $list[$num]['contract_begin_date']  = Html::convDate($dataContract['contract_begin_date']);
                   $list[$num]['show_on_global_gantt'] = $dataContract['show_on_global_gantt'];
 
-                  for ($i = 0; $dataContractDay = $DB->fetch_assoc($requestContractDay); $i++) {
+                  for ($i = 0; $dataContractDay = $DB->fetchAssoc($requestContractDay); $i++) {
                      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Daily
                         $dataContractDay["contract_type"] = $dataContract["contract_type"];
                      }
@@ -624,7 +624,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
 
       if ($numberCriDetail != 0) {
 
-         while ($dataCriDetail = $DB->fetch_array($resultCriDetail)) {
+         while ($dataCriDetail = $DB->fetchArray($resultCriDetail)) {
 
             $join = "";
             $and  = "";
@@ -650,7 +650,7 @@ class PluginManageentitiesDashboard extends CommonGLPI {
             $conso      = 0;
 
             if ($numberTask != 0) {
-               while ($dataTask = $DB->fetch_array($resultTask)) {
+               while ($dataTask = $DB->fetchArray($resultTask)) {
 
                   // Set conso per techs
                   $tmp = PluginManageentitiesCriDetail::setConso($dataTask['actiontime'],

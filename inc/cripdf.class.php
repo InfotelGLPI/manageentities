@@ -318,7 +318,7 @@ class PluginManageentitiesCriPDF extends FPDF {
         AND `is_default` = 1";
 
       $result = $DB->query($query);
-      while ($data = $DB->fetch_array($result)) {
+      while ($data = $DB->fetchArray($result)) {
          $contact = new contact;
          $contact->GetfromDb($data["contacts_id"]);
          $manager = $contact->fields["firstname"] . " " . $contact->fields["name"];

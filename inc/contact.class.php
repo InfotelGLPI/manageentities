@@ -63,7 +63,7 @@ class PluginManageentitiesContact extends CommonDBTM {
       $number = $DB->numrows($result);
 
       if ($number) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
 
             $query_nodefault  = "UPDATE `" . $this->getTable() . "`
             SET `is_default` = 0 WHERE `id` = '" . $data["id"] . "' ";
@@ -110,7 +110,7 @@ class PluginManageentitiesContact extends CommonDBTM {
             echo "<th>&nbsp;</th>";
          echo "</tr>";
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $ID = $data["contacts_id"];
             echo "<tr class='tab_bg_1'>";
             echo "<td class='left'><a href='" . $CFG_GLPI["root_doc"] . "/front/contact.form.php?id=" . $data["id"] . "'>" . $data["name"] . " " . $data["firstname"] . "</a></td>";

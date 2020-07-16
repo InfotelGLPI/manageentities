@@ -226,7 +226,7 @@ class PluginManageentitiesCri extends CommonDBTM {
          $result = $DB->query($query);
          $number = $DB->numrows($result);
          if ($number) {
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                $desc .= $data["content"] . "\n\n";
             }
             $desc = substr($desc, 0, strlen($desc) - 2); // Suppression des retours chariot pour le dernier suivi...
@@ -398,7 +398,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             $result = $DB->query($query);
             $number = $DB->numrows($result);
             if ($number) {
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetchArray($result)) {
                   $infos_date[1] = $data["min_date"];
                   $infos_date[2] = $data["max_date"];
                }
@@ -419,7 +419,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             }
             $result  = self::getTempsPasses($join, $where, $p, $condition, $nbhour);
             $cpt_tps = 0;
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                $un_temps_passe = [];
 
                if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
@@ -524,7 +524,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                $result = $DB->query($query);
                $number = $DB->numrows($result);
                if ($number) {
-                  while ($data = $DB->fetch_array($result)) {
+                  while ($data = $DB->fetchArray($result)) {
                      $infos_date[1] = $data["min_date"];
                      $infos_date[2] = $data["max_date"];
                   }
@@ -581,7 +581,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                $result       = self::getTempsPasses($join, $where, $p, $condition, $nbhour);
                $temps_passes = [];
                $cpt_tps      = 0;
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetchArray($result)) {
                   $un_temps_passe = [];
                   if (($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) && (isset($manageentities_contract_data['contract_type']) && $manageentities_contract_data['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION)) {
                      $un_temps_passe[4] = 1;
