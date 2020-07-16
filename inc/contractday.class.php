@@ -529,13 +529,14 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       }
 
       $restrict = ["`entities_id`"  => $contract->fields['entities_id'],
-                   "`contracts_id`" => $contract->fields['id']];
+                   "`contracts_id`" => $contract->fields['id'],
+                   'ORDER' => '`begin_date` ASC, `name`'];
 
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract  = reset($pluginContracts);
 
-      $pluginContractDays = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contractdays", $restrict, '', "`begin_date` ASC, `name`");
+      $pluginContractDays = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contractdays", $restrict);
       if (count($pluginContractDays)) {
          echo "<div class='center'>";
          if ($canEdit) {

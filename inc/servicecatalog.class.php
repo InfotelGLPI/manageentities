@@ -60,7 +60,7 @@ class PluginManageentitiesServicecatalog extends CommonGLPI {
 
    static function getMenuTitle() {
 
-      return "<span class='de-em'>" . __('Manage', 'servicecatalog') . " " . __('your contracts', 'manageentities') . "</span>";
+      return __('Manage your contracts', 'manageentities');
 
    }
 

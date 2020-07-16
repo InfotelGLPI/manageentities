@@ -63,13 +63,15 @@ switch ($_POST['plugin_manageentities_tab']) {
       break;
    case "documents":
       $_SESSION['glpi_plugin_manageentities_tab'] = "documents";
-      if (Session::haveRight("document", "r") && $entity->can($_SESSION["glpiactive_entity"], 'r'))
+      if (Session::haveRight("Document", READ) && $entity->can($_SESSION["glpiactive_entity"], READ)) {
          Document::showAssociated($entity);
+      }
       break;
    case "contract":
       $_SESSION['glpi_plugin_manageentities_tab'] = "contract";
-      if (Session::haveRight("contract", "r"))
+      if (Session::haveRight("Contract", READ)) {
          $PluginManageentitiesContract->showContracts($_SESSION["glpiactive_entity"]);
+      }
       break;
    case "webapplications":
       $_SESSION['glpi_plugin_manageentities_tab'] = "webapplications";
@@ -88,10 +90,13 @@ switch ($_POST['plugin_manageentities_tab']) {
       $PluginManageentitiesEntity->showTickets($_SESSION["glpiactive_entity"]);
       if ($PluginManageentitiesCri->canView())
          $PluginManageentitiesCriDetail->showReports(0, 0, $_SESSION["glpiactive_entity"]);
-      if (Session::haveRight("document", "r") && $entity->can($_SESSION["glpiactive_entity"], 'r'))
+      if (Session::haveRight("Document", READ) && $entity->can($_SESSION["glpiactive_entity"], READ)) {
          Document::showAssociated($entity);
-      if (Session::haveRight("contract", "r"))
+      }
+      if (Session::haveRight("Contract", READ)) {
          $PluginManageentitiesContract->showContracts($_SESSION["glpiactive_entity"]);
+      }
+
       break;
    default :
       break;

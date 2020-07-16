@@ -383,7 +383,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
          if ($number != 0) {
 
-            echo "<table class='tab_cadrehov'>";
+            echo "<table class='tab_cadre_me'>";
             echo "<tr><th colspan='8'>" . __('Associated intervention reports', 'manageentities');
 
             if (Session::haveRight("document", READ)) {
@@ -1261,7 +1261,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       }
 
       $who       = $options['who'];
-      $who_group = $options['who_group'];
+      $who_group = $options['whogroup'];
       $begin     = $options['begin'];
       $end       = $options['end'];
 
@@ -1355,7 +1355,6 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                                                             $CFG_GLPI["cut"]);
             $interv[$key]["url"]        = $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" .
                                           $data['tickets_id'];
-
             $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
                                        "?action=edit_event_form" .
                                        "&itemtype=TicketTask&parentitemtype=Ticket" .

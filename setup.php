@@ -47,6 +47,8 @@ function plugin_init_manageentities() {
 
    $PLUGIN_HOOKS['item_transfer']['manageentities'] = 'plugin_item_transfer_manageentities';
 
+   $plugin = new Plugin();
+
    if (Session::getLoginUserID()) {
       Plugin::registerClass('PluginManageentitiesProfile', ['addtabon' => 'Profile']);
       Plugin::registerClass('PluginManageentitiesContract', ['addtabon' => 'Contract']);
@@ -58,12 +60,12 @@ function plugin_init_manageentities() {
       Plugin::registerClass('PluginManageentitiesInterventionSkateholder', ['addtabon' => 'PluginManageentitiesContractDay']);
       Plugin::registerClass('PluginManageentitiesCriPrice', ['addtabon' => 'PluginManageentitiesContractDay']);
 
-      if (class_exists('PluginServicecatalogMain')) {
+      if ($plugin->isActivated('servicecatalog')) {
          $PLUGIN_HOOKS['servicecatalog']['manageentities'] = ['PluginManageentitiesServicecatalog'];
       }
 
       if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
-          && !class_exists('PluginServicecatalogMain')) {
+          && !$plugin->isActivated('servicecatalog')) {
          $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = "/front/entity.php";
       }
       if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
@@ -75,10 +77,9 @@ function plugin_init_manageentities() {
                                                             'front/report_moving.form.php'     => __('Report on the movement of technicians', 'manageentities'),
                                                             'front/report_occupation.form.php' => __('Report concerning the occupation of the technicians', 'manageentities')];
 
-         $plugin = new Plugin();
+
          if (isset($_SESSION["glpi_plugin_manageentities_loaded"])
              && $_SESSION["glpi_plugin_manageentities_loaded"] == 0
-             && class_exists('PluginManageentitiesContract')
              && $plugin->isActivated("manageentities")) {
             $_SESSION["glpi_plugin_manageentities_loaded"] = 1;
             Html::redirect($CFG_GLPI['root_doc'] . "/plugins/manageentities/front/entity.php");
@@ -89,13 +90,12 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['config_page']['manageentities'] = 'front/config.form.php';
       }
 
-      if (class_exists('PluginMydashboardMenu')) {
+      if ($plugin->isActivated('servicecatalog')) {
          $PLUGIN_HOOKS['mydashboard']['manageentities'] = ["PluginManageentitiesDashboard"];
       }
 
       // Add specific files to add to the header : javascript or css
-      $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css",
-                                                         "style.css"];
+      $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css", "style.css"];
 
       $PLUGIN_HOOKS['add_javascript']['manageentities'] = ['scripts/scripts-manageentities.js',
                                                                 'scripts/jquery.form.js'];

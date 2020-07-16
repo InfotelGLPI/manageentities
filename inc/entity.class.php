@@ -220,7 +220,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                      SET `date_mod` = '" . $_SESSION["glpi_plugin_manageentities_date_mod"] . "'
                      WHERE `id` ='" . $item->getField('id') . "' ";
 
-         $result = $DB->query($query);
+         $DB->query($query);
       }
 
       return true;
@@ -246,11 +246,12 @@ class PluginManageentitiesEntity extends CommonGLPI {
       echo "<div align='center'><table width='100%'><tr><td colspan='2'>";
 
       echo "<form method='post' action='entity.form.php'>";
-      echo "<table class='tab_cadre' width='80%'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td style='padding-top:16px;'>";
+
+      echo "<table class='tab_cadre_me' align='center'>";
+      echo "<tr>";
+      echo "<th>";
       echo __('Logo');
-      echo "</td>";
+      echo "</th>";
       echo "<td>";
 
       $query = "SELECT * 
@@ -281,14 +282,16 @@ class PluginManageentitiesEntity extends CommonGLPI {
               "\" class='submit' >";
          echo "</td>";
       } else {
-         echo "<td colspan='2'>";
+         echo "<th>";
+         echo "</th>";
+         echo "<td>";
          echo "</td>";
       }
 
       echo "</tr>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='top'>" . __('Name') . " </td>";
-      echo "<td class='top'>";
+      echo "<tr>";
+      echo "<th>" . __('Name') . " </th>";
+      echo "<td>";
       if ($_SESSION["glpiactive_entity"] != 0)
          echo $entity->fields["name"];
       else
@@ -297,8 +300,8 @@ class PluginManageentitiesEntity extends CommonGLPI {
          echo " (" . $entity->fields["completename"] . ")";
       echo "</td>";
       if (isset($entity->fields["comment"])) {
-         echo "<td class='top'>";
-         echo __('Comments') . ":   </td>";
+         echo "<th >";
+         echo __('Comments') . "</th>";
          echo "<td class='top center'>" . nl2br($entity->fields["comment"]);
          echo "</td>";
       } else {
@@ -306,52 +309,52 @@ class PluginManageentitiesEntity extends CommonGLPI {
       }
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Phone') . " </td>";
+      echo "<tr><th>" . __('Phone') . " </th>";
       echo "<td>";
       if (isset($entity->fields["phonenumber"]))
          echo $entity->fields["phonenumber"];
       echo "</td>";
-      echo "<td>" . __('Fax') . " </td><td>";
+      echo "<th>" . __('Fax') . " </th><td>";
       if (isset($entity->fields["fax"]))
          echo $entity->fields["fax"];
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Website') . " </td>";
+      echo "<tr><th>" . __('Website') . " </th>";
       echo "<td>";
       if (isset($entity->fields["website"]))
          echo $entity->fields["website"];
       echo "</td>";
 
-      echo "<td>" . __('Email address') . " </td><td>";
+      echo "<th>" . __('Email address') . " </th><td>";
       if (isset($entity->fields["email"]))
          echo $entity->fields["email"];
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td  rowspan='4'>" . __('Address') . " </td>";
+      echo "<tr><th rowspan='4'>" . __('Address') . " </th>";
       echo "<td class='left' rowspan='4'>";
       if (isset($entity->fields["address"]))
          echo nl2br($entity->fields["address"]);
-      echo "<td>" . __('Postal code') . "</td>";
+      echo "<th>" . __('Postal code') . "</th>";
       echo "<td>";
       if (isset($entity->fields["postcode"]))
          echo $entity->fields["postcode"];
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('City') . " </td><td>";
+      echo "<tr>";
+      echo "<th>" . __('City') . " </th><td>";
       if (isset($entity->fields["town"]))
          echo $entity->fields["town"];
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . _x('location', 'State') . " </td><td>";
+      echo "<tr>";
+      echo "<th>" . _x('location', 'State') . " </th><td>";
       if (isset($entity->fields["state"]))
          echo $entity->fields["state"];
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Country') . " </td><td>";
+      echo "<tr>";
+      echo "<th>" . __('Country') . " </th><td>";
       if (isset($entity->fields["country"]))
          echo $entity->fields["country"];
       echo "</td></tr>";
@@ -567,6 +570,8 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $menu['options']['company']['search']          = '/plugins/manageentities/front/company.php';
       $menu['options']['company']['links']['search'] = '/plugins/manageentities/front/company.php';
       $menu['icon']                                  = self::getIcon();
+
+      $menu['icon']    = self::getIcon();
 
       return $menu;
    }

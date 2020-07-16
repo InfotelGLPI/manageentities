@@ -84,7 +84,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
       if ($number) {
          echo "<form method='post' action=\"./entity.php\">";
-         echo "<div align='center'><table class='tab_cadre center'>";
+         echo "<div align='center'><table class='tab_cadre_me center'>";
          echo "<tr><th colspan='6'>" . _n('Associated commercial', 'Associated business', 2, 'manageentities') . "</th></tr>";
          echo "<tr><th>" . __('Name') . "</th>";
          echo "<th>" . __('Phone') . "</th>";
@@ -132,7 +132,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
          if ($this->canCreate() && sizeof($instID) == 1) {
             echo "<form method='post' action=\"./entity.php\">";
-            echo "<table class='tab_cadrehov center' width='95%'>";
+            echo "<table class='tab_cadre_me center' width='95%'>";
 
             echo "<tr class='tab_bg_1'><th colspan='2'>" . _n('Associated commercial', 'Associated business', 2, 'manageentities') . "</tr><tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";

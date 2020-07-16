@@ -26,6 +26,29 @@
  --------------------------------------------------------------------------
  */
 
+.tab_cadre_me {
+   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+   border-collapse: collapse;
+   width: 80%;
+}
+
+.tab_cadre_me td, .tab_cadre_me th {
+   border: 1px solid #ddd;
+   padding: 8px;
+}
+
+.tab_cadre_me tr:nth-child(even){
+   background-color: #f2f2f2;
+}
+
+.tab_cadre_me th {
+   padding-top: 12px;
+   padding-bottom: 12px;
+   text-align: left;
+   background-color: #677f92;
+   color: white;
+}
+
 .plugin_manageentities_color {
    text-align: center;
    margin: 0px auto 5px auto;

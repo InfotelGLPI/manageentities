@@ -304,7 +304,7 @@ class PluginManageentitiesContract extends CommonDBTM {
 
       if ($number) {
          echo "<form method='post' action=\"./entity.php\">";
-         echo "<div align='center'><table class='tab_cadrehov center'>";
+         echo "<div align='center'><table class='tab_cadre_me center'>";
          echo "<tr><th>" . __('Name') . "</th>";
          echo "<th>" . _x('phone', 'Number') . "</th>";
          echo "<th>" . __('Comments') . "</th>";
@@ -324,7 +324,7 @@ class PluginManageentitiesContract extends CommonDBTM {
          while ($data = $DB->fetchArray($result)) {
             $used[] = $data["contracts_id"];
 
-            echo "<tr class='tab_bg_1" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
+            echo "<tr class='" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
             echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/contract.form.php?id=" . $data["contracts_id"] . "\">" . $data["name"] . "";
             if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) echo " (" . $data["contracts_id"] . ")";
             echo "</a></td>";

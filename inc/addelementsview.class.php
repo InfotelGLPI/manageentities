@@ -910,9 +910,10 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          echo "<td colspan='3'>";
 
          // Liste des templates
-         $query = ["`is_template`" => 1];
+         $cond = ["`is_template`" => 1,
+                   'ORDER' => 'name ASC'];
 
-         $listTemplate = $dbu->getAllDataFromTable($currentContract->getTable(), $query, false, "name ASC");
+         $listTemplate = $dbu->getAllDataFromTable($currentContract->getTable(), $cond);
          $listOptions  = ["-1" => __("Blank Template")];
          if (sizeof($listTemplate) > 0) {
             foreach ($listTemplate as $tpl) {

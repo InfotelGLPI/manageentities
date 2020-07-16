@@ -40,7 +40,7 @@ function plugin_manageentities_install() {
    $update190 = false;
    if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-3.0.0.sql");
+      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-3.2.0.sql");
 
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
