@@ -588,7 +588,7 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       if (!empty($value)) {
          list($integer, $decimal) = explode('.', number_format($value, 2));
          if ($decimal != 00 && $decimal != 50 && $output_type == Search::HTML_OUTPUT) {
-            return "<span class='red'>" . html::formatNumber($value, 0, 2) . "</span>";
+            return "<span style='color:red;'>" . html::formatNumber($value, 0, 2) . "</span>";
          }
       }
       return html::formatNumber($value, 0, 2);

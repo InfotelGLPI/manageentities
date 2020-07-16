@@ -1745,7 +1745,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       $idDpContractType = 0;
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
-         echo "<td>" . __('Type of service contract', 'manageentities') . "<span class='red'>&nbsp;*&nbsp;</span></td>";
+         echo "<td>" . __('Type of service contract', 'manageentities') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
          echo "<td id='div_select_contract_type" . $idIntervention . "'>";
          $idDpContractType = PluginManageentitiesContract::dropdownContractType("contract_type", $currentContractday->fields['contract_type']);
          echo "</td>";

@@ -831,7 +831,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
          $conso += $tmp;
       } else if ($config->fields['needvalidationforcri'] == 1 && $dataCriDetail['global_validation'] != 'accepted') {
-         $conso = "<div class = 'red'>" . __('Ticket not validated', 'manageentities') . "</div>";
+         $conso = "<div style='color:red;'>" . __('Ticket not validated', 'manageentities') . "</div>";
       } else {//configuration by hour
          if ($pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION) {
             $conso = $numberTask;
@@ -839,7 +839,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             $tmp   = $actiontime / 3600;
             $conso += $tmp;
          } else {
-            $conso = "<div class = 'red'>" . __('Type of service contract missing', 'manageentities') . "</div>";
+            $conso = "<div style='color:red;'>" . __('Type of service contract missing', 'manageentities') . "</div>";
          }
       }
 
@@ -1224,14 +1224,14 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             return 0;
          }
       } else if ($config->fields['needvalidationforcri'] == 1 && $dataCriDetail['global_validation'] != 'accepted') {
-         return "<div class = 'red'>" . __('Ticket not validated', 'manageentities') . "</div>";
+         return "<div style='color:red;'>" . __('Ticket not validated', 'manageentities') . "</div>";
       } else {//configuration by hour
          if ($pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION) {
             return $numberTask;
          } else if ($pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_HOUR || $pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
             return $actiontime / 3600;
          } else {
-            return "<div class = 'red'>" . __('Type of service contract missing', 'manageentities') . "</div>";
+            return "<div style='color:red;'>" . __('Type of service contract missing', 'manageentities') . "</div>";
          }
       }
    }

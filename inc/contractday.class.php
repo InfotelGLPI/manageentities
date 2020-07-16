@@ -339,7 +339,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo "<td>" . $contract_name . "</td>";
 
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
-         echo "<td>" . __('Type of service contract', 'manageentities') . "<span class='red'>&nbsp;*&nbsp;</span></td><td>";
+         echo "<td>" . __('Type of service contract', 'manageentities') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
          PluginManageentitiesContract::dropdownContractType("contract_type", $this->fields['contract_type']);
       } else {
          echo "</td><td colspan='2'></td>";
@@ -363,7 +363,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Begin date') . "<span class='red'>&nbsp;*&nbsp;</span></td>";
+      echo "<td>" . __('Begin date') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
       echo "<td>";
       Html::showDateField("begin_date", ['value' => $this->fields["begin_date"]]);
       echo "</td>";
@@ -382,7 +382,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       }
       echo "&nbsp;" . $unit;
       echo "</td>";
-      echo "<td>" . __('State of contract', 'manageentities') . "<span class='red'>&nbsp;*&nbsp;</span></td><td>";
+      echo "<td>" . __('State of contract', 'manageentities') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
       Dropdown::show('PluginManageentitiesContractState', ['value'  => $this->fields['plugin_manageentities_contractstates_id'],
                                                            'entity' => $this->fields["entities_id"]]);
       echo "</td></tr>";
@@ -530,13 +530,17 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
       $restrict = ["`entities_id`"  => $contract->fields['entities_id'],
                    "`contracts_id`" => $contract->fields['id'],
+                   'ORDER' => '`date_signature` ASC'];
+
+      $restrict_days = ["`entities_id`"  => $contract->fields['entities_id'],
+                   "`contracts_id`" => $contract->fields['id'],
                    'ORDER' => '`begin_date` ASC, `name`'];
 
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract  = reset($pluginContracts);
 
-      $pluginContractDays = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contractdays", $restrict);
+      $pluginContractDays = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contractdays", $restrict_days);
       if (count($pluginContractDays)) {
          echo "<div class='center'>";
          if ($canEdit) {

@@ -382,13 +382,13 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          // User
-         echo "<td>" . __('User') . "<span class='red'>&nbsp;*&nbsp;</span></td>";
+         echo "<td>" . __('User') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
          echo "<td>";
          $idUser = User::dropdown(['name'  => 'users_id_tech' . $idToUse,
                                    'right' => 'interface']);
          echo "</td>";
          // Nb days
-         echo "<td>" . __('Affected to', 'manageentities') . "<span class='red'>&nbsp;*&nbsp;</span></td>";
+         echo "<td>" . __('Affected to', 'manageentities') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
          echo "<td id='nb_days_container'>";
          PluginManageentitiesDropdown::showNumber("nb_days", ["width" => 100, "min" => 0, "max" => $nbDays, "step" => "0.5", "rand" => $rand]);
          $config = PluginManageentitiesConfig::getInstance();
