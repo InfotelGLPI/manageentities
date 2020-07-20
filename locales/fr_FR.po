@@ -95,12 +95,12 @@ msgstr "Merci de sélectionner un type d'intervention"
 
 #: ajax/interventionskateholderactions.php:57
 msgid "Stakeholder successfully updated."
-msgstr ""
+msgstr "L'intervenant a bien été ajouté."
 
 #: ajax/interventionskateholderactions.php:66
 #: ajax/interventionskateholderactions.php:83
 msgid "An error happened while saving the data."
-msgstr ""
+msgstr "Une erreur est survenue lors de la sauvegarde des données."
 
 #: ajax/interventionskateholderactions.php:75
 msgid "Informations successfully added."
@@ -116,7 +116,7 @@ msgstr "Les informations ont bien été supprimées"
 
 #: ajax/interventionskateholderactions.php:109
 msgid "An error happened while deleting the data."
-msgstr ""
+msgstr "Une erreur est survenue lors de la suppressions des données"
 
 #: ajax/linkactions.php:44
 msgid "Number of hours by day"
@@ -1072,7 +1072,7 @@ msgstr "(en heures)"
 
 #: inc/cripdf.class.php:487
 msgid "Travel (in days)"
-msgstr ""
+msgstr "Déplacement (en jours)"
 
 #: inc/cripdf.class.php:489
 msgid "Travel"
@@ -1198,7 +1198,7 @@ msgstr "Mise à jour du logo"
 #: inc/entity.class.php:366
 msgctxt "button"
 msgid "Update administrative data"
-msgstr ""
+msgstr "Mise à jour des données administratives"
 
 #: inc/entity.class.php:383
 msgid "Associated interventions"
@@ -1266,7 +1266,7 @@ msgstr[1] "Utilisateurs affectés"
 
 #: inc/interventionskateholder.class.php:143
 msgid "No stakeholders have been affected yet."
-msgstr ""
+msgstr "Aucun intervenant n'a encore été ajouté."
 
 #: inc/interventionskateholder.class.php:175
 #: inc/interventionskateholder.class.php:280
