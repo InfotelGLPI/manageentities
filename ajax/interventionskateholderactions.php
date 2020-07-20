@@ -31,7 +31,7 @@ include('../../../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
-$interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
+$interventionStakeholder = new PluginManageentitiesInterventionSkateholder();
 
 if (isset($_POST['action']) && $_POST['action'] != "") {
    switch ($_POST['action']) {
@@ -44,69 +44,69 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
             $idContractdays = $_POST['contractdays_id'];
             $nbDays         = $_POST['nb_days'];
 
-            $interventionSkateholder->getFromDBByCrit(['users_id'                              => $idUser,
+            $interventionStakeholder->getFromDBByCrit(['users_id'                              => $idUser,
                                                        'plugin_manageentities_contractdays_id' => $idContractdays]);
 
-            if (isset($interventionSkateholder->fields['id']) && $interventionSkateholder->fields['id'] > 0) {
-               $interventionSkateholder->fields['number_affected_days'] += $_POST['nb_days'];
+            if (isset($interventionStakeholder->fields['id']) && $interventionStakeholder->fields['id'] > 0) {
+               $interventionStakeholder->fields['number_affected_days'] += $_POST['nb_days'];
 
-               if ($interventionSkateholder->update($interventionSkateholder->fields)) {
-                  $nbDaysAfter                                   = $interventionSkateholder->getNbAvailiableDay($_POST['contractdays_id']);
+               if ($interventionStakeholder->update($interventionStakeholder->fields)) {
+                  $nbDaysAfter                                   = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                   $_SESSION['glpi_plugin_manageentities_nbdays'] += $nbDaysAfter;
 
-                  $interventionSkateholder->showMessage(__("Skatehokder successfully updated.", "manageentities"), INFO);
-                  $interventionSkateholder->reinitListSkateholders($interventionSkateholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id']);
+                  $interventionStakeholder->showMessage(__("Stakeholder successfully updated.", "manageentities"), INFO);
+                  $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id']);
 
                   if ($nbDaysAfter <= 0) {
                      // supprimer la ligne d'ajout
-                     $interventionSkateholder->hideAddForm($_POST['contractdays_id']);
+                     $interventionStakeholder->hideAddForm($_POST['contractdays_id']);
                   }
 
                } else {
-                  $interventionSkateholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
+                  $interventionStakeholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
                }
 
             } else {
-               $interventionSkateholder->fields['users_id']                              = $idUser;
-               $interventionSkateholder->fields['number_affected_days']                  = $nbDays;
-               $interventionSkateholder->fields['plugin_manageentities_contractdays_id'] = $idContractdays;
+               $interventionStakeholder->fields['users_id']                              = $idUser;
+               $interventionStakeholder->fields['number_affected_days']                  = $nbDays;
+               $interventionStakeholder->fields['plugin_manageentities_contractdays_id'] = $idContractdays;
 
-               if ($interventionSkateholder->add($interventionSkateholder->fields)) {
-                  $interventionSkateholder->showMessage(__("Informations successfully added.", "manageentities"), INFO);
-                  $interventionSkateholder->reinitListSkateholders($interventionSkateholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id']);
-                  $nbDaysAfter = $interventionSkateholder->getNbAvailiableDay($_POST['contractdays_id']);
+               if ($interventionStakeholder->add($interventionStakeholder->fields)) {
+                  $interventionStakeholder->showMessage(__("Informations successfully added.", "manageentities"), INFO);
+                  $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id']);
+                  $nbDaysAfter = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                   if ($nbDaysAfter == 0) {
                      // Supprimer la ligne d'ajout
-                     $interventionSkateholder->hideAddForm($_POST['contractdays_id']);
+                     $interventionStakeholder->hideAddForm($_POST['contractdays_id']);
                   }
                } else {
-                  $interventionSkateholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
+                  $interventionStakeholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
                }
             }
          } else {
-            $interventionSkateholder->showMessage(__("All fields are not correctly filled.", "manageentities"), ERROR);
+            $interventionStakeholder->showMessage(__("All fields are not correctly filled.", "manageentities"), ERROR);
          }
          break;
 
       case "delete_user_datas":
          if (isset($_POST['skateholder_id']) && $_POST['skateholder_id'] > 0) {
-            $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
-            $interventionSkateholder->getFromDB($_POST['skateholder_id']);
+            $interventionStakeholder = new PluginManageentitiesInterventionSkateholder();
+            $interventionStakeholder->getFromDB($_POST['skateholder_id']);
             $intervention = new PluginManageentitiesContractDay();
             $intervention->getFromDB($_POST['contractdays_id']);
 
-            if ($interventionSkateholder->delete($interventionSkateholder->fields)) {
-               $nbDaysAfter                                   = $interventionSkateholder->getNbAvailiableDay($_POST['contractdays_id']);
+            if ($interventionStakeholder->delete($interventionStakeholder->fields)) {
+               $nbDaysAfter                                   = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDaysAfter;
-               $interventionSkateholder->showMessage(__("Informations successfully deleted.", "manageentities"), INFO);
-               $interventionSkateholder->reinitListSkateholders($interventionSkateholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id'], true);
+               $interventionStakeholder->showMessage(__("Informations successfully deleted.", "manageentities"), INFO);
+               $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id'], true);
 
                if ($nbDaysAfter > 0) {
-                  $interventionSkateholder->showAddForm($_POST['contractdays_id']);
+                  $interventionStakeholder->showAddForm($_POST['contractdays_id']);
                }
 
             } else {
-               $interventionSkateholder->showMessage(__("An error happened while deleting the data.", "manageentities"), ERROR);
+               $interventionStakeholder->showMessage(__("An error happened while deleting the data.", "manageentities"), ERROR);
             }
          }
          break;

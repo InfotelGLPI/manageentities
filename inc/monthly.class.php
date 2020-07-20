@@ -412,12 +412,12 @@ class PluginManageentitiesMonthly extends CommonDBTM {
          }
       }
       $message_header .= Search::showHeaderItem($output_type, __('Production', 'manageentities'), $num);
-      $message_header .= Search::showHeaderItem($output_type, _n('Current skateholder', 'Current skateholders', 2, 'manageentities'), $num);
+      $message_header .= Search::showHeaderItem($output_type, _n('Current skateholder', 'Current stakeholders', 2, 'manageentities'), $num);
       if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
          $message_header .= Search::showHeaderItem($output_type, __('Total production', 'manageentities'), $num);
       }
       $message_header .= Search::showHeaderItem($output_type, __('Exceeding', 'manageentities'), $num);
-      $message_header .= Search::showHeaderItem($output_type, _n('Current skateholder', 'Current skateholders', 2, 'manageentities'), $num);
+      $message_header .= Search::showHeaderItem($output_type, _n('Current skateholder', 'Current stakeholders', 2, 'manageentities'), $num);
       if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
          $message_header .= Search::showHeaderItem($output_type, __('Total exceeding', 'manageentities'), $num);
       }

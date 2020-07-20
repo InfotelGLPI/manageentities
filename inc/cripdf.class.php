@@ -484,9 +484,9 @@ class PluginManageentitiesCriPDF extends FPDF {
          $this->Cell(115, $this->line_height, '', 0, 0, '');
          $this->SetTextColor(255, 255, 255);
          if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
-            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Deplacement (in days)', 'manageentities')));
+            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Travel (in days)', 'manageentities')));
          } else {
-            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Deplacement', 'manageentities')));
+            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Travel', 'manageentities')));
          }
          $this->SetTextColor(0, 0, 0);
          $this->CellValeur(35, $this->nombredeplacement, 'C');

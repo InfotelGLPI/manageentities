@@ -140,7 +140,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
             echo "   row.setAttribute('class','tab_bg_1');\n";
             echo "   row.id='empty_skateholders" . $idToUse . "';";
             echo "   var tmpCell=row.insertCell(0);\n";
-            echo "   tmpCell.innerHTML=\"" . __("No skateholders have been affected yet.", "manageentities") . "\";";
+            echo "   tmpCell.innerHTML=\"" . __("No stakeholders have been affected yet.", "manageentities") . "\";";
             echo "}";
          }
 
@@ -250,15 +250,15 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
          if (sizeof($listSkateholders) > 1) {
             if ($this->canCreate()) {
-               echo "<th colspan='5'>" . _n('Current skateholder', 'Current skateholders', 2, 'manageentities') . "</th>";
+               echo "<th colspan='5'>" . _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities') . "</th>";
             } else {
-               echo "<th colspan='4'>" . _n('Current skateholder', 'Current skateholders', 2, 'manageentities') . "</th>";
+               echo "<th colspan='4'>" . _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities') . "</th>";
             }
          } else {
             if ($this->canCreate()) {
-               echo "<th colspan='5'>" . _n('Current skateholder', 'Current skateholders', 1, 'manageentities') . "</th>";
+               echo "<th colspan='5'>" . _n('Current stakeholder', 'Current stakeholders', 1, 'manageentities') . "</th>";
             } else {
-               echo "<th colspan='4'>" . _n('Current skateholder', 'Current skateholders', 1, 'manageentities') . "</th>";
+               echo "<th colspan='4'>" . _n('Current stakeholder', 'Current stakeholders', 1, 'manageentities') . "</th>";
             }
          }
          echo "</tr>";
