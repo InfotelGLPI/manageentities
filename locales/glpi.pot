@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GLPI - Manageentities plugin 2.0.0\n"
+"Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-24 15:09+0100\n"
+"POT-Creation-Date: 2020-07-20 11:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,18 +30,18 @@ msgstr ""
 msgid "Study and advice"
 msgstr ""
 
-#: hook.php:545 inc/addelementsview.class.php:1925 inc/cri.class.php:154
+#: hook.php:545 inc/addelementsview.class.php:2164 inc/cri.class.php:156
 #: inc/cridetail.class.php:194 inc/cridetail.class.php:398
 #: inc/cridetail.class.php:492 inc/cridetail.class.php:871
-#: inc/criprice.class.php:332 inc/critype.class.php:39
+#: inc/criprice.class.php:335 inc/critype.class.php:39
 msgid "Intervention type"
 msgid_plural "Intervention types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:546 inc/addelementsview.class.php:1577
+#: hook.php:546 inc/addelementsview.class.php:1801
 #: inc/contractday.class.php:121 inc/contractday.class.php:385
-#: inc/contractday.class.php:567 inc/contractstate.class.php:39
+#: inc/contractday.class.php:572 inc/contractstate.class.php:39
 #: inc/followup.class.php:723 inc/followup.class.php:725
 #: inc/followup.class.php:1079
 msgid "State of contract"
@@ -49,18 +49,18 @@ msgid_plural "States of contracts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: setup.php:74 inc/config.class.php:254 inc/cri.class.php:39
-#: inc/cridetail.class.php:295 inc/profile.class.php:101
+#: setup.php:76 inc/config.class.php:254 inc/cri.class.php:39
+#: inc/cridetail.class.php:295 inc/profile.class.php:100
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] ""
 msgstr[1] ""
 
-#: setup.php:75 inc/report.class.php:105
+#: setup.php:77 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr ""
 
-#: setup.php:76 inc/report.class.php:208
+#: setup.php:78 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
@@ -69,20 +69,20 @@ msgstr ""
 #: front/entity.php:44 front/report.form.php:32 front/report_moving.form.php:32
 #: front/report_occupation.form.php:32 inc/followup.class.php:968
 #: inc/monthly.class.php:548 inc/preference.class.php:75
-#: inc/profile.class.php:42 inc/profile.class.php:97
+#: inc/profile.class.php:42 inc/profile.class.php:96
 #: inc/taskcategory.class.php:55
 msgid "Entities portal"
 msgstr ""
 
-#: ajax/addelements.listener.php:311
+#: ajax/addelements.listener.php:318
 msgid "Please add this contact before adding another."
 msgstr ""
 
-#: ajax/addelements.listener.php:340
+#: ajax/addelements.listener.php:353
 msgid "Please add this intervention before adding another."
 msgstr ""
 
-#: ajax/addelements.listener.php:497 inc/addelementsview.class.php:2401
+#: ajax/addelements.listener.php:522 inc/addelementsview.class.php:2680
 msgid "Update all previous elements"
 msgstr ""
 
@@ -91,7 +91,7 @@ msgid "Thanks to select a intervention type"
 msgstr ""
 
 #: ajax/interventionskateholderactions.php:57
-msgid "Skatehokder successfully updated."
+msgid "Stakeholder successfully updated."
 msgstr ""
 
 #: ajax/interventionskateholderactions.php:66
@@ -128,7 +128,7 @@ msgstr ""
 msgid "Please activate the plugin"
 msgstr ""
 
-#: front/cri.form.php:38 inc/cri.class.php:246 inc/cridetail.class.php:305
+#: front/cri.form.php:38 inc/cri.class.php:262 inc/cridetail.class.php:305
 msgid "Generation of the intervention report"
 msgstr ""
 
@@ -388,225 +388,227 @@ msgstr ""
 msgid "This action is irreversible, Continue ?"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:311 inc/addelementsmodel.class.php:326
-#: inc/addelementsview.class.php:460
+#: inc/addelementsmodel.class.php:311 inc/addelementsmodel.class.php:328
+#: inc/addelementsview.class.php:586
 msgid "Update this entity"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:431 inc/addelementsmodel.class.php:449
-#: inc/addelementsview.class.php:1025
+#: inc/addelementsmodel.class.php:445 inc/addelementsmodel.class.php:465
+#: inc/addelementsview.class.php:1190
 msgid "Update this contract only"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:587 inc/addelementsmodel.class.php:607
+#: inc/addelementsmodel.class.php:613 inc/addelementsmodel.class.php:635
 msgid "Update this contact only"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:707 inc/addelementsmodel.class.php:762
+#: inc/addelementsmodel.class.php:741 inc/addelementsmodel.class.php:799
 msgid "Update this intervention only"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:875 inc/addelementsview.class.php:2058
-#: inc/addelementsview.class.php:2342
+#: inc/addelementsmodel.class.php:921 inc/addelementsview.class.php:2301
+#: inc/addelementsview.class.php:2609
 msgid "Update this price"
 msgid_plural "Update these prices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/addelementsview.class.php:53
+#: inc/addelementsview.class.php:73
 msgid "Add elements form"
 msgstr ""
 
-#: inc/addelementsview.class.php:65 inc/addelementsview.class.php:546
-#: inc/addelementsview.class.php:827 inc/addelementsview.class.php:1481
+#: inc/addelementsview.class.php:87 inc/addelementsview.class.php:672
+#: inc/addelementsview.class.php:961 inc/addelementsview.class.php:990
+#: inc/addelementsview.class.php:1670 inc/addelementsview.class.php:1721
 msgid "New entity"
 msgstr ""
 
-#: inc/addelementsview.class.php:85 inc/addelementsview.class.php:104
-#: inc/addelementsview.class.php:2629
+#: inc/addelementsview.class.php:110 inc/addelementsview.class.php:129
+#: inc/addelementsview.class.php:2941
 msgid "New contact"
 msgstr ""
 
-#: inc/addelementsview.class.php:118 inc/addelementsview.class.php:1513
-#: inc/addelementsview.class.php:2135
+#: inc/addelementsview.class.php:159 inc/addelementsview.class.php:1702
+#: inc/addelementsview.class.php:1740 inc/addelementsview.class.php:2380
 msgid "New contract"
 msgstr ""
 
-#: inc/addelementsview.class.php:141 inc/addelementsview.class.php:157
-#: inc/addelementsview.class.php:2633
+#: inc/addelementsview.class.php:219 inc/addelementsview.class.php:235
+#: inc/addelementsview.class.php:2945
 msgid "New intervention"
 msgstr ""
 
-#: inc/addelementsview.class.php:462
+#: inc/addelementsview.class.php:588
 msgctxt "button"
 msgid "Add only the entity"
 msgstr ""
 
-#: inc/addelementsview.class.php:556 inc/addelementsview.class.php:562
-#: inc/addelementsview.class.php:837 inc/addelementsview.class.php:1492
+#: inc/addelementsview.class.php:682 inc/addelementsview.class.php:688
+#: inc/addelementsview.class.php:977 inc/addelementsview.class.php:979
+#: inc/addelementsview.class.php:1681
 msgid "New entity created previously"
 msgstr ""
 
-#: inc/addelementsview.class.php:685
+#: inc/addelementsview.class.php:811
 msgid "Update this contact"
 msgstr ""
 
-#: inc/addelementsview.class.php:687
+#: inc/addelementsview.class.php:813
 msgid "Add only the contact"
 msgstr ""
 
-#: inc/addelementsview.class.php:698
+#: inc/addelementsview.class.php:824
 msgid "Add another contact"
 msgstr ""
 
-#: inc/addelementsview.class.php:1027
+#: inc/addelementsview.class.php:1192
 msgid "Add only the contract"
 msgstr ""
 
-#: inc/addelementsview.class.php:1132 inc/addelementsview.class.php:2193
+#: inc/addelementsview.class.php:1296 inc/addelementsview.class.php:2441
 msgid "Document list"
 msgstr ""
 
-#: inc/addelementsview.class.php:1289 inc/contract.class.php:180
-#: inc/entity.class.php:661 inc/followup.class.php:605
-#: inc/followup.class.php:690 inc/gantt.class.php:285
+#: inc/addelementsview.class.php:1462 inc/contract.class.php:188
+#: inc/entity.class.php:671 inc/followup.class.php:605
+#: inc/followup.class.php:690 inc/gantt.class.php:281
 msgid "Date of signature"
 msgstr ""
 
-#: inc/addelementsview.class.php:1294 inc/contract.class.php:183
+#: inc/addelementsview.class.php:1467 inc/contract.class.php:192
 #: inc/followup.class.php:607 inc/followup.class.php:697
-#: inc/gantt.class.php:286
+#: inc/gantt.class.php:282
 msgid "Date of renewal"
 msgstr ""
 
-#: inc/addelementsview.class.php:1302 inc/contract.class.php:188
-#: inc/contract.class.php:299 inc/followup.class.php:610
+#: inc/addelementsview.class.php:1475 inc/contract.class.php:198
+#: inc/contract.class.php:312 inc/followup.class.php:610
 #: inc/followup.class.php:705 inc/monthly.class.php:401
 msgid "Mode of management"
 msgstr ""
 
-#: inc/addelementsview.class.php:1305 inc/addelementsview.class.php:1525
-#: inc/contract.class.php:191 inc/contract.class.php:300
-#: inc/contract.class.php:302 inc/contractday.class.php:139
-#: inc/contractday.class.php:342 inc/contractday.class.php:800
+#: inc/addelementsview.class.php:1478 inc/addelementsview.class.php:1748
+#: inc/contract.class.php:201 inc/contract.class.php:313
+#: inc/contract.class.php:315 inc/contractday.class.php:139
+#: inc/contractday.class.php:342 inc/contractday.class.php:805
 #: inc/followup.class.php:611 inc/followup.class.php:706
 msgid "Type of service contract"
 msgstr ""
 
-#: inc/addelementsview.class.php:1311 inc/contract.class.php:197
+#: inc/addelementsview.class.php:1484 inc/contract.class.php:207
 msgid "Contract is imported in GLPI"
 msgstr ""
 
-#: inc/addelementsview.class.php:1329 inc/contract.class.php:213
+#: inc/addelementsview.class.php:1505 inc/contract.class.php:224
 msgid "Refacturable costs"
 msgstr ""
 
-#: inc/addelementsview.class.php:1341 inc/contract.class.php:223
+#: inc/addelementsview.class.php:1517 inc/contract.class.php:234
 msgid "Movement management"
 msgstr ""
 
-#: inc/addelementsview.class.php:1357 inc/contract.class.php:239
+#: inc/addelementsview.class.php:1536 inc/contract.class.php:251
 msgid "Duration of moving"
 msgstr ""
 
-#: inc/addelementsview.class.php:1521
+#: inc/addelementsview.class.php:1710
 msgid "New contract created previously"
 msgstr ""
 
-#: inc/addelementsview.class.php:1538
+#: inc/addelementsview.class.php:1762
 msgid "Period name"
 msgstr ""
 
-#: inc/addelementsview.class.php:1546 inc/contractday.class.php:105
-#: inc/contractday.class.php:355 inc/contractday.class.php:570
+#: inc/addelementsview.class.php:1770 inc/contractday.class.php:105
+#: inc/contractday.class.php:355 inc/contractday.class.php:575
 msgid "Postponement"
 msgstr ""
 
-#: inc/addelementsview.class.php:1567 inc/contractday.class.php:92
-#: inc/contractday.class.php:375 inc/contractday.class.php:565
-#: inc/followup.class.php:735 inc/gantt.class.php:340 inc/monthly.class.php:405
+#: inc/addelementsview.class.php:1791 inc/contractday.class.php:92
+#: inc/contractday.class.php:375 inc/contractday.class.php:570
+#: inc/followup.class.php:735 inc/gantt.class.php:336 inc/monthly.class.php:405
 msgid "Initial credit"
 msgstr ""
 
-#: inc/addelementsview.class.php:1627 inc/contractday.class.php:448
+#: inc/addelementsview.class.php:1851 inc/contractday.class.php:448
 #: inc/monthly.class.php:266 inc/monthly.class.php:277
 #: inc/monthly.class.php:280
 msgid "Already charged"
 msgstr ""
 
-#: inc/addelementsview.class.php:1641
+#: inc/addelementsview.class.php:1865
 msgid "Update this intervention"
 msgstr ""
 
-#: inc/addelementsview.class.php:1643
+#: inc/addelementsview.class.php:1867
 msgid "Add only the intervention"
 msgstr ""
 
-#: inc/addelementsview.class.php:1654
+#: inc/addelementsview.class.php:1878
 msgid "Add another intervention"
 msgstr ""
 
-#: inc/addelementsview.class.php:1821 inc/criprice.class.php:289
+#: inc/addelementsview.class.php:2048 inc/criprice.class.php:289
 msgid "Add a new price"
 msgstr ""
 
-#: inc/addelementsview.class.php:1929 inc/addelementsview.class.php:2030
+#: inc/addelementsview.class.php:2168 inc/addelementsview.class.php:2273
 #: inc/criprice.class.php:45 inc/criprice.class.php:76
-#: inc/criprice.class.php:172 inc/criprice.class.php:336
+#: inc/criprice.class.php:172 inc/criprice.class.php:339
 #: inc/critype.class.php:80 inc/monthly.class.php:409
 msgid "Daily rate"
 msgstr ""
 
-#: inc/addelementsview.class.php:1931 inc/addelementsview.class.php:2032
+#: inc/addelementsview.class.php:2170 inc/addelementsview.class.php:2275
 #: inc/criprice.class.php:47 inc/criprice.class.php:78
-#: inc/criprice.class.php:174 inc/criprice.class.php:338
+#: inc/criprice.class.php:174 inc/criprice.class.php:341
 #: inc/monthly.class.php:411
 msgid "Hourly rate"
 msgstr ""
 
-#: inc/addelementsview.class.php:1933 inc/addelementsview.class.php:2046
-#: inc/criprice.class.php:186 inc/criprice.class.php:340
-#: inc/criprice.class.php:618
+#: inc/addelementsview.class.php:2172 inc/addelementsview.class.php:2289
+#: inc/criprice.class.php:186 inc/criprice.class.php:343
+#: inc/criprice.class.php:622
 msgid "Is default"
 msgstr ""
 
-#: inc/addelementsview.class.php:2060 inc/addelementsview.class.php:2339
+#: inc/addelementsview.class.php:2303 inc/addelementsview.class.php:2606
 msgid "Add this price"
 msgid_plural "Add these prices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/addelementsview.class.php:2066
+#: inc/addelementsview.class.php:2309
 msgid "Delete this price"
 msgid_plural "Delete these prices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/addelementsview.class.php:2389
+#: inc/addelementsview.class.php:2665
 msgid "Reinitialize forms"
 msgstr ""
 
-#: inc/addelementsview.class.php:2404
+#: inc/addelementsview.class.php:2683
 msgid "Add all previous elements"
 msgstr ""
 
-#: inc/addelementsview.class.php:2857
+#: inc/addelementsview.class.php:3197
 msgid "The previous entity will be added, continue ?"
 msgstr ""
 
-#: inc/addelementsview.class.php:2860
+#: inc/addelementsview.class.php:3200
 msgid "The previous contract will be added, continue ?"
 msgstr ""
 
-#: inc/addelementsview.class.php:2863
+#: inc/addelementsview.class.php:3203
 msgid "The previous entity and contract will be added, continue ?"
 msgstr ""
 
-#: inc/addelementsview.class.php:2866
+#: inc/addelementsview.class.php:3206
 msgid "All previous elements will be added, continue ?"
 msgstr ""
 
-#: inc/addelementsview.class.php:2869
+#: inc/addelementsview.class.php:3209
 msgid "All previous elements will be updated, continue ?"
 msgstr ""
 
@@ -617,13 +619,13 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: inc/company.class.php:41 inc/config.class.php:224
-#: inc/followup.class.php:1159
+#: inc/followup.class.php:1175
 msgid "Company"
 msgid_plural "Companies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/company.class.php:115 inc/entity.class.php:274
+#: inc/company.class.php:115 inc/entity.class.php:275
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
@@ -692,8 +694,8 @@ msgstr ""
 msgid "Add a company"
 msgstr ""
 
-#: inc/config.class.php:250 inc/contract.class.php:456
-#: inc/contract.class.php:488
+#: inc/config.class.php:250 inc/contract.class.php:469
+#: inc/contract.class.php:501
 msgid "Hourly"
 msgstr ""
 
@@ -708,39 +710,39 @@ msgstr[1] ""
 msgid "Type of management"
 msgstr ""
 
-#: inc/contract.class.php:116
+#: inc/contract.class.php:122 inc/contract.class.php:124
 msgid "Contract detail"
 msgstr ""
 
-#: inc/contract.class.php:274 inc/contract.class.php:375
+#: inc/contract.class.php:287 inc/contract.class.php:388
 msgid "Associated assistance contracts"
 msgstr ""
 
-#: inc/contract.class.php:304
+#: inc/contract.class.php:317
 msgid "Used by default"
 msgstr ""
 
-#: inc/contract.class.php:407 inc/contract.class.php:433
+#: inc/contract.class.php:420 inc/contract.class.php:446
 msgid "Quarterly"
 msgstr ""
 
-#: inc/contract.class.php:408 inc/contract.class.php:435
+#: inc/contract.class.php:421 inc/contract.class.php:448
 msgid "Annual"
 msgstr ""
 
-#: inc/contract.class.php:457 inc/contract.class.php:490
+#: inc/contract.class.php:470 inc/contract.class.php:503
 msgid "By intervention"
 msgstr ""
 
-#: inc/contract.class.php:461 inc/contract.class.php:494
+#: inc/contract.class.php:474 inc/contract.class.php:507
 msgid "Technical Assistance"
 msgstr ""
 
-#: inc/contract.class.php:462 inc/contract.class.php:496
+#: inc/contract.class.php:475 inc/contract.class.php:509
 msgid "Package"
 msgstr ""
 
-#: inc/contract.class.php:516
+#: inc/contract.class.php:529
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
@@ -750,19 +752,19 @@ msgstr[1] ""
 msgid "Credit remaining"
 msgstr ""
 
-#: inc/contractday.class.php:404 inc/contractday.class.php:572
+#: inc/contractday.class.php:404 inc/contractday.class.php:577
 #: inc/followup.class.php:736 inc/followup.class.php:908
-#: inc/gantt.class.php:341
+#: inc/gantt.class.php:337
 msgid "Total consummated"
 msgstr ""
 
-#: inc/contractday.class.php:417 inc/contractday.class.php:575
-#: inc/dashboard.class.php:113 inc/dashboard.class.php:325
+#: inc/contractday.class.php:417 inc/contractday.class.php:580
+#: inc/dashboard.class.php:115 inc/dashboard.class.php:342
 #: inc/followup.class.php:742 inc/followup.class.php:909
 msgid "Total remaining"
 msgstr ""
 
-#: inc/contractday.class.php:425 inc/contractday.class.php:576
+#: inc/contractday.class.php:425 inc/contractday.class.php:581
 #: inc/followup.class.php:744 inc/followup.class.php:910
 #: inc/monthly.class.php:422
 msgid "Total exceeding"
@@ -781,16 +783,16 @@ msgstr ""
 msgid "Add a contract day"
 msgstr ""
 
-#: inc/contractday.class.php:559 inc/followup.class.php:728
+#: inc/contractday.class.php:564 inc/followup.class.php:728
 #: inc/monthly.class.php:403
 msgid "Type of contract"
 msgstr ""
 
-#: inc/contractday.class.php:744
+#: inc/contractday.class.php:749
 msgid "End date cannot be less than begin date"
 msgstr ""
 
-#: inc/contractday.class.php:774
+#: inc/contractday.class.php:779
 #, php-format
 msgid "The contract period %s already exists"
 msgstr ""
@@ -811,58 +813,58 @@ msgstr ""
 msgid "Out of contract"
 msgstr ""
 
-#: inc/cri.class.php:97 inc/cridetail.class.php:192 inc/cridetail.class.php:396
+#: inc/cri.class.php:99 inc/cridetail.class.php:192 inc/cridetail.class.php:396
 #: inc/cridetail.class.php:495 inc/cridetail.class.php:875
 #: inc/cridetail.class.php:883 inc/cridetail.class.php:956
-#: inc/report.class.php:211
+#: inc/report.class.php:215
 msgid "Technicians"
 msgstr ""
 
-#: inc/cri.class.php:120
+#: inc/cri.class.php:122
 msgid "Please assign a technician to your tasks"
 msgstr ""
 
-#: inc/cri.class.php:142
+#: inc/cri.class.php:144
 msgid "Add a technician"
 msgstr ""
 
-#: inc/cri.class.php:183
+#: inc/cri.class.php:186
 msgid "Number of moving"
 msgstr ""
 
-#: inc/cri.class.php:231
+#: inc/cri.class.php:235
 msgid "Detail of the realized works"
 msgstr ""
 
-#: inc/cri.class.php:253 inc/cridetail.class.php:308
+#: inc/cri.class.php:269 inc/cridetail.class.php:308
 msgid "Regenerate the intervention report"
 msgstr ""
 
-#: inc/cri.class.php:261
+#: inc/cri.class.php:277
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr ""
 
-#: inc/cri.class.php:263
+#: inc/cri.class.php:279
 msgid "No tasks whose category can be used"
 msgstr ""
 
-#: inc/cri.class.php:271
+#: inc/cri.class.php:287
 msgid "No tasks"
 msgstr ""
 
-#: inc/cri.class.php:461
+#: inc/cri.class.php:478
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
 
-#: inc/cri.class.php:466
+#: inc/cri.class.php:483
 msgid "Please fill the contract period end date."
 msgstr ""
 
-#: inc/cri.class.php:471
+#: inc/cri.class.php:488
 msgid "Please fill the contract period begin date."
 msgstr ""
 
-#: inc/cri.class.php:768
+#: inc/cri.class.php:785
 msgid "Save the intervention report"
 msgstr ""
 
@@ -899,7 +901,7 @@ msgstr ""
 msgid "Associated intervention reports"
 msgstr ""
 
-#: inc/cridetail.class.php:391 inc/entity.class.php:404
+#: inc/cridetail.class.php:391 inc/entity.class.php:407
 msgid "All reports"
 msgstr ""
 
@@ -1053,11 +1055,11 @@ msgid "(in hours)"
 msgstr ""
 
 #: inc/cripdf.class.php:487
-msgid "Deplacement (in days)"
+msgid "Travel (in days)"
 msgstr ""
 
 #: inc/cripdf.class.php:489
-msgid "Deplacement"
+msgid "Travel"
 msgstr ""
 
 #: inc/cripdf.class.php:505
@@ -1096,42 +1098,42 @@ msgstr ""
 msgid "Select an existing price"
 msgstr ""
 
-#: inc/dashboard.class.php:47 inc/dashboard.class.php:126
+#: inc/dashboard.class.php:47 inc/dashboard.class.php:130
 msgid "Remaining days number by opened client contracts"
 msgstr ""
 
-#: inc/dashboard.class.php:48 inc/dashboard.class.php:157
+#: inc/dashboard.class.php:48 inc/dashboard.class.php:165
 msgid "Client annuary"
 msgstr ""
 
-#: inc/dashboard.class.php:49 inc/dashboard.class.php:220
+#: inc/dashboard.class.php:49 inc/dashboard.class.php:231
 msgid "Tickets without CRI"
 msgstr ""
 
-#: inc/dashboard.class.php:50 inc/dashboard.class.php:269
+#: inc/dashboard.class.php:50 inc/dashboard.class.php:284
 msgid "Interventions with old contract"
 msgstr ""
 
-#: inc/dashboard.class.php:51 inc/dashboard.class.php:338
+#: inc/dashboard.class.php:51 inc/dashboard.class.php:356
 msgid "Opened contract prestations without remaining days"
 msgstr ""
 
-#: inc/dashboard.class.php:113 inc/dashboard.class.php:325
+#: inc/dashboard.class.php:112 inc/dashboard.class.php:339
 msgid "Team"
 msgstr ""
 
-#: inc/dashboard.class.php:113 inc/dashboard.class.php:183
-#: inc/dashboard.class.php:236 inc/dashboard.class.php:325
+#: inc/dashboard.class.php:114 inc/dashboard.class.php:194
+#: inc/dashboard.class.php:250 inc/dashboard.class.php:341
 msgid "Prestation"
 msgstr ""
 
-#: inc/dashboard.class.php:123 inc/dashboard.class.php:155
-#: inc/dashboard.class.php:217 inc/dashboard.class.php:335
+#: inc/dashboard.class.php:127 inc/dashboard.class.php:163
+#: inc/dashboard.class.php:228 inc/dashboard.class.php:353
 msgid "Plugin is not activated"
 msgstr ""
 
-#: inc/dashboard.class.php:151 inc/dashboard.class.php:183
-#: inc/dashboard.class.php:236 inc/entity.class.php:39
+#: inc/dashboard.class.php:155 inc/dashboard.class.php:192
+#: inc/dashboard.class.php:248 inc/entity.class.php:39
 #: inc/followup.class.php:591 inc/followup.class.php:637
 #: inc/monthly.class.php:396
 msgid "Client"
@@ -1164,7 +1166,7 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: inc/entity.class.php:120 inc/entity.class.php:590
+#: inc/entity.class.php:120 inc/entity.class.php:600
 msgid "References"
 msgstr ""
 
@@ -1172,25 +1174,25 @@ msgstr ""
 msgid "Portal"
 msgstr ""
 
-#: inc/entity.class.php:280
+#: inc/entity.class.php:281
 msgctxt "button"
 msgid "Update logo"
 msgstr ""
 
-#: inc/entity.class.php:363
+#: inc/entity.class.php:366
 msgctxt "button"
 msgid "Update administrative data"
 msgstr ""
 
-#: inc/entity.class.php:380
+#: inc/entity.class.php:383
 msgid "Associated interventions"
 msgstr ""
 
-#: inc/entity.class.php:397
+#: inc/entity.class.php:400
 msgid "Processed interventions"
 msgstr ""
 
-#: inc/entity.class.php:398
+#: inc/entity.class.php:401
 msgid "To be processed interventions"
 msgstr ""
 
@@ -1199,7 +1201,7 @@ msgid "Logo"
 msgstr ""
 
 #: inc/followup.class.php:602 inc/followup.class.php:683
-#: inc/gantt.class.php:284
+#: inc/gantt.class.php:280
 msgid "Contract present"
 msgstr ""
 
@@ -1219,12 +1221,12 @@ msgstr ""
 msgid "Total Guaranteed package"
 msgstr ""
 
-#: inc/followup.class.php:1096 inc/followup.class.php:1101
-#: inc/followup.class.php:1109 inc/followup.class.php:1114
+#: inc/followup.class.php:1104 inc/followup.class.php:1109
+#: inc/followup.class.php:1117 inc/followup.class.php:1122
 msgid "of period of contract"
 msgstr ""
 
-#: inc/followup.class.php:1134
+#: inc/followup.class.php:1142
 msgid "Business"
 msgstr ""
 
@@ -1232,11 +1234,11 @@ msgstr ""
 msgid "GANTT"
 msgstr ""
 
-#: inc/gantt.class.php:171
+#: inc/gantt.class.php:167
 msgid "Please wait"
 msgstr ""
 
-#: inc/gantt.class.php:242
+#: inc/gantt.class.php:238
 msgid "Nothing to display"
 msgstr ""
 
@@ -1247,8 +1249,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: inc/interventionskateholder.class.php:143
-#: inc/interventionskateholder.class.php:308
-msgid "No skateholders have been affected yet."
+msgid "No stakeholders have been affected yet."
 msgstr ""
 
 #: inc/interventionskateholder.class.php:175
@@ -1270,12 +1271,15 @@ msgstr ""
 #: inc/interventionskateholder.class.php:253
 #: inc/interventionskateholder.class.php:255
 #: inc/interventionskateholder.class.php:259
-#: inc/interventionskateholder.class.php:261 inc/monthly.class.php:415
-#: inc/monthly.class.php:420
-msgid "Current skateholder"
-msgid_plural "Current skateholders"
+#: inc/interventionskateholder.class.php:261
+msgid "Current stakeholder"
+msgid_plural "Current stakeholders"
 msgstr[0] ""
 msgstr[1] ""
+
+#: inc/interventionskateholder.class.php:308
+msgid "No skateholders have been affected yet."
+msgstr ""
 
 #: inc/interventionskateholder.class.php:380
 msgid "Add skateholders"
@@ -1304,6 +1308,12 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
+#: inc/monthly.class.php:415 inc/monthly.class.php:420
+msgid "Current skateholder"
+msgid_plural "Current stakeholders"
+msgstr[0] ""
+msgstr[1] ""
+
 #: inc/monthly.class.php:417
 msgid "Total production"
 msgstr ""
@@ -1324,15 +1334,15 @@ msgstr ""
 msgid "Status list contract for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:137
+#: inc/preference.class.php:141
 msgid "Default list of Business for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:145
+#: inc/preference.class.php:153
 msgid "Default list of companies for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:167
+#: inc/preference.class.php:179
 msgid ""
 "Warning : If there are more than one plugin which be loaded at startup, then "
 "only the first will be used"
@@ -1344,36 +1354,28 @@ msgid_plural "Rights management"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/report.class.php:109
+#: inc/report.class.php:111
 msgid "Total moving package"
 msgstr ""
 
-#: inc/report.class.php:110
+#: inc/report.class.php:112
 msgid "Total time of the tasks of a category"
 msgstr ""
 
-#: inc/report.class.php:210
+#: inc/report.class.php:214
 msgid "Daily schedule"
 msgstr ""
 
-#: inc/report.class.php:212
+#: inc/report.class.php:216
 msgid "Time justified"
 msgstr ""
 
-#: inc/report.class.php:221
+#: inc/report.class.php:225
 #, php-format
 msgid "% of time justified"
 msgstr ""
 
-#: inc/servicecatalog.class.php:57
-msgid "Manage"
-msgstr ""
-
-#: inc/servicecatalog.class.php:57
-msgid "your contracts"
-msgstr ""
-
-#: inc/servicecatalog.class.php:64
+#: inc/servicecatalog.class.php:63 inc/servicecatalog.class.php:70
 msgid "Manage your contracts"
 msgstr ""
 
