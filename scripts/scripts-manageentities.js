@@ -318,8 +318,8 @@ function getManageentitiesFormData(form) {
     var unindexed_array = form.serialize();
     var indexed_array = {};
 
-    $.map(unindexed_array, function (n, i) {
-        indexed_array[n['name']] = n['value'];
+    $.map(unindexed_array.split('&'), function (n, i) {
+        indexed_array[n.split('=')[0]] = n.split('=')[1];
     });
 
     return JSON.stringify(indexed_array);

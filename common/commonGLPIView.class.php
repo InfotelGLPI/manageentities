@@ -118,8 +118,8 @@ abstract class CommonGLPIView {
    public function initDate($id) {
       $this->showHeaderJS();
       echo "$(function() {
-         $( '#" . $id . "' ).datepicker({
-            dateFormat : 'dd-mm-yy' 
+         $( '#" . $id . "' ).flatpickr({
+            dateFormat : 'd-m-Y' 
          });
       });";
 
