@@ -64,13 +64,17 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['servicecatalog']['manageentities'] = ['PluginManageentitiesServicecatalog'];
       }
 
+      if (Session::haveRight("ticket", CREATE) && Session::haveRight("plugin_manageentities_cri_create", CREATE)) {
+         $PLUGIN_HOOKS["menu_toadd"]['manageentities']['helpdesk']  = 'PluginManageentitiesGenerateCRI';
+      }
+
       if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
           && !$plugin->isActivated('servicecatalog')) {
          $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = "/front/entity.php";
       }
       if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
          Plugin::registerClass('PluginManageentitiesPreference',['addtabon' => 'Preference']); //See #413
-         $PLUGIN_HOOKS['menu_toadd']['manageentities'] = ['management' => 'PluginManageentitiesEntity'];
+         $PLUGIN_HOOKS['menu_toadd']['manageentities']['management'] = 'PluginManageentitiesEntity';
 
          // Reports
          $PLUGIN_HOOKS['reports']['manageentities'] = ['front/report.form.php'            => _n('Intervention report', 'Intervention reports', 2, 'manageentities'),
