@@ -27,9 +27,10 @@ if (isset($_POST['generatecri'])) {
 } else {
    Html::header(PluginManageentitiesGenerateCRI::getMenuName(0), '', "assets", PluginManageentitiesGenerateCRI::getType());
    $ticket = new Ticket();
-   $ticket->fields['itilcategories_id'] = isset($_REQUEST['itilcategories_id']) ? $_REQUEST['itilcategories_id'] : 0;
-   $ticket->fields['type'] = isset($_REQUEST['type']) ? $_REQUEST['type'] : '';
-   $PluginManageentitiesGenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity']);
+   $ticket->fields['itilcategories_id'] = isset($_POST['itilcategories_id']) ? $_POST['itilcategories_id'] : 0;
+   $ticket->fields['type'] = isset($_POST['type']) ? $_POST['type'] : '';
+   $customer = isset($_POST['entities_id']) ? $_POST['entities_id'] : 0;
+   $PluginManageentitiesGenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity'], $customer);
    Html::footer();
 
 }
