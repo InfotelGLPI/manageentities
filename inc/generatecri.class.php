@@ -71,15 +71,16 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       return "fab fa-wpforms";
    }
 
-   function showWizard($ticket, $entities, $customer = 0) {
+   function showWizard($ticket, $entities) {
       global $CFG_GLPI, $DB;
 
       $rand        = mt_rand();
       $tasktemplate = 0;
 
+
       $values = ['itilcategories_id'              => 0,
-         'type'                           => Entity::getUsedConfig('tickettype',
-            $_SESSION['glpiactive_entity'],
+                  'type'                           => Entity::getUsedConfig('tickettype',
+                     $_SESSION['glpiactive_entity'],
             '', Ticket::INCIDENT_TYPE),
          'content'                        => '',
          'name'                           => '',
@@ -87,20 +88,77 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          'urgency'                        => 3,
          'impact'                         => 3,
          'priority'                       => (int)Ticket::computePriority(3, 3),
-         '_tasktemplates_id'                => [],
+         '_tasktemplates_id'              => [],
+         'users_intervenor'               => []
       ];
 
-      // default ticket values and manage onchange type & category
-      foreach ($values as $key => $value) {
-         if(!array_key_exists($key, $ticket->fields)) {
-            $ticket->fields[$key] = $value;
+
+      // Get default values from posted values on reload form
+         if (isset($_POST)) {
+            $options = $_POST;
+         }
+
+
+      if (isset($options['name'])) {
+         $order           = ["\\'", '\\"', "\\\\"];
+         $replace         = ["'", '"', "\\"];
+         $options['name'] = str_replace($order, $replace, $options['name']);
+      }
+
+      if (isset($options['content'])) {
+         // Clean new lines to be fix encoding
+         $order              = ['\\r', '\\n', "\\'", '\\"', "\\\\"];
+         $replace            = ["", "", "'", '"', "\\"];
+         $options['content'] = str_replace($order, $replace, $options['content']);
+      }
+
+      // Restore saved value or override with page parameter
+      $saved = $this->restoreInput();
+      foreach ($values as $name => $value) {
+         if (!isset($options[$name])) {
+            if (isset($saved[$name])) {
+               $options[$name] = $saved[$name];
+            } else {
+               $options[$name] = $value;
+            }
+         }
+      }
+      // Check category / type validity
+      if ($options['itilcategories_id']) {
+         $cat = new ITILCategory();
+         if ($cat->getFromDB($options['itilcategories_id'])) {
+            switch ($options['type']) {
+               case Ticket::INCIDENT_TYPE :
+                  if (!$cat->getField('is_incident')) {
+                     $options['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               case Ticket::DEMAND_TYPE :
+                  if (!$cat->getField('is_request')) {
+                     $options['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               default :
+                  break;
+            }
          }
       }
 
+
       // Load ticket template if available :
-      $tt = $ticket->getITILTemplateToUse(false, $ticket->fields['type'],
-         $ticket->fields['itilcategories_id'],
+      $tt = $ticket->getITILTemplateToUse(false,$options['type'],
+         $options['itilcategories_id'],
          $_SESSION["glpiactive_entity"]);
+
+      // Predefined fields from template : reset them
+      if (isset($options['_predefined_fields'])) {
+         $options['_predefined_fields']
+            = Toolbox::decodeArrayFromInput($options['_predefined_fields']);
+      } else {
+         $options['_predefined_fields'] = [];
+      }
 
       PluginManageentitiesEntity::showManageentitiesHeader(__('Generate Intervention report', 'manageentities'));
       echo "<form name='generate' method='post' action='" . self::getFormUrl() ."'>";
@@ -111,21 +169,35 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "</th>";
       echo "</tr>";
 
+      $predefined_fields = [];
+      $tpl_key = Ticket::getTemplateFormFieldName();
       // override default ticket by predefined fields into ticket & task template
       if (isset($tt->predefined) && count($tt->predefined) > 0 ) {
-         foreach ($tt->predefined as $key_predef => $value_predef) {
-            if(array_key_exists($key_predef, $ticket->fields)) {
-               if ($key_predef == '_tasktemplates_id') {
+         foreach ($tt->predefined as $predeffield => $predefvalue) {
+            if (isset($values[$predeffield])) {
+               if ($predeffield == '_tasktemplates_id') {
                   $tasktemplate = new TaskTemplate;
                   $array_task_template = $tt->predefined['_tasktemplates_id'];
                   foreach ($array_task_template as $id_task_template) {
                      $tasktemplate->getFromDB($id_task_template);
                   }
-               } else {
-                  $ticket->fields[$key_predef] = $value_predef;
+               } else if (((count($options['_predefined_fields']) == 0)
+                     && ($options[$predeffield] == $values[$predeffield]))
+                  || (isset($options['_predefined_fields'][$predeffield])
+                     && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
+                  || (isset($options[$tpl_key])
+                     && ($options[$tpl_key] != $tt->getID()))
+                  // user pref for requestype can't overwrite requestype from template
+                  // when change category
+                  || (($predeffield == 'requesttypes_id')
+                     && empty($saved))) {
+
+                  // Load template data
+                  $options[$predeffield]            = $predefvalue;
+                  $predefined_fields[$predeffield] = $predefvalue;
                }
             } else {
-               echo "<input type='hidden' name='" . $key_predef . "' value='" . $value_predef . "'>";
+               echo "<input type='hidden' name='" . $predeffield . "' value='" . $predefvalue . "'>";
             }
          }
       }
@@ -133,17 +205,14 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       // override default ticket by hidden fields into ticket
       if (isset($tt->hidden) && count($tt->hidden) > 0 ) {
          foreach ($tt->hidden as $key_hidden => $value_hidden) {
-            if(!array_key_exists($key_hidden, $ticket->fields)) {
+            if(!array_key_exists($key_hidden, $options)) {
                echo "<input type='hidden' name='" . $key_hidden . "' value='" . $value_hidden . "'>";
             }
          }
       }
 
-      $opt = ['name' => 'entities_id', 'rand' => $rand, 'on_change' => 'this.form.submit()'];
+      $opt = ['name' => 'entities_id', 'rand' => $rand, 'on_change' => 'this.form.submit()', $value = $entities];
 
-      if ($customer) {
-         $opt = array_merge($opt, ['value' => $customer]);
-      }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3'>";
@@ -153,8 +222,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       Entity::dropdown($opt);
       echo "</td>";
       echo "</tr>";
-      $params = ['entities_id' => '__VALUE__', 'fieldname' => 'entities_id'];
 
+//      $params = ['entities_id' => '__VALUE__', 'fieldname' => 'entities_id'];
 //      Ajax::updateItemOnSelectEvent("dropdown_entities_id$rand", "contract$rand", "../ajax/dropdownCustomer.php", $params);
 
       echo "<tr class='tab_bg_1'>";
@@ -164,13 +233,13 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "<td colspan='7'>";
       /// Auto submit to load template
       $opt['on_change'] = 'this.form.submit()';
-      $opt['value'] = $ticket->fields['type'];
+      $opt['value']     = $options['type'];
 
       $rand = $ticket::dropdownType('type', $opt);
       $params = ['type'            => '__VALUE__',
-         'entity_restrict' => $entities,
-         'value'           => $ticket->fields['itilcategories_id'],
-         'currenttype'     => $ticket->fields['type']];
+                 'entity_restrict' => $entities,
+                 'value'           => $options['itilcategories_id'],
+                 'currenttype'     => $options['type']];
 
       Ajax::updateItemOnSelectEvent("dropdown_type$rand", "show_category_by_type",
          "../ajax/dropdownGenerateCriCategories.php",
@@ -182,13 +251,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       $conditions = [];
 
-      if ($customer) {
-         $conditions['entities_id']  = $customer;
-      } else {
-         $conditions['entities_id']    = $entities;
-      }
 
-      switch ($ticket->fields['type']) {
+      switch ($options['type']) {
          case Ticket::INCIDENT_TYPE :
             $conditions['is_incident'] = 1;
             break;
@@ -208,8 +272,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       $opt_categories['condition'] = $conditions;
       $opt_categories['on_change'] = 'this.form.submit()';
-      $opt_categories['value']     = $ticket->fields["itilcategories_id"];
-
+      $opt_categories['value']     = $options['itilcategories_id'];
+      $opt_categories['entity']    = $options["entities_id"];
 
 
       echo "<tr class='tab_bg_1'>";
@@ -224,29 +288,32 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "</td>";
       echo "</tr>";
 
-      if ($customer) {
-         PluginManageentitiesGenerateCRI::showContractLinkDropdown($customer);
+      if ($entities) {
+         PluginManageentitiesGenerateCRI::showContractLinkDropdown($entities);
       }
 
-//      echo "<tr class='tab_bg_1'>";
-//      echo "<td colspan='10'>";
-//      echo "<div id='contract$rand'>";
-//      echo "</div>";
-//      echo "</td>";
-//      echo "</tr>";
+      if (!$tt->isHiddenField('name')
+         || $tt->isPredefinedField('name')) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='3'>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."<td>";
+         if (!$tt->isHiddenField('name')) {
+            $opt = [
+               'value'     => $options['name'],
+               'maxlength' => 250,
+               'size'      => 80,
+            ];
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldText('name');
-      printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
-      echo "</td>";
-      echo "<td colspan='7'>";
-      echo "<input type='text' style='width:70%' maxlength=250 name='name' ".
-         ($tt->isMandatoryField('name') ? " required='required'" : '') .
-         " value=\"".Html::cleanInputText($ticket->fields["name"])."\">";
-      echo $tt->getEndHiddenFieldValue('name', $this);
-      echo "</td>";
-      echo "</tr>";
+            if ($tt->isMandatoryField('name')) {
+               $opt['required'] = 'required';
+            }
+            echo Html::input('name', $opt);
+
+         } else {
+            echo $options['name'];
+            echo "<input type='hidden' name='name' value=\"".$options['name']."\">";
+         }
+         echo "</tr>";
+      }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3'>" .$tt->getBeginHiddenFieldText('content');
@@ -260,7 +327,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $rows       = 5;
       $content_id = "content$rand";
 
-      $content = $ticket->fields['content'];
+      $content = $options['content'];
 
       $content = Html::setRichTextContent(
          $content_id,
@@ -290,8 +357,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "</td>";
          echo "<td colspan='7'>";
          echo $tt->getBeginHiddenFieldValue('urgency');
-         Ticket::dropdownUrgency(['value' => $ticket->fields["urgency"]]);
-         echo $tt->getEndHiddenFieldValue('urgency', $ticket);
+         Ticket::dropdownUrgency(['value' => $options['urgency']]);
          echo "</td>";
       }
 
@@ -304,7 +370,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "</td>";
          echo "<td colspan='7'>";
          echo $tt->getBeginHiddenFieldValue('impact');
-         Ticket::dropdownImpact(['value' => $ticket->fields["impact"]]);
+         Ticket::dropdownImpact(['value' => $options['impact']]);
          echo "</td>";
          echo "</tr>";
       }
@@ -319,7 +385,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "</td>";
          echo "<td colspan='7'>";
          echo $tt->getBeginHiddenFieldValue('priority');
-         Ticket::dropdownImpact(['value' => $ticket->fields["priority"]]);
+         Ticket::dropdownImpact(['value' => $options['priority']]);
          echo "</td>";
          echo "</tr>";
 
@@ -338,8 +404,17 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          $users[$users_active['id']] = $users_active['realname'] . " " . $users_active['firstname'];
 
       }
+      $opt = ['multiple' => true, 'entity' => $entities];
+      $value= [];
+      if (isset($options['users_intervenor']) && count($options['users_intervenor']) > 0) {
+         $value = ['values' => $options['users_intervenor']];
+      } else {
+         $value = ['value' => Session::getLoginUserID()];
+      }
 
-      Dropdown::showFromArray('users_intervenor', $users, ['value' => Session::getLoginUserID(), 'multiple' => true, 'entity' => $entities]);
+      $opt = array_merge($opt, $value);
+
+      Dropdown::showFromArray('users_intervenor', $users, $opt);
       echo "</td>";
       echo "</tr>";
 
@@ -877,6 +952,29 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          return gmdate("i:s", $duration);
       }
       return round($duration, 3) . 's';
+   }
+
+   /**
+    * Get the data saved in the session
+    *
+    * @since 0.84
+    *
+    * @param array $default Array of value used if session is empty
+    *
+    * @return array Array of value
+    **/
+   protected function restoreInput(Array $default = []) {
+
+      if (isset($_SESSION['saveInput'][$this->getType()])) {
+         $saved = Html::cleanPostForTextArea($_SESSION['saveInput'][$this->getType()]);
+
+         // clear saved data when restored (only need once)
+         $this->clearSavedInput();
+
+         return $saved;
+      }
+
+      return $default;
    }
 
 }
