@@ -71,7 +71,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       return "fab fa-wpforms";
    }
 
-   function showWizard($ticket, $entities) {
+   function showWizard($ticket, $entities, $customer = 0) {
       global $CFG_GLPI, $DB;
 
       $rand        = mt_rand();
@@ -90,7 +90,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          '_tasktemplates_id'                => [],
       ];
 
-      // default ticket values and manage onchange state & category
+      // default ticket values and manage onchange type & category
       foreach ($values as $key => $value) {
          if(!array_key_exists($key, $ticket->fields)) {
             $ticket->fields[$key] = $value;
@@ -139,6 +139,23 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          }
       }
 
+      $opt = ['name' => 'entities_id', 'rand' => $rand, 'on_change' => 'this.form.submit()'];
+
+      if ($customer) {
+         $opt = array_merge($opt, ['value' => $customer]);
+      }
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='3'>";
+      echo __('Client');
+      echo "</td>";
+      echo "<td colspan='7'>";
+      Entity::dropdown($opt);
+      echo "</td>";
+      echo "</tr>";
+      $params = ['entities_id' => '__VALUE__', 'fieldname' => 'entities_id'];
+
+//      Ajax::updateItemOnSelectEvent("dropdown_entities_id$rand", "contract$rand", "../ajax/dropdownCustomer.php", $params);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3'>";
@@ -162,7 +179,14 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "</td>";
       echo "</tr>";
 
+
       $conditions = [];
+
+      if ($customer) {
+         $conditions['entities_id']  = $customer;
+      } else {
+         $conditions['entities_id']    = $entities;
+      }
 
       switch ($ticket->fields['type']) {
          case Ticket::INCIDENT_TYPE :
@@ -185,7 +209,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $opt_categories['condition'] = $conditions;
       $opt_categories['on_change'] = 'this.form.submit()';
       $opt_categories['value']     = $ticket->fields["itilcategories_id"];
-      $opt_categories['entity']    = $entities;
+
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3'>";
@@ -198,6 +223,17 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "</span>";
       echo "</td>";
       echo "</tr>";
+
+      if ($customer) {
+         PluginManageentitiesGenerateCRI::showContractLinkDropdown($customer);
+      }
+
+//      echo "<tr class='tab_bg_1'>";
+//      echo "<td colspan='10'>";
+//      echo "<div id='contract$rand'>";
+//      echo "</div>";
+//      echo "</td>";
+//      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3'>";
@@ -288,25 +324,6 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "</tr>";
 
       }
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='3'>";
-      echo __('Client');
-      echo "</td>";
-      echo "<td colspan='7'>";
-      Entity::dropdown(['name' => 'entities_id', 'rand' => $rand]);
-      echo "</td>";
-      echo "</tr>";
-      $params = ['entities_id' => '__VALUE__', 'fieldname' => 'entities_id'];
-
-      Ajax::updateItemOnSelectEvent("dropdown_entities_id$rand", "contract$rand", "../ajax/dropdownCustomer.php", $params);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='10'>";
-      echo "<div id='contract$rand'>";
-      echo "</div>";
-      echo "</td>";
-      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3'>";
@@ -795,16 +812,25 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       // check if categories and at least one tech for tasks. check if the customer entity are at least contract even
       //if we don't choose one
-      $mandatory_fields = ['itilcategories_id' => __('Category'),
-         'users_intervenor' => __('Technician as assigned'),
-         'plugin_manageentities_contractdays_id' => __('Customer')];
+      $mandatory_fields = ['itilcategories_id'   => __('Category'),
+         'users_intervenor'                      => __('Technician as assigned'),
+         'plugin_manageentities_contractdays_id' => __('Customer'),
+         'plan'                                  => __('Task')];
 
       foreach ($input as $key => $value) {
          if (array_key_exists($key, $mandatory_fields)) {
             if ($key !== 'plugin_manageentities_contractdays_id') {
-               if (empty($value)) {
-                  $msg[] = $mandatory_fields[$key];
-                  $checkKo = true;
+               if ($key == 'plan') {
+                  if (empty($input[$key]['begin']) && empty($input[$key]['begin'])
+                        && !array_key_exists('predifined-task', $input)) {
+                     $msg[] = $mandatory_fields[$key];
+                     $checkKo = true;
+                  }
+               } else {
+                  if (empty($value)) {
+                     $msg[] = $mandatory_fields[$key];
+                     $checkKo = true;
+                  }
                }
             }
          }
