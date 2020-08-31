@@ -29,8 +29,8 @@ if (isset($_POST['generatecri'])) {
    $ticket = new Ticket();
    $ticket->fields['itilcategories_id'] = isset($_POST['itilcategories_id']) ? $_POST['itilcategories_id'] : 0;
    $ticket->fields['type'] = isset($_POST['type']) ? $_POST['type'] : '';
-   $customer = isset($_POST['entities_id']) ? $_POST['entities_id'] : 0;
-   $PluginManageentitiesGenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity'], $customer);
+   $_SESSION['glpiactive_entity'] = isset($_POST['entities_id']) ? $_POST['entities_id'] : 0;
+   $PluginManageentitiesGenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity']);
    Html::footer();
 
 }
