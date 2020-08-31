@@ -821,7 +821,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          if (array_key_exists($key, $mandatory_fields)) {
             if ($key !== 'plugin_manageentities_contractdays_id') {
                if ($key == 'plan') {
-                  if (empty($input[$key]['begin']) && empty($input[$key]['begin'])) {
+                  if (empty($input[$key]['begin']) && empty($input[$key]['begin'])
+                        && !array_key_exists('predifined-task', $input)) {
                      $msg[] = $mandatory_fields[$key];
                      $checkKo = true;
                   }
@@ -833,11 +834,6 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                }
             }
          }
-      }
-
-      if (!array_key_exists('predifined-task', $input)) {
-         $msg[] = $mandatory_fields['task'];
-         $checkKo = true;
       }
 
       if (!array_key_exists('users_intervenor', $input )) {
