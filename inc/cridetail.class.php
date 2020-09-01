@@ -383,7 +383,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
          if ($number != 0) {
 
-            echo "<table class='tab_cadre_me'>";
+            echo "<table class='tab_cadre'>";
             echo "<tr><th colspan='8'>" . __('Associated intervention reports', 'manageentities');
 
             if (Session::haveRight("document", READ)) {
