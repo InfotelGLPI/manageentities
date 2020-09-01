@@ -49,7 +49,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
     *
     */
    static function getMenuName($nb = 0) {
-      return __('Generate report intervention', 'manageentities');
+      return __('Generation of the intervention report', 'manageentities');
    }
 
    /**
@@ -160,7 +160,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          $options['_predefined_fields'] = [];
       }
 
-      PluginManageentitiesEntity::showManageentitiesHeader(__('Generate Intervention report', 'manageentities'));
+      PluginManageentitiesEntity::showManageentitiesHeader(__('Generation of the intervention report', 'manageentities'));
       echo "<form name='generate' method='post' action='" . self::getFormUrl() ."'>";
       echo "<table class='tab_cadre' width='60%'>";
       echo "<tr class='tab_bg_1'>";
@@ -176,7 +176,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
             if (isset($values[$predeffield])) {
                if ($predeffield == '_tasktemplates_id') {
-                  $tasktemplate = new TaskTemplate;
+                  $tasktemplate = new TaskTemplate();
                   $array_task_template = $tt->predefined['_tasktemplates_id'];
                   foreach ($array_task_template as $id_task_template) {
                      $tasktemplate->getFromDB($id_task_template);
@@ -441,9 +441,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       echo "<tr class='tab_bg_1' >";
       echo "<th colspan='4'>";
-      echo __('Accomplished tasks informations', 'manageentities');
+      echo _n('Intervention task','Intervention tasks',2, 'manageentities');
       echo "&nbsp&nbsp<a onclick='addTaskOnView(" . self::TASK_DONE . ");' style='cursor:pointer;' id='img_add_cci' name='' ";
-      echo "title='" . __('Add this Task', 'manageentities') . "'><i class='fa fa-plus-circle' style='color:white;'></i></a>";
+      echo "title='" . __('Add a new Task') . "'><i class='fas fa-plus-circle' style='color:white;'></i></a>";
       echo "</th>";
       echo "</tr>";
 
@@ -515,12 +515,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               
               var blocTask  = '<div data-index=\"' + taskCount + '\" style=\"margin: 10px; padding:10px; width:100%; border:dashed;\" id=\"task_' + taskCount + '\" >';
                blocTask += '<tr class=\"tab_bg_1\">';
-               blocTask += '<span style=\"font-weight:bold; font-size: 15px;\">' + __('Task') + ' :</span><br>';
+               blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style=\"cursor:pointer;\" ><i style=\"float:right;\" class=\"fas fa-minus-circle\"></i></a>';
+               blocTask += '<span style=\"font-weight:bold; font-size: 15px;\">' + _n('Task', 'Tasks', 1) + ' :</span><br>';
                blocTask += '<span style=\"font-weight:bold;\">' + __('Description') + ' : </span><span>' + description + ' </span><br> ';
                blocTask += '<span style=\"font-weight:bold;\"> ' + __('Begin date') + ' : </span><span>' + begin + ' </span><br> ';
                blocTask += end !== undefined ? '<span style=\"font-weight:bold;\">'+ __('End date') + ' : </span><span>' + end + ' </span><br> ' : '';
                blocTask += duration > 0 ? '<span style=\"font-weight:bold;\">'+ __('Duration') + ' : </span><span>' + durationDisplay + ' </span><br>' : '';
-               blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style=\"cursor:pointer;\" ><i style=\"float:right;\" class=\"fa fa-minus-circle\"></i></a>';
                blocTask += '<input name =\"duration' + taskCount + '\" type=\"hidden\" value=\"' + duration + '\"\>';
                blocTask += '<input name =\"begin' + taskCount + '\" type=\"hidden\" value=\"' + begin + '\"\>';
                blocTask += '<input name =\"end' + taskCount + '\" type=\"hidden\" value=\"' + end + '\"\>';
@@ -540,8 +540,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                 var h = Math.floor(d / 3600);
                 var m = Math.floor(d % 3600 / 60);
            
-                var hDisplay = h > 0 ? h + (h == 1 ? \" h \" : \" h(s) \") : \"\";
-                var mDisplay = m > 0 ? m + (m == 1 ? \" m \" : \" m(s) \") : \"\";
+                var hDisplay = h > 0 ? h + (h == 1 ? \" h \" : \" h \") : \"\";
+                var mDisplay = m > 0 ? m + (m == 1 ? \" m \" : \" m \") : \"\";
                 return hDisplay + mDisplay; 
             }
             
