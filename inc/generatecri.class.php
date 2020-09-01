@@ -31,6 +31,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Class PluginManageentitiesGenerateCRI
+ */
 class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
    static $rightname = "ticket";
@@ -67,16 +70,23 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       return $menu;
    }
 
+   /**
+    * @return string
+    */
    static function getIcon() {
       return "fab fa-wpforms";
    }
 
+   /**
+    * @param $ticket
+    * @param $entities
+    *
+    * @throws \GlpitestSQLError
+    */
    function showWizard($ticket, $entities) {
-      global $CFG_GLPI, $DB;
 
       $rand         = mt_rand();
       $tasktemplate = 0;
-
 
       $values = ['itilcategories_id' => 0,
                  'type'              => Entity::getUsedConfig('tickettype',
@@ -211,12 +221,14 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          }
       }
 
-      $opt = ['name' => 'entities_id', 'rand' => $rand, 'on_change' => 'this.form.submit()', $value = $entities];
-
+      $opt = ['name'      => 'entities_id',
+              'rand'      => $rand,
+              'on_change' => 'this.form.submit()',
+              'value' => $options['entities_id']];
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo __('Client');
+      echo _n('Client', 'Clients', 2, 'manageentities');
       echo "</td>";
       echo "<td colspan='3'>";
       Entity::dropdown($opt);
@@ -563,6 +575,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
    }
 
+   /**
+    * @param $input
+    *
+    * @return bool|int
+    */
    static function createTicketAndAssociateContract($input) {
 
       $ticket         = new Ticket();
@@ -594,9 +611,10 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       foreach ($input as $key => $value) {
          if (in_array($key, $allowed_fields)) {
             switch ($key) {
-               case 'content':
-                  $inputs[$key] = addslashes($value);
-                  break;
+               //               case 'content':
+               //               case 'name':
+               //                  $inputs[$key] = addslashes($value);
+               //                  break;
                default :
                   $inputs[$key] = $value;
                   break;
@@ -618,6 +636,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
    }
 
 
+   /**
+    * @param $inputs
+    * @param $ticket_id
+    *
+    * @return bool
+    */
    static function createTasks($inputs, $ticket_id) {
 
       if (isset($inputs['predifined-task'])) {
@@ -631,7 +655,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
          $input = ['tasktemplates_id'  => $task_template_id,
                    'taskcategories_id' => $task_template->getField('tasktemplates_id'),
-                   'tickets_id'        => $ticket_id, 'users_id' => Session::getLoginUserID(),
+                   'tickets_id'        => $ticket_id,
+                   'users_id'          => Session::getLoginUserID(),
                    'users_id_tech'     => $user_ticket_task,
                    'content'           => $task_template->getField('content'),
                    'state'             => $task_template->getField('state'),
@@ -699,9 +724,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
             if ($hasBegin && $hasDuration && $hasEnd && $hasDescription) {
                $ticket_task = new TicketTask();
-               $ticket_task->add(['tickets_id'    => $ticket_id, 'users_id' => Session::getLoginUserID(),
-                                  'users_id_tech' => Session::getLoginUserID(), '_plan' => $inputs['_plan'],
-                                  'plan'          => $inputs['plan'], 'content' => addslashes($inputs['description']),
+               $ticket_task->add(['tickets_id'    => $ticket_id,
+                                  'users_id'      => Session::getLoginUserID(),
+                                  'users_id_tech' => Session::getLoginUserID(),
+                                  '_plan'         => $inputs['_plan'],
+                                  'plan'          => $inputs['plan'],
+                                  'content'       => $inputs['description'],
                                   'state'         => self::TASK_DONE]);
                $hasDuration    = false;
                $hasDescription = false;
@@ -713,6 +741,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       return true;
    }
 
+   /**
+    * @param $ticket_id
+    *
+    * @return string
+    * @throws \GlpitestSQLError
+    */
    public static function getDescriptionFromTasks($ticket_id) {
       global $DB, $CFG_GLPI;
       $config = PluginManageentitiesConfig::getInstance();
@@ -755,6 +789,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       return $desc;
    }
 
+   /**
+    * @param $inputs
+    * @param $ticket_id
+    * @param $PluginManageentitiesCri
+    */
    static function generateCri($inputs, $ticket_id, $PluginManageentitiesCri) {
       global $DB, $CFG_GLPI;
       $PluginManageentitiesCriPrice = new PluginManageentitiesCriPrice();
@@ -787,6 +826,13 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $PluginManageentitiesCri->generatePdf($input);
    }
 
+   /**
+    * @param        $entities_id
+    * @param string $type
+    *
+    * @return array
+    * @throws \GlpitestSQLError
+    */
    static function showContractLinkDropdown($entities_id, $type = 'ticket') {
       global $DB, $CFG_GLPI;
 
@@ -887,19 +933,48 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "</td>";
          echo "</tr>";
 
-         return ['contractSelected' => $contractSelected, 'contractdaySelected' => $contractdaySelected, 'is_contract' => $number];
+         return ['contractSelected' => $contractSelected,
+                 'contractdaySelected' => $contractdaySelected,
+                 'is_contract' => $number];
       }
    }
 
-   static function checkMandatoryFields($input) {
+   /**
+    * Save the input data in the Session
+    *
+    * @return void
+    **@since 0.84
+    *
+    */
+   protected function saveInput($input) {
+      $_SESSION['saveInput'][$this->getType()] = $input;
+   }
+
+   /**
+    * Clear the saved data stored in the session
+    *
+    * @return void
+    **@since 0.84
+    *
+    */
+   protected function clearSavedInput() {
+      unset($_SESSION['saveInput'][$this->getType()]);
+   }
+
+   /**
+    * @param $input
+    *
+    * @return bool
+    */
+   function checkMandatoryFields($input) {
       $msg     = [];
       $checkKo = false;
 
+      $this->saveInput($input);
       // check if categories and at least one tech for tasks. check if the customer entity are at least contract even
       //if we don't choose one
       $mandatory_fields = ['itilcategories_id'                     => __('Category'),
                            'users_intervenor'                      => __('Technician as assigned'),
-                           'plugin_manageentities_contractdays_id' => __('Customer'),
                            'plan'                                  => __('Task')];
 
       foreach ($input as $key => $value) {

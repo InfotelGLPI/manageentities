@@ -36,7 +36,7 @@ if (Session::getCurrentInterface() == 'central') {
 } else {
    Html::helpHeader(__('Entities portal', 'manageentities'));
 }
-if (Session::haveRightsOr("ticket", [CREATE])) {
+if (Session::haveRight("ticket", CREATE)) {
    $generatecri = new PluginManageentitiesGenerateCRI();
    $generatecri->showWizard($ticket = new Ticket(), $_SESSION['glpiactive_entity']);
 
