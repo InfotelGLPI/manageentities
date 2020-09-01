@@ -443,7 +443,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "<th colspan='4'>";
       echo _n('Intervention task', 'Intervention tasks', 2, 'manageentities');
       echo "&nbsp&nbsp<a onclick='addTaskOnView(" . self::TASK_DONE . ");' style='cursor:pointer;' id='img_add_cci' name='' ";
-      echo "title='" . __('Add a new Task') . "'><i class='fas fa-plus-circle' style='color:white;'></i></a>";
+      echo "title='" . __('Add this Task', 'manageentities') . "'><i class='fas fa-plus-circle' style='color:white;'></i></a>";
       echo "</th>";
       echo "</tr>";
 
