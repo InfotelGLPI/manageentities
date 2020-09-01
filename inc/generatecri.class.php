@@ -95,6 +95,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                  'content'           => '',
                  'name'              => '',
                  'entities_id'       => $_SESSION['glpiactive_entity'],
+                 'status'            => CommonITILObject::PLANNED,
                  'urgency'           => 3,
                  'impact'            => 3,
                  'priority'          => (int)Ticket::computePriority(3, 3),
@@ -224,7 +225,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $opt = ['name'      => 'entities_id',
               'rand'      => $rand,
               'on_change' => 'this.form.submit()',
-              'value' => $options['entities_id']];
+              'value'     => $options['entities_id']];
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
@@ -445,7 +446,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             echo "<span style='font-weight:bold;'>" . __('Technician group') . ": </span>";
             echo "<span>" . $group->getField('name') . "</span><br>";
          }
-         echo "<input name ='predifined-task' type='hidden' value='" . $tasktemplate->fields['id'] . "'>";
+         echo "<input name ='predefined-task' type='hidden' value='" . $tasktemplate->fields['id'] . "'>";
          echo "</div>";
          echo "</td>";
          echo "</tr>";
@@ -591,6 +592,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          'urgency',
          'entities_id',
          'impact',
+         'status',
          'priority',
          'locations_id',
          '_groups_id_assign',
@@ -621,6 +623,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             }
          }
       }
+      $inputs['status'] = CommonITILObject::PLANNED;
 
       $ticketId = $ticket->add($inputs);
 
@@ -644,9 +647,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
     */
    static function createTasks($inputs, $ticket_id) {
 
-      if (isset($inputs['predifined-task'])) {
+      if (isset($inputs['predefined-task'])) {
          $task_template    = new TaskTemplate();
-         $task_template_id = $inputs['predifined-task'];
+         $task_template_id = $inputs['predefined-task'];
          $task_template->getFromDB($task_template_id);
 
          $ticket_task      = new TicketTask();
@@ -799,7 +802,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $PluginManageentitiesCriPrice = new PluginManageentitiesCriPrice();
       $desc                         = self::getDescriptionFromTasks($ticket_id);
       $critypes                     = '';
-      if ($inputs['plugin_manageentities_contractdays_id'] > 0) {
+      if (isset($inputs['plugin_manageentities_contractdays_id'])
+          && $inputs['plugin_manageentities_contractdays_id'] > 0) {
          $critypes = $PluginManageentitiesCriPrice->getItems($inputs['plugin_manageentities_contractdays_id']);
       }
       $critypes_default = 0;
@@ -814,11 +818,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       $input['REPORT_ID']          = $ticket_id;
       $input['users_id']           = Session::getLoginUserID();
-      $input['CONTRAT']            = $inputs['contracts_id'] ?
+      $input['CONTRAT']            = isset($inputs['contracts_id']) ?
          $inputs['contracts_id'] : 0;
       $input['CONTRACTDAY']        = isset($inputs['plugin_manageentities_contractdays_id']) ?
          $inputs['plugin_manageentities_contractdays_id'] : 0;
-      $input['WITHOUTCONTRACT']    = $inputs['contracts_id'] > 0 ? false : true;
+      $input['WITHOUTCONTRACT']    = (isset($inputs['contracts_id']) && $inputs['contracts_id']) > 0 ? false : true;
       $input['REPORT_ACTIVITE']    = $critypes_default;
       $input['REPORT_DESCRIPTION'] = $desc;
       $input['entities_id']        = $inputs['entities_id'];
@@ -933,9 +937,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "</td>";
          echo "</tr>";
 
-         return ['contractSelected' => $contractSelected,
+         return ['contractSelected'    => $contractSelected,
                  'contractdaySelected' => $contractdaySelected,
-                 'is_contract' => $number];
+                 'is_contract'         => $number];
       }
    }
 
@@ -973,24 +977,23 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $this->saveInput($input);
       // check if categories and at least one tech for tasks. check if the customer entity are at least contract even
       //if we don't choose one
-      $mandatory_fields = ['itilcategories_id'                     => __('Category'),
-                           'users_intervenor'                      => __('Technician as assigned'),
-                           'plan'                                  => __('Task')];
+      $mandatory_fields = ['itilcategories_id' => __('Category'),
+                           'users_intervenor'  => __('Technician as assigned'),
+                           'plan'              => __('Task')];
 
       foreach ($input as $key => $value) {
          if (array_key_exists($key, $mandatory_fields)) {
-            if ($key !== 'plugin_manageentities_contractdays_id') {
-               if ($key == 'plan') {
-                  if (empty($input[$key]['begin']) && empty($input[$key]['begin'])
-                      && !array_key_exists('predifined-task', $input)) {
-                     $msg[]   = $mandatory_fields[$key];
-                     $checkKo = true;
-                  }
-               } else {
-                  if (empty($value)) {
-                     $msg[]   = $mandatory_fields[$key];
-                     $checkKo = true;
-                  }
+            if ($key == 'plan') {
+               if (empty($input[$key]['begin'])
+                   && empty($input[$key]['begin'])
+                   && !array_key_exists('predefined-task', $input)) {
+                  $msg[]   = $mandatory_fields[$key];
+                  $checkKo = true;
+               }
+            } else {
+               if (empty($value)) {
+                  $msg[]   = $mandatory_fields[$key];
+                  $checkKo = true;
                }
             }
          }
@@ -998,11 +1001,6 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       if (!array_key_exists('users_intervenor', $input)) {
          $msg[]   = $mandatory_fields['users_intervenor'];
-         $checkKo = true;
-      }
-
-      if (!array_key_exists('plugin_manageentities_contractdays_id', $input)) {
-         $msg[]   = $mandatory_fields['plugin_manageentities_contractdays_id'];
          $checkKo = true;
       }
 
