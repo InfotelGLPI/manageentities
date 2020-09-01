@@ -89,7 +89,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          'impact'                         => 3,
          'priority'                       => (int)Ticket::computePriority(3, 3),
          '_tasktemplates_id'              => [],
-         'users_intervenor'               => []
+                 'users_intervenor'  => [Session::getLoginUserID()]
       ];
 
 
@@ -162,9 +162,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       PluginManageentitiesEntity::showManageentitiesHeader(__('Generate Intervention report', 'manageentities'));
       echo "<form name='generate' method='post' action='" . self::getFormUrl() ."'>";
-      echo "<table class='tab_cadre' width='80%'>";
+      echo "<table class='tab_cadre' width='60%'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='10' style='padding-top:16px; font-weight: bold;'>";
+      echo "<th colspan='4' style='padding-top:16px; font-weight: bold;'>";
       echo __('Ticket informations', 'manageentities');
       echo "</th>";
       echo "</tr>";
@@ -215,10 +215,10 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='3'>";
+      echo "<td>";
       echo __('Client');
       echo "</td>";
-      echo "<td colspan='7'>";
+      echo "<td colspan='3'>";
       Entity::dropdown($opt);
       echo "</td>";
       echo "</tr>";
@@ -227,10 +227,10 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 //      Ajax::updateItemOnSelectEvent("dropdown_entities_id$rand", "contract$rand", "../ajax/dropdownCustomer.php", $params);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='3'>";
+      echo "<td>";
       echo __('Type');
       echo "</td>";
-      echo "<td colspan='7'>";
+      echo "<td colspan='3'>";
       /// Auto submit to load template
       $opt['on_change'] = 'this.form.submit()';
       $opt['value']     = $options['type'];
@@ -266,7 +266,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       }
 
       if ($tt->isMandatoryField("itilcategories_id")
-         && ($ticket->fields["itilcategories_id"] > 0)) {
+         && ($options["itilcategories_id"] > 0)) {
          $opt_categories['display_emptychoice'] = false;
       }
 
@@ -277,11 +277,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='3'>";
+      echo "<td>";
       echo sprintf(__('%1$s%2$s'), __('Category'),
          $tt->getMandatoryMark('itilcategories_id'));
       echo "</td>";
-      echo "<td colspan='7'>";
+      echo "<td colspan='3'>";
       echo "<span id='show_category_by_type'>";
       ITILCategory::dropdown($opt_categories);
       echo "</span>";
@@ -289,13 +289,14 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "</tr>";
 
       if ($entities) {
-         PluginManageentitiesGenerateCRI::showContractLinkDropdown($entities);
+         self::showContractLinkDropdown($entities);
       }
 
       if (!$tt->isHiddenField('name')
          || $tt->isPredefinedField('name')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='3'>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."<td>";
+         echo "<td>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."</td>";
+         echo "<td colspan='3'>";
          if (!$tt->isHiddenField('name')) {
             $opt = [
                'value'     => $options['name'],
@@ -316,12 +317,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='3'>" .$tt->getBeginHiddenFieldText('content');
+      echo "<td>" .$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
       echo $tt->getEndHiddenFieldText('content');
       echo "</td>";
 
-      echo "<td colspan='7'>";
+      echo "<td colspan='3'>";
       echo $tt->getBeginHiddenFieldValue('content');
       $rand_text  = mt_rand();
       $rows       = 5;
@@ -351,11 +352,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       if ($tt->isMandatoryField('urgency') || $tt->isPredefinedField('urgency')
          && $tt->isHiddenField('urgency')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='3'>".$tt->getBeginHiddenFieldText('urgency');
+         echo "<td>".$tt->getBeginHiddenFieldText('urgency');
          printf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
          echo $tt->getEndHiddenFieldText('urgency');
          echo "</td>";
-         echo "<td colspan='7'>";
+         echo "<td colspan='3'>";
          echo $tt->getBeginHiddenFieldValue('urgency');
          Ticket::dropdownUrgency(['value' => $options['urgency']]);
          echo "</td>";
@@ -364,11 +365,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       if ($tt->isMandatoryField('impact') || $tt->isPredefinedField('impact')
          && !$tt->isHiddenField('impact')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='3'>" . $tt->getBeginHiddenFieldText('impact');
+         echo "<td>" . $tt->getBeginHiddenFieldText('impact');
          printf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
          echo $tt->getEndHiddenFieldText('impact');
          echo "</td>";
-         echo "<td colspan='7'>";
+         echo "<td colspan='3'>";
          echo $tt->getBeginHiddenFieldValue('impact');
          Ticket::dropdownImpact(['value' => $options['impact']]);
          echo "</td>";
@@ -379,11 +380,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       if ($tt->isMandatoryField('priority') || $tt->isPredefinedField('priority')
          && !$tt->isHiddenField('priority')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='3'>" . $tt->getBeginHiddenFieldText('impact');
+         echo "<td>" . $tt->getBeginHiddenFieldText('priority');
          printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
          echo $tt->getEndHiddenFieldText('priority');
          echo "</td>";
-         echo "<td colspan='7'>";
+         echo "<td colspan='3'>";
          echo $tt->getBeginHiddenFieldValue('priority');
          Ticket::dropdownImpact(['value' => $options['priority']]);
          echo "</td>";
@@ -392,10 +393,10 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='3'>";
-      echo __('Intervenor', 'manageentities');
+      echo "<td>";
+      echo __('Technicians', 'manageentities');
       echo "</td>";
-      echo "<td colspan='7'>";
+      echo "<td colspan='3'>";
 
       $user = new User();
       $users_active = $user->find(['is_active' => 1]);
@@ -404,29 +405,22 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          $users[$users_active['id']] = $users_active['realname'] . " " . $users_active['firstname'];
 
       }
-      $opt = ['multiple' => true, 'entity' => $entities];
-      $value= [];
-      if (isset($options['users_intervenor']) && count($options['users_intervenor']) > 0) {
-         $value = ['values' => $options['users_intervenor']];
-      } else {
-         $value = ['value' => Session::getLoginUserID()];
-      }
 
-      $opt = array_merge($opt, $value);
-
-      Dropdown::showFromArray('users_intervenor', $users, $opt);
+      Dropdown::showFromArray('users_intervenor', $users, ['values'    => $options["users_intervenor"],
+                                                           'multiple' => true,
+                                                           'entity'   => $entities]);
       echo "</td>";
       echo "</tr>";
 
       if ($tasktemplate) {
          //$task = 1;
          echo "<tr class='tab_bg_1' >";
-         echo "<th colspan='10'>";
+         echo "<th colspan='2'>";
          echo __('Predefined template task informations', 'manageentities');
          echo "</th>";
          echo "</tr>";
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='10'>";
+         echo "<td colspan='2'>";
          echo "<div style='margin: 10px; padding:10px; width:400px; border:dashed;'>";
          echo "<span style='font-weight:bold; font-size: 15px;'>" . __('Task') . ": </span><br>";
          echo "<span style='font-weight:bold;'>" . __('Description') . ": </span>";
@@ -446,27 +440,36 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       }
 
       echo "<tr class='tab_bg_1' >";
-      echo "<th colspan='10'>";
+      echo "<th colspan='4'>";
       echo __('Accomplished tasks informations', 'manageentities');
       echo "&nbsp&nbsp<a onclick='addTaskOnView(" . self::TASK_DONE . ");' style='cursor:pointer;' id='img_add_cci' name='' ";
-      echo "title='" . __('Add this Task', 'manageentities') . "'><i class='fa fa-plus-circle'></i></a>";
+      echo "title='" . __('Add this Task', 'manageentities') . "'><i class='fa fa-plus-circle' style='color:white;'></i></a>";
       echo "</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>" . __('Description') . "</td>";
-      echo "<td colspan='3'>";
+      echo "<td>" . __('Description') . "</td>";
+
+      echo "<td>";
       // Html::textarea(['name' => 'description', 'enable_richtext' => true, 'cols' => 50, 'rows' => '5']);
-      echo "<textarea id='description-task-done' name='description' cols='130' rows='5'></textarea>";
+      echo "<textarea id='description-task-done' name='description' cols='80' rows='8'></textarea>";
       echo "</td>";
-      echo "<td colspan='2'>" . __('Start date');
+
+      echo "<td>" . __('Start date');
       echo "<br><br><span>" . __('Duration') . "</span></td>";
-      echo "<td colspan='3'>";
-      Html::showDateTimeField("plan[begin]", ['timestep' => -1, 'maybeempty' => false, 'canedit' => true, 'mindate' => '', 'maxdate' => '']);
+
+      echo "<td>";
+      Html::showDateTimeField("plan[begin]", ['timestep' => -1,
+                                              'maybeempty' => false,
+                                              'canedit' => true,
+                                              'mindate' => '',
+                                              'maxdate' => '']);
 
       echo "<br><br><div>";
 
-      $rand = Dropdown::showTimeStamp("plan[_duration]", ['min' => 0, 'max' => 50 * HOUR_TIMESTAMP, 'emptylabel' => __('Specify an end date')]);
+      $rand = Dropdown::showTimeStamp("plan[_duration]", ['min' => 0,
+                                                          'max' => 50 * HOUR_TIMESTAMP,
+                                                          'emptylabel' => __('Specify an end date')]);
       echo "<br><div id='date_end$rand'></div>";
 
       $event_options = ['duration' => '__VALUE__', 'name' => "plan[end]"];
@@ -474,6 +477,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       Ajax::updateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand", "../ajax/taskend.php", $event_options);
       echo "</div>";
       echo "</td>";
+
       echo "</tr>";
 
       echo "<script> 
@@ -510,7 +514,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               taskCount ++;
               
               var blocTask  = '<div data-index=\"' + taskCount + '\" style=\"margin: 10px; padding:10px; width:100%; border:dashed;\" id=\"task_' + taskCount + '\" >';
-               blocTask += '<tr class=\"tab_bg_1\"><br>';
+               blocTask += '<tr class=\"tab_bg_1\">';
                blocTask += '<span style=\"font-weight:bold; font-size: 15px;\">' + __('Task') + ' :</span><br>';
                blocTask += '<span style=\"font-weight:bold;\">' + __('Description') + ' : </span><span>' + description + ' </span><br> ';
                blocTask += '<span style=\"font-weight:bold;\"> ' + __('Begin date') + ' : </span><span>' + begin + ' </span><br> ';
@@ -544,13 +548,13 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
            </script>";
 
       echo "<tr class='tab_bg_1' id='tab-tasks' style='display: none'>";
-      echo "<td colspan='10'>";
+      echo "<td colspan='4'>";
       echo "<div style='width: 400px;' id='tasks'></div>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='10'>";
+      echo "<td class='center' colspan='4'>";
       echo "<input type='submit' name='generatecri' value='" . _sx('button', 'Generate') . "' class='submit'>";
       echo "</td></tr>";
       echo "</table></div>";
