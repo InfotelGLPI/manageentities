@@ -86,6 +86,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
    function showWizard($ticket, $entities) {
 
       $rand         = mt_rand();
+      $rand_user    = mt_rand();
       $tasktemplate = 0;
 
       $values = ['itilcategories_id' => 0,
@@ -455,7 +456,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "<tr class='tab_bg_1' >";
       echo "<th colspan='4'>";
       echo _n('Intervention task', 'Intervention tasks', 2, 'manageentities');
-      echo "&nbsp&nbsp<a onclick='addTaskOnView(" . self::TASK_DONE . ");' style='cursor:pointer;' id='img_add_cci' name='' ";
+      echo "&nbsp&nbsp<a onclick='addTaskOnView(false);' style='cursor:pointer;' id='img_add_cci' name='' ";
       echo "title='" . __('Add this Task', 'manageentities') . "'><i class='fas fa-plus-circle' style='color:white;'></i></a>";
       echo "</th>";
       echo "</tr>";
@@ -464,12 +465,13 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "<td>" . __('Description') . "</td>";
 
       echo "<td>";
-      // Html::textarea(['name' => 'description', 'enable_richtext' => true, 'cols' => 50, 'rows' => '5']);
       echo "<textarea id='description-task-done' name='description' cols='80' rows='8'></textarea>";
       echo "</td>";
 
       echo "<td>" . __('Start date');
-      echo "<br><br><span>" . __('Duration') . "</span></td>";
+      echo "<br><br><span>" . __('Duration') . "</span>";
+      echo "<br><br><br><i class='fas fa-user fa-fw' title='" ._n('User', 'Users', 1). "'></i>";
+      echo "</td>";
 
       echo "<td>";
       Html::showDateTimeField("plan[begin]", ['timestep'   => -1,
@@ -478,7 +480,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                                               'mindate'    => '',
                                               'maxdate'    => '']);
 
-      echo "<br><br><div>";
+      echo "<br><div>";
 
       $rand = Dropdown::showTimeStamp("plan[_duration]", ['min'        => 0,
                                                           'max'        => 50 * HOUR_TIMESTAMP,
@@ -488,31 +490,124 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $event_options = ['duration' => '__VALUE__', 'name' => "plan[end]"];
 
       Ajax::updateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand", "../ajax/taskend.php", $event_options);
-      echo "</div>";
-      echo "</td>";
+      echo "</div><br>";
+      $params = ['name'   => "users_id_tech",
+         'right'  => "own_ticket",
+         'rand'   => $rand_user,
+         'entity' => $options["entities_id"],
+         'width'  => '80%'];
 
+      echo "<div id='users_id_tech'>";
+      User::dropdown($params);
+      echo "</div>";
+
+      echo "</td>";
       echo "</tr>";
 
+
+      $countTasks       = [];
+      $task_stored      = [];
+
+      foreach ($options as $key => $value) {
+         if (strpos($key, 'begin') !== false) {
+            $countTasks [] = substr($key, strrpos($key, 'n') + 1);
+         }
+      }
+
+      if (count($countTasks) > 0) {
+         foreach ($countTasks as $countTask) {
+            foreach ($options as $key => $value) {
+               if (strpos($key, 'description') !== false) {
+                  if ($key == 'description' . $countTask) {
+                     $task_stored[$countTask]['description'] = $options['description' . $countTask];
+                  }
+               }
+
+               if (strpos($key, 'duration') !== false) {
+                  if ($key == 'duration' . $countTask) {
+                     $task_stored[$countTask]['duration'] = $options['duration' . $countTask];
+                  }
+               }
+
+               if (strpos($key, 'begin') !== false) {
+                  if ($key == 'begin' . $countTask) {
+                     $task_stored[$countTask]['begin'] = $options['begin' . $countTask];
+                  }
+               }
+
+               if (strpos($key, 'end') !== false) {
+                  if ($key == 'end' . $countTask) {
+                     $task_stored[$countTask]['end'] = $options['end' . $countTask];
+                  }
+               }
+
+               if (strpos($key, 'users_id_tech') !== false) {
+                  if ($key == 'users_id_tech' . $countTask) {
+                     $task_stored[$countTask]['users_id_tech'] = $options['users_id_tech' . $countTask];
+                  }
+               }
+            }
+         }
+      }
+
+      $task_stored = json_encode($task_stored);
+
       echo "<script> 
+
+           $(document).ready(function() {
+           let storedTasks = $task_stored; 
+              addTaskOnView(true, storedTasks);
+           });
 
             function removeBlockTask(taskcount) {
                     $(\"#task_\" + taskcount).remove();            
             }
 
-            function addTaskOnView(status) {
+            function addTaskOnView(isOnRefresh, storedTasks = []) {
 
+              let description = '';
+              let duration    = '';
+              let begin       = '';
+              let end         = '';
+              let userIdTech  = '';
+                 
+                 
+              if (Object.keys(storedTasks).length) {
                $('#tab-tasks').show();
-               let description = $('textarea[name =\"description\"]').val();
-               let duration = $('[name =\"plan[_duration]\"]').val();
-               let begin = $('[name =\"plan[begin]\"]').val();
-               let end = $('[name =\"plan[end]\"]').val();
+                  $.each(storedTasks, function(taskcount, value) {
+                       description = value['description'];
+                       duration    = value['duration'];
+                       begin       = value['begin'];
+                       end         = value['end'];
+                       userIdTech  = value['users_id_tech'];
+                    
+                    
+              let durationDisplay = secondsToHm(duration);
+              
+              let taskCount = taskcount;
+              
+            //first element
+              if (taskCount === undefined) {
+                  taskCount = 0;
+              }
+              
+              var blocTask = getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay);
+                          
+                $('#tasks').append(blocTask);   
+               }); 
+               
+           } else if (!isOnRefresh) {
+                  
+               $('#tab-tasks').show();
+                description = $('textarea[name =\"description\"]').val();
+                duration    = $('[name =\"plan[_duration]\"]').val();
+                begin       = $('[name =\"plan[begin]\"]').val();
+                end         = $('[name =\"plan[end]\"]').val();
+                userIdTech  = $('[name =\"users_id_tech\"]').val();
                            
-
-                if (description == '' || begin == '' || duration == 0 && end === undefined) {
+                if (description == '' || begin == ''  || userIdTech == 0 || end === undefined  && duration == 0) {
                     alert (__(\"Content, end and begin date are mandatory for a task !\", \"manageentities\"));                           
-                  //alert('Description, date de fin et date de début obligatoire pour une tâche !');
               } else if (end <= begin) {
-                 //alert('La date de fin doit être postérieure à la date de début !');
                     alert(__(\"End date must be after the begin date !\", \"manageentities\"));
               } else {
                 //convert duration for display
@@ -526,27 +621,36 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               }
               taskCount ++;
               
-              var blocTask  = '<div data-index=\"' + taskCount + '\" style=\"margin: 10px; padding:10px; width:100%; border:dashed;\" id=\"task_' + taskCount + '\" >';
-               blocTask += '<tr class=\"tab_bg_1\">';
-               blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style=\"cursor:pointer;\" ><i style=\"float:right;\" class=\"fas fa-minus-circle\"></i></a>';
-               blocTask += '<span style=\"font-weight:bold; font-size: 15px;\">' + _n('Task', 'Tasks', 1) + ' :</span><br>';
-               blocTask += '<span style=\"font-weight:bold;\">' + __('Description') + ' : </span><span>' + description + ' </span><br> ';
-               blocTask += '<span style=\"font-weight:bold;\"> ' + __('Begin date') + ' : </span><span>' + begin + ' </span><br> ';
-               blocTask += end !== undefined ? '<span style=\"font-weight:bold;\">'+ __('End date') + ' : </span><span>' + end + ' </span><br> ' : '';
-               blocTask += duration > 0 ? '<span style=\"font-weight:bold;\">'+ __('Duration') + ' : </span><span>' + durationDisplay + ' </span><br>' : '';
-               blocTask += '<input name =\"duration' + taskCount + '\" type=\"hidden\" value=\"' + duration + '\"\>';
-               blocTask += '<input name =\"begin' + taskCount + '\" type=\"hidden\" value=\"' + begin + '\"\>';
-               blocTask += '<input name =\"end' + taskCount + '\" type=\"hidden\" value=\"' + end + '\"\>';
-               blocTask += '<input name =\"description' + taskCount + '\" type=\"hidden\" value=\"' + description + '\"\>';
-               blocTask += '</tr></div>';
-               
-               
-                $('#tasks').append(blocTask);   
+             var blocTask = getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay);
+                              
+              $('#tasks').append(blocTask);   
               $('textarea[name =\"description\"]').val('');
               $('[name =\"plan[_duration]\"]').val();
               $('[name =\"plan[begin]\"]').val();  
+              $('[name =\"users_id_tech\"]').val(); 
+                 }
               }
-            };
+         };
+            
+            function getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay) {
+              var  blocTask  = '<div data-index=\"' + taskCount + '\" style=\"margin: 10px; padding:10px; width:100 %; border:dashed;\" id=\"task_' + taskCount + '\" >';
+               blocTask += '<tr class=\"tab_bg_1\">';
+               blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style = \"cursor:pointer;\" ><i style = \"float:right;\" class=\"fas fa-minus-circle\" ></i ></a> ';
+               blocTask += '<span style = \"font-weight:bold; font-size: 15px;\" > ' + __('Task') + ' :</span><br> ';
+               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Description') + ' : </span ><span> ' + description + ' </span><br> ';
+               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Technician as assigned') + ' : </span><span> ' + userIdTech + ' </span><br> ';
+               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Begin date') + ' : </span ><span> ' + begin + ' </span><br> ';
+               blocTask += (end == undefined || end == 'undefined') ? '' : ' <span style = \"font-weight:bold;\"> '+ __('End date') + ' : </span><span> ' + end + ' </span><br> ';
+               blocTask += (duration > 0) ? ' <span style = \"font-weight:bold;\" > '+ __('Duration') + ' : </span><span> ' + durationDisplay + ' </span><br> ' : '';
+               blocTask += ' <input name = \"duration' + taskCount + '\" type = \"hidden\" value = \"' + duration + '\"\>';
+               blocTask += ' <input name = \"begin' + taskCount + '\" type = \"hidden\" value = \"' + begin + '\"\>';
+               blocTask += ' <input name = \"end' + taskCount + '\" type = \"hidden\" value = \"' + end + '\"\>';
+               blocTask += ' <input name = \"description' + taskCount + '\" type = \"hidden\" value = \"' + description + '\"\>';
+               blocTask += ' <input name = \"users_id_tech' + taskCount + '\" type = \"hidden\" value = \"' + userIdTech + '\"\>';
+               blocTask += ' </tr></div> ';
+               
+               return blocTask;
+            }
             
             function secondsToHm(d) {
                 d = Number(d);
@@ -676,8 +780,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $hasBegin        = false;
       $hasEnd          = false;
       $hasDescription  = false;
+      $hasTech  = false;
       unset($inputs['description']);
-      unset($inputs['description-undone']);
 
       $countTasks = [];
 
@@ -704,6 +808,13 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                }
             }
 
+            if (strpos($key, 'users_id_tech') !== false) {
+               if ($key == 'users_id_tech' . $countTask) {
+                  $inputs['users_id_tech'] = $inputs['users_id_tech' . $countTask];
+                  $hasTech                 = true;
+               }
+            }
+
             if (strpos($key, 'begin') !== false) {
                if ($key == 'begin' . $countTask) {
                   $new_date                 = date('d-m-Y H:i', strtotime($inputs['begin' . $countTask]));
@@ -725,11 +836,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
             }
 
-            if ($hasBegin && $hasDuration && $hasEnd && $hasDescription) {
+            if ($hasBegin && $hasDuration && $hasEnd && $hasDescription && $hasTech) {
                $ticket_task = new TicketTask();
                $ticket_task->add(['tickets_id'    => $ticket_id,
                                   'users_id'      => Session::getLoginUserID(),
-                                  'users_id_tech' => Session::getLoginUserID(),
+                                  'users_id_tech' => $inputs['users_id_tech'],
                                   '_plan'         => $inputs['_plan'],
                                   'plan'          => $inputs['plan'],
                                   'content'       => $inputs['description'],
@@ -738,6 +849,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                $hasDescription = false;
                $hasBegin       = false;
                $hasEnd         = false;
+               $hasTech        = false;
             }
          }
       }
