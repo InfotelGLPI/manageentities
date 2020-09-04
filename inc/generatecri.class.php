@@ -52,7 +52,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
     *
     */
    static function getMenuName($nb = 0) {
-      return __('Generation of the intervention report', 'manageentities');
+      return __('Generate report intervention', 'manageentities');
    }
 
    /**
@@ -88,6 +88,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $rand         = mt_rand();
       $rand_user    = mt_rand();
       $tasktemplate = 0;
+      $countTasks   = [];
 
       $values = ['itilcategories_id' => 0,
                  'type'              => Entity::getUsedConfig('tickettype',
@@ -172,7 +173,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          $options['_predefined_fields'] = [];
       }
 
-      PluginManageentitiesEntity::showManageentitiesHeader(__('Generation of the intervention report', 'manageentities'));
+      PluginManageentitiesEntity::showManageentitiesHeader(__('Generate Intervention report', 'manageentities'));
       echo "<form name='generate' method='post' action='" . self::getFormUrl() . "'>";
       echo "<table class='tab_cadre' width='60%'>";
       echo "<tr class='tab_bg_1'>";
@@ -427,7 +428,6 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "</tr>";
 
       if ($tasktemplate) {
-         //$task = 1;
          echo "<tr class='tab_bg_1' >";
          echo "<th colspan='4'>";
          echo __('Predefined task informations', 'manageentities');
@@ -492,10 +492,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       Ajax::updateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand", "../ajax/taskend.php", $event_options);
       echo "</div><br>";
       $params = ['name'   => "users_id_tech",
-         'right'  => "own_ticket",
-         'rand'   => $rand_user,
-         'entity' => $options["entities_id"],
-         'width'  => '80%'];
+                 'right'  => "own_ticket",
+                 'rand'   => $rand_user,
+                 'value'  => Session::getLoginUserID(),
+                 'entity' => $options["entities_id"],
+                 'width'  => '80%'];
 
       echo "<div id='users_id_tech'>";
       User::dropdown($params);
@@ -504,53 +505,33 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "</td>";
       echo "</tr>";
 
+      $task_stored      = json_encode([]);
 
-      $countTasks       = [];
-      $task_stored      = [];
-
-      foreach ($options as $key => $value) {
-         if (strpos($key, 'begin') !== false) {
-            $countTasks [] = substr($key, strrpos($key, 'n') + 1);
+      if (count($saved) > 0) {
+         foreach ($saved as $key => $value) {
+            if (strpos($key, 'begin') !== false && substr($key, strrpos($key, 'n') + 1) !== '') {
+               $countTasks [] = substr($key, strrpos($key, 'n') + 1);
+            }
+         }
+         if (count($countTasks) > 0) {
+            $task_stored = json_encode(self::returnTasksStoreSession($countTasks, $saved));
+         }
+      } else {
+         foreach ($options as $key => $value) {
+            if (strpos($key, 'begin') !== false && substr($key, strrpos($key, 'n') + 1) !== '') {
+               $countTasks [] = substr($key, strrpos($key, 'n') + 1);
+            }
+         }
+         if (count($countTasks) > 0) {
+            $task_stored = json_encode(self::returnTasksStoreSession($countTasks, $options));
          }
       }
 
       if (count($countTasks) > 0) {
-         foreach ($countTasks as $countTask) {
-            foreach ($options as $key => $value) {
-               if (strpos($key, 'description') !== false) {
-                  if ($key == 'description' . $countTask) {
-                     $task_stored[$countTask]['description'] = $options['description' . $countTask];
-                  }
-               }
-
-               if (strpos($key, 'duration') !== false) {
-                  if ($key == 'duration' . $countTask) {
-                     $task_stored[$countTask]['duration'] = $options['duration' . $countTask];
-                  }
-               }
-
-               if (strpos($key, 'begin') !== false) {
-                  if ($key == 'begin' . $countTask) {
-                     $task_stored[$countTask]['begin'] = $options['begin' . $countTask];
-                  }
-               }
-
-               if (strpos($key, 'end') !== false) {
-                  if ($key == 'end' . $countTask) {
-                     $task_stored[$countTask]['end'] = $options['end' . $countTask];
-                  }
-               }
-
-               if (strpos($key, 'users_id_tech') !== false) {
-                  if ($key == 'users_id_tech' . $countTask) {
-                     $task_stored[$countTask]['users_id_tech'] = $options['users_id_tech' . $countTask];
-                  }
-               }
-            }
-         }
+         echo "<input name ='has_task' type='hidden' value='true'>";
+      } else {
+         echo "<input name ='has_task' type='hidden' value='false'>";
       }
-
-      $task_stored = json_encode($task_stored);
 
       echo "<script> 
 
@@ -560,7 +541,13 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
            });
 
             function removeBlockTask(taskcount) {
-                    $(\"#task_\" + taskcount).remove();            
+                
+               $(\"#task_\" + taskcount).remove();
+              let taskCountDone   = $('#tasks').children('div').last().attr('data-index');
+             
+              if (taskCountDone === undefined) {
+                $('[name =\"has_task\"]').val('false');
+              }
             }
 
             function addTaskOnView(isOnRefresh, storedTasks = []) {
@@ -592,7 +579,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               }
               
               var blocTask = getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay);
-                          
+              getUserName(userIdTech,taskCount);
+        
                 $('#tasks').append(blocTask);   
                }); 
                
@@ -622,8 +610,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               taskCount ++;
               
              var blocTask = getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay);
-                              
+             getUserName(userIdTech,taskCount);
+              $('[name =\"has_task\"]').val('true');
+              
               $('#tasks').append(blocTask);   
+              
               $('textarea[name =\"description\"]').val('');
               $('[name =\"plan[_duration]\"]').val();
               $('[name =\"plan[begin]\"]').val();  
@@ -638,9 +629,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style = \"cursor:pointer;\" ><i style = \"float:right;\" class=\"fas fa-minus-circle\" ></i ></a> ';
                blocTask += '<span style = \"font-weight:bold; font-size: 15px;\" > ' + __('Task') + ' :</span><br> ';
                blocTask += '<span style = \"font-weight:bold;\" > ' + __('Description') + ' : </span ><span> ' + description + ' </span><br> ';
-               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Technician as assigned') + ' : </span><span> ' + userIdTech + ' </span><br> ';
-               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Begin date') + ' : </span ><span> ' + begin + ' </span><br> ';
-               blocTask += (end == undefined || end == 'undefined') ? '' : ' <span style = \"font-weight:bold;\"> '+ __('End date') + ' : </span><span> ' + end + ' </span><br> ';
+               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Technician as assigned') + ' : </span><span id=\"user_tech_name' + taskCount +'\"></span><br> ';
+               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Begin date') + ' : </span ><span> ' + dateToYMD(begin) + ' </span><br> ';
+               blocTask += (end == undefined || end == 'undefined') ? '' : ' <span style = \"font-weight:bold;\"> '+ __('End date') + ' : </span><span> ' + dateToYMD(end) + ' </span><br> ';
                blocTask += (duration > 0) ? ' <span style = \"font-weight:bold;\" > '+ __('Duration') + ' : </span><span> ' + durationDisplay + ' </span><br> ' : '';
                blocTask += ' <input name = \"duration' + taskCount + '\" type = \"hidden\" value = \"' + duration + '\"\>';
                blocTask += ' <input name = \"begin' + taskCount + '\" type = \"hidden\" value = \"' + begin + '\"\>';
@@ -652,6 +643,18 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                return blocTask;
             }
             
+            function dateToYMD(dateToConvert) {
+                let newDate = new Date(dateToConvert);
+                var d = newDate.getDate();
+                var m = newDate.getMonth() + 1;
+                var y = newDate.getFullYear();
+                var hh = newDate.getHours();
+                var mm = newDate.getMinutes();
+                var ss = newDate.getSeconds();
+                return '' + (d <= 9 ? '0' + d : d) + '-' + (m <=9 ? '0' + m : m) + '-' +  y + ' ' +
+                              (hh <= 9 ? '0' + hh : hh) + ':' + (mm <= 9 ? '0' + mm : mm) + ':' + (ss <= 9 ? '0' + ss : hh) ;
+            }
+            
             function secondsToHm(d) {
                 d = Number(d);
                 var h = Math.floor(d / 3600);
@@ -660,6 +663,19 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                 var hDisplay = h > 0 ? h + (h == 1 ? \" h \" : \" h \") : \"\";
                 var mDisplay = m > 0 ? m + (m == 1 ? \" m \" : \" m \") : \"\";
                 return hDisplay + mDisplay; 
+            }
+            
+             function getUserName(userIdTech,taskCount) {
+                   return $.ajax({
+                             url   : CFG_GLPI.root_doc + '/plugins/manageentities/ajax/getUserTechName.php',
+                             type  : 'POST',
+                             data  : {
+                                     'user_id_tech': userIdTech,
+                             },
+                             success:function(data) {
+                                   $('#user_tech_name' + taskCount).html(JSON.parse(data));
+                                 }
+                           });
             }
             
            </script>";
@@ -1091,20 +1107,18 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       //if we don't choose one
       $mandatory_fields = ['itilcategories_id' => __('Category'),
                            'users_intervenor'  => __('Technician as assigned'),
-                           'plan'              => __('Task')];
+                           'has_task'          => __('Task')];
 
       foreach ($input as $key => $value) {
          if (array_key_exists($key, $mandatory_fields)) {
-            if ($key == 'plan') {
-               if (empty($input[$key]['begin'])
-                   && empty($input[$key]['begin'])
-                   && !array_key_exists('predefined-task', $input)) {
-                  $msg[]   = $mandatory_fields[$key];
+            if ($key == 'has_task' && !array_key_exists('predefined-task', $input)) {
+               if ($value == 'false') {
+                  $msg[] = $mandatory_fields[$key];
                   $checkKo = true;
                }
             } else {
                if (empty($value)) {
-                  $msg[]   = $mandatory_fields[$key];
+                  $msg[] = $mandatory_fields[$key];
                   $checkKo = true;
                }
             }
@@ -1169,6 +1183,49 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       }
 
       return $default;
+   }
+
+   protected function returnTasksStoreSession($countTasks, $inputs) {
+      foreach ($countTasks as $countTask) {
+         foreach ($inputs as $key => $value) {
+            if (strpos($key, 'description') !== false) {
+               if ($key == 'description' . $countTask) {
+                  $task_stored[$countTask]['description'] = $inputs['description' . $countTask];
+               }
+            }
+
+            if (strpos($key, 'duration') !== false) {
+               if ($key == 'duration' . $countTask) {
+                  $task_stored[$countTask]['duration'] = $inputs['duration' . $countTask];
+               }
+            }
+
+            if (strpos($key, 'begin') !== false) {
+               if ($key == 'begin' . $countTask) {
+                  $task_stored[$countTask]['begin'] = $inputs['begin' . $countTask];
+               }
+            }
+
+            if (strpos($key, 'end') !== false) {
+               if ($key == 'end' . $countTask) {
+                  $task_stored[$countTask]['end'] = $inputs['end' . $countTask];
+               }
+            }
+
+            if (strpos($key, 'state') !== false) {
+               if ($key == 'state' . $countTask) {
+                  $task_stored[$countTask]['state'] = $inputs['state' . $countTask];
+               }
+            }
+
+            if (strpos($key, 'users_id_tech') !== false) {
+               if ($key == 'users_id_tech' . $countTask) {
+                  $task_stored[$countTask]['users_id_tech'] = $inputs['users_id_tech' . $countTask];
+               }
+            }
+         }
+      }
+      return $task_stored;
    }
 
 }
