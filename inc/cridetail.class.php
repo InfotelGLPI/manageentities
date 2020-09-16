@@ -624,8 +624,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                      ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickets`.`id`)"
                         . " LEFT JOIN `glpi_tickettasks` 
                      ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)"
-                        . " WHERE `glpi_plugin_manageentities_cridetails`.`contracts_id` = '" . $contractDayValues["contracts_id"] . "' 
-                 AND `glpi_plugin_manageentities_cridetails`.`entities_id` = '" . $contractDayValues["entities_id"] . "' 
+                        . " WHERE `glpi_plugin_manageentities_cridetails`.`contracts_id` = '" . $contractDayValues["contracts_id"] . "'
                  AND `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id` = '" . $contractDayValues["contractdays_id"] . "' 
                  AND `glpi_tickets`.`is_deleted` = 0
                  AND `glpi_tickettasks`.`actiontime` > 0";
