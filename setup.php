@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '3.2.0');
+define('PLUGIN_MANAGEENTITIES_VERSION', '3.2.1');
 
 // Init the hooks of the plugins -Needed
 function plugin_init_manageentities() {

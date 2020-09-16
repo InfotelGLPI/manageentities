@@ -1061,7 +1061,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       echo "<input type='hidden' name='entities_id' value='" . $ticket->fields['entities_id'] . "'>";
       echo "<input type='hidden' name='date' value='" . $ticket->fields['date'] . "'>";
 
-      if ($canEdit && !empty($contractSelected['is_contract'])) {
+      if ($canEdit) {
          if (empty($cridetail)) {
             echo "<td class='center' colspan='2'>";
             echo "<input type='submit' name='addcridetail' value=\"" . _sx('button', 'Add') . "\" class='submit'>";

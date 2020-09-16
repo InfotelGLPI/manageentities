@@ -241,6 +241,13 @@ class PluginManageentitiesCri extends CommonDBTM {
             $content_id = "comment$rand_text";
             $cols       = 120;
             $rows       = 22;
+
+
+            $desc = Html::setRichTextContent(
+               $content_id,
+               $desc,
+               $rand_text
+            );
             Html::textarea(['name'            => 'REPORT_DESCRIPTION',
                             'value'           => $desc,
                             'rand'            => $rand_text,
@@ -328,6 +335,9 @@ class PluginManageentitiesCri extends CommonDBTM {
       $p['number_moving']   = 0;
       foreach ($params as $key => $val) {
          $p[$key] = $val;
+         if($key == 'REPORT_DESCRIPTION'){
+            $p[$key] = urldecode($val);
+         }
       }
 
       // ajout de la configuration du plugin
@@ -746,8 +756,15 @@ class PluginManageentitiesCri extends CommonDBTM {
             $PluginManageentitiesCriDetail->update($values);
          }
 
-         $this->CleanFiles($seepath);
+//         if(isset($p['download']) && $p['download'] == 1){
+//            echo "<IFRAME style='width:100%;height:90%' src='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
 
+//         $doc = new Document();
+//         $doc->getFromDB( $values["documents_id"]);
+//         $this->send($doc);
+//         }
+
+         $this->CleanFiles($seepath);
       } else {
          //Sauvegarde du PDF dans le fichier 
          $PDF->Output($seefilepath, 'F');

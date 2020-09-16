@@ -45,7 +45,11 @@ if (isset($_POST["addcridetail"])) {
    if ($PluginManageentitiesCri->canCreate()) {
       $criDetail->add($_POST);
    }
-   Html::back();
+   if(strpos($_SERVER['HTTP_REFERER'],"generatecri.form.php") > 0){
+      Html::redirect($CFG_GLPI['root_doc']."/plugins/manageentities/front/generatecri.form.php?download=1&tickets_id=".$_POST['tickets_id']);
+   } else{
+      Html::back();
+   }
 
 } else if (isset($_POST["updatecridetail"])) {
    if ($PluginManageentitiesCri->canCreate()) {

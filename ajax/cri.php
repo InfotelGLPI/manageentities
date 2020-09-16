@@ -46,6 +46,7 @@ switch ($_POST['action']) {
       $PluginManageentitiesCri = new PluginManageentitiesCri();
       if ($PluginManageentitiesCri->canCreate()) {
          $input                 = json_decode(stripslashes($_POST["formInput"]));
+         $input->REPORT_DESCRIPTION = urldecode($input->REPORT_DESCRIPTION);
          $params                = $_POST["params"];
          $input->enregistrement = false;
          if (isset($input->REPORT_ACTIVITE) && $input->REPORT_ACTIVITE) {

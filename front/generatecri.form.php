@@ -32,6 +32,20 @@ Session::checkLoginUser();
 
 $PluginManageentitiesGenerateCri = new PluginManageentitiesGenerateCri();
 $PluginManageentitiesCri         = new PluginManageentitiesCri();
+$ticket = new Ticket();
+
+if (count($_SESSION["glpiactiveentities"]) > 1
+   && isset($_GET['active_entity'])) {
+
+   if (!isset($_POST["is_recursive"])) {
+      $_POST["is_recursive"] = 0;
+   }
+   if (Session::changeActiveEntities($_GET["active_entity"], $_POST["is_recursive"])) {
+      if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
+         Html::redirect(preg_replace("/entities_id.*/", "", $_SERVER['HTTP_REFERER']));
+      }
+   }
+}
 
 if (isset($_POST['generatecri'])) {
    if (Session::haveRight('ticket', CREATE)) {
@@ -41,21 +55,32 @@ if (isset($_POST['generatecri'])) {
          $ticket_id = $PluginManageentitiesGenerateCri->createTicketAndAssociateContract($_POST);
          if ($ticket_id) {
             $PluginManageentitiesGenerateCri->createTasks($_POST, $ticket_id);
+            $config = PluginManageentitiesConfig::getInstance();
+            $ticket->update(['id' => $ticket_id,'status' => $config->getField('ticket_state')]);
+            if(isset($_POST['description-undone'])){
+               $_POST['content'] = $_POST['description-undone'];
+               $PluginManageentitiesGenerateCri->createTicketTaskUndone($_POST, $ticket_id);
+            }
+//            $_POST['download'] = true;
             $PluginManageentitiesGenerateCri->generateCri($_POST, $ticket_id, $PluginManageentitiesCri);
          }
+      } else{
+         Html::back();
       }
 
-      Html::back();
 
    } else {
       Html::displayRightError();
    }
 
+} else if(isset($_GET['download'])){
+   $ticket_id = $_GET['tickets_id'];
+   $PluginManageentitiesGenerateCri->generateCri($_POST, $ticket_id, $PluginManageentitiesCri);
 } else {
    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesgeneratecri");
-   $ticket = new Ticket();
    $ticket->fields['itilcategories_id'] = isset($_POST['itilcategories_id']) ? $_POST['itilcategories_id'] : 0;
    $ticket->fields['type'] = isset($_POST['type']) ? $_POST['type'] : '';
+   $_SESSION['glpiactive_entity'] = isset($_POST['entities_id']) ? $_POST['entities_id'] : 0;
    $_SESSION['glpiactive_entity'] = isset($_POST['entities_id']) ? $_POST['entities_id'] : 0;
 
    $PluginManageentitiesGenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity']);

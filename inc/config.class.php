@@ -143,6 +143,22 @@ class PluginManageentitiesConfig extends CommonDBTM {
       Dropdown::showYesNo("comment", $this->fields["comment"]);
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1 top'><td>" . __('Use Non-accomplished tasks informations in generate cri form', 'manageentities') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("non_accomplished_tasks", $this->fields["non_accomplished_tasks"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('Display PDF when using generate cri form', 'manageentities') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("get_pdf_cri", $this->fields["get_pdf_cri"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('State of ticket created from generate cri form', 'manageentities') . "</td>";
+      echo "<td>";
+      $status = Ticket::getAllStatusArray();
+      Dropdown::showFromArray("ticket_state",$status,["value" => $this->fields["ticket_state"]]);
+      echo "</td></tr>";
+
       echo "<input type='hidden' name='id' value='1'>";
       echo "<tr class='tab_bg_1 center'><td colspan='2'>
             <span style=\"font-weight:bold; color:red\">" . __('Warning: changing the configuration daily or hourly impacts the types of contract', 'manageentities') . "</td></span></tr>";

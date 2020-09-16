@@ -149,6 +149,11 @@ function plugin_manageentities_install() {
       $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-2.1.4.sql");
    }
 
+   //version 3.2.0
+   if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "non_accomplished_tasks")) {
+      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.1.sql");
+   }
+
    if ($update) {
       $index = [
          'FK_contracts'   => ['glpi_plugin_manageentities_contracts'],

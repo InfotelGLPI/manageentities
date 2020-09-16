@@ -880,7 +880,7 @@ class PluginManageentitiesCriPDF extends FPDF {
 
          $this->libelle_activite = $libelle_activite;
 
-      } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
+      } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && is_integer($libelle_activite)) {
 
          $this->libelle_activite = Toolbox::decodeFromUtf8(Dropdown::getDropdownName("glpi_plugin_manageentities_critypes",
                                                                                      $libelle_activite));
