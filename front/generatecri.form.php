@@ -63,6 +63,9 @@ if (isset($_POST['generatecri'])) {
             }
 //            $_POST['download'] = true;
             $PluginManageentitiesGenerateCri->generateCri($_POST, $ticket_id, $PluginManageentitiesCri);
+            if(!$config->getField('get_pdf_cri')){
+               Html::back();
+            }
          }
       } else{
          Html::back();

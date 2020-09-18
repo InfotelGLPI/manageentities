@@ -539,6 +539,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       $task_stored = json_encode([]);
 
+      foreach ($options as $key => $value){
+         if(strpos($key,"description") !== false){
+            $options[$key] = str_replace('\r\n' , '' ,nl2br(Toolbox::unclean_cross_side_scripting_deep($value)));
+         }
+      }
+
       if (count($saved) > 0) {
          foreach ($saved as $key => $value) {
             if (strpos($key, 'begin') !== false && substr($key, strrpos($key, 'n') + 1) !== '') {
@@ -581,7 +587,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                 $('[name =\"has_task\"]').val('false');
               }
             }
-
+            
             function addTaskOnView(isOnRefresh, storedTasks = []) {
 
               let description = '';
@@ -659,12 +665,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               var  blocTask  = '<div data-index=\"' + taskCount + '\" style=\"margin: 10px; padding:10px; width:100 %; border:dashed;\" id=\"task_' + taskCount + '\" >';
                blocTask += '<tr class=\"tab_bg_1\">';
                blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style = \"cursor:pointer;\" ><i style = \"float:right;\" class=\"fas fa-minus-circle\" ></i ></a> ';
-               blocTask += '<span style = \"font-weight:bold; font-size: 15px;\" > ' + __('Task') + ' :</span><br> ';
-               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Description') + ' : </span ><span> ' + description + ' </span><br> ';
-               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Technician as assigned') + ' : </span><span id=\"user_tech_name' + taskCount +'\"></span><br> ';
-               blocTask += '<span style = \"font-weight:bold;\" > ' + __('Begin date') + ' : </span ><span> ' + dateToYMD(begin) + ' </span><br> ';
+               blocTask += '<span style = \"font-weight:bold; font-size: 15px;\" >".__('Task')." :</span><br> ';
+               blocTask += '<span style = \"font-weight:bold;\" >". __("Description", 'servicecatalog')." : </span ><span> ' + description + ' </span><br> ';
+               blocTask += '<span style = \"font-weight:bold;\"  ". __('Technician as assigned','manageentities')." : </span><span id=\"user_tech_name' + taskCount +'\"></span><br> ';
+               blocTask += '<span style = \"font-weight:bold;\" >".__('Begin date')." : </span ><span> ' + dateToYMD(begin) + ' </span><br> ';
                blocTask += (end == undefined || end == 'undefined') ? '' : ' <span style = \"font-weight:bold;\"> '+ __('End date') + ' : </span><span> ' + dateToYMD(end) + ' </span><br> ';
-               blocTask += (duration > 0) ? ' <span style = \"font-weight:bold;\" > '+ __('Duration') + ' : </span><span> ' + durationDisplay + ' </span><br> ' : '';
+               blocTask += (duration > 0) ? ' <span style = \"font-weight:bold;\" >".__('Duration')." : </span><span> ' + durationDisplay + ' </span><br> ' : '';
                blocTask += ' <input name = \"duration' + taskCount + '\" type = \"hidden\" value = \"' + duration + '\"\>';
                blocTask += ' <input name = \"begin' + taskCount + '\" type = \"hidden\" value = \"' + begin + '\"\>';
                blocTask += ' <input name = \"end' + taskCount + '\" type = \"hidden\" value = \"' + end + '\"\>';
