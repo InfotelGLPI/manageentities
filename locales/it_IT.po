@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-20 11:39+0200\n"
+"POT-Creation-Date: 2020-09-18 15:32+0200\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2017\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/infotelGLPI/teams/79674/it_IT/)\n"
@@ -33,7 +33,7 @@ msgstr "Intervento programmato"
 msgid "Study and advice"
 msgstr "Studio e consulenza"
 
-#: hook.php:545 inc/addelementsview.class.php:2164 inc/cri.class.php:156
+#: hook.php:550 inc/addelementsview.class.php:2164 inc/cri.class.php:156
 #: inc/cridetail.class.php:194 inc/cridetail.class.php:398
 #: inc/cridetail.class.php:492 inc/cridetail.class.php:871
 #: inc/criprice.class.php:335 inc/critype.class.php:39
@@ -42,7 +42,7 @@ msgid_plural "Intervention types"
 msgstr[0] "Intervention type"
 msgstr[1] "Intervention types"
 
-#: hook.php:546 inc/addelementsview.class.php:1801
+#: hook.php:551 inc/addelementsview.class.php:1801
 #: inc/contractday.class.php:121 inc/contractday.class.php:385
 #: inc/contractday.class.php:572 inc/contractstate.class.php:39
 #: inc/followup.class.php:723 inc/followup.class.php:725
@@ -52,28 +52,30 @@ msgid_plural "States of contracts"
 msgstr[0] "State of contract"
 msgstr[1] "States of contracts"
 
-#: setup.php:76 inc/config.class.php:254 inc/cri.class.php:39
+#: setup.php:80 inc/config.class.php:270 inc/cri.class.php:39
 #: inc/cridetail.class.php:295 inc/profile.class.php:100
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] "Intervention report"
 msgstr[1] "Intervention reports"
 
-#: setup.php:77 inc/report.class.php:107
+#: setup.php:81 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr ""
 
-#: setup.php:78 inc/report.class.php:212
+#: setup.php:82 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:119 front/addelements.form.php:40 front/config.form.php:45
+#: setup.php:123 front/addelements.form.php:40 front/config.form.php:45
 #: front/cridetail.form.php:46 front/cridetail.form.php:48 front/entity.php:42
-#: front/entity.php:44 front/report.form.php:32
+#: front/entity.php:44 front/generatecri.form.php:83 front/generatecri.php:35
+#: front/generatecri.php:37 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
-#: inc/followup.class.php:968 inc/monthly.class.php:548
-#: inc/preference.class.php:75 inc/profile.class.php:42
-#: inc/profile.class.php:96 inc/taskcategory.class.php:55
+#: inc/followup.class.php:968 inc/generatecri.class.php:1123
+#: inc/monthly.class.php:548 inc/preference.class.php:75
+#: inc/profile.class.php:42 inc/profile.class.php:96
+#: inc/taskcategory.class.php:55
 msgid "Entities portal"
 msgstr "Portale Entit&agrave"
 
@@ -89,7 +91,7 @@ msgstr "Please add this intervention before adding another."
 msgid "Update all previous elements"
 msgstr "Update all previous elements"
 
-#: ajax/cri.php:64 ajax/cri.php:96 ajax/cri.php:120
+#: ajax/cri.php:65 ajax/cri.php:97 ajax/cri.php:121
 msgid "Thanks to select a intervention type"
 msgstr "Grazie per aver selezionato un tipo di intervento"
 
@@ -132,7 +134,7 @@ msgstr ""
 msgid "Please activate the plugin"
 msgstr "Please activate the plugin"
 
-#: front/cri.form.php:38 inc/cri.class.php:262 inc/cridetail.class.php:305
+#: front/cri.form.php:38 inc/cri.class.php:269 inc/cridetail.class.php:305
 msgid "Generation of the intervention report"
 msgstr "Generazione del report di intervento"
 
@@ -623,7 +625,7 @@ msgid_plural "Associated business"
 msgstr[0] "Associated commercial"
 msgstr[1] "Associated business"
 
-#: inc/company.class.php:41 inc/config.class.php:224
+#: inc/company.class.php:41 inc/config.class.php:240
 #: inc/followup.class.php:1175
 msgid "Company"
 msgid_plural "Companies"
@@ -689,22 +691,34 @@ msgstr "Default Business list for general monitoring"
 msgid "Display comments from the company in the CRI"
 msgstr "Display comments from the company in the CRI"
 
-#: inc/config.class.php:148
+#: inc/config.class.php:146
+msgid "Use Non-accomplished tasks informations in generate cri form"
+msgstr ""
+
+#: inc/config.class.php:151
+msgid "Display PDF when using generate cri form"
+msgstr ""
+
+#: inc/config.class.php:156
+msgid "State of ticket created from generate cri form"
+msgstr ""
+
+#: inc/config.class.php:164
 msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
 msgstr ""
 
-#: inc/config.class.php:217
+#: inc/config.class.php:233
 msgid "Add a company"
 msgstr "Add a company"
 
-#: inc/config.class.php:250 inc/contract.class.php:469
+#: inc/config.class.php:266 inc/contract.class.php:469
 #: inc/contract.class.php:501
 msgid "Hourly"
 msgstr "Hourly"
 
-#: inc/config.class.php:255 inc/contractday.class.php:42
+#: inc/config.class.php:271 inc/contractday.class.php:42
 #: inc/entity.class.php:100 inc/followup.class.php:720
 msgid "Period of contract"
 msgid_plural "Periods of contract"
@@ -841,37 +855,37 @@ msgstr ""
 msgid "Detail of the realized works"
 msgstr "Dettagli del lavoro realizzato"
 
-#: inc/cri.class.php:269 inc/cridetail.class.php:308
+#: inc/cri.class.php:276 inc/cridetail.class.php:308
 msgid "Regenerate the intervention report"
 msgstr "Regenerate the intervention report"
 
-#: inc/cri.class.php:277
+#: inc/cri.class.php:284
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr ""
 "Generazione impossibile, non vi &egrave alcun incarico assegnato per questa "
 "chiamata"
 
-#: inc/cri.class.php:279
+#: inc/cri.class.php:286
 msgid "No tasks whose category can be used"
 msgstr "No tasks whose category can be used"
 
-#: inc/cri.class.php:287
+#: inc/cri.class.php:294
 msgid "No tasks"
 msgstr ""
 
-#: inc/cri.class.php:478
+#: inc/cri.class.php:488
 msgid "Please fill the contract period begin and end dates."
 msgstr "Please fill the contract period begin and end dates."
 
-#: inc/cri.class.php:483
+#: inc/cri.class.php:493
 msgid "Please fill the contract period end date."
 msgstr "Please fill the contract period end date."
 
-#: inc/cri.class.php:488
+#: inc/cri.class.php:498
 msgid "Please fill the contract period begin date."
 msgstr "Please fill the contract period begin date."
 
-#: inc/cri.class.php:785
+#: inc/cri.class.php:802
 msgid "Save the intervention report"
 msgstr "Salva il rapporto di intervento"
 
@@ -896,7 +910,7 @@ msgid "Crossed time (itinerary including)"
 msgstr "Tempo trascorso (dall'apertura della chiamata)"
 
 #: inc/cridetail.class.php:197 inc/cridetail.class.php:401
-#: inc/cridetail.class.php:1113
+#: inc/cridetail.class.php:1113 inc/generatecri.class.php:1165
 msgid "Intervention with contract"
 msgstr "Intervento a contratto"
 
@@ -938,7 +952,7 @@ msgid "To compute"
 msgstr "Computare"
 
 #: inc/cridetail.class.php:510 inc/cridetail.class.php:1172
-#: inc/cridetail.class.php:1199
+#: inc/cridetail.class.php:1199 inc/generatecri.class.php:1219
 msgid "Periods of contract"
 msgstr "Periods of contract"
 
@@ -987,7 +1001,7 @@ msgstr "Associate to a contract"
 msgid "With contrat"
 msgstr ""
 
-#: inc/cridetail.class.php:1151
+#: inc/cridetail.class.php:1151 inc/generatecri.class.php:1196
 msgid "No active contracts"
 msgstr "No active contracts"
 
@@ -1003,7 +1017,7 @@ msgstr "in"
 msgid "Request number of associated help"
 msgstr "Request number of associated help"
 
-#: inc/cripdf.class.php:264
+#: inc/cripdf.class.php:264 inc/generatecri.class.php:502
 msgid "Technician"
 msgid_plural "Technicians"
 msgstr[0] "Technician"
@@ -1142,7 +1156,7 @@ msgstr "Plugin is not activated"
 #: inc/dashboard.class.php:155 inc/dashboard.class.php:192
 #: inc/dashboard.class.php:248 inc/entity.class.php:39
 #: inc/followup.class.php:591 inc/followup.class.php:637
-#: inc/monthly.class.php:396
+#: inc/generatecri.class.php:235 inc/monthly.class.php:396
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -1248,6 +1262,42 @@ msgstr "Please wait"
 #: inc/gantt.class.php:238
 msgid "Nothing to display"
 msgstr "Nothing to display"
+
+#: inc/generatecri.class.php:55
+msgid "Generate report intervention"
+msgstr ""
+
+#: inc/generatecri.class.php:177
+msgid "Generate Intervention report"
+msgstr ""
+
+#: inc/generatecri.class.php:182
+msgid "Ticket informations"
+msgstr ""
+
+#: inc/generatecri.class.php:436
+msgid "Predefined task informations"
+msgstr ""
+
+#: inc/generatecri.class.php:461
+msgid "Accomplished tasks informations"
+msgstr ""
+
+#: inc/generatecri.class.php:463
+msgid "Add this Task"
+msgstr ""
+
+#: inc/generatecri.class.php:669
+msgid "Description"
+msgstr ""
+
+#: inc/generatecri.class.php:670
+msgid "Technician as assigned"
+msgstr ""
+
+#: inc/generatecri.class.php:730
+msgid "Non-accomplished tasks informations"
+msgstr ""
 
 #: inc/interventionskateholder.class.php:39
 msgid "User affected"
