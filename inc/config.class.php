@@ -143,20 +143,40 @@ class PluginManageentitiesConfig extends CommonDBTM {
       Dropdown::showYesNo("comment", $this->fields["comment"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>" . __('Use Non-accomplished tasks informations in generate cri form', 'manageentities') . "</td>";
+      echo "<tr><th colspan='2'>" . __('CRI generation form', 'manageentities') . "</th></tr>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('Use Non-accomplished tasks informations', 'manageentities') . "</td>";
       echo "<td>";
       Dropdown::showYesNo("non_accomplished_tasks", $this->fields["non_accomplished_tasks"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>" . __('Display PDF when using generate cri form', 'manageentities') . "</td>";
+      echo "<tr class='tab_bg_1 top'><td>" . __('Display PDF', 'manageentities') . "</td>";
       echo "<td>";
       Dropdown::showYesNo("get_pdf_cri", $this->fields["get_pdf_cri"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>" . __('State of ticket created from generate cri form', 'manageentities') . "</td>";
+      echo "<tr class='tab_bg_1 top'><td>" . __('State of ticket created', 'manageentities') . "</td>";
       echo "<td>";
       $status = Ticket::getAllStatusArray();
       Dropdown::showFromArray("ticket_state",$status,["value" => $this->fields["ticket_state"]]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('Default duration', 'manageentities') . "</td>";
+      echo "<td>";
+      $rand = Dropdown::showTimeStamp("default_duration", ['value' => $this->fields["default_duration"],
+         'min' => 0,
+         'max' => 50 * HOUR_TIMESTAMP,
+         'emptylabel' => __('Specify an end date')]);
+      echo "<br><div id='date_end$rand'></div>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('Default time', 'manageentities') . "</td>";
+      echo "<td>";
+      $rand = Dropdown::showTimeStamp("default_time", ['value' => $this->fields["default_time"],
+         'min' => 0,
+         'max' => 50 * HOUR_TIMESTAMP,
+         'step' => HOUR_TIMESTAMP]);
+      echo "<br><div id='date_end$rand'></div>";
       echo "</td></tr>";
 
       echo "<input type='hidden' name='id' value='1'>";

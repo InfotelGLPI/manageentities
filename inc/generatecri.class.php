@@ -503,17 +503,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "</td>";
 
       echo "<td>";
-      $heure = intval(date('H'));
-      if ($heure < 12) {
-         $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d') . '+ 8 hours 30 minutes'));
-      } else {
-         $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d') . '+ 14 hours'));
-      }
+      $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d') . '+'.$config->getField("default_time").' sec'));
       Html::showDateTimeField("plan[begin]", ['value' => $date, 'timestep' => -1, 'maybeempty' => false, 'canedit' => true, 'mindate' => '', 'maxdate' => '']);
 
       echo "<br><div>";
 
-      $rand = Dropdown::showTimeStamp("plan[_duration]", ['value' => "12600",
+      $rand = Dropdown::showTimeStamp("plan[_duration]", ['value' => $config->getField("default_duration"),
          'min' => 0,
          'max' => 50 * HOUR_TIMESTAMP,
          'emptylabel' => __('Specify an end date')]);
@@ -632,9 +627,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                 userIdTech  = $('[name =\"users_id_tech\"]').val();
                            
                 if (description == '' || begin == ''  || userIdTech == 0 || end === undefined  && duration == 0) {
-                    alert (__(\"Content, end and begin date are mandatory for a task !\", \"manageentities\"));                           
+                    alert (" . __("Content, end and begin date are mandatory for a task !", "manageentities") . ");                           
               } else if (end <= begin) {
-                    alert(__(\"End date must be after the begin date !\", \"manageentities\"));
+                    alert(" . __("End date must be after the begin date !", "manageentities") . ");
               } else {
                 //convert duration for display
               let durationDisplay = secondsToHm(duration);
