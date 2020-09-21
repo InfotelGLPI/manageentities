@@ -467,7 +467,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Description') . "</td>";
 
-      echo "<td colspan='3'>";
+      echo "<td>";
       echo $tt->getBeginHiddenFieldValue('content');
       $rand_text = mt_rand();
       $rand = mt_rand();

@@ -76,7 +76,7 @@ class PluginManageentitiesCri extends CommonDBTM {
       $dbu        = new DbUtils();
       $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
       $cridetail  = reset($cridetails);
-      if ($cridetail['withcontract']) {
+      if (isset($cridetail['withcontract'])) {
          $contractSelected = PluginManageentitiesCriDetail::showContractLinkDropdown($cridetail, $job->fields['entities_id'], 'cri');
       } else {
          echo "<table class='tab_cadre' style='margin:0px'>";
