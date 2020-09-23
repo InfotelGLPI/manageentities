@@ -627,9 +627,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                 userIdTech  = $('[name =\"users_id_tech\"]').val();
                            
                 if (description == '' || begin == ''  || userIdTech == 0 || end === undefined  && duration == 0) {
-                    alert (" . __("Content, end and begin date are mandatory for a task !", "manageentities") . ");                           
+                    alert('" . __('Content, end and begin date are mandatory for a task !', 'manageentities') . "');                           
               } else if (end <= begin) {
-                    alert(" . __("End date must be after the begin date !", "manageentities") . ");
+                    alert('" . __('End date must be after the begin date !', 'manageentities') . "');
               } else {
                 //convert duration for display
               let durationDisplay = secondsToHm(duration);
