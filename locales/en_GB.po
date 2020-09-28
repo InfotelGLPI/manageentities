@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 14:16+0200\n"
+"POT-Creation-Date: 2020-09-28 10:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,9 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 2.3\n"
 
 #: hook.php:46 hook.php:64 hook.php:81
 msgid "Urgent intervention"
@@ -52,7 +49,7 @@ msgid_plural "States of contracts"
 msgstr[0] "State of contract"
 msgstr[1] "States of contracts"
 
-#: setup.php:80 inc/config.class.php:290 inc/cri.class.php:39
+#: setup.php:80 inc/config.class.php:301 inc/cri.class.php:39
 #: inc/cridetail.class.php:295 inc/profile.class.php:100
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -72,7 +69,7 @@ msgstr "Report concerning the occupation of the technicians"
 #: front/entity.php:44 front/generatecri.form.php:83 front/generatecri.php:35
 #: front/generatecri.php:37 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
-#: inc/followup.class.php:968 inc/generatecri.class.php:1118
+#: inc/followup.class.php:968 inc/generatecri.class.php:1124
 #: inc/monthly.class.php:548 inc/preference.class.php:75
 #: inc/profile.class.php:42 inc/profile.class.php:96
 #: inc/taskcategory.class.php:55
@@ -625,7 +622,7 @@ msgid_plural "Associated business"
 msgstr[0] "Associated commercial"
 msgstr[1] "Associated business"
 
-#: inc/company.class.php:41 inc/config.class.php:260
+#: inc/company.class.php:41 inc/config.class.php:271
 #: inc/followup.class.php:1175
 msgid "Company"
 msgid_plural "Companies"
@@ -712,10 +709,14 @@ msgid "Default duration"
 msgstr "Default duration"
 
 #: inc/config.class.php:173
-msgid "Default time"
-msgstr "Default time"
+msgid "Default time AM"
+msgstr "Default time AM"
 
-#: inc/config.class.php:184
+#: inc/config.class.php:183
+msgid "Default time PM"
+msgstr "Default time PM"
+
+#: inc/config.class.php:195
 msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
@@ -723,16 +724,16 @@ msgstr ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
 
-#: inc/config.class.php:253
+#: inc/config.class.php:264
 msgid "Add a company"
 msgstr "Add a company"
 
-#: inc/config.class.php:286 inc/contract.class.php:469
+#: inc/config.class.php:297 inc/contract.class.php:469
 #: inc/contract.class.php:501
 msgid "Hourly"
 msgstr "Hourly"
 
-#: inc/config.class.php:291 inc/contractday.class.php:42
+#: inc/config.class.php:302 inc/contractday.class.php:42
 #: inc/entity.class.php:100 inc/followup.class.php:720
 msgid "Period of contract"
 msgid_plural "Periods of contract"
@@ -922,7 +923,7 @@ msgid "Crossed time (itinerary including)"
 msgstr "Crossed time (itinerary including)"
 
 #: inc/cridetail.class.php:197 inc/cridetail.class.php:401
-#: inc/cridetail.class.php:1113 inc/generatecri.class.php:1160
+#: inc/cridetail.class.php:1113 inc/generatecri.class.php:1166
 msgid "Intervention with contract"
 msgstr "Intervention with contract"
 
@@ -964,7 +965,7 @@ msgid "To compute"
 msgstr "To compute"
 
 #: inc/cridetail.class.php:510 inc/cridetail.class.php:1172
-#: inc/cridetail.class.php:1199 inc/generatecri.class.php:1214
+#: inc/cridetail.class.php:1199 inc/generatecri.class.php:1220
 msgid "Periods of contract"
 msgstr "Periods of contract"
 
@@ -1013,7 +1014,7 @@ msgstr "Associate to a contract"
 msgid "With contrat"
 msgstr "With contrat"
 
-#: inc/cridetail.class.php:1151 inc/generatecri.class.php:1191
+#: inc/cridetail.class.php:1151 inc/generatecri.class.php:1197
 msgid "No active contracts"
 msgstr "No active contracts"
 
@@ -1299,23 +1300,23 @@ msgstr "Accomplished tasks informations"
 msgid "Add this Task"
 msgstr "Add this Task"
 
-#: inc/generatecri.class.php:630
+#: inc/generatecri.class.php:636
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr "Content, end and begin date are mandatory for a task !"
 
-#: inc/generatecri.class.php:632
+#: inc/generatecri.class.php:638
 msgid "End date must be after the begin date !"
 msgstr "End date must be after the begin date !"
 
-#: inc/generatecri.class.php:664
+#: inc/generatecri.class.php:670
 msgid "Description"
 msgstr "Description"
 
-#: inc/generatecri.class.php:665
+#: inc/generatecri.class.php:671
 msgid "Technician as assigned"
 msgstr "Technician as assigned"
 
-#: inc/generatecri.class.php:725
+#: inc/generatecri.class.php:731
 msgid "Non-accomplished tasks informations"
 msgstr "Non-accomplished tasks informations"
 
