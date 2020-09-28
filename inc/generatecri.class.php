@@ -502,8 +502,14 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo _n("Technician", "Technicians", 1, "manageentities");
       echo "</td>";
 
+      $heure = intval(date('H'));
+      if ($heure < 12) {
+         $date = strtotime(date('Y-m-d') . '+'.$config->getField("default_time_am").' sec');
+      } else {
+         $date = strtotime(date('Y-m-d') . '+'.$config->getField("default_time_pm").' sec');
+      }
       echo "<td>";
-      $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d') . '+'.$config->getField("default_time").' sec'));
+      $date = date('Y-m-d H:i:s', $date);
       Html::showDateTimeField("plan[begin]", ['value' => $date, 'timestep' => -1, 'maybeempty' => false, 'canedit' => true, 'mindate' => '', 'maxdate' => '']);
 
       echo "<br><div>";

@@ -170,12 +170,23 @@ class PluginManageentitiesConfig extends CommonDBTM {
       echo "<br><div id='date_end$rand'></div>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1 top'><td>" . __('Default time', 'manageentities') . "</td>";
+      echo "<tr class='tab_bg_1 top'><td>" . __('Default time AM', 'manageentities') . "</td>";
       echo "<td>";
-      $rand = Dropdown::showTimeStamp("default_time", ['value' => $this->fields["default_time"],
+      $rand = Dropdown::showTimeStamp("default_time_am", ['value' => $this->fields["default_time_am"],
          'min' => 0,
-         'max' => 50 * HOUR_TIMESTAMP,
-         'step' => HOUR_TIMESTAMP]);
+         'emptylabel' => "0h",
+         'max' => 23.5 * HOUR_TIMESTAMP,
+         'step' => MINUTE_TIMESTAMP * 30]);
+      echo "<br><div id='date_end$rand'></div>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1 top'><td>" . __('Default time PM', 'manageentities') . "</td>";
+      echo "<td>";
+      $rand = Dropdown::showTimeStamp("default_time_pm", ['value' => $this->fields["default_time_pm"],
+         'min' => 0,
+         'emptylabel' => "0h",
+         'max' => 23.5 * HOUR_TIMESTAMP,
+         'step' => MINUTE_TIMESTAMP * 30]);
       echo "<br><div id='date_end$rand'></div>";
       echo "</td></tr>";
 

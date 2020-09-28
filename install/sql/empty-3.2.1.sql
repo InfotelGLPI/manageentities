@@ -73,7 +73,8 @@ CREATE TABLE `glpi_plugin_manageentities_configs` (
    `get_pdf_cri` tinyint(1) NOT NULL default '0',
    `ticket_state` int(11) NOT NULL default '3',
    `default_duration` varchar(255) default NULL,
-   `default_time` varchar(255) default NULL,
+   `default_time_am` varchar(255) default NULL,
+   `default_time_pm` varchar(255) default NULL,
    PRIMARY KEY  (`id`),
    KEY `documentcategories_id` (`documentcategories_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
