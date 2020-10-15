@@ -370,7 +370,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
            LEFT JOIN `glpi_plugin_manageentities_contractdays` ON (`glpi_plugin_manageentities_contractdays`.`id` = `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id`)
            LEFT JOIN `glpi_plugin_manageentities_contractstates` ON (`glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id` = `glpi_plugin_manageentities_contractstates`.`id`)
            WHERE `glpi_documents`.`documentcategories_id` = '" . $config->fields["documentcategories_id"] . "'
-           AND " . $params['condition'];
+           AND ((" . $params['condition'] . ")
+           OR ISNULL(plugin_manageentities_contractstates_id))";
 
          if ($entity != -1)
             $query .= " AND `glpi_documents`.`entities_id` IN (" . $entity . ") ";
