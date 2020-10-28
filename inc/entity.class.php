@@ -104,12 +104,6 @@ class PluginManageentitiesEntity extends CommonGLPI {
             $tabs[8] = _n('Document', 'Documents', 2);
          }
 
-         if ($plugin->isActivated('webapplications')) {
-            if (Session::haveRight("plugin_webapplications", READ)) {
-               $tabs[9] = __('Web Applications', 'manageentities');
-            }
-         }
-
          if ($plugin->isActivated('accounts')) {
             if (Session::haveRight("plugin_accounts", READ)) {
                $tabs[10] = __('Accounts', 'manageentities');
@@ -174,10 +168,6 @@ class PluginManageentitiesEntity extends CommonGLPI {
             case 8:
                $entity->getFromDB($_SESSION["glpiactive_entity"]);
                Document_Item::showForItem($entity);
-               break;
-            case 9:
-               $entity->getFromDB($_SESSION["glpiactive_entity"]);
-               PluginWebapplicationsWebapplication_Item::showForItem($entity);
                break;
             case 10:
                $entity->getFromDB($_SESSION["glpiactive_entity"]);

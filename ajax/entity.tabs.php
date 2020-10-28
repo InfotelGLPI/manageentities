@@ -73,11 +73,6 @@ switch ($_POST['plugin_manageentities_tab']) {
          $PluginManageentitiesContract->showContracts($_SESSION["glpiactive_entity"]);
       }
       break;
-   case "webapplications":
-      $_SESSION['glpi_plugin_manageentities_tab'] = "webapplications";
-      $PluginWebapplicationsWebapplication_Item   = new PluginWebapplicationsWebapplication_Item;
-      $PluginWebapplicationsWebapplication_Item->showPluginFromItems('Entity', $_SESSION["glpiactive_entity"]);
-      break;
    case "accounts":
       $_SESSION['glpi_plugin_manageentities_tab'] = "accounts";
       $PluginAccountsAccount_Item                 = new PluginAccountsAccount_Item;
