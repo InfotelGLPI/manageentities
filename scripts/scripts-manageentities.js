@@ -286,7 +286,6 @@ function manageentities_loadCriForm(action, modal, params) {
         },
         success: function (response, opts) {
             try {
-                console.log(response);
                 var json = $.parseJSON(response);
                 if (!json.success) {
                     $("#manageentities_cri_error").html(json.message).show().delay(2000).fadeOut('slow');

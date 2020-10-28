@@ -242,7 +242,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             $cols       = 120;
             $rows       = 22;
 
-
+            echo "<script src='../../../public/lib/tinymce.js'>";
             $desc = Html::setRichTextContent(
                $content_id,
                $desc,
