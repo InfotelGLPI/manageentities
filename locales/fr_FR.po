@@ -5,16 +5,15 @@
 # 
 # Translators:
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2020
-# Kevin HAINRY <kevin.hainry@infotel.com>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-28 10:03+0200\n"
-"PO-Revision-Date: 2017-10-18 16:20+0000\n"
-"Last-Translator: Kevin HAINRY <kevin.hainry@infotel.com>, 2020\n"
+"POT-Creation-Date: 2020-09-28 10:01+0200\n"
+"PO-Revision-Date: 2020-11-02 16:08+0000\n"
+"Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2020\n"
 "Language-Team: French (France) (https://www.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
