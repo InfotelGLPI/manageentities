@@ -38,10 +38,16 @@ $PluginManageentitiesBusinessContact = new PluginManageentitiesBusinessContact()
 if (!isset($_POST["entities_id"]))
    $_POST["entities_id"] = "";
 
+$plugin = new Plugin();
 if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
 } else {
-   Html::helpHeader(__('Entities portal', 'manageentities'));
+   if ($plugin->isActivated('servicecatalog')) {
+      PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
+      echo Html::css('public/lib/jquery-gantt.css');
+   } else {
+      Html::helpHeader(__('Entities portal', 'manageentities'));
+   }
 }
 
 if ($PluginManageentitiesEntity->canView()
@@ -138,6 +144,12 @@ if ($PluginManageentitiesEntity->canView()
 
 } else {
    Html::displayRightError();
+}
+
+if (Session::getCurrentInterface() != 'central'
+    && $plugin->isActivated('servicecatalog')) {
+
+   PluginServicecatalogMain::showNavBarFooter('manageentities');
 }
 
 if (Session::getCurrentInterface() == 'central') {

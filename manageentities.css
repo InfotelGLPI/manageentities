@@ -27,9 +27,9 @@
  */
 
 .tab_cadre_me {
-   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+   /*font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;*/
    border-collapse: collapse;
-   width: 80%;
+   width: 95%;
 }
 
 .tab_cadre_me td, .tab_cadre_me th {
@@ -45,7 +45,7 @@
    padding-top: 12px;
    padding-bottom: 12px;
    text-align: left;
-   background-color: #677f92;
+   background-color: #00507B;
    color: white;
 }
 

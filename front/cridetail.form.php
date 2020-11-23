@@ -42,13 +42,26 @@ $cri = new TicketTask();
 
 $cri->checkGlobal(READ);
 
+$plugin = new Plugin();
+
 if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
 } else {
-   Html::helpHeader(__('Entities portal', 'manageentities'));
+   if ($plugin->isActivated('servicecatalog')) {
+      PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
+      echo "<br>";
+   } else {
+      Html::helpHeader(__('Entities portal', 'manageentities'));
+   }
 }
 
 $cri->display($_GET);
+
+if (Session::getCurrentInterface() != 'central'
+    && $plugin->isActivated('servicecatalog')) {
+
+   PluginServicecatalogMain::showNavBarFooter('manageentities');
+}
 
 if (Session::getCurrentInterface() == 'central') {
    Html::footer();

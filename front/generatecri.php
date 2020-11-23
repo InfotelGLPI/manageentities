@@ -31,16 +31,32 @@ include('../../../inc/includes.php');
 
 Session::checkLoginUser();
 
+$plugin = new Plugin();
 if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesgeneratecri");
 } else {
-   Html::helpHeader(__('Entities portal', 'manageentities'));
+   if ($plugin->isActivated('servicecatalog')) {
+      PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
+      echo "<br>";
+   } else {
+      Html::helpHeader(__('Entities portal', 'manageentities'));
+   }
 }
 if (Session::haveRight("ticket", CREATE)) {
    $generatecri = new PluginManageentitiesGenerateCRI();
    $generatecri->showWizard($ticket = new Ticket(), $_SESSION['glpiactive_entity']);
-
-   Html::footer();
 } else {
    Html::displayRightError();
+}
+
+if (Session::getCurrentInterface() != 'central'
+    && $plugin->isActivated('servicecatalog')) {
+
+   PluginServicecatalogMain::showNavBarFooter('manageentities');
+}
+
+if (Session::getCurrentInterface() == 'central') {
+   Html::footer();
+} else {
+   Html::helpFooter();
 }

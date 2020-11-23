@@ -231,13 +231,23 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $entity                              = new Entity();
       $entity->getFromDB($_SESSION["glpiactive_entity"]);
 
-      self::showManageentitiesHeader(__('Data administrative', 'manageentities'));
+//      self::showManageentitiesHeader(__('Data administrative', 'manageentities'));
 
-      echo "<div align='center'><table width='100%'><tr><td colspan='2'>";
+      echo "<div align='center'>";
+      echo "<table width='100%'>";
+      echo "<tr><td width='55%' >";
 
       echo "<form method='post' action='entity.form.php'>";
 
       echo "<table class='tab_cadre_me' align='center'>";
+
+      echo "<tr>";
+      echo "<th colspan='4'>";
+      echo __('Portal', 'manageentities') . " " . $_SESSION["glpiactive_entity_name"];
+      echo '<br/>' . __('Data administrative', 'manageentities');
+      echo "</th>";
+      echo "</tr>";
+
       echo "<tr>";
       echo "<th>";
       echo __('Logo');
@@ -359,9 +369,10 @@ class PluginManageentitiesEntity extends CommonGLPI {
       echo "</table>";
       Html::closeForm();
 
-      echo "</td></tr><tr><td width='40%' valign='top'>";
+      echo "</td>";
+      echo "<td width='45%' valign='top'>";
       $PluginManageentitiesContact->showContacts($_SESSION["glpiactiveentities"]);
-      echo "</td><td width='40%' valign='top'>";
+//      echo "</td><td width='40%' valign='top'>";
       $PluginManageentitiesBusinessContact->showBusiness($_SESSION["glpiactiveentities"]);
       echo "</td></tr></table></div>";
 
