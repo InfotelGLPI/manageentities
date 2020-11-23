@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-03 15:38+0000\n"
+"POT-Creation-Date: 2020-11-23 08:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,9 +65,10 @@ msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
 #: setup.php:123 front/addelements.form.php:40 front/config.form.php:45
-#: front/cridetail.form.php:46 front/cridetail.form.php:48 front/entity.php:42
-#: front/entity.php:44 front/generatecri.form.php:83 front/generatecri.php:35
-#: front/generatecri.php:37 front/report.form.php:32
+#: front/cridetail.form.php:48 front/cridetail.form.php:51
+#: front/cridetail.form.php:54 front/entity.php:43 front/entity.php:46
+#: front/entity.php:49 front/generatecri.form.php:83 front/generatecri.php:36
+#: front/generatecri.php:39 front/generatecri.php:42 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
 #: inc/followup.class.php:968 inc/generatecri.class.php:1124
 #: inc/monthly.class.php:548 inc/preference.class.php:75
@@ -472,7 +473,7 @@ msgid "Document list"
 msgstr ""
 
 #: inc/addelementsview.class.php:1462 inc/contract.class.php:188
-#: inc/entity.class.php:661 inc/followup.class.php:605
+#: inc/entity.class.php:672 inc/followup.class.php:605
 #: inc/followup.class.php:690 inc/gantt.class.php:281
 msgid "Date of signature"
 msgstr ""
@@ -627,7 +628,7 @@ msgid_plural "Companies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/company.class.php:115 inc/entity.class.php:265
+#: inc/company.class.php:115 inc/entity.class.php:275
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
@@ -931,7 +932,7 @@ msgstr ""
 msgid "Associated intervention reports"
 msgstr ""
 
-#: inc/cridetail.class.php:392 inc/entity.class.php:397
+#: inc/cridetail.class.php:392 inc/entity.class.php:408
 msgid "All reports"
 msgstr ""
 
@@ -1180,7 +1181,7 @@ msgstr ""
 msgid "Monthly follow-up"
 msgstr ""
 
-#: inc/entity.class.php:81 inc/entity.class.php:234
+#: inc/entity.class.php:81 inc/entity.class.php:247
 msgid "Data administrative"
 msgstr ""
 
@@ -1192,33 +1193,33 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: inc/entity.class.php:114 inc/entity.class.php:590
+#: inc/entity.class.php:114 inc/entity.class.php:601
 msgid "References"
 msgstr ""
 
-#: inc/entity.class.php:221
+#: inc/entity.class.php:221 inc/entity.class.php:246
 msgid "Portal"
 msgstr ""
 
-#: inc/entity.class.php:271
+#: inc/entity.class.php:281
 msgctxt "button"
 msgid "Update logo"
 msgstr ""
 
-#: inc/entity.class.php:356
+#: inc/entity.class.php:366
 msgctxt "button"
 msgid "Update administrative data"
 msgstr ""
 
-#: inc/entity.class.php:373
+#: inc/entity.class.php:384
 msgid "Associated interventions"
 msgstr ""
 
-#: inc/entity.class.php:390
+#: inc/entity.class.php:401
 msgid "Processed interventions"
 msgstr ""
 
-#: inc/entity.class.php:391
+#: inc/entity.class.php:402
 msgid "To be processed interventions"
 msgstr ""
 
