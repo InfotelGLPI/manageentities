@@ -40,7 +40,7 @@ class PluginManageentitiesCriType extends CommonDropdown {
    }
 
    static function canCreate() {
-      return Session::haveRight(self::$rightname, [CREATE, UPDATE, DELETE]);
+      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
    static function canView() {
