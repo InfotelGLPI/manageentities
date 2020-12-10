@@ -101,8 +101,11 @@ function plugin_init_manageentities() {
       // Add specific files to add to the header : javascript or css
       $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css", "style.css"];
 
-      $PLUGIN_HOOKS['add_javascript']['manageentities'] = ['scripts/scripts-manageentities.js',
-                                                                'scripts/jquery.form.js'];
+      if (isset($_SESSION['glpiactiveprofile']['interface'])
+          && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+         $PLUGIN_HOOKS['add_javascript']['manageentities'] = ['scripts/scripts-manageentities.js',
+                                                              'scripts/jquery.form.js'];
+      }
       // Ticket task duplication
       if (Session::haveRight("task", CommonITILTask::UPDATEALL)
           && Session::haveRight("task", CommonITILTask::ADDALLITEM)

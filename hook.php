@@ -167,7 +167,7 @@ function plugin_manageentities_install() {
       foreach ($index as $oldname => $newnames) {
          foreach ($newnames as $table) {
             if ($dbu->isIndex($table, $oldname)) {
-               $query  = "ALTER TABLE `$table` DROP INDEX `$oldname`;";
+               $query = "ALTER TABLE `$table` DROP INDEX `$oldname`;";
                $DB->query($query);
             }
          }
@@ -179,7 +179,7 @@ function plugin_manageentities_install() {
       if ($DB->numrows($result_) > 0) {
 
          while ($data = $DB->fetchArray($result_)) {
-            $query  = "UPDATE `glpi_plugin_manageentities_profiles`
+            $query = "UPDATE `glpi_plugin_manageentities_profiles`
                   SET `profiles_id` = '" . $data["id"] . "'
                   WHERE `id` = '" . $data["id"] . "';";
             $DB->query($query);
@@ -187,7 +187,7 @@ function plugin_manageentities_install() {
          }
       }
 
-      $query  = "ALTER TABLE `glpi_plugin_manageentities_profiles`
+      $query = "ALTER TABLE `glpi_plugin_manageentities_profiles`
                DROP `name` ;";
       $DB->query($query);
    }
@@ -215,7 +215,7 @@ function plugin_manageentities_install() {
             while ($data = $DB->fetchArray($result)) {
                if ($data['cri_tickets_id'] == '0') {
                   $criDetail->update(['id'         => $data['cri_id'],
-                                           'tickets_id' => $data['doc_tickets_id']]);
+                                      'tickets_id' => $data['doc_tickets_id']]);
                }
             }
          }
@@ -257,36 +257,36 @@ function plugin_manageentities_uninstall() {
    global $DB;
 
    $tables = ["glpi_plugin_manageentities_contracts",
-                   "glpi_plugin_manageentities_contacts",
-                   "glpi_plugin_manageentities_preferences",
-                   "glpi_plugin_manageentities_configs",
-                   "glpi_plugin_manageentities_critypes",
-                   "glpi_plugin_manageentities_criprices",
-                   "glpi_plugin_manageentities_contractdays",
-                   "glpi_plugin_manageentities_critechnicians",
-                   "glpi_plugin_manageentities_cridetails",
-                   "glpi_plugin_manageentities_contractstates",
-                   "glpi_plugin_manageentities_taskcategories",
-                   "glpi_plugin_manageentities_businesscontacts",
-                   "glpi_plugin_manageentities_companies",
-                   "glpi_plugin_manageentities_entitylogos",
-                   "glpi_plugin_manageentities_interventionskateholders"];
+              "glpi_plugin_manageentities_contacts",
+              "glpi_plugin_manageentities_preferences",
+              "glpi_plugin_manageentities_configs",
+              "glpi_plugin_manageentities_critypes",
+              "glpi_plugin_manageentities_criprices",
+              "glpi_plugin_manageentities_contractdays",
+              "glpi_plugin_manageentities_critechnicians",
+              "glpi_plugin_manageentities_cridetails",
+              "glpi_plugin_manageentities_contractstates",
+              "glpi_plugin_manageentities_taskcategories",
+              "glpi_plugin_manageentities_businesscontacts",
+              "glpi_plugin_manageentities_companies",
+              "glpi_plugin_manageentities_entitylogos",
+              "glpi_plugin_manageentities_interventionskateholders"];
 
    foreach ($tables as $table)
       $DB->query("DROP TABLE IF EXISTS `$table`;");
 
    //old versions   
    $tables = ["glpi_plugin_manageentity_contracts",
-                   "glpi_plugin_manageentity_documents",
-                   "glpi_plugin_manageentity_contacts",
-                   "glpi_plugin_manageentity_profiles",
-                   "glpi_plugin_manageentity_preference",
-                   "glpi_plugin_manageentity_config",
-                   "glpi_dropdown_plugin_manageentity_critype",
-                   "glpi_plugin_manageentity_criprice",
-                   "glpi_plugin_manageentity_dayforcontract",
-                   "glpi_plugin_manageentity_critechnicians",
-                   "glpi_plugin_manageentity_cridetails"];
+              "glpi_plugin_manageentity_documents",
+              "glpi_plugin_manageentity_contacts",
+              "glpi_plugin_manageentity_profiles",
+              "glpi_plugin_manageentity_preference",
+              "glpi_plugin_manageentity_config",
+              "glpi_dropdown_plugin_manageentity_critype",
+              "glpi_plugin_manageentity_criprice",
+              "glpi_plugin_manageentity_dayforcontract",
+              "glpi_plugin_manageentity_critechnicians",
+              "glpi_plugin_manageentity_cridetails"];
 
    foreach ($tables as $table)
       $DB->query("DROP TABLE IF EXISTS `$table`;");
@@ -548,7 +548,7 @@ function plugin_manageentities_getDropdown() {
 
    if ($plugin->isActivated("manageentities"))
       return ['PluginManageentitiesCriType'       => __('Intervention type', 'manageentities'),
-                   'PluginManageentitiesContractState' => __('State of contract', 'manageentities')];
+              'PluginManageentitiesContractState' => __('State of contract', 'manageentities')];
    else
       return [];
 }
@@ -590,8 +590,8 @@ function plugin_manageentities_getAddSearchOptions($itemtype) {
          $sopt[4455]['forcegroupby']  = true;
          $sopt[4455]['massiveaction'] = false;
          $sopt[4455]['joinparams']    = ['beforejoin'
-                                              => ['table'      => 'glpi_plugin_manageentities_cridetails',
-                                                       'joinparams' => ['jointype' => 'child']]];
+                                         => ['table'      => 'glpi_plugin_manageentities_cridetails',
+                                             'joinparams' => ['jointype' => 'child']]];
       }
    }
    return $sopt;
@@ -602,13 +602,15 @@ function plugin_manageentities_postinit() {
 
    $plugin = 'manageentities';
    foreach (['add_css', 'add_javascript'] as $type) {
-      foreach ($PLUGIN_HOOKS[$type][$plugin] as $data) {
-         if (!empty($PLUGIN_HOOKS[$type])) {
-            foreach ($PLUGIN_HOOKS[$type] as $key => $plugins_data) {
-               if (is_array($plugins_data) && $key != $plugin) {
-                  foreach ($plugins_data as $key2 => $values) {
-                     if ($values == $data) {
-                        unset($PLUGIN_HOOKS[$type][$key][$key2]);
+      if (isset($PLUGIN_HOOKS[$type][$plugin])) {
+         foreach ($PLUGIN_HOOKS[$type][$plugin] as $data) {
+            if (!empty($PLUGIN_HOOKS[$type])) {
+               foreach ($PLUGIN_HOOKS[$type] as $key => $plugins_data) {
+                  if (is_array($plugins_data) && $key != $plugin) {
+                     foreach ($plugins_data as $key2 => $values) {
+                        if ($values == $data) {
+                           unset($PLUGIN_HOOKS[$type][$key][$key2]);
+                        }
                      }
                   }
                }
