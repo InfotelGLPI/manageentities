@@ -768,7 +768,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='4'>";
-      echo "<input type='submit' name='generatecri' value='" . _sx('button', 'Generate') . "' class='submit'>";
+      echo "<input type='submit' name='generatecri' value='" . _sx('button', 'Generate', 'manageentities') . "' class='submit'>";
       echo "</td></tr>";
       echo "</table></div>";
 

@@ -64,7 +64,8 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['servicecatalog']['manageentities'] = ['PluginManageentitiesServicecatalog'];
       }
 
-      if (Session::haveRight("ticket", CREATE) && Session::haveRight("plugin_manageentities_cri_create", CREATE)) {
+      if (Session::haveRight("ticket", CREATE)
+          && Session::haveRight("plugin_manageentities_cri_create", CREATE)) {
          $PLUGIN_HOOKS["menu_toadd"]['manageentities']['helpdesk']  = 'PluginManageentitiesGenerateCRI';
       }
 

@@ -447,7 +447,11 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             }
 
             echo "</table>";
-         } else if ($entity == -1) {
+         } else {
+            echo __('No item found');
+         }
+
+         if ($entity == -1) {
             self::addReports($item, $options);
          }
       } else if ($entity == -1) {
@@ -1356,13 +1360,13 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                                                             $CFG_GLPI["cut"]);
             $interv[$key]["url"]        = $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" .
                                           $data['tickets_id'];
-            $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
-                                       "?action=edit_event_form" .
-                                       "&itemtype=TicketTask&parentitemtype=Ticket" .
-                                       "&parentid=" . $data['tickets_id'] .
-                                       "&id=" . $data['id'] .
-                                       "&url=" . $interv[$key]["url"];
-            $cri                     = new TicketTask();
+            $interv[$key]["ajaxurl"]    = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
+                                          "?action=edit_event_form" .
+                                          "&itemtype=TicketTask&parentitemtype=Ticket" .
+                                          "&parentid=" . $data['tickets_id'] .
+                                          "&id=" . $data['id'] .
+                                          "&url=" . $interv[$key]["url"];
+            $cri                        = new TicketTask();
             $cri->getFromDB($data["id"]);
             $interv[$key]["editable"] = $cri->canUpdateItem();
          }
