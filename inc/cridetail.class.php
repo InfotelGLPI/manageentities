@@ -244,6 +244,10 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       }
    }
 
+   /**
+    * @param \Ticket $ticket
+    * @param array   $options
+    */
    static function addReports(Ticket $ticket, $options = []) {
       global $CFG_GLPI;
 
@@ -324,7 +328,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       }
 
       // DELETE
-      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE) && (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) {
+      if (Session::haveRight("plugin_manageentities_cri_create", UPDATE)
+          && (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) {
          echo "<form method='post' name='cridetail_form$rand' id='cridetail_form$rand'
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesCri') . "' style='display:inline'>";
          echo "<input type='submit' name='purgedoc' value=\"" . _sx('button', 'Delete permanently') . "\" class='submit' style='margin-left:50px;'>";
@@ -451,9 +456,6 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             echo __('No item found');
          }
 
-         if ($entity == -1) {
-            self::addReports($item, $options);
-         }
       } else if ($entity == -1) {
          self::addReports($item, $options);
       }
@@ -981,6 +983,12 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       }
    }
 
+   /**
+    * @param \Ticket $ticket
+    *
+    * @return false
+    * @throws \GlpitestSQLError
+    */
    static function showForTicket(Ticket $ticket) {
       global $DB;
 
