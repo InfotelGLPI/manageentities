@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-03 15:38+0000\n"
+"POT-Creation-Date: 2020-12-11 11:24+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Tiago Graca, 2020\n"
 "Language-Team: French (Canada) (https://www.transifex.com/infotelGLPI/teams/79674/fr_CA/)\n"
@@ -35,8 +35,8 @@ msgid "Study and advice"
 msgstr "Étude et conseil"
 
 #: hook.php:550 inc/addelementsview.class.php:2164 inc/cri.class.php:156
-#: inc/cridetail.class.php:194 inc/cridetail.class.php:399
-#: inc/cridetail.class.php:493 inc/cridetail.class.php:872
+#: inc/cridetail.class.php:194 inc/cridetail.class.php:404
+#: inc/cridetail.class.php:499 inc/cridetail.class.php:878
 #: inc/criprice.class.php:335 inc/critype.class.php:39
 msgid "Intervention type"
 msgid_plural "Intervention types"
@@ -53,25 +53,26 @@ msgid_plural "States of contracts"
 msgstr[0] "État du contrat"
 msgstr[1] "États du contrat"
 
-#: setup.php:80 inc/config.class.php:301 inc/cri.class.php:39
-#: inc/cridetail.class.php:295 inc/profile.class.php:100
+#: setup.php:81 inc/config.class.php:301 inc/cri.class.php:39
+#: inc/cridetail.class.php:299 inc/profile.class.php:100
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] "Rapport d'intervention"
 msgstr[1] "Rapports d'intervention"
 
-#: setup.php:81 inc/report.class.php:107
+#: setup.php:82 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr "Rapport concernant l'occupation des techniciens"
 
-#: setup.php:82 inc/report.class.php:212
+#: setup.php:83 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr "Rapport concernant les déplacements des techniciens"
 
-#: setup.php:123 front/addelements.form.php:40 front/config.form.php:45
-#: front/cridetail.form.php:46 front/cridetail.form.php:48 front/entity.php:42
-#: front/entity.php:44 front/generatecri.form.php:83 front/generatecri.php:35
-#: front/generatecri.php:37 front/report.form.php:32
+#: setup.php:127 front/addelements.form.php:40 front/config.form.php:45
+#: front/cridetail.form.php:48 front/cridetail.form.php:51
+#: front/cridetail.form.php:54 front/entity.php:43 front/entity.php:46
+#: front/entity.php:49 front/generatecri.form.php:83 front/generatecri.php:36
+#: front/generatecri.php:39 front/generatecri.php:42 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
 #: inc/followup.class.php:968 inc/generatecri.class.php:1124
 #: inc/monthly.class.php:548 inc/preference.class.php:75
@@ -129,14 +130,14 @@ msgstr "Nombre d'heures par jour"
 msgid ""
 "Only ticket accepted are taking into account for consumption calculation"
 msgstr ""
-"Seuls les billets avec la validation « acceptée » sont concernés pour le "
+"Seuls les tickets avec la validation « acceptée » sont concernés pour le "
 "calcul des consommés"
 
 #: front/config.form.php:66
 msgid "Please activate the plugin"
 msgstr "Merci d'activer le plugin"
 
-#: front/cri.form.php:38 inc/cri.class.php:269 inc/cridetail.class.php:305
+#: front/cri.form.php:38 inc/cri.class.php:269 inc/cridetail.class.php:309
 msgid "Generation of the intervention report"
 msgstr "Génération du rapport d'intervention"
 
@@ -484,7 +485,7 @@ msgid "Document list"
 msgstr "Liste des documents associés"
 
 #: inc/addelementsview.class.php:1462 inc/contract.class.php:188
-#: inc/entity.class.php:661 inc/followup.class.php:605
+#: inc/entity.class.php:672 inc/followup.class.php:605
 #: inc/followup.class.php:690 inc/gantt.class.php:281
 msgid "Date of signature"
 msgstr "Date de signature"
@@ -640,7 +641,7 @@ msgid_plural "Companies"
 msgstr[0] "Société"
 msgstr[1] "Sociétés"
 
-#: inc/company.class.php:115 inc/entity.class.php:265
+#: inc/company.class.php:115 inc/entity.class.php:275
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
@@ -714,7 +715,7 @@ msgstr "Afficher le PDF"
 
 #: inc/config.class.php:158
 msgid "State of ticket created"
-msgstr "État du billet créé"
+msgstr "État du ticket créé"
 
 #: inc/config.class.php:164
 msgid "Default duration"
@@ -855,14 +856,14 @@ msgstr "Le champ de couleur est incorrect"
 msgid "Interventions reports"
 msgstr "Rapports d'interventions"
 
-#: inc/cri.class.php:84 inc/cridetail.class.php:1037 inc/cripdf.class.php:401
+#: inc/cri.class.php:84 inc/cridetail.class.php:1049 inc/cripdf.class.php:401
 msgid "Out of contract"
 msgstr "Hors contrat"
 
 #: inc/cri.class.php:99 inc/cridetail.class.php:192
-#: inc/cridetail.class.php:397 inc/cridetail.class.php:496
-#: inc/cridetail.class.php:876 inc/cridetail.class.php:884
-#: inc/cridetail.class.php:957 inc/report.class.php:215
+#: inc/cridetail.class.php:402 inc/cridetail.class.php:502
+#: inc/cridetail.class.php:882 inc/cridetail.class.php:890
+#: inc/cridetail.class.php:963 inc/report.class.php:215
 msgid "Technicians"
 msgstr "Intervenants"
 
@@ -882,7 +883,7 @@ msgstr "Nombres de déplacements"
 msgid "Detail of the realized works"
 msgstr "Détail des travaux réalisés"
 
-#: inc/cri.class.php:276 inc/cridetail.class.php:308
+#: inc/cri.class.php:276 inc/cridetail.class.php:312
 msgid "Regenerate the intervention report"
 msgstr "Regénérer le rapport d'intervention"
 
@@ -929,105 +930,105 @@ msgstr "Interventions liées"
 msgid "Impossible action as an intervention report exists"
 msgstr "Action impossible car un rapport d'intervention existe"
 
-#: inc/cridetail.class.php:196 inc/cridetail.class.php:401
-#: inc/cridetail.class.php:495 inc/cridetail.class.php:875
+#: inc/cridetail.class.php:196 inc/cridetail.class.php:406
+#: inc/cridetail.class.php:501 inc/cridetail.class.php:881
 #: inc/cripdf.class.php:414
 msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
-#: inc/cridetail.class.php:197 inc/cridetail.class.php:402
-#: inc/cridetail.class.php:1114 inc/generatecri.class.php:1166
+#: inc/cridetail.class.php:197 inc/cridetail.class.php:407
+#: inc/cridetail.class.php:1126 inc/generatecri.class.php:1166
 msgid "Intervention with contract"
 msgstr "Intervention sous contrat"
 
 #: inc/cridetail.class.php:199
 msgid "Associated ticket"
-msgstr "Billet associé"
+msgstr "Ticket associé"
 
-#: inc/cridetail.class.php:388
+#: inc/cridetail.class.php:393
 msgid "Associated intervention reports"
 msgstr "Rapports d'intervention associés"
 
-#: inc/cridetail.class.php:392 inc/entity.class.php:397
+#: inc/cridetail.class.php:397 inc/entity.class.php:408
 msgid "All reports"
 msgstr "Tous les rapports"
 
-#: inc/cridetail.class.php:403 inc/cripdf.class.php:390
+#: inc/cridetail.class.php:408 inc/cripdf.class.php:390
 msgid "Contract number"
 msgstr "N° du contrat"
 
-#: inc/cridetail.class.php:489
+#: inc/cridetail.class.php:495
 msgid "Intervention of contract"
 msgstr "Intervention du contrat"
 
-#: inc/cridetail.class.php:492 inc/cridetail.class.php:871
-#: inc/cridetail.class.php:956
+#: inc/cridetail.class.php:498 inc/cridetail.class.php:877
+#: inc/cridetail.class.php:962
 msgid "Object of intervention"
 msgstr "Objet de l'intervention"
 
-#: inc/cridetail.class.php:498 inc/cridetail.class.php:878
+#: inc/cridetail.class.php:504 inc/cridetail.class.php:884
 msgid "Applied daily rate"
 msgstr "Tarif journalier appliqué"
 
-#: inc/cridetail.class.php:500 inc/cridetail.class.php:880
+#: inc/cridetail.class.php:506 inc/cridetail.class.php:886
 msgid "Applied hourly rate"
 msgstr "Tarif horaire appliqué"
 
-#: inc/cridetail.class.php:502 inc/cridetail.class.php:887
+#: inc/cridetail.class.php:508 inc/cridetail.class.php:893
 msgid "To compute"
 msgstr "Calculer"
 
-#: inc/cridetail.class.php:511 inc/cridetail.class.php:1173
-#: inc/cridetail.class.php:1200 inc/generatecri.class.php:1220
+#: inc/cridetail.class.php:517 inc/cridetail.class.php:1185
+#: inc/cridetail.class.php:1212 inc/generatecri.class.php:1220
 msgid "Periods of contract"
 msgstr "Périodes du contrat"
 
-#: inc/cridetail.class.php:835 inc/cridetail.class.php:1228
+#: inc/cridetail.class.php:841 inc/cridetail.class.php:1240
 msgid "Ticket not validated"
-msgstr "Billet non validé"
+msgstr "Ticket non validé"
 
-#: inc/cridetail.class.php:843 inc/cridetail.class.php:1235
+#: inc/cridetail.class.php:849 inc/cridetail.class.php:1247
 msgid "Type of service contract missing"
 msgstr "Type de contrat de service manquant"
 
-#: inc/cridetail.class.php:868 inc/cridetail.class.php:953
+#: inc/cridetail.class.php:874 inc/cridetail.class.php:959
 msgid "Intervention periods of contract"
 msgstr "Périodes d'intervention du contrat"
 
-#: inc/cridetail.class.php:883 inc/cripdf.class.php:198
+#: inc/cridetail.class.php:889 inc/cripdf.class.php:198
 #: inc/cripdf.class.php:439
 msgid "of this intervention"
 msgstr "d'intervention"
 
-#: inc/cridetail.class.php:885
+#: inc/cridetail.class.php:891
 msgid "Applied rate"
 msgstr "Tarif appliqué"
 
-#: inc/cridetail.class.php:928
+#: inc/cridetail.class.php:934
 msgid "Total yearly consumption"
 msgstr "Consommation annuelle totale"
 
-#: inc/cridetail.class.php:935
+#: inc/cridetail.class.php:941
 msgid "Estimated number of remaining days"
 msgstr "Estimation du nombre de jours restant"
 
-#: inc/cridetail.class.php:940 inc/cridetail.class.php:971
+#: inc/cridetail.class.php:946 inc/cridetail.class.php:977
 msgid "No interventions in the dates of the period"
 msgstr "Aucunes interventions dans les dates de la prestation"
 
-#: inc/cridetail.class.php:958
+#: inc/cridetail.class.php:964
 msgid "Consumption"
 msgstr "Consommation"
 
-#: inc/cridetail.class.php:1033
+#: inc/cridetail.class.php:1045
 msgid "Associate to a contract"
 msgstr "Associer à un contrat"
 
-#: inc/cridetail.class.php:1037
+#: inc/cridetail.class.php:1049
 msgid "With contrat"
 msgstr "Avec contrat"
 
-#: inc/cridetail.class.php:1152 inc/generatecri.class.php:1197
+#: inc/cridetail.class.php:1164 inc/generatecri.class.php:1197
 msgid "No active contracts"
 msgstr "Aucuns contrats en cours"
 
@@ -1155,7 +1156,7 @@ msgstr "Annuaire client"
 
 #: inc/dashboard.class.php:49 inc/dashboard.class.php:231
 msgid "Tickets without CRI"
-msgstr "Billets sans CRI"
+msgstr "Tickets sans CRI"
 
 #: inc/dashboard.class.php:50 inc/dashboard.class.php:284
 msgid "Interventions with old contract"
@@ -1197,7 +1198,7 @@ msgstr "Suivi général"
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
 
-#: inc/entity.class.php:81 inc/entity.class.php:234
+#: inc/entity.class.php:81 inc/entity.class.php:247
 msgid "Data administrative"
 msgstr "Données administratives"
 
@@ -1209,33 +1210,33 @@ msgstr "Planification client"
 msgid "Accounts"
 msgstr "Comptes"
 
-#: inc/entity.class.php:114 inc/entity.class.php:590
+#: inc/entity.class.php:114 inc/entity.class.php:601
 msgid "References"
 msgstr "Références"
 
-#: inc/entity.class.php:221
+#: inc/entity.class.php:221 inc/entity.class.php:246
 msgid "Portal"
 msgstr "Portail"
 
-#: inc/entity.class.php:271
+#: inc/entity.class.php:281
 msgctxt "button"
 msgid "Update logo"
 msgstr "Mise à jour du logo"
 
-#: inc/entity.class.php:356
+#: inc/entity.class.php:366
 msgctxt "button"
 msgid "Update administrative data"
 msgstr "Mettre à jour les données administratives"
 
-#: inc/entity.class.php:373
+#: inc/entity.class.php:384
 msgid "Associated interventions"
 msgstr "Interventions associées"
 
-#: inc/entity.class.php:390
+#: inc/entity.class.php:401
 msgid "Processed interventions"
 msgstr "Interventions traitées"
 
-#: inc/entity.class.php:391
+#: inc/entity.class.php:402
 msgid "To be processed interventions"
 msgstr "Interventions à venir"
 
@@ -1295,7 +1296,7 @@ msgstr "Générer le rapport d'intervention"
 
 #: inc/generatecri.class.php:182
 msgid "Ticket informations"
-msgstr "Informations du billet"
+msgstr "Informations du ticket"
 
 #: inc/generatecri.class.php:436
 msgid "Predefined task informations"
@@ -1329,6 +1330,11 @@ msgstr "Technicien assigné"
 #: inc/generatecri.class.php:731
 msgid "Non-accomplished tasks informations"
 msgstr "Informations sur les tâches non complétées"
+
+#: inc/generatecri.class.php:771
+msgctxt "button"
+msgid "Generate"
+msgstr "Générer"
 
 #: inc/interventionskateholder.class.php:39
 msgid "User affected"
