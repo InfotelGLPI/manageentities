@@ -500,6 +500,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "<br><br><span>" . __('Duration') . "</span>";
       echo "<br><br><br><i class='fas fa-user fa-fw' title='" . _n('User', 'Users', 1) . "'></i>";
       echo _n("Technician", "Technicians", 1, "manageentities");
+      echo "<br><br><span>" . __('Category') . "</span>";
       echo "</td>";
 
       $heure = intval(date('H'));
@@ -533,6 +534,14 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       echo "<div id='users_id_tech'>";
       User::dropdown($params);
+      echo "</div><br>";
+
+
+      $params = ['name' => "taskcategories_id",
+                 'entity' => $options["entities_id"],
+                 'value' => isset($options['taskcategories_id']) ? $options['taskcategories_id'] : 0 ];
+      echo "<div id='taskcategories_id'>";
+      TaskCategory::dropdown($params);
       echo "</div>";
 
       echo "</td>";
@@ -596,6 +605,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               let begin       = '';
               let end         = '';
               let userIdTech  = '';
+              let tasksCategory  = '';
                  
                  
               if (Object.keys(storedTasks).length) {
@@ -606,6 +616,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                        begin       = value['begin'];
                        end         = value['end'];
                        userIdTech  = value['users_id_tech'];
+                       tasksCategory  = value['taskcategories_id'];
                     
                     
               let durationDisplay = secondsToHm(duration);
@@ -617,7 +628,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                   taskCount = 0;
               }
               
-              var blocTask = getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay);
+              var blocTask = getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay,tasksCategory);
               getUserName(userIdTech,taskCount);
         
                 $('#tasks').append(blocTask);   
@@ -631,9 +642,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                 begin       = $('[name =\"plan[begin]\"]').val();
                 end         = $('[name =\"plan[end]\"]').val();
                 userIdTech  = $('[name =\"users_id_tech\"]').val();
+                tasksCategory  = $('[name =\"taskcategories_id\"]').val();
                            
                 if (description == '' || begin == ''  || userIdTech == 0 || end === undefined  && duration == 0) {
                     alert('" . __('Content, end and begin date are mandatory for a task !', 'manageentities') . "');                           
+              } else if (tasksCategory == 0 && ".$config->fields['hourorday']." == ".PluginManageentitiesConfig::HOUR." ) {
+                    alert('" . __('Task category must be defined', 'manageentities') . "');                           
               } else if (end <= begin) {
                     alert('" . __('End date must be after the begin date !', 'manageentities') . "');
               } else {
@@ -648,7 +662,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               }
               taskCount ++;
               
-             var blocTask = getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay);
+             var blocTask = getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay,tasksCategory);
              getUserName(userIdTech,taskCount);
               $('[name =\"has_task\"]').val('true');
               
@@ -658,11 +672,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
               $('[name =\"plan[_duration]\"]').val();
               $('[name =\"plan[begin]\"]').val();  
               $('[name =\"users_id_tech\"]').val(); 
+              $('[name =\"taskcategories_id\"]').val(); 
                  }
               }
          };
             
-            function getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay) {
+            function getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay,tasksCategory) {
               var  blocTask  = '<div data-index=\"' + taskCount + '\" style=\"margin: 10px; padding:10px; width:100 %; border:dashed;\" id=\"task_' + taskCount + '\" >';
                blocTask += '<tr class=\"tab_bg_1\">';
                blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style = \"cursor:pointer;\" ><i style = \"float:right;\" class=\"fas fa-minus-circle\" ></i ></a> ';
@@ -677,6 +692,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                blocTask += ' <input name = \"end' + taskCount + '\" type = \"hidden\" value = \"' + end + '\"\>';
                blocTask += ' <input name = \"description' + taskCount + '\" type = \"hidden\" value = \"' + description + '\"\>';
                blocTask += ' <input name = \"users_id_tech' + taskCount + '\" type = \"hidden\" value = \"' + userIdTech + '\"\>';
+               blocTask += ' <input name = \"taskcategories_id' + taskCount + '\" type = \"hidden\" value = \"' + tasksCategory + '\"\>';
                blocTask += ' </tr></div> ';
                
                return blocTask;
@@ -955,6 +971,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                $inputs['duration0'] = $inputs['plan']['_duration'];
                $inputs['begin0'] = $inputs['plan']['begin'];
                $inputs['users_id_tech0'] = $inputs['users_id_tech'];
+               $inputs['taskcategories_id0'] = $inputs['taskcategories_id'];
                $inputs['end0'] = isset($inputs['plan']['end']) ? $inputs['plan']['end'] : "undefined";
 
             } else {
@@ -987,6 +1004,13 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                }
             }
 
+            if (strpos($key, 'taskcategories_id') !== false) {
+               if ($key == 'taskcategories_id' . $countTask) {
+                  $inputs['taskcategories_id'] = $inputs['taskcategories_id' . $countTask];
+                  $hasTech = true;
+               }
+            }
+
             if (strpos($key, 'begin') !== false) {
                if ($key == 'begin' . $countTask) {
                   $new_date = date('d-m-Y H:i', strtotime($inputs['begin' . $countTask]));
@@ -1013,6 +1037,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                $ticket_task->add(['tickets_id' => $ticket_id,
                   'users_id' => Session::getLoginUserID(),
                   'users_id_tech' => $inputs['users_id_tech'],
+                  'taskcategories_id' => $inputs['taskcategories_id'],
                   '_plan' => $inputs['_plan'],
                   'plan' => $inputs['plan'],
                   'content' => $inputs['description'],
@@ -1301,6 +1326,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          $checkKo = true;
       }
 
+      $config = PluginManageentitiesConfig::getInstance();
+      if ($input['taskcategories_id'] == 0 && $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+         $msg[] = _n('Task category','Task categories',1);
+         $checkKo = true;
+      }
+
       if ($checkKo) {
          Session::addMessageAfterRedirect(sprintf(__("Mandatory fields are not filled. Please correct: %s"),
             implode(', ', $msg)), false, ERROR);
@@ -1392,6 +1423,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             if (strpos($key, 'users_id_tech') !== false) {
                if ($key == 'users_id_tech' . $countTask) {
                   $task_stored[$countTask]['users_id_tech'] = $inputs['users_id_tech' . $countTask];
+               }
+            }
+            if (strpos($key, 'taskcategories_id') !== false) {
+               if ($key == 'taskcategories_id' . $countTask) {
+                  $task_stored[$countTask]['taskcategories_id'] = $inputs['taskcategories_id' . $countTask];
                }
             }
          }

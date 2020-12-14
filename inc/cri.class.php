@@ -347,6 +347,10 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       /* Initialisation du document avec les informations saisies par l'utilisateur. */
       $criType_id = $p['REPORT_ACTIVITE'];
+      $typeCri = new PluginManageentitiesCriType();
+      if($typeCri->getFromDB($criType_id)) {
+         $p['REPORT_ACTIVITE'] = $typeCri->getField('name');
+      }
       if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE || $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
          $p['REPORT_ACTIVITE'] = [];
          $criType_id           = 0;

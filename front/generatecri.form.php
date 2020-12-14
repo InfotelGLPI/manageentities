@@ -57,7 +57,7 @@ if (isset($_POST['generatecri'])) {
             $PluginManageentitiesGenerateCri->createTasks($_POST, $ticket_id);
             $config = PluginManageentitiesConfig::getInstance();
             $ticket->update(['id' => $ticket_id,'status' => $config->getField('ticket_state')]);
-            if(isset($_POST['description-undone'])){
+            if(isset($_POST['description-undone']) && $_POST['description-undone'] !=''){
                $_POST['content'] = $_POST['description-undone'];
                $PluginManageentitiesGenerateCri->createTicketTaskUndone($_POST, $ticket_id);
             }
