@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-11 11:24+0000\n"
+"POT-Creation-Date: 2020-12-14 15:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,7 +70,7 @@ msgstr ""
 #: front/entity.php:49 front/generatecri.form.php:83 front/generatecri.php:36
 #: front/generatecri.php:39 front/generatecri.php:42 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
-#: inc/followup.class.php:968 inc/generatecri.class.php:1124
+#: inc/followup.class.php:968 inc/generatecri.class.php:1149
 #: inc/monthly.class.php:548 inc/preference.class.php:75
 #: inc/profile.class.php:42 inc/profile.class.php:96
 #: inc/taskcategory.class.php:55
@@ -883,19 +883,19 @@ msgstr ""
 msgid "No tasks"
 msgstr ""
 
-#: inc/cri.class.php:488
+#: inc/cri.class.php:492
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
 
-#: inc/cri.class.php:493
+#: inc/cri.class.php:497
 msgid "Please fill the contract period end date."
 msgstr ""
 
-#: inc/cri.class.php:498
+#: inc/cri.class.php:502
 msgid "Please fill the contract period begin date."
 msgstr ""
 
-#: inc/cri.class.php:802
+#: inc/cri.class.php:806
 msgid "Save the intervention report"
 msgstr ""
 
@@ -920,7 +920,7 @@ msgid "Crossed time (itinerary including)"
 msgstr ""
 
 #: inc/cridetail.class.php:197 inc/cridetail.class.php:407
-#: inc/cridetail.class.php:1126 inc/generatecri.class.php:1166
+#: inc/cridetail.class.php:1126 inc/generatecri.class.php:1191
 msgid "Intervention with contract"
 msgstr ""
 
@@ -962,7 +962,7 @@ msgid "To compute"
 msgstr ""
 
 #: inc/cridetail.class.php:517 inc/cridetail.class.php:1185
-#: inc/cridetail.class.php:1212 inc/generatecri.class.php:1220
+#: inc/cridetail.class.php:1212 inc/generatecri.class.php:1245
 msgid "Periods of contract"
 msgstr ""
 
@@ -1011,7 +1011,7 @@ msgstr ""
 msgid "With contrat"
 msgstr ""
 
-#: inc/cridetail.class.php:1164 inc/generatecri.class.php:1197
+#: inc/cridetail.class.php:1164 inc/generatecri.class.php:1222
 msgid "No active contracts"
 msgstr ""
 
@@ -1293,27 +1293,31 @@ msgstr ""
 msgid "Add this Task"
 msgstr ""
 
-#: inc/generatecri.class.php:636
+#: inc/generatecri.class.php:648
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 
-#: inc/generatecri.class.php:638
+#: inc/generatecri.class.php:650
+msgid "Task category must be defined"
+msgstr ""
+
+#: inc/generatecri.class.php:652
 msgid "End date must be after the begin date !"
 msgstr ""
 
-#: inc/generatecri.class.php:670
+#: inc/generatecri.class.php:685
 msgid "Description"
 msgstr ""
 
-#: inc/generatecri.class.php:671
+#: inc/generatecri.class.php:686
 msgid "Technician as assigned"
 msgstr ""
 
-#: inc/generatecri.class.php:731
+#: inc/generatecri.class.php:747
 msgid "Non-accomplished tasks informations"
 msgstr ""
 
-#: inc/generatecri.class.php:771
+#: inc/generatecri.class.php:787
 msgctxt "button"
 msgid "Generate"
 msgstr ""
