@@ -379,8 +379,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
            OR ISNULL(plugin_manageentities_contractstates_id))";
 
          if ($entity != -1)
-            $query .= " AND `glpi_documents`.`entities_id` IN (" . $entity . ") ";
-         else
+            $query .= " AND `glpi_documents`.`entities_id` IN (" . $entity . ") "; else
             $query .= " AND `glpi_documents`.`tickets_id` = '" . $instID . "' ";
          $query .= " ORDER BY `glpi_plugin_manageentities_cridetails`.`date` DESC LIMIT 10";
 
@@ -454,10 +453,10 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             echo "</table>";
          } else {
             echo __('No item found');
+            if ($entity == -1) {
+               self::addReports($item, $options);
+            }
          }
-
-      } else if ($entity == -1) {
-         self::addReports($item, $options);
       }
    }
 

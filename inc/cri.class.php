@@ -333,6 +333,7 @@ class PluginManageentitiesCri extends CommonDBTM {
       $p['REPORT_ACTIVITE'] = '';
       $p['documents_id']    = 0;
       $p['number_moving']   = 0;
+
       foreach ($params as $key => $val) {
          $p[$key] = $val;
          if($key == 'REPORT_DESCRIPTION'){
