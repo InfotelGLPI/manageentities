@@ -60,7 +60,7 @@
     height: 23px;
     margin: 0;
     border-bottom: 1px solid #DDD;
-    background-color: #f6f6f6;
+    /*background-color: #f6f6f6;*/
 }
 
 .fn-gantt .leftPanel .name {
@@ -79,7 +79,7 @@
 .fn-gantt .spacer {
     margin: -2px 0 1px 0;
     border-bottom: none;
-    background-color: #f6f6f6;
+    /*background-color: #f6f6f6;*/
 }
 
 
@@ -136,7 +136,7 @@
 }
 
 .fn-gantt .wd {
-   background-color: #f6f6f6;
+   /*background-color: #f6f6f6;*/
 }
 
 .fn-gantt .rightPanel .month, .fn-gantt .rightPanel .year {
@@ -146,7 +146,7 @@
    border-bottom: 1px solid #DDD;
    height: 23px;
    margin: 0 0 0 -1px;
-   background-color: #f6f6f6;
+   /*background-color: #f6f6f6;*/
 }
 
 .fn-gantt-hint {
@@ -328,7 +328,7 @@
 
 .fn-gantt .bottom {
    clear: both;
-   background-color: #f6f6f6;
+   /*background-color: #f6f6f6;*/
    width: 100%;
 }
 .fn-gantt .navigate {

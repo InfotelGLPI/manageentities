@@ -413,9 +413,9 @@ class PluginManageentitiesDashboard extends CommonGLPI {
 
       if (isset($options['contract_states']) && $options['contract_states'] != '0') {
          $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", $options['contract_states']) . "') ";
-      } elseif ($preferences['contract_states'] != NULL) {
+      } elseif (isset($preferences['contract_states']) && $preferences['contract_states'] != NULL) {
          $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", json_decode($preferences['contract_states'], true)) . "') ";
-      } elseif ($config_states['contract_states'] != NULL) {
+      } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != NULL) {
          $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", json_decode($config_states['contract_states'], true)) . "') ";
       }
 
