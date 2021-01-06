@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-06 14:34+0000\n"
+"POT-Creation-Date: 2021-01-06 15:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -472,45 +472,45 @@ msgstr ""
 msgid "Document list"
 msgstr ""
 
-#: inc/addelementsview.class.php:1472 inc/contract.class.php:188
+#: inc/addelementsview.class.php:1472 inc/contract.class.php:192
 #: inc/entity.class.php:672 inc/followup.class.php:605
 #: inc/followup.class.php:690 inc/gantt.class.php:281
 msgid "Date of signature"
 msgstr ""
 
-#: inc/addelementsview.class.php:1477 inc/contract.class.php:192
+#: inc/addelementsview.class.php:1477 inc/contract.class.php:196
 #: inc/followup.class.php:607 inc/followup.class.php:697
 #: inc/gantt.class.php:282
 msgid "Date of renewal"
 msgstr ""
 
-#: inc/addelementsview.class.php:1485 inc/contract.class.php:198
-#: inc/contract.class.php:312 inc/followup.class.php:610
+#: inc/addelementsview.class.php:1485 inc/contract.class.php:202
+#: inc/contract.class.php:316 inc/followup.class.php:610
 #: inc/followup.class.php:705 inc/monthly.class.php:401
 msgid "Mode of management"
 msgstr ""
 
 #: inc/addelementsview.class.php:1488 inc/addelementsview.class.php:1758
-#: inc/contract.class.php:201 inc/contract.class.php:313
-#: inc/contract.class.php:315 inc/contractday.class.php:139
+#: inc/contract.class.php:205 inc/contract.class.php:317
+#: inc/contract.class.php:319 inc/contractday.class.php:139
 #: inc/contractday.class.php:342 inc/contractday.class.php:805
 #: inc/followup.class.php:611 inc/followup.class.php:706
 msgid "Type of service contract"
 msgstr ""
 
-#: inc/addelementsview.class.php:1494 inc/contract.class.php:207
+#: inc/addelementsview.class.php:1494 inc/contract.class.php:211
 msgid "Contract is imported in GLPI"
 msgstr ""
 
-#: inc/addelementsview.class.php:1515 inc/contract.class.php:224
+#: inc/addelementsview.class.php:1515 inc/contract.class.php:228
 msgid "Refacturable costs"
 msgstr ""
 
-#: inc/addelementsview.class.php:1527 inc/contract.class.php:234
+#: inc/addelementsview.class.php:1527 inc/contract.class.php:238
 msgid "Movement management"
 msgstr ""
 
-#: inc/addelementsview.class.php:1546 inc/contract.class.php:251
+#: inc/addelementsview.class.php:1546 inc/contract.class.php:255
 msgid "Duration of moving"
 msgstr ""
 
@@ -725,8 +725,8 @@ msgstr ""
 msgid "Add a company"
 msgstr ""
 
-#: inc/config.class.php:297 inc/contract.class.php:469
-#: inc/contract.class.php:501
+#: inc/config.class.php:297 inc/contract.class.php:473
+#: inc/contract.class.php:505
 msgid "Hourly"
 msgstr ""
 
@@ -741,39 +741,39 @@ msgstr[1] ""
 msgid "Type of management"
 msgstr ""
 
-#: inc/contract.class.php:122 inc/contract.class.php:124
+#: inc/contract.class.php:126 inc/contract.class.php:128
 msgid "Contract detail"
 msgstr ""
 
-#: inc/contract.class.php:287 inc/contract.class.php:388
+#: inc/contract.class.php:291 inc/contract.class.php:392
 msgid "Associated assistance contracts"
 msgstr ""
 
-#: inc/contract.class.php:317
+#: inc/contract.class.php:321
 msgid "Used by default"
 msgstr ""
 
-#: inc/contract.class.php:420 inc/contract.class.php:446
+#: inc/contract.class.php:424 inc/contract.class.php:450
 msgid "Quarterly"
 msgstr ""
 
-#: inc/contract.class.php:421 inc/contract.class.php:448
+#: inc/contract.class.php:425 inc/contract.class.php:452
 msgid "Annual"
 msgstr ""
 
-#: inc/contract.class.php:470 inc/contract.class.php:503
+#: inc/contract.class.php:474 inc/contract.class.php:507
 msgid "By intervention"
 msgstr ""
 
-#: inc/contract.class.php:474 inc/contract.class.php:507
+#: inc/contract.class.php:478 inc/contract.class.php:511
 msgid "Technical Assistance"
 msgstr ""
 
-#: inc/contract.class.php:475 inc/contract.class.php:509
+#: inc/contract.class.php:479 inc/contract.class.php:513
 msgid "Package"
 msgstr ""
 
-#: inc/contract.class.php:529
+#: inc/contract.class.php:533
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
