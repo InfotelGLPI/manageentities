@@ -299,8 +299,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
       $entity = $this->getEntity();
 
       $childEntity = new Entity();
-      $childEntity->getFromDB($_POST['new_entity_entities_id']);
-      $entity->fields['completename'] = $childEntity->fields['completename'] . " > " . $entity->fields['name'];
+      if($childEntity->getFromDB($_POST['new_entity_entities_id'])){
+         $entity->fields['completename'] = $childEntity->fields['completename'] . " > " . $entity->fields['name'];
+      }
 
       // If entity already saved
       if (isset($entity->fields['id']) && $entity->fields['id'] > 0) {

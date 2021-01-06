@@ -941,7 +941,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       // Entite
       echo "<tr  class='tab_bg_1'>";
       //         INFOTEL : MODIFICATION PRESALES
-      if (!isset($params["presales"])) {
+      if (!isset($params["presales"]) || (isset($params["presales"]) && $params["presales"] == false ) ) {
 
 
          echo "<td>" . __("Entity") . $this->pModel->getMessage("mandatory_field") . "</td>";
