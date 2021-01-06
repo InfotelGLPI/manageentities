@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-04 10:38+0000\n"
+"POT-Creation-Date: 2021-01-06 14:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -391,25 +391,25 @@ msgstr ""
 msgid "This action is irreversible, Continue ?"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:311 inc/addelementsmodel.class.php:328
+#: inc/addelementsmodel.class.php:312 inc/addelementsmodel.class.php:329
 #: inc/addelementsview.class.php:586
 msgid "Update this entity"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:445 inc/addelementsmodel.class.php:465
+#: inc/addelementsmodel.class.php:446 inc/addelementsmodel.class.php:466
 #: inc/addelementsview.class.php:1190
 msgid "Update this contract only"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:613 inc/addelementsmodel.class.php:635
+#: inc/addelementsmodel.class.php:614 inc/addelementsmodel.class.php:636
 msgid "Update this contact only"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:741 inc/addelementsmodel.class.php:799
+#: inc/addelementsmodel.class.php:742 inc/addelementsmodel.class.php:800
 msgid "Update this intervention only"
 msgstr ""
 
-#: inc/addelementsmodel.class.php:921 inc/addelementsview.class.php:2301
+#: inc/addelementsmodel.class.php:922 inc/addelementsview.class.php:2301
 #: inc/addelementsview.class.php:2609
 msgid "Update this price"
 msgid_plural "Update these prices"
