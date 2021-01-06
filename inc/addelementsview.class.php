@@ -1025,7 +1025,17 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td>";
       echo "<input type='text' name='contract_num' id='contract_num' value='" . (isset($currentContract->fields['num']) ? $currentContract->fields['num'] : '') . "' /> ";
       echo "</td>";
-      echo "<td colspan='2'></td></tr>";
+      $randDropdown = mt_rand();
+      echo "<td><label for='dropdown_states_id$randDropdown'>".__('Status')."</label></td>";
+      echo "<td>";
+      State::dropdown([
+                         'value'     => $currentContract->fields["states_id"],
+                         'entity'    => $currentContract->fields["entities_id"],
+                         'condition' => ['is_visible_contract' => 1],
+                         'rand'      => $randDropdown
+                      ]);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Start date') . "</td>";
