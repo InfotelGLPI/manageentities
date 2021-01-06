@@ -71,13 +71,15 @@ class PluginManageentitiesContract extends CommonDBTM {
          $input['date_signature'] = 'NULL';
 
       if (isset($input['contract_added'])
-          && ($input['contract_added'] == "on" || $input['contract_added'])) {
+          && ($input['contract_added'] === "on"
+          || ($input['contract_added'] && $input['contract_added'] != 0 ))) {
          $input['contract_added'] = 1;
       } else {
          $input['contract_added'] = 0;
       }
       if (isset($input['refacturable_costs'])
-          && $input['refacturable_costs'] == "on") {
+          && ($input['refacturable_costs'] === "on"
+          || ($input['refacturable_costs'] && $input['refacturable_costs'] != 0 ))) {
          $input['refacturable_costs'] = 1;
       } else {
          $input['refacturable_costs'] = 0;
@@ -96,13 +98,15 @@ class PluginManageentitiesContract extends CommonDBTM {
          $input['date_signature'] = 'NULL';
 
       if (isset($input['contract_added'])
-          && $input['contract_added'] == "on") {
+          && ($input['contract_added'] === "on"
+          || ($input['contract_added'] && $input['contract_added'] != 0 ))) {
          $input['contract_added'] = 1;
       } else {
          $input['contract_added'] = 0;
       }
       if (isset($input['refacturable_costs'])
-          && $input['refacturable_costs'] == "on") {
+          && ($input['refacturable_costs'] === "on"
+          || ($input['refacturable_costs'] && $input['refacturable_costs'] != 0 ))) {
          $input['refacturable_costs'] = 1;
       } else {
          $input['refacturable_costs'] = 0;
