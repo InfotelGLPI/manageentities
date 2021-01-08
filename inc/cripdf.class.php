@@ -218,18 +218,34 @@ class PluginManageentitiesCriPDF extends FPDF {
          $this->CellValeur($this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Created by', 'manageentities') . ' : ' . $this->GetDateFormatee($aujour_hui) . " " . __('in', 'manageentities') . " " . $this->GetHeureFormatee($aujour_hui)), 'C', 1, 'LTRB', false); // Libellé pour la date.
          $this->SetY($this->GetY() + $this->line_height);
       } else {
-         /* Date et heure. */
-         $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8(__('Created by', 'manageentities')) . ' :', 'C', 1, 'LTR', true); // Libellé pour la date.
-         $this->SetY($this->GetY() + $this->line_height);
-         $this->SetX($largeur_titre + $largeur_logo + 10);
-         $this->CellValeur($largeur_date, $this->GetDateFormatee($aujour_hui), 'C', 1, 'LR'); // Date.
-         $this->SetY($this->GetY() + $this->line_height);
-         $this->SetX($largeur_titre + $largeur_logo + 10);
-         $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8(__('in', 'manageentities')) . ' :', 'C', 1, 'LR', true); // Libellé pour l'heure.
-         $this->SetY($this->GetY() + $this->line_height);
-         $this->SetX($largeur_titre + $largeur_logo + 10);
-         $this->CellValeur($largeur_date, $this->GetHeureFormatee($aujour_hui), 'C', 1, 'LRB'); // Heure.
-         $this->SetY($this->GetY() + $this->line_height);
+         $config = PluginManageentitiesConfig::getInstance();
+         if(!$config->fields['disable_date_header']){
+            /* Date et heure. */
+            $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8(__('Created by', 'manageentities')) . ' :', 'C', 1, 'LTR', true); // Libellé pour la date.
+            $this->SetY($this->GetY() + $this->line_height);
+            $this->SetX($largeur_titre + $largeur_logo + 10);
+            $this->CellValeur($largeur_date, $this->GetDateFormatee($aujour_hui), 'C', 1, 'LR'); // Date.
+            $this->SetY($this->GetY() + $this->line_height);
+            $this->SetX($largeur_titre + $largeur_logo + 10);
+            $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8(__('in', 'manageentities')) . ' :', 'C', 1, 'LR', true); // Libellé pour l'heure.
+            $this->SetY($this->GetY() + $this->line_height);
+            $this->SetX($largeur_titre + $largeur_logo + 10);
+            $this->CellValeur($largeur_date, $this->GetHeureFormatee($aujour_hui), 'C', 1, 'LRB'); // Heure.
+            $this->SetY($this->GetY() + $this->line_height);
+         } else{
+            /* Empty */
+            $this->CellValeur($largeur_date, "", 'C', 1, 'LTR', true); // Libellé pour la date.
+            $this->SetY($this->GetY() + $this->line_height);
+            $this->SetX($largeur_titre + $largeur_logo + 10);
+            $this->CellValeur($largeur_date, "", 'C', 1, 'LR'); // Date.
+            $this->SetY($this->GetY() + $this->line_height);
+            $this->SetX($largeur_titre + $largeur_logo + 10);
+            $this->CellValeur($largeur_date, "", 'C', 1, 'LR', true); // Libellé pour l'heure.
+            $this->SetY($this->GetY() + $this->line_height);
+            $this->SetX($largeur_titre + $largeur_logo + 10);
+            $this->CellValeur($largeur_date, "", 'C', 1, 'LRB'); // Heure.
+            $this->SetY($this->GetY() + $this->line_height);
+         }
       }
 
 
@@ -893,6 +909,7 @@ class PluginManageentitiesCriPDF extends FPDF {
       $this->description_cri = $description_cri;
       $this->description_cri = Html::clean($this->description_cri);
       $this->description_cri = stripcslashes($this->description_cri);
+      $this->description_cri = htmlspecialchars_decode($this->description_cri);
       $this->description_cri = str_replace("\\\\", "\\", $this->description_cri);
       $this->description_cri = str_replace("\\'", "'", $this->description_cri);
       $this->description_cri = str_replace("<br>", " ", $this->description_cri);

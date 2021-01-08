@@ -190,6 +190,11 @@ class PluginManageentitiesConfig extends CommonDBTM {
       echo "<br><div id='date_end$rand'></div>";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1 top'><td>" . __('Disable creation date in header of PDF', 'manageentities') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("disable_date_header", $this->fields["disable_date_header"]);
+      echo "</td></tr>";
+
       echo "<input type='hidden' name='id' value='1'>";
       echo "<tr class='tab_bg_1 center'><td colspan='2'>
             <span style=\"font-weight:bold; color:red\">" . __('Warning: changing the configuration daily or hourly impacts the types of contract', 'manageentities') . "</td></span></tr>";

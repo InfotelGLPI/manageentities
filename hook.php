@@ -40,7 +40,7 @@ function plugin_manageentities_install() {
    $update190 = false;
    if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-3.2.0.sql");
+      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-3.2.2.sql");
 
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
@@ -149,9 +149,14 @@ function plugin_manageentities_install() {
       $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-2.1.4.sql");
    }
 
-   //version 3.2.0
+   //version 3.2.1
    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "non_accomplished_tasks")) {
       $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.1.sql");
+   }
+
+   //version 3.2.2
+   if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "disable_date_header")) {
+      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.2.sql");
    }
 
    if ($update) {
