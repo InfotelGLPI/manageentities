@@ -233,10 +233,12 @@ class PluginManageentitiesCompany extends CommonDBTM {
    }
 
    function post_updateItem($history = 1) {
-      $img = $this->addFiles($this->input);
-      foreach ($img as $key => $name) {
-         $this->fields['logo_id'] = $key;
-         $this->updateInDB(['logo_id']);
+      if ($this->fields['logo_id'] == 0) {
+         $img = $this->addFiles($this->input);
+         foreach ($img as $key => $name) {
+            $this->fields['logo_id'] = $key;
+            $this->updateInDB(['logo_id']);
+         }
       }
    }
 
