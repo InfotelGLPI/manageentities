@@ -1110,7 +1110,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                FROM `glpi_contracts`
                LEFT JOIN `glpi_plugin_manageentities_contracts`
                     ON (`glpi_plugin_manageentities_contracts`.`contracts_id` = `glpi_contracts`.`id`)
-               WHERE `glpi_plugin_manageentities_contracts`.`entities_id` = '" . $entities_id . "'
+               WHERE `glpi_plugin_manageentities_contracts`.`entities_id` = '" . $entities_id . "' 
+                      AND `glpi_contracts`.`is_deleted` = 0 
                ORDER BY `glpi_contracts`.`name` ";
 
       $result              = $DB->query($query);
