@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-11 10:47+0000\n"
+"POT-Creation-Date: 2021-03-31 09:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -924,7 +924,7 @@ msgid "Crossed time (itinerary including)"
 msgstr ""
 
 #: inc/cridetail.class.php:197 inc/cridetail.class.php:406
-#: inc/cridetail.class.php:1125 inc/generatecri.class.php:1191
+#: inc/cridetail.class.php:1126 inc/generatecri.class.php:1192
 msgid "Intervention with contract"
 msgstr ""
 
@@ -965,16 +965,16 @@ msgstr ""
 msgid "To compute"
 msgstr ""
 
-#: inc/cridetail.class.php:516 inc/cridetail.class.php:1184
-#: inc/cridetail.class.php:1211 inc/generatecri.class.php:1245
+#: inc/cridetail.class.php:516 inc/cridetail.class.php:1185
+#: inc/cridetail.class.php:1212 inc/generatecri.class.php:1246
 msgid "Periods of contract"
 msgstr ""
 
-#: inc/cridetail.class.php:840 inc/cridetail.class.php:1239
+#: inc/cridetail.class.php:840 inc/cridetail.class.php:1240
 msgid "Ticket not validated"
 msgstr ""
 
-#: inc/cridetail.class.php:848 inc/cridetail.class.php:1246
+#: inc/cridetail.class.php:848 inc/cridetail.class.php:1247
 msgid "Type of service contract missing"
 msgstr ""
 
@@ -1015,7 +1015,7 @@ msgstr ""
 msgid "With contrat"
 msgstr ""
 
-#: inc/cridetail.class.php:1163 inc/generatecri.class.php:1222
+#: inc/cridetail.class.php:1164 inc/generatecri.class.php:1223
 msgid "No active contracts"
 msgstr ""
 
