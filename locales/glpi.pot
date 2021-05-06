@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-31 09:56+0000\n"
+"POT-Creation-Date: 2021-05-06 07:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,7 +71,7 @@ msgstr ""
 #: front/generatecri.php:39 front/generatecri.php:42 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
 #: inc/followup.class.php:968 inc/generatecri.class.php:1149
-#: inc/monthly.class.php:548 inc/preference.class.php:75
+#: inc/monthly.class.php:548 inc/preference.class.php:77
 #: inc/profile.class.php:42 inc/profile.class.php:96
 #: inc/taskcategory.class.php:55
 msgid "Entities portal"
@@ -1410,23 +1410,23 @@ msgstr ""
 msgid "State of intervention"
 msgstr ""
 
-#: inc/preference.class.php:106
+#: inc/preference.class.php:108
 msgid "Launch the plugin Entities portal with GLPI launching"
 msgstr ""
 
-#: inc/preference.class.php:117
+#: inc/preference.class.php:119
 msgid "Status list contract for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:141
+#: inc/preference.class.php:143
 msgid "Default list of Business for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:153
+#: inc/preference.class.php:155
 msgid "Default list of companies for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:179
+#: inc/preference.class.php:181
 msgid ""
 "Warning : If there are more than one plugin which be loaded at startup, then "
 "only the first will be used"
