@@ -71,7 +71,9 @@ class PluginManageentitiesPreference extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if ($item->getType() == 'Preference') {
+      if ($item->getType() == 'Preference'
+      && isset($_SESSION["glpiactiveprofile"]["interface"])
+          && $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
          return __('Entities portal', 'manageentities');
       }
       return '';

@@ -250,7 +250,7 @@ function cloneTicketTask(options) {
         dataType: "json",
         data: {
             'tickets_id': options.tickets_id,
-            'new_date_value': $('#' + options.new_date_id).val(),
+            'new_date_value': $('input[name=new_date]').val(),
             'tickettasks_id': options.tickettasks_id,
             'action': 'cloneTicketTask'
         },

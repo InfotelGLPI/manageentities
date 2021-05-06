@@ -51,7 +51,7 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
                                                                'mintime' => $CFG_GLPI["planning_begin"],
                                                                'maxtime' => $CFG_GLPI["planning_end"]]);
          $params        = json_encode(['root_doc'       => $CFG_GLPI['root_doc'],
-                                       'new_date_id'    => 'showdate' . $randDate,
+//                                       'new_date_id'    => 'showdate' . $randDate,
                                        'tickets_id'     => $_POST['tickets_id'],
                                        'tickettasks_id' => $_POST['tickettasks_id']]);
          $tickettask_id = $_POST['tickettasks_id'];
@@ -67,20 +67,21 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
       case "cloneTicketTask":
          header('Content-Type: application/json; charset=UTF-8"');
 
-         if (isset($_POST['new_date_value'])) {
+         if (isset($_POST['new_date_value']) && !empty($_POST['new_date_value'])) {
             $tickettask->fields['begin'] = $_POST['new_date_value'];
-         }
 
-         unset($tickettask->fields['end']);
-         unset($tickettask->fields['id']);
-         $tickettask->fields['date']    = date("Y-m-d H:i:s ", time());
-         $tickettask->fields['content'] = addslashes($tickettask->fields['content']);
-         $tickettask->fields['plan']    = ['begin'     => date("Y-m-d H:i:s ", strtotime($tickettask->fields['begin'])),
-                                           '_duration' => $tickettask->fields['actiontime'],
-                                           'users_id'  => $tickettask->fields['users_id_tech']];
+            unset($tickettask->fields['end']);
+            unset($tickettask->fields['id']);
+            $tickettask->fields['date']    = date("Y-m-d H:i:s ", time());
+            $tickettask->fields['content'] = addslashes($tickettask->fields['content']);
+            $tickettask->fields['plan']    = ['begin'     => $tickettask->fields['begin'],
+                                              '_duration' => $tickettask->fields['actiontime'],
+                                              'users_id'  => $tickettask->fields['users_id_tech']];
+            $tickettask->fields['uuid']    = \Ramsey\Uuid\Uuid::uuid4();
 
-         if ($id = $tickettask->add($tickettask->fields)) {
-            echo json_encode(['tickettasks_id' => $id]);
+            if ($id = $tickettask->add($tickettask->fields)) {
+               echo json_encode(['tickettasks_id' => $id]);
+            }
          }
          break;
    }
