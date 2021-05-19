@@ -1774,7 +1774,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<input type='text' name='intervention_name" . $idIntervention . "' id='intervention_name" . $idIntervention . "'  value='" . (isset($currentContractday->fields['name']) ? $currentContractday->fields['name'] : '') . "'  />";
       echo "</td>";
 
-      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR
+          && isset($pluginContract['contract_type']) &&  $pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
          echo "<td></td><td></td>";
       } else {
          echo "<td>" . __('Postponement', 'manageentities') . "</td>";
@@ -1799,7 +1800,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Initial credit', 'manageentities') . "</td>";
-      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR
+          && isset($pluginContract['contract_type'])
+          && $pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
          echo "<td>&nbsp;";
       } else {
          echo "<td><input type='text' name='nbday" . $idIntervention . "' id='nbday" . $idIntervention . "' value='" .
@@ -3099,10 +3102,12 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
             break;
          case ElementType::INTERVENTION:
             // contract name
+
             if (isset($_POST['new_intervention_name']) && $_POST['new_intervention_name'] != "") {
                $this->bordersOnError("intervention_name" . $_POST['fakeid_new_intervention'], false, false);
                // contract type
-               if (isset($_POST['contract_type']) && $_POST['contract_type'] != "0") {
+               //commented because cannot be used with hour setup
+//               if (isset($_POST['contract_type']) && $_POST['contract_type'] != "0") {
                   $this->bordersOnError("div_select_contract_type" . $_POST['fakeid_new_intervention'], false, false);
                   // begin date
                   if (isset($_POST['new_intervention_begin_date']) && $_POST['new_intervention_begin_date'] != "") {
@@ -3132,11 +3137,11 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
                      $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
 
                   }
-               } else {
-                  $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "div_select_contract_type" . $_POST['fakeid_new_intervention']);
-                  $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
-
-               }
+//               } else {
+//                  $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "div_select_contract_type" . $_POST['fakeid_new_intervention']);
+//                  $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
+//
+//               }
             } else {
                $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "intervention_name" . $_POST['fakeid_new_intervention']);
                $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
