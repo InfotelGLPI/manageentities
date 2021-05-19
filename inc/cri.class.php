@@ -357,7 +357,7 @@ class PluginManageentitiesCri extends CommonDBTM {
           || $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR
       ) {
          $p['REPORT_ACTIVITE'] = [];
-         $criType_id           = 0;
+//         $criType_id           = 0;
       }
 
       //$PDF->SetDescriptionCri(Toolbox::unclean_cross_side_scripting_deep($p['REPORT_DESCRIPTION']));
