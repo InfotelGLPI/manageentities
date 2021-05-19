@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-06 07:20+0000\n"
+"POT-Creation-Date: 2021-05-19 10:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,7 +89,7 @@ msgstr ""
 msgid "Update all previous elements"
 msgstr ""
 
-#: ajax/cri.php:65 ajax/cri.php:97 ajax/cri.php:121
+#: ajax/cri.php:66 ajax/cri.php:99 ajax/cri.php:123
 msgid "Thanks to select a intervention type"
 msgstr ""
 
@@ -887,19 +887,19 @@ msgstr ""
 msgid "No tasks"
 msgstr ""
 
-#: inc/cri.class.php:493
+#: inc/cri.class.php:497
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
 
-#: inc/cri.class.php:498
+#: inc/cri.class.php:502
 msgid "Please fill the contract period end date."
 msgstr ""
 
-#: inc/cri.class.php:503
+#: inc/cri.class.php:507
 msgid "Please fill the contract period begin date."
 msgstr ""
 
-#: inc/cri.class.php:807
+#: inc/cri.class.php:812
 msgid "Save the intervention report"
 msgstr ""
 
