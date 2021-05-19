@@ -331,6 +331,7 @@ class PluginManageentitiesCri extends CommonDBTM {
       $p['WITHOUTCONTRACT'] = 0;
       $p['CONTRAT']         = 0;
       $p['REPORT_ACTIVITE'] = '';
+      $p['REPORT_ACTIVITE_ID'] = 0;
       $p['documents_id']    = 0;
       $p['number_moving']   = 0;
 
@@ -347,15 +348,18 @@ class PluginManageentitiesCri extends CommonDBTM {
       $PDF = new PluginManageentitiesCriPDF('P', 'mm', 'A4');
 
       /* Initialisation du document avec les informations saisies par l'utilisateur. */
-      $criType_id = $p['REPORT_ACTIVITE'];
+      $criType_id = $p['REPORT_ACTIVITE_ID'];
       $typeCri = new PluginManageentitiesCriType();
       if($typeCri->getFromDB($criType_id)) {
          $p['REPORT_ACTIVITE'] = $typeCri->getField('name');
       }
-      if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE || $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+      if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE
+          || $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR
+      ) {
          $p['REPORT_ACTIVITE'] = [];
          $criType_id           = 0;
       }
+
       //$PDF->SetDescriptionCri(Toolbox::unclean_cross_side_scripting_deep($p['REPORT_DESCRIPTION']));
       $p['REPORT_DESCRIPTION'] = Toolbox::unclean_cross_side_scripting_deep($p['REPORT_DESCRIPTION']);
       $p['REPORT_DESCRIPTION'] = str_replace("’", "'", $p['REPORT_DESCRIPTION']);
@@ -798,6 +802,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             echo "<input type='hidden' name='CONTRACTDAY' value='" . $p['CONTRACTDAY'] . "' >";
             echo "<input type='hidden' name='WITHOUTCONTRACT' value='" . $p['WITHOUTCONTRACT'] . "' >";
             echo "<input type='hidden' name='number_moving' value='" . $p['number_moving'] . "' >";
+            echo "<input type='hidden' name='REPORT_ACTIVITE_ID' value='" . $p['REPORT_ACTIVITE_ID'] . "' >";
 
             $params = ['job'      => $job->fields['id'],
                             'form'     => 'formReport',

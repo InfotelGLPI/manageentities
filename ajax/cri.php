@@ -50,6 +50,7 @@ switch ($_POST['action']) {
          $params                = $_POST["params"];
          $input->enregistrement = false;
          if (isset($input->REPORT_ACTIVITE) && $input->REPORT_ACTIVITE) {
+            $input->REPORT_ACTIVITE_ID = $input->REPORT_ACTIVITE;
             $PluginManageentitiesCri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
@@ -75,7 +76,8 @@ switch ($_POST['action']) {
 
          $input->enregistrement = false;
          if ($input->REPORT_ACTIVITE) {
-            // Purge cri 
+            // Purge cri
+            $input->REPORT_ACTIVITE_ID = $input->REPORT_ACTIVITE;
             $criDetail           = new PluginManageentitiesCriDetail();
             $data_criDetail      = $criDetail->find(['tickets_id' => $input->REPORT_ID]);
             $data_criDetail      = reset($data_criDetail);
