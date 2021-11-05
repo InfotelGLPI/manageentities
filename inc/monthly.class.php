@@ -632,9 +632,9 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='8'>";
-      echo "<input type='submit' name='searchmonthly' value='" . _sx('button', 'Search') . "' class='submit'>";
-      echo "<input type='hidden' name='entities_id' value='" . $options['entities_id'] . "'>";
-      echo "<input type='hidden' name='year_current' value=$year>";
+      echo Html::submit(_sx('button', 'Search'), ['name' => 'searchmonthly', 'class' => 'btn btn-primary']);
+      echo Html::hidden('entities_id', ['value' => $options['entities_id']]);
+      echo Html::hidden('year_current', ['id' => 'action', 'value' => $year]);
       echo "</td></tr>";
       echo "</table></div>";
 

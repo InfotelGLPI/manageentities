@@ -374,8 +374,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
          echo "<div class='center first-bloc' " . (($nbDays > 0) ? "" : "style='display:none") . " id='global_form_content" . $idToUse . "'>";
          echo "<table class='tab_cadre_fixe' id='tbl_add_skateholder" . $idToUse . "'>";
-         echo "<input type='hidden' name='action' id='action' value='add_user_datas' />";
-
+         echo Html::hidden('action', ['id' => 'action', 'value' => 'add_user_datas']);
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='6'>" . __('Add skateholders', 'manageentities') . "</th>";
          echo "</tr>";
@@ -401,7 +400,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
 
          echo "<td>";
          echo "<input type='hidden' name='id_user' id='id_user' value='dropdown_users_id_tech" . $idUser . "' />";
-         echo "<input type='button' class='submit' name='add_skateholder' id='add_skateholder' value='" . _sx("button", "Add") . "' onclick='addSkateholder" . $idToUse . "();' />";
+         echo "<input type='button' class='submit btn btn-primary' name='add_skateholder' id='add_skateholder' value='" . _sx("button", "Add") . "' onclick='addSkateholder" . $idToUse . "();' />";
          echo "</td>";
          echo "</tr>";
          echo "</table>";

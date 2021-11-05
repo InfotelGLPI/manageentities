@@ -1059,7 +1059,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             $colspan = '1';
          } else {
             $colspan = '2';
-            echo "<input type='hidden' name='entities_id' value='-1'>";
+            echo Html::hidden('entities_id', ['value' => -1]);
          }
 
          $plugin_config = new PluginManageentitiesConfig();
@@ -1194,9 +1194,9 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center' colspan='4'>";
-         echo "<input type='submit' name='searchcontract' value='" . _sx('button', 'Search') . "' class='submit'>";
-         echo "<input type='hidden' name='begin_date' value='" . $options['begin_date'] . "'>";
-         echo "<input type='hidden' name='end_date' value='" . $options['end_date'] . "'>";
+         echo Html::submit(_sx('button', 'Search'), ['name' => 'searchcontract', 'class' => 'btn btn-primary']);
+         echo Html::hidden('begin_date', ['value' => $options['begin_date']]);
+         echo Html::hidden('end_date', ['value' => $options['end_date']]);
          echo "</td></tr>";
 
 
@@ -1244,7 +1244,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
           && Session::getCurrentInterface()) {
          echo "<td class='tab_bg_2' width='30%'>";
 
-         echo "<input type='hidden' name='item_type' value='" . $item_type_output . "'>";
+         echo Html::hidden('item_type', ['value' => $item_type_output]);
          if ($item_type_output_param != 0)
             echo "<input type='hidden' name='item_type_param' value='" .
                  serialize($item_type_output_param) . "'>";
@@ -1261,7 +1261,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "<option value='" . Search::SYLK_OUTPUT . "'>" . __('Current page in SLK') . "</option>";
          echo "<option value='" . Search::CSV_OUTPUT . "'>" . __('Current page in CSV') . "</option>";
          echo "</select>&nbsp;";
-         echo "<button type='submit' name='export' class='unstyled pointer' " .
+         echo "<button type='submit' name='export' class='btn btn-primary unstyled pointer' " .
               " title=\"" . _sx('button', 'Export') . "\">" .
               "<i class='far fa-save'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
          echo "</td>";

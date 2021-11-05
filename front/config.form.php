@@ -44,7 +44,7 @@ if ($plugin->isActivated("manageentities")) {
       } else {
          Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
          $config->GetFromDB(1);
-         $config->showForm();
+         $config->showConfigForm();
          //$config->showDetails();
          $config->showFormCompany();
 

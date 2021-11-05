@@ -175,8 +175,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       }
       echo "</td>";
       echo "<td>";
-      echo "<input type='text' name='price' value='" . Html::formatNumber($this->fields["price"]) . "'size='5'>";
-      //      Html::autocompletionTextField($this, "price", array('value' => Html::formatNumber($this->fields['price'])));
+      echo Html::input('price', ['value' => Html::formatNumber($this->fields["price"]), 'size' => 5]);
       echo "</td>";
       echo "</tr>";
       echo "<tr class='tab_bg_1'>";
@@ -187,8 +186,8 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo('is_default', $this->fields['is_default']);
-      echo "<input type='hidden' name='plugin_manageentities_contractdays_id' value='" . $options['parent']->getField('id') . "' >";
-      echo "<input type='hidden' name='entities_id' value='" . $options['parent']->getField('entities_id') . "' >";
+      echo Html::hidden('plugin_manageentities_contractdays_id', ['value' => $options['parent']->getField('id')]);
+      echo Html::hidden('entities_id', ['value' => $options['parent']->getField('entities_id')]);
       echo "</td>";
 
       // Select an existing criprice

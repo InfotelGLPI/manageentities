@@ -42,7 +42,8 @@ class PluginManageentitiesConfig extends CommonDBTM {
    const REPORT_INTERVENTION = 0;
    const PERIOD_INTERVENTION = 1;
 
-   function showForm() {
+   function showConfigForm() {
+
       global $DB, $CFG_GLPI;
       echo "<form name='form' method='post' action='" .
            Toolbox::getItemTypeFormURL('PluginManageentitiesConfig') . "'>";

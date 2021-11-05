@@ -93,7 +93,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . PluginManageentitiesCompany::getTypeName(1) . "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
+      echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
       echo "</td>";
       echo "<td></td><td></td></tr>";
 
@@ -157,10 +157,11 @@ class PluginManageentitiesCompany extends CommonDBTM {
          $rand = mt_rand();
 
          $addButton = "<form method='post' name='company_form'.$rand.'' id='company_form" . $rand . "'
-               action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesCompany') . "'>
-               <input type='hidden' name='company_id' value='company'>
-               <input type='hidden' name='id' value=''>
-               <input type='submit' name='addperiod' value='" . _sx('button', 'Add') . "' class='submit'>";
+               action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesCompany') . "'>";
+         $addButton .= Html::hidden('company_id', ['value' => 'company']);
+         $addButton .= Html::hidden('id', ['value' => '']);
+         $addButton .= Html::submit(_sx('button', 'Save'), ['name' => 'addperiod', 'class' => 'btn btn-primary']);
+
       }
 
       if (isset($options['title'])) {

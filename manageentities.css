@@ -121,14 +121,7 @@ div#tabcontent {
 }
 
 .manageentities-button {
-   position: relative;
-   display: inline-block;
-   padding: 0 .6em;
-   overflow: hidden;
-   height: 1.9em;
-   line-height: 1.9em;
-   white-space: nowrap;
-   cursor: pointer;
+   margin-right: 1px !important;
 }
 
 .manageentities-state-default.manageentities-corner-left { /* non-theme */

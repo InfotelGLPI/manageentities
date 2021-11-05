@@ -261,19 +261,19 @@ class PluginManageentitiesContract extends CommonDBTM {
       echo "</div></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<input type='hidden' name='contracts_id' value='" . $contract->fields['id'] . "'>";
-      echo "<input type='hidden' name='entities_id' value='" . $contract->fields['entities_id'] . "'>";
+      echo Html::hidden('contracts_id', ['value' => $contract->fields['id']]);
+      echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id']]);
 
       if ($canEdit) {
          if (empty($pluginContract)) {
             echo "<td class='center' colspan='4'>";
-            echo "<input type='submit' name='addcontract' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+            echo Html::submit(_sx('button', 'Add'), ['name' => 'addcontract', 'class' => 'btn btn-primary']);
          } else {
-            echo "<input type='hidden' name='id' value='" . $pluginContract['id'] . "'>";
+            echo Html::hidden('id', ['value' => $pluginContract['id']]);
             echo "<td class='center' colspan='2'>";
-            echo "<input type='submit' name='updatecontract' value='" . _sx('button', 'Update') . "' class='submit'>";
+            echo Html::submit(_sx('button', 'Update'), ['name' => 'updatecontract', 'class' => 'btn btn-primary']);
             echo "</td><td class='center' colspan='2'>";
-            echo "<input type='submit' name='delcontract' value='" . _sx('button', 'Delete permanently') . "' class='submit'>";
+            echo Html::submit(_sx('button', 'Delete permanently'), ['name' => 'delcontract', 'class' => 'btn btn-primary']);
          }
          echo "</td>";
       }
@@ -376,11 +376,15 @@ class PluginManageentitiesContract extends CommonDBTM {
             } else {
                echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
             }
-            echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
+            echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
             Dropdown::show('Contract', ['name' => "contracts_id",
                                         'used' => $used]);
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
-            echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'></td>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>";
+            echo "<i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i>";
+            echo "</a>";
+            echo "</td><td class='center'>";
+            echo Html::submit(_sx('button', 'Add'), ['name' => 'addcontracts', 'class' => 'btn btn-primary']);
+            echo "</td>";
             echo "</tr>";
          }
          echo "</table></div>";
@@ -397,11 +401,13 @@ class PluginManageentitiesContract extends CommonDBTM {
          echo "</tr>";
          if ($this->canCreate()) {
             echo "<tr class='tab_bg_1'><td class='center'>";
-            echo "<input type='hidden' name='entities_id' value=" . $_SESSION["glpiactive_entity"] . ">";
+            echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
             Dropdown::show('Contract', ['name' => "contracts_id"]);
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>
-            <i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
-            echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>";
+            echo "<i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i>";
+            echo "</a>";
+            echo "</td><td class='center'>";
+            echo Html::submit(_sx('button', 'Add'), ['name' => 'addcontracts', 'class' => 'btn btn-primary']);
             echo "</td><td></td>";
             echo "</tr>";
          }

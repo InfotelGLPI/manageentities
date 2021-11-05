@@ -320,7 +320,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                     'toupdate'   => "showCriDetail$rand",
                     'width'      => 1000,
                     'height'     => 550];
-         echo "<input type='submit' name='submit' value=\"" . $title . "\" class='submit' 
+         echo "<input type='submit' name='submit' value=\"" . $title . "\" class='submit btn btn-primary' 
          onClick='manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");'>";
          if (!isset($options['modal'])) {
             echo "<div id=\"$modal\" title=\"" . $title . "\" style=\"display:none;text-align:center\"></div>";
@@ -332,8 +332,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
           && (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) {
          echo "<form method='post' name='cridetail_form$rand' id='cridetail_form$rand'
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesCri') . "' style='display:inline'>";
-         echo "<input type='submit' name='purgedoc' value=\"" . _sx('button', 'Delete permanently') . "\" class='submit' style='margin-left:50px;'>";
-         echo "<input type='hidden' name='documents_id' value=\"" . $cridetail['documents_id'] . "\">";
+         echo Html::submit(_sx('button', 'Delete permanently'), ['name' => 'purgedoc', 'class' => 'btn btn-primary']);
+         echo Html::hidden('documents_id', ['value' => $cridetail['documents_id']]);
          Html::closeForm();
       }
 
@@ -1073,20 +1073,20 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<input type='hidden' name='tickets_id' value='" . $ticket->fields['id'] . "'>";
-      echo "<input type='hidden' name='entities_id' value='" . $ticket->fields['entities_id'] . "'>";
-      echo "<input type='hidden' name='date' value='" . $ticket->fields['date'] . "'>";
+      echo Html::hidden('tickets_id', ['value' => $ticket->fields['id']]);
+      echo Html::hidden('entities_id', ['value' => $ticket->fields['entities_id']]);
+      echo Html::hidden('date', ['value' => $ticket->fields['date']]);
 
       if ($canEdit) {
          if (empty($cridetail)) {
             echo "<td class='center' colspan='2'>";
-            echo "<input type='submit' name='addcridetail' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+            echo Html::submit(_sx('button', 'Add'), ['name' => 'addcridetail', 'class' => 'btn btn-primary']);
             echo "</td>";
          } else {
             echo "<td class='center' colspan='2'>";
-            echo "<input type='hidden' name='id' value='" . $cridetail['id'] . "'>";
-            echo "<input type='submit' name='updatecridetail' value='" . _sx('button', 'Update') . "' class='submit' style='margin-right:50px;'>";
-            echo "<input type='submit' name='delcridetail' value='" . _sx('button', 'Delete permanently') . "' class='submit'>";
+            echo Html::hidden('id', ['value' => $cridetail['id']]);
+            echo Html::submit(_sx('button', 'Update'), ['name' => 'updatecridetail', 'class' => 'btn btn-primary']);
+            echo Html::submit(_sx('button', 'Delete permanently'), ['name' => 'delcridetail', 'class' => 'btn btn-primary']);
             echo "</td>";
          }
       }

@@ -88,12 +88,12 @@ class PluginManageentitiesPreference extends CommonDBTM {
          if (!$pref_ID)
             $pref_ID = self::addDefaultPreference(Session::getLoginUserID());
 
-         self::showForm($CFG_GLPI['root_doc'] . "/plugins/manageentities/front/preference.form.php", $pref_ID, Session::getLoginUserID());
+         self::showPreferencesForm($CFG_GLPI['root_doc'] . "/plugins/manageentities/front/preference.form.php", $pref_ID);
       }
       return true;
    }
 
-   static function showForm($target, $ID, $user_id) {
+   static function showPreferencesForm($target, $ID) {
       global $DB;
 
       $data = plugin_version_manageentities();
@@ -174,8 +174,8 @@ class PluginManageentitiesPreference extends CommonDBTM {
 
 
       echo "<tr class='tab_bg_1 center'><td colspan='2'>";
-      echo "<input type='submit' name='update_user_preferences_manageentities' value='" . _sx('button', 'Post') . "' class='submit'>";
-      echo "<input type='hidden' name='id' value='" . $ID . "'>";
+      echo Html::submit(_sx('button', 'Post'), ['name' => 'update_user_preferences_manageentities', 'class' => 'btn btn-primary']);
+      echo Html::hidden('id', ['value' => $ID]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1 center'><td colspan='2'>";
       echo __('Warning : If there are more than one plugin which be loaded at startup, then only the first will be used', 'manageentities');

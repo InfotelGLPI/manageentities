@@ -348,7 +348,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . PluginManageentitiesContractDay::getTypeName(1) . "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name", ['value' => $this->fields["name"]]);
+      echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
       echo "</td>";
 
       if (($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) || ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $pluginContract['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
@@ -387,9 +387,9 @@ class PluginManageentitiesContractDay extends CommonDBTM {
                                                            'entity' => $this->fields["entities_id"]]);
       echo "</td></tr>";
 
-      echo "<input type='hidden' name='contracts_id' value='" . $contract_id . "'>";
-      echo "<input type='hidden' name='contract_id' value='" . $contract_id . "'>";
-      echo "<input type='hidden' name='entities_id' value='" . $contract->fields['entities_id'] . "'>";
+      echo Html::hidden('contracts_id', ['value' => $contract_id]);
+      echo Html::hidden('contract_id', ['value' => $contract_id]);
+      echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id']]);
 
       // We get all cri detail data
       $this->fields['contractdays_id'] = $this->fields['id'];
@@ -489,10 +489,10 @@ class PluginManageentitiesContractDay extends CommonDBTM {
          $rand = mt_rand();
 
          $addButton = "<form method='post' name='contractDays_form'.$rand.'' id='contractDays_form" . $rand . "'
-               action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesContractDay') . "?contract_id=" . $contract->fields['id'] . "'>
-               <input type='hidden' name='contract_id' value='" . $contract_id . "'>
-               <input type='hidden' name='id' value=''>
-               <input type='submit' name='addperiod' value='" . _sx('button', 'Add') . "' class='submit'>";
+               action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesContractDay') . "?contract_id=" . $contract->fields['id'] . "'>";
+         $addButton .= Html::hidden('contract_id', ['value' => $contract_id]);
+         $addButton .= Html::hidden('id', ['value' => '']);
+        $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'addperiod', 'class' => 'btn btn-primary']);
       }
 
       if (isset($options['title'])) {

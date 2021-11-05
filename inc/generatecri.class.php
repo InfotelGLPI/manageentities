@@ -211,7 +211,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                   $predefined_fields[$predeffield] = $predefvalue;
                }
             } else {
-               echo "<input type='hidden' name='" . $predeffield . "' value='" . $predefvalue . "'>";
+               echo Html::hidden($predeffield, ['value' => $predefvalue]);
             }
          }
       }
@@ -220,7 +220,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       if (isset($tt->hidden) && count($tt->hidden) > 0) {
          foreach ($tt->hidden as $key_hidden => $value_hidden) {
             if (!array_key_exists($key_hidden, $options)) {
-               echo "<input type='hidden' name='" . $key_hidden . "' value='" . $value_hidden . "'>";
+               echo Html::hidden($key_hidden, ['value' => $value_hidden]);
             }
          }
       }
@@ -327,7 +327,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
          } else {
             echo $options['name'];
-            echo "<input type='hidden' name='name' value=\"" . $options['name'] . "\">";
+            echo Html::hidden('name', ['value' => $options['name']]);
          }
          echo "</tr>";
       }
@@ -450,7 +450,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             echo "<span style='font-weight:bold;'>" . __('Technician group') . ": </span>";
             echo "<span>" . $group->getField('name') . "</span><br>";
          }
-         echo "<input name ='predefined-task' type='hidden' value='" . $tasktemplate->fields['id'] . "'>";
+         echo Html::hidden('predefined-task', ['value' =>  $tasktemplate->fields['id']]);
          echo "</div>";
          echo "</td>";
          echo "</tr>";
@@ -576,9 +576,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       }
 
       if (count($countTasks) > 0) {
-         echo "<input name ='has_task' type='hidden' value='true'>";
+         echo Html::hidden('has_task', ['value' => true]);
       } else {
-         echo "<input name ='has_task' type='hidden' value='false'>";
+         echo Html::hidden('has_task', ['value' => false]);
       }
 
       echo "<script> 
@@ -784,7 +784,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='4'>";
-      echo "<input type='submit' name='generatecri' value='" . _sx('button', 'Generate', 'manageentities') . "' class='submit'>";
+      echo Html::submit(_sx('button', 'Generate', 'manageentities'), ['name' => 'generatecri', 'class' => 'btn btn-primary']);
       echo "</td></tr>";
       echo "</table></div>";
 

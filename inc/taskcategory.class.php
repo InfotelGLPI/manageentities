@@ -130,7 +130,7 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<input type='hidden' name='id' value=" . $this->fields["id"] . ">";
+      echo Html::hidden('id', ['value' => $this->fields["id"]]);
 
       $options['canedit'] = false;
 

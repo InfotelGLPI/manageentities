@@ -86,9 +86,9 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
          echo "<form method='post' action=\"./entity.php\">";
          echo "<div align='center'><table class='tab_cadre_me center'>";
          echo "<tr><th colspan='6'>";
-         echo "<h6><div class='alert alert-secondary' role='alert'>";
+         echo "<h3><div class='alert alert-secondary' role='alert'>";
          echo _n('Associated commercial', 'Associated business', 2, 'manageentities');
-         echo "</div></h6>";
+         echo "</div></h3>";
          echo "</th></tr>";
 
          echo "<tr><th>" . __('Name') . "</th>";
@@ -124,10 +124,14 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
          if ($this->canCreate() && sizeof($instID) == 1) {
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
-            echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
+            echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
             $rand = User::dropdown(['right' => 'interface']);
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
-            echo "</td><td class='center'><input type='submit' name='addbusiness' value=\"" . _x('button', 'Add') . "\" class='submit'></td>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'>";
+            echo "<i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i>";
+            echo "</a>";
+            echo "</td><td class='center'>";
+            echo Html::submit(_x('button', 'Add'), ['name' => 'addbusiness', 'class' => 'btn btn-primary']);
+            echo "</td>";
             echo "</tr>";
          }
          echo "</table></div>";
@@ -140,11 +144,13 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
             echo "<table class='tab_cadre_me center' width='95%'>";
 
             echo "<tr class='tab_bg_1'><th colspan='2'>" . _n('Associated commercial', 'Associated business', 2, 'manageentities') . "</tr><tr><td class='tab_bg_2 center'>";
-            echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
+            echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
             $rand = User::dropdown(['right' => 'interface']);
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'>";
+            echo "<i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i>";
+            echo "</a>";
             echo "</td><td class='center tab_bg_2'>";
-            echo "<input type='submit' name='addbusiness' value=\"" . _x('button', 'Add') . "\" class='submit'>";
+            echo Html::submit(_x('button', 'Add'), ['name' => 'addbusiness', 'class' => 'btn btn-primary']);
             echo "</td></tr>";
 
             echo "</table></div>";

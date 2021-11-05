@@ -327,18 +327,18 @@ function getManageentitiesFormData(form) {
 
 function manageentitiesShowMonth(formId, toupdate, monthNames, year, month) {
     $.each(monthNames, function (index, val) {
-        var monthClass = 'manageentities-button manageentities-state-default';
+        var monthClass = 'btn btn-info manageentities-button';
         if (index == 1) {
-            monthClass = 'manageentities-button manageentities-state-default manageentities-corner-left';
+            monthClass = 'btn btn-info manageentities-button manageentities-corner-left';
         }
         
         if (index == 12) {
-            monthClass = 'manageentities-button manageentities-state-default manageentities-corner-right';
+            monthClass = 'btn btn-info manageentities-button manageentities-corner-right';
         }
         if (month == index) {
-           monthClass = 'manageentities-button manageentities-state-active';
+           monthClass = 'btn btn-info manageentities-button manageentities-state-active';
         } 
-        $('<a class="' + monthClass + ' manageentities_href" href="#' + index + '_' + year + '">' + val + '</a>').click(function () {
+        $('<a class="' + monthClass + '" href="#' + index + '_' + year + '">' + val + '</a>').click(function () {
             if (!$(this).hasClass('manageentities-state-disabled')) {
                 $(this).removeClass('manageentities-state-hover');
             }

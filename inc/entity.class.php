@@ -217,10 +217,10 @@ class PluginManageentitiesEntity extends CommonGLPI {
    }
 
    static function showManageentitiesHeader($subtitle = '') {
-      echo "<h6><div class='alert alert-secondary' role='alert'>";
+      echo "<h3><div class='alert alert-secondary' role='alert'>";
       echo __('Portal', 'manageentities') . " " . $_SESSION["glpiactive_entity_name"];
       echo '<br/>' . $subtitle;
-      echo "</div></h6>";
+      echo "</div></h3>";
    }
 
    function showDescription($instID) {
@@ -235,7 +235,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
       echo "<div align='center'>";
       echo "<table width='100%'>";
-      echo "<tr><td width='55%' >";
+      echo "<tr><td width='55%' style='vertical-align: top;' >";
 
       echo "<form method='post' action='entity.form.php'>";
 
@@ -243,9 +243,9 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
       echo "<tr>";
       echo "<th colspan='4'>";
-      echo "<h6><div class='alert alert-secondary' role='alert'>";
+      echo "<h3><div class='alert alert-secondary' role='alert'>";
       echo __('Data administrative', 'manageentities');
-      echo "</div></h6>";
+      echo "</div></h3>";
       echo "</th>";
       echo "</tr>";
 
@@ -278,9 +278,9 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
          echo "</td><td class='left'>";
          echo "(" . Document::getMaxUploadSize() . ")&nbsp;";
-         echo "<br><input type='hidden' name='entities_id' value='" . $entity->fields["id"] . "'>";
-         echo "<input type='submit' name='add' value=\"" . _sx('button', 'Update logo', 'manageentities') .
-              "\" class='submit' >";
+         echo "<br>";
+         echo Html::hidden('entities_id', ['value' => $entity->fields["id"]]);
+         echo Html::submit(_sx('button', 'Update logo', 'manageentities'), ['name' => 'add', 'class' => 'btn btn-primary']);
          echo "</td>";
       } else {
          echo "<th>";
@@ -363,8 +363,8 @@ class PluginManageentitiesEntity extends CommonGLPI {
           && Session::getCurrentInterface() != 'helpdesk') {
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center' colspan='4'>";
-         echo "<input type='hidden' name='entities_id' value='" . $entity->fields["id"] . "'>";
-         echo "<input type='submit' name='update' value='" . _sx('button', 'Update administrative data', 'manageentities') . "' class='submit'>";
+         echo Html::hidden('entities_id', ['value' => $entity->fields["id"]]);
+         echo Html::submit(_sx('button', 'Update administrative data', 'manageentities'), ['name' => 'update', 'class' => 'btn btn-primary']);
          echo "</td></tr>";
       }
       echo "</table>";

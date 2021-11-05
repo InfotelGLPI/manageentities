@@ -61,7 +61,7 @@ class PluginManageentitiesCri extends CommonDBTM {
            "/plugins/manageentities/front/cri.form.php\" method=\"post\" name=\"formReport\">";
 
       // Champ caché pour l'identifiant du ticket.
-      echo "<input type='hidden' name='REPORT_ID' value='$ID' />";
+      echo Html::hidden('REPORT_ID', ['value' => $ID]);
       echo "<div align='center'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -141,13 +141,13 @@ class PluginManageentitiesCri extends CommonDBTM {
                                        'width'  => $width]);
 
       echo "&nbsp;<input type='button' name='add_tech' value=\"" .
-           __('Add a technician', 'manageentities') . "\" class='submit' onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
+           __('Add a technician', 'manageentities') . "\" class='submit btn btn-primary' onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
       echo "</td>";
       echo "</tr>";
 
       if ($contractSelected['contractSelected'] && $contractSelected['contractdaySelected']) {
-         echo "<input type='hidden' name='CONTRAT' value='" . $contractSelected['contractSelected'] . "' />";
-         echo "<input type='hidden' name='CONTRACTDAY' value='" . $contractSelected['contractdaySelected'] . "' />";
+         echo Html::hidden('CONTRAT', ['value' => $contractSelected['contractSelected']]);
+         echo Html::hidden('CONTRACTDAY', ['value' => $contractSelected['contractdaySelected']]);
 
          if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
             /* Information complémentaire pour le libellés des activités. */
@@ -175,7 +175,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
             //configuration do not use price
          } else {
-            echo "<input type='hidden' name='REPORT_ACTIVITE' value='noprice' />";
+            echo Html::hidden('REPORT_ACTIVITE', ['value' => 'noprice']);
          }
 
          $contract = new PluginManageentitiesContract();
@@ -193,7 +193,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             }
          }
       } elseif (!$cridetail['withcontract']) {
-         echo "<input type='hidden' name='WITHOUTCONTRACT' value='1' />";
+         echo Html::hidden('WITHOUTCONTRACT', ['value' => 1]);
       }
 
       if (self::isTask($ID)) {
@@ -266,7 +266,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             if (empty($options['action'])) {
                if (!empty($technicians_id)) {
                   echo "<input type='button' name='add_cri' value=\"" .
-                       __('Generation of the intervention report', 'manageentities') . "\" class='submit' 
+                       __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary' 
                   onClick='manageentities_loadCriForm(\"addCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
                }
                // action not empty : update cri
@@ -780,14 +780,16 @@ class PluginManageentitiesCri extends CommonDBTM {
 
          if ($config->fields["backup"] == 1) {
             echo "<form method='post' name='formReport'>";
-            echo "<input type='hidden' name='REPORT_ID' value='" . $p['REPORT_ID'] . "' >";
-            echo "<input type='hidden' name='REPORT_SOUS_CONTRAT' value='$sous_contrat' >";
+            echo Html::hidden('REPORT_ID', ['value' => $p['REPORT_ID']]);
+            echo Html::hidden('REPORT_SOUS_CONTRAT', ['value' => $sous_contrat]);
+
             if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-               echo "<input type='hidden' name='REPORT_ACTIVITE' value='hour' >";
+               echo Html::hidden('REPORT_ACTIVITE', ['value' => 'hour']);
+
             } elseif ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
-               echo "<input type='hidden' name='REPORT_ACTIVITE' value='" . $p['REPORT_ACTIVITE'] . "' />";
+               echo Html::hidden('REPORT_ACTIVITE', ['value' => $p['REPORT_ACTIVITE']]);
             } else {
-               echo "<input type='hidden' name='REPORT_ACTIVITE' value='noprice' />";
+               echo Html::hidden('REPORT_ACTIVITE', ['value' => 'noprice']);
             }
             $p['REPORT_DESCRIPTION'] = stripcslashes($p['REPORT_DESCRIPTION']);
             $p['REPORT_DESCRIPTION'] = str_replace("\\\\", "\\", $p['REPORT_DESCRIPTION']);
@@ -796,20 +798,21 @@ class PluginManageentitiesCri extends CommonDBTM {
             $p['REPORT_DESCRIPTION'] = str_replace("’", "'", $p['REPORT_DESCRIPTION']);
 
             echo "<textarea style='display:none;' name='REPORT_DESCRIPTION' cols='100' rows='8'>" . $p['REPORT_DESCRIPTION'] . "</textarea>";
-            echo "<input type='hidden' name='INTERVENANTS' value='$intervenants' >";
-            echo "<input type='hidden' name='documents_id' value='" . $p['documents_id'] . "' >";
-            echo "<input type='hidden' name='CONTRAT' value='" . $p['CONTRAT'] . "' >";
-            echo "<input type='hidden' name='CONTRACTDAY' value='" . $p['CONTRACTDAY'] . "' >";
-            echo "<input type='hidden' name='WITHOUTCONTRACT' value='" . $p['WITHOUTCONTRACT'] . "' >";
-            echo "<input type='hidden' name='number_moving' value='" . $p['number_moving'] . "' >";
-            echo "<input type='hidden' name='REPORT_ACTIVITE_ID' value='" . $p['REPORT_ACTIVITE_ID'] . "' >";
+
+            echo Html::hidden('INTERVENANTS', ['value' => $intervenants]);
+            echo Html::hidden('documents_id', ['value' => $p['documents_id']]);
+            echo Html::hidden('CONTRAT', ['value' => $p['CONTRAT']]);
+            echo Html::hidden('CONTRACTDAY', ['value' => $p['CONTRACTDAY']]);
+            echo Html::hidden('WITHOUTCONTRACT', ['value' => $p['WITHOUTCONTRACT']]);
+            echo Html::hidden('number_moving', ['value' => $p['number_moving']]);
+            echo Html::hidden('REPORT_ACTIVITE_ID', ['value' => $p['REPORT_ACTIVITE_ID']]);
 
             $params = ['job'      => $job->fields['id'],
                             'form'     => 'formReport',
                             'root_doc' => $CFG_GLPI['root_doc'],
                             'toupdate' => $options['toupdate']];
             echo "<p><input type='button' name='save_cri' value=\"" .
-                 __('Save the intervention report', 'manageentities') . "\" class='submit' onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'></p>";
+                 __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary' onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'></p>";
             Html::closeForm();
          }
 

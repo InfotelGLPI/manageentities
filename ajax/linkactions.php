@@ -54,14 +54,12 @@ if (isset($_POST["action"])) {
          $config = PluginManageentitiesConfig::getInstance();
          switch ($_POST["hourorday"]) {
             case PluginManageentitiesConfig::DAY :
-               Html::autocompletionTextField($config, "hourbyday", ['size' => "5"]);
-               echo "<input type='hidden' name='needvalidationforcri' value='0'>";
-
+               echo Html::input('hourbyday', ['value' => $config->fields["hourbyday"], 'size' => 5]);
+               echo Html::hidden('needvalidationforcri', ['value' => 0]);
                break;
             case PluginManageentitiesConfig::HOUR :
                Dropdown::showYesNo("needvalidationforcri", $config->fields["needvalidationforcri"]);
-               echo "<input type='hidden' name='hourbyday' value='0'>";
-
+               echo Html::hidden('hourbyday', ['value' => 0]);
                break;
          }
          break;
