@@ -43,13 +43,28 @@ class PluginManageentitiesDashboard extends CommonGLPI {
    }
 
    function getWidgetsForItem() {
-      return [
-         $this->getType() . "1" => __("Remaining days number by opened client contracts", "manageentities"),//Nombre de jours restants par contrat client
-         $this->getType() . "2" => __("Client annuary", "manageentities"),
-         $this->getType() . "3" => __("Tickets without CRI", "manageentities"),
-         $this->getType() . "4" => __("Interventions with old contract", "manageentities"),
-         $this->getType() . "5" => __("Opened contract prestations without remaining days", "manageentities"),
+
+      $widgets = [
+         __('Tables', "mydashboard") => [
+            $this->getType() . "1" => ["title"   => __("Remaining days number by opened client contracts", "manageentities"),
+                                       "icon"    => "fas fa-table",
+                                       "comment" => ""],
+            $this->getType() . "2" => ["title"   => __("Client annuary", "manageentities"),
+                                       "icon"    => "fas fa-table",
+                                       "comment" => ""],
+            $this->getType() . "3" => ["title"   => __("Tickets without CRI", "manageentities"),
+                                       "icon"    => "fas fa-table",
+                                       "comment" => ""],
+            $this->getType() . "4" => ["title"   => __("Interventions with old contract", "manageentities"),
+                                       "icon"    => "fas fa-table",
+                                       "comment" => ""],
+            $this->getType() . "5" => ["title"   => __("Opened contract prestations without remaining days", "manageentities"),
+                                       "icon"    => "fas fa-table",
+                                       "comment" => ""],
+         ],
       ];
+      return $widgets;
+
    }
 
    function getWidgetContentForItem($widgetId) {

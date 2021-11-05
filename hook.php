@@ -359,8 +359,11 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num) {
                } else {
                   $data["ITEM_4"] = 0;
                }
+               $out = "";
+               if ($data["ITEM_4"] > 0) {
+                  $out = Html::formatnumber($data["ITEM_4"], 2);
+               }
 
-               $out = Html::formatnumber($data["ITEM_$num"], 2);
                return $out;
                break;
 

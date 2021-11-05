@@ -752,14 +752,18 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                      $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] = 0;
                   }
                   // Set conso per techs
-                  $tmp                                                                               = self::setConso($dataTask['actiontime'], 0, $config, $dataCriDetail, $pluginContract, 1);
-                  $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += $PDF->TotalTpsPassesArrondis(round($tmp, 2));
+                  $tmp = self::setConso($dataTask['actiontime'], 0, $config, $dataCriDetail, $pluginContract, 1);
+
+                  $round = round($tmp, 2);
+
+                  $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += (int)$PDF->TotalTpsPassesArrondis($round);
 
                   // Set global conso of contractday
-                  $conso += $PDF->TotalTpsPassesArrondis(round($tmp, 2));
+
+                  $conso += (int)$PDF->TotalTpsPassesArrondis($round);
 
                   // Set depass per techs
-                  $left -= self::computeInDays($dataTask['actiontime'], $config, $dataCriDetail, $pluginContract, 1);
+                  $left -= (int)self::computeInDays($dataTask['actiontime'], $config, $dataCriDetail, $pluginContract, 1);
                   if ($left <= 0) {
                      $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] += abs($PDF->TotalTpsPassesArrondis($left));
                      $left                                                                               = 0;

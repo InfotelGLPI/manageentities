@@ -85,7 +85,12 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
       if ($number) {
          echo "<form method='post' action=\"./entity.php\">";
          echo "<div align='center'><table class='tab_cadre_me center'>";
-         echo "<tr><th colspan='6'>" . _n('Associated commercial', 'Associated business', 2, 'manageentities') . "</th></tr>";
+         echo "<tr><th colspan='6'>";
+         echo "<h6><div class='alert alert-secondary' role='alert'>";
+         echo _n('Associated commercial', 'Associated business', 2, 'manageentities');
+         echo "</div></h6>";
+         echo "</th></tr>";
+
          echo "<tr><th>" . __('Name') . "</th>";
          echo "<th>" . __('Phone') . "</th>";
          echo "<th>" . __('Phone') . " 2</th>";

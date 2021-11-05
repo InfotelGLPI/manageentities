@@ -217,10 +217,10 @@ class PluginManageentitiesEntity extends CommonGLPI {
    }
 
    static function showManageentitiesHeader($subtitle = '') {
-      echo "<div class='plugin_manageentities_color'>";
+      echo "<h6><div class='alert alert-secondary' role='alert'>";
       echo __('Portal', 'manageentities') . " " . $_SESSION["glpiactive_entity_name"];
       echo '<br/>' . $subtitle;
-      echo "</div>";
+      echo "</div></h6>";
    }
 
    function showDescription($instID) {
@@ -243,8 +243,9 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
       echo "<tr>";
       echo "<th colspan='4'>";
-      echo __('Portal', 'manageentities') . " " . $_SESSION["glpiactive_entity_name"];
-      echo '<br/>' . __('Data administrative', 'manageentities');
+      echo "<h6><div class='alert alert-secondary' role='alert'>";
+      echo __('Data administrative', 'manageentities');
+      echo "</div></h6>";
       echo "</th>";
       echo "</tr>";
 
