@@ -1231,9 +1231,9 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $object->fields['week_end_hour']       = $_POST['new_contract_week_end_hour'];
             $object->fields['saturday_begin_hour'] = $_POST['new_contract_sat_degin_hour'];
             $object->fields['saturday_end_hour']   = $_POST['new_contract_sat_end_hour'];
-            $object->fields['monday_begin_hour']   = $_POST['new_contract_mon_begin_hour'];
-            $object->fields['monday_end_hour']     = $_POST['new_contract_mon_end_hour'];
-            $object->fields['use_monday']          = $_POST['new_contract_use_monday'];
+            $object->fields['sunday_begin_hour']   = $_POST['new_contract_sun_begin_hour'];
+            $object->fields['sunday_end_hour']     = $_POST['new_contract_sun_end_hour'];
+            $object->fields['use_sunday']          = $_POST['new_contract_use_sunday'];
             $object->fields['use_saturday']        = $_POST['new_contract_use_saturday'];
             $object->fields['is_deleted']          = 0;
 

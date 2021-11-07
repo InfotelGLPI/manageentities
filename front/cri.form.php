@@ -75,7 +75,9 @@ if (isset($_POST["addcridetail"])) {
    }
    Html::back();
 
-} else {
+}
+
+else {
    $PluginManageentitiesCri->showForm($_GET["job"], ['action' => $_GET["action"]]);
 }
 

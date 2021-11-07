@@ -46,6 +46,10 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
    // ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
    public function showForm() {
+
+      echo Html::css("/plugins/manageentities/lib/jquery-ui/jquery-ui.min.css");
+      echo Html::script("plugins/manageentities/lib/jquery-ui/jquery-ui.min.js");
+
       $this->showTitle();
       // addEntite
       $entityContent = $this->showFormEntity();
@@ -68,19 +72,19 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
    public function showTitle() {
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
 
-      echo "<div id='mytabsaddelement' class='tab_cadre_fixe'>";
-      echo "   <ul id='mytabsaddelementtitle' class='center'>";
-      echo "      <li class='center'> <a href='#elementtitle'>" . __("Add elements form", "manageentities") . "</a></li>";
-      echo "</ul>";
-      echo "</span>";
-      echo "</div>";
+      echo "<h3><div class='alert alert-secondary' role='alert'>";
+      echo __("Add elements form", "manageentities");
+      echo "</div>
+               </h3>";
    }
 
    public function showFormEntity() {
       echo "<div id='mytabsentity' class='tab_cadre_fixe'>";
       echo "   <ul id='tabentitytitle'>";
 
-      if (isset($this->pModel->getEntity()->fields['name']) && $this->pModel->getEntity()->fields['name'] != "" && !$this->pModel->isOnError(Errors::ERROR_ENTITY, Errors::ERROR_ALL)) {
+      if (isset($this->pModel->getEntity()->fields['name'])
+          && $this->pModel->getEntity()->fields['name'] != ""
+          && !$this->pModel->isOnError(Errors::ERROR_ENTITY, Errors::ERROR_ALL)) {
          echo "      <li> ";
          echo "<a href='#tabs-1'>" . $this->pModel->getEntity()->getField("name") . $this->showImgSaved($this->pModel->getEntity(), $this->pModel->getMessage(ElementType::ENTITY, Status::SAVED), 1) . "</a></li>";
       } else {
@@ -91,7 +95,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "</ul>";
       $entityContent = $this->showFormAddEntity();
       echo "</div>";
-      echo "<br/><br/>";
+      //      echo "<br/><br/>";
       return $entityContent;
    }
 
@@ -134,7 +138,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          $contactContent[1] = $this->showFormAddContact(1);
          echo "</div>";
       }
-      echo "<br/><br/>";
+      //      echo "<br/><br/>";
       return $contactContent;
    }
 
@@ -173,7 +177,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       if (isset($params["presales"])) {
          echo "<div class='center'>";
-         echo Html::submit(_x('button', 'Next'), ['name' => 'add_contract', 'class' => 'btn btn-primary']);
+         echo Html::submit(_x('button', 'Next'), ['name' => 'add_contract', 'class' => 'btn btn-primary manageentities_button']);
          echo "</div>";
          Html::closeForm();
       }
@@ -242,7 +246,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       if (!isset($params["presales"])) {
 
-         echo "<br/><br/>";
+         //         echo "<br/><br/>";
 
          $this->showBtnRAZ();
       } else {
@@ -500,9 +504,14 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "</td>";
 
       echo "<td>";
-      echo "<textarea cols='45' rows='2' name='entity_comment' id='entity_comment' >";
-      echo $currentEntity->fields["comment"];
-      echo "</textarea></td></tr>\n";
+      Html::textarea(['name'            => 'entity_comment',
+                      'value'           => $currentEntity->fields["comment"],
+                      'editor_id'       => 'entity_comment',
+                      'enable_richtext' => false,
+                      'cols'            => 45,
+                      'rows'            => 2]);
+
+      echo "</td></tr>\n";
 
       echo "</td>";
 
@@ -530,63 +539,68 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Phone') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='entity_phonenumber' id='entity_phonenumber' value='" . $currentEntity->fields["name"] . "'/> ";
+      echo Html::input('entity_phonenumber', ['value' => $currentEntity->fields["phonenumber"], 'id' => 'entity_phonenumber']);
       echo "</td>";
       echo "<td rowspan='7'>" . __('Address') . "</td>";
       echo "<td rowspan='7'>";
-      echo "<textarea cols='45' rows='8' name='entity_address' id='entity_address'>" . $currentEntity->fields["address"] . "</textarea>";
+      Html::textarea(['name'            => 'entity_address',
+                      'value'           => $currentEntity->fields["address"],
+                      'editor_id'       => 'entity_address',
+                      'enable_richtext' => false,
+                      'cols'            => 45,
+                      'rows'            => 8]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Fax') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='entity_fax' id='entity_fax' value='" . $currentEntity->fields["fax"] . "'/> ";
+      echo Html::input('entity_fax', ['value' => $currentEntity->fields["fax"], 'id' => 'entity_fax']);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Website') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='entity_website' id='entity_website' value='" . $currentEntity->fields["website"] . "'/> ";
+      echo Html::input('entity_website', ['value' => $currentEntity->fields["website"], 'id' => 'entity_website']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . _n('Email', 'Emails', 1) . "</td>";
       echo "<td>";
-      echo "<input type='text' name='entity_email' id='entity_email' value='" . $currentEntity->fields["email"] . "'/> ";
+      echo Html::input('entity_email', ['value' => $currentEntity->fields["email"], 'id' => 'entity_email']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Postal code') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='entity_postcode' id='entity_postcode' size='7' value='" . $currentEntity->fields["postcode"] . "'/> ";
-      echo "&nbsp;&nbsp;" . __('City') . "&nbsp;";
-      echo "<input type='text' name='entity_city' id='entity_city' size='27' value='" . $currentEntity->fields["town"] . "'/> ";
+      echo Html::input('entity_postcode', ['value' => $currentEntity->fields["postcode"], 'id' => 'entity_postcode', 'size' => 7]);
+      echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('City') . "</td>";
+      echo "<td>";
+      echo Html::input('entity_city', ['value' => $currentEntity->fields["town"], 'id' => 'entity_city', 'size' => 27]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . _x('location', 'State') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='entity_state' id='entity_state' value='" . $currentEntity->fields["state"] . "'/> ";
+      echo Html::input('entity_state', ['value' => $currentEntity->fields["state"], 'id' => 'entity_state']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Country') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='entity_country' id='entity_country' value='" . $currentEntity->fields["country"] . "'/> ";
+      echo Html::input('entity_country', ['value' => $currentEntity->fields["country"], 'id' => 'entity_country']);
       echo "</td></tr>";
 
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='submit btn btn-primary' name='btnAddEntity' id='btnAddEntity' ";
-
+      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddEntity' id='btnAddEntity' ";
       if (isset($this->pModel->getEntity()->fields["id"]) && $currentEntity->fields["id"] > 0) {
          echo "value='" . __("Update this entity", "manageentities") . "'";
       } else {
          echo "value='" . _sx('button', "Add only the entity", "manageentities") . "'";
       }
-
-
       echo " onclick='javascript:addOnlyEntity();'";
       echo "/>";
       echo "</tr>";
@@ -650,14 +664,22 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<input type='hidden' name='fakeid_new_contact" . $rand . "' id='fakeid_new_contact" . $rand . "' value='" . $idContact . "' />";
+      $name = "fakeid_new_contact" . $rand;
+      echo Html::hidden($name, ['id' => $name, 'value' => $idContact]);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __("Entity") . $this->pModel->getMessage("mandatory_field") . "</td>";
       echo "<td>";
 
       echo "<div id='div_select_entity_for_contact" . $rand . "' ";
-      if (isset($currentContact->fields['entities_id']) && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0 && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] || ((!isset($currentContact->fields['entities_id']) || $currentContact->fields['entities_id'] == "") && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)) {
+      if (isset($currentContact->fields['entities_id'])
+          && isset($this->pModel->getEntity()->fields['id'])
+          && $this->pModel->getEntity()->fields['id'] > 0
+          && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+          || ((!isset($currentContact->fields['entities_id'])
+               || $currentContact->fields['entities_id'] == "")
+              && isset($this->pModel->getEntity()->fields['id'])
+              && $this->pModel->getEntity()->fields['id'] > 0)) {
          echo " style='visibility:hidden;' ";
       }
       echo ">";
@@ -675,16 +697,28 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       $listIdsRet[] = $idDpEntity;
 
 
-      echo "<label for='previous_entity_for_contact" . $rand . "'> <input type='checkbox'
-         name='previous_entity_for_contact" . $rand . "' id='previous_entity_for_contact" . $rand . "' 
-         title='" . __("New entity created previously", "manageentities") . "' ";
-
-      if (isset($currentContact->fields['entities_id']) && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0 && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] || ((!isset($currentContact->fields['entities_id']) || $currentContact->fields['entities_id'] == "") && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)) {
-         echo " checked='checked' ";
+      echo "<label for='previous_entity_for_contact" . $rand . "'>";
+      $name  = "previous_entity_for_contact" . $rand;
+      $check = 0;
+      if (isset($currentContact->fields['entities_id'])
+          && isset($this->pModel->getEntity()->fields['id'])
+          && $this->pModel->getEntity()->fields['id'] > 0
+          && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+          || ((!isset($currentContact->fields['entities_id'])
+               || $currentContact->fields['entities_id'] == "")
+              && isset($this->pModel->getEntity()->fields['id'])
+              && $this->pModel->getEntity()->fields['id'] > 0)) {
+         $check = 1;
       }
+      Html::showCheckbox([
+                            'name'    => $name,
+                            'id'      => $name,
+                            'checked' => $check,
+                            'onclick' => "switchElementsEnableFromCb(this,'div_select_entity_for_contact" . $rand . "')"
+                         ]);
 
-      echo "onclick=\"switchElementsEnableFromCb(this,'div_select_entity_for_contact" . $rand . "');\" /> " . __("New entity created previously", "manageentities") . "</label>";
 
+      echo "&nbsp;" . __("New entity created previously", "manageentities") . "</label>";
 
       echo "</td>";
       echo "<td>" . __("Child entities") . "</td>";
@@ -702,66 +736,82 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Surname') . $this->pModel->getMessage("mandatory_field") . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_name" . $rand . "' id='contact_name" . $rand . "' value='" . (isset($currentContact->fields['name']) ? $currentContact->fields['name'] : '') . "' /> ";
+      $name = "contact_name" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['name'] ?? ''), 'id' => $name]);
       echo "</td>";
 
       echo "<td rowspan='4' class='left'>" . __('Comments') . "</td>";
       echo "<td class='left' rowspan='4'>";
-      echo "<textarea cols='45' rows='7' name='contact_comment" . $rand . "' id='contact_comment" . $rand . "' >" . (isset($currentContact->fields['comment']) ? $currentContact->fields['comment'] : '') . "</textarea>";
+      $name = "contact_comment" . $rand;
+      Html::textarea(['name'            => $name,
+                      'value'           => $currentContact->fields["comment"],
+                      'editor_id'       => $name,
+                      'enable_richtext' => false,
+                      'cols'            => 45,
+                      'rows'            => 7]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('First name') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_firstname" . $rand . "' id='contact_firstname" . $rand . "' value='" . (isset($currentContact->fields['firstname']) ? $currentContact->fields['firstname'] : '') . "'/> ";
+      $name = "contact_firstname" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['firstname'] ?? ''), 'id' => $name]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Phone') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_phone" . $rand . "' id='contact_phone" . $rand . "' value='" . (isset($currentContact->fields['phone']) ? $currentContact->fields['phone'] : '') . "'/> ";
+      $name = "contact_phone" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['phone'] ?? ''), 'id' => $name]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Phone 2') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_phone2" . $rand . "' id='contact_phone2" . $rand . "' value='" . (isset($currentContact->fields['phone2']) ? $currentContact->fields['phone2'] : '') . "'/> ";
+      $name = "contact_phone2" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['phone2'] ?? ''), 'id' => $name]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Mobile phone') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_mobile" . $rand . "' id='contact_mobile" . $rand . "' value='" . (isset($currentContact->fields['mobile']) ? $currentContact->fields['mobile'] : '') . "'/> ";
+      $name = "contact_mobile" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['mobile'] ?? ''), 'id' => $name]);
       echo "</td>";
       echo "<td class='middle'>" . __('Address') . "</td>";
       echo "<td class='middle'>";
-      echo "<textarea cols='37' rows='3' name='contact_address" . $rand . "' id='contact_address" . $rand . "'>" . (isset($currentContact->fields['address']) ? $currentContact->fields['address'] : '') . "</textarea>";
+      $name = "contact_address" . $rand;
+      Html::textarea(['name'            => $name,
+                      'value'           => $currentContact->fields["address"],
+                      'editor_id'       => $name,
+                      'enable_richtext' => false,
+                      'cols'            => 37,
+                      'rows'            => 3]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Fax') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_fax" . $rand . "' id='contact_fax" . $rand . "' value='" . (isset($currentContact->fields['fax']) ? $currentContact->fields['fax'] : '') . "'/> ";
+      $name = "contact_fax" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['fax'] ?? ''), 'id' => $name]);
       echo "</td>";
       echo "<td>" . __('Postal code') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_postcode" . $rand . "' id='contact_postcode" . $rand . "' size='10' value='" . (isset($currentContact->fields['postcode']) ? $currentContact->fields['postcode'] : '') . "'/> ";
-
-      echo "&nbsp;&nbsp;" . __('City') . "&nbsp;";
-
-      echo "<input type='text' name='contact_town" . $rand . "' id='contact_town" . $rand . "' size='23' value='" . (isset($currentContact->fields['town']) ? $currentContact->fields['town'] : '') . "'/> ";
-
+      $name = "contact_postcode" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['postcode'] ?? ''), 'id' => $name, 'size' => 7]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . _n('Email', 'Emails', 1) . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_email" . $rand . "' id='contact_email" . $rand . "' value='" . (isset($currentContact->fields['email']) ? $currentContact->fields['email'] : '') . "'/> ";
+      $name = "contact_email" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['email'] ?? ''), 'id' => $name]);
       echo "</td>";
 
-      echo "<td>" . _x('location', 'State') . "</td>";
+      echo "<td>" . __('City') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contact_state" . $rand . "' id='contact_state" . $rand . "' value='" . (isset($currentContact->fields['state']) ? $currentContact->fields['state'] : '') . "'/> ";
+      $name = "contact_town" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['town'] ?? ''), 'id' => $name, 'size' => 27]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -774,10 +824,10 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
 
       echo "</td>";
-      echo "<td>" . __('Country') . "</td>";
+      echo "<td>" . _x('location', 'State') . "</td>";
       echo "<td>";
-
-      echo "<input type='text' name='contact_country" . $rand . "' id='contact_country" . $rand . "' value='" . (isset($currentContact->fields['country']) ? $currentContact->fields['country'] : '') . "'/> ";
+      $name = "contact_state" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['state'] ?? ''), 'id' => $name]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . _x('person', 'Title') . "</td><td>";
@@ -787,6 +837,13 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
 
       echo "</td>";
+      echo "<td>" . __('Country') . "</td>";
+      echo "<td>";
+      $name = "contact_country" . $rand;
+      echo Html::input($name, ['value' => ($currentContact->fields['country'] ?? ''), 'id' => $name]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Manager') . "</td>";
       echo "<td>";
 
@@ -798,19 +855,17 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       $idDpYmanager = Dropdown::showYesNo("is_manager_yn", $value, -1, ['rand' => $rand]);
       echo "</td>";
+      echo "<td colspan='2'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='submit btn btn-primary' name='btnAddContact" . $idContact . "' id='btnAddContact" . $idContact . "' ";
-
-
+      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddContact" . $idContact . "' id='btnAddContact" . $idContact . "' ";
       if (isset($currentContact->fields["id"]) && $currentContact->fields["id"] > 0) {
          echo "value='" . __("Update this contact", "manageentities") . "'";
       } else {
          echo "value='" . __("Add only the contact", "manageentities") . "'";
       }
-
       echo " onclick='javascript:addOnlyContact" . $idContact . "();'";
       echo "/>";
       echo "</td>";
@@ -819,7 +874,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
       //      echo "<input type='submit' class='submit' name='btnAddnewFormContact'  id='btnAddnewFormContact'  value='" . __ ( "Add another contact", "manageentities" ) . "' onclick=\"javascript:addAnotherContact();document.getElementById(this.id).style.visibility='hidden';\"/>";
-      echo "<input type='submit' class='submit btn btn-primary' name='btnAddnewFormContact" . $rand . "'  id='btnAddnewFormContact" . $rand . "'  value='" . __("Add another contact", "manageentities") . "' onclick=\"javascript:addAnotherContact" . $idContact . "();\"/>";
+      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddnewFormContact" . $rand . "'  
+      id='btnAddnewFormContact" . $rand . "'  
+      value='" . __("Add another contact", "manageentities") . "' onclick=\"javascript:addAnotherContact" . $idContact . "();\"/>";
       echo "</td>";
       echo "</tr>";
 
@@ -909,7 +966,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
          // Liste des templates
          $cond = ["`is_template`" => 1,
-                   'ORDER' => 'name ASC'];
+                  'ORDER'         => 'name ASC'];
 
          $listTemplate = $dbu->getAllDataFromTable($currentContract->getTable(), $cond);
          $listOptions  = ["-1" => __("Blank Template")];
@@ -939,7 +996,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       // Entite
       echo "<tr  class='tab_bg_1'>";
       //         INFOTEL : MODIFICATION PRESALES
-      if (!isset($params["presales"]) || (isset($params["presales"]) && $params["presales"] == false ) ) {
+      if (!isset($params["presales"]) || (isset($params["presales"]) && $params["presales"] == false)) {
 
 
          echo "<td>" . __("Entity") . $this->pModel->getMessage("mandatory_field") . "</td>";
@@ -962,7 +1019,10 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          ]);
 
          echo "</div>";
-         echo "<label for='previous_entity_for_contract'> <input type='checkbox' name='previous_entity_for_contract' id='previous_entity_for_contract' ";
+
+         echo "<label for='previous_entity_for_contract'>";
+         $name  = "previous_entity_for_contract";
+         $check = 0;
          if (isset($currentContract->fields['entities_id'])
              && isset($this->pModel->getEntity()->fields['id'])
              && $this->pModel->getEntity()->fields['id'] > 0
@@ -970,12 +1030,18 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
              || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "")
                  && isset($this->pModel->getEntity()->fields['id'])
                  && $this->pModel->getEntity()->fields['id'] > 0)) {
-            echo " checked='checked' ";
+            $check = 1;
          }
-         echo " title='" . __("New entity created previously", "manageentities") . "'";
-         echo "onclick=\"switchElementsEnableFromCb(this,'div_select_entity_for_contract');\" /> ";
-         echo __("New entity created previously", "manageentities") . "</label>";
-         echo "</td>";
+         Html::showCheckbox([
+                               'name'    => $name,
+                               'id'      => $name,
+                               'checked' => $check,
+                               'onclick' => "switchElementsEnableFromCb(this,'div_select_entity_for_contract')"
+                            ]);
+
+
+         echo "&nbsp;" . __("New entity created previously", "manageentities") . "</label>";
+
          echo "</td>";
       } else {
 
@@ -1007,7 +1073,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Name') . $this->pModel->getMessage("mandatory_field") . "</td><td>";
-      echo "<input type='text' name='contract_name' id='contract_name' value='" . (isset($currentContract->fields['name']) ? $currentContract->fields['name'] : '') . "' /> ";
+      $name = "contract_name";
+      echo Html::input($name, ['value' => ($currentContract->fields['name'] ?? ''), 'id' => $name]);
       echo "</td>";
       echo "<td>" . __('Contract type') . "</td><td >";
       $idDpContractType = ContractType::dropdown([
@@ -1021,10 +1088,11 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . _x('phone', 'Number') . "</td>";
       echo "<td>";
-      echo "<input type='text' name='contract_num' id='contract_num' value='" . (isset($currentContract->fields['num']) ? $currentContract->fields['num'] : '') . "' /> ";
+      $name = "contract_num";
+      echo Html::input($name, ['value' => ($currentContract->fields['num'] ?? ''), 'id' => $name]);
       echo "</td>";
       $randDropdown = mt_rand();
-      echo "<td><label for='dropdown_states_id$randDropdown'>".__('Status')."</label></td>";
+      echo "<td><label for='dropdown_states_id$randDropdown'>" . __('Status') . "</label></td>";
       echo "<td>";
       State::dropdown([
                          'value'     => $currentContract->fields["states_id"],
@@ -1042,13 +1110,11 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       $idDateBegin = "contract_begin_date" . $rand;
 
-      echo "<input id='" . $idDateBegin . "' type='text' size='10' name='" . $idDateBegin . "' value='";
-      echo(
-      isset($currentContract->fields['begin_date']) && $currentContract->fields['begin_date'] != "NULL" && $currentContract->fields['begin_date'] ?
+      $name = "$idDateBegin";
+      echo Html::input($name, ['value' => isset($currentContract->fields['begin_date']) && $currentContract->fields['begin_date'] != "NULL" && $currentContract->fields['begin_date'] ?
          date('d-m-Y', strtotime($currentContract->fields['begin_date'])) :
-         ''
-      );
-      echo "' >";
+         '', 'id'                      => $name]);
+
       $this->initDate($idDateBegin);
 
       echo "</td>";
@@ -1075,7 +1141,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "</td>";
       echo "<td>" . __('Account number') . "</td><td>";
-      echo "<input type='text' name='contract_accounting_number' id='contract_accounting_number' value='" . (isset($currentContract->fields['accounting_number']) ? $currentContract->fields['accounting_number'] : '') . "' />";
+      $name = "contract_accounting_number";
+      echo Html::input($name, ['value' => ($currentContact->fields['accounting_number'] ?? ''), 'id' => $name]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Contract renewal period') . "</td><td>";
@@ -1146,7 +1213,13 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       echo "<tr class='tab_bg_1'><td class='top'>" . __('Comments') . "</td>";
       echo "<td class='center' colspan='3'>";
-      echo "<textarea cols='50' rows='4' name='contract_comment' id='contract_comment'>" . $currentContract->fields["comment"] . "</textarea>";
+      $name = "contract_comment";
+      Html::textarea(['name'            => $name,
+                      'value'           => $currentContract->fields["comment"],
+                      'editor_id'       => $name,
+                      'enable_richtext' => false,
+                      'cols'            => 50,
+                      'rows'            => 4]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Support hours') . "</td>";
@@ -1174,14 +1247,14 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Sundays and holidays') . "</td>";
       echo "<td colspan='3'>";
-      $idDpYNmon = Dropdown::showYesNo("contract_use_monday",
-                                       $currentContract->fields["use_monday"],
+      $idDpYNmon = Dropdown::showYesNo("contract_use_sunday",
+                                       $currentContract->fields["use_sunday"],
                                        -1,
                                        ["rand" => $rand]);
       echo "<span class='small_space'>" . __('Start') . "</span>&nbsp;";
-      $idDpContractMonBeginHour = $this->showHours("contract_monday_begin_hour", $currentContract->fields["monday_begin_hour"], 0, $rand);
+      $idDpContractSunBeginHour = $this->showHours("contract_sunday_begin_hour", $currentContract->fields["sunday_begin_hour"], 0, $rand);
       echo "<span class='small_space'>" . __('End') . "</span>&nbsp;";
-      $idDpContractMonEndHour = $this->showHours("contract_monday_end_hour", $currentContract->fields["monday_end_hour"], 0, $rand);
+      $idDpContractSunEndHour = $this->showHours("contract_sunday_end_hour", $currentContract->fields["sunday_end_hour"], 0, $rand);
       echo "</td></tr>";
 
 
@@ -1193,7 +1266,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr  class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='submit btn btn-primary' name='btnAddContract' id='btnAddContract' value='";
+      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddContract' id='btnAddContract' value='";
       if (isset($currentContract->fields['id']) && $currentContract->fields['id'] > 0) {
          echo "" . __("Update this contract only", "manageentities") . "' ";
       } else {
@@ -1225,13 +1298,13 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          "contract_accounting_number"                               => ["text", "new_contract_accounting_number"],
          "contract_comment"                                         => ["text", "new_contract_comment"],
          "dropdown_contract_use_saturday" . $idDpYNsat              => ["dropdown", "new_contract_use_saturday"],
-         "dropdown_contract_use_monday" . $idDpYNmon                => ["dropdown", "new_contract_use_monday"],
+         "dropdown_contract_use_sunday" . $idDpYNmon                => ["dropdown", "new_contract_use_sunday"],
          "contract_week_begin_hour" . $idDpContractWkBeginHour      => ["dropdown", "new_contract_week_begin_hour"],
          "contract_week_end_hour" . $idDpContractWkEndHour          => ["dropdown", "new_contract_week_end_hour"],
          "contract_saturday_begin_hour" . $idDpContractSatBeginHour => ["dropdown", "new_contract_sat_degin_hour"],
          "contract_saturday_end_hour" . $idDpContractSatEndHour     => ["dropdown", "new_contract_sat_end_hour"],
-         "contract_monday_begin_hour" . $idDpContractMonBeginHour   => ["dropdown", "new_contract_mon_begin_hour"],
-         "contract_monday_end_hour" . $idDpContractMonEndHour       => ["dropdown", "new_contract_mon_end_hour"],
+         "contract_sunday_begin_hour" . $idDpContractSunBeginHour   => ["dropdown", "new_contract_sun_begin_hour"],
+         "contract_sunday_end_hour" . $idDpContractSunEndHour       => ["dropdown", "new_contract_sun_end_hour"],
          "dropdown_contract_max_links_allowed" . $idMaxItems        => ["dropdown", "new_contract_max_links_allowed"],
          "dropdown_contract_renewal" . $idDpRenewal                 => ["dropdown", "new_contract_renewal"],
          "dropdown_contract_billing" . $idDpBilling                 => ["dropdown", "new_contract_billing"],
@@ -1270,13 +1343,13 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
    function showListPDFcontract($display = true) {
       global $DB;
-      $ret = "";
+      $ret          = "";
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
       $item         = $this->pModel->getContract();
 
       $arr       = $this->pModel->getQueryForDFContract($item);
-      $query     = isset($arr['query']) ? $arr['query'] : null;
-      $linkparam = isset($arr['linkparam']) ? $arr['linkparam'] : '';
+      $query     = $arr['query'] ?? null;
+      $linkparam = $arr['linkparam'] ?? '';
 
 
       if ($query != null) {
@@ -1299,14 +1372,14 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       if ($number) {
 
-         $ret.= "<tr class='tab_bg_1'>";
-         $ret.= "<th colspan='6' class='center'>";
-         $ret.= __("Document list", "manageentities");
-         $ret.= "</th>";
-         $ret.= "</tr>";
+         $ret .= "<tr class='tab_bg_1'>";
+         $ret .= "<th colspan='6' class='center'>";
+         $ret .= __("Document list", "manageentities");
+         $ret .= "</th>";
+         $ret .= "</tr>";
 
 
-         $ret.= "<tr class='tab_bg_1'>";
+         $ret .= "<tr class='tab_bg_1'>";
 
          $columns = ['name'      => __('Name'),
                      'entity'    => __('Entity'),
@@ -1316,9 +1389,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
                      'assocdate' => __('Date')];
 
          foreach ($columns as $key => $val) {
-            $ret.= "<th>" . $val . "</th>";
+            $ret .= "<th>" . $val . "</th>";
          }
-         $ret.= "</tr>";
+         $ret  .= "</tr>";
          $used = [];
 
          // Don't use this for document associated to document
@@ -1346,22 +1419,22 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
             }
             $used[$docID] = $docID;
 
-            $ret.= "<tr class='tab_bg_1" . ($data["is_deleted"] ? "_2" : "") . "'>";
-            $ret.= "<td class='center'>$link</td>";
-            $ret.= "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entityID']);
-            $ret.= "</td>";
-            $ret.= "<td class='left'>$downloadlink</td>";
-            $ret.= "<td class='center'>" . Dropdown::getDropdownName("glpi_documentcategories", $data["documentcategories_id"]);
-            $ret.= "</td>";
-            $ret.= "<td class='center'>" . $data["mime"] . "</td>";
-            $ret.= "<td class='center'>" . Html::convDateTime($data["assocdate"]) . "</td>";
-            $ret.= "</tr>";
+            $ret .= "<tr class='tab_bg_1" . ($data["is_deleted"] ? "_2" : "") . "'>";
+            $ret .= "<td class='center'>$link</td>";
+            $ret .= "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entityID']);
+            $ret .= "</td>";
+            $ret .= "<td class='left'>$downloadlink</td>";
+            $ret .= "<td class='center'>" . Dropdown::getDropdownName("glpi_documentcategories", $data["documentcategories_id"]);
+            $ret .= "</td>";
+            $ret .= "<td class='center'>" . $data["mime"] . "</td>";
+            $ret .= "<td class='center'>" . Html::convDateTime($data["assocdate"]) . "</td>";
+            $ret .= "</tr>";
             $i++;
          }
       }
-      if($display){
+      if ($display) {
          echo $ret;
-      }else{
+      } else {
          return $ret;
       }
    }
@@ -1372,34 +1445,34 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       $this->closeFormJS();
    }
 
-      private function initFormAddPDFContract() {
-         $dbu          = new DbUtils();
-         $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
+   private function initFormAddPDFContract() {
+      $dbu          = new DbUtils();
+      $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
 
-         echo "<div id='form-add-contract' style='display: none;'>";
-         echo "<form id='add-form-contract' method='POST' enctype='multipart/form-data' action='" . $this->pModel->getUrl() . "'>";
-         echo Html::hidden('action', ['id' => 'action', 'value' => Action::ADD_NEW_CONTRACT_PDF]);
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>" . __("Heading") . "</td>";
-         echo "<td>";
-         if (isset($this->pModel->getContract()->fields['entities_id']) && $this->pModel->getContract()->fields['entities_id'] > 0) {
-            DocumentCategory::dropdown(['entity' => $dbu->getSonsOf(Entity::getTable(),
-                                                                    $this->pModel->getContract()->fields['entities_id'])]);
-         } else {
-            DocumentCategory::dropdown();
-         }
-         echo "</td>";
-         echo "<td colspan='3' style='padding-top:16px;'>";
-         echo Html::file();
-         echo "</td><td class='left'>";
-         echo "(" . Document::getMaxUploadSize() . ")&nbsp;";
-         echo "</td>";
-         echo "</tr>";
-         echo "</table>";
-         Html::closeForm();
-         echo "</div>";
+      echo "<div id='form-add-contract' style='display: none;'>";
+      echo "<form id='add-form-contract' method='POST' enctype='multipart/form-data' action='" . $this->pModel->getUrl() . "'>";
+      echo Html::hidden('action', ['id' => 'action', 'value' => Action::ADD_NEW_CONTRACT_PDF]);
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __("Heading") . "</td>";
+      echo "<td>";
+      if (isset($this->pModel->getContract()->fields['entities_id']) && $this->pModel->getContract()->fields['entities_id'] > 0) {
+         DocumentCategory::dropdown(['entity' => $dbu->getSonsOf(Entity::getTable(),
+                                                                 $this->pModel->getContract()->fields['entities_id'])]);
+      } else {
+         DocumentCategory::dropdown();
       }
+      echo "</td>";
+      echo "<td colspan='3' style='padding-top:16px;'>";
+      echo Html::file();
+      echo "</td><td class='left'>";
+      echo "(" . Document::getMaxUploadSize() . ")&nbsp;";
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>";
+   }
 
    /**
     * @param $oldCMTid
@@ -1469,13 +1542,17 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr class='tab_bg_1'><td>" . __('Date of signature', 'manageentities') . "</td>";
       echo "<td>";
-      echo "<input id='cmanagetype_date_signature" . $idPluginContract . "' type='text' size='10' name='cmanagetype_date_signature" . $idPluginContract . "'
-            value='" . (isset($pluginContract['date_signature']) && $pluginContract['date_signature'] != "NULL" && $pluginContract['date_signature'] ? date('d-m-Y', strtotime($pluginContract['date_signature'])) : '') . "' >";
+      $name = "cmanagetype_date_signature" . $idPluginContract;
+      echo Html::input($name, ['value' => (isset($pluginContract['date_signature'])
+                                           && $pluginContract['date_signature'] != "NULL"
+                                           && $pluginContract['date_signature'] ? date('d-m-Y', strtotime($pluginContract['date_signature'])) : ''), 'id' => $name, 'size' => 10]);
 
       echo "</td><td>" . __('Date of renewal', 'manageentities') . "</td><td>";
 
-      echo "<input id='cmanagetype_date_renewal" . $idPluginContract . "' type='text' size='10' name='cmanagetype_date_renewal" . $idPluginContract . "'
-            value='" . (isset($pluginContract['date_renewal']) && $pluginContract['date_renewal'] != "NULL" && $pluginContract['date_renewal'] ? date('d-m-Y', strtotime($pluginContract['date_renewal'])) : '') . "' >";
+      $name = "cmanagetype_date_renewal" . $idPluginContract;
+      echo Html::input($name, ['value' => (isset($pluginContract['date_renewal'])
+                                           && $pluginContract['date_renewal'] != "NULL"
+                                           && $pluginContract['date_renewal'] ? date('d-m-Y', strtotime($pluginContract['date_renewal'])) : ''), 'id' => $name, 'size' => 10]);
 
       echo "</td></tr>";
       $idDpContractType = 0;
@@ -1488,16 +1565,15 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          echo "</td></tr>";
       }
 
-      if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY
+          && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
          echo "<tr class='tab_bg_1'><td>" . __('Contract is imported in GLPI', 'manageentities') . "</td>";
          echo "<td>";
-         $sel = "";
-         if (isset($pluginContract['contract_added']) && $pluginContract['contract_added'] == "1") {
-            $sel = "checked";
-            echo "<input type='checkbox' name='contract_added' id='contract_added' value='0' $sel>";
-         } else {
-            echo "<input type='checkbox' name='contract_added' id='contract_added' value='1' $sel>";
-         }
+         Html::showCheckbox([
+                               'name'    => 'contract_added',
+                               'id'      => 'contract_added',
+                               'checked' => $pluginContract['contract_added'] ?? 1
+                            ]);
          echo "</td><td colspan='2'></td></tr>";
       }
 
@@ -1505,27 +1581,25 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td>" . __('Show on global GANTT') . "</td>";
       echo "<td>";
       $idDpYNonGANT = Dropdown::showYesNo("show_on_global_gantt",
-                                          isset($pluginContract["show_on_global_gantt"]) ? $pluginContract["show_on_global_gantt"] : 0,
+                                          $pluginContract["show_on_global_gantt"] ?? 1,
                                           -1,
                                           ["rand" => $idPluginContract]);
       echo "</td>";
 
       echo "<td>" . __('Refacturable costs', 'manageentities') . "</td>";
       echo "<td>";
-      $sel = "";
-      if (isset($pluginContract['refacturable_costs']) && $pluginContract['refacturable_costs'] == "1") {
-         $sel = "checked";
-         echo "<input type='checkbox' name='refacturable_costs' id='refacturable_costs' value='0' $sel>";
-      } else {
-         echo "<input type='checkbox' name='refacturable_costs' id='refacturable_costs' value='1' $sel>";
-      }
+      Html::showCheckbox([
+                            'name'    => 'refacturable_costs',
+                            'id'      => 'refacturable_costs',
+                            'checked' => $pluginContract["refacturable_costs"] ?? 1,
+                         ]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Movement management', 'manageentities') . "</td>";
       echo "<td>";
       $rand = Dropdown::showYesNo("moving_management",
-                                  isset($pluginContract["moving_management"]) ? $pluginContract["moving_management"] : 0,
+                                  $pluginContract["moving_management"] ?? 0,
                                   -1,
                                   ['on_change' => 'changemovement();']);
       echo Html::scriptBlock("
@@ -1545,7 +1619,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<td><div id='movement'>";
       $rand_duration = Dropdown::showTimeStamp('duration_moving',
-                                               ['value'           => isset($pluginContract["duration_moving"]) ? $pluginContract["duration_moving"] : 0,
+                                               ['value'           => $pluginContract["duration_moving"] ?? 0,
                                                 'addfirstminutes' => true]);
       echo "</div></td></tr>";
 
@@ -1555,15 +1629,16 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       if ($canEdit) {
          echo "<td class='center' colspan='2'>";
-         echo "<input type='submit' class='submit btn btn-primary' name='btnAddContractManagementType' id='btnAddContractManagementType'";
+         echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddContractManagementType' id='btnAddContractManagementType'";
          if (empty($pluginContract)) {
             echo " value=\"" . _sx('button', 'Add') . "\" ";
          } else {
             echo " value=\"" . _sx('button', 'Update') . "\" ";
          }
-         echo " class='submit btn btn-primary' onclick='addContractManagementType();'>";
+         echo " class='btn btn-primary manageentities_button' onclick='addContractManagementType();'>";
          echo "</td><td class='center' colspan='2'>";
-         echo "<input type='submit' class='submit btn btn-primary' name='btnDeleteContractManagementType' id='btnDeleteContractManagementType' value='" . _sx('button', 'Delete permanently') . "' class='submit' onclick='confirm_deleteContractManagementType();' ";
+         echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnDeleteContractManagementType' id='btnDeleteContractManagementType' 
+         value='" . _sx('button', 'Delete permanently') . "' class='submit' onclick='confirm_deleteContractManagementType();' ";
          if (empty($pluginContract)) {
             echo " style='visibility:hidden' ";
          }
@@ -1644,7 +1719,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract  = reset($pluginContracts);
 
-      $unit = PluginManageentitiesContract::getUnitContractType($config, isset($pluginContract['contract_type']) ? $pluginContract['contract_type'] : []);
+      $unit = PluginManageentitiesContract::getUnitContractType($config, $pluginContract['contract_type'] ?? []);
 
 
       // Onchange for img purpose
@@ -1652,8 +1727,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       $this->updateImgTabTitle(true, "'img_" . $currentContractday->getType() . ($idIntervention) . "'", $this->pModel->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED));
       echo "\" >";
 
-      echo "<input type='hidden' name='fakeid_new_intervention" . $rand . "' id='fakeid_new_intervention" . $rand . "' value='" . $idIntervention . "' />";
-
+      $name = "fakeid_new_intervention" . $rand;
+      echo Html::hidden($name, ['id' => $name, 'value' => $idIntervention]);
 
       echo "<table class='tab_cadre_fixe'>";
 
@@ -1666,7 +1741,14 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
          echo "<div id='div_select_entity_for_intervention" . $rand . "' ";
 
-         if (isset($currentContractday->fields['entities_id']) && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0 && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] || ((!isset($currentContractday->fields['entities_id']) || $currentContractday->fields['entities_id'] == "") && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)) {
+         if (isset($currentContractday->fields['entities_id'])
+             && isset($this->pModel->getEntity()->fields['id'])
+             && $this->pModel->getEntity()->fields['id'] > 0
+             && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+             || ((!isset($currentContractday->fields['entities_id'])
+                  || $currentContractday->fields['entities_id'] == "")
+                 && isset($this->pModel->getEntity()->fields['id'])
+                 && $this->pModel->getEntity()->fields['id'] > 0)) {
             echo " style='visibility:hidden;' ";
          }
          echo " >";
@@ -1674,20 +1756,35 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          $condition  = $dbu->getEntitiesRestrictCriteria("glpi_entities");
          $idDpEntity = Dropdown::show($dbu->getItemTypeForTable("glpi_entities"), [
             'name'       => 'intervention_entities_id',
-            'value'      => isset($currentContractday->fields['entities_id']) ? $currentContractday->fields ['entities_id'] : 0,
+            'value'      => $currentContractday->fields ['entities_id'] ?? 0,
             'emptylabel' => __("New entity", "manageentities"),
             'on_change'  => 'updateCriPrice' . $idIntervention . '();updateContractList' . $realRand . '()',
             'condition'  => $condition
          ]);
          echo "</div>";
 
-         echo "<label for='previous_entity_for_intervention" . $rand . "'> <input type='checkbox' name='previous_entity_for_intervention" . $rand . "' id='previous_entity_for_intervention" . $rand . "' ";
-         if (isset($currentContractday->fields['entities_id']) && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0 && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] || ((!isset($currentContractday->fields['entities_id']) || $currentContractday->fields['entities_id'] == "") && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)) {
-            echo " checked='checked' ";
+         echo "<label for='previous_entity_for_intervention" . $rand . "'>";
+         $name  = "previous_entity_for_intervention" . $rand;
+         $check = 0;
+         if (isset($currentContractday->fields['entities_id'])
+             && isset($this->pModel->getEntity()->fields['id'])
+             && $this->pModel->getEntity()->fields['id'] > 0
+             && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+             || ((!isset($currentContractday->fields['entities_id'])
+                  || $currentContractday->fields['entities_id'] == "")
+                 && isset($this->pModel->getEntity()->fields['id'])
+                 && $this->pModel->getEntity()->fields['id'] > 0)) {
+            $check = 1;
          }
+         Html::showCheckbox([
+                               'name'    => $name,
+                               'id'      => $name,
+                               'checked' => $check,
+                               'onclick' => "switchElementsEnableFromCb(this,'div_select_entity_for_intervention" . $rand . "')"
+                            ]);
 
-         echo " title='" . __("New entity created previously", "manageentities") . "' onclick=\"switchElementsEnableFromCb(this,'div_select_entity_for_intervention" . $rand . "');\" /> " . __("New entity created previously", "manageentities") . "</label>";
 
+         echo "&nbsp;" . __("New entity created previously", "manageentities") . "</label>";
 
          echo "</td>";
          echo "</tr>";
@@ -1699,7 +1796,14 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          echo "<div id='div_select_contract_for_intervention" . $idIntervention . "' ";
 
 
-         if (isset($currentContractday->fields['contracts_id']) && isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0 && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id'] || ((!isset($currentContractday->fields['contracts_id']) || $currentContractday->fields['contracts_id'] == "") && isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0)) {
+         if (isset($currentContractday->fields['contracts_id'])
+             && isset($this->pModel->getContract()->fields['id'])
+             && $this->pModel->getContract()->fields['id'] > 0
+             && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id']
+             || ((!isset($currentContractday->fields['contracts_id'])
+                  || $currentContractday->fields['contracts_id'] == "")
+                 && isset($this->pModel->getContract()->fields['id'])
+                 && $this->pModel->getContract()->fields['id'] > 0)) {
             echo " style='visibility:hidden;' ";
          }
          echo " >";
@@ -1711,15 +1815,34 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          ]);
 
          echo "</div>";
-         echo "<label for='previous_contract_for_intervention" . $rand . "'> <input type='checkbox' name='previous_contract_for_intervention" . $rand . "' id='previous_contract_for_intervention" . $rand . "' ";
-         if (isset($currentContractday->fields['contracts_id']) && isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0 && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id'] || ((!isset($currentContractday->fields['contracts_id']) || $currentContractday->fields['contracts_id'] == "") && isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0)) {
-            echo " checked='true' ";
+
+         echo "<label for='previous_contract_for_intervention" . $rand . "'>";
+         $name  = "previous_contract_for_intervention" . $rand;
+         $check = 0;
+         if (isset($currentContractday->fields['contracts_id'])
+             && isset($this->pModel->getContract()->fields['id'])
+             && $this->pModel->getContract()->fields['id'] > 0
+             && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id']
+             || ((!isset($currentContractday->fields['contracts_id'])
+                  || $currentContractday->fields['contracts_id'] == "")
+                 && isset($this->pModel->getContract()->fields['id'])
+                 && $this->pModel->getContract()->fields['id'] > 0)) {
+            $check = 1;
          }
-         echo " autocomplete='off' title='" . __("New contract created previously", "manageentities") . "' onclick=\"switchElementsEnableFromCb(this,'div_select_contract_for_intervention" . $rand . "');\" /> " . __("New contract created previously", "manageentities") . "</label>";
+         Html::showCheckbox([
+                               'name'    => $name,
+                               'id'      => $name,
+                               'checked' => $check,
+                               'onclick' => "switchElementsEnableFromCb(this,'div_select_contract_for_intervention" . $rand . "')"
+                            ]);
+
+
+         echo "&nbsp;" . __("New contract created previously", "manageentities") . "</label>";
          echo "</td>";
 
       } else {
-         echo "<input type='hidden' name='presales" . $rand . "' id='presales" . $rand . "' value='" . $paramsF["presales"] . "' />";
+         $name = "presales" . $rand;
+         echo Html::hidden($name, ['id' => $name, 'value' => $paramsF["presales"]]);
          echo "<td hidden>";
 
          $condition  = $dbu->getEntitiesRestrictCriteria("glpi_entities");
@@ -1769,16 +1892,18 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __("Period name", "manageentities") . $this->pModel->getMessage("mandatory_field") . "</td>";
       echo "<td>";
-      echo "<input type='text' name='intervention_name" . $idIntervention . "' id='intervention_name" . $idIntervention . "'  value='" . (isset($currentContractday->fields['name']) ? $currentContractday->fields['name'] : '') . "'  />";
+      $name = "intervention_name" . $idIntervention;
+      echo Html::input($name, ['value' => ($currentContractday->fields['name'] ?? ''), 'id' => $name]);
       echo "</td>";
 
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR
-          && isset($pluginContract['contract_type']) &&  $pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
+          && isset($pluginContract['contract_type']) && $pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
          echo "<td></td><td></td>";
       } else {
          echo "<td>" . __('Postponement', 'manageentities') . "</td>";
-         echo "<td><input type='text' name='report" . $idIntervention . "' id='report" . $idIntervention . "' value='" .
-              Html::formatNumber($currentContractday->fields["report"], true, 1) . "'size='5'>";
+         echo "<td>";
+         $name = "report" . $idIntervention;
+         echo Html::input($name, ['value' => Html::formatNumber($currentContractday->fields["report"], true, 1), 'id' => $name, 'size' => 5]);
          echo "&nbsp;" . $unit;
          echo "</td>";
       }
@@ -1787,13 +1912,16 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Begin date') . $this->pModel->getMessage("mandatory_field") . "</td>";
       echo "<td>";
-
-      echo "<input id='intervention_begin_date" . $idIntervention . "' type='text' size='10' name='intervention_begin_date" . $idIntervention . "' value='" . (isset($currentContractday->fields['begin_date']) && $currentContractday->fields['begin_date'] != "NULL" && $currentContractday->fields['begin_date'] ? Html::convDate($currentContractday->fields['begin_date']) : '') . "' >";
-
+      $name = "intervention_begin_date" . $idIntervention;
+      echo Html::input($name, ['value' => (isset($currentContractday->fields['begin_date'])
+                                           && $currentContractday->fields['begin_date'] != "NULL"
+                                           && $currentContractday->fields['begin_date'] ? Html::convDate($currentContractday->fields['begin_date']) : ''), 'id' => $name, 'size' => 5]);
       echo "</td>";
       echo "<td>" . __('End date') . "</td><td>";
-      echo "<input id='intervention_end_date" . $idIntervention . "' type='text' size='10' name='intervention_end_date" . $idIntervention . "'  value='" . (isset($currentContractday->fields['end_date']) && $currentContractday->fields['end_date'] != "NULL" ? $currentContractday->fields['end_date'] : '') . "' >";
-
+      $name = "intervention_end_date" . $idIntervention;
+      echo Html::input($name, ['value' => (isset($currentContractday->fields['end_date'])
+                                           && $currentContractday->fields['end_date'] != "NULL"
+                                           && $currentContractday->fields['end_date'] ? Html::convDate($currentContractday->fields['end_date']) : ''), 'id' => $name, 'size' => 5]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1803,8 +1931,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
           && $pluginContract['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED) {
          echo "<td>&nbsp;";
       } else {
-         echo "<td><input type='text' name='nbday" . $idIntervention . "' id='nbday" . $idIntervention . "' value='" .
-              Html::formatNumber($currentContractday->fields["nbday"], true, 1) . "'size='5'>";
+         echo "<td>";
+         $name = "nbday" . $idIntervention;
+         echo Html::input($name, ['value' => Html::formatNumber($currentContractday->fields["nbday"], true, 1), 'id' => $name, 'size' => 5]);
       }
       echo "&nbsp;" . $unit;
 
@@ -1861,16 +1990,19 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Already charged', 'manageentities') . "</td>";
       echo "<td colspan='3'>";
-      $currentContractday->fields['charged'] == 1 ? $isCharged = "checked='checked'" : $isCharged = '';
-      echo "<input type='checkbox' name='charged' id='charged' " . $isCharged . " />";
-
+      Html::showCheckbox([
+                            'name'    => 'charged',
+                            'id'      => 'charged',
+                            'checked' => $currentContractday->fields['charged'] ?? 0
+                         ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<table class='tab_cadre_fixe' >";
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='submit btn btn-primary' name='btnAddIntervention" . $idIntervention . "' id='btnAddIntervention" . $idIntervention . "' ";
+      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddIntervention" . $idIntervention . "' 
+      id='btnAddIntervention" . $idIntervention . "' ";
 
       if (isset($currentContractday->fields["id"]) && $currentContractday->fields["id"] > 0) {
          echo " value='" . __("Update this intervention", "manageentities") . "' ";
@@ -1886,7 +2018,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='submit btn btn-primary' name='btnAddnewFormIntervention" . $idIntervention . "'  id='btnAddnewFormIntervention" . $idIntervention . "'  value='" . __("Add another intervention", "manageentities") . "' onclick=\"javascript:addAnotherIntervention" . $idIntervention . "();\"/>";
+      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddnewFormIntervention" . $idIntervention . "'  
+      id='btnAddnewFormIntervention" . $idIntervention . "'  value='" . __("Add another intervention", "manageentities") . "' 
+      onclick=\"javascript:addAnotherIntervention" . $idIntervention . "();\"/>";
       echo "</td> </tr>";
 
       echo "</table>";
@@ -2056,7 +2190,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          $this->showJSfunction("showFormCriPrice" . $rand, "viewcriprice_" . $fakeIdIntervention, $this->pModel->getUrl(), [], $params);
 
          echo "<div class='center firstbloc'>" .
-              "<input type='button' class='vsubmit' onclick='showFormCriPrice" . $rand . "();' value='" . __('Add a new price', 'manageentities') . "' /></div>\n";
+              "<input type='button' class='btn btn-primary manageentities_button' onclick='showFormCriPrice" . $rand . "();' value='" . __('Add a new price', 'manageentities') . "' /></div>\n";
       }
 
 
@@ -2263,7 +2397,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       // Cri Type
       echo "<td>";
       echo PluginManageentitiesCriType::getTypeName() . '&nbsp;' . $this->pModel->getMessage("mandatory_field");
-      echo "<input type='hidden' name='id_criprice" . $item->fields['id'] . "' id='id_criprice" . $item->fields['id'] . "' value='" . $item->fields['id'] . "' />";
+      $name = "id_criprice" . $item->fields['id'];
+      echo Html::hidden($name, ['id' => $name, 'value' => $item->fields['id']]);
+
       echo "</td>";
 
       echo "<td>";
@@ -2288,8 +2424,10 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo $this->pModel->getMessage("mandatory_field");
       echo "</td>";
       echo "<td>";
-      echo "<input type='text' name='textfield_price" . $rand . "' id='textfield_price" . $rand . "' value='" . $item->fields['price'] . "' size='40' class='x-form-text x-form-field x-form-focus'/>";
-
+      $name = "textfield_price" . $rand;
+      echo Html::input($name, ['value' => $item->fields['price'],
+                               'id' => $name,
+                               'size' => 10]);
       echo "</td>";
       echo "</tr>";
       echo "<tr class='tab_bg_1'>";
@@ -2305,7 +2443,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' style='text-align: center'>";
-      echo "<input type='button' class='vsubmit' name='btn_add_cprice_" . $rand . "' id='btn_add_cprice_" . $rand . "'";
+      echo "<input type='button' class='btn btn-primary manageentities_button' name='btn_add_cprice_" . $rand . "' id='btn_add_cprice_" . $rand . "'";
       if (isset($item->fields['id']) && $item->fields['id'] > 0) {
          echo "   value='" . _n('Update this price', 'Update these prices', 1, 'manageentities') . "'";
       } else {
@@ -2314,7 +2452,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "   onclick='addCriPrice" . $rand . "();'/>";
 
       if (isset($item->fields['id']) && $item->fields['id'] > 0) {
-         echo "<input type='button' class='vsubmit' style='margin-left:16px;' name='btn_delete_cprice_" . $rand . "' id='btn_delete_cprice_" . $rand . "'";
+         echo "<input type='button' class='btn btn-primary manageentities_button' style='margin-left:16px;' name='btn_delete_cprice_" . $rand . "' id='btn_delete_cprice_" . $rand . "'";
          echo "   value='" . _n('Delete this price', 'Delete these prices', 1, 'manageentities') . "'";
          echo "   onclick='deleteCriPrice" . $rand . "();'/>";
       }
@@ -2434,7 +2572,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       $link         = $doc->getLinkURL();
       $downloadlink = $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $doc->fields['id'];
 
-//      $icon = $this->pModel->getIconSrcFromExtension($this->pModel->getFileExtension($doc->fields['filename']));
+      //      $icon = $this->pModel->getIconSrcFromExtension($this->pModel->getFileExtension($doc->fields['filename']));
 
       $this->showHeaderJS();
 
@@ -2499,9 +2637,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "tmpCell.setAttribute('class','left');\n";
       echo "tmpCell.setAttribute('style','padding-left:12px;');\n";
 
-//      echo "tmpImg = document.createElement('img');";
-//      echo "tmpImg.src=\"" . $CFG_GLPI["typedoc_icon_dir"] . "/" . $icon . "\";";
-//      echo "tmpCell.appendChild(tmpImg);";
+      //      echo "tmpImg = document.createElement('img');";
+      //      echo "tmpImg.src=\"" . $CFG_GLPI["typedoc_icon_dir"] . "/" . $icon . "\";";
+      //      echo "tmpCell.appendChild(tmpImg);";
 
 
       echo "tmpHref = document.createElement('a');";
@@ -2664,12 +2802,18 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
    }
 
    private function showBtnRAZ() {
+      global $CFG_GLPI;
+
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
 
-      echo "<form name='form_raz' id='form_raz' method='post' action='" . $this->pModel->getUrl() . "' >";
-      echo Html::hidden('action', ['value' => Action::REINIT_FORMS,'id' => 'action_raz']);
+      $target = $CFG_GLPI["root_doc"] . "/plugins/manageentities/front/addelements.listener.php";
+
+      echo "<form name='form_raz' id='form_raz' method='post' action='" . $target . "' >";
+      echo Html::hidden('action', ['value' => Action::REINIT_FORMS, 'id' => 'action_raz']);
       echo "<div class='center' >";
-      echo Html::submit(__("Reinitialize forms", 'manageentities'), ['name' => 'btnAddAll','id' => 'btnAddAll',  'class' => 'btn btn-primary']);
+      echo Html::submit(__("Reinitialize forms", 'manageentities'), ['name' => 'btnAddAll',
+                                                                     'id' => 'btnAddAll',
+                                                                     'class' => 'btn btn-primary manageentities_button']);
       echo "</div>";
       Html::closeForm();
    }
@@ -2681,7 +2825,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<table class='tab_cadre_fixe' >";
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' class='submit btn btn-primary' name='btnAddAll' id='btnAddAll' ";
+      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddAll' id='btnAddAll' ";
 
       if ($this->isWizardAlreadySaveInDB()) {
          echo "value='" . __("Update all previous elements", "manageentities") . "' ";
@@ -3101,41 +3245,41 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
                $this->bordersOnError("intervention_name" . $_POST['fakeid_new_intervention'], false, false);
                // contract type
                //commented because cannot be used with hour setup
-//               if (isset($_POST['contract_type']) && $_POST['contract_type'] != "0") {
-                  $this->bordersOnError("div_select_contract_type" . $_POST['fakeid_new_intervention'], false, false);
-                  // begin date
-                  if (isset($_POST['new_intervention_begin_date']) && $_POST['new_intervention_begin_date'] != "") {
-                     $this->bordersOnError("intervention_begin_date" . $_POST['fakeid_new_intervention'], false, false);
+               //               if (isset($_POST['contract_type']) && $_POST['contract_type'] != "0") {
+               $this->bordersOnError("div_select_contract_type" . $_POST['fakeid_new_intervention'], false, false);
+               // begin date
+               if (isset($_POST['new_intervention_begin_date']) && $_POST['new_intervention_begin_date'] != "") {
+                  $this->bordersOnError("intervention_begin_date" . $_POST['fakeid_new_intervention'], false, false);
 
 
-                     // contract statut
-                     if (isset($_POST['new_intervention_contractstate_id']) && $_POST['new_intervention_contractstate_id'] > 0) {
-                        $this->bordersOnError("div_select_contractstate" . $_POST['fakeid_new_intervention'], false, false);
-                        // default intervention type
-                        if ((isset($_POST['new_intervention_contract_id']) && $_POST['new_intervention_contract_id'] > 0) ||
-                            (isset($_POST['previous_contract_for_intervention']) && $_POST['previous_contract_for_intervention'] == "true")) {
-                           $this->bordersOnError("cell_select_contract_for_intervention" . $_POST['fakeid_new_intervention'], false, false);
-                           return true;
-                        } else {
-                           $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "cell_select_contract_for_intervention" . $_POST['fakeid_new_intervention']);
-                           $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
-
-                        }
+                  // contract statut
+                  if (isset($_POST['new_intervention_contractstate_id']) && $_POST['new_intervention_contractstate_id'] > 0) {
+                     $this->bordersOnError("div_select_contractstate" . $_POST['fakeid_new_intervention'], false, false);
+                     // default intervention type
+                     if ((isset($_POST['new_intervention_contract_id']) && $_POST['new_intervention_contract_id'] > 0) ||
+                         (isset($_POST['previous_contract_for_intervention']) && $_POST['previous_contract_for_intervention'] == "true")) {
+                        $this->bordersOnError("cell_select_contract_for_intervention" . $_POST['fakeid_new_intervention'], false, false);
+                        return true;
                      } else {
-                        $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "div_select_contractstate" . $_POST['fakeid_new_intervention']);
+                        $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "cell_select_contract_for_intervention" . $_POST['fakeid_new_intervention']);
                         $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
 
                      }
                   } else {
-                     $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "intervention_begin_date" . $_POST['fakeid_new_intervention']);
+                     $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "div_select_contractstate" . $_POST['fakeid_new_intervention']);
                      $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
 
                   }
-//               } else {
-//                  $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "div_select_contract_type" . $_POST['fakeid_new_intervention']);
-//                  $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
-//
-//               }
+               } else {
+                  $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "intervention_begin_date" . $_POST['fakeid_new_intervention']);
+                  $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
+
+               }
+               //               } else {
+               //                  $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "div_select_contract_type" . $_POST['fakeid_new_intervention']);
+               //                  $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
+               //
+               //               }
             } else {
                $this->showMessage($pModel->getMessage(ElementType::INTERVENTION, Errors::ERROR_FIELDS), Messages::MESSAGE_ERROR, -1, -1, "intervention_name" . $_POST['fakeid_new_intervention']);
                $pModel->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
@@ -3266,7 +3410,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          $begin      = (int)$plan_begin[0];
          $end        = (int)$plan_end[0];
       }
-      echo "<select name=\"" . $name . $rand . "\" id=\"" . $name . $rand . "\">";
+      echo "<select class='form-select' name=\"" . $name . $rand . "\" id=\"" . $name . $rand . "\" style='max-width: 100px;display: inline-block;'>";
 
       for ($i = $begin; $i < $end; $i++) {
          if ($i < 10) {

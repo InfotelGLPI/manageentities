@@ -51,9 +51,11 @@ class PluginManageentitiesCri extends CommonDBTM {
                  'form'       => 'formReport',
                  'root_doc'   => $CFG_GLPI['root_doc'],
                  'toupdate'   => $options['toupdate'],
-                 'pdf_action' => $options['action']];
+                 'pdf_action' => $options['action'],
+                 'width'      => 1000,
+                 'height'     => 550];
 
-      PluginManageentitiesEntity::showManageentitiesHeader(__('Interventions reports', 'manageentities'));
+      //      PluginManageentitiesEntity::showManageentitiesHeader(__('Interventions reports', 'manageentities'));
 
       echo "<div class='red styleContractTitle' style='display:none' id='manageentities_cri_error'></div>";
 
@@ -83,9 +85,9 @@ class PluginManageentitiesCri extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<th>" . __('Out of contract', 'manageentities') . "</th>";
          echo "</tr></table>";
-         $contractSelected = ['contractSelected' => 0,
+         $contractSelected = ['contractSelected'    => 0,
                               'contractdaySelected' => 0,
-                              'is_contract' => 0];
+                              'is_contract'         => 0];
       }
       echo "</td>";
       echo "</tr>";
@@ -106,12 +108,15 @@ class PluginManageentitiesCri extends CommonDBTM {
             $techs = [];
             foreach ($technicians_id as $remove => $data) {
                foreach ($data as $users_id => $users_name) {
+                  $rand = mt_rand();
                   if ($remove == 'remove') {
                      $params['tech_id'] = $users_id;
                      $techs[]           = $users_name . "&nbsp;" .
-                                          "<a class='pointer' onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>
+                                          "<a class='pointer' name='deleteTech$rand' 
+                                          onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>
                   <i class=\"far fa-trash-alt\" title=\"" . _sx('button', 'Delete permanently') . "\"></i>
                   </a>";
+
                   } else {
                      $techs[] = $users_name;
                   }
@@ -133,15 +138,16 @@ class PluginManageentitiesCri extends CommonDBTM {
             }
          }
       }
+      $rand = mt_rand();
+      $idUser = User::dropdown(['name'   => "users_id",
+                                  'entity' => $job->fields["entities_id"],
+                                  'used'   => $used,
+                                  'right'  => 'all',
+                                  'width'  => $width]);
+      echo "&nbsp;<a class='pointer' name='add_tech$rand' 
+                                          onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>
+                  <i class=\"fas fa-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i>";
 
-      $userRand = User::dropdown(['name'   => "users_id",
-                                       'entity' => $job->fields["entities_id"],
-                                       'used'   => $used,
-                                       'right'  => 'all',
-                                       'width'  => $width]);
-
-      echo "&nbsp;<input type='button' name='add_tech' value=\"" .
-           __('Add a technician', 'manageentities') . "\" class='submit btn btn-primary' onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
       echo "</td>";
       echo "</tr>";
 
@@ -192,7 +198,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                echo "</tr>";
             }
          }
-      } elseif (!$cridetail['withcontract']) {
+      } elseif (!isset($cridetail['withcontract']) ||$cridetail['withcontract'] == false) {
          echo Html::hidden('WITHOUTCONTRACT', ['value' => 1]);
       }
 
@@ -237,25 +243,20 @@ class PluginManageentitiesCri extends CommonDBTM {
 
             echo "<td colspan='2'>";
             //echo "<textarea name=\"REPORT_DESCRIPTION\" cols='120' rows='22'>$desc</textarea>";
-            $rand_text  = mt_rand();
-            $content_id = "comment$rand_text";
-            $cols       = 120;
-            $rows       = 22;
+            $rand_text = mt_rand();
+            $cols      = 120;
+            $rows      = 22;
 
-            echo "<script src='../../../public/lib/tinymce.js'>";
-            $desc = Html::setRichTextContent(
-               $content_id,
-               $desc,
-               $rand_text
-            );
-            Html::textarea(['name'            => 'REPORT_DESCRIPTION',
-                            'value'           => $desc,
-                            'rand'            => $rand_text,
-                            'editor_id'       => $content_id,
-                            'enable_richtext' => true,
-                            'cols'            => $cols,
-                            'rows'            => $rows]);
-
+            echo Html::script("public/lib/tinymce.js");
+            Html::textarea([
+                              'name'              => 'REPORT_DESCRIPTION',
+                              'value'             => Glpi\Toolbox\RichText::getSafeHtml($desc, true),
+                              'enable_richtext'   => true,
+                              'enable_fileupload' => false,
+                              'enable_images'     => false,
+                              'rand'              => $rand_text,
+                              'editor_id'         => 'comment' . $rand_text,
+                           ]);
             echo "</td>";
             echo "</tr>";
 
@@ -265,16 +266,21 @@ class PluginManageentitiesCri extends CommonDBTM {
             // action empty : add cri
             if (empty($options['action'])) {
                if (!empty($technicians_id)) {
+//                  Html::requireJs('glpi_dialog');
+//                  $modal = $options['modal'];
+
                   echo "<input type='button' name='add_cri' value=\"" .
-                       __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary' 
+                       __('Generation of the intervention report', 'manageentities') . "\" class='btn btn-primary manageentities_button' 
                   onClick='manageentities_loadCriForm(\"addCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
                }
                // action not empty : update cri
             } elseif ($options['action'] == 'update_cri') {
                if (!empty($technicians_id)) {
-                  echo "<input type='button' name='update_cri' class='manageentities_button' value=\"" .
-                       __('Regenerate the intervention report', 'manageentities') . "\" 
+
+                  echo "<input type='button' name='update_cri' class='btn btn-primary manageentities_button' value=\"" .
+                      __('Regenerate the intervention report', 'manageentities') . "\" 
                   onClick='manageentities_loadCriForm(\"updateCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
+
                }
             }
          } else {
@@ -289,11 +295,9 @@ class PluginManageentitiesCri extends CommonDBTM {
             echo "</tr>";
          }
       } else {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td class='center red' >";
-         echo __('No tasks', 'manageentities');
-         echo "</td>";
-         echo "</tr>";
+         echo "<div class='alert alert-important alert-warning d-flex' >";
+         echo __("Impossible generation, you didn't create a scheduled task", 'manageentities');
+         echo "</div>";
       }
       echo "</td>";
       echo "</tr>";
@@ -327,17 +331,17 @@ class PluginManageentitiesCri extends CommonDBTM {
    function generatePdf($params, $options = []) {
       global $PDF, $DB, $CFG_GLPI;
 
-      $p['CONTRACTDAY']     = 0;
-      $p['WITHOUTCONTRACT'] = 0;
-      $p['CONTRAT']         = 0;
-      $p['REPORT_ACTIVITE'] = '';
+      $p['CONTRACTDAY']        = 0;
+      $p['WITHOUTCONTRACT']    = 0;
+      $p['CONTRAT']            = 0;
+      $p['REPORT_ACTIVITE']    = '';
       $p['REPORT_ACTIVITE_ID'] = 0;
-      $p['documents_id']    = 0;
-      $p['number_moving']   = 0;
+      $p['documents_id']       = 0;
+      $p['number_moving']      = 0;
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
-         if($key == 'REPORT_DESCRIPTION'){
+         if ($key == 'REPORT_DESCRIPTION') {
             $p[$key] = urldecode($val);
          }
       }
@@ -349,19 +353,19 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       /* Initialisation du document avec les informations saisies par l'utilisateur. */
       $criType_id = $p['REPORT_ACTIVITE_ID'];
-      $typeCri = new PluginManageentitiesCriType();
-      if($typeCri->getFromDB($criType_id)) {
+      $typeCri    = new PluginManageentitiesCriType();
+      if ($typeCri->getFromDB($criType_id)) {
          $p['REPORT_ACTIVITE'] = $typeCri->getField('name');
       }
       if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE
           || $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR
       ) {
          $p['REPORT_ACTIVITE'] = [];
-//         $criType_id           = 0;
+         //         $criType_id           = 0;
       }
 
       //$PDF->SetDescriptionCri(Toolbox::unclean_cross_side_scripting_deep($p['REPORT_DESCRIPTION']));
-      $p['REPORT_DESCRIPTION'] = Toolbox::unclean_cross_side_scripting_deep($p['REPORT_DESCRIPTION']);
+      $p['REPORT_DESCRIPTION'] = Glpi\Toolbox\Sanitizer::unsanitize($p['REPORT_DESCRIPTION']);
       $p['REPORT_DESCRIPTION'] = str_replace("’", "'", $p['REPORT_DESCRIPTION']);
       $PDF->SetDescriptionCri($p['REPORT_DESCRIPTION']);
 
@@ -765,13 +769,13 @@ class PluginManageentitiesCri extends CommonDBTM {
             $PluginManageentitiesCriDetail->update($values);
          }
 
-//         if(isset($p['download']) && $p['download'] == 1){
-//            echo "<IFRAME style='width:100%;height:90%' src='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
+         //         if(isset($p['download']) && $p['download'] == 1){
+         //            echo "<IFRAME style='width:100%;height:90%' src='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
 
-//         $doc = new Document();
-//         $doc->getFromDB( $values["documents_id"]);
-//         $this->send($doc);
-//         }
+         //         $doc = new Document();
+         //         $doc->getFromDB( $values["documents_id"]);
+         //         $this->send($doc);
+         //         }
 
          $this->CleanFiles($seepath);
       } else {
@@ -779,6 +783,7 @@ class PluginManageentitiesCri extends CommonDBTM {
          $PDF->Output($seefilepath, 'F');
 
          if ($config->fields["backup"] == 1) {
+
             echo "<form method='post' name='formReport'>";
             echo Html::hidden('REPORT_ID', ['value' => $p['REPORT_ID']]);
             echo Html::hidden('REPORT_SOUS_CONTRAT', ['value' => $sous_contrat]);
@@ -808,15 +813,19 @@ class PluginManageentitiesCri extends CommonDBTM {
             echo Html::hidden('REPORT_ACTIVITE_ID', ['value' => $p['REPORT_ACTIVITE_ID']]);
 
             $params = ['job'      => $job->fields['id'],
-                            'form'     => 'formReport',
-                            'root_doc' => $CFG_GLPI['root_doc'],
-                            'toupdate' => $options['toupdate']];
+                       'form'     => 'formReport',
+                       'root_doc' => $CFG_GLPI['root_doc'],
+                       'toupdate' => $options['toupdate']];
             echo "<p><input type='button' name='save_cri' value=\"" .
-                 __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary' onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'></p>";
+                 __('Save the intervention report', 'manageentities') . "\" class='btn btn-primary manageentities_button' 
+                 onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'></p>";
+
+            echo "<IFRAME style='width:500px;height:700px' src='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
             Html::closeForm();
+
          }
 
-         echo "<IFRAME style='width:100%;height:90%' src='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
+
 
 
          //         if(empty($p['documents_id'])){

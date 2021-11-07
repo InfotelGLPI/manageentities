@@ -81,7 +81,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-
+      echo "<br>";
       if ($number) {
          echo "<form method='post' action=\"./entity.php\">";
          echo "<div align='center'><table class='tab_cadre_me center'>";
@@ -115,7 +115,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
                                     'deletebusiness',
                                     _x('button', 'Delete permanently'),
                                     ['id' => $ID],
-                                    "../../../pics/delete.png");
+                                    'fa-times-circle');
                echo "</td>";
             }
             echo "</tr>";
@@ -141,9 +141,14 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
          if ($this->canCreate() && sizeof($instID) == 1) {
             echo "<form method='post' action=\"./entity.php\">";
-            echo "<table class='tab_cadre_me center' width='95%'>";
+            echo "<div align='center'><table class='tab_cadre_me center'>";
+            echo "<tr><th colspan='2'>";
+            echo "<h3><div class='alert alert-secondary' role='alert'>";
+            echo _n('Associated commercial', 'Associated business', 2, 'manageentities');
+            echo "</div></h3>";
+            echo "</th></tr>";
 
-            echo "<tr class='tab_bg_1'><th colspan='2'>" . _n('Associated commercial', 'Associated business', 2, 'manageentities') . "</tr><tr><td class='tab_bg_2 center'>";
+            echo "<tr><td class='tab_bg_2 center'>";
             echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
             $rand = User::dropdown(['right' => 'interface']);
             echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'>";

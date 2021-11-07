@@ -295,18 +295,17 @@ function manageentities_loadCriForm(action, modal, params) {
                 $('#' + modal).html(response);
 
                 switch (action) {
-                    case 'showCriForm':
-                        $('#' + modal).dialog({
-                            autoOpen: true,
-                            height: params.height,
-                            width: params.width,
-                            overflow: "none"
-                        });
-                        break;
 
                     case 'saveCri':
-                        $('#' + modal).dialog('close');
+                        // $('#' + modal).dialog('close');
                         window.location.reload();
+                        break;
+                    default:
+                        glpi_html_dialog({
+                            title: __('Interventions reports', 'manageentities'),
+                            body: response,
+                            id: action,
+                        })
                         break;
                 }
             }

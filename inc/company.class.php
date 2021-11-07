@@ -160,7 +160,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesCompany') . "'>";
          $addButton .= Html::hidden('company_id', ['value' => 'company']);
          $addButton .= Html::hidden('id', ['value' => '']);
-         $addButton .= Html::submit(_sx('button', 'Save'), ['name' => 'addperiod', 'class' => 'btn btn-primary']);
+         $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'add_company', 'class' => 'btn btn-primary']);
 
       }
 

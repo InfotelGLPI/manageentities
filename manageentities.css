@@ -124,6 +124,10 @@ div#tabcontent {
    margin-right: 1px !important;
 }
 
+.manageentities_button {
+   padding: 10px!important;
+}
+
 .manageentities-state-default.manageentities-corner-left { /* non-theme */
    border-top-left-radius: 4px;
    border-bottom-left-radius: 4px;

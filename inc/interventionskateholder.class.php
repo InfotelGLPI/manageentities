@@ -389,7 +389,11 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          // Nb days
          echo "<td>" . __('Affected to', 'manageentities') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
          echo "<td id='nb_days_container'>";
-         PluginManageentitiesDropdown::showNumber("nb_days", ["width" => 100, "min" => 0, "max" => $nbDays, "step" => "0.5", "rand" => $rand]);
+         PluginManageentitiesDropdown::showNumber("nb_days", ["width" => 100,
+                                                              "min" => 0,
+                                                              "max" => $nbDays,
+                                                              "step" => "0.5",
+                                                              "rand" => $rand]);
          $config = PluginManageentitiesConfig::getInstance();
          if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
             echo "&nbsp;" . _n("Day", "Days", 2);
@@ -399,8 +403,10 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          echo "</td>";
 
          echo "<td>";
-         echo "<input type='hidden' name='id_user' id='id_user' value='dropdown_users_id_tech" . $idUser . "' />";
-         echo "<input type='button' class='submit btn btn-primary' name='add_skateholder' id='add_skateholder' value='" . _sx("button", "Add") . "' onclick='addSkateholder" . $idToUse . "();' />";
+         $value = "dropdown_users_id_tech" . $idUser;
+         echo Html::hidden('id_user', ['id' => 'id_user', 'value' => $value]);
+         echo "<input type='button' class='submit btn btn-primary' name='add_skateholder' id='add_skateholder' 
+         value='" . _sx("button", "Add") . "' onclick='addSkateholder" . $idToUse . "();' />";
          echo "</td>";
          echo "</tr>";
          echo "</table>";

@@ -314,17 +314,21 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       }
 
       if ($generation_ok || $regeneration_ok) {
+         Html::requireJs('glpi_dialog');
          $params = ['pdf_action' => $pdf_action,
                     'job'        => $ticket->fields['id'],
                     'root_doc'   => $CFG_GLPI['root_doc'],
                     'toupdate'   => "showCriDetail$rand",
                     'width'      => 1000,
                     'height'     => 550];
-         echo "<input type='submit' name='submit' value=\"" . $title . "\" class='submit btn btn-primary' 
-         onClick='manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");'>";
-         if (!isset($options['modal'])) {
-            echo "<div id=\"$modal\" title=\"" . $title . "\" style=\"display:none;text-align:center\"></div>";
-         }
+
+         echo Html::submit($title, ['name'    => 'showCriForm',
+                                    'class'   => 'btn btn-primary',
+                                    'onclick' => "manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");"]);
+
+//         if (!isset($options['modal'])) {
+//            echo "<div id=\"$modal\" title=\"" . $title . "\" style=\"display:none;text-align:center\"></div>";
+//         }
       }
 
       // DELETE
@@ -452,7 +456,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
             echo "</table>";
          } else {
+            echo "<div class='center alert alert-important alert-info d-flex'>";
             echo __('No item found');
+            echo "</div>";
             if ($entity == -1) {
                self::addReports($item, $options);
             }

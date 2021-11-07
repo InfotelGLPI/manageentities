@@ -115,7 +115,7 @@ class PluginManageentitiesGantt extends CommonDBTM {
 
                   /*$color = 'ganttBegin';
                   //$color = 'ganttGreen';
-                  
+
                   if ($val['percent'] > 50) {
                      $color = 'ganttGreen';
                   }

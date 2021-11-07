@@ -35,8 +35,6 @@ if ($plugin->isActivated("manageentities")
     && Session::haveRight('plugin_manageentities', UPDATE)) {
 
    $addElementsView = new PluginManageentitiesAddElementsView();
-
-
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
    $addElementsView->showForm();
    Html::footer();

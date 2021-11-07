@@ -333,24 +333,24 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $tt->getBeginHiddenFieldText('content');
+      echo "<td>";
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      echo $tt->getEndHiddenFieldText('content');
+//      echo $tt->getEndHiddenFieldText('content');
       echo "</td>";
 
       echo "<td colspan='3'>";
-      echo $tt->getBeginHiddenFieldValue('content');
+//      echo $tt->getBeginHiddenFieldValue('content');
       $rand_text = mt_rand();
       $rows = 5;
       $content_id = "content$rand";
 
       $content = $options['content'];
 
-      $content = Html::setRichTextContent(
-         $content_id,
-         $content,
-         $rand
-      );
+//      $content = Html::setRichTextContent(
+//         $content_id,
+//         $content,
+//         $rand
+//      );
 
       echo "<div id='content$rand_text'>";
       Html::textarea([
@@ -360,7 +360,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          'required' => $tt->isMandatoryField('content'),
          'rows' => $rows,
          'enable_richtext' => true,
-         'value' => $content
+         'enable_fileupload' => false,
+         'enable_images'     => false,
+         'value' => Glpi\Toolbox\RichText::getSafeHtml($content, true),
       ]);
       echo "</div>";
       echo "</td>";
@@ -368,26 +370,26 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       if ($tt->isMandatoryField('urgency') || $tt->isPredefinedField('urgency')
          && $tt->isHiddenField('urgency')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>" . $tt->getBeginHiddenFieldText('urgency');
+         echo "<td>";
          printf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
-         echo $tt->getEndHiddenFieldText('urgency');
+//         echo $tt->getEndHiddenFieldText('urgency');
          echo "</td>";
          echo "<td colspan='3'>";
-         echo $tt->getBeginHiddenFieldValue('urgency');
+//         echo $tt->getBeginHiddenFieldValue('urgency');
          Ticket::dropdownUrgency(['value' => $options['urgency']]);
-         echo $tt->getEndHiddenFieldValue('urgency', $ticket);
+//         echo $tt->getEndHiddenFieldValue('urgency', $ticket);
          echo "</td>";
       }
 
       if ($tt->isMandatoryField('impact') || $tt->isPredefinedField('impact')
          && !$tt->isHiddenField('impact')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>" . $tt->getBeginHiddenFieldText('impact');
+         echo "<td>";
          printf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
-         echo $tt->getEndHiddenFieldText('impact');
+//         echo $tt->getEndHiddenFieldText('impact');
          echo "</td>";
          echo "<td colspan='3'>";
-         echo $tt->getBeginHiddenFieldValue('impact');
+//         echo $tt->getBeginHiddenFieldValue('impact');
          Ticket::dropdownImpact(['value' => $options['impact']]);
          echo "</td>";
          echo "</tr>";
@@ -397,12 +399,12 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       if ($tt->isMandatoryField('priority') || $tt->isPredefinedField('priority')
          && !$tt->isHiddenField('priority')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>" . $tt->getBeginHiddenFieldText('priority');
+         echo "<td>";
          printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
-         echo $tt->getEndHiddenFieldText('priority');
+//         echo $tt->getEndHiddenFieldText('priority');
          echo "</td>";
          echo "<td colspan='3'>";
-         echo $tt->getBeginHiddenFieldValue('priority');
+//         echo $tt->getBeginHiddenFieldValue('priority');
          Ticket::dropdownImpact(['value' => $options['priority']]);
          echo "</td>";
          echo "</tr>";
@@ -468,7 +470,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "<td>" . __('Description') . "</td>";
 
       echo "<td>";
-      echo $tt->getBeginHiddenFieldValue('content');
+//      echo $tt->getBeginHiddenFieldValue('content');
       $rand_text = mt_rand();
       $rand = mt_rand();
       $rows = 5;
@@ -476,11 +478,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       $content = isset($options['description']) ? $options['description'] : "";
 
-      $content = Html::setRichTextContent(
-         $content_id,
-         $content,
-         $rand
-      );
+//      $content = Html::setRichTextContent(
+//         $content_id,
+//         $content,
+//         $rand
+//      );
 
       echo "<div id='content$rand_text'>";
       Html::textarea([
@@ -491,7 +493,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          'required' => $tt->isMandatoryField('description'),
          'rows' => $rows,
          'enable_richtext' => true,
-         'value' => $content
+         'enable_fileupload' => false,
+         'enable_images'     => false,
+         'value' => Glpi\Toolbox\RichText::getSafeHtml($content, true),
       ]);
       echo "</div>";
       echo "</td>";
@@ -751,7 +755,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Description') . "</td>";
          echo "<td colspan='3'>";
-         echo $tt->getBeginHiddenFieldValue('content');
+//         echo $tt->getBeginHiddenFieldValue('content');
          $rand_text = mt_rand();
          $rand = mt_rand();
          $rows = 5;
@@ -759,11 +763,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
          $content = isset($options['description-undone']) ? $options['description-undone'] : "";
 
-         $content = Html::setRichTextContent(
-            $content_id,
-            $content,
-            $rand
-         );
+//         $content = Html::setRichTextContent(
+//            $content_id,
+//            $content,
+//            $rand
+//         );
 
          echo "<div id='content$rand_text'>";
          Html::textarea([
@@ -774,7 +778,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             'required' => $tt->isMandatoryField('description-undone'),
             'rows' => $rows,
             'enable_richtext' => true,
-            'value' => $content
+            'enable_fileupload' => false,
+            'enable_images'     => false,
+            'value' => Glpi\Toolbox\RichText::getSafeHtml($content, true),
          ]);
          echo "</div>";
          echo "</td>";

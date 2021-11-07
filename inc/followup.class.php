@@ -1246,14 +1246,14 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
          echo Html::hidden('item_type', ['value' => $item_type_output]);
          if ($item_type_output_param != 0)
-            echo "<input type='hidden' name='item_type_param' value='" .
-                 serialize($item_type_output_param) . "'>";
+            echo Html::hidden('item_type_param', ['value' => serialize($item_type_output_param)]);
 
          $explode = explode("&amp;", $parameters);
          for ($i = 0; $i < count($explode); $i++) {
-            $pos = strpos($explode[$i], '=');
-            echo "<input type='hidden' name=\"" . substr($explode[$i], 0, $pos) . "\" value=\"" .
-                 substr($explode[$i], $pos + 1) . "\">";
+            $pos  = strpos($explode[$i], '=');
+            $name = substr($explode[$i], 0, $pos);
+            echo Html::hidden($name, ['value' => substr($explode[$i], $pos + 1)]);
+
          }
          echo "<select name='display_type'>";
          echo "<option value='" . Search::PDF_OUTPUT_LANDSCAPE . "'>" . __('Current page in landscape PDF') . "</option>";
