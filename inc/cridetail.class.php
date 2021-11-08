@@ -1371,11 +1371,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             } else {
                $interv[$key]["end"] = $data["end"];
             }
-            $interv[$key]["name"]       = Html::resume_text($data["name"], $CFG_GLPI["cut"]);
+            $interv[$key]["name"]     = Glpi\Toolbox\Sanitizer::unsanitize(Html::resume_text($data["name"], $CFG_GLPI["cut"])); // name is re-encoded on JS side
+            $interv[$key]["content"]  = Glpi\Toolbox\RichText::getSafeHtml(Html::resume_text($data["content"],$CFG_GLPI["cut"]));
             $interv[$key]["actiontime"] = $data["actiontime"];
-            $interv[$key]["content"]
-                                        = Html::resume_text(Toolbox::unclean_cross_side_scripting_deep($data["content"]),
-                                                            $CFG_GLPI["cut"]);
             $interv[$key]["url"]        = $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" .
                                           $data['tickets_id'];
             $interv[$key]["ajaxurl"]    = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .

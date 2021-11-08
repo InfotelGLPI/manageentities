@@ -108,7 +108,7 @@ switch ($_POST['action']) {
          $params = $_POST["params"];
 
          $input->enregistrement = false;
-         if ($input->REPORT_ACTIVITE) {
+         if (isset($input->REPORT_ACTIVITE)) {
             // Purge cri
             $input->REPORT_ACTIVITE_ID = $input->REPORT_ACTIVITE;
             $criDetail                 = new PluginManageentitiesCriDetail();
