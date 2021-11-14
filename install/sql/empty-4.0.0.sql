@@ -85,8 +85,8 @@ INSERT INTO `glpi_plugin_manageentities_configs` (`id`,`backup`,`documentcategor
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_critypes`;
 CREATE TABLE `glpi_plugin_manageentities_critypes` (
    `id` int(11) NOT NULL auto_increment,
-   `name` varchar(255) collate utf8_unicode_ci default NULL,
-   `comment` text collate utf8_unicode_ci,
+   `name` varchar(255) collate utf8mb4_unicode_ci default NULL,
+   `comment` text collate utf8mb4_unicode_ci,
    PRIMARY KEY  (`id`),
    KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -108,7 +108,7 @@ DROP TABLE IF EXISTS `glpi_plugin_manageentities_contractdays`;
 CREATE TABLE `glpi_plugin_manageentities_contractdays` (
    `id` int(11) NOT NULL auto_increment,
    `entities_id` int(11) NOT NULL default '0',
-   `name` varchar(255) collate utf8_unicode_ci default NULL,
+   `name` varchar(255) collate utf8mb4_unicode_ci default NULL,
    `plugin_manageentities_critypes_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_manageentities_critypes (id)',
    `contracts_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contracts (id)',
    `plugin_manageentities_contractstates_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractstates (id)',
@@ -160,7 +160,7 @@ CREATE TABLE `glpi_plugin_manageentities_cridetails` (
    `withcontract` int(11) NOT NULL default '0',
    `contracts_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contracts (id)',
    `realtime` decimal(20,2) default '0.00',
-   `technicians` varchar(255) collate utf8_unicode_ci default NULL,
+   `technicians` varchar(255) collate utf8mb4_unicode_ci default NULL,
    `tickets_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_tickets (id)',
    `number_moving` int(11) NOT NULL default '0' COMMENT 'Number of movements',
    PRIMARY KEY  (`id`),
@@ -175,11 +175,11 @@ CREATE TABLE `glpi_plugin_manageentities_cridetails` (
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_contractstates`;
 CREATE TABLE `glpi_plugin_manageentities_contractstates` (
    `id` int(11) NOT NULL auto_increment,
-   `name` varchar(255) collate utf8_unicode_ci default NULL,
+   `name` varchar(255) collate utf8mb4_unicode_ci default NULL,
    `is_active` tinyint(1) NOT NULL default '0',
    `is_closed` tinyint(1) NOT NULL default '0',
    `color` varchar(7) default '#F2F2F2',
-   `comment` text collate utf8_unicode_ci,
+   `comment` text collate utf8mb4_unicode_ci,
    PRIMARY KEY  (`id`),
    KEY `name` (`name`),
    KEY `is_active` (`is_active`)
@@ -197,12 +197,12 @@ CREATE TABLE `glpi_plugin_manageentities_taskcategories` (
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_companies`;
 CREATE TABLE `glpi_plugin_manageentities_companies` (
    `id` int(11) NOT NULL auto_increment,
-   `name` varchar(255) collate utf8_unicode_ci default NULL,
-   `address` text collate utf8_unicode_ci COMMENT 'address of the company shown on CRI',
+   `name` varchar(255) collate utf8mb4_unicode_ci default NULL,
+   `address` text collate utf8mb4_unicode_ci COMMENT 'address of the company shown on CRI',
    `entity_id` text default NULL,
    `recursive` int(11) default 0,
    `logo_id` int(11) default 0 COMMENT 'RELATION to glpi_documents',
-   `comment` text collate utf8_unicode_ci,
+   `comment` text collate utf8mb4_unicode_ci,
    PRIMARY KEY  (`id`),
    KEY `logo_id` (`logo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
