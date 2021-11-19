@@ -464,7 +464,11 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Comments') . " ";
       echo "</td><td>";
-      echo "<textarea cols='40' rows='5' name='comment'>" . $this->fields["comment"] . "</textarea>";
+      Html::textarea(['name'            => 'comment',
+                      'value'           => $this->fields["comment"],
+                      'cols'       => 40,
+                      'rows'       => 5,
+                      'enable_richtext' => false]);
       echo "</td><td></td><td></td></tr>";
       echo "</tr>";
 

@@ -87,7 +87,9 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "<td class='right'>" . __('Task category') . " :</td><td>";
       TaskCategory::dropdown(['name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0]);
       echo "</td></tr>";
-      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
+      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'>";
+      echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
+      echo "</td></tr>";
       echo "</table>";
       Html::closeForm();
       echo "</div>";
@@ -122,7 +124,9 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "<td class='right'>" . __('Task category') . " :</td><td>";
       TaskCategory::dropdown(['name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0]);
       echo "</td></tr>";
-      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
+      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'>";
+      echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
+      echo "</td></tr>";
       echo "</table>";
       Html::closeForm();
       echo "</div>";

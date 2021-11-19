@@ -99,6 +99,7 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['mydashboard']['manageentities'] = ["PluginManageentitiesDashboard"];
       }
 
+      $PLUGIN_HOOKS['post_item_form']['manageentities'] = ['PluginManageentitiesTicketTask', 'postForm'];
       // Add specific files to add to the header : javascript or css
       $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css", "style.css"];
 
@@ -108,14 +109,14 @@ function plugin_init_manageentities() {
                                                               'scripts/jquery.form.js'];
       }
       // Ticket task duplication
-      if (Session::haveRight("task", CommonITILTask::UPDATEALL)
-          && Session::haveRight("task", CommonITILTask::ADDALLITEM)
-          && strpos($_SERVER['REQUEST_URI'], "ticket.form.php") !== false
-          && strpos($_SERVER['REQUEST_URI'], 'id=') !== false
-          && Session::haveRight("plugin_manageentities", READ)) {
-
-         $PLUGIN_HOOKS['add_javascript']['manageentities'][] = 'scripts/manageentities_load_scripts.js';
-      }
+//      if (Session::haveRight("task", CommonITILTask::UPDATEALL)
+//          && Session::haveRight("task", CommonITILTask::ADDALLITEM)
+//          && strpos($_SERVER['REQUEST_URI'], "ticket.form.php") !== false
+//          && strpos($_SERVER['REQUEST_URI'], 'id=') !== false
+//          && Session::haveRight("plugin_manageentities", READ)) {
+//
+//         $PLUGIN_HOOKS['add_javascript']['manageentities'][] = 'scripts/manageentities_load_scripts.js';
+//      }
       $PLUGIN_HOOKS['post_init']['manageentities'] = 'plugin_manageentities_postinit';
    }
 }
@@ -133,28 +134,10 @@ function plugin_version_manageentities() {
       'requirements'   => [
          'glpi' => [
             'min' => '10.0',
+            'max' => '11.0',
             'dev' => false
          ]
       ]
    ];
 
-}
-
-// Optional : check prerequisites before install : may print errors or add to message after redirect
-function plugin_manageentities_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '10.0', 'lt')
-      || version_compare(GLPI_VERSION, '11.0', 'ge')) {
-      if (method_exists('Plugin', 'messageIncompatible')) {
-         echo Plugin::messageIncompatible('core', '10.0');
-      }
-      return false;
-   }
-
-   return true;
-}
-
-
-// Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
-function plugin_manageentities_check_config() {
-   return true;
 }

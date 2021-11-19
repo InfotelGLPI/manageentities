@@ -85,7 +85,9 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       if (isset($_POST['techs'])) {
          echo "<tr class='tab_bg_2'><td colspan='4'></td></tr>";
       }
-      echo "<tr class='tab_bg_2'><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
+      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
+      echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
+      echo "</td></tr>";
 
       echo "</table>";
       Html::closeForm();
@@ -120,7 +122,9 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo __('Technician') . " :</td><td class='tab_bg_2 center' colspan='3' >";
       Dropdown::showFromArray('techs', $techs, ['multiple' => true]);
       echo "</td></tr>";
-      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'><input type=\"submit\" class='button' name=\"send\" Value=\"" . _sx('button', 'Post') . "\" /></td></tr>";
+      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'>";
+      echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
+      echo "</td></tr>";
 
       echo "</table>";
       Html::closeForm();

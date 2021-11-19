@@ -100,14 +100,22 @@ class PluginManageentitiesCompany extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Address') . "</td>";
       echo "<td>";
-      echo "<textarea cols='40' rows='5' name='address'>" . $this->fields["address"] . "</textarea>";
+      Html::textarea(['name'            => 'address',
+                      'value'           => $this->fields["address"],
+                      'cols'       => 40,
+                      'rows'       => 5,
+                      'enable_richtext' => false]);
       echo "</td>";
       echo "<td></td><td></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Comments') . "</td>";
       echo "<td>";
-      echo "<textarea cols='40' rows='5' name='comment'>" . $this->fields["comment"] . "</textarea>";
+      Html::textarea(['name'            => 'comment',
+                      'value'           => $this->fields["comment"],
+                      'cols'       => 40,
+                      'rows'       => 5,
+                      'enable_richtext' => false]);
       echo "</td>";
       echo "<td></td><td></td></tr>";
 

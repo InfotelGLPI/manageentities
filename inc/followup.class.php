@@ -1255,7 +1255,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
             echo Html::hidden($name, ['value' => substr($explode[$i], $pos + 1)]);
 
          }
-         echo "<select name='display_type'>";
+         echo "<select class='form-select' name='display_type'>";
          echo "<option value='" . Search::PDF_OUTPUT_LANDSCAPE . "'>" . __('Current page in landscape PDF') . "</option>";
          echo "<option value='" . Search::PDF_OUTPUT_PORTRAIT . "'>" . __('Current page in portrait PDF') . "</option>";
          echo "<option value='" . Search::SYLK_OUTPUT . "'>" . __('Current page in SLK') . "</option>";

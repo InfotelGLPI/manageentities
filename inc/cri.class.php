@@ -802,8 +802,12 @@ class PluginManageentitiesCri extends CommonDBTM {
             $p['REPORT_DESCRIPTION'] = str_replace("<br>", " ", $p['REPORT_DESCRIPTION']);
             $p['REPORT_DESCRIPTION'] = str_replace("’", "'", $p['REPORT_DESCRIPTION']);
 
-            echo "<textarea style='display:none;' name='REPORT_DESCRIPTION' cols='100' rows='8'>" . $p['REPORT_DESCRIPTION'] . "</textarea>";
-
+            Html::textarea(['name'            => 'REPORT_DESCRIPTION',
+                            'value'           => $p['REPORT_DESCRIPTION'],
+                            'display'           => 'none',
+                            'cols'       => 100,
+                            'rows'       => 8,
+                            'enable_richtext' => false]);
             echo Html::hidden('INTERVENANTS', ['value' => $intervenants]);
             echo Html::hidden('documents_id', ['value' => $p['documents_id']]);
             echo Html::hidden('CONTRAT', ['value' => $p['CONTRAT']]);
