@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-14 16:08+0000\n"
+"POT-Creation-Date: 2021-11-19 11:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,7 @@ msgstr[1] ""
 
 #: hook.php:559 inc/addelementsview.class.php:1941
 #: inc/contractday.class.php:121 inc/contractday.class.php:385
-#: inc/contractday.class.php:572 inc/contractstate.class.php:39
+#: inc/contractday.class.php:576 inc/contractstate.class.php:39
 #: inc/followup.class.php:723 inc/followup.class.php:725
 #: inc/followup.class.php:1079
 msgid "State of contract"
@@ -64,7 +64,7 @@ msgstr ""
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:127 front/addelements.form.php:38 front/config.form.php:45
+#: setup.php:128 front/addelements.form.php:38 front/config.form.php:45
 #: front/cridetail.form.php:48 front/cridetail.form.php:51
 #: front/cridetail.form.php:54 front/entity.php:43 front/entity.php:46
 #: front/entity.php:49 front/generatecri.form.php:83 front/generatecri.php:36
@@ -492,7 +492,7 @@ msgstr ""
 #: inc/addelementsview.class.php:1563 inc/addelementsview.class.php:1879
 #: inc/contract.class.php:205 inc/contract.class.php:317
 #: inc/contract.class.php:319 inc/contractday.class.php:139
-#: inc/contractday.class.php:342 inc/contractday.class.php:805
+#: inc/contractday.class.php:342 inc/contractday.class.php:809
 #: inc/followup.class.php:611 inc/followup.class.php:706
 msgid "Type of service contract"
 msgstr ""
@@ -522,12 +522,12 @@ msgid "Period name"
 msgstr ""
 
 #: inc/addelementsview.class.php:1903 inc/contractday.class.php:105
-#: inc/contractday.class.php:355 inc/contractday.class.php:575
+#: inc/contractday.class.php:355 inc/contractday.class.php:579
 msgid "Postponement"
 msgstr ""
 
 #: inc/addelementsview.class.php:1928 inc/contractday.class.php:92
-#: inc/contractday.class.php:375 inc/contractday.class.php:570
+#: inc/contractday.class.php:375 inc/contractday.class.php:574
 #: inc/followup.class.php:735 inc/gantt.class.php:336 inc/monthly.class.php:405
 msgid "Initial credit"
 msgstr ""
@@ -627,17 +627,17 @@ msgid_plural "Companies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/company.class.php:115 inc/entity.class.php:276
+#: inc/company.class.php:123 inc/entity.class.php:276
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: inc/company.class.php:203 inc/company.class.php:221
+#: inc/company.class.php:211 inc/company.class.php:229
 #: inc/entitylogo.class.php:72
 msgid "The format of the image must be in JPG or JPEG"
 msgstr ""
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: inc/company.class.php:318
+#: inc/company.class.php:326
 #, php-format
 msgid "Logo %d"
 msgstr ""
@@ -786,19 +786,19 @@ msgstr[1] ""
 msgid "Credit remaining"
 msgstr ""
 
-#: inc/contractday.class.php:404 inc/contractday.class.php:577
+#: inc/contractday.class.php:404 inc/contractday.class.php:581
 #: inc/followup.class.php:736 inc/followup.class.php:908
 #: inc/gantt.class.php:337
 msgid "Total consummated"
 msgstr ""
 
-#: inc/contractday.class.php:417 inc/contractday.class.php:580
+#: inc/contractday.class.php:417 inc/contractday.class.php:584
 #: inc/dashboard.class.php:130 inc/dashboard.class.php:357
 #: inc/followup.class.php:742 inc/followup.class.php:909
 msgid "Total remaining"
 msgstr ""
 
-#: inc/contractday.class.php:425 inc/contractday.class.php:581
+#: inc/contractday.class.php:425 inc/contractday.class.php:585
 #: inc/followup.class.php:744 inc/followup.class.php:910
 #: inc/monthly.class.php:422
 msgid "Total exceeding"
@@ -813,20 +813,20 @@ msgstr ""
 msgid "Remaining total (amount)"
 msgstr ""
 
-#: inc/contractday.class.php:528
+#: inc/contractday.class.php:532
 msgid "Add a contract day"
 msgstr ""
 
-#: inc/contractday.class.php:564 inc/followup.class.php:728
+#: inc/contractday.class.php:568 inc/followup.class.php:728
 #: inc/monthly.class.php:403
 msgid "Type of contract"
 msgstr ""
 
-#: inc/contractday.class.php:749
+#: inc/contractday.class.php:753
 msgid "End date cannot be less than begin date"
 msgstr ""
 
-#: inc/contractday.class.php:779
+#: inc/contractday.class.php:783
 #, php-format
 msgid "The contract period %s already exists"
 msgstr ""
@@ -890,7 +890,7 @@ msgstr ""
 msgid "Please fill the contract period begin date."
 msgstr ""
 
-#: inc/cri.class.php:820
+#: inc/cri.class.php:824
 msgid "Save the intervention report"
 msgstr ""
 
