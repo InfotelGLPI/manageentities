@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-24 10:09+0000\n"
+"POT-Creation-Date: 2021-11-24 11:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -472,7 +472,7 @@ msgid "Document list"
 msgstr ""
 
 #: inc/addelementsview.class.php:1543 inc/contract.class.php:192
-#: inc/entity.class.php:673 inc/followup.class.php:605
+#: inc/entity.class.php:674 inc/followup.class.php:605
 #: inc/followup.class.php:690 inc/gantt.class.php:281
 msgid "Date of signature"
 msgstr ""
@@ -484,14 +484,14 @@ msgid "Date of renewal"
 msgstr ""
 
 #: inc/addelementsview.class.php:1560 inc/contract.class.php:202
-#: inc/contract.class.php:316 inc/followup.class.php:610
+#: inc/contract.class.php:317 inc/followup.class.php:610
 #: inc/followup.class.php:705 inc/monthly.class.php:401
 msgid "Mode of management"
 msgstr ""
 
 #: inc/addelementsview.class.php:1563 inc/addelementsview.class.php:1879
-#: inc/contract.class.php:205 inc/contract.class.php:317
-#: inc/contract.class.php:319 inc/contractday.class.php:139
+#: inc/contract.class.php:205 inc/contract.class.php:318
+#: inc/contract.class.php:320 inc/contractday.class.php:139
 #: inc/contractday.class.php:342 inc/contractday.class.php:809
 #: inc/followup.class.php:611 inc/followup.class.php:706
 msgid "Type of service contract"
@@ -631,13 +631,13 @@ msgstr[1] ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: inc/company.class.php:211 inc/company.class.php:229
+#: inc/company.class.php:212 inc/company.class.php:230
 #: inc/entitylogo.class.php:72
 msgid "The format of the image must be in JPG or JPEG"
 msgstr ""
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: inc/company.class.php:326
+#: inc/company.class.php:327
 #, php-format
 msgid "Logo %d"
 msgstr ""
@@ -728,8 +728,8 @@ msgstr ""
 msgid "Add a company"
 msgstr ""
 
-#: inc/config.class.php:304 inc/contract.class.php:479
-#: inc/contract.class.php:511
+#: inc/config.class.php:304 inc/contract.class.php:480
+#: inc/contract.class.php:512
 msgid "Hourly"
 msgstr ""
 
@@ -748,35 +748,35 @@ msgstr ""
 msgid "Contract detail"
 msgstr ""
 
-#: inc/contract.class.php:291 inc/contract.class.php:396
+#: inc/contract.class.php:291 inc/contract.class.php:397
 msgid "Associated assistance contracts"
 msgstr ""
 
-#: inc/contract.class.php:321
+#: inc/contract.class.php:322
 msgid "Used by default"
 msgstr ""
 
-#: inc/contract.class.php:430 inc/contract.class.php:456
+#: inc/contract.class.php:431 inc/contract.class.php:457
 msgid "Quarterly"
 msgstr ""
 
-#: inc/contract.class.php:431 inc/contract.class.php:458
+#: inc/contract.class.php:432 inc/contract.class.php:459
 msgid "Annual"
 msgstr ""
 
-#: inc/contract.class.php:480 inc/contract.class.php:513
+#: inc/contract.class.php:481 inc/contract.class.php:514
 msgid "By intervention"
 msgstr ""
 
-#: inc/contract.class.php:484 inc/contract.class.php:517
+#: inc/contract.class.php:485 inc/contract.class.php:518
 msgid "Technical Assistance"
 msgstr ""
 
-#: inc/contract.class.php:485 inc/contract.class.php:519
+#: inc/contract.class.php:486 inc/contract.class.php:520
 msgid "Package"
 msgstr ""
 
-#: inc/contract.class.php:539
+#: inc/contract.class.php:540
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
