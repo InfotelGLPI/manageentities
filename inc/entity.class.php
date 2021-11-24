@@ -616,7 +616,8 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $entity      = new Entity();
       $i           = 0;
 
-      while ($data = $result->next()) {
+      foreach ($result as $data) {
+//      while ($data = $result->next()) {
 
          if ($entity->getFromDB($data['entities_id'])) {
             $debug[$data['entities_id']] = ['name'      => $entity->getName(),
@@ -654,7 +655,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                echo "</tr>";
             }
          }
-
+         $result->next();
       }
       if ($i % 2 != 0) {
          echo "<td colspan='2'></td>";

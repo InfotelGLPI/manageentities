@@ -91,6 +91,7 @@ class PluginManageentitiesContact extends CommonDBTM {
       $query      = "SELECT `glpi_contacts`.*, `" . $this->getTable() . "`.`id` as contacts_id, `" . $this->getTable() . "`.`is_default`
         FROM `" . $this->getTable() . "`, `glpi_contacts`
         WHERE `" . $this->getTable() . "`.`contacts_id`=`glpi_contacts`.`id`
+        AND `glpi_contacts`.`is_deleted` = 0
         AND `" . $this->getTable() . "`.`entities_id` IN ($entitiesId)
         ORDER BY `glpi_contacts`.`name`";
 

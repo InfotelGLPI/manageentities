@@ -128,7 +128,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
          echo "</div></td>";
       }
       echo "<td>";
-      echo Html::file(['multiple' => false, 'onlyimages' => true]);
+//      echo Html::file(['multiple' => false, 'onlyimages' => true]);
+      echo "<input class='form-control' type='file' name='logo_id'>";
       echo "</td>";
       if ($this->fields["logo_id"] == 0) {
          echo "<td></td>";

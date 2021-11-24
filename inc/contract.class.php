@@ -301,6 +301,7 @@ class PluginManageentitiesContract extends CommonDBTM {
                        `" . $this->getTable() . "`.`id` as myid
         FROM `" . $this->getTable() . "`, `glpi_contracts`
         WHERE `" . $this->getTable() . "`.`contracts_id` = `glpi_contracts`.`id`
+        AND `glpi_contracts`.`is_deleted` = 0
         AND `" . $this->getTable() . "`.`entities_id` IN (" . $entitiesID . ")
         ORDER BY `glpi_contracts`.`begin_date`, `glpi_contracts`.`name`";
       $result = $DB->query($query);

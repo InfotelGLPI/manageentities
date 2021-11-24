@@ -377,13 +377,13 @@ class PluginManageentitiesMonthly extends CommonDBTM {
       $result = $DB->query($query);
       $nb     = $DB->numrows($result);
       if ($nb && $output_type == search::HTML_OUTPUT) {
-         echo "<div class = 'center red b'>" . __('Warning : There are supplementary interventions which depends on  a prestation with a earlier end date', 'manageentities') . "</div>";
+         echo "<div class = 'alert alert-important alert-warning d-flex'>" . __('Warning : There are supplementary interventions which depends on  a prestation with a earlier end date', 'manageentities') . "</div>";
          echo _n('Ticket', 'Tickets', $nb);
          echo " : ";
          while ($data = $DB->fetchArray($result)) {
             $ticket = new Ticket();
             $ticket->getFromDB($data["tickets_id"]);
-            echo $ticket->getLink() . "<br>";
+            echo $ticket->getLink() . " (".$data["tickets_id"].")<br>";
          }
 
       }
