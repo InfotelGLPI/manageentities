@@ -1638,7 +1638,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          echo " class='btn btn-primary manageentities_button' onclick='addContractManagementType();'>";
          echo "</td><td class='center' colspan='2'>";
          echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnDeleteContractManagementType' id='btnDeleteContractManagementType' 
-         value='" . _sx('button', 'Delete permanently') . "' class='submit' onclick='confirm_deleteContractManagementType();' ";
+         value='" . _sx('button', 'Delete permanently') . "' class='btn btn-primary' onclick='confirm_deleteContractManagementType();' ";
          if (empty($pluginContract)) {
             echo " style='visibility:hidden' ";
          }

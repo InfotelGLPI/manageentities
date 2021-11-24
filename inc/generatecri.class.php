@@ -443,7 +443,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "<div style='margin: 10px; padding:10px; width:400px; border:dashed;'>";
          echo "<span style='font-weight:bold; font-size: 15px;'>" . _n('Task', 'Tasks', 1) . " : </span><br>";
          echo "<span style='font-weight:bold;'>" . __('Description') . " : </span>";
-         echo "<span>" . Html::clean($tasktemplate->getField('content')) . "</span><br>";
+         echo "<span>" . Glpi\Toolbox\RichText::getTextFromHtml($tasktemplate->getField('content')) . "</span><br>";
          echo "<span style='font-weight:bold;'>" . __('Duration') . " : </span>";
          echo "<span>" . self::formatDuration($tasktemplate->getField('actiontime')) . "</span><br>";
          if ($tasktemplate->getField('groups_id_tech') > 0) {

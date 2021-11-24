@@ -175,64 +175,64 @@ function switchElementsEnableFromCb(currentCb, idToHide) {
     }
 }
 
-function showCloneTicketTask(options) {
-    //################## TICKET TASK ################################################################
-    $(document).ready(function () {
-        // Only in ticket.php
-        if (location.pathname.indexOf('ticket.form.php') > 0) {
-            // get tickets_id
-            var tickets_id = getUrlParam(window.location.href, 'id');
-            //only in edit form
-            if (tickets_id == undefined || tickets_id == 0)
-                return;
-
-            // Launched on each complete Ajax load 
-            $(document).ajaxComplete(function (event, xhr, option) {
-                setTimeout(function () {
-                    // We execute the code only if the ticket form display request is done 
-                    if (option.data != undefined) {
-                        var tid;
-
-                        // Get the right tab
-                        if (getUrlParam(option.data, 'type') == 'TicketTask'
-                                && (option.url.indexOf("ajax/timeline.php") != -1 || option.url.indexOf("ajax/viewsubitem.php") != -1)) {
-                            var taskId = getUrlParam(option.data, '&id');
-                            var tid = 0;
-                            if ((taskId != undefined)) {
-                                tid = taskId;
-                            }
-
-                            if (tid > 0) {
-                                $.ajax({
-                                    url: options.root_doc + '/plugins/manageentities/ajax/tickettask.php',
-                                    type: "POST",
-                                    dataType: "html",
-                                    data: {
-                                        'tickets_id': tickets_id,
-                                        'tickettasks_id': tid,
-                                        'action': 'showCloneTicketTask'
-                                    },
-                                    success: function (response, opts) {
-                                        var taskForm = $("input[value='"+tid+"']").next("tr");
-                                        if ($("span[name='duplicate_"+tid+"']").length == 0) {
-                                            $(response).insertBefore(taskForm);
-                                        }
-
-                                        var scripts, scriptsFinder = /<script[^>]*>([\s\S]+?)<\/script>/gi;
-                                        while (scripts = scriptsFinder.exec(response)) {
-                                            eval(scripts[1]);
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                }, 100);
-            }, this);
-        }
-    });
-}
+// function showCloneTicketTask(options) {
+//     //################## TICKET TASK ################################################################
+//     $(document).ready(function () {
+//         // Only in ticket.php
+//         if (location.pathname.indexOf('ticket.form.php') > 0) {
+//             // get tickets_id
+//             var tickets_id = getUrlParam(window.location.href, 'id');
+//             //only in edit form
+//             if (tickets_id == undefined || tickets_id == 0)
+//                 return;
+//
+//             // Launched on each complete Ajax load
+//             $(document).ajaxComplete(function (event, xhr, option) {
+//                 setTimeout(function () {
+//                     // We execute the code only if the ticket form display request is done
+//                     if (option.data != undefined) {
+//                         var tid;
+//
+//                         // Get the right tab
+//                         if (getUrlParam(option.data, 'type') == 'TicketTask'
+//                                 && (option.url.indexOf("ajax/timeline.php") != -1 || option.url.indexOf("ajax/viewsubitem.php") != -1)) {
+//                             var taskId = getUrlParam(option.data, '&id');
+//                             var tid = 0;
+//                             if ((taskId != undefined)) {
+//                                 tid = taskId;
+//                             }
+//
+//                             if (tid > 0) {
+//                                 $.ajax({
+//                                     url: options.root_doc + '/plugins/manageentities/ajax/tickettask.php',
+//                                     type: "POST",
+//                                     dataType: "html",
+//                                     data: {
+//                                         'tickets_id': tickets_id,
+//                                         'tickettasks_id': tid,
+//                                         'action': 'showCloneTicketTask'
+//                                     },
+//                                     success: function (response, opts) {
+//                                         var taskForm = $("input[value='"+tid+"']").next("tr");
+//                                         if ($("span[name='duplicate_"+tid+"']").length == 0) {
+//                                             $(response).insertBefore(taskForm);
+//                                         }
+//
+//                                         var scripts, scriptsFinder = /<script[^>]*>([\s\S]+?)<\/script>/gi;
+//                                         while (scripts = scriptsFinder.exec(response)) {
+//                                             eval(scripts[1]);
+//                                         }
+//                                     }
+//                                 });
+//                             }
+//                         }
+//                     }
+//
+//                 }, 100);
+//             }, this);
+//         }
+//     });
+// }
 
 function getUrlParam(url, name) {
     var results = new RegExp('[?&]?' + name + '=([^&]+)(&|$)').exec(url);

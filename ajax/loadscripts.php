@@ -33,18 +33,18 @@ Html::header_nocache();
 Session::checkLoginUser();
 header("Content-Type: text/html; charset=UTF-8");
 
-if (isset($_POST['action'])) {
-   switch ($_POST['action']) {
-      case "load" :
-         if (Session::haveRight("task", CommonITILTask::UPDATEALL)
-             && Session::haveRight("task", CommonITILTask::ADDALLITEM)
-             && strpos($_SERVER['HTTP_REFERER'], "ticket.form.php") !== false
-             && strpos($_SERVER['HTTP_REFERER'], 'id=') !== false
-             && Session::getCurrentInterface() == "central"
-             && Session::haveRight("plugin_manageentities", READ)) {
-
-            echo "<script type='text/javascript'>showCloneTicketTask(" . json_encode(['root_doc' => $CFG_GLPI['root_doc']]) . ");</script>";
-         }
-         break;
-   }
-}
+//if (isset($_POST['action'])) {
+//   switch ($_POST['action']) {
+//      case "load" :
+//         if (Session::haveRight("task", CommonITILTask::UPDATEALL)
+//             && Session::haveRight("task", CommonITILTask::ADDALLITEM)
+//             && strpos($_SERVER['HTTP_REFERER'], "ticket.form.php") !== false
+//             && strpos($_SERVER['HTTP_REFERER'], 'id=') !== false
+//             && Session::getCurrentInterface() == "central"
+//             && Session::haveRight("plugin_manageentities", READ)) {
+//
+//            echo "<script type='text/javascript'>showCloneTicketTask(" . json_encode(['root_doc' => $CFG_GLPI['root_doc']]) . ");</script>";
+//         }
+//         break;
+//   }
+//}

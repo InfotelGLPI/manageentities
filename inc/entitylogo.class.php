@@ -81,7 +81,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
             $doc          = new Document();
             $img          = ["id" => $this->fields["logos_id"]];
             $doc->delete($img, 1);
-            $logo = $this->addFilesCRI(0, -1, $values);
+            $logo = $this->addFilesCRI($values,0, -1);
             foreach ($logo as $key => $name) {
                $this->add(['entities_id' => $values["entities_id"],
                            'logos_id'    => $key]);
@@ -89,7 +89,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
 
          } else {
 
-            $logo = $this->addFilesCRI(0, -1, $values);
+            $logo = $this->addFilesCRI($values,0, -1);
 
             foreach ($logo as $key => $name) {
 
@@ -109,7 +109,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
       );
    }
 
-   function addFilesCRI($donotif = 0, $disablenotif = 1, $values) {
+   function addFilesCRI( $values, $donotif = 0, $disablenotif = 1) {
       global $CFG_GLPI;
 
       if (!isset($values['_filename']) || (count($values['_filename']) == 0)) {
