@@ -64,12 +64,12 @@
 }
 
 .fn-gantt .leftPanel .name {
-    width: 150px;
+    width: 100px!important;
     font-weight: bold;
 }
 
 .fn-gantt .leftPanel .desc {
-    width: 375px;
+    width: 124px!important;
 }
 
 .fn-gantt .leftPanel .fn-wide, .fn-gantt .leftPanel .fn-wide .fn-label {
@@ -414,7 +414,7 @@
    text-decoration: none;
 }
 
-.fn-gantt .nav-link {
+.fn-gantt .fn-nav-link {
    margin: 0px 0px 8px 0px;
    display: inline-block;
    width: 20px;

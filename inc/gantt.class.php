@@ -56,8 +56,8 @@ class PluginManageentitiesGantt extends CommonDBTM {
     */
    static function showGantt($values = []) {
 
-      Html::requireJs('gantt');
-
+      echo Html::css('/plugins/manageentities/lib/jquery-gantt.css');
+      echo Html::script("/plugins/manageentities/lib/jquery-gantt.js");
       PluginManageentitiesEntity::showManageentitiesHeader(__('GANTT', 'manageentities'));
 
       $todisplay = static::getDataToDisplayOnGantt($_SESSION["glpiactiveentities"], true);
@@ -220,7 +220,7 @@ class PluginManageentitiesGantt extends CommonDBTM {
             }
             $js .= "     $('." . $col . "').css('background-color', '$color');";
             $js .= "     $('." . $col . "').css('border', '1px solid #000');";
-            $js .= "     $('." . $col . "').css('background-image', 'url(\"../lib/jquery-gantt/img/$img\")');";
+            $js .= "     $('." . $col . "').css('background-image', 'url(\"../lib/jquery-plugins/img/$img\")');";
 
             $js .= "     $('." . $col . "').css('background-repeat', 'no-repeat');";
             $js .= "     $('." . $col . "').css('color', 'transparent');";
