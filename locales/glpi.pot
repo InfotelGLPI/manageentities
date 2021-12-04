@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-29 15:29+0000\n"
+"POT-Creation-Date: 2021-12-04 18:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,9 +66,9 @@ msgstr ""
 
 #: setup.php:128 front/addelements.form.php:38 front/config.form.php:45
 #: front/cridetail.form.php:48 front/cridetail.form.php:51
-#: front/cridetail.form.php:54 front/entity.php:43 front/entity.php:46
+#: front/cridetail.form.php:53 front/entity.php:43 front/entity.php:46
 #: front/entity.php:48 front/generatecri.form.php:83 front/generatecri.php:36
-#: front/generatecri.php:39 front/generatecri.php:42 front/report.form.php:32
+#: front/generatecri.php:39 front/generatecri.php:41 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
 #: inc/followup.class.php:968 inc/generatecri.class.php:1155
 #: inc/monthly.class.php:548 inc/preference.class.php:77
@@ -127,7 +127,7 @@ msgid ""
 "Only ticket accepted are taking into account for consumption calculation"
 msgstr ""
 
-#: front/config.form.php:66
+#: front/config.form.php:65
 msgid "Please activate the plugin"
 msgstr ""
 
