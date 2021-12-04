@@ -49,7 +49,6 @@ if (Session::getCurrentInterface() == 'central') {
 } else {
    if ($plugin->isActivated('servicecatalog')) {
       PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
-      echo "<br>";
    } else {
       Html::helpHeader(__('Entities portal', 'manageentities'));
    }

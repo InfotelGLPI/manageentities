@@ -53,8 +53,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 
 } else {
    Html::header(__('Setup'), '', "config", "plugins");
-   echo "<div align='center'><br><br>";
-   echo "<i class='fas fa-exclamation-triangle fa-4x' style='color:orange'></i><br><br>";
+   echo "<div class='alert alert-important alert-warning d-flex'>";
    echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
    Html::footer();
 }
