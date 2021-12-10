@@ -362,7 +362,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          'enable_richtext' => true,
          'enable_fileupload' => false,
          'enable_images'     => false,
-         'value' => Glpi\Toolbox\RichText::getSafeHtml($content, true),
+         'value' => Glpi\RichText\RichText::getSafeHtml($content, true),
       ]);
       echo "</div>";
       echo "</td>";
@@ -443,7 +443,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo "<div style='margin: 10px; padding:10px; width:400px; border:dashed;'>";
          echo "<span style='font-weight:bold; font-size: 15px;'>" . _n('Task', 'Tasks', 1) . " : </span><br>";
          echo "<span style='font-weight:bold;'>" . __('Description') . " : </span>";
-         echo "<span>" . Glpi\Toolbox\RichText::getTextFromHtml($tasktemplate->getField('content')) . "</span><br>";
+         echo "<span>" . Glpi\RichText\RichText::getTextFromHtml($tasktemplate->getField('content')) . "</span><br>";
          echo "<span style='font-weight:bold;'>" . __('Duration') . " : </span>";
          echo "<span>" . self::formatDuration($tasktemplate->getField('actiontime')) . "</span><br>";
          if ($tasktemplate->getField('groups_id_tech') > 0) {
@@ -495,7 +495,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          'enable_richtext' => true,
          'enable_fileupload' => false,
          'enable_images'     => false,
-         'value' => Glpi\Toolbox\RichText::getSafeHtml($content, true),
+         'value' => Glpi\RichText\RichText::getSafeHtml($content, true),
       ]);
       echo "</div>";
       echo "</td>";
@@ -555,7 +555,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
       foreach ($options as $key => $value){
          if(strpos($key,"description") !== false){
-            $options[$key] = str_replace('\r\n' , '' ,nl2br(Toolbox::unclean_cross_side_scripting_deep($value)));
+            $options[$key] = str_replace('\r\n' , '' ,nl2br(Glpi\Toolbox\Sanitizer::unsanitize($value)));
          }
       }
 
@@ -780,7 +780,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             'enable_richtext' => true,
             'enable_fileupload' => false,
             'enable_images'     => false,
-            'value' => Glpi\Toolbox\RichText::getSafeHtml($content, true),
+            'value' => Glpi\RichText\RichText::getSafeHtml($content, true),
          ]);
          echo "</div>";
          echo "</td>";

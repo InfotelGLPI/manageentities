@@ -250,7 +250,7 @@ class PluginManageentitiesCri extends CommonDBTM {
             echo Html::script("public/lib/tinymce.js");
             Html::textarea([
                               'name'              => 'REPORT_DESCRIPTION',
-                              'value'             => Glpi\Toolbox\RichText::getSafeHtml($desc, true),
+                              'value'             => Glpi\RichText\RichText::getSafeHtml($desc, true),
                               'enable_richtext'   => true,
                               'enable_fileupload' => false,
                               'enable_images'     => false,
