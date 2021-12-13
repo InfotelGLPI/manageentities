@@ -1261,9 +1261,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
          echo "<option value='" . Search::SYLK_OUTPUT . "'>" . __('Current page in SLK') . "</option>";
          echo "<option value='" . Search::CSV_OUTPUT . "'>" . __('Current page in CSV') . "</option>";
          echo "</select>&nbsp;";
-         echo "<button type='submit' name='export' class='btn btn-primary unstyled pointer' " .
-              " title=\"" . _sx('button', 'Export') . "\">" .
-              "<i class='far fa-save'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
+         echo Html::submit(_sx('button', 'Export'), ['name' => 'export', 'class' => 'btn btn-primary']);
          echo "</td>";
       }
 

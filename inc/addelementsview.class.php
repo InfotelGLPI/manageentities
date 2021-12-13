@@ -31,7 +31,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-include_once(GLPI_ROOT . '/plugins/manageentities/common/commonGLPIView.class.php');
+include_once(PLUGIN_MANAGEENTITIES_DIR . '/common/commonGLPIView.class.php');
 
 class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
@@ -47,8 +47,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
    public function showForm() {
 
-      echo Html::css("/plugins/manageentities/lib/jquery-ui/jquery-ui.min.css");
-      echo Html::script("plugins/manageentities/lib/jquery-ui/jquery-ui.min.js");
+      echo Html::css(PLUGIN_MANAGEENTITIES_NOTFULL_DIR."/lib/jquery-ui/jquery-ui.min.css");
+      echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR."/lib/jquery-ui/jquery-ui.min.js");
 
       $this->showTitle();
       // addEntite
@@ -2806,7 +2806,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
 
-      $target = $CFG_GLPI["root_doc"] . "/plugins/manageentities/front/addelements.listener.php";
+      $target = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/addelements.listener.php";
 
       echo "<form name='form_raz' id='form_raz' method='post' action='" . $target . "' >";
       echo Html::hidden('action', ['value' => Action::REINIT_FORMS, 'id' => 'action_raz']);

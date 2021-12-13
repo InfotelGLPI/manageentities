@@ -56,8 +56,8 @@ class PluginManageentitiesGantt extends CommonDBTM {
     */
    static function showGantt($values = []) {
 
-      echo Html::css('/plugins/manageentities/lib/jquery-gantt.css');
-      echo Html::script("/plugins/manageentities/lib/jquery-gantt.js");
+      echo Html::css(PLUGIN_MANAGEENTITIES_NOTFULL_DIR.'/lib/jquery-gantt.css');
+      echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR."/lib/jquery-gantt.js");
       PluginManageentitiesEntity::showManageentitiesHeader(__('GANTT', 'manageentities'));
 
       $todisplay = static::getDataToDisplayOnGantt($_SESSION["glpiactiveentities"], true);

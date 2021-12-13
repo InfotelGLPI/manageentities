@@ -31,8 +31,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-require_once(GLPI_ROOT . "/plugins/manageentities/fpdf/fpdf.php");
-require_once(GLPI_ROOT . "/plugins/manageentities/fpdf/font/symbol.php");
+require_once(PLUGIN_MANAGEENTITIES_DIR . "/fpdf/fpdf.php");
+require_once(PLUGIN_MANAGEENTITIES_DIR . "/fpdf/font/symbol.php");
 
 class PluginManageentitiesCriPDF extends FPDF {
 

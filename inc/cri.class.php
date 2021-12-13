@@ -49,7 +49,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       $params = ['job'        => $ID,
                  'form'       => 'formReport',
-                 'root_doc'   => $CFG_GLPI['root_doc'],
+                 'root_doc'   => PLUGIN_MANAGEENTITIES_WEBDIR,
                  'toupdate'   => $options['toupdate'],
                  'pdf_action' => $options['action'],
                  'width'      => 1000,
@@ -59,8 +59,8 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       echo "<div class='red styleContractTitle' style='display:none' id='manageentities_cri_error'></div>";
 
-      echo "<form action=\"" . $CFG_GLPI["root_doc"] .
-           "/plugins/manageentities/front/cri.form.php\" method=\"post\" name=\"formReport\">";
+      echo "<form action=\"" . PLUGIN_MANAGEENTITIES_WEBDIR .
+           "/front/cri.form.php\" method=\"post\" name=\"formReport\">";
 
       // Champ caché pour l'identifiant du ticket.
       echo Html::hidden('REPORT_ID', ['value' => $ID]);
@@ -770,7 +770,7 @@ class PluginManageentitiesCri extends CommonDBTM {
          }
 
          //         if(isset($p['download']) && $p['download'] == 1){
-         //            echo "<IFRAME style='width:100%;height:90%' src='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
+         //            echo "<IFRAME style='width:100%;height:90%' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
 
          //         $doc = new Document();
          //         $doc->getFromDB( $values["documents_id"]);
@@ -818,13 +818,13 @@ class PluginManageentitiesCri extends CommonDBTM {
 
             $params = ['job'      => $job->fields['id'],
                        'form'     => 'formReport',
-                       'root_doc' => $CFG_GLPI['root_doc'],
+                       'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
                        'toupdate' => $options['toupdate']];
             echo "<p><input type='button' name='save_cri' value=\"" .
                  __('Save the intervention report', 'manageentities') . "\" class='btn btn-primary manageentities_button' 
                  onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'></p>";
 
-            echo "<IFRAME style='width:500px;height:700px' src='" . $CFG_GLPI['root_doc'] . "/plugins/manageentities/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
+            echo "<IFRAME style='width:500px;height:700px' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
             Html::closeForm();
 
          }
@@ -833,7 +833,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
 
          //         if(empty($p['documents_id'])){
-         //         echo "<IFRAME src='".$CFG_GLPI['root_doc']."/plugins/manageentities/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' width='1000' height='1000' scrolling=auto frameborder=1></IFRAME>";
+         //         echo "<IFRAME src='".PLUGIN_MANAGEENTITIES_WEBDIR."/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' width='1000' height='1000' scrolling=auto frameborder=1></IFRAME>";
          //         } else {
          //            echo "<IFRAME src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=$p['documents_id']&tickets_id=$p['REPORT_ID']' width='1000' height='1000' scrolling=auto frameborder=1></IFRAME>";
          //         }

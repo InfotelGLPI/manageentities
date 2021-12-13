@@ -204,7 +204,7 @@ function switchElementsEnableFromCb(currentCb, idToHide) {
 //
 //                             if (tid > 0) {
 //                                 $.ajax({
-//                                     url: options.root_doc + '/plugins/manageentities/ajax/tickettask.php',
+//                                     url: options.root_doc + '/ajax/tickettask.php',
 //                                     type: "POST",
 //                                     dataType: "html",
 //                                     data: {
@@ -245,7 +245,7 @@ function getUrlParam(url, name) {
 
 function cloneTicketTask(options) {
     $.ajax({
-        url: options.root_doc + '/plugins/manageentities/ajax/tickettask.php',
+        url: options.root_doc + '/ajax/tickettask.php',
         type: "POST",
         dataType: "json",
         data: {
@@ -274,7 +274,7 @@ function manageentities_loadCriForm(action, modal, params) {
     }
 
     $.ajax({
-        url: params.root_doc + '/plugins/manageentities/ajax/cri.php',
+        url: params.root_doc + '/ajax/cri.php',
         type: "POST",
         dataType: "html",
         data: {

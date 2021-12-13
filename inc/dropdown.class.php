@@ -103,7 +103,7 @@ class PluginManageentitiesDropdown extends Dropdown {
                 'toadd'     => $p['toadd']];
 
       $out = Html::jsAjaxDropdown($myname, $field_id,
-                                  $CFG_GLPI['root_doc'] . "/plugins/manageentities/ajax/getDropdownNumber.php",
+                                  PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/getDropdownNumber.php",
                                   $param);
 
       if ($p['display']) {

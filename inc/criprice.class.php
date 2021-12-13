@@ -156,7 +156,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       echo "<script type='text/javascript'>";
       echo "function manageentities_loadSelectPrice(){";
       Ajax::updateItemJsCode('manageentities_loadPrice',
-                             $CFG_GLPI['root_doc'] . "/plugins/manageentities/ajax/criprice.php",
+                             PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/criprice.php",
                              ['action'      => 'loadPrice',
                               'critypes_id' => '__VALUE__',
                               'entities_id' => $options['parent']->getField('entities_id')],
@@ -538,7 +538,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
                       $parent->getForeignKeyField() => $parents_id,
                       'id'                          => $items_id];
       Ajax::updateItemJsCode($toupdate,
-                             $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/viewsubitem.php", $params);
+                             PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/viewsubitem.php", $params);
       echo "};";
       echo "</script>\n";
    }

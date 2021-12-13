@@ -203,7 +203,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          $params['id_dp_nbdays']    = "nb_days" . $item->fields['plugin_manageentities_contractdays_id'];
          $params['contractdays_id'] = $item->fields['plugin_manageentities_contractdays_id'];
          $params['skateholder_id']  = $item->fields['id'];
-         $url                       = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
+         $url                       = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
 
          $this->showJSfunction("deleteSkateholder" . $idToUse . $item->fields['id'], $idDivAjax, $url, [], $params);
       }
@@ -298,7 +298,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
                   $params['id_dp_nbdays']    = "nb_days" . $skateholder['plugin_manageentities_contractdays_id'];
                   $params['contractdays_id'] = $item->fields['id'];
                   $params['skateholder_id']  = $skateholder['id'];
-                  $url                       = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
+                  $url                       = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
 
                   $this->showJSfunction("deleteSkateholder" . $idToUse . $skateholder['id'], $idDivAjax, $url, [], $params);
 
@@ -360,7 +360,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          $ID                                            = $item->fields['id'];
          $contractday                                   = new PluginManageentitiesContractDay();
          $nbDays                                        = $this->getNbAvailiableDay($item->fields['id']);
-         $url                                           = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/interventionskateholderactions.php";
+         $url                                           = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
          $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDays;
 
          if ($ID > 0) {

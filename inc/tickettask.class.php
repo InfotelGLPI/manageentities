@@ -56,7 +56,7 @@ class PluginManageentitiesTicketTask extends CommonDBTM {
                                                                   'rand'    => $rand,
                                                                   'mintime' => $CFG_GLPI["planning_begin"],
                                                                   'maxtime' => $CFG_GLPI["planning_end"]]);
-            $params        = json_encode(['root_doc'       => $CFG_GLPI['root_doc'],
+            $params        = json_encode(['root_doc'       => PLUGIN_MANAGEENTITIES_WEBDIR,
                                           //                                       'new_date_id'    => 'showdate' . $randDate,
                                           'tickets_id'     => $tickettask->fields['tickets_id'],
                                           'tickettasks_id' => $tickettask->fields['id']]);

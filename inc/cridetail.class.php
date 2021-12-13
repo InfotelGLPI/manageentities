@@ -317,7 +317,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          Html::requireJs('glpi_dialog');
          $params = ['pdf_action' => $pdf_action,
                     'job'        => $ticket->fields['id'],
-                    'root_doc'   => $CFG_GLPI['root_doc'],
+                    'root_doc'   => PLUGIN_MANAGEENTITIES_WEBDIR,
                     'toupdate'   => "showCriDetail$rand",
                     'width'      => 1000,
                     'height'     => 550];
@@ -1187,8 +1187,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                  'contractdays_id'      => $contractdaySelected,
                  'current_contracts_id' => $contractSelected,
                  'width'                => $width];
-      Ajax::updateItemOnSelectEvent("dropdown_contracts_id$rand", "show_contractdays", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/dropdownContract.php", $params);
-      Ajax::updateItem("show_contractdays", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/dropdownContract.php", $params, "dropdown_contracts_id$rand");
+      Ajax::updateItemOnSelectEvent("dropdown_contracts_id$rand", "show_contractdays", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php", $params);
+      Ajax::updateItem("show_contractdays", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php", $params, "dropdown_contracts_id$rand");
       echo "</td>";
 
       // Display contract day

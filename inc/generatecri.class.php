@@ -63,7 +63,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       $menu = [];
 
       $menu['title'] = self::getMenuName();
-      $menu['page'] = "/plugins/manageentities/front/generatecri.php";
+      $menu['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR."/front/generatecri.php";
       $menu['links']['search'] = self::getSearchURL(false);
       $menu['icon'] = self::getIcon();
 
@@ -584,9 +584,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       } else {
          echo Html::hidden('has_task', ['value' => false]);
       }
-
+      $rootdoc = PLUGIN_MANAGEENTITIES_WEBDIR;
       echo "<script> 
-
+         var root_doc = '$rootdoc';
            $(document).ready(function() {
            let storedTasks = $task_stored; 
               addTaskOnView(true, storedTasks);
@@ -726,7 +726,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             
              function getUserName(userIdTech,taskCount) {
                    return $.ajax({
-                             url   : CFG_GLPI.root_doc + '/plugins/manageentities/ajax/getUserTechName.php',
+                             url   : root_doc + '/ajax/getUserTechName.php',
                              type  : 'POST',
                              data  : {
                                      'user_id_tech': userIdTech,
@@ -1136,11 +1136,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
          $input['REPORT_ID'] = $ticket_id;
          $input['users_id'] = Session::getLoginUserID();
-         $input['CONTRAT'] = isset($inputs['contracts_id']) ?
-            $inputs['contracts_id'] : 0;
-         $input['CONTRACTDAY'] = isset($inputs['plugin_manageentities_contractdays_id']) ?
-            $inputs['plugin_manageentities_contractdays_id'] : 0;
-         $input['WITHOUTCONTRACT'] = (isset($inputs['contracts_id']) && $inputs['contracts_id']) > 0 ? false : true;
+         $input['CONTRAT'] = $inputs['contracts_id'] ?? 0;
+         $input['CONTRACTDAY'] = $inputs['plugin_manageentities_contractdays_id'] ?? 0;
+         $input['WITHOUTCONTRACT'] = !((isset($inputs['contracts_id']) && $inputs['contracts_id']) > 0);
          $input['REPORT_ACTIVITE'] = $critypes_default;
          $input['REPORT_DESCRIPTION'] = $desc;
          $input['entities_id'] = $inputs['entities_id'];
@@ -1244,8 +1242,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             'contractdays_id' => $contractdaySelected,
             'current_contracts_id' => $contractSelected,
             'width' => $width];
-         Ajax::updateItemOnSelectEvent("dropdown_contracts_id$rand", "show_contractdays", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/dropdownContract.php", $params);
-         Ajax::updateItem("show_contractdays", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/dropdownContract.php", $params, "dropdown_contracts_id$rand");
+         Ajax::updateItemOnSelectEvent("dropdown_contracts_id$rand", "show_contractdays", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php", $params);
+         Ajax::updateItem("show_contractdays", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php", $params, "dropdown_contracts_id$rand");
          echo "</td>";
 
          // Display contract day

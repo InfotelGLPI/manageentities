@@ -88,7 +88,7 @@ class PluginManageentitiesPreference extends CommonDBTM {
          if (!$pref_ID)
             $pref_ID = self::addDefaultPreference(Session::getLoginUserID());
 
-         self::showPreferencesForm($CFG_GLPI['root_doc'] . "/plugins/manageentities/front/preference.form.php", $pref_ID);
+         self::showPreferencesForm(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/preference.form.php", $pref_ID);
       }
       return true;
    }

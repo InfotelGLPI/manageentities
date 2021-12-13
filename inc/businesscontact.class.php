@@ -111,7 +111,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
             if ($this->canCreate() && sizeof($instID) == 1) {
                echo "<td class='center' class='tab_bg_2'>";
-               Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+               Html::showSimpleForm(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
                                     'deletebusiness',
                                     _x('button', 'Delete permanently'),
                                     ['id' => $ID],

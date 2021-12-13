@@ -128,7 +128,7 @@ class PluginManageentitiesContact extends CommonDBTM {
                if ($data["is_default"]) {
                   echo __('Manager');
                } else {
-                  Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+                  Html::showSimpleForm(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
                                        'contactbydefault',
                                        __('Manager'),
                                        ['contacts_id' => $ID, 'entities_id' => $_SESSION["glpiactive_entity"]]);
@@ -142,7 +142,7 @@ class PluginManageentitiesContact extends CommonDBTM {
 
             if ($this->canCreate() && sizeof($instID) == 1) {
                echo "<td class='center' class='tab_bg_2'>";
-               Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+               Html::showSimpleForm(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
                                     'deletecontacts',
                                     _x('button', 'Delete permanently'),
                                     ['id' => $ID],

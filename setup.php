@@ -29,6 +29,13 @@
 
 define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.0');
 
+if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
+   define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
+   define("PLUGIN_MANAGEENTITIES_NOTFULL_DIR", Plugin::getPhpDir("manageentities",false));
+   define("PLUGIN_MANAGEENTITIES_WEBDIR", Plugin::getWebDir("manageentities"));
+   define("PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR", Plugin::getWebDir("manageentities",false));
+}
+
 // Init the hooks of the plugins -Needed
 function plugin_init_manageentities() {
    global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -87,7 +94,7 @@ function plugin_init_manageentities() {
              && $_SESSION["glpi_plugin_manageentities_loaded"] == 0
              && $plugin->isActivated("manageentities")) {
             $_SESSION["glpi_plugin_manageentities_loaded"] = 1;
-            Html::redirect($CFG_GLPI['root_doc'] . "/plugins/manageentities/front/entity.php");
+            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php");
          }
       }
 

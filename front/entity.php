@@ -100,11 +100,11 @@ if ($PluginManageentitiesEntity->canView()
          }
          Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"]);
          if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-            Html::redirect(preg_replace("/entities_id.*/", "", $CFG_GLPI["root_doc"] . "/plugins/manageentities/front/entity.php"));
+            Html::redirect(preg_replace("/entities_id.*/", "", PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php"));
          }
 
       } else if (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
-         Html::redirect($CFG_GLPI["root_doc"] . "/plugins/manageentities/front/entity.php?active_entity=" . $_POST["entities_id"] . "");
+         Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php?active_entity=" . $_POST["entities_id"] . "");
 
       } else {
          if (Session::getCurrentInterface() == 'central') {

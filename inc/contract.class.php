@@ -347,7 +347,7 @@ class PluginManageentitiesContract extends CommonDBTM {
                if ($data["is_default"]) {
                   echo __('Yes');
                } else {
-                  Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+                  Html::showSimpleForm(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
                                        'contractbydefault',
                                        __('No'),
                                        ['myid' => $data["myid"], 'entities_id' => $_SESSION["glpiactive_entity"]]);
@@ -359,7 +359,7 @@ class PluginManageentitiesContract extends CommonDBTM {
             if ($this->canCreate() && sizeof($instID) == 1) {
                echo "<td class='center' class='tab_bg_2'>";
 
-               Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+               Html::showSimpleForm(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
                                     'deletecontracts',
                                     _x('button', 'Delete permanently'),
                                     ['id' => $data["myid"]]);

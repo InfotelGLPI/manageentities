@@ -30,17 +30,17 @@
 function plugin_manageentities_install() {
    global $DB;
 
-   include_once(GLPI_ROOT . "/plugins/manageentities/inc/profile.class.php");
-   include_once(GLPI_ROOT . "/plugins/manageentities/inc/preference.class.php");
-   include_once(GLPI_ROOT . "/plugins/manageentities/inc/config.class.php");
-   include_once(GLPI_ROOT . "/plugins/manageentities/inc/cridetail.class.php");
+   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/profile.class.php");
+   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/preference.class.php");
+   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/config.class.php");
+   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/cridetail.class.php");
 
    $dbu       = new DbUtils();
    $update    = false;
    $update190 = false;
    if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-4.0.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty-4.0.0.sql");
 
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
@@ -53,13 +53,13 @@ function plugin_manageentities_install() {
    } else if ($DB->tableExists("glpi_plugin_manageentity_profiles") && !$DB->tableExists("glpi_plugin_manageentity_preference")) {
 
       $update = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.4.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.5.0.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.5.1.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.6.0.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.4.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.5.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.5.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.6.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.0.sql");
       $update190 = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
       $DB->query($query);
@@ -71,12 +71,12 @@ function plugin_manageentities_install() {
    } else if ($DB->tableExists("glpi_plugin_manageentity_profiles") && $DB->fieldExists("glpi_plugin_manageentity_profiles", "interface")) {
 
       $update = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.5.0.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.5.1.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.6.0.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.5.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.5.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.6.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.0.sql");
       $update190 = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
       $DB->query($query);
@@ -88,75 +88,75 @@ function plugin_manageentities_install() {
    } else if ($DB->tableExists("glpi_plugin_manageentity_config") && !$DB->fieldExists("glpi_plugin_manageentity_config", "hourbyday")) {
 
       $update = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.5.1.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.6.0.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.5.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.6.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.0.sql");
       $update190 = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
    } else if ($DB->tableExists("glpi_plugin_manageentity_profiles") && !$DB->tableExists("glpi_plugin_manageentities_profiles")) {
 
       $update = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.6.0.sql");
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.6.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.0.sql");
       $update190 = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
    } else if ($DB->tableExists("glpi_plugin_manageentities_profiles") && !$DB->tableExists("glpi_plugin_manageentities_contractstates")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.0.sql");
       $update190 = true;
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
    } else if ($DB->tableExists("glpi_plugin_manageentities_configs") && !$DB->fieldExists("glpi_plugin_manageentities_contracts", "contract_added")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
    }
 
    if ($DB->tableExists("glpi_plugin_manageentities_cridetails") && !$DB->fieldExists("glpi_plugin_manageentities_cridetails", "plugin_manageentities_contractdays_id")) {
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-1.9.2.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.2.sql");
    }
 
    if ($DB->tableExists("glpi_plugin_manageentities_configs") && $DB->fieldExists("glpi_plugin_manageentities_configs", "linktocontract")) {
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-2.0.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.0.0.sql");
    }
 
    if ($DB->tableExists("glpi_plugin_manageentities_configs") && !$DB->fieldExists("glpi_plugin_manageentities_configs", "company_address")) {
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-2.0.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.0.1.sql");
    }
 
    if (!$DB->tableExists("glpi_plugin_manageentities_interventionskateholders")) {
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-2.0.2.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.0.2.sql");
    }
 
    if (!$DB->fieldExists("glpi_plugin_manageentities_criprices", "plugin_manageentities_contractdays_id")) {
-      include(GLPI_ROOT . "/plugins/manageentities/install/update_202_203.php");
+      include(PLUGIN_MANAGEENTITIES_DIR . "/install/update_202_203.php");
       update202to203();
    }
 
    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "contract_states") && !$DB->tableExists('glpi_plugin_manageentities_business_contacts')) {
-      include(GLPI_ROOT . "/plugins/manageentities/install/update_210_211.php");
+      include(PLUGIN_MANAGEENTITIES_DIR . "/install/update_210_211.php");
       update210to211();
    }
 
    //version 2.1.3
    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "comment")) {
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-2.1.3.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.1.3.sql");
    }
 
    //version 2.1.4
    if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "moving_management")) {
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-2.1.4.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.1.4.sql");
    }
 
    //version 3.2.1
    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "non_accomplished_tasks")) {
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.1.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-3.2.1.sql");
    }
 
    //version 3.2.2
    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "disable_date_header")) {
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.2.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-3.2.2.sql");
    }
 
    if ($update) {
@@ -228,13 +228,13 @@ function plugin_manageentities_install() {
    }
 
    if (!$DB->tableExists('glpi_plugin_manageentities_entitylogos')) {
-      include(GLPI_ROOT . "/plugins/manageentities/install/update_211_212.php");
+      include(PLUGIN_MANAGEENTITIES_DIR . "/install/update_211_212.php");
       update211to212();
    }
 
    //version 2.1.5
    if (!$DB->fieldExists("glpi_plugin_manageentities_contractdays", "contract_type")) {
-      include(GLPI_ROOT . "/plugins/manageentities/install/update_214_215.php");
+      include(PLUGIN_MANAGEENTITIES_DIR . "/install/update_214_215.php");
       update214to215();
    }
 
@@ -300,7 +300,7 @@ function plugin_manageentities_uninstall() {
 
    Toolbox::deleteDir($rep_files_manageentities);
 
-   include_once(GLPI_ROOT . "/plugins/manageentities/inc/profile.class.php");
+   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/profile.class.php");
 
    PluginManageentitiesProfile::removeRightsFromSession();
    PluginManageentitiesProfile::removeRightsFromDB();

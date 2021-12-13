@@ -544,33 +544,31 @@ class PluginManageentitiesEntity extends CommonGLPI {
    }
 
    static function getMenuContent() {
-      $plugin_page = "/plugins/manageentities/front/entity.php";
+
       $menu        = [];
       //Menu entry in tools
       $menu['title']           = self::getTypeName(2);
-      $menu['page']            = $plugin_page;
-      $menu['links']['search'] = $plugin_page;
+      $menu['page']            = self::getSearchURL(false);
+      $menu['links']['search'] = self::getSearchURL(false);
       if (Session::haveRightsOr("plugin_manageentities", [CREATE, UPDATE]) || Session::haveRight("config", UPDATE)) {
          //Entry icon in breadcrumb
          $menu['links']['config'] = PluginManageentitiesConfig::getFormURL(false);
          //Link to config page in admin plugins list
          $menu['config_page']  = PluginManageentitiesConfig::getFormURL(false);
-         $menu['links']['add'] = '/plugins/manageentities/front/addelements.form.php';
+         $menu['links']['add'] = PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR.'/front/addelements.form.php';
       }
 
       $menu['options']['contractday']['title'] = PluginManageentitiesContractDay::getTypeName(2);
-      $menu['options']['contractday']['page']  = '/plugins/manageentities/front/contractday.php';
-      //      $menu['options']['contractday']['add']    = '/plugins/manageentities/front/contractday.form.php';
-      //      $menu['options']['contractday']['links']['add'] = '/plugins/manageentities/front/contractday.form.php';
-      $menu['options']['contractday']['search']          = '/plugins/manageentities/front/contractday.php';
-      $menu['options']['contractday']['links']['search'] = '/plugins/manageentities/front/contractday.php';
+      $menu['options']['contractday']['page']  = PluginManageentitiesContractDay::getSearchURL(false);
+      $menu['options']['contractday']['search']          = PluginManageentitiesContractDay::getSearchURL(false);
+      $menu['options']['contractday']['links']['search'] = PluginManageentitiesContractDay::getSearchURL(false);
 
       $menu['options']['company']['title']           = PluginManageentitiesCompany::getTypeName(2);
-      $menu['options']['company']['page']            = '/plugins/manageentities/front/company.php';
-      $menu['options']['company']['add']             = '/plugins/manageentities/front/company.form.php';
-      $menu['options']['company']['links']['add']    = '/plugins/manageentities/front/company.form.php';
-      $menu['options']['company']['search']          = '/plugins/manageentities/front/company.php';
-      $menu['options']['company']['links']['search'] = '/plugins/manageentities/front/company.php';
+      $menu['options']['company']['page']            = PluginManageentitiesCompany::getSearchURL(false);
+      $menu['options']['company']['add']             = PluginManageentitiesCompany::getFormURL(false);
+      $menu['options']['company']['links']['add']    = PluginManageentitiesCompany::getFormURL(false);
+      $menu['options']['company']['search']          = PluginManageentitiesCompany::getSearchURL(false);
+      $menu['options']['company']['links']['search'] = PluginManageentitiesCompany::getSearchURL(false);
       $menu['icon']                                  = self::getIcon();
 
       $menu['icon']    = self::getIcon();
@@ -617,7 +615,6 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $i           = 0;
 
       foreach ($result as $data) {
-//      while ($data = $result->next()) {
 
          if ($entity->getFromDB($data['entities_id'])) {
             $debug[$data['entities_id']] = ['name'      => $entity->getName(),

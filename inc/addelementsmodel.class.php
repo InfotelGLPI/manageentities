@@ -31,7 +31,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-include_once(GLPI_ROOT . '/plugins/manageentities/common/commonGLPIModel.class.php');
+include_once(PLUGIN_MANAGEENTITIES_DIR . '/common/commonGLPIModel.class.php');
 
 // Enumeration like for Errors
 class Errors extends CommonGLPIErrors {
@@ -145,7 +145,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
    private function __construct() {
       global $CFG_GLPI;
 
-      $this->url    = $CFG_GLPI ['root_doc'] . "/plugins/manageentities/ajax/addelements.listener.php";
+      $this->url    = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/addelements.listener.php";
       $this->errors = [];
 
       $entity = new Entity ();

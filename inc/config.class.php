@@ -77,14 +77,14 @@ class PluginManageentitiesConfig extends CommonDBTM {
       echo "</tr>";
 
       //js for load configuration
-      Ajax::updateItem("title_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+      Ajax::updateItem("title_show_hourorday", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/linkactions.php",
                        ['hourorday' => $this->fields["hourorday"], 'action' => 'title_show_hourorday'], "dropdown_hourorday$rand");
-      Ajax::updateItem("value_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+      Ajax::updateItem("value_show_hourorday", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/linkactions.php",
                        ['hourorday' => $this->fields["hourorday"], 'action' => 'value_show_hourorday'], "dropdown_hourorday$rand");
       //js for change configuration
-      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_show_hourorday", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/linkactions.php",
                                     ['hourorday' => '__VALUE__', 'action' => 'title_show_hourorday']);
-      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_show_hourorday", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_show_hourorday", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/linkactions.php",
                                     ['hourorday' => '__VALUE__', 'action' => 'value_show_hourorday']);
       echo "</td></tr>";
 
@@ -220,51 +220,6 @@ class PluginManageentitiesConfig extends CommonDBTM {
       }
       return $input;
    }
-
-   /*function showDetails() {
-      echo "<form name='form' method='post' action='".
-         Toolbox::getItemTypeFormURL('PluginManageentitiesConfig')."'>";
-
-      echo "<div align='center'><table class='tab_cadre_fixe'  cellspacing='2' cellpadding='2'>";
-      
-
-      echo "<input type='hidden' name='id' value='1'>";
-
-      echo "<tr><th colspan='2'><input type=\"submit\" name=\"update_config\" class=\"submit\"
-         value=\""._sx('button', 'Save')."\" ></th></tr>";
-
-      echo "</table></div>";
-      Html::closeForm();
-   }
-   
-   
-   function showFormAddress(){
-       echo "<form name='form' method='post' action='".
-         Toolbox::getItemTypeFormURL('PluginManageentitiesConfig')."'>";
-
-      echo "<div align='center'><table class='tab_cadre_fixe'  cellspacing='2' cellpadding='2'>";
-      echo "<tr><th colspan='2'>".__('Address')."</th></tr>";
-   
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>";
-      
-      echo "<textarea cols='80' rows='8' name='company_address' id='company_address' >";
-      
-      echo $this->fields['company_address'];
-      echo "</textarea></td></tr>\n";
-      
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr><th colspan='2'><input type='submit' name='update_config' class='submit'
-         value='"._sx('button', 'Save')."' ></th></tr>";
-
-      echo "<input type='hidden' name='id' value='1'>";
-        
-        
-      echo "</table></div>";
-      Html::closeForm();
-   }*/
 
    function showFormCompany() {
       //add a company

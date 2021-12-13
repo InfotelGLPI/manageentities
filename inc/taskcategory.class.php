@@ -70,7 +70,7 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
             $self->createAccess($item->getField('id'));
          }
          $self->showForm($item->getField('id'), ['target' =>
-                                                    $CFG_GLPI["root_doc"] . "/plugins/manageentities/front/taskcategory.form.php"]);
+                                                    PLUGIN_MANAGEENTITIES_WEBDIR . "/front/taskcategory.form.php"]);
       }
       return true;
    }
