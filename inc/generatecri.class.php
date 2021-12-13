@@ -584,9 +584,9 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       } else {
          echo Html::hidden('has_task', ['value' => false]);
       }
-      $rootdoc = PLUGIN_MANAGEENTITIES_WEBDIR;
+      $root_manageentities_doc = PLUGIN_MANAGEENTITIES_WEBDIR;
       echo "<script> 
-         var root_doc = '$rootdoc';
+         var root_manageentities_doc = '$root_manageentities_doc';
            $(document).ready(function() {
            let storedTasks = $task_stored; 
               addTaskOnView(true, storedTasks);
