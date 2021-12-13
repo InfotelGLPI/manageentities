@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-10 15:59+0000\n"
+"POT-Creation-Date: 2021-12-13 07:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,28 +49,28 @@ msgid_plural "States of contracts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: setup.php:81 inc/config.class.php:308 inc/cri.class.php:39
+#: setup.php:88 inc/config.class.php:263 inc/cri.class.php:39
 #: inc/cridetail.class.php:299 inc/profile.class.php:100
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] ""
 msgstr[1] ""
 
-#: setup.php:82 inc/report.class.php:107
+#: setup.php:89 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr ""
 
-#: setup.php:83 inc/report.class.php:212
+#: setup.php:90 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:128 front/addelements.form.php:38 front/config.form.php:45
+#: setup.php:135 front/addelements.form.php:38 front/config.form.php:45
 #: front/cridetail.form.php:48 front/cridetail.form.php:51
 #: front/cridetail.form.php:53 front/entity.php:43 front/entity.php:46
-#: front/entity.php:48 front/generatecri.form.php:83 front/generatecri.php:36
+#: front/entity.php:48 front/generatecri.form.php:84 front/generatecri.php:36
 #: front/generatecri.php:39 front/generatecri.php:41 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
-#: inc/followup.class.php:968 inc/generatecri.class.php:1155
+#: inc/followup.class.php:968 inc/generatecri.class.php:1153
 #: inc/monthly.class.php:548 inc/preference.class.php:77
 #: inc/profile.class.php:42 inc/profile.class.php:96
 #: inc/taskcategory.class.php:55
@@ -127,7 +127,7 @@ msgid ""
 "Only ticket accepted are taking into account for consumption calculation"
 msgstr ""
 
-#: front/config.form.php:65
+#: front/config.form.php:64
 msgid "Please activate the plugin"
 msgstr ""
 
@@ -472,7 +472,7 @@ msgid "Document list"
 msgstr ""
 
 #: inc/addelementsview.class.php:1543 inc/contract.class.php:192
-#: inc/entity.class.php:674 inc/followup.class.php:605
+#: inc/entity.class.php:671 inc/followup.class.php:605
 #: inc/followup.class.php:690 inc/gantt.class.php:281
 msgid "Date of signature"
 msgstr ""
@@ -620,7 +620,7 @@ msgid_plural "Associated business"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/company.class.php:41 inc/config.class.php:278
+#: inc/company.class.php:41 inc/config.class.php:233
 #: inc/followup.class.php:1175
 msgid "Company"
 msgid_plural "Companies"
@@ -724,16 +724,16 @@ msgid ""
 "contract"
 msgstr ""
 
-#: inc/config.class.php:271
+#: inc/config.class.php:226
 msgid "Add a company"
 msgstr ""
 
-#: inc/config.class.php:304 inc/contract.class.php:480
+#: inc/config.class.php:259 inc/contract.class.php:480
 #: inc/contract.class.php:512
 msgid "Hourly"
 msgstr ""
 
-#: inc/config.class.php:309 inc/contractday.class.php:42
+#: inc/config.class.php:264 inc/contractday.class.php:42
 #: inc/entity.class.php:100 inc/followup.class.php:720
 msgid "Period of contract"
 msgid_plural "Periods of contract"
@@ -915,7 +915,7 @@ msgid "Crossed time (itinerary including)"
 msgstr ""
 
 #: inc/cridetail.class.php:197 inc/cridetail.class.php:410
-#: inc/cridetail.class.php:1136 inc/generatecri.class.php:1198
+#: inc/cridetail.class.php:1136 inc/generatecri.class.php:1196
 msgid "Intervention with contract"
 msgstr ""
 
@@ -957,7 +957,7 @@ msgid "To compute"
 msgstr ""
 
 #: inc/cridetail.class.php:522 inc/cridetail.class.php:1195
-#: inc/cridetail.class.php:1222 inc/generatecri.class.php:1252
+#: inc/cridetail.class.php:1222 inc/generatecri.class.php:1250
 msgid "Periods of contract"
 msgstr ""
 
@@ -1006,7 +1006,7 @@ msgstr ""
 msgid "With contrat"
 msgstr ""
 
-#: inc/cridetail.class.php:1174 inc/generatecri.class.php:1229
+#: inc/cridetail.class.php:1174 inc/generatecri.class.php:1227
 msgid "No active contracts"
 msgstr ""
 
@@ -1196,7 +1196,7 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: inc/entity.class.php:114 inc/entity.class.php:602
+#: inc/entity.class.php:114 inc/entity.class.php:600
 msgid "References"
 msgstr ""
 
