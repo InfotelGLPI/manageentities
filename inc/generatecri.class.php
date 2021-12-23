@@ -726,7 +726,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             
              function getUserName(userIdTech,taskCount) {
                    return $.ajax({
-                             url   : root_doc + '/ajax/getUserTechName.php',
+                             url   : root_manageentities_doc + '/ajax/getUserTechName.php',
                              type  : 'POST',
                              data  : {
                                      'user_id_tech': userIdTech,

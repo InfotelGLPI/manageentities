@@ -645,3 +645,35 @@ function plugin_manageentities_displayConfigItem($type, $ID, $data, $num) {
    }
    return "";
 }
+
+function plugin_manageentities_redefine_menus($menu) {
+   if (!Session::getCurrentInterface() == "helpdesk") {
+      return $menu;
+   }
+
+   $menu["manageentities"] = [
+                       "title" => PluginManageentitiesEntity::getTypeName(),
+                       "icon" => PluginManageentitiesEntity::getIcon(),
+                    ];
+   $infos['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/entity.php";
+   $infos['title'] = __('Manage your contracts', 'manageentities');
+   $infos['icon'] = PluginManageentitiesEntity::getIcon();
+   $menu['manageentities']['content']["manageentities_entities"] = $infos;
+
+   $infos['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/gantt.php";
+   $infos['title'] = PluginManageentitiesGantt::getTypeName();
+   $infos['icon'] = PluginManageentitiesGantt::getIcon();
+   $menu['manageentities']['content']["manageentities_gantt"] = $infos;
+
+   $infos['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/administrativedatas.php";
+   $infos['title'] = PluginManageentitiesEntity::getTypeName();
+   $infos['icon'] = PluginManageentitiesEntity::getIcon();
+   $menu['manageentities']['content']["manageentities_admindatas"] = $infos;
+
+   $infos['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/contractday.php";
+   $infos['title'] = PluginManageentitiesContractDay::getTypeName();
+   $infos['icon'] = PluginManageentitiesContractDay::getIcon();
+   $menu['manageentities']['content']["manageentities_reports"] = $infos;
+
+   return $menu;
+}

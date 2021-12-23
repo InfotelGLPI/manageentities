@@ -82,10 +82,10 @@ if (isset($_POST['generatecri'])) {
    $PluginManageentitiesGenerateCri->generateCri($_POST, $ticket_id, $PluginManageentitiesCri);
 } else {
    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesgeneratecri");
-   $ticket->fields['itilcategories_id'] = isset($_POST['itilcategories_id']) ? $_POST['itilcategories_id'] : 0;
-   $ticket->fields['type']              = isset($_POST['type']) ? $_POST['type'] : '';
-   $_SESSION['glpiactive_entity']       = isset($_POST['entities_id']) ? $_POST['entities_id'] : 0;
-   $_SESSION['glpiactive_entity']       = isset($_POST['entities_id']) ? $_POST['entities_id'] : 0;
+   $ticket->fields['itilcategories_id'] = $_POST['itilcategories_id'] ?? 0;
+   $ticket->fields['type']              = $_POST['type'] ?? '';
+   $_SESSION['glpiactive_entity']       = $_POST['entities_id'] ?? 0;
+   $_SESSION['glpiactive_entity']       = $_POST['entities_id'] ?? 0;
 
    $PluginManageentitiesGenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity']);
    Html::footer();

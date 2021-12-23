@@ -299,7 +299,7 @@ class PluginManageentitiesReport extends CommonDBTM {
          return false;
       }
       for ($i = $iStart; $i < $iEnd + 86400; $i = strtotime('+1 day', $i)) {
-         $sDateToArr                = strftime('%Y-%m-%d', $i);
+         $sDateToArr                = date('Y-m-d', $i);
          $sYear                     = substr($sDateToArr, 0, 4);
          $sMonth                    = substr($sDateToArr, 5, 2);
          $aDates[$sYear][$sMonth][] = $sDateToArr;

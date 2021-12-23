@@ -177,7 +177,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       if (isset($params["presales"])) {
          echo "<div class='center'>";
-         echo Html::submit(_x('button', 'Next'), ['name' => 'add_contract', 'class' => 'btn btn-primary manageentities_button']);
+         echo Html::submit(_x('button', 'Next', 'presales'), ['name' => 'add_contract', 'class' => 'btn btn-primary manageentities_button']);
          echo "</div>";
          Html::closeForm();
       }
@@ -486,7 +486,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
 
       echo "<div id='tabs-1' style='padding:0px;' onchange=\"javascript:";
-      $this->updateImgTabTitle(true, "'img_" . $this->pModel->getEntity()->getType() . "1'", $this->pModel->getMessage(ElementType::ENTITY, Status::NOT_SAVED));
+      $this->updateImgTabTitle("'img_" . $this->pModel->getEntity()->getType() . "1'", $this->pModel->getMessage(ElementType::ENTITY, Status::NOT_SAVED), true);
       echo "\" >";
 
       $fields = $currentEntity->getAdditionalFields();
@@ -659,7 +659,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       // Onchange for img purpose
       echo "   <div id='tabs-" . ($idContact) . "' style='padding:0px;' onchange=\"javascript:";
-      $this->updateImgTabTitle(true, "'img_" . $currentContact->getType() . ($idContact) . "'", $this->pModel->getMessage(ElementType::CONTACT, Status::NOT_SAVED));
+      $this->updateImgTabTitle( "'img_" . $currentContact->getType() . ($idContact) . "'", $this->pModel->getMessage(ElementType::CONTACT, Status::NOT_SAVED), true);
       echo "\" >";
 
       echo "<table class='tab_cadre_fixe'>";
@@ -945,7 +945,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
 
       echo "   <div id='tabs-1' style='padding:0px;' onchange=\"javascript:";
-      $this->updateImgTabTitle(true, "'img_" . $this->pModel->getContract()->getType() . "1'", $this->pModel->getMessage(ElementType::CONTRACT, Status::NOT_SAVED));
+      $this->updateImgTabTitle( "'img_" . $this->pModel->getContract()->getType() . "1'", $this->pModel->getMessage(ElementType::CONTRACT, Status::NOT_SAVED), true);
       echo "\" >";
 
 
@@ -1724,7 +1724,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       // Onchange for img purpose
       echo "   <div id='tabs-" . ($idIntervention) . "' style='padding:0px;' onchange=\"javascript:";
-      $this->updateImgTabTitle(true, "'img_" . $currentContractday->getType() . ($idIntervention) . "'", $this->pModel->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED));
+      $this->updateImgTabTitle( "'img_" . $currentContractday->getType() . ($idIntervention) . "'", $this->pModel->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED), true);
       echo "\" >";
 
       $name = "fakeid_new_intervention" . $rand;
@@ -2765,7 +2765,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
     * @param      $imgId
     * @param      $text
     */
-   public function updateImgTabTitle($toEdit = false, $imgId, $text) {
+   public function updateImgTabTitle($imgId, $text, $toEdit = false) {
       if ($toEdit) {
          echo "if ($($imgId)){";
          echo "$($imgId).attr('src', '../pics/asterisk.png');";
@@ -3079,7 +3079,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
     * @param     $tabId
     * @param     $type
     */
-   public function updateTabs($nbContact = 0, $idDivAjax, $tabId, $type) {
+   public function updateTabs($idDivAjax, $tabId, $type, $nbContact = 0) {
 
       $this->showHeaderJS();
       echo "var num_tabs = $('$tabId ul li').length + 1;";

@@ -35,6 +35,14 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
 
    static $rightname = 'plugin_manageentities';
 
+   static function getTypeName($nb = 0) {
+      return __('General follow-up', 'manageentities');
+   }
+
+   static function getIcon() {
+      return "fas fa-user-tie";
+   }
+
    static function canView() {
       return Session::haveRight(self::$rightname, READ);
    }

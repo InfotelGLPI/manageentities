@@ -35,6 +35,14 @@ class PluginManageentitiesMonthly extends CommonDBTM {
 
    static $rightname = 'plugin_manageentities';
 
+   static function getTypeName($nb = 0) {
+      return __('Monthly follow-up', 'manageentities');
+   }
+
+   static function getIcon() {
+      return "fas fa-user-tie";
+   }
+   
    // Css styles/class
    static $style = ['background-color: #FEC95C;color:#000',
                     'text-align:left',

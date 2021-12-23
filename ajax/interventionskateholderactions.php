@@ -55,7 +55,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                   $_SESSION['glpi_plugin_manageentities_nbdays'] += $nbDaysAfter;
 
                   $interventionStakeholder->showMessage(__("Stakeholder successfully updated.", "manageentities"), INFO);
-                  $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id']);
+                  $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
 
                   if ($nbDaysAfter <= 0) {
                      // supprimer la ligne d'ajout
@@ -73,7 +73,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
 
                if ($interventionStakeholder->add($interventionStakeholder->fields)) {
                   $interventionStakeholder->showMessage(__("Informations successfully added.", "manageentities"), INFO);
-                  $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id']);
+                  $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
                   $nbDaysAfter = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                   if ($nbDaysAfter == 0) {
                      // Supprimer la ligne d'ajout
@@ -99,7 +99,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                $nbDaysAfter                                   = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDaysAfter;
                $interventionStakeholder->showMessage(__("Informations successfully deleted.", "manageentities"), INFO);
-               $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['id_dp_nbdays'], $_POST['contractdays_id'], true);
+               $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays'], true);
 
                if ($nbDaysAfter > 0) {
                   $interventionStakeholder->showAddForm($_POST['contractdays_id']);

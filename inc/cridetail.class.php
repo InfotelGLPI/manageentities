@@ -39,6 +39,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       return _n('Intervention task', 'Intervention tasks', $nb, 'manageentities');
    }
 
+   static function getIcon() {
+      return "fas fa-user-tie";
+   }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType() == 'Ticket' && Session::haveRight("plugin_manageentities_cri_create", READ)) {
@@ -392,7 +395,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
          if ($number != 0) {
 
-            echo "<table class='tab_cadre'>";
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='8'>" . __('Associated intervention reports', 'manageentities');
 
             if (Session::haveRight("document", READ)) {

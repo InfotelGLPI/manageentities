@@ -308,7 +308,7 @@ switch ($_POST ['action']) {
 
          $pView   = new PluginManageentitiesAddElementsView();
          $content = $pView->showFormAddContact($nbContact);
-         $pView->updateTabs($nbContact, $_POST['id_div_ajax'], "div#mytabscontacts", ElementType::CONTACT);
+         $pView->updateTabs($_POST['id_div_ajax'], "div#mytabscontacts", ElementType::CONTACT,$nbContact);
          $pView->selectTab("mytabscontacts", $nbContact);
 
          $pView->showJSfunction("addAnotherContact" . $nbContact, $content['idDivNewContact'], $pModel->getUrl(), $content['listIds'], $content['paramsAddNewContact']);
@@ -342,7 +342,7 @@ switch ($_POST ['action']) {
          //        INFOTEL
          //            $pView->showFormCriPrice(-1,$nbIntervention+1,array('parent' => "PluginManageentitiesContractDay"));
          //            $pView->initCriPricesView($intervention,$nbIntervention);
-         $pView->updateTabs($nbIntervention, $_POST['id_div_ajax'], "div#mytabsinterventions", ElementType::INTERVENTION);
+         $pView->updateTabs($_POST['id_div_ajax'], "div#mytabsinterventions", ElementType::INTERVENTION,$nbIntervention);
          $pView->selectTab("mytabsinterventions", $nbIntervention);
 
          $pView->showJSfunction("addOnlyIntervention" . $nbIntervention, $intervention['idDivAjax'], $pModel->getUrl(), $intervention['listIds'], $intervention['params'], $intervention['idDivStakeholdersAjax']);

@@ -62,10 +62,10 @@ if (isset($_POST["addcontract"])) {
    Html::back();
 
 } else {
-   $contractday->checkGlobal(READ);
+   $contract->checkGlobal(READ);
 
    Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
-   $contractday->display($_GET);
+   $contract->display($_GET);
 
    Html::footer();
 }

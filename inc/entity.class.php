@@ -36,7 +36,11 @@ class PluginManageentitiesEntity extends CommonGLPI {
    static $rightname = 'plugin_manageentities';
 
    static function getTypeName($nb = 0) {
-      return _n('Client', 'Clients', $nb, 'manageentities');
+      return _n('Client management', 'Clients management', $nb, 'manageentities');
+   }
+
+   static function getIcon() {
+      return "fas fa-user-tie";
    }
 
    static function canView() {
@@ -92,11 +96,14 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
          // ajout de la configuration du plugin
          $config = PluginManageentitiesConfig::getInstance();
-         if ((Session::getCurrentInterface() == 'central') || (Session::getCurrentInterface() == 'helpdesk' && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
+         if ((Session::getCurrentInterface() == 'central')
+             || (Session::getCurrentInterface() == 'helpdesk'
+                 && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
             if ($PluginManageentitiesCri->canView()) {
                $tabs[7] = __('Interventions reports', 'manageentities');
             }
-         } elseif (Session::getCurrentInterface() == 'helpdesk' && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
+         } elseif (Session::getCurrentInterface() == 'helpdesk'
+                   && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
             $tabs[7] = _n('Period of contract', 'Periods of contract', 2, 'manageentities');
          }
 
@@ -132,6 +139,11 @@ class PluginManageentitiesEntity extends CommonGLPI {
          $monthly                             = new PluginManageentitiesMonthly();
          $entity                              = new Entity();
 
+         if (Session::getCurrentInterface() != 'helpdesk') {
+            $entities = $_SESSION["glpiactiveentities"];
+         } else {
+            $entities = [$_SESSION["glpiactive_entity"]];
+         }
          switch ($tabnum) {
             case 1 :
                $followUp->showCriteriasForm($_GET);
@@ -145,36 +157,40 @@ class PluginManageentitiesEntity extends CommonGLPI {
                PluginManageentitiesGantt::showGantt($_GET);
                break;
             case 4 :
-               $PluginManageentitiesEntity->showDescription($_SESSION["glpiactiveentities"]);
+               $PluginManageentitiesEntity->showDescription($entities);
                break;
             case 5 :
-               $PluginManageentitiesContract->showContracts($_SESSION["glpiactiveentities"]);
+               $PluginManageentitiesContract->showContracts($entities);
                break;
             case 6:
-               $PluginManageentitiesEntity->showTickets($_SESSION["glpiactiveentities"]);
+               $PluginManageentitiesEntity->showTickets($entities);
                break;
             case 7:
                $config = PluginManageentitiesConfig::getInstance();
                if ((Session::getCurrentInterface() == 'central')
                    || (Session::getCurrentInterface() == 'helpdesk'
                        && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
-                  $PluginManageentitiesCriDetail->showReports(0, 0, $_SESSION["glpiactiveentities"], ['condition' => "`glpi_plugin_manageentities_contractstates`.`is_closed` != 1 "]);
+                  $PluginManageentitiesCriDetail->showReports(0, 0, $entities, ['condition' => "`glpi_plugin_manageentities_contractstates`.`is_closed` != 1 "]);
                } elseif (Session::getCurrentInterface() == 'helpdesk'
                          && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
-                  $PluginManageentitiesCriDetail->showPeriod(0, 0, $_SESSION["glpiactiveentities"]);
+                  $PluginManageentitiesCriDetail->showPeriod(0, 0, $entities);
                }
 
                break;
             case 8:
-               $entity->getFromDB($_SESSION["glpiactive_entity"]);
-               Document_Item::showForItem($entity);
+               foreach ($entities as $entity_id) {
+                  $entity->getFromDB($entity_id);
+                  Document_Item::showForItem($entity);
+               }
                break;
             case 10:
-               $entity->getFromDB($_SESSION["glpiactive_entity"]);
-               PluginAccountsAccount_Item::showForItem($entity);
+               foreach ($entities as $entity_id) {
+                  $entity->getFromDB($entity_id);
+                  PluginAccountsAccount_Item::showForItem($entity);
+               }
                break;
             case 11:
-               $PluginManageentitiesEntity->showReferences($_SESSION["glpiactiveentities"]);
+               $PluginManageentitiesEntity->showReferences($entities);
                break;
             default :
                break;
@@ -223,159 +239,161 @@ class PluginManageentitiesEntity extends CommonGLPI {
       echo "</div></h3>";
    }
 
-   function showDescription($instID) {
+   function showDescription($entities) {
       global $DB, $CFG_GLPI;
 
       $PluginManageentitiesContact         = new PluginManageentitiesContact();
       $PluginManageentitiesBusinessContact = new PluginManageentitiesBusinessContact();
       $entity                              = new Entity();
-      $entity->getFromDB($_SESSION["glpiactive_entity"]);
 
-//      self::showManageentitiesHeader(__('Data administrative', 'manageentities'));
+      foreach ($entities as $instID) {
 
-      echo "<div align='center'>";
-      echo "<table width='100%'>";
-      echo "<tr><td width='55%' style='vertical-align: top;' >";
+         $entity->getFromDB($instID);
 
-      echo "<form method='post' action='entity.form.php'>";
+         //      self::showManageentitiesHeader(__('Data administrative', 'manageentities'));
 
-      echo "<table class='tab_cadre_me' align='center'>";
+         echo "<div align='center'>";
+         echo "<table width='100%'>";
+         echo "<tr><td width='55%' style='vertical-align: top;' >";
 
-      echo "<tr>";
-      echo "<th colspan='4'>";
-      echo "<h3><div class='alert alert-secondary' role='alert'>";
-      echo __('Data administrative', 'manageentities');
-      echo "</div></h3>";
-      echo "</th>";
-      echo "</tr>";
+         echo "<form method='post' action='entity.form.php'>";
 
-      echo "<tr>";
-      echo "<th>";
-      echo __('Logo');
-      echo "</th>";
-      echo "<td>";
+         echo "<table class='tab_cadre_me' align='center'>";
 
-      $query = "SELECT * 
+         echo "<tr>";
+         echo "<th colspan='4'>";
+         echo "<h3><div class='alert alert-secondary' role='alert'>";
+         echo __('Data administrative', 'manageentities');
+         echo "</div></h3>";
+         echo "</th>";
+         echo "</tr>";
+
+         echo "<tr>";
+         echo "<th>";
+         echo __('Logo');
+         echo "</th>";
+         echo "<td>";
+
+         $query = "SELECT * 
                 FROM `glpi_plugin_manageentities_entitylogos` 
                 WHERE `entities_id` = '" . $entity->fields["id"] . "';";
 
-      if ($result = $DB->query($query)) {
-         $number = $DB->numrows($result);
-         if ($number != 0) {
-            while ($ligne = $DB->fetchAssoc($result)) {
-               echo "<img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $ligne["logos_id"] . "'>";
+         if ($result = $DB->query($query)) {
+            $number = $DB->numrows($result);
+            if ($number != 0) {
+               while ($ligne = $DB->fetchAssoc($result)) {
+                  echo "<img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $ligne["logos_id"] . "'>";
+               }
             }
          }
-      }
-      echo "</td>";
-
-
-      if (sizeof($instID) == 1
-          && Session::getCurrentInterface() != 'helpdesk') {
-         echo "<td style='padding-top:16px;'>";
-         echo __('Logo (format JPG or JPEG)', 'manageentities');
-         echo Html::file();
-
-         echo "</td><td class='left'>";
-         echo "(" . Document::getMaxUploadSize() . ")&nbsp;";
-         echo "<br>";
-         echo Html::hidden('entities_id', ['value' => $entity->fields["id"]]);
-         echo Html::submit(_sx('button', 'Update logo', 'manageentities'), ['name' => 'add', 'class' => 'btn btn-primary']);
          echo "</td>";
-      } else {
-         echo "<th>";
-         echo "</th>";
+
+
+         if (Session::getCurrentInterface() != 'helpdesk') {
+            echo "<td style='padding-top:16px;'>";
+            echo __('Logo (format JPG or JPEG)', 'manageentities');
+            echo Html::file();
+
+            echo "</td><td class='left'>";
+            echo "(" . Document::getMaxUploadSize() . ")&nbsp;";
+            echo "<br>";
+            echo Html::hidden('entities_id', ['value' => $entity->fields["id"]]);
+            echo Html::submit(_sx('button', 'Update logo', 'manageentities'), ['name' => 'add', 'class' => 'btn btn-primary']);
+            echo "</td>";
+         } else {
+            echo "<th>";
+            echo "</th>";
+            echo "<td>";
+            echo "</td>";
+         }
+
+         echo "</tr>";
+         echo "<tr>";
+         echo "<th>" . __('Name') . " </th>";
          echo "<td>";
+         if ($_SESSION["glpiactive_entity"] != 0)
+            echo $entity->fields["name"];
+         else
+            echo __('Root entity');
+         if ($_SESSION["glpiactive_entity"] != 0)
+            echo " (" . $entity->fields["completename"] . ")";
          echo "</td>";
-      }
+         if (isset($entity->fields["comment"])) {
+            echo "<th >";
+            echo __('Comments') . "</th>";
+            echo "<td class='top center'>" . nl2br($entity->fields["comment"]);
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
+         }
+         echo "</tr>";
 
-      echo "</tr>";
-      echo "<tr>";
-      echo "<th>" . __('Name') . " </th>";
-      echo "<td>";
-      if ($_SESSION["glpiactive_entity"] != 0)
-         echo $entity->fields["name"];
-      else
-         echo __('Root entity');
-      if ($_SESSION["glpiactive_entity"] != 0)
-         echo " (" . $entity->fields["completename"] . ")";
-      echo "</td>";
-      if (isset($entity->fields["comment"])) {
-         echo "<th >";
-         echo __('Comments') . "</th>";
-         echo "<td class='top center'>" . nl2br($entity->fields["comment"]);
+         echo "<tr><th>" . __('Phone') . " </th>";
+         echo "<td>";
+         if (isset($entity->fields["phonenumber"]))
+            echo $entity->fields["phonenumber"];
          echo "</td>";
-      } else {
-         echo "<td colspan='2'>&nbsp;</td>";
-      }
-      echo "</tr>";
-
-      echo "<tr><th>" . __('Phone') . " </th>";
-      echo "<td>";
-      if (isset($entity->fields["phonenumber"]))
-         echo $entity->fields["phonenumber"];
-      echo "</td>";
-      echo "<th>" . __('Fax') . " </th><td>";
-      if (isset($entity->fields["fax"]))
-         echo $entity->fields["fax"];
-      echo "</td></tr>";
-
-      echo "<tr><th>" . __('Website') . " </th>";
-      echo "<td>";
-      if (isset($entity->fields["website"]))
-         echo $entity->fields["website"];
-      echo "</td>";
-
-      echo "<th>" . __('Email address') . " </th><td>";
-      if (isset($entity->fields["email"]))
-         echo $entity->fields["email"];
-      echo "</td></tr>";
-
-      echo "<tr><th rowspan='4'>" . __('Address') . " </th>";
-      echo "<td class='left' rowspan='4'>";
-      if (isset($entity->fields["address"]))
-         echo nl2br($entity->fields["address"]);
-      echo "<th>" . __('Postal code') . "</th>";
-      echo "<td>";
-      if (isset($entity->fields["postcode"]))
-         echo $entity->fields["postcode"];
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr>";
-      echo "<th>" . __('City') . " </th><td>";
-      if (isset($entity->fields["town"]))
-         echo $entity->fields["town"];
-      echo "</td></tr>";
-
-      echo "<tr>";
-      echo "<th>" . _x('location', 'State') . " </th><td>";
-      if (isset($entity->fields["state"]))
-         echo $entity->fields["state"];
-      echo "</td></tr>";
-
-      echo "<tr>";
-      echo "<th>" . __('Country') . " </th><td>";
-      if (isset($entity->fields["country"]))
-         echo $entity->fields["country"];
-      echo "</td></tr>";
-      if (sizeof($instID) == 1
-          && Session::getCurrentInterface() != 'helpdesk') {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td class='center' colspan='4'>";
-         echo Html::hidden('entities_id', ['value' => $entity->fields["id"]]);
-         echo Html::submit(_sx('button', 'Update administrative data', 'manageentities'), ['name' => 'update', 'class' => 'btn btn-primary']);
+         echo "<th>" . __('Fax') . " </th><td>";
+         if (isset($entity->fields["fax"]))
+            echo $entity->fields["fax"];
          echo "</td></tr>";
-      }
-      echo "</table>";
-      Html::closeForm();
 
+         echo "<tr><th>" . __('Website') . " </th>";
+         echo "<td>";
+         if (isset($entity->fields["website"]))
+            echo $entity->fields["website"];
+         echo "</td>";
+
+         echo "<th>" . __('Email address') . " </th><td>";
+         if (isset($entity->fields["email"]))
+            echo $entity->fields["email"];
+         echo "</td></tr>";
+
+         echo "<tr><th rowspan='4'>" . __('Address') . " </th>";
+         echo "<td class='left' rowspan='4'>";
+         if (isset($entity->fields["address"]))
+            echo nl2br($entity->fields["address"]);
+         echo "<th>" . __('Postal code') . "</th>";
+         echo "<td>";
+         if (isset($entity->fields["postcode"]))
+            echo $entity->fields["postcode"];
+         echo "</td>";
+         echo "</tr>";
+
+         echo "<tr>";
+         echo "<th>" . __('City') . " </th><td>";
+         if (isset($entity->fields["town"]))
+            echo $entity->fields["town"];
+         echo "</td></tr>";
+
+         echo "<tr>";
+         echo "<th>" . _x('location', 'State') . " </th><td>";
+         if (isset($entity->fields["state"]))
+            echo $entity->fields["state"];
+         echo "</td></tr>";
+
+         echo "<tr>";
+         echo "<th>" . __('Country') . " </th><td>";
+         if (isset($entity->fields["country"]))
+            echo $entity->fields["country"];
+         echo "</td></tr>";
+         if (Session::getCurrentInterface() != 'helpdesk') {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td class='center' colspan='4'>";
+            echo Html::hidden('entities_id', ['value' => $entity->fields["id"]]);
+            echo Html::submit(_sx('button', 'Update administrative data', 'manageentities'), ['name' => 'update', 'class' => 'btn btn-primary']);
+            echo "</td></tr>";
+         }
+         echo "</table>";
+         Html::closeForm();
+      }
       echo "</td>";
       echo "<td width='45%' valign='top'>";
-      $PluginManageentitiesContact->showContacts($_SESSION["glpiactiveentities"]);
-//      echo "</td><td width='40%' valign='top'>";
-      $PluginManageentitiesBusinessContact->showBusiness($_SESSION["glpiactiveentities"]);
+      $PluginManageentitiesContact->showContacts($entities);
+      //      echo "</td><td width='40%' valign='top'>";
+      $PluginManageentitiesBusinessContact->showBusiness($entities);
       echo "</td></tr></table></div>";
+
 
    }
 
@@ -545,7 +563,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
    static function getMenuContent() {
 
-      $menu        = [];
+      $menu = [];
       //Menu entry in tools
       $menu['title']           = self::getTypeName(2);
       $menu['page']            = self::getSearchURL(false);
@@ -555,11 +573,11 @@ class PluginManageentitiesEntity extends CommonGLPI {
          $menu['links']['config'] = PluginManageentitiesConfig::getFormURL(false);
          //Link to config page in admin plugins list
          $menu['config_page']  = PluginManageentitiesConfig::getFormURL(false);
-         $menu['links']['add'] = PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR.'/front/addelements.form.php';
+         $menu['links']['add'] = PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR . '/front/addelements.form.php';
       }
 
-      $menu['options']['contractday']['title'] = PluginManageentitiesContractDay::getTypeName(2);
-      $menu['options']['contractday']['page']  = PluginManageentitiesContractDay::getSearchURL(false);
+      $menu['options']['contractday']['title']           = PluginManageentitiesContractDay::getTypeName(2);
+      $menu['options']['contractday']['page']            = PluginManageentitiesContractDay::getSearchURL(false);
       $menu['options']['contractday']['search']          = PluginManageentitiesContractDay::getSearchURL(false);
       $menu['options']['contractday']['links']['search'] = PluginManageentitiesContractDay::getSearchURL(false);
 
@@ -571,14 +589,11 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $menu['options']['company']['links']['search'] = PluginManageentitiesCompany::getSearchURL(false);
       $menu['icon']                                  = self::getIcon();
 
-      $menu['icon']    = self::getIcon();
+      $menu['icon'] = self::getIcon();
 
       return $menu;
    }
 
-   static function getIcon() {
-      return "fas fa-user-tie";
-   }
 
    function getRights($interface = 'central') {
 

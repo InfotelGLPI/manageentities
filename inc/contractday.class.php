@@ -39,7 +39,23 @@ class PluginManageentitiesContractDay extends CommonDBTM {
    public $dohistory = true;
 
    static function getTypeName($nb = 0) {
+
+      $config                  = PluginManageentitiesConfig::getInstance();
+      $PluginManageentitiesCri = new PluginManageentitiesCri();
+
+      if (Session::getCurrentInterface() == 'helpdesk'
+          && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION
+          && $PluginManageentitiesCri->canView()) {
+         return __('Interventions reports', 'manageentities');
+      } elseif (Session::getCurrentInterface() == 'central'
+                && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
+         return _n('Period of contract', 'Periods of contract', $nb, 'manageentities');
+      }
       return _n('Period of contract', 'Periods of contract', $nb, 'manageentities');
+   }
+
+   static function getIcon() {
+      return "fas fa-user-tie";
    }
 
    static function canView() {
@@ -466,8 +482,8 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo "</td><td>";
       Html::textarea(['name'            => 'comment',
                       'value'           => $this->fields["comment"],
-                      'cols'       => 40,
-                      'rows'       => 5,
+                      'cols'            => 40,
+                      'rows'            => 5,
                       'enable_richtext' => false]);
       echo "</td><td></td><td></td></tr>";
       echo "</tr>";
@@ -496,7 +512,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesContractDay') . "?contract_id=" . $contract->fields['id'] . "'>";
          $addButton .= Html::hidden('contract_id', ['value' => $contract_id]);
          $addButton .= Html::hidden('id', ['value' => '']);
-        $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'addperiod', 'class' => 'btn btn-primary']);
+         $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'addperiod', 'class' => 'btn btn-primary']);
       }
 
       if (isset($options['title'])) {
@@ -534,11 +550,11 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
       $restrict = ["`entities_id`"  => $contract->fields['entities_id'],
                    "`contracts_id`" => $contract->fields['id'],
-                   'ORDER' => '`date_signature` ASC'];
+                   'ORDER'          => '`date_signature` ASC'];
 
       $restrict_days = ["`entities_id`"  => $contract->fields['entities_id'],
-                   "`contracts_id`" => $contract->fields['id'],
-                   'ORDER' => '`begin_date` ASC, `name`'];
+                        "`contracts_id`" => $contract->fields['id'],
+                        'ORDER'          => '`begin_date` ASC, `name`'];
 
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);

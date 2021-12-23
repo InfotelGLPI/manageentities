@@ -57,7 +57,9 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
-
+   static function getIcon() {
+      return "fas fa-user-tie";
+   }
    /**
     * Display tab for item
     *

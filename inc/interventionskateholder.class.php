@@ -107,7 +107,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
       $this->closeFormJS();
    }
 
-   public function reinitListSkateholders($item, $idDpNbdays = null, $contractdaysId, $toDelete = false) {
+   public function reinitListSkateholders($item, $contractdaysId, $idDpNbdays = null, $toDelete = false) {
       global $CFG_GLPI;
 
       if ($item->getType() == PluginManageentitiesInterventionSkateholder::getType()) {

@@ -52,6 +52,15 @@ class PluginManageentitiesServicecatalog extends CommonGLPI {
       return PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
    }
 
+   /**
+    * @return string
+    */
+   static function getNavBarLink() {
+      global $CFG_GLPI;
+
+      return PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/entity.php";
+   }
+
    static function getMenuLogo() {
 
       return PluginManageentitiesEntity::getIcon();

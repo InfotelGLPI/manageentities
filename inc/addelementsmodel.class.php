@@ -311,7 +311,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $this->setEntity($entity);
             $pView->changeBtnName("btnAddEntity", __("Update this entity", "manageentities"));
             $pView->updateTabTitle(1, $entity->fields['name'], "div#mytabsentity", $entity, $this->getMessage(ElementType::ENTITY, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_" . $entity->getType() . "1'", $this->getMessage(ElementType::ENTITY, Status::SAVED));
+            $pView->updateImgTabTitle("'img_" . $entity->getType() . "1'", $this->getMessage(ElementType::ENTITY, Status::SAVED, false));
             $this->deleteError(Errors::ERROR_ENTITY, Errors::ERROR_ADD);
             return ["result" => Status::UPDATED,
                     "message" => $this->getMessage(ElementType::ENTITY, Status::UPDATED)];
@@ -328,7 +328,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $this->setEntity($entity);
             $pView->changeBtnName("btnAddEntity", __("Update this entity", "manageentities"));
             $pView->updateTabTitle(1, $entity->fields['name'], "div#mytabsentity", $entity, $this->getMessage(ElementType::ENTITY, Status::SAVED), true);
-            $pView->updateImgTabTitle(false, "'img_" . $entity->getType() . "1'", $this->getMessage(ElementType::ENTITY, Status::SAVED));
+            $pView->updateImgTabTitle( "'img_" . $entity->getType() . "1'", $this->getMessage(ElementType::ENTITY, Status::SAVED), false);
             $this->deleteError(Errors::ERROR_ENTITY, Errors::ERROR_ADD);
             return ["result" => Status::ADDED,
                     "message" => $this->getMessage(ElementType::ENTITY, Status::ADDED)];
@@ -442,7 +442,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          if (isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") {
             $this->setContract($contract);
             $pView->updateTabTitle(1, $contract->fields['name'], "div#mytabscontract", $contract, $this->getMessage(ElementType::CONTRACT, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_" . $contract->getType() . "1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED));
+            $pView->updateImgTabTitle("'img_" . $contract->getType() . "1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED), false);
             $pView->changeBtnName("btnAddContract", __("Update this contract only", "manageentities"));
             $this->deleteError(Errors::ERROR_CONTRACT, Errors::ERROR_UPDATE);
             $this->setIsContractTemplate(0);
@@ -467,7 +467,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $this->setContract($contract);
             $strTitleTab = isset($contract->fields['name']) ? $contract->fields['name'] : "";
             $pView->updateTabTitle(1, $strTitleTab, "div#mytabscontract", $contract, $this->getMessage(ElementType::CONTRACT, Status::SAVED), true);
-            $pView->updateImgTabTitle(false, "'img_" . $contract->getType() . "1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED));
+            $pView->updateImgTabTitle( "'img_" . $contract->getType() . "1'", $this->getMessage(ElementType::CONTRACT, Status::SAVED), false);
             $this->setIsContractTemplate(0);
             $pView->showFormAddContractManagementType($contract);
             $pView->showFormAddPDFcontract();
@@ -640,7 +640,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $strTitleTab .= isset($contact->fields['name']) ? $contact->fields['name'] : "";
 
                $pView->updateTabTitle($_POST['fakeid_new_contact'], $strTitleTab, "div#mytabscontacts", $contact, $this->getMessage(ElementType::CONTACT, Status::SAVED), true);
-               $pView->updateImgTabTitle(false, "'img_" . $contact->getType() . $_POST['fakeid_new_contact'] . "'", $this->getMessage(ElementType::CONTACT, Status::SAVED));
+               $pView->updateImgTabTitle( "'img_" . $contact->getType() . $_POST['fakeid_new_contact'] . "'", $this->getMessage(ElementType::CONTACT, Status::SAVED), false);
 
                return ["result" => Status::ADDED,
                        "message" => $this->getMessage(ElementType::CONTACT, Status::ADDED)];
@@ -733,11 +733,11 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $nbIntervention                                   = $this->getNbContractDays();
             $interventions[$_POST['fakeid_new_intervention']] = $intervention;
             $this->setContractDays($interventions);
-            $pView->updateImgTabTitle(false, "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED));
+            $pView->updateImgTabTitle( "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED), false);
             $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
 
             $pView->updateTabTitle($_POST['fakeid_new_intervention'], $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
+            $pView->updateImgTabTitle( "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED), false);
 
             $pView->changeBtnName("btnAddIntervention" . $_POST['fakeid_new_intervention'], __("Update this intervention only", "manageentities"));
 
@@ -894,7 +894,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
 
             $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
             $pView->updateTabTitle($_POST['fakeid_new_intervention'], $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
+            $pView->updateImgTabTitle( "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED), false);
 
             $pView->updateListItems($intervention, $_POST['fakeid_new_intervention'], $criPrice, Status::UPDATED);
 
@@ -918,7 +918,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
 
             $pView->updateTabTitle($_POST['fakeid_new_intervention'], $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
-            $pView->updateImgTabTitle(false, "'img_PluginManageentitiesContractDay" . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
+            $pView->updateImgTabTitle( "'img_PluginManageentitiesContractDay" . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED), false);
             $pView->changeBtnName("btn_add_cprice_" . $tabIdIntervention, __("Update this price", "manageentities"));
             $pView->updateCPriceID($criPrice->fields['id']);
             $pView->updateListItems($intervention, $_POST['fakeid_new_intervention'], $criPrice, Status::ADDED);
