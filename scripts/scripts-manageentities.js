@@ -23,12 +23,12 @@ function showResponse(responseText, statusText, xhr, $form) {
 }
 
 
-function showFormAddPDFContract(textTitle, btnYes, btnNo) {
+function showFormAddPDFContract(root_manage, textTitle, btnYes, btnNo) {
     var mTitle = "<i class='fas fa-info-circle fa-1x'></i>&nbsp;" + textTitle;
     $("#form-add-contract").dialog({
         autoOpen: false,
-        height: 200,
-        width: 450,
+        height: 400,
+        width: 650,
         modal: true,
         open: function () {
             $(this)
@@ -39,13 +39,14 @@ function showFormAddPDFContract(textTitle, btnYes, btnNo) {
         buttons:
                 [{
                         text: btnYes,
+                    'class':'btn btn-primary',
                         click: function () {
                             $('#add-form-contract').submit();
                         
                             $(this).dialog("close");
                             $.ajax({
                                 method: 'GET',
-                                url: ("../ajax/" + "updateDocumentList.php"),
+                                url: (root_manage + "/ajax/updateDocumentList.php"),
 
                                 data: {
                                     action: "refresh",
@@ -61,6 +62,7 @@ function showFormAddPDFContract(textTitle, btnYes, btnNo) {
                         }
                     }, {
                         text: btnNo,
+                    'class':'btn btn-primary',
                         click: function () {
                             $(this).dialog("close");
                         }

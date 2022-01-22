@@ -39,7 +39,7 @@ $pView  = new PluginManageentitiesAddElementsView();
 
 // checker le $_POST['criprice_id']
 
-switch ($_POST ['action']) {
+switch ($_POST['action']) {
    case Action::ADD_ONLY_ENTITY :
       // if all fields filled
       $pModel->storeDatasInSession(ElementType::ENTITY, $pModel->getEntity());

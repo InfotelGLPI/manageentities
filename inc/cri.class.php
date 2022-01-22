@@ -270,14 +270,14 @@ class PluginManageentitiesCri extends CommonDBTM {
 //                  $modal = $options['modal'];
 
                   echo "<input type='button' name='add_cri' value=\"" .
-                       __('Generation of the intervention report', 'manageentities') . "\" class='btn btn-primary manageentities_button' 
+                       __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button' 
                   onClick='manageentities_loadCriForm(\"addCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
                }
                // action not empty : update cri
             } elseif ($options['action'] == 'update_cri') {
                if (!empty($technicians_id)) {
 
-                  echo "<input type='button' name='update_cri' class='btn btn-primary manageentities_button' value=\"" .
+                  echo "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\"" .
                       __('Regenerate the intervention report', 'manageentities') . "\" 
                   onClick='manageentities_loadCriForm(\"updateCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'>";
 
@@ -821,7 +821,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                        'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
                        'toupdate' => $options['toupdate']];
             echo "<p><input type='button' name='save_cri' value=\"" .
-                 __('Save the intervention report', 'manageentities') . "\" class='btn btn-primary manageentities_button' 
+                 __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button' 
                  onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'></p>";
 
             echo "<IFRAME style='width:500px;height:700px' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";

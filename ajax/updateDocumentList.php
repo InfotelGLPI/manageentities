@@ -38,31 +38,32 @@ if (!defined('GLPI_ROOT')) {
 
 $val = "";
 
-$val.= "<tr class='tab_bg_1'  id='tr_add_contract'  style='display:table-row; '>";
-$val.= "<td>";
-$val.= __("Add a document");
-$val.= "</td>";
-$val.= "<td colspan='5'>";
-$val.= "<a onclick=\"showFormAddPDFContract('" . __("Add a document") . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
-$val.= "<i class=\"fas fa-3x fa-plus-square\"></i></a>";
-$val.= "</td>";
-$val.= "</tr>";
-$ele = new PluginManageentitiesAddElementsView();
-$val.= $ele->showListPDFcontract(false);
+$val         .= "<tr class='tab_bg_1' id='tr_add_contract' style='display:table-row; '>";
+$val         .= "<td>";
+$val         .= __("Add a document");
+$val         .= "</td>";
+$val         .= "<td colspan='5'>";
+$root_manage = PLUGIN_MANAGEENTITIES_WEBDIR;
+$val         .= "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document") . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
+$val         .= "<i class=\"fas fa-3x fa-plus-square\"></i></a>";
+$val         .= "</td>";
+$val         .= "</tr>";
+$ele         = new PluginManageentitiesAddElementsView();
+$val         .= $ele->showListPDFcontract(false);
 
-$pModel = PluginManageentitiesAddElementsModel::getInstance();
+$pModel     = PluginManageentitiesAddElementsModel::getInstance();
 $srcImg     = "";
 $alertTitle = "";
 
-while (!isset($_SESSION["manageentities"]["add_doc_status"]["result"])){
+while (!isset($_SESSION["manageentities"]["add_doc_status"]["result"])) {
 
 }
-$infos =  $_SESSION["manageentities"]["add_doc_status"];
+$infos = $_SESSION["manageentities"]["add_doc_status"];
 unset($_SESSION["manageentities"]["add_doc_status"]);
 $message = $infos["message"];
-if($infos["result"] == Status::ADDED){
+if ($infos["result"] == Status::ADDED) {
    $messageType = Messages::MESSAGE_INFO;
-}else{
+} else {
    $messageType = Messages::MESSAGE_ERROR;
 }
 switch ($messageType) {
@@ -91,7 +92,7 @@ switch ($messageType) {
 //$val.= "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>" . $message . "</div>";
 
 //$this->showHeaderJS();
-$val.= Html::scriptBlock("
+$val .= Html::scriptBlock("
 $( \"body\" ).append(\"<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'> $message </div>\");
 var mTitle =  \"<i class='" . $srcImg . " fa-1x' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";
 $( '#alert-message' ).dialog({

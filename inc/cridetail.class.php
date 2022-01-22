@@ -44,7 +44,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if ($item->getType() == 'Ticket' && Session::haveRight("plugin_manageentities_cri_create", READ)) {
+      if ($item->getType() == 'Ticket'
+          && Session::haveRight("plugin_manageentities_cri_create", READ)) {
          return PluginManageentitiesCri::getTypeName(1);
       } else if ($item->getType() == 'PluginManageentitiesContractDay') {
 

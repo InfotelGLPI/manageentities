@@ -47,8 +47,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
    public function showForm() {
 
-      echo Html::css(PLUGIN_MANAGEENTITIES_NOTFULL_DIR."/lib/jquery-ui/jquery-ui.min.css");
-      echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR."/lib/jquery-ui/jquery-ui.min.js");
+      echo Html::css(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/jquery-ui/jquery-ui.min.css");
+      echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/jquery-ui/jquery-ui.min.js");
 
       $this->showTitle();
       // addEntite
@@ -177,7 +177,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       if (isset($params["presales"])) {
          echo "<div class='center'>";
-         echo Html::submit(_x('button', 'Next', 'presales'), ['name' => 'add_contract', 'class' => 'btn btn-primary manageentities_button']);
+         echo Html::submit(_x('button', 'Next >', 'presales'), ['name'  => 'add_contract',
+                                                                'class' => 'submit btn btn-primary manageentities_button']);
          echo "</div>";
          Html::closeForm();
       }
@@ -291,6 +292,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
       $contractContent['params']['action'] = Action::ADD_ONLY_CONTRACT;
       $this->showJSfunction("addOnlyContract" . $contractContent['params']['rand'], $contractContent['idDivAjax'], $pModel->getUrl(), $contractContent['listIds'], $contractContent['params']);
+      $this->initFormAddPDFContract();
    }
 
    public function initJSPresalesIntervention($interventionContent) {
@@ -388,7 +390,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       // only contract
       $contractContent['params']['action'] = Action::ADD_ONLY_CONTRACT;
       $this->showJSfunction("addOnlyContract" . $contractContent['params']['rand'], $contractContent['idDivAjax'], $pModel->getUrl(), $contractContent['listIds'], $contractContent['params']);
-
+      $this->initFormAddPDFContract();
 
       // Entity AND Contract
       $contractContent['params']['action'] = Action::ADD_ENTITY_AND_CONTRACT;
@@ -595,7 +597,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddEntity' id='btnAddEntity' ";
+      echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddEntity' id='btnAddEntity' ";
       if (isset($this->pModel->getEntity()->fields["id"]) && $currentEntity->fields["id"] > 0) {
          echo "value='" . __("Update this entity", "manageentities") . "'";
       } else {
@@ -659,7 +661,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       // Onchange for img purpose
       echo "   <div id='tabs-" . ($idContact) . "' style='padding:0px;' onchange=\"javascript:";
-      $this->updateImgTabTitle( "'img_" . $currentContact->getType() . ($idContact) . "'", $this->pModel->getMessage(ElementType::CONTACT, Status::NOT_SAVED), true);
+      $this->updateImgTabTitle("'img_" . $currentContact->getType() . ($idContact) . "'", $this->pModel->getMessage(ElementType::CONTACT, Status::NOT_SAVED), true);
       echo "\" >";
 
       echo "<table class='tab_cadre_fixe'>";
@@ -860,7 +862,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddContact" . $idContact . "' id='btnAddContact" . $idContact . "' ";
+      echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddContact" . $idContact . "' id='btnAddContact" . $idContact . "' ";
       if (isset($currentContact->fields["id"]) && $currentContact->fields["id"] > 0) {
          echo "value='" . __("Update this contact", "manageentities") . "'";
       } else {
@@ -874,7 +876,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
       //      echo "<input type='submit' class='submit' name='btnAddnewFormContact'  id='btnAddnewFormContact'  value='" . __ ( "Add another contact", "manageentities" ) . "' onclick=\"javascript:addAnotherContact();document.getElementById(this.id).style.visibility='hidden';\"/>";
-      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddnewFormContact" . $rand . "'  
+      echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddnewFormContact" . $rand . "'  
       id='btnAddnewFormContact" . $rand . "'  
       value='" . __("Add another contact", "manageentities") . "' onclick=\"javascript:addAnotherContact" . $idContact . "();\"/>";
       echo "</td>";
@@ -945,7 +947,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
 
       echo "   <div id='tabs-1' style='padding:0px;' onchange=\"javascript:";
-      $this->updateImgTabTitle( "'img_" . $this->pModel->getContract()->getType() . "1'", $this->pModel->getMessage(ElementType::CONTRACT, Status::NOT_SAVED), true);
+      $this->updateImgTabTitle("'img_" . $this->pModel->getContract()->getType() . "1'", $this->pModel->getMessage(ElementType::CONTRACT, Status::NOT_SAVED), true);
       echo "\" >";
 
 
@@ -1226,7 +1228,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td colspan='3'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('on week') . "</td>";
+      echo "<td>" . __('On week') . "</td>";
       echo "<td colspan='3'>" . __('Start') . "&nbsp;";
       $idDpContractWkBeginHour = $this->showHours("contract_week_begin_hour", $currentContract->fields["week_begin_hour"], 0, $rand);
 
@@ -1235,7 +1237,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('on Saturday') . "</td>";
+      echo "<td>" . __('On Saturday') . "</td>";
       echo "<td colspan='3'>";
       $idDpYNsat = Dropdown::showYesNo("contract_use_saturday", $currentContract->fields["use_saturday"], -1, ["rand" => $rand]);
       echo "<span class='small_space'>" . __('Start') . "</span>&nbsp;";
@@ -1266,7 +1268,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr  class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddContract' id='btnAddContract' value='";
+      echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddContract' id='btnAddContract' value='";
       if (isset($currentContract->fields['id']) && $currentContract->fields['id'] > 0) {
          echo "" . __("Update this contract only", "manageentities") . "' ";
       } else {
@@ -1284,7 +1286,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo __("Add a document");
       echo "</td>";
       echo "<td colspan='5'>";
-      echo "<a onclick=\"showFormAddPDFContract('" . __("Add a document") . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
+      $root_manage = PLUGIN_MANAGEENTITIES_WEBDIR;
+      echo "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document") . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
       echo "<i class=\"fas fa-3x fa-plus-square\"></i></a>";
       echo "</td>";
       echo "</tr>";
@@ -1451,18 +1454,24 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<div id='form-add-contract' style='display: none;'>";
       echo "<form id='add-form-contract' method='POST' enctype='multipart/form-data' action='" . $this->pModel->getUrl() . "'>";
-      echo Html::hidden('action', ['id' => 'action', 'value' => Action::ADD_NEW_CONTRACT_PDF]);
+
+      echo Html::hidden('action', ['id' => 'action',
+                                   'value' => Action::ADD_NEW_CONTRACT_PDF]);
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __("Heading") . "</td>";
       echo "<td>";
-      if (isset($this->pModel->getContract()->fields['entities_id']) && $this->pModel->getContract()->fields['entities_id'] > 0) {
+      if (isset($this->pModel->getContract()->fields['entities_id'])
+          && $this->pModel->getContract()->fields['entities_id'] > 0) {
          DocumentCategory::dropdown(['entity' => $dbu->getSonsOf(Entity::getTable(),
-                                                                 $this->pModel->getContract()->fields['entities_id'])]);
+                                                                 $this->pModel->getContract()->fields['entities_id']),
+                                       'comments' => false]);
       } else {
-         DocumentCategory::dropdown();
+         DocumentCategory::dropdown(['comments' => false]);
       }
       echo "</td>";
+      echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3' style='padding-top:16px;'>";
       echo Html::file();
       echo "</td><td class='left'>";
@@ -1629,15 +1638,15 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       if ($canEdit) {
          echo "<td class='center' colspan='2'>";
-         echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddContractManagementType' id='btnAddContractManagementType'";
+         echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddContractManagementType' id='btnAddContractManagementType'";
          if (empty($pluginContract)) {
             echo " value=\"" . _sx('button', 'Add') . "\" ";
          } else {
             echo " value=\"" . _sx('button', 'Update') . "\" ";
          }
-         echo " class='btn btn-primary manageentities_button' onclick='addContractManagementType();'>";
+         echo " class='submit btn btn-primary manageentities_button' onclick='addContractManagementType();'>";
          echo "</td><td class='center' colspan='2'>";
-         echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnDeleteContractManagementType' id='btnDeleteContractManagementType' 
+         echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnDeleteContractManagementType' id='btnDeleteContractManagementType' 
          value='" . _sx('button', 'Delete permanently') . "' class='btn btn-primary' onclick='confirm_deleteContractManagementType();' ";
          if (empty($pluginContract)) {
             echo " style='visibility:hidden' ";
@@ -1724,7 +1733,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       // Onchange for img purpose
       echo "   <div id='tabs-" . ($idIntervention) . "' style='padding:0px;' onchange=\"javascript:";
-      $this->updateImgTabTitle( "'img_" . $currentContractday->getType() . ($idIntervention) . "'", $this->pModel->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED), true);
+      $this->updateImgTabTitle("'img_" . $currentContractday->getType() . ($idIntervention) . "'", $this->pModel->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED), true);
       echo "\" >";
 
       $name = "fakeid_new_intervention" . $rand;
@@ -2001,7 +2010,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<table class='tab_cadre_fixe' >";
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddIntervention" . $idIntervention . "' 
+      echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddIntervention" . $idIntervention . "' 
       id='btnAddIntervention" . $idIntervention . "' ";
 
       if (isset($currentContractday->fields["id"]) && $currentContractday->fields["id"] > 0) {
@@ -2018,7 +2027,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='right'>";
-      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddnewFormIntervention" . $idIntervention . "'  
+      echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddnewFormIntervention" . $idIntervention . "'  
       id='btnAddnewFormIntervention" . $idIntervention . "'  value='" . __("Add another intervention", "manageentities") . "' 
       onclick=\"javascript:addAnotherIntervention" . $idIntervention . "();\"/>";
       echo "</td> </tr>";
@@ -2190,7 +2199,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
          $this->showJSfunction("showFormCriPrice" . $rand, "viewcriprice_" . $fakeIdIntervention, $this->pModel->getUrl(), [], $params);
 
          echo "<div class='center firstbloc'>" .
-              "<input type='button' class='btn btn-primary manageentities_button' onclick='showFormCriPrice" . $rand . "();' value='" . __('Add a new price', 'manageentities') . "' /></div>\n";
+              "<input type='button' class='submit btn btn-primary manageentities_button' onclick='showFormCriPrice" . $rand . "();' value='" . __('Add a new price', 'manageentities') . "' /></div>\n";
       }
 
 
@@ -2426,8 +2435,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<td>";
       $name = "textfield_price" . $rand;
       echo Html::input($name, ['value' => $item->fields['price'],
-                               'id' => $name,
-                               'size' => 10]);
+                               'id'    => $name,
+                               'size'  => 10]);
       echo "</td>";
       echo "</tr>";
       echo "<tr class='tab_bg_1'>";
@@ -2436,14 +2445,18 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo __('Is default', 'manageentities') . '&nbsp;';
       echo "</td>";
       echo "<td>";
-      $idDpIsdefault = Dropdown::showYesNo('is_default', $item->fields['is_default']);
+      $value = 1;
+      if (isset($item->fields['is_default']) && !empty($item->fields['is_default'])) {
+         $value = $item->fields['is_default'];
+      }
+      $idDpIsdefault = Dropdown::showYesNo('is_default', $value);
       echo "</td>";
       echo "<td colspan='2'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' style='text-align: center'>";
-      echo "<input type='button' class='btn btn-primary manageentities_button' name='btn_add_cprice_" . $rand . "' id='btn_add_cprice_" . $rand . "'";
+      echo "<input type='button' class='submit btn btn-primary manageentities_button' name='btn_add_cprice_" . $rand . "' id='btn_add_cprice_" . $rand . "'";
       if (isset($item->fields['id']) && $item->fields['id'] > 0) {
          echo "   value='" . _n('Update this price', 'Update these prices', 1, 'manageentities') . "'";
       } else {
@@ -2452,7 +2465,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "   onclick='addCriPrice" . $rand . "();'/>";
 
       if (isset($item->fields['id']) && $item->fields['id'] > 0) {
-         echo "<input type='button' class='btn btn-primary manageentities_button' style='margin-left:16px;' name='btn_delete_cprice_" . $rand . "' id='btn_delete_cprice_" . $rand . "'";
+         echo "<input type='button' class='submit btn btn-primary manageentities_button' style='margin-left:16px;' name='btn_delete_cprice_" . $rand . "' id='btn_delete_cprice_" . $rand . "'";
          echo "   value='" . _n('Delete this price', 'Delete these prices', 1, 'manageentities') . "'";
          echo "   onclick='deleteCriPrice" . $rand . "();'/>";
       }
@@ -2811,9 +2824,9 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<form name='form_raz' id='form_raz' method='post' action='" . $target . "' >";
       echo Html::hidden('action', ['value' => Action::REINIT_FORMS, 'id' => 'action_raz']);
       echo "<div class='center' >";
-      echo Html::submit(__("Reinitialize forms", 'manageentities'), ['name' => 'btnAddAll',
-                                                                     'id' => 'btnAddAll',
-                                                                     'class' => 'btn btn-primary manageentities_button']);
+      echo Html::submit(__("Reinitialize forms", 'manageentities'), ['name'  => 'btnAddAll',
+                                                                     'id'    => 'btnAddAll',
+                                                                     'class' => 'submit btn btn-primary manageentities_button']);
       echo "</div>";
       Html::closeForm();
    }
@@ -2825,7 +2838,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "<table class='tab_cadre_fixe' >";
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' class='btn btn-primary manageentities_button' name='btnAddAll' id='btnAddAll' ";
+      echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddAll' id='btnAddAll' ";
 
       if ($this->isWizardAlreadySaveInDB()) {
          echo "value='" . __("Update all previous elements", "manageentities") . "' ";
