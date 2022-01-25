@@ -72,7 +72,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo __('Entity') . " :</td><td>";
 
       $entity    = new Entity();
-      $data      = [Dropdown::EMPTY_VALUE];
+//      $data      = [Dropdown::EMPTY_VALUE];
       $condition = ['id' => $_SESSION["glpiactiveentities"]];
       $data      = $entity->find($condition);
 
@@ -82,10 +82,12 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       }
 
       Dropdown::showFromArray('entities_id', $elements,
-                              ['values' => isset($_POST['entities_id']) ? $_POST['entities_id'] : [], 'multiple' => true, 'entity' => $_SESSION['glpiactiveentities']]);
+                              ['values' => $_POST['entities_id'] ?? [],
+                               'multiple' => true,
+                               'entity' => $_SESSION['glpiactiveentities']]);
 
       echo "<td class='right'>" . __('Task category') . " :</td><td>";
-      TaskCategory::dropdown(['name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0]);
+      TaskCategory::dropdown(['name' => 'category_id', 'value' => $_POST['category_id'] ?? 0]);
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'>";
       echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
@@ -110,7 +112,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo __('Entity') . " :</td><td>";
 
       $entity    = new Entity();
-      $data      = [Dropdown::EMPTY_VALUE];
+//      $data      = [Dropdown::EMPTY_VALUE];
       $condition = ['id' => $_SESSION["glpiactiveentities"]];
       $data      = $entity->find($condition);
 
@@ -119,7 +121,9 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
          $elements[$val['entities_id']] = Dropdown::getDropdownName("glpi_entities", $val['entities_id']);
       }
       Dropdown::showFromArray('entities_id', $elements,
-                              ['multiple' => true, 'entity' => $_SESSION['glpiactiveentities']]);
+                              ['multiple' => true,
+                               'entity' => $_SESSION['glpiactiveentities']
+                              ]);
 
       echo "<td class='right'>" . __('Task category') . " :</td><td>";
       TaskCategory::dropdown(['name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0]);

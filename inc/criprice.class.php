@@ -286,7 +286,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
          echo "<div id='viewcriprice" . $item->fields['id'] . "_$rand'></div>\n";
          self::getJSEdition("viewcriprice" . $item->fields['id'] . "_$rand", "viewAddCriprice" . $item->fields['id'] . "_$rand", $this->getType(), -1, 'PluginManageentitiesContractDay', $item->fields['id']);
          echo "<div class='center firstbloc'>" .
-              "<a class='btn btn-primary' href='javascript:viewAddCriprice" . $item->fields['id'] . "_$rand();'>";
+              "<a class='submit btn btn-primary' href='javascript:viewAddCriprice" . $item->fields['id'] . "_$rand();'>";
          echo __('Add a new price', 'manageentities') . "</a></div>\n";
       }
 

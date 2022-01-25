@@ -69,7 +69,7 @@ class PluginManageentitiesReport extends CommonDBTM {
                   . " AND `glpi_plugin_manageentities_contracts`.`moving_management` = 1 "
 
                   . " AND `glpi_tickets`.`entities_id` = " . $entity_id;
-         $query .= $dbu->getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
+         $query .= $dbu->getEntitiesRestrictRequest(" AND", "glpi_documents", '', $entity_id, true);
 
          $query .= " GROUP BY `glpi_documents`.`tickets_id` ";
          $query .= "ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
@@ -121,7 +121,7 @@ class PluginManageentitiesReport extends CommonDBTM {
             if ($i % 2) {
                $class = " class='tab_bg_1 ";
             }
-            echo "<tr $class" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
+            echo "<tr>";
             echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $key) . "</td>";
             echo "<td class='center'>" . Html::formatNumber($row['total_depl']) . "</td>";
             echo "<td class='center'>" . Html::formatNumber($row['actiontime']) . "</td>";

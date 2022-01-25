@@ -29,8 +29,6 @@
 
 include('../../../inc/includes.php');
 
-require("../fpdf/font/symbol.php");
-
 Session::checkLoginUser();
 if (!isset($_POST["cri"])) $_POST["cri"] = "";
 if (!isset($_GET["action"])) $_GET["action"] = "";

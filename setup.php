@@ -36,6 +36,8 @@ if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
    define("PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR", Plugin::getWebDir("manageentities",false));
 }
 
+include_once PLUGIN_MANAGEENTITIES_DIR . "/vendor/autoload.php";
+
 // Init the hooks of the plugins -Needed
 function plugin_init_manageentities() {
    global $PLUGIN_HOOKS, $CFG_GLPI;
