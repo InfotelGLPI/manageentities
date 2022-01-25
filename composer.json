@@ -1,0 +1,10 @@
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "glpi-project/tools": "^0.4"
+    },
+    "require": {
+        "fpdf/fpdf": "^1.83.2"
+    }
+}
