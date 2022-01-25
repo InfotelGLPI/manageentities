@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-22 14:19+0000\n"
+"POT-Creation-Date: 2022-01-25 08:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,22 +53,22 @@ msgstr[1] ""
 msgid "Manage your contracts"
 msgstr ""
 
-#: setup.php:88 inc/config.class.php:263 inc/cri.class.php:39
+#: setup.php:90 inc/config.class.php:263 inc/cri.class.php:39
 #: inc/cridetail.class.php:303 inc/profile.class.php:100
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] ""
 msgstr[1] ""
 
-#: setup.php:89 inc/report.class.php:107
+#: setup.php:91 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr ""
 
-#: setup.php:90 inc/report.class.php:212
+#: setup.php:92 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:135 front/addelements.form.php:38 front/config.form.php:45
+#: setup.php:137 front/addelements.form.php:38 front/config.form.php:45
 #: front/cridetail.form.php:48 front/cridetail.form.php:51
 #: front/cridetail.form.php:53 front/entity.php:43 front/entity.php:46
 #: front/entity.php:48 front/generatecri.form.php:84 front/generatecri.php:36
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Please activate the plugin"
 msgstr ""
 
-#: front/cri.form.php:38 inc/cri.class.php:273 inc/cridetail.class.php:313
+#: front/cri.form.php:36 inc/cri.class.php:273 inc/cridetail.class.php:313
 msgid "Generation of the intervention report"
 msgstr ""
 
@@ -853,7 +853,7 @@ msgstr ""
 msgid "Color field is not correct"
 msgstr ""
 
-#: inc/cri.class.php:86 inc/cridetail.class.php:1062 inc/cripdf.class.php:417
+#: inc/cri.class.php:86 inc/cridetail.class.php:1062 inc/cripdf.class.php:414
 msgid "Out of contract"
 msgstr ""
 
@@ -924,7 +924,7 @@ msgstr ""
 
 #: inc/cridetail.class.php:200 inc/cridetail.class.php:413
 #: inc/cridetail.class.php:510 inc/cridetail.class.php:894
-#: inc/cripdf.class.php:430
+#: inc/cripdf.class.php:427
 msgid "Crossed time (itinerary including)"
 msgstr ""
 
@@ -945,7 +945,7 @@ msgstr ""
 msgid "All reports"
 msgstr ""
 
-#: inc/cridetail.class.php:415 inc/cripdf.class.php:406
+#: inc/cridetail.class.php:415 inc/cripdf.class.php:403
 msgid "Contract number"
 msgstr ""
 
@@ -987,8 +987,8 @@ msgstr ""
 msgid "Intervention periods of contract"
 msgstr ""
 
-#: inc/cridetail.class.php:902 inc/cripdf.class.php:198
-#: inc/cripdf.class.php:455
+#: inc/cridetail.class.php:902 inc/cripdf.class.php:195
+#: inc/cripdf.class.php:452
 msgid "of this intervention"
 msgstr ""
 
@@ -1024,113 +1024,113 @@ msgstr ""
 msgid "No active contracts"
 msgstr ""
 
-#: inc/cripdf.class.php:218 inc/cripdf.class.php:224
+#: inc/cripdf.class.php:215 inc/cripdf.class.php:221
 msgid "Created by"
 msgstr ""
 
-#: inc/cripdf.class.php:218 inc/cripdf.class.php:230
+#: inc/cripdf.class.php:215 inc/cripdf.class.php:227
 msgid "in"
 msgstr ""
 
-#: inc/cripdf.class.php:264
+#: inc/cripdf.class.php:261
 msgid "Request number of associated help"
 msgstr ""
 
-#: inc/cripdf.class.php:280 inc/generatecri.class.php:506
+#: inc/cripdf.class.php:277 inc/generatecri.class.php:506
 msgid "Technician"
 msgid_plural "Technicians"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/cripdf.class.php:294
+#: inc/cripdf.class.php:291
 msgid "Intervention date"
 msgstr ""
 
-#: inc/cripdf.class.php:297
+#: inc/cripdf.class.php:294
 msgid "Year"
 msgstr ""
 
-#: inc/cripdf.class.php:311
+#: inc/cripdf.class.php:308
 msgid "From"
 msgstr ""
 
-#: inc/cripdf.class.php:315
+#: inc/cripdf.class.php:312
 msgid "To"
 msgstr ""
 
-#: inc/cripdf.class.php:345
+#: inc/cripdf.class.php:342
 msgid "Society name"
 msgstr ""
 
-#: inc/cripdf.class.php:361
+#: inc/cripdf.class.php:358
 msgid "Person in charge"
 msgstr ""
 
-#: inc/cripdf.class.php:403
+#: inc/cripdf.class.php:400
 msgid "Help on contract"
 msgstr ""
 
-#: inc/cripdf.class.php:434
+#: inc/cripdf.class.php:431
 msgid "Wording of the activities"
 msgstr ""
 
-#: inc/cripdf.class.php:436 inc/cripdf.class.php:438
+#: inc/cripdf.class.php:433 inc/cripdf.class.php:435
 msgid "Date of"
 msgstr ""
 
-#: inc/cripdf.class.php:437 inc/cripdf.class.php:439
+#: inc/cripdf.class.php:434 inc/cripdf.class.php:436
 msgid "Hour of"
 msgstr ""
 
-#: inc/cripdf.class.php:443
+#: inc/cripdf.class.php:440
 msgid "Crossed time"
 msgstr ""
 
-#: inc/cripdf.class.php:458
+#: inc/cripdf.class.php:455
 msgid "(in days)"
 msgstr ""
 
-#: inc/cripdf.class.php:460
+#: inc/cripdf.class.php:457
 msgid "(in hours)"
 msgstr ""
 
-#: inc/cripdf.class.php:503
+#: inc/cripdf.class.php:500
 msgid "Travel (in days)"
 msgstr ""
 
-#: inc/cripdf.class.php:505
+#: inc/cripdf.class.php:502
 msgid "Travel"
 msgstr ""
 
-#: inc/cripdf.class.php:521
+#: inc/cripdf.class.php:518
 msgid "Total (in days)"
 msgstr ""
 
-#: inc/cripdf.class.php:523
+#: inc/cripdf.class.php:520
 msgid "Total (in hours)"
 msgstr ""
 
-#: inc/cripdf.class.php:587
+#: inc/cripdf.class.php:584
 msgid "Detail of work done"
 msgstr ""
 
-#: inc/cripdf.class.php:645
+#: inc/cripdf.class.php:642
 msgid "Customer comments"
 msgstr ""
 
-#: inc/cripdf.class.php:729
+#: inc/cripdf.class.php:726
 msgid "Customer stamp"
 msgstr ""
 
-#: inc/cripdf.class.php:730
+#: inc/cripdf.class.php:727
 msgid "Customer Visa"
 msgstr ""
 
-#: inc/cripdf.class.php:760
+#: inc/cripdf.class.php:757
 msgid "Page"
 msgstr ""
 
-#: inc/cripdf.class.php:760
+#: inc/cripdf.class.php:757
 msgid "on"
 msgstr ""
 
