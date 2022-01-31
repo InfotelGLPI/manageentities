@@ -80,7 +80,7 @@ CREATE TABLE `glpi_plugin_manageentities_configs` (
    KEY `documentcategories_id` (`documentcategories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-INSERT INTO `glpi_plugin_manageentities_configs` (`id`,`backup`,`documentcategories_id`,`hourorday`,`hourbyday`,`needvalidationforcri`) VALUES ('1', '0','-1','0','8','0');
+INSERT INTO `glpi_plugin_manageentities_configs` (`id`,`backup`,`documentcategories_id`,`hourorday`,`hourbyday`,`needvalidationforcri`) VALUES ('1', '0','0','0','8','0');
 
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_critypes`;
 CREATE TABLE `glpi_plugin_manageentities_critypes` (
