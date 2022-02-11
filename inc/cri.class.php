@@ -807,7 +807,9 @@ class PluginManageentitiesCri extends CommonDBTM {
                             'display'           => 'none',
                             'cols'       => 100,
                             'rows'       => 8,
-                            'enable_richtext' => false]);
+                            'enable_richtext' => true,
+                            'enable_fileupload' => false,
+                            'enable_images'     => false,]);
             echo Html::hidden('INTERVENANTS', ['value' => $intervenants]);
             echo Html::hidden('documents_id', ['value' => $p['documents_id']]);
             echo Html::hidden('CONTRAT', ['value' => $p['CONTRAT']]);
