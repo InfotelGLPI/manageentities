@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-17 07:58+0000\n"
+"POT-Creation-Date: 2022-02-17 12:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,22 +53,22 @@ msgstr[1] ""
 msgid "Manage your contracts"
 msgstr ""
 
-#: setup.php:90 inc/config.class.php:263 inc/cri.class.php:39
+#: setup.php:91 inc/config.class.php:263 inc/cri.class.php:39
 #: inc/cridetail.class.php:303 inc/profile.class.php:100
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] ""
 msgstr[1] ""
 
-#: setup.php:91 inc/report.class.php:107
+#: setup.php:92 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr ""
 
-#: setup.php:92 inc/report.class.php:212
+#: setup.php:93 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:137 front/addelements.form.php:38 front/config.form.php:45
+#: setup.php:138 front/addelements.form.php:38 front/config.form.php:45
 #: front/cridetail.form.php:48 front/cridetail.form.php:51
 #: front/cridetail.form.php:53 front/entity.php:43 front/entity.php:46
 #: front/entity.php:48 front/generatecri.form.php:84 front/generatecri.php:36
