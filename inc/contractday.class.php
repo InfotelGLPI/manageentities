@@ -562,7 +562,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
       $pluginContractDays = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contractdays", $restrict_days);
       if (count($pluginContractDays)) {
-         echo "<div class='center'>";
+         echo "<div class='left'>";
          if ($canEdit) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['item' => __CLASS__, 'container' => 'mass' . __CLASS__ . $rand];
