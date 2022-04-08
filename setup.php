@@ -80,8 +80,8 @@ function plugin_init_manageentities() {
 
       if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
           && !$plugin->isActivated('servicecatalog')) {
-         $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = "/front/entity.php";
-         $PLUGIN_HOOKS['helpdesk_menu_entry_icon']['badges'] = PluginManageentitiesEntity::getIcon();
+         $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR."/front/entity.php";
+         $PLUGIN_HOOKS['helpdesk_menu_entry_icon']['manageentities'] = PluginManageentitiesEntity::getIcon();
       }
       if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
          Plugin::registerClass('PluginManageentitiesPreference',['addtabon' => 'Preference']); //See #413
