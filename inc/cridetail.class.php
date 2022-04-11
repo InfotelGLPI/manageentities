@@ -1279,7 +1279,11 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          'display_done_events' => true,
       ];
       $options         = array_merge($default_options, $options);
-
+      $addcrit = "";
+      if ($options['display_done_events'] == false) {
+         $addcrit = "AND `glpi_tickets`.`status` NOT IN ('" . Ticket::CLOSED . "','" . Ticket::SOLVED . "')
+         AND `glpi_tickettasks`.`state` NOT IN ('" . Planning::DONE . "') ";
+      }
       $interv = [];
 
       if (!isset($options['begin']) || ($options['begin'] == 'NULL')
@@ -1311,17 +1315,20 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                                WHERE `glpi_groups_users`.`groups_id` IN ('$groups')
                                      AND `glpi_groups`.`is_assign`))";
       } else { // Only personal ones
-         $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='" . $who . "' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $who . "'";
+         $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='" . $who . "' 
+         OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $who . "'";
       }
 
       if ($who > 0) {
-         $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='" . $who . "' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $who . "'";
+         $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='" . $who . "' 
+         OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $who . "'";
       }
       if ($who_group > 0) {
          $ASSIGN = " AND `users_id` IN (SELECT `users_id`
                                  FROM `glpi_groups_users`
                                  WHERE `groups_id` = '$who_group')";
       }
+
 
       $query = "SELECT `glpi_tickettasks`.`users_id_tech`,
                        `glpi_tickettasks`.`begin`,
@@ -1341,6 +1348,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                . " WHERE (`glpi_tickettasks`.`begin` >= '" . $begin . "' 
                   AND `glpi_tickettasks`.`end` <= '" . $end . "') "
                . " AND NOT `glpi_tickets`.`is_deleted` "
+               . " $addcrit "
                . " AND $ASSIGN ";
       $query .= $dbu->getEntitiesRestrictRequest("AND", "glpi_tickets", '',
                                                  $_SESSION["glpiactiveentities"], false);
