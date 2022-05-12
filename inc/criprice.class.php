@@ -312,7 +312,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
 
       $config = PluginManageentitiesConfig::getInstance();
 
-      echo "<div class='center'>";
+      echo "<div class='left'>";
       if ($canedit) {
          Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
          $massiveactionparams = ['item'      => __CLASS__,
@@ -366,7 +366,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
 
          echo "</tr>";
       }
-
+      echo "</table>";
       if ($canedit) {
          $massiveactionparams = ['item'      => __CLASS__,
                                  'ontop'     => false,

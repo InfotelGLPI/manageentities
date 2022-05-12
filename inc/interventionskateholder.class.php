@@ -339,6 +339,9 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
    public function showForm($item = [], $options = []) {
       global $CFG_GLPI;
 
+      echo Html::css(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/jquery-ui/jquery-ui.min.css");
+      echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/jquery-ui/jquery-ui.min.js");
+      
       if ($item->getType() == PluginManageentitiesInterventionSkateholder::getType()) {
          $idToUse   = $item->fields['plugin_manageentities_contractdays_id'];
          $idDivAjax = "tabskateholderajax" . $item->fields['plugin_manageentities_contractdays_id'];
@@ -389,7 +392,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
          // Nb days
          echo "<td>" . __('Affected to', 'manageentities') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
          echo "<td id='nb_days_container'>";
-         PluginManageentitiesDropdown::showNumber("nb_days", ["width" => 100,
+         Dropdown::showNumber("nb_days", ["width" => 100,
                                                               "min" => 0,
                                                               "max" => $nbDays,
                                                               "step" => "0.5",

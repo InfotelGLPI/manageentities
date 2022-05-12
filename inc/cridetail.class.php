@@ -330,9 +330,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                                     'class'   => 'btn btn-primary',
                                     'onclick' => "manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");"]);
 
-//         if (!isset($options['modal'])) {
-//            echo "<div id=\"$modal\" title=\"" . $title . "\" style=\"display:none;text-align:center\"></div>";
-//         }
+         //         if (!isset($options['modal'])) {
+         //            echo "<div id=\"$modal\" title=\"" . $title . "\" style=\"display:none;text-align:center\"></div>";
+         //         }
       }
 
       // DELETE
@@ -766,14 +766,14 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
                   $round = round($tmp, 2);
 
-                  $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += (int)$PDF->TotalTpsPassesArrondis($round);
+                  $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += $PDF->TotalTpsPassesArrondis($round);
 
                   // Set global conso of contractday
 
-                  $conso += (int)$PDF->TotalTpsPassesArrondis($round);
+                  $conso += $PDF->TotalTpsPassesArrondis($round);
 
                   // Set depass per techs
-                  $left -= (int)self::computeInDays($dataTask['actiontime'], $config, $dataCriDetail, $pluginContract, 1);
+                  $left -= self::computeInDays($dataTask['actiontime'], $config, $dataCriDetail, $pluginContract, 1);
                   if ($left <= 0) {
                      $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] += abs($PDF->TotalTpsPassesArrondis($left));
                      $left                                                                               = 0;
@@ -868,6 +868,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
    static function showForContractDay(PluginManageentitiesContractDay $contractDay) {
       global $PDF, $DB, $CFG_GLPI;
+
       $colspan = 8;
       $config  = PluginManageentitiesConfig::getInstance();
       $PDF     = new PluginManageentitiesCriPDF('P', 'mm', 'A4');
@@ -890,7 +891,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             echo "<th>" . __('Object of intervention', 'manageentities') . "</th>";
             echo "<th>" . __('Intervention type', 'manageentities') . "</th>";
             echo "<th>" . __('File') . "</th>";
-            if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY || (isset($manageentities_contract->fields['contract_type']) && $manageentities_contract->fields['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION)) {
+            if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY
+                || (isset($manageentities_contract->fields['contract_type'])
+                    && $manageentities_contract->fields['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION)) {
                echo "<th>" . __('Crossed time (itinerary including)', 'manageentities') . "</th>";
                echo "<th>" . __('Technicians', 'manageentities') . "</th>";
                if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
@@ -1279,7 +1282,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          'display_done_events' => true,
       ];
       $options         = array_merge($default_options, $options);
-      $addcrit = "";
+      $addcrit         = "";
       if ($options['display_done_events'] == false) {
          $addcrit = "AND `glpi_tickets`.`status` NOT IN ('" . Ticket::CLOSED . "','" . Ticket::SOLVED . "')
          AND `glpi_tickettasks`.`state` NOT IN ('" . Planning::DONE . "') ";
@@ -1383,8 +1386,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             } else {
                $interv[$key]["end"] = $data["end"];
             }
-            $interv[$key]["name"]     = Glpi\Toolbox\Sanitizer::unsanitize(Html::resume_text($data["name"], $CFG_GLPI["cut"])); // name is re-encoded on JS side
-            $interv[$key]["content"]  = Glpi\RichText\RichText::getSafeHtml(Html::resume_text($data["content"],$CFG_GLPI["cut"]));
+            $interv[$key]["name"]       = Glpi\Toolbox\Sanitizer::unsanitize(Html::resume_text($data["name"], $CFG_GLPI["cut"])); // name is re-encoded on JS side
+            $interv[$key]["content"]    = Glpi\RichText\RichText::getSafeHtml(Html::resume_text($data["content"], $CFG_GLPI["cut"]));
             $interv[$key]["actiontime"] = $data["actiontime"];
             $interv[$key]["url"]        = $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" .
                                           $data['tickets_id'];

@@ -135,7 +135,7 @@ if ($PluginManageentitiesEntity->canView()
                      "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : 0,
                      "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
                      "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0];
-         Html::requireJs('gantt');
+
          $entity = new PluginManageentitiesEntity();
          $entity->display($options);
       }

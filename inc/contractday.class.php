@@ -341,8 +341,8 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       $dbu             = new DbUtils();
       $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
       $pluginContract  = reset($pluginContracts);
-
-      $unit = PluginManageentitiesContract::getUnitContractType($config, $pluginContract['contract_type']);
+      $contract_type   = isset($pluginContract['contract_type'])??0;
+      $unit = PluginManageentitiesContract::getUnitContractType($config, $contract_type);
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -367,7 +367,9 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
       echo "</td>";
 
-      if (($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) || ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $pluginContract['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
+      if (($config->fields['hourorday'] == PluginManageentitiesConfig::DAY)
+          || ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR
+              && $pluginContract['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
          echo "<td>" . __('Postponement', 'manageentities') . "</td>";
          echo "<td><input type='text' name='report' value='" .
               Html::formatNumber($this->fields["report"]) . "'size='5'>";
