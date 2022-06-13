@@ -29,6 +29,8 @@
 
 include('../../../inc/includes.php');
 
+Session::checkLoginUser();
+
 if (isset($_GET["file"])) { // for other file
    $splitter = explode("/", $_GET["file"]);
 
