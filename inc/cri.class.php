@@ -826,7 +826,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                  __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button' 
                  onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode($params) . ");'></p>";
 
-            echo "<IFRAME style='width:500px;height:700px' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
+            echo "<IFRAME style='width:500px;height:700px' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/$filename' scrolling=none frameborder=1></IFRAME>";
             Html::closeForm();
 
          }

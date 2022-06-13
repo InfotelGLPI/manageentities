@@ -168,7 +168,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
       if (isset($params["presales"])) {
          echo "<form name='contract' id='contract' method='post'
-            action='" . $CFG_GLPI['root_doc'] . "/plugins/presales/front/finalizeopportunity.form.php'>";
+            action='" .PLUGIN_PRESALES_WEBDIR . "/front/finalizeopportunity.form.php'>";
          echo Html::hidden("id_quotation", ["value" => $params["id_quotation"]]);
       }
       echo "<div id='divContract' class='center' >";
