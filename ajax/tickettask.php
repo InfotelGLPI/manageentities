@@ -72,7 +72,7 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
 
             unset($tickettask->fields['end']);
             unset($tickettask->fields['id']);
-            $tickettask->fields['date']    = date("Y-m-d H:i:s ", time());
+            $tickettask->fields['date']    = date("Y-m-d H:i:s", time());
             $tickettask->fields['content'] = addslashes($tickettask->fields['content']);
             $tickettask->fields['plan']    = ['begin'     => $tickettask->fields['begin'],
                                               '_duration' => $tickettask->fields['actiontime'],

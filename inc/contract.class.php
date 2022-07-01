@@ -220,7 +220,7 @@ class PluginManageentitiesContract extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Show on global GANTT') . "</td>";
+      echo "<td>" . __('Show on GANTT', 'manageentities') . "</td>";
       echo "<td>";
       $gantt = (isset($pluginContract['show_on_global_gantt']) ? $pluginContract['show_on_global_gantt'] : 0);
       Dropdown::showYesNo("show_on_global_gantt", $gantt);

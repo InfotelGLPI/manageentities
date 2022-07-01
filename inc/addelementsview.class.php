@@ -1287,7 +1287,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       echo "</td>";
       echo "<td colspan='5'>";
       $root_manage = PLUGIN_MANAGEENTITIES_WEBDIR;
-      echo "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document") . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
+      echo "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document") .
+           "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
       echo "<i class=\"fas fa-3x fa-plus-square\"></i></a>";
       echo "</td>";
       echo "</tr>";
@@ -1587,7 +1588,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Show on global GANTT') . "</td>";
+      echo "<td>" . __('Show on GANTT', 'manageentities') . "</td>";
       echo "<td>";
       $idDpYNonGANT = Dropdown::showYesNo("show_on_global_gantt",
                                           $pluginContract["show_on_global_gantt"] ?? 1,

@@ -44,7 +44,8 @@ $val         .= __("Add a document");
 $val         .= "</td>";
 $val         .= "<td colspan='5'>";
 $root_manage = PLUGIN_MANAGEENTITIES_WEBDIR;
-$val         .= "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document") . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
+$val         .= "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document")
+                . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
 $val         .= "<i class=\"fas fa-3x fa-plus-square\"></i></a>";
 $val         .= "</td>";
 $val         .= "</tr>";
