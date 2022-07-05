@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-01 15:52+0000\n"
+"POT-Creation-Date: 2022-07-05 16:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Please activate the plugin"
 msgstr ""
 
-#: front/cri.form.php:36 inc/cri.class.php:273 inc/cridetail.class.php:313
+#: front/cri.form.php:36 inc/cri.class.php:274 inc/cridetail.class.php:313
 msgid "Generation of the intervention report"
 msgstr ""
 
@@ -876,39 +876,39 @@ msgstr ""
 msgid "Add a technician"
 msgstr ""
 
-#: inc/cri.class.php:192
+#: inc/cri.class.php:193
 msgid "Number of moving"
 msgstr ""
 
-#: inc/cri.class.php:241
+#: inc/cri.class.php:242
 msgid "Detail of the realized works"
 msgstr ""
 
-#: inc/cri.class.php:281 inc/cridetail.class.php:316
+#: inc/cri.class.php:282 inc/cridetail.class.php:316
 msgid "Regenerate the intervention report"
 msgstr ""
 
-#: inc/cri.class.php:290 inc/cri.class.php:299
+#: inc/cri.class.php:291 inc/cri.class.php:300
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr ""
 
-#: inc/cri.class.php:292
+#: inc/cri.class.php:293
 msgid "No tasks whose category can be used"
 msgstr ""
 
-#: inc/cri.class.php:501
+#: inc/cri.class.php:502
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
 
-#: inc/cri.class.php:506
+#: inc/cri.class.php:507
 msgid "Please fill the contract period end date."
 msgstr ""
 
-#: inc/cri.class.php:511
+#: inc/cri.class.php:512
 msgid "Please fill the contract period begin date."
 msgstr ""
 
-#: inc/cri.class.php:826
+#: inc/cri.class.php:827
 msgid "Save the intervention report"
 msgstr ""
 
