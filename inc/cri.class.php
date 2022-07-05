@@ -185,7 +185,8 @@ class PluginManageentitiesCri extends CommonDBTM {
          }
 
          $contract = new PluginManageentitiesContract();
-         if ($contract->getFromDBByCrit(['contracts_id' => $contractSelected['contractSelected']])) {
+         if ($contract->getFromDBByCrit(['contracts_id' => $contractSelected['contractSelected'],
+                                         'entities_id' => $job->fields["entities_id"]])) {
             if ($contract->fields['moving_management']) {
                echo "<tr class='tab_bg_1'>";
                echo "<th>";
