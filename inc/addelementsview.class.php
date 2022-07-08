@@ -254,6 +254,35 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
    }
 
+   public function showFormPoints($params = []) {
+
+
+         $interventions = $this->pModel->getContractDays();
+         $intervention  = $interventions[1];
+         echo "<div id='mytabsinterventions' class='tab_cadre_fixe'>";
+         echo "   <ul>";
+         $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
+         if (trim($strTitleTab) == "" || $this->pModel->isOnError(Errors::ERROR_INTERVENTION, Errors::ERROR_ALL, 1)) {
+            $strTitleTab = __("New intervention", "manageentities");
+         }
+         echo "      <li>";
+         echo "<a href='#tabs-1'>" . $strTitleTab . $this->showImgSaved($intervention, $this->pModel->getMessage(ElementType::INTERVENTION, Status::SAVED), 1) . "</a></li>";
+         echo "   </ul>";
+         $interventionContent[1] = $this->showFormAddContractPoint(1, $params);
+         echo "</div>";
+
+
+
+         echo "<br/><br/>";
+
+         $this->showBtnRAZ();
+
+
+
+      return $interventionContent;
+
+   }
+
 
    /**
     * L'idee globale, c'est que chacun des parametres de la fonction initJSFunctions contient au
@@ -1970,6 +1999,335 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
       ];
 
       $params = ['action'          => Action::ADD_ONLY_INTERVENTION,
+                 "id_div_ajax"     => $idDivAjax,
+                 "id_intervention" => $idIntervention
+      ];
+
+      echo "<div id='viewlistcriprice" . $rand . "'>";
+      echo "</div>";
+
+
+      echo "<div id='" . $idDivStakeHoldersAjax . "' style='text-align:center;'>";
+
+      $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
+      if (isset($currentContractday->fields['id']) && $currentContractday->fields['id'] > 0) {
+         $interventionSkateholder->displayTabContentForItem($currentContractday);
+      }
+      echo "</div>";
+
+      echo "<div id='" . $idDivAjax . "' style='text-align:center;'>";
+
+
+      echo "</div>";
+      echo "</div>";
+      echo "<div id='" . $idDivNewIntervention . "'></div>";
+
+      $interventionContent = ['idDivAjax'                => $idDivAjax,
+                              'listIds'                  => $listId,
+                              'params'                   => $params,
+                              'paramsAddNewIntervention' => $paramsAddNewIntervention,
+                              'idDivNewIntervention'     => $idDivNewIntervention,
+                              'idDivStakeholdersAjax'    => $idDivStakeHoldersAjax
+      ];
+
+      return $interventionContent;
+   }
+
+   /**
+    * @param int   $idIntervention
+    * @param array $paramsF
+    *
+    * @return array
+    */
+   public function showFormAddContractPoint($idIntervention = 1, $paramsF = []) {
+      $this->pModel = PluginManageentitiesAddElementsModel::getInstance();
+
+      $currentContractday = $this->pModel->getContractDay($idIntervention);
+
+      $rand     = $idIntervention;
+      $realRand = mt_rand();
+
+      $config      = PluginManageentitiesConfig::getInstance();
+      $conso       = 0;
+      $contract_id = 0;
+      $contract    = $this->pModel->getContract();
+      if (!isset($contract->fields['id'])) {
+         $contract->getEmpty();
+      }
+
+      $entity = $this->pModel->getEntity();
+      if (!isset($entity->fields['id'])) {
+         $entity->getEmpty();
+      }
+
+      $ID      = 0;
+      $options = ["contract_id" => ""];
+      //TODO entities recursive
+      $restrict = [
+                   "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']];
+
+      $dbu             = new DbUtils();
+      $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contractpoints", $restrict);
+      $pluginContract  = reset($pluginContracts);
+
+      $unit = PluginManageentitiesContract::getUnitContractType($config, isset($pluginContract['contract_type']) ? $pluginContract['contract_type'] : []);
+
+
+      // Onchange for img purpose
+      echo "   <div id='tabs-" . ($idIntervention) . "' style='padding:0px;' onchange=\"javascript:";
+      $this->updateImgTabTitle(true, "'img_" . $currentContractday->getType() . ($idIntervention) . "'", $this->pModel->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED));
+      echo "\" >";
+
+      echo "<input type='hidden' name='fakeid_new_intervention" . $rand . "' id='fakeid_new_intervention" . $rand . "' value='" . $idIntervention . "' />";
+
+
+      echo "<table class='tab_cadre_fixe'>";
+
+      // Entite
+//      echo "<tr  class='tab_bg_1'>";
+      //         INFOTEL : MODIFICATION PRESALES
+      if (!isset($paramsF["presales"])) {
+//         echo "<td>" . __("Entity") . $this->pModel->getMessage("mandatory_field") . "</td>";
+//         echo "<td colspan='3'>";
+//
+//         echo "<div id='div_select_entity_for_intervention" . $rand . "' ";
+//
+//         if (isset($currentContractday->fields['entities_id']) && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0 && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] || ((!isset($currentContractday->fields['entities_id']) || $currentContractday->fields['entities_id'] == "") && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)) {
+//            echo " style='visibility:hidden;' ";
+//         }
+//         echo " >";
+//
+//         $condition  = $dbu->getEntitiesRestrictCriteria("glpi_entities");
+//         $idDpEntity = Dropdown::show($dbu->getItemTypeForTable("glpi_entities"), [
+//            'name'       => 'intervention_entities_id',
+//            'value'      => isset($currentContractday->fields['entities_id']) ? $currentContractday->fields ['entities_id'] : 0,
+//            'emptylabel' => __("New entity", "manageentities"),
+//            'on_change'  => 'updateCriPrice' . $idIntervention . '();updateContractList' . $realRand . '()',
+//            'condition'  => $condition
+//         ]);
+//         echo "</div>";
+//
+//         echo "<label for='previous_entity_for_intervention" . $rand . "'> <input type='checkbox' name='previous_entity_for_intervention" . $rand . "' id='previous_entity_for_intervention" . $rand . "' ";
+//         if (isset($currentContractday->fields['entities_id']) && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0 && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] || ((!isset($currentContractday->fields['entities_id']) || $currentContractday->fields['entities_id'] == "") && isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)) {
+//            echo " checked='checked' ";
+//         }
+//
+//         echo " title='" . __("New entity created previously", "manageentities") . "' onclick=\"switchElementsEnableFromCb(this,'div_select_entity_for_intervention" . $rand . "');\" /> " . __("New entity created previously", "manageentities") . "</label>";
+//
+//
+//         echo "</td>";
+//         echo "</tr>";
+
+         // Contrat
+         echo "<tr  class='tab_bg_1'>";
+         echo "<td>" . __("Contract") . $this->pModel->getMessage("mandatory_field") . "</td>";
+         echo "<td  id='cell_select_contract_for_intervention" . $idIntervention . "' >";
+         echo "<div id='div_select_contract_for_intervention" . $idIntervention . "' ";
+
+
+         if (isset($currentContractday->fields['contracts_id']) && isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0 && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id'] || ((!isset($currentContractday->fields['contracts_id']) || $currentContractday->fields['contracts_id'] == "") && isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0)) {
+            echo " style='visibility:hidden;' ";
+         }
+         echo " >";
+
+         $idDpContract = Dropdown::show($dbu->getItemTypeForTable("glpi_contracts"), [
+            'name'       => 'intervention_contracts_id',
+            'value'      => isset($currentContractday->fields['contracts_id']) ? $currentContractday->fields ['contracts_id'] : 'name',
+            'emptylabel' => __("New contract", "manageentities")
+         ]);
+
+         echo "</div>";
+         echo "<label for='previous_contract_for_intervention" . $rand . "'> <input type='checkbox' name='previous_contract_for_intervention" . $rand . "' id='previous_contract_for_intervention" . $rand . "' ";
+         if (isset($currentContractday->fields['contracts_id']) && isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0 && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id'] || ((!isset($currentContractday->fields['contracts_id']) || $currentContractday->fields['contracts_id'] == "") && isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0)) {
+            echo " checked='true' ";
+         }
+         echo " autocomplete='off' title='" . __("New contract created previously", "manageentities") . "' onclick=\"switchElementsEnableFromCb(this,'div_select_contract_for_intervention" . $rand . "');\" /> " . __("New contract created previously", "manageentities") . "</label>";
+         echo "</td>";
+
+      } else {
+         echo "<input type='hidden' name='presales" . $rand . "' id='presales" . $rand . "' value='" . $paramsF["presales"] . "' />";
+         echo "<td hidden>";
+
+         $condition  = $dbu->getEntitiesRestrictCriteria("glpi_entities");
+         $idDpEntity = Dropdown::show($dbu->getItemTypeForTable("glpi_entities"), [
+            'name'       => 'intervention_entities_id',
+            'value'      => $paramsF["presales"],
+            'emptylabel' => __("New entity", "manageentities"),
+            'on_change'  => 'updateCriPrice' . $idIntervention . '();updateContractList' . $realRand . '()',
+            'condition'  => $condition
+         ]);
+
+         //         echo Html::hidden("contract_entities_id", ["value" => $params["presales"], "id" => "paramshide"]);
+
+
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr  class='tab_bg_1'>";
+         echo "<td></td>";
+         echo "<td></td>";
+         echo "<td hidden>";
+
+
+         $idDpContract = Dropdown::show($dbu->getItemTypeForTable("glpi_contracts"), [
+            'name'       => 'intervention_contracts_id',
+            'value'      => $paramsF["contracts_id"],
+            'emptylabel' => __("New contract", "manageentities")
+         ]);
+
+         echo "</td>";
+
+      }
+
+      $idDpContractType = 0;
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::POINTS) {
+         echo "<td>" . __('Contract mode', 'manageentities') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
+         echo "<td id='div_select_contract_type" . $idIntervention . "'>";
+         $idDpContractType = PluginManageentitiesContract::dropdownContractType("contract_type", $currentContractday->fields['contract_type']);
+         echo "</td>";
+      } else {
+         echo "<td colspan='2'></td>";
+      }
+      echo "</tr>";
+
+      if (isset($options['contract_id'])) {
+         $contract_id = $options['contract_id'];
+      }
+
+
+
+
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Initial credit', 'manageentities') . "</td>";
+      if ($config->fields['hourorday'] == PluginManageentitiesConfig::POINTS
+          && isset($pluginContract['contract_type'])
+          && $pluginContract['contract_type'] == PluginManageentitiesContractpoint::CONTRACT_UNLIMITED) {
+         echo "<td>&nbsp;";
+      } else {
+         echo "<td><input type='text' name='initial_credit' id='nbday" . $idIntervention . "' value='" .
+              Html::formatNumber($currentContractday->fields["initial_credit"], true, 1) . "'size='5'>";
+      }
+      echo "&nbsp;" . $unit;
+
+      echo "</td>";
+      echo "<td colspan='1'>" . __('Contact mail','manageentities') . "</td>";
+      echo "<td colspan='1'>" . Html::input('contact_email',['value' => $currentContractday->fields['contact_email']]) . "</td>";
+      echo "<input type='hidden' name='contracts_id' value='" . $contract_id . "'>";
+      echo "<input type='hidden' name='contract_id' value='" . $contract_id . "'>";
+
+      echo "</td></tr>";
+      echo "<tr>";
+      echo "<td colspan='1'>" . __('Number of minutes in a slice by default','manageentities') . "</td>";
+      echo "<td colspan='1'>" . Dropdown::showNumber('minutes_slice',['max' => 480,'display' => false,'value' => $currentContractday->fields['minutes_slice']])."</td>";
+      echo "<td colspan='1'>" . __('Number of points per slice by default','manageentities') . "</td>";
+      echo "<td colspan='1'>" . Dropdown::showNumber('points_slice',['max' => 1500,'display' => false,'value' => $currentContractday->fields['points_slice']])."</td>";
+
+      echo "</tr>";
+
+
+
+
+      echo "<table class='tab_cadre_fixe' >";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='4' class='right'>";
+      echo "<input type='submit' class='submit' name='btnAddIntervention" . $idIntervention . "' id='btnAddIntervention" . $idIntervention . "' ";
+
+      if (isset($currentContractday->fields["id"]) && $currentContractday->fields["id"] > 0) {
+         echo " value='" . __("Update this intervention", "manageentities") . "' ";
+      } else {
+         echo " value='" . __("Add only the intervention", "manageentities") . "' ";
+      }
+
+
+      echo " onclick='javascript:addOnlyIntervention" . $idIntervention . "();'";
+      echo "/>";
+      echo "</td>";
+      echo "</tr>";
+
+//      echo "<tr class='tab_bg_2'>";
+//      echo "<td colspan='4' class='right'>";
+//      echo "<input type='submit' class='submit' name='btnAddnewFormIntervention" . $idIntervention . "'  id='btnAddnewFormIntervention" . $idIntervention . "'  value='" . __("Add another intervention", "manageentities") . "' onclick=\"javascript:addAnotherIntervention" . $idIntervention . "();\"/>";
+//      echo "</td> </tr>";
+
+      echo "</table>";
+
+      //      var_dump($this->pModel->getAllCriPrice());
+
+
+      if (isset($currentContractday->fields['id']) && $currentContractday->fields['id'] > 0) {
+         $this->initCriPricesView($currentContractday, $idIntervention);
+      }
+
+      $this->initDate("intervention_begin_date" . $idIntervention);
+      $this->initDate("intervention_end_date" . $idIntervention);
+
+      $idDivNewIntervention  = "divaddnewintervention" . $rand;
+      $idDivAjax             = "tabinterventionajax" . $rand;
+      $idDivStakeHoldersAjax = "tabstakeholderajax" . $rand;
+
+      $listId = [
+         "fakeid_new_intervention" . $rand                 => ["hidden", "fakeid_new_intervention"],
+         //         "price_".$idIntervention                                    => ["text","new_intervention_price"],
+         "dropdown_intervention_entities_id" . $idDpEntity => ["dropdown", "new_intervention_entity_id"],
+         "previous_entity_for_intervention" . $rand        => ["checkbox", "previous_entity_for_intervention"],
+      ];
+
+      $params = ['action'          => Action::UPDATE_CRI_PRICE,
+                 "id_div_ajax"     => $idDivAjax,
+                 "id_intervention" => $idIntervention
+      ];
+      $this->showJSfunction("updateCriPrice" . $idIntervention, $idDivAjax, $this->pModel->getUrl(), $listId, $params);
+
+      $listId = ["fakeid_new_intervention" . $rand                 => ["hidden", "fakeid_new_intervention"],
+                 "dropdown_intervention_entities_id" . $idDpEntity => ["dropdown", "new_intervention_entity_id"],
+                 "previous_entity_for_intervention" . $rand        => ["checkbox", "previous_entity_for_intervention"],
+      ];
+
+      $params = ['action'               => Action::UPDATE_CONTRACT_LIST,
+                 "id_div_ajax"          => "div_select_contract_for_intervention" . $idIntervention,
+                 "id_intervention"      => $idIntervention,
+                 "id_dropdown_entity"   => $idDpEntity,
+                 "id_dropdown_contract" => $idDpContract
+      ];
+
+      $this->showJSfunction("updateContractList" . $realRand, "div_select_contract_for_intervention" . $idIntervention, $this->pModel->getUrl(), $listId, $params);
+
+      $listId = [
+         "fakeid_new_intervention" . $rand                                       => ["hidden", "fakeid_new_intervention"],
+         "intervention_name" . $idIntervention                                   => ["text", "new_intervention_name"],
+         "intervention_begin_date" . $idIntervention                             => ["text", "new_intervention_begin_date"],
+         "intervention_end_date" . $idIntervention                               => ["text", "new_intervention_end_date"],
+         "nbday" . $idIntervention                                               => ["text", "new_intervention_nbday"],
+         "btnAddnewFormIntervention" . $idIntervention                           => ["button", "id_btn_add_intervention"],
+         "report" . $idIntervention                                              => ["text", "new_intervention_report"],
+         "dropdown_intervention_entities_id" . $idDpEntity                       => ["dropdown", "new_intervention_entity_id"],
+         "dropdown_intervention_contracts_id" . $idDpContract                    => ["dropdown", "new_intervention_contract_id"],
+         "charged"                                                               => ["checkbox", "new_intervention_charged"],
+         "previous_entity_for_intervention" . $rand                              => ["checkbox", "previous_entity_for_intervention"],
+         "previous_contract_for_intervention" . $rand                            => ["checkbox", "previous_contract_for_intervention"],
+         "dropdown_plugin_manageentities_contractstates_id" . $idDpContractState => ["dropdown", "new_intervention_contractstate_id"],
+         "dropdown_contract_type" . $idDpContractType                            => ["dropdown", "contract_type"]
+      ];
+      //         INFOTEL : MODIFICATION PRESALES
+      if (isset($paramsF["presales"])) {
+
+         //         array_push();
+         $listId = array_merge($listId, ["presales" . $rand => ["hidden", "presales"]]);
+      }
+
+
+      //      if ($this->pModel->getCriPrice($idIntervention) == null){
+      //         $listId["dropdown_plugin_manageentities_critypes_id".$rand] = array("dropdown","new_intervention_critypes_id");
+      //         $listId["price_".$idIntervention]                                          = array("text","new_intervention_price");
+      //      }
+
+
+      $paramsAddNewIntervention = ["action"             => Action::ADD_NEW_INTERVENTION,
+                                   "id_div_new_contact" => $idDivNewIntervention,
+                                   "id_div_ajax"        => $idDivAjax
+      ];
+
+      $params = ['action'          => Action::ADD_ONLY_CONTRACTPOINTS,
                  "id_div_ajax"     => $idDivAjax,
                  "id_intervention" => $idIntervention
       ];

@@ -90,7 +90,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             self::showForTicket($item);
             //               }
          }
-         self::showReports($item, $item->getField('id'));
+         if ($config->fields['hourorday'] != PluginManageentitiesConfig::POINTS) {
+            self::showReports($item, $item->getField('id'));
+         }
          //} else {
          //   echo __("Impossible generation, you didn't create a scheduled task", 'manageentities');
          //   echo "<br>";
@@ -1100,12 +1102,41 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    static function showContractLinkDropdown($cridetail, $entities_id, $type = 'ticket') {
       global $DB, $CFG_GLPI;
 
+
+      
+
+
+      $config = PluginManageentitiesConfig::getInstance();
+      $entity = new Entity();
+      $entities = "(".$entities_id;
+      foreach (getAncestorsOf("glpi_entities", $entities_id) as $parent) {
+         $entities .= ",$parent";
+      }
+      $entities .= ")";
       $contract = new contract();
       $contract->getEmpty();
       $rand  = mt_rand();
       $width = 300;
-
-      $query = "SELECT DISTINCT(`glpi_contracts`.`id`),
+      if($config->getField('hourorday') == PluginManageentitiesConfig::POINTS) {
+         $query = "SELECT DISTINCT(`glpi_contracts`.`id`),
+                       `glpi_contracts`.`name`,
+                       `glpi_contracts`.`num`,
+                       `glpi_plugin_manageentities_contractpoints`.`contracts_id`,
+                       `glpi_plugin_manageentities_contractpoints`.`id` as ID_us,
+                       `glpi_plugin_manageentities_contractpoints`.`current_credit` as current_credit,
+                       `glpi_plugin_manageentities_contractpoints`.`contract_cancelled` as contract_cancelled,
+                        0 as is_default
+                
+               FROM `glpi_contracts`
+               INNER JOIN `glpi_plugin_manageentities_contractpoints`
+                    ON (`glpi_plugin_manageentities_contractpoints`.`contracts_id` = `glpi_contracts`.`id`)
+               WHERE (`glpi_contracts`.`entities_id` =  " . $entities_id . " 
+                      OR (`glpi_contracts`.`entities_id` IN  " . $entities . " 
+                      AND `glpi_contracts`.`is_recursive` = 1))
+                      AND `glpi_contracts`.`is_deleted` = 0 
+               ORDER BY `glpi_contracts`.`name` ";
+      } else {
+         $query = "SELECT DISTINCT(`glpi_contracts`.`id`),
                        `glpi_contracts`.`name`,
                        `glpi_contracts`.`num`,
                        `glpi_plugin_manageentities_contracts`.`contracts_id`,
@@ -1114,10 +1145,12 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                FROM `glpi_contracts`
                LEFT JOIN `glpi_plugin_manageentities_contracts`
                     ON (`glpi_plugin_manageentities_contracts`.`contracts_id` = `glpi_contracts`.`id`)
-               WHERE `glpi_plugin_manageentities_contracts`.`entities_id` = '" . $entities_id . "' 
+               WHERE (`glpi_plugin_manageentities_contracts`.`entities_id` =  " . $entities_id . " 
+                      OR (`glpi_plugin_manageentities_contracts`.`entities_id` IN  " . $entities . " 
+                      AND `glpi_contracts`.`is_recursive` = 1))
                       AND `glpi_contracts`.`is_deleted` = 0 
                ORDER BY `glpi_contracts`.`name` ";
-
+      }
       $result              = $DB->query($query);
       $number              = $DB->numrows($result);
       $selected            = false;
@@ -1139,15 +1172,25 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                   $contractSelected    = $cridetail['contracts_id'];
                   $contractdaySelected = $cridetail["plugin_manageentities_contractdays_id"];
                   $value               = $data["id"];
+                  if($config->getField('hourorday') == PluginManageentitiesConfig::POINTS) {
+                     $elements[$data["id"]] = $data["name"] . " - " . $data["num"];
+                  }
                } else if ($data["is_default"] == '1' && !$selected) {
                   $contractSelected = $data['contracts_id'];
                   $value            = $data["id"];
                }
-
-               if (PluginManageentitiesContract::checkRemainingOpenContractDays($data["id"])
-                   || (isset($cridetail['contracts_id']) ? $cridetail['contracts_id'] : 0) == $data["id"]) {
-                  $elements[$data["id"]] = $data["name"] . " - " . $data["num"];
+               if($config->getField('hourorday') == PluginManageentitiesConfig::POINTS) {
+                  if(($data['current_credit'] > 0 && $data['contract_cancelled']==1) || $data['contract_cancelled']==0) {
+                     $elements[$data["id"]] = $data["name"] . " - " . $data["num"];
+                  }
+               } else {
+                  if (PluginManageentitiesContract::checkRemainingOpenContractDays($data["id"])
+                      || (isset($cridetail['contracts_id']) ? $cridetail['contracts_id'] : 0) == $data["id"]) {
+                     $elements[$data["id"]] = $data["name"] . " - " . $data["num"];
+                  }
                }
+
+
             }
             if ($value == 0 && count($elements) == 2) {
                unset($elements[0]);
@@ -1184,24 +1227,56 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       Ajax::updateItemOnSelectEvent("dropdown_contracts_id$rand", "show_contractdays", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/dropdownContract.php", $params);
       Ajax::updateItem("show_contractdays", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/dropdownContract.php", $params, "dropdown_contracts_id$rand");
       echo "</td>";
-
-      // Display contract day
-      echo "<th>" . __('Periods of contract', 'manageentities') . "</th>";
-      echo "<td>";
-      $restrict = ['entities_id'  => $contract->fields['entities_id'],
-                   'contracts_id' => $contractSelected];
-      $restrict += ['NOT' => ['plugin_manageentities_contractstates_id' => 2]];//Closed contract was 8, is now 2
-      if ($type == 'ticket') {
-         echo "<span id='show_contractdays'>";
-         Dropdown::show('PluginManageentitiesContractDay', ['name'      => 'plugin_manageentities_contractdays_id',
-                                                            'value'     => $contractdaySelected,
-                                                            'condition' => $restrict,
-                                                            'width'     => $width]);
-         echo "</span>";
+      if($config->getField('hourorday') != PluginManageentitiesConfig::POINTS) {
+         // Display contract day
+         echo "<th>" . __('Periods of contract', 'manageentities') . "</th>";
+         echo "<td>";
+         $restrict = ['entities_id'  => $contract->fields['entities_id'],
+                      'contracts_id' => $contractSelected];
+         $restrict += ['NOT' => ['plugin_manageentities_contractstates_id' => 2]];//Closed contract was 8, is now 2
+         if ($type == 'ticket') {
+            echo "<span id='show_contractdays'>";
+            Dropdown::show('PluginManageentitiesContractDay', ['name'      => 'plugin_manageentities_contractdays_id',
+                                                               'value'     => $contractdaySelected,
+                                                               'condition' => $restrict,
+                                                               'width'     => $width]);
+            echo "</span>";
+         } else {
+            echo Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected);
+         }
+         echo "</td>";
       } else {
-         echo Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected);
+         $contractpoint = new PluginManageentitiesContractpoint();
+         $contractpoint->getEmpty();
+         $contractpoint->getFromDBByCrit(['contracts_id' => $contract->getID()]);
+         $unlimited = false;
+         if(isset($contractpoint->fields['contract_type']) && $contractpoint->fields['contract_type'] == PluginManageentitiesContractpoint::CONTRACT_UNLIMITED ) {
+            $unlimited = true;
+         }
+         echo "<td>";echo "</td>";
+         echo "<td>";echo "</td>";
+         echo "</tr>";
+         echo "<tr>";
+         if(!$unlimited) {
+            echo "<tr>";
+            echo "<th colspan='1'>" . __('Current credit','manageentities') . "</th>";
+            echo "<td colspan='1'>" . $contractpoint->fields['current_credit']."  ". __('points','manageentities')."</td>";
+            echo "<th colspan='1'>" . __('Contract cancelled','manageentities') . "</th>";
+            echo "<td colspan='1'>" . Dropdown::getYesNo($contractpoint->fields['contract_cancelled'])."</td>";
+
+            echo "</tr>";
+         } else {
+            echo "<tr>";
+            echo "<th colspan='1'>" . __('Current credit','manageentities') . "</th>";
+            echo "<td colspan='1'>" .  __('Unlimited','manageentities')."</td>";
+            echo "<th colspan='1'>" . __('Contract cancelled','manageentities') . "</th>";
+            echo "<td colspan='1'>" . Dropdown::getYesNo($contractpoint->fields['contract_cancelled'])."</td>";
+
+            echo "</tr>";
+         }
+
       }
-      echo "</td>";
+
       echo "</tr>";
       echo "</table>";
 

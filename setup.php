@@ -27,7 +27,13 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '3.2.2');
+define('PLUGIN_MANAGEENTITIES_VERSION', '3.2.3-update');
+if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
+   define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
+   define("PLUGIN_MANAGEENTITIES_DIR_NOFULL", Plugin::getPhpDir("manageentities",false));
+}
+
+
 
 // Init the hooks of the plugins -Needed
 function plugin_init_manageentities() {
@@ -51,7 +57,14 @@ function plugin_init_manageentities() {
 
    if (Session::getLoginUserID()) {
       Plugin::registerClass('PluginManageentitiesProfile', ['addtabon' => 'Profile']);
-      Plugin::registerClass('PluginManageentitiesContract', ['addtabon' => 'Contract']);
+      $config = PluginManageentitiesConfig::getInstance();
+      if($config->getField('hourorday') == PluginManageentitiesConfig::POINTS) {
+         Plugin::registerClass('PluginManageentitiesContractpoint', ['addtabon' => 'Contract']);
+         $PLUGIN_HOOKS['pre_item_form']['manageentities']  = [PluginManageentitiesContractpoint::class, 'messageTask'];
+      } else {
+         Plugin::registerClass('PluginManageentitiesContract', ['addtabon' => 'Contract']);
+      }
+
       Plugin::registerClass('PluginManageentitiesCriDetail', ['addtabon'       => 'Ticket',
                                                                    'planning_types' => true]);
 

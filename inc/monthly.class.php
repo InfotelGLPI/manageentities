@@ -69,6 +69,8 @@ class PluginManageentitiesMonthly extends CommonDBTM {
                              OR `glpi_plugin_manageentities_contracts`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION . "'
                              OR `glpi_plugin_manageentities_contracts`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED . "')";
          // Daily
+      } else   if ($config->fields['hourorday'] == PluginManageentitiesConfig::POINTS){
+         $configHourOrDay = "";
       } else {
          $configHourOrDay = "AND (`glpi_plugin_manageentities_contractdays`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_NULL . "'
                              OR `glpi_plugin_manageentities_contractdays`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_AT . "'
