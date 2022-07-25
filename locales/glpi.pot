@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-05 16:45+0000\n"
+"POT-Creation-Date: 2022-07-25 08:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -644,13 +644,13 @@ msgstr[1] ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: inc/company.class.php:212 inc/company.class.php:230
+#: inc/company.class.php:211 inc/company.class.php:229
 #: inc/entitylogo.class.php:72
 msgid "The format of the image must be in JPG or JPEG"
 msgstr ""
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: inc/company.class.php:327
+#: inc/company.class.php:326
 #, php-format
 msgid "Logo %d"
 msgstr ""
