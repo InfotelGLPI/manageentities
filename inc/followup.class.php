@@ -94,8 +94,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
       $beginDateBefore        = '';
       $endDateAfter           = '';
       $endDateBefore          = '';
-      $beginDate              = 'NULL';
-      $endDate                = 'NULL';
+      $beginDate              = '';
+      $endDate                = '';
       $contractState          = '';
       $queryBusiness          = '';
       $queryCompany           = '';
@@ -128,23 +128,23 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                              OR `glpi_plugin_manageentities_contractdays`.`contract_type`='" . PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT . "')";
       }
 
-      if (isset($options['begin_date_after']) && $options['begin_date_after'] != 'NULL') {
+      if (isset($options['begin_date_after']) && $options['begin_date_after'] != '') {
          $beginDateAfter = " AND (`glpi_plugin_manageentities_contractdays`.`begin_date` >='" .
                            $options['begin_date_after'] . "' )";
          $beginDate      = $options['begin_date_after'];
       }
 
-      if (isset($options['begin_date_before']) && $options['begin_date_before'] != 'NULL') {
+      if (isset($options['begin_date_before']) && $options['begin_date_before'] != '') {
          $beginDateBefore = " AND (`glpi_plugin_manageentities_contractdays`.`begin_date` <= ADDDATE('" .
                             $options['begin_date_before'] . "', INTERVAL 1 DAY))";
       }
 
-      if (isset($options['end_date_after']) && $options['end_date_after'] != 'NULL') {
+      if (isset($options['end_date_after']) && $options['end_date_after'] != '') {
          $endDateAfter = " AND (`glpi_plugin_manageentities_contractdays`.`end_date` >= '" .
                          $options['end_date_after'] . "' )";
       }
 
-      if (isset($options['end_date_before']) && $options['end_date_before'] != 'NULL') {
+      if (isset($options['end_date_before']) && $options['end_date_before'] != '') {
          $endDateBefore = " AND (`glpi_plugin_manageentities_contractdays`.`end_date` <= ADDDATE('" .
                           $options['end_date_before'] . "', INTERVAL 1 DAY))";
          $endDate       = $options['end_date_before'];

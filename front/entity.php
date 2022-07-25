@@ -125,11 +125,11 @@ if ($PluginManageentitiesEntity->canView()
             $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
          }
          $options = ["begin_date_after"  => isset($_POST['begin_date_after']) ? $_POST['begin_date_after'] : $dateYear,
-                     "begin_date_before" => isset($_POST['begin_date_before']) ? $_POST['begin_date_before'] : "NULL",
+                     "begin_date_before" => isset($_POST['begin_date_before']) ? $_POST['begin_date_before'] : "",
                      "begin_date"        => isset($_POST['begin_date']) ? $_POST['begin_date'] : $dateMonthbegin,
                      "end_date"          => isset($_POST['end_date']) ? $_POST['end_date'] : $dateMonthend,
-                     "end_date_after"    => isset($_POST['end_date_after']) ? $_POST['end_date_after'] : "NULL",
-                     "end_date_before"   => isset($_POST['end_date_before']) ? $_POST['end_date_before'] : "NULL",
+                     "end_date_after"    => isset($_POST['end_date_after']) ? $_POST['end_date_after'] : "",
+                     "end_date_before"   => isset($_POST['end_date_before']) ? $_POST['end_date_before'] : "",
                      "contract_states"   => isset($_POST['contract_states']) ? $_POST['contract_states'] : 0,
                      "entities_id"       => (isset($_POST['entities_id']) && (!empty($_POST['entities_id']))) ? $_POST['entities_id'] : -1,
                      "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : 0,
