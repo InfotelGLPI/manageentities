@@ -29,10 +29,7 @@
 
 include('../../../inc/includes.php');
 
-$plugin = new Plugin();
-
-
-if ($plugin->isActivated("manageentities")) {
+if (Plugin::isPluginActive("manageentities")) {
    if (Session::haveRight("plugin_manageentities", UPDATE)) {
       $config = new PluginManageentitiesConfig();
 

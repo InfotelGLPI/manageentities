@@ -56,8 +56,6 @@ function plugin_init_manageentities() {
 
    $PLUGIN_HOOKS['item_transfer']['manageentities'] = 'plugin_item_transfer_manageentities';
 
-   $plugin = new Plugin();
-
    if (Session::getLoginUserID()) {
       Plugin::registerClass('PluginManageentitiesProfile', ['addtabon' => 'Profile']);
       Plugin::registerClass('PluginManageentitiesContract', ['addtabon' => 'Contract']);
@@ -69,7 +67,7 @@ function plugin_init_manageentities() {
       Plugin::registerClass('PluginManageentitiesInterventionSkateholder', ['addtabon' => 'PluginManageentitiesContractDay']);
       Plugin::registerClass('PluginManageentitiesCriPrice', ['addtabon' => 'PluginManageentitiesContractDay']);
 
-      if ($plugin->isActivated('servicecatalog')) {
+      if (Plugin::isPluginActive('servicecatalog')) {
          $PLUGIN_HOOKS['servicecatalog']['manageentities'] = ['PluginManageentitiesServicecatalog'];
       }
 
@@ -79,7 +77,7 @@ function plugin_init_manageentities() {
       }
 
       if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
-          && !$plugin->isActivated('servicecatalog')) {
+          && !Plugin::isPluginActive('servicecatalog')) {
          $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR."/front/entity.php";
          $PLUGIN_HOOKS['helpdesk_menu_entry_icon']['manageentities'] = PluginManageentitiesEntity::getIcon();
       }
@@ -95,7 +93,7 @@ function plugin_init_manageentities() {
 
          if (isset($_SESSION["glpi_plugin_manageentities_loaded"])
              && $_SESSION["glpi_plugin_manageentities_loaded"] == 0
-             && $plugin->isActivated("manageentities")) {
+             && Plugin::isPluginActive("manageentities")) {
             $_SESSION["glpi_plugin_manageentities_loaded"] = 1;
             Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php");
          }
@@ -105,7 +103,7 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['config_page']['manageentities'] = 'front/config.form.php';
       }
 
-      if ($plugin->isActivated('servicecatalog')) {
+      if (Plugin::isPluginActive('servicecatalog')) {
          $PLUGIN_HOOKS['mydashboard']['manageentities'] = ["PluginManageentitiesDashboard"];
       }
 

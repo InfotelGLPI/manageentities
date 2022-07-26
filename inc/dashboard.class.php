@@ -76,9 +76,8 @@ class PluginManageentitiesDashboard extends CommonGLPI {
       switch ($widgetId) {
          case $this->getType() . "1":
 
-            $plugin = new Plugin();
             $widget = new PluginMydashboardHtml();
-            if ($plugin->isActivated("manageentities")) {
+            if (Plugin::isPluginActive("manageentities")) {
                $link_contract     = Toolbox::getItemTypeFormURL("Contract");
                $link_contract_day = Toolbox::getItemTypeFormURL("PluginManageentitiesContractDay");
                $entity            = new Entity();
@@ -147,10 +146,10 @@ class PluginManageentitiesDashboard extends CommonGLPI {
             return $widget;
             break;
          case $this->getType() . "2":
-            $plugin = new Plugin();
+
             $widget = new PluginMydashboardHtml();
 
-            if ($plugin->isActivated("manageentities")) {
+            if (Plugin::isPluginActive("manageentities")) {
 
                $query = "SELECT `glpi_entities`.`name` as client,`glpi_contacts`.`firstname`, `glpi_contacts`.`name`, `glpi_contacts`.`phone`, `glpi_contacts`.`mobile`
                            FROM `glpi_contacts`
@@ -182,9 +181,9 @@ class PluginManageentitiesDashboard extends CommonGLPI {
             return $widget;
             break;
          case $this->getType() . "3":
-            $plugin = new Plugin();
+
             $widget = new PluginMydashboardHtml();
-            if ($plugin->isActivated("manageentities")) {
+            if (Plugin::isPluginActive("manageentities")) {
                $link_contract_day = Toolbox::getItemTypeFormURL("PluginManageentitiesContractDay");
                $link_ticket       = Toolbox::getItemTypeFormURL("Ticket");
 
@@ -302,9 +301,8 @@ class PluginManageentitiesDashboard extends CommonGLPI {
             break;
          case $this->getType() . "5":
 
-            $plugin = new Plugin();
             $widget = new PluginMydashboardHtml();
-            if ($plugin->isActivated("manageentities")) {
+            if (Plugin::isPluginActive("manageentities")) {
                $link_contract     = Toolbox::getItemTypeFormURL("Contract");
                $link_contract_day = Toolbox::getItemTypeFormURL("PluginManageentitiesContractDay");
                $entity            = new Entity();

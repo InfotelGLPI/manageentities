@@ -63,7 +63,6 @@ class PluginManageentitiesEntity extends CommonGLPI {
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if ($item->getType() == __CLASS__) {
-         $plugin                  = new Plugin();
          $followUp                = new PluginManageentitiesFollowUp();
          $monthly                 = new PluginManageentitiesMonthly();
          $gantt                   = new PluginManageentitiesGantt();
@@ -111,7 +110,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
             $tabs[8] = _n('Document', 'Documents', 2);
          }
 
-         if ($plugin->isActivated('accounts')) {
+         if (Plugin::isPluginActive('accounts')) {
             if (Session::haveRight("plugin_accounts", READ)) {
                $tabs[10] = __('Accounts', 'manageentities');
             }

@@ -31,11 +31,10 @@ include('../../../inc/includes.php');
 
 Session::checkLoginUser();
 
-$plugin = new Plugin();
 if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesgeneratecri");
 } else {
-   if ($plugin->isActivated('servicecatalog')) {
+   if (Plugin::isPluginActive('servicecatalog')) {
       PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
    } else {
       Html::helpHeader(__('Entities portal', 'manageentities'));
@@ -49,7 +48,7 @@ if (Session::haveRight("ticket", CREATE)) {
 }
 
 if (Session::getCurrentInterface() != 'central'
-    && $plugin->isActivated('servicecatalog')) {
+    && Plugin::isPluginActive('servicecatalog')) {
 
    PluginServicecatalogMain::showNavBarFooter('manageentities');
 }

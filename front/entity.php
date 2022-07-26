@@ -38,11 +38,10 @@ $PluginManageentitiesBusinessContact = new PluginManageentitiesBusinessContact()
 if (!isset($_POST["entities_id"]))
    $_POST["entities_id"] = "";
 
-$plugin = new Plugin();
 if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
 } else {
-   if ($plugin->isActivated('servicecatalog')) {
+   if (Plugin::isPluginActive('servicecatalog')) {
       PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
    } else {
       Html::helpHeader(__('Entities portal', 'manageentities'));
@@ -146,7 +145,7 @@ if ($PluginManageentitiesEntity->canView()
 }
 
 if (Session::getCurrentInterface() != 'central'
-    && $plugin->isActivated('servicecatalog')) {
+    && Plugin::isPluginActive('servicecatalog')) {
 
    PluginServicecatalogMain::showNavBarFooter('manageentities');
 }

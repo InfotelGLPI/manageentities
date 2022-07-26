@@ -524,9 +524,7 @@ function plugin_item_transfer_manageentities($parm) {
 // Define dropdown relations
 function plugin_manageentities_getDatabaseRelations() {
 
-   $plugin = new Plugin();
-
-   if ($plugin->isActivated("manageentities"))
+   if (Plugin::isPluginActive("manageentities"))
       return ["glpi_plugin_manageentities_critypes"       => ["glpi_plugin_manageentities_criprices"    => "plugin_manageentities_critypes_id",
                                                               "glpi_plugin_manageentities_cridetails"   => "plugin_manageentities_critypes_id",
                                                               "glpi_plugin_manageentities_contractdays" => "plugin_manageentities_critypes_id"],
@@ -555,9 +553,8 @@ function plugin_manageentities_getDatabaseRelations() {
 
 // Define Dropdown tables to be manage in GLPI :
 function plugin_manageentities_getDropdown() {
-   $plugin = new Plugin();
 
-   if ($plugin->isActivated("manageentities"))
+   if (Plugin::isPluginActive("manageentities"))
       return ['PluginManageentitiesCriType'       => __('Intervention type', 'manageentities'),
               'PluginManageentitiesContractState' => __('State of contract', 'manageentities')];
    else

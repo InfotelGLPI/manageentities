@@ -29,9 +29,7 @@
 
 include('../../../inc/includes.php');
 
-$plugin = new Plugin();
-
-if ($plugin->isActivated("manageentities")
+if (Plugin::isPluginActive("manageentities")
     && Session::haveRight('plugin_manageentities', UPDATE)) {
 
    $addElementsView = new PluginManageentitiesAddElementsView();
