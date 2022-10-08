@@ -99,7 +99,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
              || (Session::getCurrentInterface() == 'helpdesk'
                  && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
             if ($PluginManageentitiesCri->canView()) {
-               $tabs[7] = __('Interventions reports', 'manageentities');
+               $tabs[7] = __("Interventions reports", 'manageentities');
             }
          } elseif (Session::getCurrentInterface() == 'helpdesk'
                    && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
