@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-08 12:46+0000\n"
+"POT-Creation-Date: 2022-11-15 10:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,7 +54,7 @@ msgid "Manage your contracts"
 msgstr ""
 
 #: setup.php:89 inc/config.class.php:263 inc/cri.class.php:39
-#: inc/cridetail.class.php:303 inc/profile.class.php:100
+#: inc/cridetail.class.php:303 inc/profile.class.php:104
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] ""
@@ -76,7 +76,7 @@ msgstr ""
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
 #: inc/followup.class.php:976 inc/generatecri.class.php:1153
 #: inc/monthly.class.php:556 inc/preference.class.php:77
-#: inc/profile.class.php:42 inc/profile.class.php:96
+#: inc/profile.class.php:44 inc/profile.class.php:100
 #: inc/taskcategory.class.php:55
 msgid "Entities portal"
 msgstr ""
@@ -811,7 +811,7 @@ msgid "Total consummated"
 msgstr ""
 
 #: inc/contractday.class.php:435 inc/contractday.class.php:602
-#: inc/dashboard.class.php:129 inc/dashboard.class.php:355
+#: inc/dashboard.class.php:132 inc/dashboard.class.php:342
 #: inc/followup.class.php:750 inc/followup.class.php:917
 msgid "Total remaining"
 msgstr ""
@@ -1142,46 +1142,42 @@ msgstr ""
 msgid "Select an existing price"
 msgstr ""
 
-#: inc/dashboard.class.php:48
-msgid "Tables"
-msgstr ""
-
-#: inc/dashboard.class.php:49 inc/dashboard.class.php:144
+#: inc/dashboard.class.php:54 inc/dashboard.class.php:145
 msgid "Remaining days number by opened client contracts"
 msgstr ""
 
-#: inc/dashboard.class.php:52 inc/dashboard.class.php:179
+#: inc/dashboard.class.php:57 inc/dashboard.class.php:178
 msgid "Client annuary"
 msgstr ""
 
-#: inc/dashboard.class.php:55 inc/dashboard.class.php:245
+#: inc/dashboard.class.php:60 inc/dashboard.class.php:239
 msgid "Tickets without CRI"
 msgstr ""
 
-#: inc/dashboard.class.php:58 inc/dashboard.class.php:298
+#: inc/dashboard.class.php:63 inc/dashboard.class.php:289
 msgid "Interventions with old contract"
 msgstr ""
 
-#: inc/dashboard.class.php:61 inc/dashboard.class.php:369
+#: inc/dashboard.class.php:66 inc/dashboard.class.php:354
 msgid "Opened contract prestations without remaining days"
 msgstr ""
 
-#: inc/dashboard.class.php:126 inc/dashboard.class.php:352
+#: inc/dashboard.class.php:129 inc/dashboard.class.php:339
 msgid "Team"
 msgstr ""
 
-#: inc/dashboard.class.php:128 inc/dashboard.class.php:208
-#: inc/dashboard.class.php:264 inc/dashboard.class.php:354
+#: inc/dashboard.class.php:131 inc/dashboard.class.php:206
+#: inc/dashboard.class.php:257 inc/dashboard.class.php:341
 msgid "Prestation"
 msgstr ""
 
-#: inc/dashboard.class.php:141 inc/dashboard.class.php:177
-#: inc/dashboard.class.php:242 inc/dashboard.class.php:366
+#: inc/dashboard.class.php:142 inc/dashboard.class.php:176
+#: inc/dashboard.class.php:236 inc/dashboard.class.php:351
 msgid "Plugin is not activated"
 msgstr ""
 
-#: inc/dashboard.class.php:169 inc/dashboard.class.php:206
-#: inc/dashboard.class.php:262 inc/followup.class.php:599
+#: inc/dashboard.class.php:168 inc/dashboard.class.php:204
+#: inc/dashboard.class.php:255 inc/followup.class.php:599
 #: inc/followup.class.php:645 inc/generatecri.class.php:235
 #: inc/monthly.class.php:404
 msgid "Client"
@@ -1452,7 +1448,7 @@ msgid ""
 "only the first will be used"
 msgstr ""
 
-#: inc/profile.class.php:37
+#: inc/profile.class.php:38
 msgid "Right management"
 msgid_plural "Rights management"
 msgstr[0] ""
