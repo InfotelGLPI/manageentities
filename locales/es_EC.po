@@ -1113,7 +1113,7 @@ msgstr "Hora de"
 
 #: inc/cripdf.class.php:440
 msgid "Crossed time"
-msgstr "Tiempo cruzado"
+msgstr "Tiempo de esfuerzo"
 
 #: inc/cripdf.class.php:455
 msgid "(in days)"
