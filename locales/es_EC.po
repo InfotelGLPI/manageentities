@@ -954,7 +954,7 @@ msgstr "Acción imposible al existir un informe de intervención"
 #: inc/cridetail.class.php:510 inc/cridetail.class.php:897
 #: inc/cripdf.class.php:427
 msgid "Crossed time (itinerary including)"
-msgstr "Tiempo cruzado (itinerario incluido)"
+msgstr "Tiempo de esfuerzo (itinerario incluido)"
 
 #: inc/cridetail.class.php:201 inc/cridetail.class.php:414
 #: inc/cridetail.class.php:1143 inc/generatecri.class.php:1196
