@@ -1318,7 +1318,7 @@ msgstr "Nada para mostrar"
 
 #: inc/generatecri.class.php:55
 msgid "Generate report intervention"
-msgstr "Generar intervención de informe"
+msgstr "Generar informe de intervención"
 
 #: inc/generatecri.class.php:177
 msgid "Generate Intervention report"
