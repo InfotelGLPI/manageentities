@@ -967,7 +967,7 @@ msgstr "Ticket asociado"
 
 #: inc/cridetail.class.php:400
 msgid "Associated intervention reports"
-msgstr "Reportes de intervención asociados"
+msgstr "Informes de intervención asociados"
 
 #: inc/cridetail.class.php:404 inc/entity.class.php:426
 msgid "All reports"
