@@ -331,7 +331,7 @@ msgstr "Los campos de la nueva intervención NO están completos "
 
 #: inc/addelementsmodel.class.php:247
 msgid "An error happend while saving the intervention."
-msgstr "Ocurrió un error al salvar la intervención "
+msgstr "Ocurrió un error al guardar la intervención "
 
 #: inc/addelementsmodel.class.php:248
 msgid "An error happend while updating the intervention."
