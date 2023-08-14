@@ -343,7 +343,7 @@ msgstr "Intervención actualizada con éxito."
 
 #: inc/addelementsmodel.class.php:250
 msgid "Intervention successfully added."
-msgstr "Intervención añadida correctamente."
+msgstr "Intervención añadida con éxito."
 
 #: inc/addelementsmodel.class.php:251
 msgid "Intervention saved in base"
