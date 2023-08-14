@@ -1054,7 +1054,7 @@ msgstr "Sin contratos activos"
 
 #: inc/cripdf.class.php:215 inc/cripdf.class.php:221
 msgid "Created by"
-msgstr "Creado por"
+msgstr "Creado el"
 
 #: inc/cripdf.class.php:215 inc/cripdf.class.php:227
 msgid "in"
