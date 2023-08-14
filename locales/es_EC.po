@@ -339,7 +339,7 @@ msgstr "Ocurrió un error al actualizar la intervención."
 
 #: inc/addelementsmodel.class.php:249
 msgid "Intervention successfully updated."
-msgstr "Intervención actualizada correctamente."
+msgstr "Intervención actualizada con éxito."
 
 #: inc/addelementsmodel.class.php:250
 msgid "Intervention successfully added."
