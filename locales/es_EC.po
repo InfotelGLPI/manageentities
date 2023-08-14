@@ -64,8 +64,8 @@ msgstr "Administra tus contratos"
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] "Informe de intervención "
-msgstr[1] "Informe de intervención"
-msgstr[2] "Informe de intervención"
+msgstr[1] "Informes de intervenciones"
+msgstr[2] "Informes de intervenciones"
 
 #: setup.php:90 inc/report.class.php:107
 msgid "Report on the movement of technicians"
