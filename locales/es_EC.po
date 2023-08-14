@@ -1058,7 +1058,7 @@ msgstr "Creado el"
 
 #: inc/cripdf.class.php:215 inc/cripdf.class.php:227
 msgid "in"
-msgstr "en"
+msgstr "a las"
 
 #: inc/cripdf.class.php:261
 msgid "Request number of associated help"
