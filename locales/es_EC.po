@@ -1161,7 +1161,7 @@ msgstr "Página"
 
 #: inc/cripdf.class.php:757
 msgid "on"
-msgstr "en"
+msgstr "de"
 
 #: inc/criprice.class.php:197
 msgid "Select an existing price"
