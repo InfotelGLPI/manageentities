@@ -1125,11 +1125,11 @@ msgstr "(en horas)"
 
 #: inc/cripdf.class.php:500
 msgid "Travel (in days)"
-msgstr "Viaje (en días)"
+msgstr "Movilización (en días)"
 
 #: inc/cripdf.class.php:502
 msgid "Travel"
-msgstr "Viajar"
+msgstr "Movilización"
 
 #: inc/cripdf.class.php:518
 msgid "Total (in days)"
