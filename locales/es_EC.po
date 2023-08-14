@@ -1153,7 +1153,7 @@ msgstr "Sello del cliente"
 
 #: inc/cripdf.class.php:727
 msgid "Customer Visa"
-msgstr "Visa del cliente"
+msgstr "Firma del cliente"
 
 #: inc/cripdf.class.php:757
 msgid "Page"
