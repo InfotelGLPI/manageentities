@@ -400,7 +400,7 @@ msgstr "Contrato e intervención añadidos con éxito"
 
 #: inc/addelementsmodel.class.php:267
 msgid "Entity, intervention and contract successfully added"
-msgstr "Entidad,intervención y contrato adicionados con suceso "
+msgstr "Entidad, intervención y contrato añadidos con éxito"
 
 #: inc/addelementsmodel.class.php:271
 msgid "This action is irreversible, Continue ?"
