@@ -1085,7 +1085,7 @@ msgstr "Desde el"
 
 #: inc/cripdf.class.php:312
 msgid "To"
-msgstr "Para"
+msgstr "Hasta el"
 
 #: inc/cripdf.class.php:342
 msgid "Society name"
