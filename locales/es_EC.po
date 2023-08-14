@@ -933,7 +933,7 @@ msgstr "Por favor, indique la fecha de inicio del contrato."
 
 #: inc/cri.class.php:827
 msgid "Save the intervention report"
-msgstr "Guardar reporte de intervención"
+msgstr "Guardar el informe de intervención"
 
 #: inc/cridetail.class.php:39
 msgid "Intervention task"
