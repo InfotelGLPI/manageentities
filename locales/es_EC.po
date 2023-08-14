@@ -335,7 +335,7 @@ msgstr "Ocurrió un error al guardar la intervención "
 
 #: inc/addelementsmodel.class.php:248
 msgid "An error happend while updating the intervention."
-msgstr "Ocurrió un error al apagar la intervención "
+msgstr "Ocurrió un error al actualizar la intervención "
 
 #: inc/addelementsmodel.class.php:249
 msgid "Intervention successfully updated."
