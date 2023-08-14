@@ -819,7 +819,7 @@ msgstr[2] "Intervenciones"
 
 #: inc/contractday.class.php:49 inc/entity.class.php:102
 msgid "Interventions reports"
-msgstr "Reportes de intervención"
+msgstr "Informes de intervenciones"
 
 #: inc/contractday.class.php:146
 msgid "Credit remaining"
