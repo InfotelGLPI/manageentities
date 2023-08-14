@@ -1097,7 +1097,7 @@ msgstr "Persona responsable"
 
 #: inc/cripdf.class.php:400
 msgid "Help on contract"
-msgstr "Ayuda sobre contratos"
+msgstr "Soporte dentro de contrato"
 
 #: inc/cripdf.class.php:431
 msgid "Wording of the activities"
