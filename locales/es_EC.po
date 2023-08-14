@@ -352,7 +352,7 @@ msgstr "Intervención grabada en la base de datos"
 #: inc/addelementsmodel.class.php:252
 msgid "Intervention informations not updated in base"
 msgstr ""
-"Las informaciones de la intervención NO fueron grabadas en la base de datos "
+"Las informaciones de la intervención NO fueron grabadas en la base de datos"
 
 #: inc/addelementsmodel.class.php:255
 msgid "All fields are not filled."
