@@ -144,7 +144,7 @@ msgstr "Por favor active el complemento "
 
 #: front/cri.form.php:36 inc/cri.class.php:274 inc/cridetail.class.php:313
 msgid "Generation of the intervention report"
-msgstr "Generando informe de intervención"
+msgstr "Generar informe de intervención"
 
 #: front/entity.form.php:40
 msgid "No picture uploaded"
