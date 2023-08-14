@@ -1081,7 +1081,7 @@ msgstr "Año"
 
 #: inc/cripdf.class.php:308
 msgid "From"
-msgstr "De"
+msgstr "Desde el"
 
 #: inc/cripdf.class.php:312
 msgid "To"
