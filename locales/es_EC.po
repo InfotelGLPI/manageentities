@@ -460,7 +460,7 @@ msgstr "Siguiente"
 #: inc/addelementsview.class.php:224 inc/addelementsview.class.php:240
 #: inc/addelementsview.class.php:3110
 msgid "New intervention"
-msgstr "Nueva intervención "
+msgstr "Nueva intervención"
 
 #: inc/addelementsview.class.php:604
 msgctxt "button"
