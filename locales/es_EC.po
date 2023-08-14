@@ -392,7 +392,7 @@ msgstr "Entidad y contrato adicionados con suceso "
 
 #: inc/addelementsmodel.class.php:265
 msgid "Entity and intervention successfully added"
-msgstr "Entidad e intervención añadidas correctamente."
+msgstr "Entidad e intervención añadidas correctamente"
 
 #: inc/addelementsmodel.class.php:266
 msgid "Contract and intervention successfully added"
