@@ -1145,7 +1145,7 @@ msgstr "Detalle del trabajo realizado"
 
 #: inc/cripdf.class.php:642
 msgid "Customer comments"
-msgstr "Comentarios de los clientes"
+msgstr "Comentarios del cliente"
 
 #: inc/cripdf.class.php:726
 msgid "Customer stamp"
