@@ -422,7 +422,7 @@ msgstr "Actualice unicamente este contacto "
 
 #: inc/addelementsmodel.class.php:742 inc/addelementsmodel.class.php:800
 msgid "Update this intervention only"
-msgstr "Actualice unicamente esta intervención  "
+msgstr "Actualice unicamente esta intervención"
 
 #: inc/addelementsmodel.class.php:922 inc/addelementsview.class.php:2462
 #: inc/addelementsview.class.php:2770
