@@ -115,7 +115,7 @@ msgstr "Ha ocurrido un error mientras se guardaban los datos"
 
 #: ajax/interventionskateholderactions.php:75
 msgid "Informations successfully added."
-msgstr "Informaciones grabadas con suceso "
+msgstr "Información añadida correctamente."
 
 #: ajax/interventionskateholderactions.php:87
 msgid "All fields are not correctly filled."
