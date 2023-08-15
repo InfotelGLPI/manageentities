@@ -532,7 +532,7 @@ msgstr "Costes refacturables"
 
 #: inc/addelementsview.class.php:1609 inc/contract.class.php:238
 msgid "Movement management"
-msgstr "Gestión de movimiento"
+msgstr "Gestión de movilización"
 
 #: inc/addelementsview.class.php:1628 inc/contract.class.php:255
 msgid "Duration of moving"
