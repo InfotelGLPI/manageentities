@@ -1386,7 +1386,7 @@ msgstr "Todavía no se ha visto afectada ninguna parte interesada."
 #: inc/interventionskateholder.class.php:280
 #: inc/interventionskateholder.class.php:393
 msgid "Affected to"
-msgstr "Afectados a"
+msgstr "Afectada a"
 
 #: inc/interventionskateholder.class.php:190
 #: inc/interventionskateholder.class.php:288
