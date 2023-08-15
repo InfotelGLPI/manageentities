@@ -1414,7 +1414,7 @@ msgstr "Todavía no se ha visto afectada ninguna parte interesada."
 
 #: inc/interventionskateholder.class.php:382
 msgid "Add skateholders"
-msgstr "Añadir skateholders"
+msgstr "Añadir partes interesadas"
 
 #: inc/monthly.class.php:272 inc/monthly.class.php:280
 #: inc/monthly.class.php:290 inc/monthly.class.php:590
