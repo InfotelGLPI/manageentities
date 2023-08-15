@@ -69,7 +69,7 @@ msgstr[2] "Informes de intervenciones"
 
 #: setup.php:90 inc/report.class.php:107
 msgid "Report on the movement of technicians"
-msgstr "Informe del movimiento de los técnicos"
+msgstr "Informe sobre la movilización de técnicos"
 
 #: setup.php:91 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
