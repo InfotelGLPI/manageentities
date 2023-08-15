@@ -1410,7 +1410,7 @@ msgstr[2] "Partes interesadas actuales"
 
 #: inc/interventionskateholder.class.php:308
 msgid "No skateholders have been affected yet."
-msgstr "Aún no se ha visto afectado ningún skater."
+msgstr "Todavía no se ha visto afectada ninguna parte interesada."
 
 #: inc/interventionskateholder.class.php:382
 msgid "Add skateholders"
