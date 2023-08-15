@@ -1374,7 +1374,7 @@ msgstr "Crear"
 #: inc/interventionskateholder.class.php:39
 msgid "User affected"
 msgid_plural "Users affected"
-msgstr[0] "Usuarios afectados"
+msgstr[0] "Usuario afectado"
 msgstr[1] "Usuarios afectados"
 msgstr[2] "Usuarios afectados"
 
