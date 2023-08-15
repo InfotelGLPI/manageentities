@@ -31,7 +31,7 @@ msgstr "Intervención programada"
 
 #: hook.php:50 hook.php:68 hook.php:85
 msgid "Study and advice"
-msgstr "Estudiar e informar "
+msgstr "Estudio y asesoramiento"
 
 #: hook.php:558 inc/addelementsview.class.php:2319 inc/cri.class.php:162
 #: inc/cridetail.class.php:198 inc/cridetail.class.php:411
