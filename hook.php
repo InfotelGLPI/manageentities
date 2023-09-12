@@ -40,7 +40,7 @@ function plugin_manageentities_install() {
    $update190 = false;
    if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
 
-      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-3.2.2.sql");
+      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/empty-3.2.3.sql");
 
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
@@ -158,6 +158,10 @@ function plugin_manageentities_install() {
    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "disable_date_header")) {
       $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.2.sql");
    }
+   //version 3.2.3
+   if (!$DB->tableExists("glpi_plugin_manageentities_contractpoints")) {
+      $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.3.sql");
+   }
 
    if ($update) {
       $index = [
@@ -255,6 +259,13 @@ function plugin_manageentities_install() {
       }
    }
 
+    CronTask::Register(PluginManageentitiesContractpoint::class, 'AutoReport', DAY_TIMESTAMP,
+        [
+            'comment' => __('Auto intervention report generation', 'manageentities'),
+            'mode'    => CronTask::MODE_EXTERNAL
+        ]
+    );
+
    return true;
 }
 
@@ -268,6 +279,8 @@ function plugin_manageentities_uninstall() {
               "glpi_plugin_manageentities_critypes",
               "glpi_plugin_manageentities_criprices",
               "glpi_plugin_manageentities_contractdays",
+              "glpi_plugin_manageentities_contractpoints",
+              "glpi_plugin_manageentities_mappingcategoryslices",
               "glpi_plugin_manageentities_critechnicians",
               "glpi_plugin_manageentities_cridetails",
               "glpi_plugin_manageentities_contractstates",
@@ -413,6 +426,9 @@ function plugin_pre_item_purge_manageentities($item) {
 
          $temp = new PluginManageentitiesCriDetail();
          $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
+
+	$temp = new PluginManageentitiesContractpoint();
+         $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
          break;
       case 'Contact' :
          $temp = new PluginManageentitiesContact();
@@ -529,6 +545,7 @@ function plugin_manageentities_getDatabaseRelations() {
                                                               "glpi_plugin_manageentities_contractdays" => "plugin_manageentities_critypes_id"],
               "glpi_contracts"                            => ["glpi_plugin_manageentities_contracts"    => "contracts_id",
                                                               "glpi_plugin_manageentities_contractdays" => "contracts_id",
+							     "glpi_plugin_manageentities_contractpoints" => "contracts_id",
                                                               "glpi_plugin_manageentities_cridetails"   => "contracts_id"],
               "glpi_contacts"                             => ["glpi_plugin_manageentities_contacts" => "contacts_id"],
               "glpi_users"                                => ["glpi_plugin_manageentities_preferences"    => "users_id",

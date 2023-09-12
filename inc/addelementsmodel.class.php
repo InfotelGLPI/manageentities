@@ -43,6 +43,7 @@ class Errors extends CommonGLPIErrors {
    const ERROR_INTERVENTION             = 3;
    const ERROR_FIELDS                   = 4;
    const ERROR_CRIPRICE                 = 5;
+   const ERROR_CONTRACTPOINT                = 6;
    const ERROR_NAME_EXIST               = 'name_exist';
    const ERROR_ADD_PDF                  = 'error_add_pdf';
    const ERROR_CRIPRICE_EXIST           = 'error_criprice_exist';
@@ -57,6 +58,7 @@ class ElementType extends CommonGLPIElementType {
    const CONTRACT                 = 'contract';
    const CONTRACT_MANAGEMENT_TYPE = 'contract_management_type';
    const INTERVENTION             = 'intervention';
+   const CONTRACTPOINT             = 'contractpoint';
    const CRIPRICE                 = 'criprice';
    const ALL                      = 'all_elements';
 
@@ -89,6 +91,7 @@ class Action {
    const ADD_ONLY_CONTACT                        = 'add_only_contact';
    const ADD_ONLY_CONTRACT                       = 'add_only_contract';
    const ADD_ONLY_INTERVENTION                   = 'add_only_intervention';
+   const ADD_ONLY_CONTRACTPOINTS                 = 'add_only_contractpoints';
    const ADD_ENTITY_AND_CONTACT                  = 'add_entity_and_contact';
    const ADD_ENTITY_AND_CONTRACT                 = 'add_entity_and_contract';
    const ADD_ENTITY_AND_INTERVENTION             = 'add_entity_and_intervention';
@@ -250,6 +253,15 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
             Status::ADDED        => __("Intervention successfully added.", "manageentities"),
             Status::SAVED        => __("Intervention saved in base", "manageentities"),
             Status::NOT_SAVED    => __("Intervention informations not updated in base", "manageentities")
+         ],
+         ElementType::CONTRACTPOINT                                               => [
+            Errors::ERROR_FIELDS => "<span style='color:red;'> " . __("All new contract details fields are not filled.", "manageentities") . "</span>",
+            Errors::ERROR_ADD    => "<span style='color:red;'> " . __("An error happend while saving the details.", "manageentities") . "</span>",
+            Errors::ERROR_UPDATE => "<span style='color:red;'> " . __("An error happend while updating the details.", "manageentities") . "</span>",
+            Status::UPDATED      => __("Contract details successfully updated.", "manageentities"),
+            Status::ADDED        => __("Contract details successfully added.", "manageentities"),
+            Status::SAVED        => __("Contract details saved in base", "manageentities"),
+            Status::NOT_SAVED    => __("Contract informations not updated in base", "manageentities")
          ],
          ElementType::ALL                                                        => [
             Errors::ERROR_FIELDS => "<span style='color:red;'> " . __("All fields are not filled.", "manageentities") . "</span>",
@@ -846,6 +858,174 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
       }
    }
 
+   public function addContractpointToBase($pView, $idIntervention = -1) {
+      $interventions = $this->getContractDays();
+
+      if ($idIntervention == -1) {
+         $intervention = $interventions[$_POST['fakeid_new_intervention']];
+      } else {
+         $intervention = $interventions[$idIntervention];
+      }
+
+      $arrayRes = [];
+      $cpt      = 0;
+
+      // Case "Previous entity created"
+      if ($_POST['previous_entity_for_intervention'] == "true") {
+         $entity = $this->getEntity();
+         // IF entity already created
+         if (isset($entity->fields['id']) && $entity->fields['id'] != "") {
+            $intervention->fields['entities_id'] = $entity->fields['id'];
+         } else {
+            $arrayRes["result"] = Action::ADD_ONLY_ENTITY;
+            $cpt++;
+         }
+      } else {
+         if (isset($_POST['new_intervention_entity_id'])) {
+            $intervention->fields['entities_id'] = $_POST['new_intervention_entity_id'];
+         } else {
+            return ["result" => Errors::ERROR_FIELDS,
+                    "message" => $this->getMessage(ElementType::ENTITY, Errors::ERROR_FIELDS)];
+         }
+      }
+
+
+      if (isset($_POST['previous_contract_for_intervention']) && $_POST['previous_contract_for_intervention'] == "true") {
+         $contract = $this->getContract();
+         if (isset($contract->fields['id']) && $contract->fields['id'] != "") {
+            $intervention->fields['contracts_id'] = $contract->fields['id'];
+         } else {
+            $arrayRes["result"] = Action::ADD_ONLY_CONTRACT;
+            $cpt++;
+         }
+      } else {
+         if (isset($_POST['new_intervention_contract_id']) && $_POST['new_intervention_contract_id'] > 0) {
+            $intervention->fields['contracts_id'] = $_POST['new_intervention_contract_id'];
+         } else {
+            return ["result" => Errors::ERROR_FIELDS,
+                    "message" => $this->getMessage(ElementType::CONTRACT, Errors::ERROR_FIELDS)];
+         }
+      }
+
+      if ($cpt == 2) {
+         return ["result" => Action::ADD_ENTITY_AND_CONTRACT,
+                 "from" => $intervention->getType()];
+      } else if ($cpt == 1) {
+         $arrayRes["from"] = $intervention->getType();
+         return $arrayRes;
+      }
+
+
+      // Cri prices
+//      $price = $this->getCriPrice($_POST['fakeid_new_intervention']);
+
+      // If intervention already created
+      if (isset($intervention->fields['id']) && $intervention->fields['id'] > 0) {
+         // update intervention
+         $tmpInter = new PluginManageentitiesContractpoint();
+
+         $tmpInter->getFromDB($intervention->fields['id']);
+
+         $datas        = $this->persistData($intervention, DBOperation::UPDATE);
+
+         if (isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") {
+            $nbIntervention                                   = $this->getNbContractDays();
+            $interventions[$_POST['fakeid_new_intervention']] = $intervention;
+            $this->setContractDays($interventions);
+            $pView->updateImgTabTitle(false, "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::NOT_SAVED));
+            $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
+
+            $pView->updateTabTitle($_POST['fakeid_new_intervention'], $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
+            $pView->updateImgTabTitle(false, "'img_" . $intervention->getType() . $_POST['fakeid_new_intervention'] . "'", $this->getMessage(ElementType::INTERVENTION, Status::SAVED));
+
+            $pView->changeBtnName("btnAddIntervention" . $_POST['fakeid_new_intervention'], __("Update this intervention only", "manageentities"));
+
+
+
+
+            if ((isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") ||
+                (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true")) {
+
+               $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
+               $interventionSkateholder->displayTabContentForItem($intervention);
+               return ["result" => Status::UPDATED,
+                       "message" => $this->getMessage(ElementType::CONTRACTPOINT, Status::UPDATED)];
+
+            } else {
+               $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true');
+               return ["result" => Status::NOT_UPDATED,
+                       "message" => $this->getMessage(ElementType::CONTRACTPOINT, Errors::ERROR_UPDATE)];
+            }
+
+         } else {
+            $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true');
+            return ["result" => Status::NOT_UPDATED,
+                    "message" => $this->getMessage(ElementType::CONTRACTPOINT, Errors::ERROR_UPDATE)];
+         }
+
+      } else {
+         // Add intervention
+         if (isset($intervention->fields['id']))
+            unset($intervention->fields['id']);
+         if (empty($intervention->fields['plugin_manageentities_critypes_id'])) {
+            unset($intervention->fields['plugin_manageentities_critypes_id']);
+         }
+         $datas = $this->persistData($intervention, DBOperation::ADD);
+
+         if (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true") {
+
+            $nbIntervention = $this->getNbContractDays();
+            $this->addContractDay($intervention, $nbIntervention);
+            $this->deleteError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD);
+            $pView->changeBtnName("btnAddIntervention" . $_POST['fakeid_new_intervention'], __("Update this intervention only", "manageentities"));
+            $strTitleTab = isset($intervention->fields['name']) ? $intervention->fields['name'] : "";
+            $pView->updateTabTitle($nbIntervention, $strTitleTab, "div#mytabsinterventions", $intervention, $this->getMessage(ElementType::INTERVENTION, Status::SAVED), true);
+//            $pView->initCriPricesView($intervention, $nbIntervention);
+
+            if (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true") {
+               if ((isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") ||
+                   (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true")) {
+
+                  $interventionSkateholder = new PluginManageentitiesInterventionSkateholder();
+                  $interventionSkateholder->displayTabContentForItem($intervention);
+                  return ["result" => Status::ADDED,
+                          "message" => $this->getMessage(ElementType::CONTRACTPOINT, Status::ADDED)];
+
+               } else {
+                  $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, 'true', $_POST['fakeid_new_intervention']);
+                  return ["result" => Status::NOT_ADDED,
+                          "message" => $this->getMessage(ElementType::CONTRACTPOINT, Errors::ERROR_ADD)];
+               }
+
+            } else {
+               $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, true, $_POST['fakeid_new_intervention']);
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::CONTRACTPOINT, Errors::ERROR_ADD)];
+            }
+
+         } else {
+            $this->addError(Errors::ERROR_INTERVENTION, Errors::ERROR_ADD, true, $_POST['fakeid_new_intervention']);
+            unset($intervention->fields['id']);
+            if (isset($datas['cause'])) {
+               $arrayRes = ["result" => Status::NOT_ADDED,
+                            "cause" => $datas['cause']];
+               switch ($datas['cause']) {
+                  case Errors::ERROR_NAME_EXIST:
+                     $arrayRes['message'] = $this->getMessage(ElementType::CONTRACTPOINT, Errors::ERROR_NAME_EXIST);
+                     break;
+                  default:
+                     $arrayRes['message'] = $this->getMessage(ElementType::CONTRACTPOINT, Errors::ERROR_ADD);
+                     break;
+               }
+               return $arrayRes;
+            } else {
+               return ["result" => Status::NOT_ADDED,
+                       "message" => $this->getMessage(ElementType::CONTRACTPOINT, Errors::ERROR_ADD)];
+            }
+         }
+      }
+   }
+
    public function deleteCriPrice($pView, $tabIdIntervention, $idCriPrice) {
       $error = false;
 
@@ -1266,6 +1446,22 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $object->fields['end_date'] = null;
             }
             if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
+               $object->fields['contract_type'] = $_POST['contract_type'];
+            } else {
+               $object->fields['contract_type'] = 0;
+            }
+            $object->fields['nbday']                                   = $_POST['new_intervention_nbday'];
+            $object->fields['report']                                  = $_POST['new_intervention_report'];
+            $object->fields['charged']                                 = $_POST['new_intervention_charged'] == 'true' ? 1 : 0;
+            $object->fields['plugin_manageentities_contractstates_id'] = $_POST['new_intervention_contractstate_id'];
+
+            $this->addContractDay($object, $_POST['fakeid_new_intervention']);
+            break;
+         case ElementType::CONTRACTPOINT:
+
+
+
+            if ($config->fields['hourorday'] == PluginManageentitiesConfig::POINTS) {
                $object->fields['contract_type'] = $_POST['contract_type'];
             } else {
                $object->fields['contract_type'] = 0;
