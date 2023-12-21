@@ -63,7 +63,7 @@ msgstr "Administra tus contratos"
 #: inc/cridetail.class.php:303 inc/profile.class.php:104
 msgid "Intervention report"
 msgid_plural "Intervention reports"
-msgstr[0] "Informe de intervención "
+msgstr[0] "Informe de intervención"
 msgstr[1] "Informes de intervenciones"
 msgstr[2] "Informes de intervenciones"
 
@@ -98,11 +98,11 @@ msgstr "Por favor, finalice esta intervención antes de añadir otra."
 
 #: ajax/addelements.listener.php:522 inc/addelementsview.class.php:2845
 msgid "Update all previous elements"
-msgstr "Actualice los elementos previos "
+msgstr "Actualice los elementos previos"
 
 #: ajax/cri.php:99 ajax/cri.php:132 ajax/cri.php:156
 msgid "Thanks to select a intervention type"
-msgstr "Gracias por seleccionar el tipo de intervención "
+msgstr "Gracias por seleccionar el tipo de intervención"
 
 #: ajax/interventionskateholderactions.php:57
 msgid "Stakeholder successfully updated."
@@ -111,7 +111,7 @@ msgstr "Interesado actualizado con éxito."
 #: ajax/interventionskateholderactions.php:66
 #: ajax/interventionskateholderactions.php:83
 msgid "An error happened while saving the data."
-msgstr "Ha ocurrido un error mientras se guardaban los datos"
+msgstr "Ha ocurrido un error mientras se guardaban los datos."
 
 #: ajax/interventionskateholderactions.php:75
 msgid "Informations successfully added."
@@ -119,19 +119,19 @@ msgstr "Información añadida correctamente."
 
 #: ajax/interventionskateholderactions.php:87
 msgid "All fields are not correctly filled."
-msgstr "No todos los campos fueron correctamente digitados"
+msgstr "No todos los campos fueron correctamente digitados."
 
 #: ajax/interventionskateholderactions.php:101
 msgid "Informations successfully deleted."
-msgstr "Informaciones apagadas con suceso "
+msgstr "Informaciones apagadas con suceso."
 
 #: ajax/interventionskateholderactions.php:109
 msgid "An error happened while deleting the data."
-msgstr "Ha ocurrido un error cuando se borraban los datos"
+msgstr "Ha ocurrido un error cuando se borraban los datos."
 
 #: ajax/linkactions.php:44
 msgid "Number of hours by day"
-msgstr "Número de horas por día "
+msgstr "Número de horas por día"
 
 #: ajax/linkactions.php:48
 msgid ""
@@ -140,7 +140,7 @@ msgstr "Solo llamados aceptados con computados en el cálculo de consumo"
 
 #: front/config.form.php:61
 msgid "Please activate the plugin"
-msgstr "Por favor active el complemento "
+msgstr "Por favor active el complemento"
 
 #: front/cri.form.php:36 inc/cri.class.php:274 inc/cridetail.class.php:313
 msgid "Generation of the intervention report"
@@ -148,35 +148,35 @@ msgstr "Generar informe de intervención"
 
 #: front/entity.form.php:40
 msgid "No picture uploaded"
-msgstr "Ninguna figura cargada "
+msgstr "Ninguna imagen cargada"
 
 #: inc/addelementsmodel.class.php:193
 msgid "All new entity fields are not filled."
-msgstr "Los campos de la nueva entidad no fueron completados"
+msgstr "Los campos de la nueva entidad no fueron completados."
 
 #: inc/addelementsmodel.class.php:194
 msgid "An error happend while saving the entity."
-msgstr "Ocurrió un error al grabar la entidad"
+msgstr "Ocurrió un error al grabar la entidad."
 
 #: inc/addelementsmodel.class.php:195
 msgid "Entity name already exists."
-msgstr "Nombre de la entidad ya existe "
+msgstr "Nombre de la entidad ya existe."
 
 #: inc/addelementsmodel.class.php:196
 msgid "An error happend while updating the entity."
-msgstr "Ocurrió un error al actualizar la entidad "
+msgstr "Ocurrió un error al actualizar la entidad."
 
 #: inc/addelementsmodel.class.php:197
 msgid "Entity successfully updated."
-msgstr "Entidad actualizada correctamente "
+msgstr "Entidad actualizada correctamente."
 
 #: inc/addelementsmodel.class.php:198
 msgid "Entity successfully added."
-msgstr "Entidad adicionada correctamente "
+msgstr "Entidad adicionada correctamente."
 
 #: inc/addelementsmodel.class.php:199
 msgid "Entity saved in base"
-msgstr "Entidad grabada en la base de datos "
+msgstr "Entidad grabada en la base de datos"
 
 #: inc/addelementsmodel.class.php:200
 msgid "Entity informations not updated in base"
@@ -184,23 +184,23 @@ msgstr "La informaciones de la entidad NO fueron grabadas en la base de datos"
 
 #: inc/addelementsmodel.class.php:203
 msgid "All new contact fields are not filled."
-msgstr "Los campos del nuevo contacto no fueron completados"
+msgstr "Los campos del nuevo contacto no fueron completados."
 
 #: inc/addelementsmodel.class.php:204
 msgid "An error happend while saving the contact."
-msgstr "Ocurrió un error al salvar el contacto "
+msgstr "Ocurrió un error al salvar el contacto."
 
 #: inc/addelementsmodel.class.php:205
 msgid "An error happend while updating the contact."
-msgstr "Ocurrió un error al actualizar en contacto "
+msgstr "Ocurrió un error al actualizar en contacto."
 
 #: inc/addelementsmodel.class.php:206
 msgid "Contact successfully updated."
-msgstr "Contacto actualizado correctamente "
+msgstr "Contacto actualizado correctamente."
 
 #: inc/addelementsmodel.class.php:207
 msgid "Contact successfully added."
-msgstr "Contacto agregado correctamente "
+msgstr "Contacto agregado correctamente."
 
 #: inc/addelementsmodel.class.php:208
 msgid "Contact saved in base"
@@ -208,126 +208,126 @@ msgstr "Contacto grabado en la base de datos"
 
 #: inc/addelementsmodel.class.php:209
 msgid "Contact informations not updated in base"
-msgstr "El contacto NO fue grabado en la base de datos "
+msgstr "El contacto NO fue grabado en la base de datos"
 
 #: inc/addelementsmodel.class.php:212
 msgid "All new contract fields are not filled."
-msgstr "Todos los campos del nuevo contrato NO fueron completados "
+msgstr "Todos los campos del nuevo contrato NO fueron completados."
 
 #: inc/addelementsmodel.class.php:213
 msgid "An error happend while saving the contract."
-msgstr "Ocurrió un error al salvar el contrato "
+msgstr "Ocurrió un error al salvar el contrato."
 
 #: inc/addelementsmodel.class.php:214
 msgid "An error happend while uploading the document."
-msgstr "Ocurrió un error al actualizar el documento "
+msgstr "Ocurrió un error al actualizar el documento."
 
 #: inc/addelementsmodel.class.php:215
 msgid "Contract name already exists."
-msgstr "Este nombre de contrato ya existe "
+msgstr "Este nombre de contrato ya existe."
 
 #: inc/addelementsmodel.class.php:216
 msgid "An error happend while updating the contract."
-msgstr "Ocurrió un error al actualizar el contrato "
+msgstr "Ocurrió un error al actualizar el contrato."
 
 #: inc/addelementsmodel.class.php:217
 msgid "Contract successfully updated"
-msgstr "Contrato actualizado con suceso "
+msgstr "Contrato actualizado con suceso"
 
 #: inc/addelementsmodel.class.php:218
 msgid "Contract successfully added"
-msgstr "Contrato adicionado con suceso "
+msgstr "Contrato adicionado con suceso"
 
 #: inc/addelementsmodel.class.php:219
 msgid "Document successfully added"
-msgstr "Documento adicionado con suceso "
+msgstr "Documento adicionado con suceso"
 
 #: inc/addelementsmodel.class.php:220
 msgid "Contract saved in base"
-msgstr "Contrato grabado en la base de datos "
+msgstr "Contrato grabado en la base de datos"
 
 #: inc/addelementsmodel.class.php:221
 msgid "Contract informations not updated in base"
 msgstr ""
-"Las informaciones del contrato NO fueron actualizadas en la base de datos "
+"Las informaciones del contrato NO fueron actualizadas en la base de datos"
 
 #: inc/addelementsmodel.class.php:224
 msgid "All new contract management type fields are not filled."
 msgstr ""
-" Todos los campos de administración del nuevo contrato NO están completos"
+"Todos los campos de administración del nuevo contrato NO están completes."
 
 #: inc/addelementsmodel.class.php:225
 msgid "An error happend while saving the contract management type."
-msgstr "Ocurrió un error al salvar el tipo de administración del contrato "
+msgstr "Ocurrió un error al salvar el tipo de administración del contrato."
 
 #: inc/addelementsmodel.class.php:226
 msgid "Contract management type name already exists."
-msgstr "El nombre del tipo de administración de contrato ya existe "
+msgstr "El nombre del tipo de administración de contrato ya existe."
 
 #: inc/addelementsmodel.class.php:227
 msgid "An error happend while updating the contract management type."
-msgstr "Ocurrió un error al actualizar el tipo de administración de contrato"
+msgstr "Ocurrió un error al actualizar el tipo de administración de contrato."
 
 #: inc/addelementsmodel.class.php:228
 msgid "An error happend while deleting the contract management type."
-msgstr "Ocurrió un error al apagar el tipo de administración de contrato"
+msgstr "Ocurrió un error al apagar el tipo de administración de contrato."
 
 #: inc/addelementsmodel.class.php:229
 msgid "Contract management type successfully updated"
-msgstr "Tipo de administración de contrato actualizado con suceso "
+msgstr "Tipo de administración de contrato actualizado con suceso"
 
 #: inc/addelementsmodel.class.php:230
 msgid "Contract management type successfully added"
-msgstr "Tipo de administración de contrato adicionado con suceso "
+msgstr "Tipo de administración de contrato adicionado con suceso"
 
 #: inc/addelementsmodel.class.php:231
 msgid "Contract management type saved in base"
-msgstr "Tipo de administración de contrato grabado en la base de datos "
+msgstr "Tipo de administración de contrato grabado en la base de datos"
 
 #: inc/addelementsmodel.class.php:232
 msgid "Contract management type informations not updated in base"
 msgstr ""
-"El tipo de administración de contrato NO fue grabado en la base de datos "
+"El tipo de administración de contrato NO fue grabado en la base de datos"
 
 #: inc/addelementsmodel.class.php:233
 msgid "Contract management type succesfully deleted."
-msgstr "Tipo de administración de contrato apagado con suceso"
+msgstr "Tipo de administración de contrato apagado con suceso."
 
 #: inc/addelementsmodel.class.php:236
 msgid "All new fields are not filled."
-msgstr "No fueron completados todos los campos  "
+msgstr "No fueron completados todos los campos."
 
 #: inc/addelementsmodel.class.php:237
 msgid "An error happend while saving the price."
-msgstr "Ocurrió un error al salvar el precio"
+msgstr "Ocurrió un error al salvar el precio."
 
 #: inc/addelementsmodel.class.php:238
 msgid "An error happend while updating the price."
-msgstr "Ocurrió un error al actualizar el precio"
+msgstr "Ocurrió un error al actualizar el precio."
 
 #: inc/addelementsmodel.class.php:239
 msgid "An error happend while deleting the price."
-msgstr "Ocurrió un error al apagar el precio"
+msgstr "Ocurrió un error al apagar el precio."
 
 #: inc/addelementsmodel.class.php:240
 msgid "Price successfully updated"
-msgstr "Precio actualizado con suceso "
+msgstr "Precio actualizado con suceso"
 
 #: inc/addelementsmodel.class.php:241
 msgid "Price successfully added"
-msgstr "Precio inserido con suceso "
+msgstr "Precio inserido con suceso"
 
 #: inc/addelementsmodel.class.php:242
 msgid "Price saved in base"
-msgstr "Precio grabado en la base de datos "
+msgstr "Precio grabado en la base de datos"
 
 #: inc/addelementsmodel.class.php:243
 msgid "Price succesfully deleted."
-msgstr "Precio apagado con suceso "
+msgstr "Precio apagado con suceso."
 
 #: inc/addelementsmodel.class.php:246
 msgid "All new intervention fields are not filled."
-msgstr "Los campos de la nueva intervención NO están completos "
+msgstr "Los campos de la nueva intervención NO están completos."
 
 #: inc/addelementsmodel.class.php:247
 msgid "An error happend while saving the intervention."
@@ -356,23 +356,23 @@ msgstr ""
 
 #: inc/addelementsmodel.class.php:255
 msgid "All fields are not filled."
-msgstr "No están todos los campos completos "
+msgstr "No están todos los campos completos."
 
 #: inc/addelementsmodel.class.php:256
 msgid "An error happend while saving the informations."
-msgstr "Ocurrió un error al salvar las informaciones "
+msgstr "Ocurrió un error al salvar las informaciones."
 
 #: inc/addelementsmodel.class.php:257
 msgid "An error happend while updating the informations."
-msgstr "Ocurrió un error al actualizar las informaciones "
+msgstr "Ocurrió un error al actualizar las informaciones."
 
 #: inc/addelementsmodel.class.php:258
 msgid "All infomations successfully updated."
-msgstr "Todas las informaciones actualizadas con suceso "
+msgstr "Todas las informaciones actualizadas con suceso."
 
 #: inc/addelementsmodel.class.php:259
 msgid "All informations successfully added."
-msgstr "Todas las informaciones adicionadas con suceso "
+msgstr "Todas las informaciones adicionadas con suceso."
 
 #: inc/addelementsmodel.class.php:260
 msgid "All informations saved in base"
@@ -384,11 +384,11 @@ msgstr "Todas las informaciones NO fueron grabadas en la base de datos"
 
 #: inc/addelementsmodel.class.php:263
 msgid "Entity and contact successfully added"
-msgstr "Entidad y contacto adicionados con suceso "
+msgstr "Entidad y contacto adicionados con suceso"
 
 #: inc/addelementsmodel.class.php:264
 msgid "Entity and contract successfully added"
-msgstr "Entidad y contrato adicionados con suceso "
+msgstr "Entidad y contrato adicionados con suceso"
 
 #: inc/addelementsmodel.class.php:265
 msgid "Entity and intervention successfully added"
@@ -404,21 +404,21 @@ msgstr "Entidad, intervención y contrato añadidos con éxito"
 
 #: inc/addelementsmodel.class.php:271
 msgid "This action is irreversible, Continue ?"
-msgstr "Esta acción es definitiva, Continúa? "
+msgstr "Esta acción es definitiva, ¿Continuar?"
 
 #: inc/addelementsmodel.class.php:312 inc/addelementsmodel.class.php:329
 #: inc/addelementsview.class.php:602
 msgid "Update this entity"
-msgstr "Actualice esta entidad "
+msgstr "Actualice esta entidad"
 
 #: inc/addelementsmodel.class.php:446 inc/addelementsmodel.class.php:466
 #: inc/addelementsview.class.php:1273
 msgid "Update this contract only"
-msgstr "Actualice unicamente este contrato "
+msgstr "Actualice unicamente este contrato"
 
 #: inc/addelementsmodel.class.php:614 inc/addelementsmodel.class.php:636
 msgid "Update this contact only"
-msgstr "Actualice unicamente este contacto "
+msgstr "Actualice unicamente este contacto"
 
 #: inc/addelementsmodel.class.php:742 inc/addelementsmodel.class.php:800
 msgid "Update this intervention only"
@@ -428,13 +428,13 @@ msgstr "Actualice unicamente esta intervención"
 #: inc/addelementsview.class.php:2770
 msgid "Update this price"
 msgid_plural "Update these prices"
-msgstr[0] "Actualice estos precios "
-msgstr[1] "Actualice estos precios "
-msgstr[2] "Actualice estos precios "
+msgstr[0] "Actualice este precio"
+msgstr[1] "Actualice estos precios"
+msgstr[2] "Actualice estos precios"
 
 #: inc/addelementsview.class.php:76
 msgid "Add elements form"
-msgstr "Agregar formulario de elementos "
+msgstr "Agregar formulario de elementos"
 
 #: inc/addelementsview.class.php:91 inc/addelementsview.class.php:694
 #: inc/addelementsview.class.php:1018 inc/addelementsview.class.php:1056
@@ -470,45 +470,45 @@ msgstr "Agregar solamente la entidad"
 #: inc/addelementsview.class.php:723 inc/addelementsview.class.php:1045
 #: inc/addelementsview.class.php:1797
 msgid "New entity created previously"
-msgstr "Entidad creada previamente "
+msgstr "Entidad creada previamente"
 
 #: inc/addelementsview.class.php:867
 msgid "Update this contact"
-msgstr "Actualice este contrato "
+msgstr "Actualice este contrato"
 
 #: inc/addelementsview.class.php:869
 msgid "Add only the contact"
-msgstr "Agregue solamente el contacto "
+msgstr "Agregue solamente el contacto"
 
 #: inc/addelementsview.class.php:881
 msgid "Add another contact"
-msgstr "Agregue otro contacto "
+msgstr "Agregue otro contacto"
 
 #: inc/addelementsview.class.php:1275
 msgid "Add only the contract"
-msgstr "Agregue solamente el contrato "
+msgstr "Agregue solamente el contrato"
 
 #: inc/addelementsview.class.php:1381 inc/addelementsview.class.php:2602
 msgid "Document list"
-msgstr "Lista de documentos "
+msgstr "Lista de documentos"
 
 #: inc/addelementsview.class.php:1553 inc/contract.class.php:192
 #: inc/entity.class.php:685 inc/followup.class.php:613
 #: inc/followup.class.php:698 inc/gantt.class.php:289
 msgid "Date of signature"
-msgstr "Fecha de la firma "
+msgstr "Fecha de la firma"
 
 #: inc/addelementsview.class.php:1560 inc/contract.class.php:196
 #: inc/followup.class.php:615 inc/followup.class.php:705
 #: inc/gantt.class.php:290
 msgid "Date of renewal"
-msgstr "Fecha de la renovación "
+msgstr "Fecha de la renovación"
 
 #: inc/addelementsview.class.php:1570 inc/contract.class.php:202
 #: inc/contract.class.php:317 inc/followup.class.php:618
 #: inc/followup.class.php:713 inc/monthly.class.php:409
 msgid "Mode of management"
-msgstr "Modo de gestión."
+msgstr "Modo de gestión"
 
 #: inc/addelementsview.class.php:1573 inc/addelementsview.class.php:1889
 #: inc/contract.class.php:205 inc/contract.class.php:318
@@ -620,7 +620,7 @@ msgstr "Reiniciar formularios"
 
 #: inc/addelementsview.class.php:2848
 msgid "Add all previous elements"
-msgstr "Añadir todos los elementos anteriores "
+msgstr "Añadir todos los elementos anteriores"
 
 #: inc/addelementsview.class.php:3364
 msgid "The previous entity will be added, continue ?"
@@ -911,7 +911,7 @@ msgstr "Regenerar el informe de intervención"
 
 #: inc/cri.class.php:291 inc/cri.class.php:300
 msgid "Impossible generation, you didn't create a scheduled task"
-msgstr "Generación imposible, no has creado una tarea programada."
+msgstr "Generación imposible, no has creado una tarea programada"
 
 #: inc/cri.class.php:293
 msgid "No tasks whose category can be used"
@@ -1018,7 +1018,7 @@ msgstr "Períodos de intervención del contrato"
 #: inc/cridetail.class.php:905 inc/cripdf.class.php:195
 #: inc/cripdf.class.php:452
 msgid "of this intervention"
-msgstr "De esta intervención"
+msgstr "de esta intervención"
 
 #: inc/cridetail.class.php:907
 msgid "Applied rate"
@@ -1326,7 +1326,7 @@ msgstr "Generar informe de intervención"
 
 #: inc/generatecri.class.php:182
 msgid "Ticket informations"
-msgstr "Información sobre los ticket "
+msgstr "Información sobre los Casos"
 
 #: inc/generatecri.class.php:438
 msgid "Predefined task informations"
@@ -1352,7 +1352,7 @@ msgstr "Debe definirse la categoría de la tarea"
 
 #: inc/generatecri.class.php:656
 msgid "End date must be after the begin date !"
-msgstr "La fecha final debe ser posterior a la fecha inicial."
+msgstr "¡La fecha final debe ser posterior a la fecha inicial!"
 
 #: inc/generatecri.class.php:689
 msgid "Description"
@@ -1431,11 +1431,11 @@ msgid ""
 "prestation with a earlier end date"
 msgstr ""
 "Advertencia: hay intervenciones suplementarias que dependen de un "
-"precontrato cuya fecha de finalización es anterior."
+"precontrato cuya fecha de finalización es anterior"
 
 #: inc/monthly.class.php:414
 msgid "Remaining on "
-msgstr "Permanecer en"
+msgstr "Permanecer en "
 
 #: inc/monthly.class.php:422
 msgid "Production"
@@ -1493,7 +1493,7 @@ msgstr[2] "Gestión de derechos"
 
 #: inc/report.class.php:111
 msgid "Total moving package"
-msgstr "Paquetes movidos en total "
+msgstr "Paquetes movidos en total"
 
 #: inc/report.class.php:112
 msgid "Total time of the tasks of a category"
