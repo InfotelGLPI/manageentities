@@ -33,39 +33,51 @@ $contractday = new PluginManageentitiesContractDay();
 $contract    = new PluginManageentitiesContractpoint();
 
 if (isset($_POST["add"])) {
-   $contract->check(-1, UPDATE);
-   $newID = $contract->add($_POST);
-   Html::back();
+    $contract->check(-1, UPDATE);
+    $newID = $contract->add($_POST);
+    Html::back();
 
 } else if (isset($_POST["purge"])) {
-   $contract->check($_POST["id"], UPDATE);
-   $contract->delete($_POST);
-   Html::back();
+    $contract->check($_POST["id"], UPDATE);
+    $contract->delete($_POST);
+    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $contract->check($_POST["id"], UPDATE);
-   $contract->update($_POST);
-   Html::back();
+    $contract->check($_POST["id"], UPDATE);
+    $contract->update($_POST);
+    Html::back();
 
 } else if (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
-   Session::checkRight("contract", UPDATE);
-   $contractday->addNbDay($_POST);
-   Html::back();
+    Session::checkRight("contract", UPDATE);
+    $contractday->addNbDay($_POST);
+    Html::back();
 
 } else if (isset($_POST["delete_nbday"])) {
-   Session::checkRight("contract", UPDATE);
-   foreach ($_POST["item_nbday"] as $key => $val) {
-      if ($val == 1) {
-         $contractday->delete(['id' => $key]);
-      }
-   }
-   Html::back();
+    Session::checkRight("contract", UPDATE);
+    foreach ($_POST["item_nbday"] as $key => $val) {
+        if ($val == 1) {
+            $contractday->delete(['id' => $key]);
+        }
+    }
+    Html::back();
 
+} else if (isset($_POST["generate_report"]) && $_POST["month"] && isset($_POST["year"])) {
+    Session::checkRight("contract", READ);
+    $found = $contract->getFromDBByCrit(['contracts_id' => $_POST['id']]);
+    if ($found) {
+        PluginManageentitiesContractpoint::generateReport(
+            $contract,
+            $_POST['month'],
+            $_POST['year'],
+            'manual'
+        );
+    }
+    Html::back();
 } else {
-   $contractday->checkGlobal(READ);
+    $contractday->checkGlobal(READ);
 
-   Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
-   $contractday->display($_GET);
+    Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
+    $contractday->display($_GET);
 
-   Html::footer();
+    Html::footer();
 }
