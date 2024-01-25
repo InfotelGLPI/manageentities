@@ -351,7 +351,6 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
         echo "<td>";
         echo Html::hidden('id', ['value' => $contract->getID()]);
-        echo Html::hidden('action', ['value' => 'generate_report']);
         echo Html::submit(
             "<i class='fas fa-envelope'></i>&nbsp;" . __('Send bill', 'manageentities'),
             ['name' => 'generate_bill']
@@ -757,7 +756,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $taskCategories = array();
 
         foreach ($entityReport as $entityNum => $TicketsbyEntity) {
-            $pdf = new GLPIPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+            $pdf = self::pdfSetup();
 
             $entity->getFromDB($entityNum);
 
@@ -766,7 +765,6 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             $footer = $config->getField('footer');
 
             $totalTime = 0;
-            //Toolbox::logInFile('mail_manageentities_info',print_r($TicketsbyEntity,true) . "  : tickets by entities",true);
             foreach ($TicketsbyEntity as $tickets_id => $tasks) {
                 $ticket->getFromDB($tickets_id);
                 $html .= self::reportTicket(
