@@ -14,7 +14,7 @@ CREATE TABLE `glpi_plugin_manageentities_contractpoints`
     `contract_cancelled` tinyint(1) NOT NULL default '0',
     `threshold`          int(11) NOT NULL default '0',
     `picture_logo`       varchar(255) NOT NULL default '',
-    `footer`             TEXT         NOT NULL default '',
+    `footer`             TEXT,
     PRIMARY KEY (`id`),
     UNIQUE KEY `unicity` (`contracts_id`,`entities_id`),
     KEY                  `contracts_id` (`contracts_id`),
@@ -37,7 +37,7 @@ ALTER TABLE `glpi_plugin_manageentities_configs`
 ALTER TABLE `glpi_plugin_manageentities_configs`
     ADD `picture_logo` varchar(255) NOT NULL default '';
 ALTER TABLE `glpi_plugin_manageentities_configs`
-    ADD `footer` TEXT NOT NULL default '';
+    ADD `footer` TEXT;
 ALTER TABLE `glpi_plugin_manageentities_configs`
     ADD `category_outOfContract` int(11) NOT NULL default '0';
 ALTER TABLE `glpi_plugin_manageentities_configs`
