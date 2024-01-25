@@ -68,13 +68,14 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
     function prepareInputForAdd($input)
     {
-
         if (isset($input['date_renewal'])
-            && empty($input['date_renewal']))
+            && empty($input['date_renewal'])) {
             $input['date_renewal'] = 'NULL';
+        }
         if (isset($input['date_signature'])
-            && empty($input['date_signature']))
+            && empty($input['date_signature'])) {
             $input['date_signature'] = 'NULL';
+        }
 
         if (isset($input['contract_added'])
             && ($input['contract_added'] === "on"
@@ -98,13 +99,14 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
     function prepareInputForUpdate($input)
     {
-
         if (isset($input['date_renewal'])
-            && empty($input['date_renewal']))
+            && empty($input['date_renewal'])) {
             $input['date_renewal'] = 'NULL';
+        }
         if (isset($input['date_signature'])
-            && empty($input['date_signature']))
+            && empty($input['date_signature'])) {
             $input['date_signature'] = 'NULL';
+        }
 
         if (isset($input['contract_added'])
             && ($input['contract_added'] === "on"
@@ -127,10 +129,11 @@ class PluginManageentitiesContractpoint extends CommonDBTM
     {
         if ($item->getType() == 'Contract'
             && !isset($withtemplate) || empty($withtemplate)) {
-
             $dbu = new DbUtils();
-            $restrict = ["`entities_id`" => $item->fields['entities_id'],
-                "`contracts_id`" => $item->fields['id']];
+            $restrict = [
+                "`entities_id`" => $item->fields['entities_id'],
+                "`contracts_id`" => $item->fields['id']
+            ];
             $pluginContractDays = $dbu->countElementsInTable("glpi_plugin_manageentities_contractdays", $restrict);
             if ($_SESSION['glpishow_count_on_tabs']) {
                 return self::createTabEntry(__('Contract detail', 'manageentities'), $pluginContractDays);
@@ -142,7 +145,6 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
     static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         if (get_class($item) == 'Contract') {
             $self = new self();
             $self->showForContract($item);
@@ -166,7 +168,6 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
         if ($number) {
             while ($data = $DB->fetchArray($result)) {
-
                 $query_nodefault = "UPDATE `" . $this->getTable() . "`
             SET `is_default` = 0 WHERE `id` = " . $data["id"];
                 $DB->query($query_nodefault);
@@ -185,11 +186,14 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $canEdit = $contract->can($contract->fields['id'], UPDATE);
         $entity = new Entity();
         $entity->getFromDB(0);
-        if (!$canView) return false;
+        if (!$canView) {
+            return false;
+        }
 
         $restrict = [
 //         "`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contract->fields['entities_id'],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']];
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']
+        ];
         $dbu = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
         $pluginContract = reset($pluginContracts);
@@ -237,7 +241,8 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         echo "</tr>";
         echo "<tr>";
         echo "<td colspan='1'>" . __('Initial credit', 'manageentities') . "</td>";
-        echo "<td colspan='1'>" . Html::input('initial_credit', ['value' => $this->fields['initial_credit']]) . "  " . __('points', 'manageentities') . "</td>";
+        echo "<td colspan='1'>" . Html::input('initial_credit', ['value' => $this->fields['initial_credit']]
+            ) . "  " . __('points', 'manageentities') . "</td>";
         echo "<td colspan='1'>" . __('Renewal number', 'manageentities') . "</td>";
         echo "<td colspan='1'>" . $this->fields['renewal_number'] . "</td>";
 
@@ -246,12 +251,16 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         echo "<td colspan='1'>" . __('Current credit', 'manageentities') . "</td>";
         echo "<td colspan='1'>" . $this->fields['current_credit'] . "  " . __('points', 'manageentities') . "</td>";
         echo "<td colspan='1'>" . __('Credit consumed', 'manageentities') . "</td>";
-        echo "<td colspan='1'>" . Html::input('current_credit', ['value' => $this->fields['current_credit']]) . "  " . __('points', 'manageentities') . "</td>";
+        echo "<td colspan='1'>" . Html::input('current_credit', ['value' => $this->fields['current_credit']]
+            ) . "  " . __('points', 'manageentities') . "</td>";
 
         echo "</tr>";
         echo "<tr>";
         echo "<td colspan='1'>" . __('Contract renewal threshold', 'manageentities') . "</td>";
-        echo "<td colspan='1'>" . Html::input('threshold', ['value' => $this->fields['threshold']]) . "  " . __('points', 'manageentities') . "</td>";
+        echo "<td colspan='1'>" . Html::input('threshold', ['value' => $this->fields['threshold']]) . "  " . __(
+                'points',
+                'manageentities'
+            ) . "</td>";
         echo "<td colspan='1'>" . "</td>";
         echo "<td colspan='1'>" . "</td>";
 
@@ -259,18 +268,33 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
         echo "<tr>";
         echo "<td colspan='1'>" . __('Number of minutes in a slice by default', 'manageentities') . "</td>";
-        echo "<td colspan='1'>" . Dropdown::showNumber('minutes_slice', ['max' => 480, 'display' => false, 'value' => $this->fields['minutes_slice']]) . "</td>";
+        echo "<td colspan='1'>" . Dropdown::showNumber(
+                'minutes_slice',
+                ['max' => 480, 'display' => false, 'value' => $this->fields['minutes_slice']]
+            ) . "</td>";
         echo "<td colspan='1'>" . __('Number of points per slice by default', 'manageentities') . "</td>";
-        echo "<td colspan='1'>" . Dropdown::showNumber('points_slice', ['max' => 1500, 'display' => false, 'value' => $this->fields['points_slice']]) . "</td>";
+        echo "<td colspan='1'>" . Dropdown::showNumber(
+                'points_slice',
+                ['max' => 1500, 'display' => false, 'value' => $this->fields['points_slice']]
+            ) . "</td>";
 
         echo "</tr>";
         echo "<tr>";
         echo "<td colspan='1'>" . __('Logo to show in report', 'manageentities') . "</td>";
-        echo "<td colspan='3'>" . Html::file(['name' => 'picture_logo', 'value' => $this->fields["picture_logo"], 'onlyimages' => true, 'display' => false]) . "</td>";
+        echo "<td colspan='3'>" . Html::file(
+                [
+                    'name' => 'picture_logo',
+                    'value' => $this->fields["picture_logo"],
+                    'onlyimages' => true,
+                    'display' => false
+                ]
+            ) . "</td>";
         echo "</tr>";
         echo "<tr>";
         echo "<td colspan='1'>" . __('Text in report footer', 'manageentities') . "</td>";
-        echo "<td colspan='3'>" . Html::textarea(['name' => 'footer', 'value' => $this->fields["footer"], 'display' => false]) . "</td>";
+        echo "<td colspan='3'>" . Html::textarea(
+                ['name' => 'footer', 'value' => $this->fields["footer"], 'display' => false]
+            ) . "</td>";
 
         echo "</tr>";
         echo "<tr>";
@@ -290,38 +314,47 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             $mapping->showForm(0, ['plugin_manageentities_contractpoints_id' => $this->getID()]);
             $mapping->showFromContract($this->getID(), $_GET);
         }
-
     }
 
     /**
      * @param $contract Contract
      * @return void
      */
-    private function showReportGeneratorForm($contract) {
+    private function showReportGeneratorForm($contract)
+    {
         echo "<form method='post' name='report_form' id='report_form' style='margin: 1rem 0px'
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesContractpoint') . "'>";
         echo "<table class='tab_cadre_fixe center'><tbody>";
-        echo "<tr><th colspan='4'>" . __('Generate a monthly report', 'manageentities') . "</th></tr>";
+        echo "<tr><th colspan='4'>" . __('Rebill a month', 'manageentities') . "</th></tr>";
         $months = Toolbox::getMonthsOfYearArray();
         echo "<tr><td>";
-        echo "<div><label for='month' style='margin-right: 4px'>".__('Month', 'manageentities')."</label>";
+        echo "<div><label for='month' style='margin-right: 4px'>" . __('Month', 'manageentities') . "</label>";
         Dropdown::showFromArray('month', $months);
         echo "</div></td>";
 
-        echo "<td><div><label for='year' style='margin-right: 4px'>".__('Year', 'manageentities')."</label>";
+        echo "<td>
+                <div>
+                    <label for='year' style='margin-right: 4px'>" . __('Year', 'manageentities') . "</label>";
         Dropdown::showNumber('year', [
             'max' => date('Y'),
             'min' => date('Y', strtotime($contract->fields['begin_date'])),
             'value' => date('Y')
         ]);
-        echo "</div></div></td>";
+        echo "</div>
+            </td>";
 
+        echo "<td><div><label for='billing' style='margin-right: 4px'>" . __(
+                "Update contract's points",
+                'manageentities'
+            ) . "</label>";
+        echo "<input type='checkbox' name='billing' checked='checked'/></td>";
+
+        echo "<td>";
         echo Html::hidden('id', ['value' => $contract->getID()]);
         echo Html::hidden('action', ['value' => 'generate_report']);
-        echo "<td colspan='2'>";
         echo Html::submit(
-            "<i class='fas fa-save'></i>&nbsp;".__('Generate', 'manageentities'),
-            ['name' => 'generate_report']
+            "<i class='fas fa-envelope'></i>&nbsp;" . __('Send bill', 'manageentities'),
+            ['name' => 'generate_bill']
         );
         echo "</td></tr>";
         echo "</tbody></table>";
@@ -360,12 +393,13 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
                 echo "<th>" . __('Mode of management', 'manageentities') . "</th>";
                 echo "<th>" . __('Type of service contract', 'manageentities') . "</th>";
-            } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+            } elseif ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                 echo "<th>" . __('Type of service contract', 'manageentities') . "</th>";
             }
             echo "<th>" . __('Used by default', 'manageentities') . "</th>";
-            if ($this->canCreate() && sizeof($instID) == 1)
+            if ($this->canCreate() && sizeof($instID) == 1) {
                 echo "<th>&nbsp;</th>";
+            }
             echo "</tr>";
 
             $used = [];
@@ -375,14 +409,16 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
                 echo "<tr class='" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
                 echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/contract.form.php?id=" . $data["contracts_id"] . "\">" . $data["name"] . "";
-                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) echo " (" . $data["contracts_id"] . ")";
+                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                    echo " (" . $data["contracts_id"] . ")";
+                }
                 echo "</a></td>";
                 echo "<td class='center'>" . $data["num"] . "</td>";
                 echo "<td class='center'>" . nl2br($data["comment"]) . "</td>";
                 if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
                     echo "<td class='center'>" . self::getContractManagement($data["management"]) . "</td>";
                     echo "<td class='center'>" . self::getContractType($data['contract_type']) . "</td>";
-                } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+                } elseif ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                     echo "<td class='center'></td>";
                     //               echo "<td class='center'>".self::getContractType($data['contract_type'])."</td>";
                 }
@@ -391,10 +427,12 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                     if ($data["is_default"]) {
                         echo __('Yes');
                     } else {
-                        Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+                        Html::showSimpleForm(
+                            $CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                             'contractbydefault',
                             __('No'),
-                            ['myid' => $data["myid"], 'entities_id' => $_SESSION["glpiactive_entity"]]);
+                            ['myid' => $data["myid"], 'entities_id' => $_SESSION["glpiactive_entity"]]
+                        );
                     }
                 } else {
                     echo Dropdown::getYesNo($data["is_default"]);
@@ -403,34 +441,42 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                 if ($this->canCreate() && sizeof($instID) == 1) {
                     echo "<td class='center' class='tab_bg_2'>";
 
-                    Html::showSimpleForm($CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
+                    Html::showSimpleForm(
+                        $CFG_GLPI['root_doc'] . '/plugins/manageentities/front/entity.php',
                         'deletecontracts',
                         _x('button', 'Delete permanently'),
-                        ['id' => $data["myid"]]);
+                        ['id' => $data["myid"]]
+                    );
                     echo "</td>";
                 }
                 echo "</tr>";
-
             }
 
             if ($this->canCreate() && sizeof($instID) == 1) {
                 if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
                     echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
-                } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+                } elseif ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                     echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
                 } else {
                     echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
                 }
                 echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
-                Dropdown::show('Contract', ['name' => "contracts_id",
-                    'used' => $used]);
-                echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
-                echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'></td>";
+                Dropdown::show('Contract', [
+                    'name' => "contracts_id",
+                    'used' => $used
+                ]);
+                echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'><i title=\"" . _sx(
+                        'button',
+                        'Add'
+                    ) . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
+                echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx(
+                        'button',
+                        'Add'
+                    ) . "\" class='submit'></td>";
                 echo "</tr>";
             }
             echo "</table></div>";
             Html::closeForm();
-
         } else {
             echo "<form method='post' action=\"./entity.php\">";
             echo "<div align='center'><table class='tab_cadrehov center'>";
@@ -445,8 +491,14 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                 echo "<input type='hidden' name='entities_id' value=" . $_SESSION["glpiactive_entity"] . ">";
                 Dropdown::show('Contract', ['name' => "contracts_id"]);
                 echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>
-            <i title=\"" . _sx('button', 'Add') . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
-                echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
+            <i title=\"" . _sx(
+                        'button',
+                        'Add'
+                    ) . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i></a>";
+                echo "</td><td class='center'><input type='submit' name='addcontracts' value=\"" . _sx(
+                        'button',
+                        'Add'
+                    ) . "\" class='submit'>";
                 echo "</td><td></td>";
                 echo "</tr>";
             }
@@ -466,9 +518,11 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      */
     static function dropdownContractManagement($name, $value = 0, $rand = null)
     {
-        $contractManagements = [self::MANAGEMENT_NONE => Dropdown::EMPTY_VALUE,
+        $contractManagements = [
+            self::MANAGEMENT_NONE => Dropdown::EMPTY_VALUE,
             self::MANAGEMENT_QUARTERLY => __('Quarterly', 'manageentities'),
-            self::MANAGEMENT_ANNUAL => __('Annual', 'manageentities')];
+            self::MANAGEMENT_ANNUAL => __('Annual', 'manageentities')
+        ];
 
         if (!empty($contractManagements)) {
             if ($rand == null) {
@@ -594,26 +648,28 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      */
     static function messageTask($params)
     {
-
         if (isset($params['item'])) {
             $item = $params['item'];
             $cridetail = new PluginManageentitiesCriDetail();
             $contractpoints = new PluginManageentitiesContractpoint();
             if ($item->getType() == TicketTask::getType()) {
-                if ($_POST['parenttype'] == Ticket::getType() && !$cridetail->getFromDBByCrit(['tickets_id' => $_POST['tickets_id']])) {
+                if ($_POST['parenttype'] == Ticket::getType() && !$cridetail->getFromDBByCrit(
+                        ['tickets_id' => $_POST['tickets_id']]
+                    )) {
                     $text = __("No contract link to this ticket", 'manageentities');
                     echo "<tr class='tab_bg_1 warning'><td colspan='4'><i class='fas fa-exclamation-triangle fa-2x'></i> $text</td></tr>";
-                } else if ($_POST['parenttype'] == Ticket::getType() &&
+                } elseif ($_POST['parenttype'] == Ticket::getType() &&
                     $cridetail->getFromDBByCrit(['tickets_id' => $_POST['tickets_id']]) &&
                     $contractpoints->getFromDBByCrit(['contracts_id' => $cridetail->fields['contracts_id']]) &&
                     $contractpoints->fields['contract_cancelled'] == 1 &&
                     $contractpoints->fields['current_credit'] < $contractpoints->fields['threshold']) {
-                    $text = sprintf(__("The contract is cancelled and the current credit is under %s", 'manageentities'), $contractpoints->fields['threshold']);
+                    $text = sprintf(
+                        __("The contract is cancelled and the current credit is under %s", 'manageentities'),
+                        $contractpoints->fields['threshold']
+                    );
                     echo "<tr class='tab_bg_1 warning'><td colspan='4'><i class='fas fa-exclamation-triangle fa-2x'></i> $text</td></tr>";
                 }
-
             }
-
         }
         return true;
     }
@@ -628,9 +684,9 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         switch ($name) {
             case 'AutoReport':
                 return [
-                    'description' => __('Auto intervention report', 'manageentities')]; // Optional
+                    'description' => __('Auto intervention report', 'manageentities')
+                ]; // Optional
                 break;
-
         }
         return [];
     }
@@ -644,7 +700,6 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      **/
     static function cronAutoReport($task = null)
     {
-
         global $CFG_GLPI;
         if (!$CFG_GLPI["notifications_mailing"]) {
             return 0;
@@ -682,13 +737,16 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             $obj->getEmpty();
             $obj->fields = $data;
 
-            self::generateReport($obj, $month_number, $year, 'cronAutoReport');
+            self::generateReport($obj, $month_number, $year, true);
         }
 
         //SEND mail for task without contract
 
-        $tasks = $task->find(['taskcategories_id' => $config->fields['category_outOfContract'], ['date' => ['>=', $begin_date]],
-            ['date' => ['<=', $end_date]]]);
+        $tasks = $task->find([
+            'taskcategories_id' => $config->fields['category_outOfContract'],
+            ['date' => ['>=', $begin_date]],
+            ['date' => ['<=', $end_date]]
+        ]);
         $entityReport = [];
         $tick = new Ticket();
         foreach ($tasks as $t) {
@@ -761,8 +819,12 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             if (!empty($user_email)) {
                 $mmail->AddAddress($user_email, $user_email);
                 $mmail->Subject = $subject;
-                $mmail->Body = sprintf(__("Please find attached billing of %s", 'manageentities'), $months[$month_number] . ' ' . $year);
-                $mmail->MessageID = "GLPI-" . Ticket::getType() . "-" . $ticket->getID() . "." . time() . "." . rand() . "@" . php_uname('n');
+                $mmail->Body = sprintf(
+                    __("Please find attached billing of %s", 'manageentities'),
+                    $months[$month_number] . ' ' . $year
+                );
+                $mmail->MessageID = "GLPI-" . Ticket::getType() . "-" . $ticket->getID() . "." . time() . "." . rand(
+                    ) . "@" . php_uname('n');
 
                 $document->getFromDB($doc_id);
                 $path = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
@@ -770,15 +832,31 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                     $path,
                     $document->fields['filename']
                 );
-                if (/*$mmail->Send()*/ true) {
+                if ($mmail->Send()) {
                     Session::addMessageAfterRedirect(__('The email has been sent', 'manageentities'), false, INFO);
                 } else {
-                    Session::addMessageAfterRedirect(__('Error sending email with document', 'manageentities') . "<br/>" . $mmail->ErrorInfo, false, ERROR);
-                    Toolbox::logInFile('mail_manageentities', __('Error sending email with document', 'manageentities') . "<br/>" . $mmail->ErrorInfo, true);
+                    Session::addMessageAfterRedirect(
+                        __('Error sending email with document', 'manageentities') . "<br/>" . $mmail->ErrorInfo,
+                        false,
+                        ERROR
+                    );
+                    Toolbox::logInFile(
+                        'mail_manageentities',
+                        __('Error sending email with document', 'manageentities') . "<br/>" . $mmail->ErrorInfo,
+                        true
+                    );
                 }
             } else {
-                Session::addMessageAfterRedirect(__('Error sending email with document : No email', 'manageentities'), false, ERROR);
-                Toolbox::logInFile('mail_manageentities', __('Error sending email with document : No email', 'manageentities'), true);
+                Session::addMessageAfterRedirect(
+                    __('Error sending email with document : No email', 'manageentities'),
+                    false,
+                    ERROR
+                );
+                Toolbox::logInFile(
+                    'mail_manageentities',
+                    __('Error sending email with document : No email', 'manageentities'),
+                    true
+                );
             }
         }
 
@@ -793,24 +871,24 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      * @param $contract PluginManageentitiesContractpoint Contract for the report
      * @param $month string month, n format
      * @param $year string year, Y format
-     * @param $origin string if !== 'manual', will update $contract's available points
+     * @param $billing boolean if true, will update $contract's available points
      * @return void
      */
-    public static function generateReport($contract, $month, $year, $origin)
+    public static function generateReport($contract, $month, $year, $billing)
     {
         global $CFG_GLPI;
         $config = PluginManageentitiesConfig::getInstance();
         $baseContract = new Contract();
-        $criDetail= new PluginManageentitiesCriDetail();
-        $entity= new Entity();
-        $ticket= new Ticket();
-        $task= new TicketTask();
+        $criDetail = new PluginManageentitiesCriDetail();
+        $entity = new Entity();
+        $ticket = new Ticket();
+        $task = new TicketTask();
 
         $taskCategories = array();
 
         $date = mktime(0, 0, 0, $month, 1, $year);
         $begin_date = date('Y-m-d', $date);
-        $endOfTheMonth = date('t',  $date);
+        $endOfTheMonth = date('t', $date);
         $end_date = date('Y-m-d h:i:s', mktime(23, 59, 59, $month, $endOfTheMonth, $year));
 
         // basic contract infos
@@ -834,8 +912,11 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
         foreach ($criDetails as $cri) {
             if ($ticket->getFromDB($cri['tickets_id'])) {
-                $tasks = $task->find(['tickets_id' => $cri['tickets_id'], ['date' => ['>=', $begin_date]],
-                    ['date' => ['<=', $end_date]]]);
+                $tasks = $task->find([
+                    'tickets_id' => $cri['tickets_id'],
+                    ['date' => ['>=', $begin_date]],
+                    ['date' => ['<=', $end_date]]
+                ]);
                 $html .= self::reportTicket(
                     $ticket,
                     $tasks,
@@ -867,7 +948,9 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $info['renewal_number'] = $contract->fields['renewal_number'] + $renewal_number;
         $info['credit_consumed'] = $contract->fields['credit_consumed'] + $contractPoints;
 
-        if ($origin !== 'manual') $contract->update($info);
+        if ($billing) {
+            $contract->update($info);
+        }
 
         $html .= "
       <div id=\"current_credit\" style=\" text-align: right;padding-bottom: 20px; font-weight: bold;\">"
@@ -910,8 +993,12 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         if (!empty($user_email)) {
             $mmail->AddAddress($user_email, $user_email);
             $mmail->Subject = $subject;
-            $mmail->Body = sprintf(__("Please find attached billing of %s", 'manageentities'), $months[$month] . ' ' . $year);
-            $mmail->MessageID = "GLPI-" . Ticket::getType() . "-" . $ticket->getID() . "." . time() . "." . rand() . "@" . php_uname('n');
+            $mmail->Body = sprintf(
+                __("Please find attached billing of %s", 'manageentities'),
+                $months[$month] . ' ' . $year
+            );
+            $mmail->MessageID = "GLPI-" . Ticket::getType() . "-" . $ticket->getID() . "." . time() . "." . rand(
+                ) . "@" . php_uname('n');
 
             $document->getFromDB($doc_id);
             $path = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
@@ -919,22 +1006,36 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                 $path,
                 $document->fields['filename']
             );
-            if (/*$mmail->Send()*/ true) {
+            if ($mmail->Send()) {
                 Session::addMessageAfterRedirect(__('The email has been sent', 'manageentities'), false, INFO);
             } else {
-                Session::addMessageAfterRedirect(__('Error sending email with document', 'manageentities') . "<br/>" . $mmail->ErrorInfo, false, ERROR);
+                Session::addMessageAfterRedirect(
+                    __('Error sending email with document', 'manageentities') . "<br/>" . $mmail->ErrorInfo,
+                    false,
+                    ERROR
+                );
             }
         } else {
-            Session::addMessageAfterRedirect(__('Error sending email with document : No email', 'manageentities') . " " . $contract->fields['contracts_id'], false, ERROR);
-
+            Session::addMessageAfterRedirect(
+                __(
+                    'Error sending email with document : No email',
+                    'manageentities'
+                ) . " " . $contract->fields['contracts_id'],
+                false,
+                ERROR
+            );
         }
 
         if ($renewal_number > 0 && !empty($config->fields['email_billing_destination'])) {
             $user_email = $config->fields['email_billing_destination'];
             $mmail->AddAddress($user_email, $user_email);
             $mmail->Subject = $subject;
-            $mmail->Body = sprintf(__("Please find attached billing of %s", 'manageentities'), $months[$month] . ' ' . $year);
-            $mmail->MessageID = "GLPI-" . Ticket::getType() . "-" . $ticket->getID() . "." . time() . "." . rand() . "@" . php_uname('n');
+            $mmail->Body = sprintf(
+                __("Please find attached billing of %s", 'manageentities'),
+                $months[$month] . ' ' . $year
+            );
+            $mmail->MessageID = "GLPI-" . Ticket::getType() . "-" . $ticket->getID() . "." . time() . "." . rand(
+                ) . "@" . php_uname('n');
 
             $document->getFromDB($doc_id);
             $path = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
@@ -942,14 +1043,26 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                 $path,
                 $document->fields['filename']
             );
-            if (/*$mmail->Send()*/ true) {
+            if ($mmail->Send()) {
                 Session::addMessageAfterRedirect(__('The email has been sent', 'manageentities'), false, INFO);
             } else {
-                Session::addMessageAfterRedirect(__('Error sending email with document for renewal', 'manageentities') . "<br/>" . $mmail->ErrorInfo, false, ERROR);
+                Session::addMessageAfterRedirect(
+                    __('Error sending email with document for renewal', 'manageentities') . "<br/>" . $mmail->ErrorInfo,
+                    false,
+                    ERROR
+                );
             }
-        } else if ($renewal_number > 0) {
-            Session::addMessageAfterRedirect(__('Error sending email with document : No email', 'manageentities'), false, ERROR);
-            Toolbox::logInFile('mail_manageentities', __('Error sending email with document : No email', 'manageentities'), true);
+        } elseif ($renewal_number > 0) {
+            Session::addMessageAfterRedirect(
+                __('Error sending email with document : No email', 'manageentities'),
+                false,
+                ERROR
+            );
+            Toolbox::logInFile(
+                'mail_manageentities',
+                __('Error sending email with document : No email', 'manageentities'),
+                true
+            );
         }
     }
 
@@ -1028,7 +1141,10 @@ class PluginManageentitiesContractpoint extends CommonDBTM
            <table style=\"margin:auto;  \">
              
                   <tr style=\" text-align: center;font-weight: bold; font-size: 12px \">
-                        <td colspan=\"2\" style=\"border: 1px solid black;\">" . __("Statement of intervention tickets", "manageentities") . "</td>
+                        <td colspan=\"2\" style=\"border: 1px solid black;\">" . __(
+                "Statement of intervention tickets",
+                "manageentities"
+            ) . "</td>
                         
                         <td style=\" border: 1px solid black;\">" . $months[$month] . " " . $year . "</td>
                     </tr>
@@ -1047,7 +1163,10 @@ class PluginManageentitiesContractpoint extends CommonDBTM
              <thead >
                   <tr>
                         <td style=\"border: 1px solid black;\">" . __('Date') . "</td>
-                        <td colspan=\"5\" style=\"border: 1px solid black;\">" . __('Client request, action and solve', 'manageentities') . "</td>
+                        <td colspan=\"5\" style=\"border: 1px solid black;\">" . __(
+                'Client request, action and solve',
+                'manageentities'
+            ) . "</td>
                         <td style=\"border: 1px solid black;\">" . __('Time', 'manageentities') . "</td>
                         <td style=\"border: 1px solid black;\">" . __('Category') . "</td>";
         if ($contract) {
@@ -1066,22 +1185,34 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      * @param $tasks array result from Task->find()
      * @param $taskCategories array initialise as empty array and do not touch until all tickets have been passed through this function
      * @param $begin_date string date format 'Y-m-d', will be used to look if a solution to $ticket was found in the wanted time period
-     * @param $end_date string date format Y-m-d 'h:i:s', will be used to look if a solution to $ticket was found in the wanted time period
+     * @param $end_date string date format 'Y-m-d h:i:s', will be used to look if a solution to $ticket was found in the wanted time period
      * @param $totalTime int will add the time spent on all $tasks to it
      * @param $contract PluginManageentitiesContractpoint|null if defined, will show the number of points spent on each tickets
      * @param $contractPoints int if defined and $contract is too, will add the point spent on all $tasks to it
      * @return string html string containing a <tr></tr>
      */
-    private static function reportTicket($ticket, $tasks, &$taskCategories, $begin_date, $end_date, &$totalTime, $contract = null, &$contractPoints = null)
-    {
+    private static function reportTicket(
+        $ticket,
+        $tasks,
+        &$taskCategories,
+        $begin_date,
+        $end_date,
+        &$totalTime,
+        $contract = null,
+        &$contractPoints = null
+    ) {
         $solution = new ITILSolution();
         $html = '';
         $is_sol = false;
         $solution->getEmpty();
         if (!in_array($ticket->fields['status'], Ticket::getNotSolvedStatusArray())) {
-            $is_sol = $solution->getFromDBByCrit(['itemtype' => Ticket::getType(), 'items_id' => $ticket->getID(),
-                'status' => CommonITILValidation::ACCEPTED, ['date_creation' => ['>=', $begin_date]],
-                ['date_creation' => ['<=', $end_date]]]);
+            $is_sol = $solution->getFromDBByCrit([
+                'itemtype' => Ticket::getType(),
+                'items_id' => $ticket->getID(),
+                'status' => CommonITILValidation::ACCEPTED,
+                ['date_creation' => ['>=', $begin_date]],
+                ['date_creation' => ['<=', $end_date]]
+            ]);
         }
         $count = ((count($tasks) ?? 0) + (($is_sol == true) ? 1 : 0));
         $colspan = $contract ? 8 : 7;
@@ -1108,14 +1239,18 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             if (!array_key_exists($t['taskcategories_id'], $taskCategories)) {
                 $taskCategories[$t['taskcategories_id']] = array();
                 $categoryFound = $taskCategory->getFromDB($t['taskcategories_id']);
-                if ($categoryFound) $taskCategories[$t['taskcategories_id']]['category'] = $taskCategory;
+                if ($categoryFound) {
+                    $taskCategories[$t['taskcategories_id']]['category'] = $taskCategory;
+                }
                 if ($contract) {
                     $mappingCategorySlice = new PluginManageentitiesMappingCategorySlice();
                     $sliceFound = $mappingCategorySlice->getFromDBByCrit([
                         'plugin_manageentities_contractpoints_id' => $contract->getID(),
                         'taskcategories_id' => $t['taskcategories_id']
                     ]);
-                    if ($sliceFound) $taskCategories[$t['taskcategories_id']]['slice'] = $mappingCategorySlice;
+                    if ($sliceFound) {
+                        $taskCategories[$t['taskcategories_id']]['slice'] = $mappingCategorySlice;
+                    }
                 }
             }
 
@@ -1177,7 +1312,8 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      * Call after looping on tickets with reportTicket to close <tbody> and <table>
      * @return string HTML
      */
-    private static function reportEndTickets() {
+    private static function reportEndTickets()
+    {
         return "</tbody>
             </table>
             <br>";
@@ -1190,7 +1326,8 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      * @param $year mixed datetime format Y, XXXX
      * @return false|string|null
      */
-    private static function reportGenerateFileName($entity, $month, $year) {
+    private static function reportGenerateFileName($entity, $month, $year)
+    {
         $months = Toolbox::getMonthsOfYearArray();
         $fileName = $entity->getFriendlyName() . "-" . $months[$month] . $year . ".pdf";
         $fileName = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $fileName);

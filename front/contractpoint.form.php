@@ -30,29 +30,25 @@
 include('../../../inc/includes.php');
 
 $contractday = new PluginManageentitiesContractDay();
-$contract    = new PluginManageentitiesContractpoint();
+$contract = new PluginManageentitiesContractpoint();
 
 if (isset($_POST["add"])) {
     $contract->check(-1, UPDATE);
     $newID = $contract->add($_POST);
     Html::back();
-
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $contract->check($_POST["id"], UPDATE);
     $contract->delete($_POST);
     Html::back();
-
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $contract->check($_POST["id"], UPDATE);
     $contract->update($_POST);
     Html::back();
-
-} else if (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
+} elseif (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
     Session::checkRight("contract", UPDATE);
     $contractday->addNbDay($_POST);
     Html::back();
-
-} else if (isset($_POST["delete_nbday"])) {
+} elseif (isset($_POST["delete_nbday"])) {
     Session::checkRight("contract", UPDATE);
     foreach ($_POST["item_nbday"] as $key => $val) {
         if ($val == 1) {
@@ -60,8 +56,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-
-} else if (isset($_POST["generate_report"]) && $_POST["month"] && isset($_POST["year"])) {
+} elseif (isset($_POST["generate_bill"]) && $_POST["month"] && isset($_POST["year"])) {
     Session::checkRight("contract", READ);
     $found = $contract->getFromDBByCrit(['contracts_id' => $_POST['id']]);
     if ($found) {
@@ -69,14 +64,20 @@ if (isset($_POST["add"])) {
             $contract,
             $_POST['month'],
             $_POST['year'],
-            'manual'
+            isset($_POST['billing'])
         );
     }
     Html::back();
 } else {
     $contractday->checkGlobal(READ);
 
-    Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
+    Html::header(
+        PluginManageentitiesContractDay::getTypeName(2),
+        '',
+        "management",
+        "pluginmanageentitiesentity",
+        "contractday"
+    );
     $contractday->display($_GET);
 
     Html::footer();
