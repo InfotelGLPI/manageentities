@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.3');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.1.0');
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
    define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
@@ -56,7 +56,7 @@ function plugin_init_manageentities() {
 
    $PLUGIN_HOOKS['item_transfer']['manageentities'] = 'plugin_item_transfer_manageentities';
 
-   if (Session::getLoginUserID()) {
+   if (Session::getLoginUserID() && Plugin::isPluginActive("manageentities")) {
       Plugin::registerClass('PluginManageentitiesProfile', ['addtabon' => 'Profile']);
       $config = PluginManageentitiesConfig::getInstance();
       if($config->getField('hourorday') == PluginManageentitiesConfig::POINTS) {
@@ -114,7 +114,6 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['mydashboard']['manageentities'] = ["PluginManageentitiesDashboard"];
       }
 
-      //TODO: check
       $PLUGIN_HOOKS['post_item_form']['manageentities'] = ['PluginManageentitiesTicketTask', 'postForm'];
       // Add specific files to add to the header : javascript or css
       $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css", "style.css"];
