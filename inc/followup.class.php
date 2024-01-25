@@ -352,6 +352,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      $name_period = "";
                      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Daily
                         $dataContractDay["contract_type"] = $dataContract["contract_type"];
+                     }if ($config->fields['hourorday'] == PluginManageentitiesConfig::POINTS) {// Daily
+                        $dataContractDay["contract_type"] = $dataContract["contract_type"];
                      }
 
                      if (Session::getCurrentInterface() == 'central') {

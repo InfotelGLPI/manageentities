@@ -48,6 +48,50 @@ if (isset($_POST["action"])) {
                echo __('Only ticket accepted are taking into account for consumption calculation', 'manageentities');
 
                break;
+            case PluginManageentitiesConfig::POINTS :
+               echo __('Day to generate intervention report', 'manageentities');
+
+               break;
+         }
+         break;
+      case 'title_show_logo' :
+         $config = PluginManageentitiesConfig::getInstance();
+         switch ($_POST["hourorday"]) {
+
+            case PluginManageentitiesConfig::POINTS :
+               echo __('Logo to show in report', 'manageentities');
+
+               break;
+         }
+         break;
+      case 'title_show_footer' :
+         $config = PluginManageentitiesConfig::getInstance();
+         switch ($_POST["hourorday"]) {
+
+            case PluginManageentitiesConfig::POINTS :
+               echo __('Text in report footer', 'manageentities');
+
+               break;
+         }
+         break;
+      case 'title_category_outOfContract' :
+         $config = PluginManageentitiesConfig::getInstance();
+         switch ($_POST["hourorday"]) {
+
+            case PluginManageentitiesConfig::POINTS :
+               echo __('Category for Task out of contract', 'manageentities');
+
+               break;
+         }
+         break;
+      case 'title_email_billing_destination' :
+         $config = PluginManageentitiesConfig::getInstance();
+         switch ($_POST["hourorday"]) {
+
+            case PluginManageentitiesConfig::POINTS :
+               echo __('Email destination for Out ouf contract billing', 'manageentities');
+
+               break;
          }
          break;
       case 'value_show_hourorday' :
@@ -60,6 +104,55 @@ if (isset($_POST["action"])) {
             case PluginManageentitiesConfig::HOUR :
                Dropdown::showYesNo("needvalidationforcri", $config->fields["needvalidationforcri"]);
                echo Html::hidden('hourbyday', ['value' => 0]);
+               break;
+            case PluginManageentitiesConfig::POINTS :
+               Dropdown::showNumber("date_to_generate_contract", ['value' => $config->fields["date_to_generate_contract"],'min' => 1,'max' => 31]);
+//               echo "<input type='hidden' name='hourbyday' value='0'>";
+
+               break;
+         }
+         break;
+      case 'value_show_logo' :
+         $config = PluginManageentitiesConfig::getInstance();
+         switch ($_POST["hourorday"]) {
+
+            case PluginManageentitiesConfig::POINTS :
+               Html::file(['name' => 'picture_logo','value' => $config->fields["picture_logo"],'onlyimages' => true]);
+//               echo "<input type='hidden' name='hourbyday' value='0'>";
+
+               break;
+         }
+         break;
+      case 'value_show_footer' :
+         $config = PluginManageentitiesConfig::getInstance();
+         switch ($_POST["hourorday"]) {
+
+            case PluginManageentitiesConfig::POINTS :
+               Html::textarea(['name' => 'footer','value' => $config->fields["footer"]]);
+//               echo "<input type='hidden' name='hourbyday' value='0'>";
+
+               break;
+         }
+         break;
+      case 'value_category_outOfContract' :
+         $config = PluginManageentitiesConfig::getInstance();
+         switch ($_POST["hourorday"]) {
+
+            case PluginManageentitiesConfig::POINTS :
+               TaskCategory::dropdown(['name' => 'category_outOfContract','value' => $config->fields["category_outOfContract"]]);
+//               echo "<input type='hidden' name='hourbyday' value='0'>";
+
+               break;
+         }
+         break;
+      case 'value_email_billing_destination' :
+         $config = PluginManageentitiesConfig::getInstance();
+         switch ($_POST["hourorday"]) {
+
+            case PluginManageentitiesConfig::POINTS :
+              echo Html::input('email_billing_destination',['value' => $config->fields['email_billing_destination']]);
+//               echo "<input type='hidden' name='hourbyday' value='0'>";
+
                break;
          }
          break;

@@ -37,6 +37,7 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
    const DAY                 = 0;
    const HOUR                = 1;
+   const POINTS              = 2;
    const NOPRICE             = 0;
    const PRICE               = 1;
    const REPORT_INTERVENTION = 0;
@@ -86,7 +87,70 @@ class PluginManageentitiesConfig extends CommonDBTM {
                                     ['hourorday' => '__VALUE__', 'action' => 'title_show_hourorday']);
       Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_show_hourorday", PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/linkactions.php",
                                     ['hourorday' => '__VALUE__', 'action' => 'value_show_hourorday']);
+
+      echo "<tr class='tab_bg_1 top'>";
+      echo "<td><span id='title_show_logo'></span></td>";
+      echo "<td><span id='value_show_logo'></span></td>";
+      echo "</tr>";
+
+      //js for load configuration
+      Ajax::updateItem("title_show_logo", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'title_show_logo'], "dropdown_hourorday$rand");
+      Ajax::updateItem("value_show_logo", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'value_show_logo'], "dropdown_hourorday$rand");
+      //js for change configuration
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_show_logo", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    ['hourorday' => '__VALUE__', 'action' => 'title_show_logo']);
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_show_logo", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    ['hourorday' => '__VALUE__', 'action' => 'value_show_logo']);
+
+      echo "<tr class='tab_bg_1 top'>";
+      echo "<td><span id='title_show_footer'></span></td>";
+      echo "<td><span id='value_show_footer'></span></td>";
+      echo "</tr>";
+
+      //js for load configuration
+      Ajax::updateItem("title_show_footer", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'title_show_footer'], "dropdown_hourorday$rand");
+      Ajax::updateItem("value_show_footer", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'value_show_footer'], "dropdown_hourorday$rand");
+      //js for change configuration
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_show_footer", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    ['hourorday' => '__VALUE__', 'action' => 'title_show_footer']);
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_show_footer", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    ['hourorday' => '__VALUE__', 'action' => 'value_show_footer']);echo "<tr class='tab_bg_1 top'>";
+
+      echo "<td><span id='title_category_outOfContract'></span></td>";
+      echo "<td><span id='value_category_outOfContract'></span></td>";
+      echo "</tr>";
+
+      //js for load configuration
+      Ajax::updateItem("title_category_outOfContract", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'title_category_outOfContract'], "dropdown_hourorday$rand");
+      Ajax::updateItem("value_category_outOfContract", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'value_category_outOfContract'], "dropdown_hourorday$rand");
+      //js for change configuration
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_category_outOfContract", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    ['hourorday' => '__VALUE__', 'action' => 'title_category_outOfContract']);
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_category_outOfContract", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    ['hourorday' => '__VALUE__', 'action' => 'value_category_outOfContract']);
+
+      echo "<td><span id='title_email_billing_destination'></span></td>";
+      echo "<td><span id='value_email_billing_destination'></span></td>";
+      echo "</tr>";
+
+      //js for load configuration
+      Ajax::updateItem("title_email_billing_destination", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'title_email_billing_destination'], "dropdown_hourorday$rand");
+      Ajax::updateItem("value_email_billing_destination", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                       ['hourorday' => $this->fields["hourorday"], 'action' => 'value_email_billing_destination'], "dropdown_hourorday$rand");
+      //js for change configuration
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "title_email_billing_destination", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    ['hourorday' => '__VALUE__', 'action' => 'title_email_billing_destination']);
+      Ajax::updateItemOnSelectEvent("dropdown_hourorday$rand", "value_email_billing_destination", $CFG_GLPI["root_doc"] . "/plugins/manageentities/ajax/linkactions.php",
+                                    ['hourorday' => '__VALUE__', 'action' => 'value_email_billing_destination']);
       echo "</td></tr>";
+
 
       echo "<tr class='tab_bg_1 top'><td>" . __('Only public task are visible on intervention report', 'manageentities') . "</td>";
       echo "<td>";
@@ -218,6 +282,38 @@ class PluginManageentitiesConfig extends CommonDBTM {
       } else {
          $input['business_id'] = 'NULL';
       }
+
+      foreach (['picture_logo'] as $name) {
+         if (isset($input["_blank_$name"])
+             && $input["_blank_$name"]) {
+            $input[$name] = '';
+
+            if (array_key_exists($name, $this->fields)) {
+               Toolbox::deletePicture($this->fields[$name]);
+            }
+         }
+
+         if (isset($input["_$name"])) {
+            $filename = array_shift($input["_$name"]);
+            $src      = GLPI_TMP_DIR . '/' . $filename;
+
+            $prefix   = '';
+            if (isset($input["_prefix_$name"])) {
+               $prefix = array_shift($input["_prefix_$name"]);
+            }
+
+            if ($dest = Toolbox::savePicture($src, $prefix)) {
+               $input[$name] = $dest;
+            } else {
+               Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
+            }
+
+            if (array_key_exists($name, $this->fields)) {
+               Toolbox::deletePicture($this->fields[$name]);
+            }
+         }
+      }
+
       return $input;
    }
 
@@ -256,7 +352,9 @@ class PluginManageentitiesConfig extends CommonDBTM {
 
    function getConfigType() {
       return ([self::DAY  => _x('periodicity', 'Daily'),
-               self::HOUR => __('Hourly', 'manageentities')]);
+               self::HOUR => __('Hourly', 'manageentities'),
+               self::POINTS => __('Points', 'manageentities'),
+      ]);
    }
 
    function dropdownConfigChoiceIntervention($name, $value = 0) {
@@ -278,6 +376,39 @@ class PluginManageentitiesConfig extends CommonDBTM {
       }
 
       return self::$instance;
+   }
+   function prepareInputForAdd($input) {
+      foreach (['picture_logo'] as $name) {
+         if (isset($input["_blank_$name"])
+             && $input["_blank_$name"]) {
+            $input[$name] = '';
+
+            if (array_key_exists($name, $this->fields)) {
+               Toolbox::deletePicture($this->fields[$name]);
+            }
+         }
+
+         if (isset($input["_$name"])) {
+            $filename = array_shift($input["_$name"]);
+            $src      = GLPI_TMP_DIR . '/' . $filename;
+
+            $prefix   = '';
+            if (isset($input["_prefix_$name"])) {
+               $prefix = array_shift($input["_prefix_$name"]);
+            }
+
+            if ($dest = Toolbox::savePicture($src, $prefix)) {
+               $input[$name] = $dest;
+            } else {
+               Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
+            }
+
+            if (array_key_exists($name, $this->fields)) {
+               Toolbox::deletePicture($this->fields[$name]);
+            }
+         }
+      }
+      return parent::prepareInputForAdd($input); // TODO: Change the autogenerated stub
    }
 
 }

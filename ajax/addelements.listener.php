@@ -89,6 +89,16 @@ switch ($_POST['action']) {
          $pView->showResults($addInterventionOK);
       }
       break;
+      case Action::ADD_ONLY_CONTRACTPOINTS :
+      $pModel->storeDatasInSession(ElementType::CONTRACTPOINT, $pModel->getContractDay($_POST['fakeid_new_intervention']));
+      $addInterventionOK = false;
+      if ($pView->checkFields(ElementType::CONTRACTPOINT, $pModel)) {
+         $pModel->deleteError(Errors::ERROR_CONTRACTPOINT, Errors::ERROR_ADD, $_POST['fakeid_new_intervention']);
+         $addInterventionOK = $pModel->addContractpointToBase($pView);
+
+         $pView->showResults($addInterventionOK);
+      }
+      break;
 
 
    case Action::SHOW_FORM_CRI_PRICE:

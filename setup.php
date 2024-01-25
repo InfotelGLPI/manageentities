@@ -58,7 +58,14 @@ function plugin_init_manageentities() {
 
    if (Session::getLoginUserID()) {
       Plugin::registerClass('PluginManageentitiesProfile', ['addtabon' => 'Profile']);
-      Plugin::registerClass('PluginManageentitiesContract', ['addtabon' => 'Contract']);
+      $config = PluginManageentitiesConfig::getInstance();
+      if($config->getField('hourorday') == PluginManageentitiesConfig::POINTS) {
+         Plugin::registerClass('PluginManageentitiesContractpoint', ['addtabon' => 'Contract']);
+         $PLUGIN_HOOKS['pre_item_form']['manageentities']  = [PluginManageentitiesContractpoint::class, 'messageTask'];
+      } else {
+         Plugin::registerClass('PluginManageentitiesContract', ['addtabon' => 'Contract']);
+      }
+
       Plugin::registerClass('PluginManageentitiesCriDetail', ['addtabon'       => 'Ticket',
                                                                    'planning_types' => true]);
 
@@ -107,6 +114,7 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['mydashboard']['manageentities'] = ["PluginManageentitiesDashboard"];
       }
 
+      //TODO: check
       $PLUGIN_HOOKS['post_item_form']['manageentities'] = ['PluginManageentitiesTicketTask', 'postForm'];
       // Add specific files to add to the header : javascript or css
       $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css", "style.css"];
@@ -116,6 +124,7 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['add_javascript']['manageentities'] = ['scripts/scripts-manageentities.js',
                                                               'scripts/jquery.form.js'];
       }
+      //TODO: check
       // Ticket task duplication
 //      if (Session::haveRight("task", CommonITILTask::UPDATEALL)
 //          && Session::haveRight("task", CommonITILTask::ADDALLITEM)

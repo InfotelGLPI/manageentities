@@ -541,6 +541,15 @@ class PluginManageentitiesContract extends CommonDBTM {
             case self::CONTRACT_TYPE_UNLIMITED :
                return __('Unlimited');
          }
+      } else   if ($config->fields['hourorday'] == PluginManageentitiesConfig::POINTS){
+         switch ($value) {
+            case PluginManageentitiesContractpoint::CONTRACT_POINTS:
+               return _n('Hour', 'Hours', 2);
+            case PluginManageentitiesContractpoint::CONTRACT_UNLIMITED :
+               return _n('Intervention', 'Interventions', 2, 'manageentities');
+            case self::CONTRACT_TYPE_UNLIMITED :
+               return __('Unlimited');
+         }
       } else {
          return _n('Day', 'Days', 2);
       }
