@@ -218,6 +218,11 @@ function plugin_manageentities_install()
     //version 4.0.0
     $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.0.sql");
 
+    //version 4.1.0
+    if (!$DB->fieldExists("glpi_plugin_manageentities_companies", "logo_id")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.1.0.sql");
+    }
+
     if ($update) {
         $index = [
             'FK_contracts' => ['glpi_plugin_manageentities_contracts'],
@@ -318,7 +323,7 @@ function plugin_manageentities_install()
     CronTask::Register(
         PluginManageentitiesContractpoint::class, 'AutoReport', DAY_TIMESTAMP,
         [
-            'comment' => __('Auto intervention report generation', 'manageentities'),
+            'comment' => addcslashes(__('Auto intervention report generation', 'manageentities'), "'"),
             'mode' => CronTask::MODE_EXTERNAL
         ]
     );
@@ -646,7 +651,7 @@ function plugin_manageentities_getDatabaseRelations()
             ],
             "glpi_documents" => [
                 "glpi_plugin_manageentities_cridetails" => "documents_id",
-                "glpi_plugin_manageentities_companies" => "logo_id"
+                "glpi_plugin_manageentities_companies" => "documents_id"
             ],
             "glpi_documentcategories" => ["glpi_plugin_manageentities_configs" => "documentcategories_id"],
             "glpi_tickets" => [

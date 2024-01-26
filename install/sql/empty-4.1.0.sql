@@ -206,10 +206,10 @@ CREATE TABLE `glpi_plugin_manageentities_companies` (
                                                         `address` text collate utf8mb4_unicode_ci COMMENT 'address of the company shown on CRI',
                                                         `entity_id` text default NULL,
                                                         `recursive` int unsigned default 0,
-                                                        `logo_id` int unsigned default 0 COMMENT 'RELATION to glpi_documents',
+                                                        `documents_id` int unsigned default 0 COMMENT 'RELATION to glpi_documents',
                                                         `comment` text collate utf8mb4_unicode_ci,
                                                         PRIMARY KEY  (`id`),
-                                                        KEY `logo_id` (`logo_id`)
+                                                        KEY `documents_id` (`documents_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_entitylogos`;
@@ -223,9 +223,9 @@ CREATE TABLE `glpi_plugin_manageentities_entitylogos` (
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_contractpoints`;
 CREATE TABLE `glpi_plugin_manageentities_contractpoints`
 (
-    `id`                 int(11) NOT NULL auto_increment,
-    `contracts_id`       int(11) NOT NULL default '0' COMMENT ' RELATION to glpi_contracts (id)',
-    `entities_id`        int(11) NOT NULL default '0',
+    `id`                 int(11) unsigned NOT NULL auto_increment,
+    `contracts_id`       int(11) unsigned NOT NULL default '0' COMMENT ' RELATION to glpi_contracts (id)',
+    `entities_id`        int(11) unsigned NOT NULL default '0',
     `renewal_number`     int(11) NOT NULL default '0',
     `initial_credit`     int(11) NOT NULL default '0',
     `current_credit`     int(11) NOT NULL default '0',
@@ -247,9 +247,9 @@ CREATE TABLE `glpi_plugin_manageentities_contractpoints`
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_mappingcategoryslices`;
 CREATE TABLE `glpi_plugin_manageentities_mappingcategoryslices`
 (
-    `id`                                      int(11) NOT NULL auto_increment,
-    `taskcategories_id`                       int(11) NOT NULL default '0' COMMENT ' RELATION to glpi_taskcategories (id)',
-    `plugin_manageentities_contractpoints_id` int(11) NOT NULL default '0' COMMENT ' RELATION to glpi_plugin_manageentities_contractpoints (id)',
+    `id`                                      int(11) unsigned NOT NULL auto_increment,
+    `taskcategories_id`                       int(11) unsigned NOT NULL default '0' COMMENT ' RELATION to glpi_taskcategories (id)',
+    `plugin_manageentities_contractpoints_id` int(11) unsigned NOT NULL default '0' COMMENT ' RELATION to glpi_plugin_manageentities_contractpoints (id)',
     `minutes_slice`                           int(11) NOT NULL default '0',
     `points_slice`                            int(11) NOT NULL default '0',
 

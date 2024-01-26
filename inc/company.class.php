@@ -121,16 +121,16 @@ class PluginManageentitiesCompany extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Logo (format JPG or JPEG)', 'manageentities') . "</td>";
-      if ($this->fields["logo_id"] != 0) {
+      if ($this->fields["documents_id"] != 0) {
          echo "<td>";
          echo "<div  id='picture'>";
-         echo "<img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $this->fields["logo_id"] . "'>";
+         echo "<img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $this->fields["documents_id"] . "'>";
          echo "</div></td>";
       }
       echo "<td>";
       echo Html::file(['multiple' => false, 'onlyimages' => true]);
       echo "</td>";
-      if ($this->fields["logo_id"] == 0) {
+      if ($this->fields["documents_id"] == 0) {
          echo "<td></td>";
       }
       echo "<td></td></tr>";
@@ -210,9 +210,9 @@ class PluginManageentitiesCompany extends CommonDBTM {
          if (!in_array($extension, ['jpg', 'jpeg'])) {
             Session::addMessageAfterRedirect(__('The format of the image must be in JPG or JPEG', 'manageentities'), false, ERROR);
             unset($input);
-         } elseif ($company['logo_id'] != 0) {
+         } elseif ($company['documents_id'] != 0) {
             $doc = new Document();
-            $img = $doc->find(['id' => $company["logo_id"]]);
+            $img = $doc->find(['id' => $company["documents_id"]]);
             $img = reset($img);
             $doc->delete($img, 1);
          }
@@ -236,17 +236,17 @@ class PluginManageentitiesCompany extends CommonDBTM {
    function post_addItem($history = 1) {
       $img = $this->addFiles($this->input);
       foreach ($img as $key => $name) {
-         $this->fields['logo_id'] = $key;
-         $this->updateInDB(['logo_id']);
+         $this->fields['documents_id'] = $key;
+         $this->updateInDB(['documents_id']);
       }
    }
 
    function post_updateItem($history = 1) {
-      if ($this->fields['logo_id'] == 0) {
+      if ($this->fields['documents_id'] == 0) {
          $img = $this->addFiles($this->input);
          foreach ($img as $key => $name) {
-            $this->fields['logo_id'] = $key;
-            $this->updateInDB(['logo_id']);
+            $this->fields['documents_id'] = $key;
+            $this->updateInDB(['documents_id']);
          }
       }
    }
@@ -290,7 +290,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
             $image_coordinates = json_decode(urldecode($this->input['_coordinates'][$key]), true);
             Toolbox::resizePicture($filename, $filename, $image_coordinates['img_w'], $image_coordinates['img_h'], $image_coordinates['img_y'], $image_coordinates['img_x'], $image_coordinates['img_w'], $image_coordinates['img_h'], 0);
          } else {
-            Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 0, 0, 0);
+            Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 1, 1, 0);
          }
 
          //If file tag is present
@@ -404,7 +404,7 @@ class PluginManageentitiesCompany extends CommonDBTM {
                $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                foreach ($sons as $son) {
                   if ($son == $obj->entite[0]->fields['id']) {
-                     if ($doc->getFromDB($data["logo_id"])) {
+                     if ($doc->getFromDB($data["documents_id"])) {
                         return $doc->fields['filepath'];
                      }
                   }
@@ -413,8 +413,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
          }
 
       } else {
-         if ($company["logo_id"] != 0) {
-            $doc->getFromDB($company["logo_id"]);
+         if ($company["documents_id"] != 0) {
+            $doc->getFromDB($company["documents_id"]);
             return $doc->fields['filepath'];
          }
       }

@@ -209,7 +209,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
         echo "<div align='spaced'><table class='tab_cadre_fixe center'>";
         echo Html::hidden('contracts_id', ['value' => $contract->fields['id']]);
-        echo "<tr><th colspan='4'>" . PluginManageentitiesContract::getTypeName(0) . "</th></tr>";
+        echo "<tr><th colspan='4' class='ps-5'>" . PluginManageentitiesContract::getTypeName(0) . "</th></tr>";
         echo "<tr>";
         echo "<td colspan='1'>" . __('Contract mode', 'manageentities') . "</td>";
         echo "<td colspan='1'>";
@@ -325,7 +325,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         echo "<form method='post' name='report_form' id='report_form' style='margin: 1rem 0px'
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesContractpoint') . "'>";
         echo "<table class='tab_cadre_fixe center'><tbody>";
-        echo "<tr><th colspan='4'>" . __('Rebill a month', 'manageentities') . "</th></tr>";
+        echo "<tr><th colspan='4' class='ps-5'>" . __('Rebill a month', 'manageentities') . "</th></tr>";
         $months = Toolbox::getMonthsOfYearArray();
         echo "<tr><td>";
         echo "<div><label for='month' style='margin-right: 4px'>" . __('Month', 'manageentities') . "</label>";
@@ -349,11 +349,14 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             ) . "</label>";
         echo "<input type='checkbox' name='billing' checked='checked'/></td>";
 
-        echo "<td>";
+        echo "<td class='d-flex flex-row-reverse'>";
         echo Html::hidden('id', ['value' => $contract->getID()]);
         echo Html::submit(
             "<i class='fas fa-envelope'></i>&nbsp;" . __('Send bill', 'manageentities'),
-            ['name' => 'generate_bill']
+            [
+                'class' => "btn btn-primary me-2",
+                'name' => 'generate_bill'
+            ]
         );
         echo "</td></tr>";
         echo "</tbody></table>";
@@ -1070,11 +1073,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      */
     private static function pdfSetup()
     {
-        $pdf = new GLPIPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-        $pdf->SetCreator('GLPI');
-        $pdf->SetAuthor('GLPI');
-        $pdf->SetTitle("");
-        $pdf->SetHeaderData('', '', "", '');
+        $pdf = new GLPIPDF();
 
         // font
         $font = 'helvetica';
@@ -1092,7 +1091,6 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $pdf->SetFooterMargin(10);
 
         $pdf->SetAutoPageBreak(true, 15);
-        $pdf->AddPage();
 
         return $pdf;
     }
