@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-04 17:59+0200\n"
+"POT-Creation-Date: 2024-01-25 09:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -136,11 +136,11 @@ msgstr ""
 msgid "Day to generate intervention report"
 msgstr ""
 
-#: ajax/linkactions.php:62 inc/contractpoint.class.php:258
+#: ajax/linkactions.php:62 inc/contractpoint.class.php:283
 msgid "Logo to show in report"
 msgstr ""
 
-#: ajax/linkactions.php:72 inc/contractpoint.class.php:262
+#: ajax/linkactions.php:72 inc/contractpoint.class.php:294
 msgid "Text in report footer"
 msgstr ""
 
@@ -537,7 +537,7 @@ msgid "Date of renewal"
 msgstr ""
 
 #: inc/addelementsview.class.php:1514 inc/contract.class.php:202
-#: inc/contract.class.php:316 inc/contractpoint.class.php:313
+#: inc/contract.class.php:316 inc/contractpoint.class.php:394
 #: inc/followup.class.php:612 inc/followup.class.php:707
 #: inc/monthly.class.php:403
 msgid "Mode of management"
@@ -548,8 +548,8 @@ msgstr ""
 #: inc/contract.class.php:319 inc/contractbilling.class.php:139
 #: inc/contractbilling.class.php:342 inc/contractbilling.class.php:805
 #: inc/contractday.class.php:139 inc/contractday.class.php:342
-#: inc/contractday.class.php:805 inc/contractpoint.class.php:314
-#: inc/contractpoint.class.php:316 inc/followup.class.php:613
+#: inc/contractday.class.php:805 inc/contractpoint.class.php:395
+#: inc/contractpoint.class.php:397 inc/followup.class.php:613
 #: inc/followup.class.php:708
 msgid "Type of service contract"
 msgstr ""
@@ -589,7 +589,7 @@ msgstr ""
 #: inc/contractbilling.class.php:92 inc/contractbilling.class.php:375
 #: inc/contractbilling.class.php:570 inc/contractday.class.php:92
 #: inc/contractday.class.php:375 inc/contractday.class.php:570
-#: inc/contractpoint.class.php:229 inc/followup.class.php:737
+#: inc/contractpoint.class.php:243 inc/followup.class.php:737
 #: inc/gantt.class.php:336 inc/monthly.class.php:407
 msgid "Initial credit"
 msgstr ""
@@ -612,19 +612,19 @@ msgstr ""
 msgid "Add another intervention"
 msgstr ""
 
-#: inc/addelementsview.class.php:2183 inc/contractpoint.class.php:200
+#: inc/addelementsview.class.php:2183 inc/contractpoint.class.php:214
 msgid "Contract mode"
 msgstr ""
 
-#: inc/addelementsview.class.php:2213 inc/contractpoint.class.php:221
+#: inc/addelementsview.class.php:2213 inc/contractpoint.class.php:235
 msgid "Contact mail"
 msgstr ""
 
-#: inc/addelementsview.class.php:2220 inc/contractpoint.class.php:251
+#: inc/addelementsview.class.php:2220 inc/contractpoint.class.php:270
 msgid "Number of minutes in a slice by default"
 msgstr ""
 
-#: inc/addelementsview.class.php:2222 inc/contractpoint.class.php:253
+#: inc/addelementsview.class.php:2222 inc/contractpoint.class.php:275
 msgid "Number of points per slice by default"
 msgstr ""
 
@@ -811,7 +811,8 @@ msgstr ""
 msgid "Hourly"
 msgstr ""
 
-#: inc/config.class.php:399 inc/contractpoint.class.php:509
+#: inc/config.class.php:399 inc/contractpoint.class.php:613
+#: inc/contractpoint.class.php:1173
 msgid "Points"
 msgstr ""
 
@@ -828,26 +829,26 @@ msgid "Type of management"
 msgstr ""
 
 #: inc/contract.class.php:126 inc/contract.class.php:128
-#: inc/contractpoint.class.php:128 inc/contractpoint.class.php:130
+#: inc/contractpoint.class.php:139 inc/contractpoint.class.php:141
 msgid "Contract detail"
 msgstr ""
 
 #: inc/contract.class.php:291 inc/contract.class.php:392
-#: inc/contractpoint.class.php:288 inc/contractpoint.class.php:389
+#: inc/contractpoint.class.php:369 inc/contractpoint.class.php:483
 msgid "Associated assistance contracts"
 msgstr ""
 
-#: inc/contract.class.php:321 inc/contractpoint.class.php:318
+#: inc/contract.class.php:321 inc/contractpoint.class.php:399
 msgid "Used by default"
 msgstr ""
 
 #: inc/contract.class.php:424 inc/contract.class.php:450
-#: inc/contractpoint.class.php:421 inc/contractpoint.class.php:447
+#: inc/contractpoint.class.php:523 inc/contractpoint.class.php:551
 msgid "Quarterly"
 msgstr ""
 
 #: inc/contract.class.php:425 inc/contract.class.php:452
-#: inc/contractpoint.class.php:422 inc/contractpoint.class.php:449
+#: inc/contractpoint.class.php:524 inc/contractpoint.class.php:553
 msgid "Annual"
 msgstr ""
 
@@ -922,120 +923,140 @@ msgstr ""
 msgid "The contract period %s already exists"
 msgstr ""
 
-#: inc/contractpoint.class.php:50
+#: inc/contractpoint.class.php:51
 msgid "Contract details"
 msgstr ""
 
-#: inc/contractpoint.class.php:210
+#: inc/contractpoint.class.php:224
 msgid "Cancelled contract"
 msgstr ""
 
-#: inc/contractpoint.class.php:230 inc/contractpoint.class.php:237
-#: inc/contractpoint.class.php:239 inc/contractpoint.class.php:244
+#: inc/contractpoint.class.php:245 inc/contractpoint.class.php:252
+#: inc/contractpoint.class.php:255 inc/contractpoint.class.php:261
 #: inc/cridetail.class.php:1263 inc/mappingcategoryslice.class.php:204
 msgid "points"
 msgstr ""
 
-#: inc/contractpoint.class.php:231
+#: inc/contractpoint.class.php:246
 msgid "Renewal number"
 msgstr ""
 
-#: inc/contractpoint.class.php:236 inc/cridetail.class.php:1262
+#: inc/contractpoint.class.php:251 inc/cridetail.class.php:1262
 #: inc/cridetail.class.php:1270
 msgid "Current credit"
 msgstr ""
 
-#: inc/contractpoint.class.php:238
+#: inc/contractpoint.class.php:253
 msgid "Credit consumed"
 msgstr ""
 
-#: inc/contractpoint.class.php:243
+#: inc/contractpoint.class.php:259
 msgid "Contract renewal threshold"
 msgstr ""
 
-#: inc/contractpoint.class.php:510 inc/cridetail.class.php:1271
+#: inc/contractpoint.class.php:328
+msgid "Rebill a month"
+msgstr ""
+
+#: inc/contractpoint.class.php:331
+msgid "Month"
+msgstr ""
+
+#: inc/contractpoint.class.php:337 inc/cripdf.class.php:297
+msgid "Year"
+msgstr ""
+
+#: inc/contractpoint.class.php:347
+msgid "Update contract's points"
+msgstr ""
+
+#: inc/contractpoint.class.php:356
+msgid "Send bill"
+msgstr ""
+
+#: inc/contractpoint.class.php:614 inc/cridetail.class.php:1271
 msgid "Unlimited"
 msgstr ""
 
-#: inc/contractpoint.class.php:551
+#: inc/contractpoint.class.php:659
 msgid "No contract link to this ticket"
 msgstr ""
 
-#: inc/contractpoint.class.php:558
+#: inc/contractpoint.class.php:667
 #, php-format
 msgid "The contract is cancelled and the current credit is under %s"
 msgstr ""
 
-#: inc/contractpoint.class.php:577
+#: inc/contractpoint.class.php:687
 msgid "Auto intervention report"
 msgstr ""
 
-#: inc/contractpoint.class.php:698 inc/contractpoint.class.php:993
-msgid "Statement of intervention tickets"
+#: inc/contractpoint.class.php:785
+msgid "Total time counted :"
 msgstr ""
 
-#: inc/contractpoint.class.php:706
-msgid "Point balance :"
-msgstr ""
-
-#: inc/contractpoint.class.php:714 inc/contractpoint.class.php:1004
-msgid "Client request, action and solve"
-msgstr ""
-
-#: inc/contractpoint.class.php:715 inc/contractpoint.class.php:1005
-msgid "Time"
-msgstr ""
-
-#: inc/contractpoint.class.php:746 inc/contractpoint.class.php:1034
-#, php-format
-msgid "Ticket n° %s"
-msgstr ""
-
-#: inc/contractpoint.class.php:814
-msgid "Total points counted :"
-msgstr ""
-
-#: inc/contractpoint.class.php:815
-msgid "Points remaining :"
-msgstr ""
-
-#: inc/contractpoint.class.php:816
-msgid "Number of renewal :"
-msgstr ""
-
-#: inc/contractpoint.class.php:844 inc/contractpoint.class.php:1116
+#: inc/contractpoint.class.php:814 inc/contractpoint.class.php:989
 #, php-format
 msgid "Billinf of %s"
 msgstr ""
 
-#: inc/contractpoint.class.php:855 inc/contractpoint.class.php:884
-#: inc/contractpoint.class.php:1127
+#: inc/contractpoint.class.php:823 inc/contractpoint.class.php:997
+#: inc/contractpoint.class.php:1034
 #, php-format
 msgid "Please find attached billing of %s"
 msgstr ""
 
-#: inc/contractpoint.class.php:865 inc/contractpoint.class.php:894
-#: inc/contractpoint.class.php:1137
+#: inc/contractpoint.class.php:836 inc/contractpoint.class.php:1010
+#: inc/contractpoint.class.php:1047
 msgid "The email has been sent"
 msgstr ""
 
-#: inc/contractpoint.class.php:868 inc/contractpoint.class.php:1140
-#: inc/contractpoint.class.php:1141
+#: inc/contractpoint.class.php:839 inc/contractpoint.class.php:845
+#: inc/contractpoint.class.php:1013
 msgid "Error sending email with document"
 msgstr ""
 
-#: inc/contractpoint.class.php:873 inc/contractpoint.class.php:902
-#: inc/contractpoint.class.php:903 inc/contractpoint.class.php:1145
-#: inc/contractpoint.class.php:1146
+#: inc/contractpoint.class.php:851 inc/contractpoint.class.php:857
+#: inc/contractpoint.class.php:1021 inc/contractpoint.class.php:1057
+#: inc/contractpoint.class.php:1063
 msgid "Error sending email with document : No email"
 msgstr ""
 
-#: inc/contractpoint.class.php:897
+#: inc/contractpoint.class.php:957
+msgid "Total points counted :"
+msgstr ""
+
+#: inc/contractpoint.class.php:958
+msgid "Points remaining :"
+msgstr ""
+
+#: inc/contractpoint.class.php:959
+msgid "Number of renewal :"
+msgstr ""
+
+#: inc/contractpoint.class.php:1050
 msgid "Error sending email with document for renewal"
 msgstr ""
 
-#: inc/contractpoint.class.php:1087
-msgid "Total time counted :"
+#: inc/contractpoint.class.php:1145
+msgid "Statement of intervention tickets"
+msgstr ""
+
+#: inc/contractpoint.class.php:1158
+msgid "Point balance :"
+msgstr ""
+
+#: inc/contractpoint.class.php:1167
+msgid "Client request, action and solve"
+msgstr ""
+
+#: inc/contractpoint.class.php:1170
+msgid "Time"
+msgstr ""
+
+#: inc/contractpoint.class.php:1226
+#, php-format
+msgid "Ticket n° %s"
 msgstr ""
 
 #: inc/contractstate.class.php:58 inc/contractstate.class.php:86
@@ -1249,10 +1270,6 @@ msgstr[1] ""
 
 #: inc/cripdf.class.php:294
 msgid "Intervention date"
-msgstr ""
-
-#: inc/cripdf.class.php:297
-msgid "Year"
 msgstr ""
 
 #: inc/cripdf.class.php:311
