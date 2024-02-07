@@ -350,7 +350,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         echo "<input type='checkbox' name='billing' checked='checked'/></td>";
 
         echo "<td>";
-        echo Html::hidden('id', ['value' => $contract->getID()]);
+        echo Html::hidden('contracts_id', ['value' => $contract->getID()]);
         echo Html::submit(
             "<i class='fas fa-envelope'></i>&nbsp;" . __('Send bill', 'manageentities'),
             ['name' => 'generate_bill']
@@ -894,7 +894,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         // entity associated with the contract
         $entity->getFromDB($baseContract->getEntityID());
         // interventions linked to the contract
-        $criDetails = $criDetail->find(['contracts_id' => $contract->getEntityID()]);
+        $criDetails = $criDetail->find(['contracts_id' => $baseContract->getID()]);
 
         $pdf = self::pdfSetup();
 
