@@ -42,21 +42,24 @@ function plugin_manageentities_install()
     if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty-4.1.0.sql");
 
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __(
-                'Urgent intervention',
-                'manageentities'
-            ) . "');";
-        $DB->query($query);
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __(
-                'Scheduled intervention',
-                'manageentities'
-            ) . "');";
-        $DB->query($query);
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __(
-                'Study and advice',
-                'manageentities'
-            ) . "');";
-        $DB->query($query);
+        $DB->insert(
+            'glpi_plugin_manageentities_critypes', [
+                'id' => 1,
+                'name' => __('Urgent intervention', 'manageentities')
+            ]
+        );
+        $DB->insert(
+            'glpi_plugin_manageentities_critypes', [
+                'id' => 2,
+                'name' => __('Scheduled intervention', 'manageentities')
+            ]
+        );
+        $DB->insert(
+            'glpi_plugin_manageentities_critypes', [
+                'id' => 3,
+                'name' => __('Study and advice', 'manageentities')
+            ]
+        );
     } else {
         if ($DB->tableExists("glpi_plugin_manageentity_profiles") && !$DB->tableExists(
                 "glpi_plugin_manageentity_preference"
@@ -70,21 +73,24 @@ function plugin_manageentities_install()
             $update190 = true;
             $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
-            $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __(
-                    'Urgent intervention',
-                    'manageentities'
-                ) . "');";
-            $DB->query($query);
-            $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __(
-                    'Scheduled intervention',
-                    'manageentities'
-                ) . "');";
-            $DB->query($query);
-            $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __(
-                    'Study and advice',
-                    'manageentities'
-                ) . "');";
-            $DB->query($query);
+            $DB->insert(
+                'glpi_plugin_manageentities_critypes', [
+                    'id' => 1,
+                    'name' => __('Urgent intervention', 'manageentities')
+                ]
+            );
+            $DB->insert(
+                'glpi_plugin_manageentities_critypes', [
+                    'id' => 2,
+                    'name' => __('Scheduled intervention', 'manageentities')
+                ]
+            );
+            $DB->insert(
+                'glpi_plugin_manageentities_critypes', [
+                    'id' => 3,
+                    'name' => __('Study and advice', 'manageentities')
+                ]
+            );
         } else {
             if ($DB->tableExists("glpi_plugin_manageentity_profiles") && $DB->fieldExists(
                     "glpi_plugin_manageentity_profiles",
@@ -98,21 +104,24 @@ function plugin_manageentities_install()
                 $update190 = true;
                 $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
-                $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __(
-                        'Urgent intervention',
-                        'manageentities'
-                    ) . "');";
-                $DB->query($query);
-                $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __(
-                        'Scheduled intervention',
-                        'manageentities'
-                    ) . "');";
-                $DB->query($query);
-                $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __(
-                        'Study and advice',
-                        'manageentities'
-                    ) . "');";
-                $DB->query($query);
+                $DB->insert(
+                    'glpi_plugin_manageentities_critypes', [
+                        'id' => 1,
+                        'name' => __('Urgent intervention', 'manageentities')
+                    ]
+                );
+                $DB->insert(
+                    'glpi_plugin_manageentities_critypes', [
+                        'id' => 2,
+                        'name' => __('Scheduled intervention', 'manageentities')
+                    ]
+                );
+                $DB->insert(
+                    'glpi_plugin_manageentities_critypes', [
+                        'id' => 3,
+                        'name' => __('Study and advice', 'manageentities')
+                    ]
+                );
             } else {
                 if ($DB->tableExists("glpi_plugin_manageentity_config") && !$DB->fieldExists(
                         "glpi_plugin_manageentity_config",
@@ -210,6 +219,7 @@ function plugin_manageentities_install()
     if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "disable_date_header")) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-3.2.2.sql");
     }
+
     //version 3.2.3 && 4.1.0 (?)
     if (!$DB->tableExists("glpi_plugin_manageentities_contractpoints")) {
         $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.3.sql");
@@ -238,48 +248,53 @@ function plugin_manageentities_install()
             foreach ($newnames as $table) {
                 if ($dbu->isIndex($table, $oldname)) {
                     $query = "ALTER TABLE `$table` DROP INDEX `$oldname`;";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 }
             }
         }
 
-        $query_ = "SELECT *
-            FROM `glpi_plugin_manageentities_profiles` ";
-        $result_ = $DB->query($query_);
-        if ($DB->numrows($result_) > 0) {
-            while ($data = $DB->fetchArray($result_)) {
-                $query = "UPDATE `glpi_plugin_manageentities_profiles`
-                  SET `profiles_id` = '" . $data["id"] . "'
-                  WHERE `id` = '" . $data["id"] . "';";
-                $DB->query($query);
-            }
+
+        $request = $DB->request('glpi_plugin_manageentities_profiles');
+        foreach ($request as $data) {
+            $DB->update(
+                'glpi_plugin_manageentities_profiles',
+                ['profiles_id' => $data['$id']],
+                ['id' => $data['id']]
+            );
         }
 
         $query = "ALTER TABLE `glpi_plugin_manageentities_profiles`
                DROP `name` ;";
-        $DB->query($query);
+        $DB->doQuery($query);
     }
 
     if ($update190) {
         $config = PluginManageentitiesConfig::getInstance();
         if ($config->fields["backup"] == 1) {
             $criDetail = new PluginManageentitiesCriDetail();
+            $request = $DB->request([
+                'SELECT' => [
+                    'glpi_documents.id AS doc_id',
+                    'glpi_documents.tickets_id AS doc_tickets_id',
+                    'glpi_plugin_manageentities_cridetails.id AS cri_id',
+                    'glpi_plugin_manageentities_cridetails.tickets_id AS cri_tickets_id'
+                ],
+                'FROM' => 'glpi_documents',
+                'LEFT JOIN' => [
+                    'glpi_plugin_manageentities_cridetails' => [
+                        'FKEY' => [
+                            'glpi_documents' => 'id',
+                            'glpi_plugin_manageentities_cridetails' => 'documents_id'
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    'glpi_documents.documentcategories_id' => $config->fields["documentcategories_id"]
+                ]
+            ]);
 
-            $query = "SELECT `glpi_documents`.`id` AS doc_id,
-                          `glpi_documents`.`tickets_id` AS doc_tickets_id,
-                          `glpi_plugin_manageentities_cridetails`.`id` AS cri_id,
-                          `glpi_plugin_manageentities_cridetails`.`tickets_id` AS cri_tickets_id
-              FROM `glpi_documents`
-              LEFT JOIN `glpi_plugin_manageentities_cridetails`
-                  ON (`glpi_documents`.`id` = `glpi_plugin_manageentities_cridetails`.`documents_id`)
-              WHERE `glpi_documents`.`documentcategories_id` = '" .
-                $config->fields["documentcategories_id"] . "' ";
-
-            $result = $DB->query($query);
-            $number = $DB->numrows($result);
-
-            if ($number != "0") {
-                while ($data = $DB->fetchArray($result)) {
+            if (count($request)) {
+                foreach ($request as $data) {
                     if ($data['cri_tickets_id'] == '0') {
                         $criDetail->update([
                             'id' => $data['cri_id'],
@@ -296,7 +311,7 @@ function plugin_manageentities_install()
         update211to212();
     }
 
-    //version 2.1.5
+//version 2.1.5
     if (!$DB->fieldExists("glpi_plugin_manageentities_contractdays", "contract_type")) {
         include(PLUGIN_MANAGEENTITIES_DIR . "/install/update_214_215.php");
         update214to215();
@@ -310,7 +325,7 @@ function plugin_manageentities_install()
 
     PluginManageentitiesProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
     PluginManageentitiesProfile::initProfile();
-    $DB->query("DROP TABLE IF EXISTS `glpi_plugin_manageentities_profiles`;");
+    $DB->dropTable('glpi_plugin_manageentities_profiles', true);
 
     $pref_ID = PluginManageentitiesPreference::checkIfPreferenceExists(Session::getLoginUserID());
     if ($pref_ID) {
@@ -323,7 +338,7 @@ function plugin_manageentities_install()
     CronTask::Register(
         PluginManageentitiesContractpoint::class, 'AutoReport', DAY_TIMESTAMP,
         [
-            'comment' => addcslashes(__('Auto intervention report generation', 'manageentities'), "'"),
+            'comment' => Toolbox::addslashes_deep(__('Auto intervention report generation', 'manageentities'), "'"),
             'mode' => CronTask::MODE_EXTERNAL
         ]
     );
@@ -356,7 +371,7 @@ function plugin_manageentities_uninstall()
     ];
 
     foreach ($tables as $table) {
-        $DB->query("DROP TABLE IF EXISTS `$table`;");
+        $DB->dropTable($table, true);
     }
 
     //old versions
@@ -375,7 +390,7 @@ function plugin_manageentities_uninstall()
     ];
 
     foreach ($tables as $table) {
-        $DB->query("DROP TABLE IF EXISTS `$table`;");
+        $DB->dropTable($table, true);
     }
 
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
@@ -427,19 +442,18 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num)
         case 'PluginManageentitiesCriType':
             switch ($table . '.' . $field) {
                 case "glpi_plugin_manageentities_criprices.price" :
-                    //               $manageentitiesCritypes = new PluginManageentitiesCriType();
-                    //               $manageentitiesCritypes->getFromDBByCrit(["id = $table.plugin_manageentities_critypes_id
-                    //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
-
-                    $query = "SELECT * 
-                       FROM $table 
-                       WHERE  id = $table.plugin_manageentities_critypes_id 
-                       AND entities_id IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')";
-
-                    $result = $DB->query($query);
-                    if ($DB->numrows($result)) {
-                        while ($datas = $DB->fetchAssoc($result)) {
-                            $data["ITEM_4"] = $datas['price'];
+                    $result = $DB->request([
+                        'FROM' => $table,
+                        'WHERE' => [
+                            'id' => $table . '.plugin_manageentities_critypes_id',
+                            'AND' => [
+                                'entities_id' => $_SESSION["glpiactiveentities"]
+                            ]
+                        ]
+                    ]);
+                    if ($result->count()) {
+                        foreach ($result as $line) {
+                            $data["ITEM_4"] = $line['price'];
                         }
                     } else {
                         $data["ITEM_4"] = 0;
@@ -480,6 +494,9 @@ function plugin_pre_item_purge_manageentities($item)
 
             $temp = new PluginManageentitiesCriDetail();
             $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
+
+            $temp = new PluginManageentitiesContractpoint();
+            $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
             break;
         case 'Ticket' :
             $temp = new PluginManageentitiesCriTechnician();
@@ -498,7 +515,6 @@ function plugin_pre_item_purge_manageentities($item)
             $temp = new PluginManageentitiesCriDetail();
             $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
 
-            // TODO: même chose pour case Entity ?
             $temp = new PluginManageentitiesContractpoint();
             $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
             break;
@@ -507,7 +523,8 @@ function plugin_pre_item_purge_manageentities($item)
             $temp->deleteByCriteria(['contacts_id' => $item->getField('id')]);
             break;
         case 'TaskCategory' :
-            // TODO: delete MappingCategorySlice ?
+            $temp = new PluginManageentitiesMappingCategorySlice();
+            $temp->deleteByCriteria(['taskcategories_id' => $item->getField('id')]);
             $temp = new PluginManageentitiesTaskCategory();
             $temp->deleteByCriteria(['taskcategories_id' => $item->getField('id')]);
             break;
@@ -537,7 +554,7 @@ function plugin_item_transfer_manageentities($parm)
                     ]);
                 }
             }
-            //TODO: ContractPoints ?
+
             $contractDay = new PluginManageentitiesContractDay();
             $condition = ["`glpi_plugin_manageentities_contractdays`.`contracts_id`" => $parm['id']];
             $allPluginContractDays = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractdays', $condition);
@@ -568,6 +585,19 @@ function plugin_item_transfer_manageentities($parm)
                     }
                     $contractDay->update([
                         'id' => $onePluginContractDays['id'],
+                        'contracts_id' => $contract->fields['id'],
+                        'entities_id' => $contract->fields['entities_id']
+                    ]);
+                }
+            }
+
+            $contractPoint = new PluginManageentitiesContractPoint();
+            $condition = ["`glpi_plugin_manageentities_contractpoints`.`contracts_id`" => $parm['id']];
+            $contractPoints = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractpoints', $condition);
+            if (!empty($contractPoints)) {
+                foreach ($contractPoints as $contractP) {
+                    $contractPoint->update([
+                        'id' => $contractP['id'],
                         'contracts_id' => $contract->fields['id'],
                         'entities_id' => $contract->fields['entities_id']
                     ]);

@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["generate_bill"]) && $_POST["month"] && isset($_POST["year"])) {
     Session::checkRight("contract", READ);
-    $found = $contract->getFromDBByCrit(['contracts_id' => $_POST['id']]);
+    $found = $contract->getFromDBByCrit(['contracts_id' => $_POST['contracts_id']]);
     if ($found) {
         PluginManageentitiesContractpoint::generateReport(
             $contract,

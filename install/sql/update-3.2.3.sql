@@ -1,8 +1,8 @@
 CREATE TABLE `glpi_plugin_manageentities_contractpoints`
 (
-    `id`                 int(11) NOT NULL auto_increment,
-    `contracts_id`       int(11) NOT NULL default '0' COMMENT ' RELATION to glpi_contracts (id)',
-    `entities_id`        int(11) NOT NULL default '0',
+    `id`                 int unsigned NOT NULL auto_increment,
+    `contracts_id`       int unsigned NOT NULL default '0' COMMENT ' RELATION to glpi_contracts (id)',
+    `entities_id`        int unsigned NOT NULL default '0',
     `renewal_number`     int(11) NOT NULL default '0',
     `initial_credit`     int(11) NOT NULL default '0',
     `current_credit`     int(11) NOT NULL default '0',
@@ -23,9 +23,9 @@ CREATE TABLE `glpi_plugin_manageentities_contractpoints`
 
 CREATE TABLE `glpi_plugin_manageentities_mappingcategoryslices`
 (
-    `id`                                      int(11) NOT NULL auto_increment,
-    `taskcategories_id`                       int(11) NOT NULL default '0' COMMENT ' RELATION to glpi_taskcategories (id)',
-    `plugin_manageentities_contractpoints_id` int(11) NOT NULL default '0' COMMENT ' RELATION to glpi_plugin_manageentities_contractpoints (id)',
+    `id`                                      int unsigned NOT NULL auto_increment,
+    `taskcategories_id`                       int unsigned NOT NULL default '0' COMMENT ' RELATION to glpi_taskcategories (id)',
+    `plugin_manageentities_contractpoints_id` int unsigned NOT NULL default '0' COMMENT ' RELATION to glpi_plugin_manageentities_contractpoints (id)',
     `minutes_slice`                           int(11) NOT NULL default '0',
     `points_slice`                            int(11) NOT NULL default '0',
 
