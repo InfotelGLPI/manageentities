@@ -335,11 +335,14 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         echo "<td>
                 <div>
                     <label for='year' style='margin-right: 4px'>" . __('Year', 'manageentities') . "</label>";
-        Dropdown::showNumber('year', [
-            'max' => date('Y'),
-            'min' => date('Y', strtotime($contract->fields['begin_date'])),
-            'value' => date('Y')
-        ]);
+        $yearOptions = [
+                'max' => date('Y'),
+                'value' => date('Y')
+        ];
+        if ($contract->fields['begin_date']) {
+            $yearOptions['min'] = date('Y', strtotime($contract->fields['begin_date']));
+        }
+        Dropdown::showNumber('year', $yearOptions);
         echo "</div>
             </td>";
 
@@ -1222,7 +1225,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             $html .= sprintf(__('Ticket n° %s', 'manageentities'), "<br> " . $ticket->getID());
             $html .= "</td>";
             $html .= "<td colspan=\"$colspan\" style=\"border: 1px solid black;\">";
-            $html .= nl2br(Html::clean($ticket->fields['content']));
+            $html .= nl2br(Glpi\RichText\RichText::getTextFromHtml($ticket->fields['content']));
             $html .= "</td>";
             $html .= "</tr>";
         }
@@ -1271,7 +1274,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             $html .= "</td>";
 
             $html .= "<td colspan=\"4\" style=\"border: 1px solid black;\">";
-            $html .= nl2br(Html::clean($t['content']));
+            $html .= nl2br(Glpi\RichText\RichText::getTextFromHtml($t['content']));
             $html .= "</td>";
 
             $html .= "<td  style=\"border: 1px solid black;\">";
@@ -1296,7 +1299,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         if ($solution->getID() != 0 && $solution->getID() != -1 && $solution->getID() != '') {
             $html .= "<tr>";
             $html .= "<td colspan=\"$colspan\" style=\"border: 1px solid black;\">";
-            $html .= nl2br(Html::clean($solution->fields['content']));
+            $html .= nl2br(Glpi\RichText\RichText::getTextFromHtml($solution->fields['content']));
             $html .= "</td>";
             $html .= "</tr>";
         }

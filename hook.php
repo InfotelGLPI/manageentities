@@ -220,7 +220,7 @@ function plugin_manageentities_install()
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-3.2.2.sql");
     }
 
-    //version 3.2.3 && 4.1.0 (?)
+    //version 3.2.3 && 4.1.0
     if (!$DB->tableExists("glpi_plugin_manageentities_contractpoints")) {
         $DB->runFile(GLPI_ROOT . "/plugins/manageentities/install/sql/update-3.2.3.sql");
     }
@@ -229,7 +229,7 @@ function plugin_manageentities_install()
     $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.0.sql");
 
     //version 4.1.0
-    if (!$DB->fieldExists("glpi_plugin_manageentities_companies", "logo_id")) {
+    if ($DB->fieldExists("glpi_plugin_manageentities_companies", "logo_id")) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.1.0.sql");
     }
 
