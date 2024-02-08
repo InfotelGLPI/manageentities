@@ -330,7 +330,7 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
         WHERE `entities_id` = " . $this->entite[0]->fields["id"] . "
         AND `is_default` = 1";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       while ($data = $DB->fetchArray($result)) {
          $contact = new Contact();
          $contact->getFromDB($data["contacts_id"]);

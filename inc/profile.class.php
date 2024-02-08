@@ -165,10 +165,10 @@ class PluginManageentitiesProfile extends Profile
                     $query = "UPDATE `glpi_profilerights` 
                          SET `rights`='" . self::translateARight($profile_data[$old]) . "' 
                          WHERE `name`='$new' AND `profiles_id`='" . $profile_data['profiles_id'] . "'";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 } else {
                     $query = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`, `rights`) VALUES ('" . $profile_data['profiles_id'] . "', '$new', '" . self::translateARight($profile_data[$old]) . "');";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 }
             }
         }

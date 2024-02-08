@@ -84,7 +84,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          $query  = "SELECT COUNT(*) AS cpt
                   FROM `glpi_tickettasks` $join
                   WHERE `glpi_tickettasks`.`tickets_id` = '" . $item->getField('id') . "' $and";
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
          while ($data = $DB->fetchArray($result)) {
             $cpt = $data["cpt"];
          }
@@ -174,7 +174,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       $query .= " GROUP BY `glpi_documents`.`tickets_id` ";
       $query .= "ORDER BY `" . $this->getTable() . "`.`date` ASC";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
 
       if (Session::isMultiEntitiesMode()) {
@@ -393,7 +393,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             $query .= " AND `glpi_documents`.`tickets_id` = '" . $instID . "' ";
          $query .= " ORDER BY `glpi_plugin_manageentities_cridetails`.`date` DESC LIMIT 10";
 
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
          $number = $DB->numrows($result);
 
          if ($number != 0) {
@@ -485,7 +485,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
           FROM `glpi_contracts`
           WHERE `entities_id` IN (" . $entity . ") ";
 
-      $result_contracts = $DB->query($query_contracts);
+      $result_contracts = $DB->doQuery($query_contracts);
 
       while ($data_contract = $DB->fetchArray($result_contracts)) {
          $query = "SELECT `glpi_plugin_manageentities_contractdays`.*
@@ -496,7 +496,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
           AND `glpi_plugin_manageentities_contractstates`.`is_closed` != 1
           ORDER BY `glpi_plugin_manageentities_contractdays`.`begin_date` DESC";
 
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
          $number = $DB->numrows($result);
 
          if ($number != 0) {
@@ -668,7 +668,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       }
 
 
-      $resultCriDetail = $DB->query($queryCriDetail);
+      $resultCriDetail = $DB->doQuery($queryCriDetail);
       $numberCriDetail = $DB->numrows($resultCriDetail);
 
       $restrict        = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contractDayValues["entities_id"],
@@ -744,7 +744,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
             $queryTask .= " ORDER BY `glpi_tickettasks`.`begin`";
 
-            $resultTask     = $DB->query($queryTask);
+            $resultTask     = $DB->doQuery($queryTask);
             $numberTask     = $DB->numrows($resultTask);
             $tech           = '';
             $conso          = 0;
@@ -1034,7 +1034,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                   $config->fields["documentcategories_id"] . "'
                  AND `glpi_documents`.`tickets_id` = '" . $ticket->fields['id'] . "'";
 
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
          $number = $DB->numrows($result);
 
          if ($number != 0) {
@@ -1164,7 +1164,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                       AND `glpi_contracts`.`is_deleted` = 0 
                ORDER BY `glpi_contracts`.`name` ";
       }
-      $result              = $DB->query($query);
+      $result              = $DB->doQuery($query);
       $number              = $DB->numrows($result);
       $selected            = false;
       $contractSelected    = 0;
@@ -1434,7 +1434,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       $query .= " GROUP BY `glpi_tickettasks`.`id` ";
       //$query.= " ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $i      = 0;
 
       if ($DB->numrows($result) > 0) {

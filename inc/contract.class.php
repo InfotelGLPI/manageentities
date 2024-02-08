@@ -149,7 +149,7 @@ class PluginManageentitiesContract extends CommonDBTM {
       $query  = "SELECT *
         FROM `" . $this->getTable() . "`
         WHERE `entities_id` IN (" . $entities_id . ") ";
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
 
       if ($number) {
@@ -157,13 +157,13 @@ class PluginManageentitiesContract extends CommonDBTM {
 
             $query_nodefault = "UPDATE `" . $this->getTable() . "`
             SET `is_default` = 0 WHERE `id` = " . $data["id"];
-            $DB->query($query_nodefault);
+            $DB->doQuery($query_nodefault);
          }
       }
 
       $query_default = "UPDATE `" . $this->getTable() . "`
         SET `is_default` = 1 WHERE `id` = $id";
-      $DB->query($query_default);
+      $DB->doQuery($query_default);
    }
 
    static function showForContract(Contract $contract) {
@@ -304,7 +304,7 @@ class PluginManageentitiesContract extends CommonDBTM {
         AND `glpi_contracts`.`is_deleted` = 0
         AND `" . $this->getTable() . "`.`entities_id` IN (" . $entitiesID . ")
         ORDER BY `glpi_contracts`.`begin_date`, `glpi_contracts`.`name`";
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
 
       if ($number) {
@@ -566,7 +566,7 @@ class PluginManageentitiesContract extends CommonDBTM {
                 WHERE `glpi_plugin_manageentities_contractdays`.`contracts_id` = " . $contracts_id . " 
                 AND `glpi_plugin_manageentities_contractstates`.`is_active` = 1";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       while ($data = $DB->fetchArray($result)) {
          if ($data['count'] > 0) {
             return true;

@@ -188,7 +188,7 @@ class PluginManageentitiesConfig extends CommonDBTM {
         WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
         GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
 
       $users = [];
       while ($data = $DB->fetchAssoc($result)) {

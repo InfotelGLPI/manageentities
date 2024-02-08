@@ -206,7 +206,7 @@ class PluginManageentitiesDashboard extends CommonGLPI
                                 __('Prestation', 'manageentities')];
                     $widget->setTabNames($headers);
 
-                    $result = $DB->query($query);
+                    $result = $DB->doQuery($query);
                     $nb     = $DB->numrows($result);
 
                     $datas = [];
@@ -258,7 +258,7 @@ class PluginManageentitiesDashboard extends CommonGLPI
                             __('End date')];
                 $widget->setTabNames($headers);
 
-                $result = $DB->query($query);
+                $result = $DB->doQuery($query);
                 $nb     = $DB->numrows($result);
 
                 $datas = [];
@@ -431,7 +431,7 @@ class PluginManageentitiesDashboard extends CommonGLPI
                " . $dbu->getEntitiesRestrictRequest("AND", "glpi_entities", 'id', "", true) . "
                ORDER BY `glpi_entities`.`name`";
 
-        $resEntity   = $DB->query($queryEntity);
+        $resEntity   = $DB->doQuery($queryEntity);
         $nbTotEntity = ($resEntity ? $DB->numrows($resEntity) : 0);
 
         if ($resEntity && $nbTotEntity > 0) {
@@ -499,7 +499,7 @@ class PluginManageentitiesDashboard extends CommonGLPI
                        GROUP BY `glpi_plugin_manageentities_contractdays`.`id`
                        ORDER BY `glpi_plugin_manageentities_contractdays`.`end_date` ASC";
 
-                    $requestContractDay = $DB->query($queryContractDay);
+                    $requestContractDay = $DB->doQuery($queryContractDay);
                     $nbContractDay      = ($requestContractDay ? $DB->numrows($requestContractDay) : 0);
 
                     if ($requestContractDay && $nbContractDay > 0) {
@@ -611,7 +611,7 @@ class PluginManageentitiesDashboard extends CommonGLPI
                            ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
 
 
-        $resultCriDetail = $DB->query($queryCriDetail);
+        $resultCriDetail = $DB->doQuery($queryCriDetail);
         $numberCriDetail = $DB->numrows($resultCriDetail);
 
         $restrict = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contractDayValues["entities_id"],
@@ -642,7 +642,7 @@ class PluginManageentitiesDashboard extends CommonGLPI
 
                 $queryTask .= " ORDER BY `glpi_tickettasks`.`begin`";
 
-                $resultTask = $DB->query($queryTask);
+                $resultTask = $DB->doQuery($queryTask);
                 $numberTask = $DB->numrows($resultTask);
                 $conso      = 0;
 

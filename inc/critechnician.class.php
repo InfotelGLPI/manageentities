@@ -36,7 +36,7 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
    function checkIfTechnicianExists($ID) {
       global $DB;
 
-      $result = $DB->query("SELECT `id`
+      $result = $DB->doQuery("SELECT `id`
                 FROM `" . $this->getTable() . "`
                 WHERE `tickets_id` = '" . $ID . "' ");
       if ($DB->numrows($result) > 0)
@@ -66,7 +66,7 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
                LEFT JOIN `glpi_users`
                  ON(`glpi_users`.`id`=`glpi_tickettasks`.`users_id_tech`)
                WHERE `tickets_id` = '" . $tickets_id . "'";
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       if ($DB->numrows($result)) {
          while ($data = $DB->fetchArray($result)) {
             if ($data['users_id'] != 0) {
@@ -89,7 +89,7 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
                LEFT JOIN `glpi_users`
                  ON(`glpi_users`.`id`=`glpi_plugin_manageentities_critechnicians`.`users_id`)
                WHERE `tickets_id` = '" . $tickets_id . "' ";
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       if ($DB->numrows($result)) {
          while ($data = $DB->fetchArray($result)) {
             if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {

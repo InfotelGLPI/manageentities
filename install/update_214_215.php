@@ -40,16 +40,16 @@ function update214to215() {
    $migration->executeMigration();
 
    $query  = " SELECT * FROM `glpi_plugin_manageentities_contracts`";
-   if ($result = $DB->query($query)) {
+   if ($result = $DB->doQuery($query)) {
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetchAssoc($result)) {
 
             $query_contractdays  = "SELECT * FROM `glpi_plugin_manageentities_contractdays` WHERE `contracts_id` = " . $data['contracts_id'].";";
-            if ($result_contractdays = $DB->query($query_contractdays)) {
+            if ($result_contractdays = $DB->doQuery($query_contractdays)) {
                if ($DB->numrows($result_contractdays) > 0) {
                   while ($data_contractdays = $DB->fetchAssoc($result_contractdays)) {
                      $query = "UPDATE `glpi_plugin_manageentities_contractdays` SET `contract_type` = " . $data['contract_type'].";";
-                     $DB->query($query);
+                     $DB->doQuery($query);
                   }
                }
             }

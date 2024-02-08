@@ -424,7 +424,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
 
       $query .= " ORDER BY `glpi_plugin_manageentities_critypes`.`name`";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       if ($DB->numrows($result) != 0) {
          while ($data = $DB->fetchAssoc($result)) {
             $output[$data['id']] = $data;
@@ -451,7 +451,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
       FROM `" . $this->getTable() . "`
       WHERE `plugin_manageentities_critypes_id` = '" . $plugin_manageentities_critypes_id . "'
       AND `entities_id` = '" . $entities_id . "' ";
-      if ($result = $DB->query($query)) {
+      if ($result = $DB->doQuery($query)) {
          if ($DB->numrows($result) != 1) {
             return false;
          }
@@ -508,7 +508,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
          }
 
          $query = "UPDATE `" . $this->getTable() . "` SET `is_default` = 0 WHERE `id` IN ('" . implode("','", $items_id) . "');";
-         $DB->query($query);
+         $DB->doQuery($query);
       }
 
       return $input;

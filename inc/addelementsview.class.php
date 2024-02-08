@@ -1386,7 +1386,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView {
 
 
       if ($query != null) {
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
          $number = $DB->numrows($result);
          $i      = 0;
 

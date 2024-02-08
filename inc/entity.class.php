@@ -225,7 +225,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                      SET `date_mod` = '" . $_SESSION["glpi_plugin_manageentities_date_mod"] . "'
                      WHERE `id` ='" . $item->getField('id') . "' ";
 
-         $DB->query($query);
+         $DB->doQuery($query);
       }
 
       return true;
@@ -277,7 +277,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                 FROM `glpi_plugin_manageentities_entitylogos` 
                 WHERE `entities_id` = '" . $entity->fields["id"] . "';";
 
-         if ($result = $DB->query($query)) {
+         if ($result = $DB->doQuery($query)) {
             $number = $DB->numrows($result);
             if ($number != 0) {
                while ($ligne = $DB->fetchAssoc($result)) {
@@ -444,7 +444,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
         ORDER BY date DESC
         LIMIT 10";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $i      = 0;
       $number = $DB->numrows($result);
 
@@ -482,7 +482,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
         ORDER BY date DESC
         LIMIT 10";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $i      = 0;
       $number = $DB->numrows($result);
 

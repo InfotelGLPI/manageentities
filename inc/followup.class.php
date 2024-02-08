@@ -230,7 +230,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                " . $dbu->getEntitiesRestrictRequest("AND", "glpi_entities", 'id', "", true) . "
                ORDER BY `glpi_entities`.`name`";
 
-      $resEntity   = $DB->query($queryEntity);
+      $resEntity   = $DB->doQuery($queryEntity);
       $nbTotEntity = ($resEntity ? $DB->numrows($resEntity) : 0);
 
       if ($resEntity && $nbTotEntity > 0) {
@@ -312,7 +312,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                        GROUP BY `glpi_plugin_manageentities_contractdays`.`id`
                        ORDER BY `glpi_plugin_manageentities_contractdays`.`end_date` ASC";
 
-               $requestContractDay = $DB->query($queryContractDay);
+               $requestContractDay = $DB->doQuery($queryContractDay);
                $nbContractDay      = ($requestContractDay ? $DB->numrows($requestContractDay) : 0);
 
                if ($requestContractDay && $nbContractDay > 0) {
@@ -456,7 +456,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                                ORDER BY `glpi_plugin_manageentities_cridetails`.`date` DESC
                                LIMIT 1";
                      }
-                     $resTicket = $DB->query($queryTicket);
+                     $resTicket = $DB->doQuery($queryTicket);
                      $date      = NULL;
                      for ($j = 0; $dataTicket = $DB->fetchAssoc($resTicket); $j++) {
                         $date = Html::convDate($dataTicket['date']);
@@ -466,7 +466,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                      $queryColor = "SELECT `glpi_plugin_manageentities_contractstates`.`color`
                                FROM `glpi_plugin_manageentities_contractstates`
                                WHERE `glpi_plugin_manageentities_contractstates`.`id` = '" . $dataContractDay['contractstates_id'] . "'";
-                     $color      = $DB->result($DB->query($queryColor), 0, "color");
+                     $color      = $DB->result($DB->doQuery($queryColor), 0, "color");
 
                      $list[$num]['days'][$i]['contract_is_closed']   = $dataContractDay['is_closed'];
                      $list[$num]['days'][$i]['contractday_name']     = $name_period;
@@ -1141,7 +1141,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM {
                   WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
                   GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
 
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
          $users  = [];
          while ($data = $DB->fetchAssoc($result)) {
             $users[$data['id']] = $data['realname'] . " " . $data['firstname'];

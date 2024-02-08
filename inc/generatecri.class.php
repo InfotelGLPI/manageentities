@@ -1096,7 +1096,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                    WHERE `tickets_id` = '" . $ticket_id . "' $and";
       }
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
       if ($number) {
          while ($data = $DB->fetchArray($result)) {
@@ -1185,7 +1185,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
                      AND `glpi_contracts`.`is_deleted` = 0 
                ORDER BY `glpi_contracts`.`name` ";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
       $selected = false;
       $contractSelected = 0;

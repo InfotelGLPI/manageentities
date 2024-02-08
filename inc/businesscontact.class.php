@@ -50,7 +50,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
       $query  = "SELECT *
         FROM `" . $this->getTable() . "`
         WHERE `entities_id` = '" . $entities_id . "' ";
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
 
       if ($number) {
@@ -58,13 +58,13 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
             $query_nodefault  = "UPDATE `" . $this->getTable() . "`
             SET `is_default` = '0' WHERE `id` = '" . $data["id"] . "' ";
-            $result_nodefault = $DB->query($query_nodefault);
+            $result_nodefault = $DB->doQuery($query_nodefault);
          }
       }
 
       $query_default  = "UPDATE `" . $this->getTable() . "`
         SET `is_default` = '1' WHERE `id` ='" . $users_id . "' ";
-      $result_default = $DB->query($query_default);
+      $result_default = $DB->doQuery($query_default);
    }
 
    function showBusiness($instID) {
@@ -79,7 +79,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
         GROUP BY `" . $this->getTable() . "`.`users_id`
         ORDER BY `glpi_users`.`name`";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
       echo "<br>";
       if ($number) {

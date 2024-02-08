@@ -74,7 +74,7 @@ class PluginManageentitiesReport extends CommonDBTM {
          $query .= " GROUP BY `glpi_documents`.`tickets_id` ";
          $query .= "ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
 
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
 
          $total_depl  = 0;
          $tickets_ids = [];
@@ -188,7 +188,7 @@ class PluginManageentitiesReport extends CommonDBTM {
                          . " AND `glpi_tickets`.`is_deleted` = 0"
                          . " AND `glpi_tickettasks`.`users_id_tech` = $tech "
                          . " AND `glpi_tickettasks`.`actiontime` != 0";
-               $result = $DB->query($query);
+               $result = $DB->doQuery($query);
 
                while ($task = $DB->fetchArray($result)) {
                   $actiontime       += $task['actiontime'];

@@ -80,7 +80,7 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
 
       $query = "SELECT * FROM `glpi_plugin_manageentities_taskcategories`
                WHERE `taskcategories_id` = '" . $taskcategories_id . "' ";
-      if ($result = $DB->query($query)) {
+      if ($result = $DB->doQuery($query)) {
          if ($DB->numrows($result) != 1) {
             return false;
          }

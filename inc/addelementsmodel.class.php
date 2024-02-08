@@ -399,7 +399,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $query = $arr['query'];
 
                if ($query != null) {
-                  $result = $DB->query($query);
+                  $result = $DB->doQuery($query);
                   $number = $DB->numrows($result);
                } else {
                   $number = false;

@@ -230,7 +230,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                    WHERE `tickets_id` = '" . $ID . "' $and";
          }
 
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
          $number = $DB->numrows($result);
          if ($number) {
             while ($data = $DB->fetchArray($result)) {
@@ -419,7 +419,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                            WHERE gf.tickets_id = '" . $p['REPORT_ID'] . "' $where
                       ) t";
 
-            $result = $DB->query($query);
+            $result = $DB->doQuery($query);
             $number = $DB->numrows($result);
             if ($number) {
                while ($data = $DB->fetchArray($result)) {
@@ -545,7 +545,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                            WHERE gf.tickets_id = '" . $p['REPORT_ID'] . "' $where
                       ) t";
 
-               $result = $DB->query($query);
+               $result = $DB->doQuery($query);
                $number = $DB->numrows($result);
                if ($number) {
                   while ($data = $DB->fetchArray($result)) {
@@ -900,7 +900,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                           AND gf2.id NOT IN (SELECT DISTINCT id FROM glpi_tickettasks gtp2)
                       ) t
                   ORDER BY t.date_debut ASC";
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       return $result;
    }
 
