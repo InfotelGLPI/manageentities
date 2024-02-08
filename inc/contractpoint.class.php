@@ -1109,11 +1109,14 @@ class PluginManageentitiesContractpoint extends CommonDBTM
     private static function reportHeader($entity, $month, $year, $contract = null)
     {
         $config = new PluginManageentitiesConfig();
+        $config->getFromDB(1);
 
         $img = $config->fields['picture_logo'];
         if ($contract) {
             if (!empty($contract->fields['picture_logo'])) {
-                $img = $contract->fields['picture_logo'];
+                if ($contract->fields['picture_logo'] !== 'Array') {
+                    $img = $contract->fields['picture_logo'];
+                }
             }
         }
 
