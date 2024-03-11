@@ -322,6 +322,21 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      */
     private function showReportGeneratorForm($contract)
     {
+        global $DB;
+
+        $options = [];
+        $defaultYear = date('Y');
+        $request = $DB->request([
+            'FROM' => 'glpi_plugin_manageentities_contractpoints_bills',
+            'WHERE' => ['plugin_manageentities_contractpoints_id' => $this->getID()],
+            'ORDERBY' => 'date DESC',
+            'LIMIT' => 1
+        ]);
+        foreach ($request as $row) {
+            $options['value'] = date('n', strtotime($row['date']));
+            $defaultYear = date('Y', strtotime($row['date']));
+        }
+
         echo "<form method='post' name='report_form' id='report_form' style='margin: 1rem 0px'
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesContractpoint') . "'>";
         echo "<table class='tab_cadre_fixe center'><tbody>";
@@ -329,15 +344,15 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $months = Toolbox::getMonthsOfYearArray();
         echo "<tr><td>";
         echo "<div><label for='month' style='margin-right: 4px'>" . __('Month', 'manageentities') . "</label>";
-        Dropdown::showFromArray('month', $months);
+        Dropdown::showFromArray('month', $months, $options);
         echo "</div></td>";
 
         echo "<td>
                 <div>
                     <label for='year' style='margin-right: 4px'>" . __('Year', 'manageentities') . "</label>";
         $yearOptions = [
-                'max' => date('Y'),
-                'value' => date('Y')
+            'max' => date('Y'),
+            'value' => $defaultYear
         ];
         if ($contract->fields['begin_date']) {
             $yearOptions['min'] = date('Y', strtotime($contract->fields['begin_date']));
@@ -888,19 +903,19 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $endOfTheMonth = date('t', $date);
         $end_date = date('Y-m-d h:i:s', mktime(23, 59, 59, $month, $endOfTheMonth, $year));
 
-        // get the bast points from the last month if it get re-billed
+        // get the points from the last month if it get re-billed
         $latestBillPoints = null;
-        if ($month === $previousMonth && $year === $previousMonthYear && $billing) {
+        if ($month === $previousMonth && $year === $previousMonthYear) {
             $request = $DB->request([
                 'FROM' => 'glpi_plugin_manageentities_contractpoints_bills',
                 'WHERE' => ['plugin_manageentities_contractpoints_id' => $contract->getID()],
                 'ORDERBY' => 'date DESC',
                 'LIMIT' => 1
             ]);
-            foreach($request as $row) {
+            foreach ($request as $row) {
                 $endDate = explode(' ', $end_date);
                 // verify that it correspond to the given month
-                if ($row['date'] >=  $begin_date && $row['date'] <= $endDate[0]) {
+                if ($row['date'] >= $begin_date && $row['date'] <= $endDate[0]) {
                     $latestBillPoints = $row;
                 }
             }
@@ -924,7 +939,9 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
         $pdf = self::pdfSetup();
 
-        $html = self::reportHeader($entity, $month, $year, $contract);
+        $availablePoints = $latestBillPoints ? $latestBillPoints['pre_bill_points'] : $contract->fields['current_credit'];
+
+        $html = self::reportHeader($entity, $month, $year, $contract, $availablePoints);
 
         $footer = $config->fields['footer'];
         if (!empty($contract->fields['footer'])) {
@@ -956,10 +973,9 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $html .= self::reportEndTickets();
 
         $renewal_number = 0;
-        $remainingPoints = $latestBillPoints ? $latestBillPoints['pre_bill_points'] : $contract->fields['current_credit'];
         $rest = null;
         if ($billing) {
-            $rest = $remainingPoints - $contractPoints;
+            $rest = $availablePoints - $contractPoints;
             if ($rest <= $contract->fields['threshold'] &&
                 $contract->fields['contract_cancelled'] == 0 &&
                 $contract->fields['contract_type'] == self::CONTRACT_POINTS &&
@@ -971,7 +987,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                 }
             }
         } else {
-            $rest = $remainingPoints;
+            $rest = $availablePoints;
         }
 
         $info['id'] = $contract->fields['id'];
@@ -1024,7 +1040,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                     [
                         'plugin_manageentities_contractpoints_id' => $contract->getID(),
                         'date' => $begin_date,
-                        'pre_bill_points' => $remainingPoints,
+                        'pre_bill_points' => $availablePoints,
                         'post_bill_points' => $rest,
                         'documents_id' => $doc_id
                     ]
@@ -1152,9 +1168,10 @@ class PluginManageentitiesContractpoint extends CommonDBTM
      * @param $month mixed format n, 1-12, month of the report
      * @param $year mixed format Y, XXXX, year of the report
      * @param $contract PluginManageentitiesContractpoint|null contract to which the report is linked
+     * @param $availablePoints int|null
      * @return string HTML, contain <header> followed by a <table> and its <thead>, end with an open <tbody>
      */
-    private static function reportHeader($entity, $month, $year, $contract = null)
+    private static function reportHeader($entity, $month, $year, $contract = null, $availablePoints = null)
     {
         $config = new PluginManageentitiesConfig();
         $config->getFromDB(1);
@@ -1205,7 +1222,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         if ($contract) {
             $html .= "
             <div id=\"current_credit\" style=\" text-align: right;padding-bottom: 20px; font-weight: bold;\">"
-                . __("Point balance :", 'manageentities') . " " . $contract->fields['current_credit'] . " <br>
+            . __("Point balance :", 'manageentities') . " " . $availablePoints ?? $contract->fields['current_credit'] . " <br>
               </div>";
         }
 
