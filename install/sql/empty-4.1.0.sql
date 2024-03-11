@@ -244,6 +244,18 @@ CREATE TABLE `glpi_plugin_manageentities_contractpoints`
     KEY                  `entities_id` (`entities_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_contractpoints_bills`;
+CREATE TABLE `glpi_plugin_manageentities_contractpoints_bills`
+(
+    `id`                                      int unsigned NOT NULL auto_increment,
+    `plugin_manageentities_contractpoints_id` int unsigned NOT NULL default '0' COMMENT ' RELATION to glpi_plugin_manageentities_contractpoints (id)',
+    `documents_id` int unsigned NOT NULL default '0' COMMENT ' RELATION to glpi_documents (id)',
+    `date` datetime NOT NULL,
+    `pre_bill_points` int(11) NOT NULL,
+    `post_bill_points` int(11) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_mappingcategoryslices`;
 CREATE TABLE `glpi_plugin_manageentities_mappingcategoryslices`
 (

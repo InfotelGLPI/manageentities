@@ -726,14 +726,11 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $cron_status = 0;
         $contract = new PluginManageentitiesContractpoint();
         $entity = new Entity();
-        $contracts = $contract->find();
+        $contracts = $contract->find(['contracts_cancelled' => 0]);
         $task = new TicketTask();
         $ticket = new Ticket();
         $contractGlpi = new Contract();
         foreach ($contracts as $data) {
-            if ($data['contract_cancelled'] == 1) {
-                continue;
-            }
             if (!$contractGlpi->getFromDB($data['contracts_id'])) {
                 continue;
             }
@@ -881,6 +878,34 @@ class PluginManageentitiesContractpoint extends CommonDBTM
     public static function generateReport($contract, $month, $year, $billing)
     {
         global $CFG_GLPI;
+        global $DB;
+        $lastMonthTimeStamp = strtotime('-1 month');
+        $previousMonth = date('n', $lastMonthTimeStamp);
+        $previousMonthYear = date('Y', $lastMonthTimeStamp);
+
+        $date = mktime(0, 0, 0, $month, 1, $year);
+        $begin_date = date('Y-m-d', $date);
+        $endOfTheMonth = date('t', $date);
+        $end_date = date('Y-m-d h:i:s', mktime(23, 59, 59, $month, $endOfTheMonth, $year));
+
+        // get the bast points from the last month if it get re-billed
+        $latestBillPoints = null;
+        if ($month === $previousMonth && $year === $previousMonthYear && $billing) {
+            $request = $DB->request([
+                'FROM' => 'glpi_plugin_manageentities_contractpoints_bills',
+                'WHERE' => ['plugin_manageentities_contractpoints_id' => $contract->getID()],
+                'ORDERBY' => 'date DESC',
+                'LIMIT' => 1
+            ]);
+            foreach($request as $row) {
+                $endDate = explode(' ', $end_date);
+                // verify that it correspond to the given month
+                if ($row['date'] >=  $begin_date && $row['date'] <= $endDate[0]) {
+                    $latestBillPoints = $row;
+                }
+            }
+        }
+
         $config = PluginManageentitiesConfig::getInstance();
         $baseContract = new Contract();
         $criDetail = new PluginManageentitiesCriDetail();
@@ -889,11 +914,6 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $task = new TicketTask();
 
         $taskCategories = array();
-
-        $date = mktime(0, 0, 0, $month, 1, $year);
-        $begin_date = date('Y-m-d', $date);
-        $endOfTheMonth = date('t', $date);
-        $end_date = date('Y-m-d h:i:s', mktime(23, 59, 59, $month, $endOfTheMonth, $year));
 
         // basic contract infos
         $baseContract->getFromDB($contract->fields['contracts_id']);
@@ -936,25 +956,28 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $html .= self::reportEndTickets();
 
         $renewal_number = 0;
-        $rest = $contract->fields['current_credit'] - $contractPoints;
-        if ($rest <= $contract->fields['threshold'] &&
-            $contract->fields['contract_cancelled'] == 0 &&
-            $contract->fields['contract_type'] == self::CONTRACT_POINTS &&
-            $contract->fields['initial_credit'] > 0
-        ) {
-            while ($rest <= 0) {
-                $rest += $contract->fields['initial_credit'];
-                $renewal_number++;
+        $remainingPoints = $latestBillPoints ? $latestBillPoints['pre_bill_points'] : $contract->fields['current_credit'];
+        $rest = null;
+        if ($billing) {
+            $rest = $remainingPoints - $contractPoints;
+            if ($rest <= $contract->fields['threshold'] &&
+                $contract->fields['contract_cancelled'] == 0 &&
+                $contract->fields['contract_type'] == self::CONTRACT_POINTS &&
+                $contract->fields['initial_credit'] > 0
+            ) {
+                while ($rest <= 0) {
+                    $rest += $contract->fields['initial_credit'];
+                    $renewal_number++;
+                }
             }
+        } else {
+            $rest = $remainingPoints;
         }
+
         $info['id'] = $contract->fields['id'];
         $info['current_credit'] = $rest;
         $info['renewal_number'] = $contract->fields['renewal_number'] + $renewal_number;
         $info['credit_consumed'] = $contract->fields['credit_consumed'] + $contractPoints;
-
-        if ($billing) {
-            $contract->update($info);
-        }
 
         $html .= "
       <div id=\"current_credit\" style=\" text-align: right;padding-bottom: 20px; font-weight: bold;\">"
@@ -983,6 +1006,31 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $pdf->Output(GLPI_DOC_DIR . "/_tmp/" . $fileName, 'F');
         $document = new Document();
         $doc_id = $document->add(['_filename' => [$fileName], 'entities_id' => $entity->getID()]);
+
+        if ($billing) {
+            $contract->update($info);
+            if ($latestBillPoints) {
+                $DB->update(
+                    'glpi_plugin_manageentities_contractpoints_bills',
+                    [
+                        'post_bill_points' => $rest,
+                        'documents_id' => $doc_id
+                    ],
+                    ['id' => $latestBillPoints['id']]
+                );
+            } else {
+                $DB->insert(
+                    'glpi_plugin_manageentities_contractpoints_bills',
+                    [
+                        'plugin_manageentities_contractpoints_id' => $contract->getID(),
+                        'date' => $begin_date,
+                        'pre_bill_points' => $remainingPoints,
+                        'post_bill_points' => $rest,
+                        'documents_id' => $doc_id
+                    ]
+                );
+            }
+        }
 
         $mmail = new GLPIMailer();
         $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
