@@ -34,7 +34,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['month']) && $_POST['month'] && isset($_POST['year']) && $_POST['year']) {
+if (isset($_POST['month']) && $_POST['month'] && isset($_POST['year']) && $_POST['year'] && $_POST['id']) {
     global $DB;
     $date = mktime(0, 0, 0, $_POST['month'], 1, $_POST['year']);
     $begin_date = date('Y-m-d', $date);
@@ -43,13 +43,14 @@ if (isset($_POST['month']) && $_POST['month'] && isset($_POST['year']) && $_POST
     $rows = $DB->request([
         'FROM' => 'glpi_plugin_manageentities_contractpoints_bills',
         'WHERE' => [
+            'plugin_manageentities_contractpoints_id' => $_POST['id'],
             ['date' => ['>=', $begin_date]],
             ['date' => ['<=', $end_date]]
         ]
     ]);
     if ($rows->count()) {
         foreach($rows as $row) {
-            if (date('Y m') === date('Y m', $date)) {
+            if (date('Y m', strtotime('-1MONTH')) === date('Y m', $date)) {
                 echo '<small>'.__('Points will be automatically reset to ').' '.$row['pre_bill_points'].'</small>';
             } else {
                 echo '<small>'.__('Points before billing of this month : ').' '.$row['pre_bill_points'].'</small>';

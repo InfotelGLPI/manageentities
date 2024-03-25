@@ -378,13 +378,15 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                 $('#dropdown_month$rand').change(e => {
                     pointsIndicator.load('$url', {
                             'year' : getYear(),
-                            'month' : getMonth()
+                            'month' : getMonth(),
+                            'id' : {$this->fields['id']}
                         });
                 })
                 $('#dropdown_year$rand').change(e => {
                     pointsIndicator.load('$url', {
                             'year' : getYear(),
-                            'month' : getMonth()
+                            'month' : getMonth(),
+                            'id' : {$this->fields['id']}
                         });
                 })
                 $('#dropdown_year$rand').trigger('change');
