@@ -324,7 +324,8 @@ class PluginManageentitiesContractpoint extends CommonDBTM
     {
         global $DB;
 
-        $options = [];
+        $rand = mt_rand();
+        $options = ['rand' => $rand];
         $defaultYear = date('Y');
         $request = $DB->request([
             'FROM' => 'glpi_plugin_manageentities_contractpoints_bills',
@@ -341,6 +342,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                action='" . Toolbox::getItemTypeFormURL('PluginManageentitiesContractpoint') . "'>";
         echo "<table class='tab_cadre_fixe center'><tbody>";
         echo "<tr><th colspan='4' class='ps-5'>" . __('Rebill a month', 'manageentities') . "</th></tr>";
+        echo "<tr><td colspan='2'></td><td id='points_indicator'></td></tr>";
         $months = Toolbox::getMonthsOfYearArray();
         echo "<tr><td>";
         echo "<div><label for='month' style='margin-right: 4px'>" . __('Month', 'manageentities') . "</label>";
@@ -352,7 +354,8 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                     <label for='year' style='margin-right: 4px'>" . __('Year', 'manageentities') . "</label>";
         $yearOptions = [
             'max' => date('Y'),
-            'value' => $defaultYear
+            'value' => $defaultYear,
+            'rand' => $rand
         ];
         if ($contract->fields['begin_date']) {
             $yearOptions['min'] = date('Y', strtotime($contract->fields['begin_date']));
@@ -360,7 +363,33 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         Dropdown::showNumber('year', $yearOptions);
         echo "</div>
             </td>";
-
+        $url = Plugin::getWebDir('manageentities') . "/ajax/contractpointbill.php";
+        echo "
+            <script>
+                const monthSelect = document.getElementById('dropdown_month$rand');
+                const yearSelect = document.getElementById('dropdown_year$rand');
+                const pointsIndicator = $('#points_indicator');
+                function getYear() {
+                    return yearSelect.options[yearSelect.selectedIndex].value;
+                }
+                function getMonth() {
+                    return monthSelect.options[monthSelect.selectedIndex].value;
+                }
+                $('#dropdown_month$rand').change(e => {
+                    pointsIndicator.load('$url', {
+                            'year' : getYear(),
+                            'month' : getMonth()
+                        });
+                })
+                $('#dropdown_year$rand').change(e => {
+                    pointsIndicator.load('$url', {
+                            'year' : getYear(),
+                            'month' : getMonth()
+                        });
+                })
+                $('#dropdown_year$rand').trigger('change');
+            </script>
+         ";
         echo "<td><div><label for='billing' style='margin-right: 4px'>" . __(
                 "Update contract's points",
                 'manageentities'
