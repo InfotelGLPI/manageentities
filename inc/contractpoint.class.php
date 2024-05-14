@@ -772,15 +772,17 @@ class PluginManageentitiesContractpoint extends CommonDBTM
         $cron_status = 0;
         $contract = new PluginManageentitiesContractpoint();
         $entity = new Entity();
-        $contracts = $contract->find(['contracts_cancelled' => 0]);
+        $contracts = $contract->find();
         $task = new TicketTask();
         $ticket = new Ticket();
         $contractGlpi = new Contract();
         foreach ($contracts as $data) {
+            if ($data['contract_cancelled'] != 0) {
+                continue;
+            }
             if (!$contractGlpi->getFromDB($data['contracts_id'])) {
                 continue;
             }
-
             $obj = new PluginManageentitiesContractpoint();
             $obj->getEmpty();
             $obj->fields = $data;
@@ -1108,6 +1110,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             if ($mmail->Send()) {
                 Session::addMessageAfterRedirect(__('The email has been sent', 'manageentities'), false, INFO);
             } else {
+                Toolbox::logInFile('test-log', 'erreur envoi mai');
                 Session::addMessageAfterRedirect(
                     __('Error sending email with document', 'manageentities') . "<br/>" . $mmail->ErrorInfo,
                     false,
@@ -1115,6 +1118,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
                 );
             }
         } else {
+            Toolbox::logInFile('test-log', 'erreur envoi mai');
             Session::addMessageAfterRedirect(
                 __(
                     'Error sending email with document : No email',
