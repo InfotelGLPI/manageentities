@@ -1233,15 +1233,21 @@ class PluginManageentitiesContractpoint extends CommonDBTM
     
         </header>
         <br>
-        <div id=\"client\" style=\" text-align: right;padding-bottom: 20px\">
+        <div id=\"client\" style=\" text-align: right;\">
         " . $entity->getFriendlyName() . "<br>
          " . $entity->getField('address') . "<br>
-         " . $entity->getField('postcode') . " " . $entity->getField('town') . "<br><br>
+         " . $entity->getField('postcode') . " " . $entity->getField('town') . "<br><br>";
 
-      
-        </div>
-           <table style=\"margin:auto;  \">
-             
+        if ($contract) {
+            $html .= "
+            <span id=\"current_credit\" style=\" text-align: right;padding-bottom: 20px; font-weight: bold;\">"
+            . __("Point balance :", 'manageentities') . " " . $availablePoints ?? $contract->fields['current_credit'] . " <br>
+              </span><br><br>";
+        }
+
+        $html .= "</div>";
+
+        $html .= "<table style=\"margin:auto;  \">
                   <tr style=\" text-align: center;font-weight: bold; font-size: 12px \">
                         <td colspan=\"2\" style=\"border: 1px solid black;\">" . __(
                 "Statement of intervention tickets",
@@ -1253,13 +1259,6 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             
             </table>
             <br>";
-
-        if ($contract) {
-            $html .= "
-            <div id=\"current_credit\" style=\" text-align: right;padding-bottom: 20px; font-weight: bold;\">"
-            . __("Point balance :", 'manageentities') . " " . $availablePoints ?? $contract->fields['current_credit'] . " <br>
-              </div>";
-        }
 
         $html .= "<table style=\"margin:auto;\">
              <thead >
