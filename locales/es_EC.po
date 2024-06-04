@@ -722,7 +722,7 @@ msgstr "Forma de generación CRI"
 
 #: inc/config.class.php:149
 msgid "Use Non-accomplished tasks informations"
-msgstr "Utilizar información sobre tareas no realizadas"
+msgstr "Usar información de tareas no completadas"
 
 #: inc/config.class.php:154
 msgid "Display PDF"
