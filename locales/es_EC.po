@@ -1364,7 +1364,7 @@ msgstr "Técnico asignado"
 
 #: inc/generatecri.class.php:751
 msgid "Non-accomplished tasks informations"
-msgstr "Información sobre tareas no realizadas"
+msgstr "Información sobre tareas no completadas"
 
 #: inc/generatecri.class.php:793
 msgctxt "button"
