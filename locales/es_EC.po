@@ -102,7 +102,7 @@ msgstr "Actualice los elementos previos"
 
 #: ajax/cri.php:99 ajax/cri.php:132 ajax/cri.php:156
 msgid "Thanks to select a intervention type"
-msgstr "Gracias por seleccionar el tipo de intervención"
+msgstr "Por favor, seleccione un tipo de intervención"
 
 #: ajax/interventionskateholderactions.php:57
 msgid "Stakeholder successfully updated."
