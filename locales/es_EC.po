@@ -829,7 +829,7 @@ msgstr "Credito restante"
 #: inc/followup.class.php:744 inc/followup.class.php:916
 #: inc/gantt.class.php:345
 msgid "Total consummated"
-msgstr "Total consumado"
+msgstr "Total consumido"
 
 #: inc/contractday.class.php:435 inc/contractday.class.php:602
 #: inc/dashboard.class.php:132 inc/dashboard.class.php:342
