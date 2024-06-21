@@ -850,7 +850,7 @@ msgstr "Garantía"
 #: inc/contractday.class.php:475 inc/followup.class.php:758
 #: inc/followup.class.php:923
 msgid "Remaining total (amount)"
-msgstr "Total restante (importe)"
+msgstr "Total restante (cantidad)"
 
 #: inc/contractday.class.php:550
 msgid "Add a contract day"
