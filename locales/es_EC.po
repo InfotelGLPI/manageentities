@@ -996,7 +996,7 @@ msgstr "Tarifa por hora aplicada"
 
 #: inc/cridetail.class.php:517 inc/cridetail.class.php:909
 msgid "To compute"
-msgstr "Para calcular"
+msgstr "Recuento"
 
 #: inc/cridetail.class.php:526 inc/cridetail.class.php:1202
 #: inc/cridetail.class.php:1229 inc/generatecri.class.php:1250
