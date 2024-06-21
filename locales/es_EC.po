@@ -1030,7 +1030,7 @@ msgstr "Consumo total anual"
 
 #: inc/cridetail.class.php:957
 msgid "Estimated number of remaining days"
-msgstr "Número de días restantes estimados"
+msgstr "Número estimado de días restantes"
 
 #: inc/cridetail.class.php:962 inc/cridetail.class.php:993
 msgid "No interventions in the dates of the period"
