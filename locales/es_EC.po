@@ -562,7 +562,7 @@ msgstr "Credito Inicial"
 #: inc/monthly.class.php:274 inc/monthly.class.php:285
 #: inc/monthly.class.php:288
 msgid "Already charged"
-msgstr "Cargado"
+msgstr "Ya facturado"
 
 #: inc/addelementsview.class.php:2018
 msgid "Update this intervention"
@@ -854,7 +854,7 @@ msgstr "Total restante (importe)"
 
 #: inc/contractday.class.php:550
 msgid "Add a contract day"
-msgstr "Añadir un día de contrato"
+msgstr "Añadir un servicio"
 
 #: inc/contractday.class.php:586 inc/followup.class.php:736
 #: inc/monthly.class.php:411
