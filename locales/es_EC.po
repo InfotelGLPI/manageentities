@@ -1293,7 +1293,7 @@ msgstr "Total del crédito inicial"
 
 #: inc/followup.class.php:922
 msgid "Total Guaranteed package"
-msgstr "Paquete total garantizado"
+msgstr "Total de Garantía"
 
 #: inc/followup.class.php:1112 inc/followup.class.php:1117
 #: inc/followup.class.php:1125 inc/followup.class.php:1130
