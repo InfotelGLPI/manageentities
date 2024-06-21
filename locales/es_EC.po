@@ -536,7 +536,7 @@ msgstr "Gestión de movilización"
 
 #: inc/addelementsview.class.php:1628 inc/contract.class.php:255
 msgid "Duration of moving"
-msgstr "Duración del movimiento"
+msgstr "Tiempo de trayecto"
 
 #: inc/addelementsview.class.php:1850
 msgid "New contract created previously"
