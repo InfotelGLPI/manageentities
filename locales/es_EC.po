@@ -899,7 +899,7 @@ msgstr "Agregar un técnico"
 
 #: inc/cri.class.php:193
 msgid "Number of moving"
-msgstr "Número de movimientos"
+msgstr "Cantidad de movilización"
 
 #: inc/cri.class.php:242
 msgid "Detail of the realized works"
