@@ -1326,7 +1326,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             $html .= "<br>";
             $html .= sprintf(__('Ticket n° %s', 'manageentities'), "<br> " . $ticket->getID());
             $html .= "</td>";
-            $html .= "<td colspan=\"$colspan\" style=\"border: 1px solid black;\">";
+            $html .= "<td colspan=\"$colspan\" style=\"border: 1px solid black; text-align: left;\">";
             $html .= nl2br(Glpi\RichText\RichText::getTextFromHtml($ticket->fields['content']));
             $html .= "</td>";
             $html .= "</tr>";
@@ -1375,22 +1375,22 @@ class PluginManageentitiesContractpoint extends CommonDBTM
             $html .= Html::convDate($t['date']);
             $html .= "</td>";
 
-            $html .= "<td colspan=\"4\" style=\"border: 1px solid black;\">";
+            $html .= "<td colspan=\"4\" style=\"border: 1px solid black; text-align: left;\">";
             $html .= nl2br(Glpi\RichText\RichText::getTextFromHtml($t['content']));
             $html .= "</td>";
 
-            $html .= "<td  style=\"border: 1px solid black;\">";
+            $html .= "<td  style=\"border: 1px solid black; text-align: center;\">";
             $html .= ($t['actiontime'] / 60) . " " . _n('minute', 'minutes', 2);
             $html .= "</td>";
 
-            $html .= "<td  style=\"border: 1px solid black;\">";
+            $html .= "<td  style=\"border: 1px solid black; text-align: center;\">";
             if (array_key_exists('category', $taskCategories[$t['taskcategories_id']])) {
                 $html .= $taskCategories[$t['taskcategories_id']]['category']->fields['name'];
             }
             $html .= "</td>";
 
             if ($contract) {
-                $html .= "<td  style=\"border: 1px solid black;\">";
+                $html .= "<td  style=\"border: 1px solid black; text-align: center\">";
                 $html .= $points;
                 $html .= "</td>";
             }
@@ -1400,7 +1400,7 @@ class PluginManageentitiesContractpoint extends CommonDBTM
 
         if ($solution->getID() != 0 && $solution->getID() != -1 && $solution->getID() != '') {
             $html .= "<tr>";
-            $html .= "<td colspan=\"$colspan\" style=\"border: 1px solid black;\">";
+            $html .= "<td colspan=\"$colspan\" style=\"border: 1px solid black; text-align: left\">";
             $html .= nl2br(Glpi\RichText\RichText::getTextFromHtml($solution->fields['content']));
             $html .= "</td>";
             $html .= "</tr>";
