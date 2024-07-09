@@ -535,7 +535,8 @@ function plugin_manageentities_getDatabaseRelations() {
               "glpi_users"                                => ["glpi_plugin_manageentities_preferences"    => "users_id",
                                                               "glpi_plugin_manageentities_critechnicians" => "users_id"],
               "glpi_documents"                            => ["glpi_plugin_manageentities_cridetails" => "documents_id",
-                                                              "glpi_plugin_manageentities_companies"  => "logo_id"],
+                                                              //"glpi_plugin_manageentities_companies"  => "logo_id"
+                                                              ],
               "glpi_documentcategories"                   => ["glpi_plugin_manageentities_configs" => "documentcategories_id"],
               "glpi_tickets"                              => ["glpi_plugin_manageentities_critechnicians" => "tickets_id",
                                                               "glpi_plugin_manageentities_cridetails"     => "tickets_id"],
