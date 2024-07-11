@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-09 14:59+0000\n"
+"POT-Creation-Date: 2024-07-11 15:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Study and advice"
 msgstr ""
 
-#: hook.php:559 inc/addelementsview.class.php:2319 inc/cri.class.php:162
+#: hook.php:566 inc/addelementsview.class.php:2319 inc/cri.class.php:162
 #: inc/cridetail.class.php:198 inc/cridetail.class.php:411
 #: inc/cridetail.class.php:508 inc/cridetail.class.php:892
 #: inc/criprice.class.php:336 inc/critype.class.php:39
@@ -39,7 +39,7 @@ msgid_plural "Intervention types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:560 inc/addelementsview.class.php:1951
+#: hook.php:567 inc/addelementsview.class.php:1951
 #: inc/contractday.class.php:137 inc/contractday.class.php:403
 #: inc/contractday.class.php:594 inc/contractstate.class.php:39
 #: inc/followup.class.php:731 inc/followup.class.php:733
@@ -49,7 +49,7 @@ msgid_plural "States of contracts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:660 inc/servicecatalog.class.php:72 inc/servicecatalog.class.php:79
+#: hook.php:668 inc/servicecatalog.class.php:72 inc/servicecatalog.class.php:79
 msgid "Manage your contracts"
 msgstr ""
 
@@ -68,9 +68,12 @@ msgstr ""
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:136 front/addelements.form.php:36 front/config.form.php:42
+#: setup.php:143 front/addelements.form.php:36 front/config.form.php:42
 #: front/cridetail.form.php:46 front/cridetail.form.php:49
-#: front/cridetail.form.php:51 front/entity.php:42 front/entity.php:45
+#: front/cridetail.form.php:51 front/directhelpdesk.form.php:52
+#: front/directhelpdesk.form.php:55 front/directhelpdesk.form.php:57
+#: front/directhelpdesk.php:35 front/directhelpdesk.php:38
+#: front/directhelpdesk.php:40 front/entity.php:42 front/entity.php:45
 #: front/entity.php:47 front/generatecri.form.php:84 front/generatecri.php:35
 #: front/generatecri.php:38 front/generatecri.php:40 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
@@ -570,7 +573,7 @@ msgstr ""
 #: inc/addelementsview.class.php:2323 inc/addelementsview.class.php:2430
 #: inc/criprice.class.php:45 inc/criprice.class.php:78
 #: inc/criprice.class.php:174 inc/criprice.class.php:340
-#: inc/critype.class.php:80 inc/monthly.class.php:417
+#: inc/critype.class.php:79 inc/monthly.class.php:417
 msgid "Daily rate"
 msgstr ""
 
@@ -1184,6 +1187,22 @@ msgid "Client"
 msgid_plural "Clients"
 msgstr[0] ""
 msgstr[1] ""
+
+#: inc/directhelpdesk.class.php:41
+msgid "Not billed interventions"
+msgstr ""
+
+#: inc/directhelpdesk.class.php:61
+msgid "Add an unbilled intervention"
+msgstr ""
+
+#: inc/directhelpdesk.class.php:167
+msgid "Dashboard"
+msgstr ""
+
+#: inc/directhelpdesk.class.php:406
+msgid "is Billed"
+msgstr ""
 
 #: inc/entity.class.php:39
 msgid "Client management"
