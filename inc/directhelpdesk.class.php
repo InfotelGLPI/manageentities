@@ -170,7 +170,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
             $entities = $_SESSION["glpiactiveentities"];
             $directs = [];
             foreach ($items as $item) {
-                
+
                 if (!in_array($item["entities_id"], $entities)) {
                     continue;
                 }
@@ -403,7 +403,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
             'id'       => '11',
             'table'    => $this->getTable(),
             'field'    => 'is_billed',
-            'name'     => __('is Billed', 'manageentities'),
+            'name'     => __('Is billed', 'manageentities'),
             'datatype' => 'bool',
         ];
 
