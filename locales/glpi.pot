@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-15 10:28+0000\n"
+"POT-Creation-Date: 2024-07-09 14:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Study and advice"
 msgstr ""
 
-#: hook.php:558 inc/addelementsview.class.php:2319 inc/cri.class.php:162
+#: hook.php:559 inc/addelementsview.class.php:2319 inc/cri.class.php:162
 #: inc/cridetail.class.php:198 inc/cridetail.class.php:411
 #: inc/cridetail.class.php:508 inc/cridetail.class.php:892
 #: inc/criprice.class.php:336 inc/critype.class.php:39
@@ -39,7 +39,7 @@ msgid_plural "Intervention types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:559 inc/addelementsview.class.php:1951
+#: hook.php:560 inc/addelementsview.class.php:1951
 #: inc/contractday.class.php:137 inc/contractday.class.php:403
 #: inc/contractday.class.php:594 inc/contractstate.class.php:39
 #: inc/followup.class.php:731 inc/followup.class.php:733
@@ -49,7 +49,7 @@ msgid_plural "States of contracts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:659 inc/servicecatalog.class.php:72 inc/servicecatalog.class.php:79
+#: hook.php:660 inc/servicecatalog.class.php:72 inc/servicecatalog.class.php:79
 msgid "Manage your contracts"
 msgstr ""
 
