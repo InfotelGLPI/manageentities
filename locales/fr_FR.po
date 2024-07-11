@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 15:34+0000\n"
+"POT-Creation-Date: 2024-07-11 15:39+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2024\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -1232,7 +1232,7 @@ msgid "Dashboard"
 msgstr "Dashboard"
 
 #: inc/directhelpdesk.class.php:406
-msgid "is Billed"
+msgid "Is billed"
 msgstr "Est facturée"
 
 #: inc/entity.class.php:39
