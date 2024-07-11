@@ -70,7 +70,6 @@ class PluginManageentitiesCriType extends CommonDropdown {
          ]
       ];
 
-      //TODO : Problème de table non unique : comment ajouter un allias ?
       $tab[] = [
          'id'           => '13',
          'table'        => 'glpi_plugin_manageentities_criprices',

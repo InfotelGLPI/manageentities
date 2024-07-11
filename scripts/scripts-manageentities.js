@@ -1,5 +1,3 @@
-
-
 $(document).ready(function () {
     var options = {
         target: '#output1', // target element(s) to be updated with server response 
@@ -42,7 +40,7 @@ function showFormAddPDFContract(root_manage, textTitle, btnYes, btnNo) {
                     'class':'btn btn-primary',
                         click: function () {
                             $('#add-form-contract').submit();
-                        
+
                             $(this).dialog("close");
                             $.ajax({
                                 method: 'GET',
@@ -332,13 +330,13 @@ function manageentitiesShowMonth(formId, toupdate, monthNames, year, month) {
         if (index == 1) {
             monthClass = 'btn btn-info manageentities-button manageentities-corner-left';
         }
-        
+
         if (index == 12) {
             monthClass = 'btn btn-info manageentities-button manageentities-corner-right';
         }
         if (month == index) {
            monthClass = 'btn btn-info manageentities-button manageentities-state-active';
-        } 
+        }
         $('<a class="' + monthClass + '" href="#' + index + '_' + year + '">' + val + '</a>').click(function () {
             if (!$(this).hasClass('manageentities-state-disabled')) {
                 $(this).removeClass('manageentities-state-hover');
@@ -362,12 +360,12 @@ function manageentitiesShowMonth(formId, toupdate, monthNames, year, month) {
                             .removeClass('manageentities-state-down');
                 }
         ).appendTo(toupdate);
-        
+
     });
 }
 function searchManageentities(index, formId, year, monthNames) {
     $("input[name='year_current']").val(year);
-    
+
     var begin_date = new Date(year, index - 1, 1);
     var end_date = new Date(year, index, 0);
     $("input[name='begin_date']").val(begin_date.yyyymmdd());
@@ -428,11 +426,11 @@ function nextYearManagesEntities(formId, element, year, monthNames) {
 }
 
 
-Date.prototype.yyyymmdd = function() {         
-                                
-        var yyyy = this.getFullYear().toString();                                    
-        var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based         
-        var dd  = this.getDate().toString();             
-                            
+Date.prototype.yyyymmdd = function() {
+
+        var yyyy = this.getFullYear().toString();
+        var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+        var dd  = this.getDate().toString();
+
         return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-   };  
+   };

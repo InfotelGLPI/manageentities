@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.3');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.4');
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
    define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
@@ -71,10 +71,10 @@ function plugin_init_manageentities() {
          $PLUGIN_HOOKS['servicecatalog']['manageentities'] = ['PluginManageentitiesServicecatalog'];
       }
 
-      if (Session::haveRight("ticket", CREATE)
-          && Session::haveRight("plugin_manageentities_cri_create", CREATE)) {
-         $PLUGIN_HOOKS["menu_toadd"]['manageentities']['helpdesk']  = 'PluginManageentitiesGenerateCRI';
-      }
+       $PLUGIN_HOOKS['menu_toadd']['manageentities'] = ['helpdesk' => [
+           PluginManageentitiesGenerateCRI::class,
+           PluginManageentitiesDirecthelpdesk::class,
+       ]];
 
       if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
           && !Plugin::isPluginActive('servicecatalog')) {
@@ -114,9 +114,16 @@ function plugin_init_manageentities() {
       if (isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
          $PLUGIN_HOOKS['add_javascript']['manageentities'] = ['scripts/scripts-manageentities.js',
+             'scripts/script-directhelpdesk.js.php',
                                                               'scripts/jquery.form.js'];
       }
-      // Ticket task duplication
+
+       if (class_exists('PluginManageentitiesDirecthelpdesk')) { // only if plugin activated
+           $PLUGIN_HOOKS['plugin_datainjection_populate']['manageentities']
+               = 'plugin_datainjection_populate_manageentities';
+       }
+
+       // Ticket task duplication
 //      if (Session::haveRight("task", CommonITILTask::UPDATEALL)
 //          && Session::haveRight("task", CommonITILTask::ADDALLITEM)
 //          && strpos($_SERVER['REQUEST_URI'], "ticket.form.php") !== false
@@ -141,7 +148,7 @@ function plugin_version_manageentities() {
       'homepage'       => 'https://github.com/InfotelGLPI/manageentities',
       'requirements'   => [
          'glpi' => [
-            'min' => '10.0',
+            'min' => '10.0.11',
             'max' => '11.0',
             'dev' => false
          ]

@@ -1,0 +1,98 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set bg = "" %}
+{% if item.isDeleted() %}
+    {% set bg = "asset-deleted" %}
+{% endif %}
+
+<div class="asset {{ bg }}">
+    {% include("components/form/header.html.twig") %}
+
+    {% set rand = random() %}
+    {% set params  = params ?? [] %}
+    {% set target       = params['target'] ?? item.getFormURL() %}
+    {% set withtemplate = params['withtemplate'] ?? "" %}
+    {% set item_type = item.getType() %}
+
+    <div class="card-body d-flex">
+        <div class="col-9 flex-column">
+            <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                <div class="row flex-row align-items-start flex-grow-1">
+                    <div class="row flex-row">
+                        {% if item.isField('name') %}
+                            {{ fields.autoNameField(
+                                "name",
+                                item,
+                                (item_type == 'Contact' ? __('Surname') : __('Name')),
+                            withtemplate
+                            ) }}
+                        {% endif %}
+
+                        {% if item.isField('users_id') %}
+                            {{ fields.dropdownField(
+                                "User",
+                                "users_id",
+                                item.fields['users_id'],
+                                "User"|itemtype_name,
+                                {
+                                    'entity': item.fields['entities_id'],
+                                    'right': 'all',
+                                }
+                            ) }}
+                        {% endif %}
+
+
+                        {% if item.isField('date') %}
+                            {{ fields.dateField('date', item.fields['date'], __('Date'), {
+                            }) }}
+                        {% endif %}
+
+                        {% if item.isField('comment') %}
+                            {{ fields.textareaField(
+                                "comment",
+                                item.fields['comment'],
+                                _n('Comment', 'Comments', 2),
+                            ) }}
+                        {% endif %}
+
+
+                         {% if item.isField('is_billed') %}
+                         {{ fields.dropdownYesNo('is_billed', item.fields['is_billed'], __('is billed', 'manageentities')) }}
+                         {% endif %}
+
+                        {% if item.isField('tickets_id') %}
+                            {% set condition =  {'is_deleted': 0}%}
+                            {{ fields.dropdownField(
+                                'Ticket',
+                                'tickets_id',
+                                item.fields['tickets_id'],
+                                'Ticket'|itemtype_name,
+                                {
+                                    'entity': item.fields['entities_id'],
+                                    'condition': condition
+                                }
+                            ) }}
+                        {% endif %}
+
+
+                    </div> {# .row #}
+                </div> {# .row #}
+            </div> {# .flex-row #}
+        </div>
+        <div class="col-3 flex-column">
+            <div class="flex-row asset-pictures">
+                {% include("components/form/pictures.html.twig") with {'gallery_type': ''} %}
+            </div>
+        </div>
+    </div> {# .card-body #}
+
+    {% include("components/form/buttons.html.twig") %}
+{#    {% include("components/form/inventory_info.html.twig") %}#}
+
+
+    {% if params['formfooter'] == null %}
+        <div class="card-footer mx-n2 mb-n2 mt-4">
+            {% include("components/form/dates.html.twig") %}
+        </div>
+    {% endif %}
+</div>

@@ -40,15 +40,15 @@ function plugin_manageentities_install() {
    $update190 = false;
    if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
 
-      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty-4.0.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty-4.0.4.sql");
 
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __('Scheduled intervention', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __('Study and advice', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
 
    } else if ($DB->tableExists("glpi_plugin_manageentity_profiles") && !$DB->tableExists("glpi_plugin_manageentity_preference")) {
 
@@ -62,11 +62,11 @@ function plugin_manageentities_install() {
       $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __('Scheduled intervention', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __('Study and advice', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
 
    } else if ($DB->tableExists("glpi_plugin_manageentity_profiles") && $DB->fieldExists("glpi_plugin_manageentity_profiles", "interface")) {
 
@@ -79,11 +79,11 @@ function plugin_manageentities_install() {
       $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __('Scheduled intervention', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __('Study and advice', 'manageentities') . "');";
-      $DB->query($query);
+      $DB->doQuery($query);
 
    } else if ($DB->tableExists("glpi_plugin_manageentity_config") && !$DB->fieldExists("glpi_plugin_manageentity_config", "hourbyday")) {
 
@@ -149,18 +149,6 @@ function plugin_manageentities_install() {
       $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.1.4.sql");
    }
 
-   //version 3.2.1
-   if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "non_accomplished_tasks")) {
-      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-3.2.1.sql");
-   }
-
-   //version 3.2.2
-   if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "disable_date_header")) {
-      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-3.2.2.sql");
-   }
-
-   //version 4.0.0
-   $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.0.sql");
 
    if ($update) {
       $index = [
@@ -176,28 +164,28 @@ function plugin_manageentities_install() {
          foreach ($newnames as $table) {
             if ($dbu->isIndex($table, $oldname)) {
                $query = "ALTER TABLE `$table` DROP INDEX `$oldname`;";
-               $DB->query($query);
+               $DB->doQuery($query);
             }
          }
       }
 
       $query_  = "SELECT *
             FROM `glpi_plugin_manageentities_profiles` ";
-      $result_ = $DB->query($query_);
+      $result_ = $DB->doQuery($query_);
       if ($DB->numrows($result_) > 0) {
 
          while ($data = $DB->fetchArray($result_)) {
             $query = "UPDATE `glpi_plugin_manageentities_profiles`
                   SET `profiles_id` = '" . $data["id"] . "'
                   WHERE `id` = '" . $data["id"] . "';";
-            $DB->query($query);
+            $DB->doQuery($query);
 
          }
       }
 
       $query = "ALTER TABLE `glpi_plugin_manageentities_profiles`
                DROP `name` ;";
-      $DB->query($query);
+      $DB->doQuery($query);
    }
 
    if ($update190) {
@@ -216,7 +204,7 @@ function plugin_manageentities_install() {
               WHERE `glpi_documents`.`documentcategories_id` = '" .
                   $config->fields["documentcategories_id"] . "' ";
 
-         $result = $DB->query($query);
+         $result = $DB->doQuery($query);
          $number = $DB->numrows($result);
 
          if ($number != "0") {
@@ -241,6 +229,24 @@ function plugin_manageentities_install() {
       update214to215();
    }
 
+    //version 3.2.1
+    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "non_accomplished_tasks")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-3.2.1.sql");
+    }
+
+    //version 3.2.2
+    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "disable_date_header")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-3.2.2.sql");
+    }
+
+    //version 4.0.0
+    $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.0.sql");
+
+    //version 4.0.4
+    if (!$DB->tableExists('glpi_plugin_manageentities_directhelpdesks')) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.4.sql");
+    }
+
    $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
    if (!is_dir($rep_files_manageentities))
       mkdir($rep_files_manageentities);
@@ -248,7 +254,7 @@ function plugin_manageentities_install() {
 
    PluginManageentitiesProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
    PluginManageentitiesProfile::initProfile();
-   $DB->query("DROP TABLE IF EXISTS `glpi_plugin_manageentities_profiles`;");
+   $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_manageentities_profiles`;");
 
    $pref_ID = PluginManageentitiesPreference::checkIfPreferenceExists(Session::getLoginUserID());
    if ($pref_ID) {
@@ -278,10 +284,11 @@ function plugin_manageentities_uninstall() {
               "glpi_plugin_manageentities_businesscontacts",
               "glpi_plugin_manageentities_companies",
               "glpi_plugin_manageentities_entitylogos",
-              "glpi_plugin_manageentities_interventionskateholders"];
+              "glpi_plugin_manageentities_interventionskateholders",
+       "glpi_plugin_manageentities_directhelpdesks"];
 
    foreach ($tables as $table)
-      $DB->query("DROP TABLE IF EXISTS `$table`;");
+      $DB->doQuery("DROP TABLE IF EXISTS `$table`;");
 
    //old versions   
    $tables = ["glpi_plugin_manageentity_contracts",
@@ -297,7 +304,7 @@ function plugin_manageentities_uninstall() {
               "glpi_plugin_manageentity_cridetails"];
 
    foreach ($tables as $table)
-      $DB->query("DROP TABLE IF EXISTS `$table`;");
+      $DB->doQuery("DROP TABLE IF EXISTS `$table`;");
 
    $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
 
@@ -354,7 +361,7 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num) {
                        WHERE  id = $table.plugin_manageentities_critypes_id 
                        AND entities_id IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')";
 
-               $result = $DB->query($query);
+               $result = $DB->doQuery($query);
                if ($DB->numrows($result)) {
                   while ($datas = $DB->fetchAssoc($result)) {
                      $data["ITEM_4"] = $datas['price'];
@@ -628,6 +635,7 @@ function plugin_manageentities_postinit() {
       }
    }
 
+
    $PLUGIN_HOOKS['item_purge']['manageentities']["Document"]
       = ['PluginManageentitiesEntityLogo', 'cleanForItem'];
 }
@@ -677,4 +685,10 @@ function plugin_manageentities_redefine_menus($menu) {
    $menu['manageentities']['content']["manageentities_reports"] = $infos;
 
    return $menu;
+}
+
+function plugin_datainjection_populate_manageentities()
+{
+    global $INJECTABLE_TYPES;
+    $INJECTABLE_TYPES['PluginManageentitiesDirecthelpdeskInjection'] = 'directhelpdesks';
 }
