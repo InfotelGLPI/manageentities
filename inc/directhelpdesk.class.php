@@ -71,72 +71,85 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
         return true;
     }
 
+    /**
+     * @return string form HTML
+     */
    static function loadModal() {
 
-       echo "<form action='".self::getFormURL()."' method='post'>";
-       echo "<div class='modal' tabindex='-1' id='directhelpdesk-modal'>";
-       echo "<div class='modal-dialog'>";
-       echo "<div class='modal-content'>";
+       $form = "<form action='".self::getFormURL()."' method='post'>";
+       $form .= "<div class='modal' tabindex='-1' id='directhelpdesk-modal'>";
+       $form .= "<div class='modal-dialog'>";
+       $form .= "<div class='modal-content'>";
 
-       echo "<div class='modal-header'>";
-       echo "<h5 class='modal-title'>";
-       echo "<i class='fas fa-plus me-2'></i>";
-       echo __('Add an unbilled intervention', 'manageentities');
-       echo "</h5>";
-       echo "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='".__('Close')."'></button>";
-       echo "</div>";
+       $form .= "<div class='modal-header'>";
+       $form .= "<h5 class='modal-title'>";
+       $form .= "<i class='fas fa-plus me-2'></i>";
+       $form .= __('Add an unbilled intervention', 'manageentities');
+       $form .= "</h5>";
+       $form .= "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='".__('Close')."'></button>";
+       $form .= "</div>";
 
        $name = "";
-       echo "<div class='modal-body'>";
-       echo "<table class='tab_cadre'>";
+       $form .= "<div class='modal-body'>";
+       $form .= "<table class='tab_cadre'>";
 
-       echo "<tr class='tab_bg_1'>";
-       echo "<td>" . Entity::getTypeName() . " <span class='red'>*</span></td>";
-       echo "<td colspan='4'>";
-       $opt = ['name' => 'entities_id'];
-       Entity::dropdown($opt);
-       echo "</td>";
-       echo "</tr>";
+       $form .= "<tr class='tab_bg_1'>";
+       $form .= "<td>" . Entity::getTypeName() . " <span class='red'>*</span></td>";
+       $form .= "<td colspan='4'>";
+       $opt = [
+           'name' => 'entities_id',
+           'display' => false
+       ];
+       $form .= Entity::dropdown($opt);
+       $form .= "</td>";
+       $form .= "</tr>";
 
-       echo "<tr class='tab_bg_1'>";
-       echo "<td>" . __('Title') . " <span class='red'>*</span></td>";
-       echo "<td colspan='4'>";
-       echo Html::input('name', ['size'  => 40]);
-       echo "</td>";
-       echo "</tr>";
+       $form .= "<tr class='tab_bg_1'>";
+       $form .= "<td>" . __('Title') . " <span class='red'>*</span></td>";
+       $form .= "<td colspan='4'>";
+       $form .= Html::input('name', ['size'  => 40]);
+       $form .= "</td>";
+       $form .= "</tr>";
 
-       echo "<tr class='tab_bg_1'>";
-       echo "<td>" . __('Description') . " <span class='red'>*</span></td>";
-       echo "<td colspan='4'>";
-       Html::textarea(['name'            => 'comment',
+       $form .= "<tr class='tab_bg_1'>";
+       $form .= "<td>" . __('Description') . " <span class='red'>*</span></td>";
+       $form .= "<td colspan='4'>";
+       $form .= Html::textarea([
+           'name'            => 'comment',
            'cols'            => '40',
            'rows'            => '10',
-           'enable_ricktext' => false]);
-       echo "</td>";
-       echo "</tr>";
+           'enable_ricktext' => false,
+           'display' => false
+       ]);
+       $form .= "</td>";
+       $form .= "</tr>";
 
-       echo "<tr class='tab_bg_1'>";
-       echo "<td>";
-       echo __("Date")." <span class='red'>*</span>";
-       echo "</td>";
-       echo "<td colspan='4'>";
-       Html::showDateField("date", [
+       $form .= "<tr class='tab_bg_1'>";
+       $form .= "<td>";
+       $form .= __("Date")." <span class='red'>*</span>";
+       $form .= "</td>";
+       $form .= "<td colspan='4'>";
+       $form .= Html::showDateField("date", [
            'value'      => date("Y-m-d"),
            'maybeempty' => true,
-           'canedit'    => true]);
-       echo "</td>";
-       echo "</tr>";
+           'canedit'    => true,
+           'display' => false
+       ]);
+       $form .= "</td>";
+       $form .= "</tr>";
 
-       echo "<tr class='tab_bg_1'><td>";
-       echo "<i class='fas fa-stopwatch fa-fw me-1' title='".__('Duration')."'> </i><span class='red'>*</span></td>";
-       echo "<td>";
-       Dropdown::showTimeStamp("actiontime", [
+       $form .= "<tr class='tab_bg_1'><td>";
+       $form .= "<i class='fas fa-stopwatch fa-fw me-1' title='".__('Duration')."'> </i><span class='red'>*</span></td>";
+       $form .= "<td>";
+       $form .= Dropdown::showTimeStamp("actiontime", [
            'min' => 0,
-           'max' => 50 * HOUR_TIMESTAMP]);
-       echo "</td>";
-       echo "<td>";
-       echo "<i class='fas fa-ticket-alt fa-fw me-1' title='".__('Linked ticket')."'></i></td>";
-       echo "<td>";
+           'max' => 50 * HOUR_TIMESTAMP,
+           'display' => false
+       ]);
+       $form .= "</td>";
+       $form .= "<td>";
+       $form .= "<i class='fas fa-ticket-alt fa-fw me-1' title='".__('Linked ticket')."'></i></td>";
+       $form .= "<td>";
        //TODO only opened tickets for selected entity
        $linkparam = [
            'name'        => 'tickets_id',
@@ -145,23 +158,25 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
            'displaywith' => ['id'],
            'display'     => false
        ];
-       echo Ticket::dropdown($linkparam);
-       echo "</td></tr>";
+       $form .= Ticket::dropdown($linkparam);
+       $form .= "</td></tr>";
 
-       echo "<tr class='tab_bg_1 center'><td colspan='4'>";
-       echo Html::hidden('users_id', ['value' => Session::getLoginUserID()]);
-       echo Html::submit(_sx('button', 'Post'), ['name' => 'add', 'class' => 'btn btn-primary']);
-       echo "</td></tr>";
+       $form .= "<tr class='tab_bg_1 center'><td colspan='4'>";
+       $form .= Html::hidden('users_id', ['value' => Session::getLoginUserID()]);
+       $form .= Html::submit(_sx('button', 'Post'), ['name' => 'add', 'class' => 'btn btn-primary']);
+       $form .= "</td></tr>";
 
-       echo "</table>";
+       $form .= "</table>";
 
 
-       echo "</div>";
+       $form .= "</div>";
 
-       echo "</div>";
-       echo "</div>";
-       echo "</div>";
-       Html::closeForm();
+       $form .= "</div>";
+       $form .= "</div>";
+       $form .= "</div>";
+       $form .= Html::closeForm(false);
+
+       return $form;
    }
 
     function showForm($ID, $options = []) {

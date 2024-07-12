@@ -29,31 +29,9 @@
 
 include('../../../inc/includes.php');
 
+Html::header_nocache();
 Session::checkLoginUser();
 
 if (Session::getCurrentInterface() == 'central') {
-    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesdirecthelpdesk");
-} else {
-    if (Plugin::isPluginActive('servicecatalog')) {
-        PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
-    } else {
-        Html::helpHeader(__('Entities portal', 'manageentities'));
-    }
-}
-
-//TODO select entity from simplified interface ?
-PluginManageentitiesDirecthelpdesk::showDashboard();
-
-//TODO select entity from simplified interface ?
-Search::show('PluginManageentitiesDirecthelpdesk');
-
-if (Session::getCurrentInterface() != 'central'
-    && Plugin::isPluginActive('servicecatalog')) {
-    PluginServicecatalogMain::showNavBarFooter('manageentities');
-}
-
-if (Session::getCurrentInterface() == 'central') {
-    Html::footer();
-} else {
-    Html::helpFooter();
+    echo PluginManageentitiesDirecthelpdesk::loadModal();
 }
