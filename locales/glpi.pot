@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-11 15:39+0000\n"
+"POT-Creation-Date: 2024-07-12 12:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Study and advice"
 msgstr ""
 
-#: hook.php:566 inc/addelementsview.class.php:2319 inc/cri.class.php:162
+#: hook.php:567 inc/addelementsview.class.php:2319 inc/cri.class.php:162
 #: inc/cridetail.class.php:198 inc/cridetail.class.php:411
 #: inc/cridetail.class.php:508 inc/cridetail.class.php:892
 #: inc/criprice.class.php:336 inc/critype.class.php:39
@@ -39,7 +39,7 @@ msgid_plural "Intervention types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:567 inc/addelementsview.class.php:1951
+#: hook.php:568 inc/addelementsview.class.php:1951
 #: inc/contractday.class.php:137 inc/contractday.class.php:403
 #: inc/contractday.class.php:594 inc/contractstate.class.php:39
 #: inc/followup.class.php:731 inc/followup.class.php:733
@@ -49,38 +49,38 @@ msgid_plural "States of contracts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:668 inc/servicecatalog.class.php:72 inc/servicecatalog.class.php:79
+#: hook.php:669 inc/servicecatalog.class.php:72 inc/servicecatalog.class.php:79
 msgid "Manage your contracts"
 msgstr ""
 
-#: setup.php:89 inc/config.class.php:263 inc/cri.class.php:39
+#: setup.php:107 inc/config.class.php:263 inc/cri.class.php:39
 #: inc/cridetail.class.php:303 inc/profile.class.php:104
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] ""
 msgstr[1] ""
 
-#: setup.php:90 inc/report.class.php:107
+#: setup.php:108 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr ""
 
-#: setup.php:91 inc/report.class.php:212
+#: setup.php:110 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:143 front/addelements.form.php:36 front/config.form.php:42
+#: setup.php:167 front/addelements.form.php:36 front/config.form.php:42
 #: front/cridetail.form.php:46 front/cridetail.form.php:49
-#: front/cridetail.form.php:51 front/directhelpdesk.form.php:52
-#: front/directhelpdesk.form.php:55 front/directhelpdesk.form.php:57
-#: front/directhelpdesk.php:35 front/directhelpdesk.php:38
-#: front/directhelpdesk.php:40 front/entity.php:42 front/entity.php:45
-#: front/entity.php:47 front/generatecri.form.php:84 front/generatecri.php:35
-#: front/generatecri.php:38 front/generatecri.php:40 front/report.form.php:32
-#: front/report_moving.form.php:32 front/report_occupation.form.php:32
-#: inc/followup.class.php:976 inc/generatecri.class.php:1153
-#: inc/monthly.class.php:556 inc/preference.class.php:77
-#: inc/profile.class.php:44 inc/profile.class.php:100
-#: inc/taskcategory.class.php:55
+#: front/cridetail.form.php:51 front/directhelpdesk.form.php:36
+#: front/directhelpdesk.form.php:78 front/directhelpdesk.form.php:81
+#: front/directhelpdesk.form.php:83 front/directhelpdesk.php:35
+#: front/directhelpdesk.php:38 front/directhelpdesk.php:40 front/entity.php:42
+#: front/entity.php:45 front/entity.php:47 front/generatecri.form.php:84
+#: front/generatecri.php:35 front/generatecri.php:38 front/generatecri.php:40
+#: front/report.form.php:32 front/report_moving.form.php:32
+#: front/report_occupation.form.php:32 inc/followup.class.php:976
+#: inc/generatecri.class.php:1153 inc/monthly.class.php:556
+#: inc/preference.class.php:77 inc/profile.class.php:44
+#: inc/profile.class.php:100 inc/taskcategory.class.php:55
 msgid "Entities portal"
 msgstr ""
 
@@ -140,6 +140,11 @@ msgstr ""
 
 #: front/cri.form.php:36 inc/cri.class.php:274 inc/cridetail.class.php:313
 msgid "Generation of the intervention report"
+msgstr ""
+
+#: front/directhelpdesk.form.php:51 inc/addelementsview.class.php:224
+#: inc/addelementsview.class.php:240 inc/addelementsview.class.php:3110
+msgid "New intervention"
 msgstr ""
 
 #: front/entity.form.php:40
@@ -446,11 +451,6 @@ msgstr ""
 #: inc/addelementsview.class.php:180
 msgctxt "button"
 msgid "Next >"
-msgstr ""
-
-#: inc/addelementsview.class.php:224 inc/addelementsview.class.php:240
-#: inc/addelementsview.class.php:3110
-msgid "New intervention"
 msgstr ""
 
 #: inc/addelementsview.class.php:604
@@ -1188,19 +1188,24 @@ msgid_plural "Clients"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/directhelpdesk.class.php:41
+#: inc/directhelpdesk.class.php:42 inc/directhelpdesk_ticket.class.php:40
 msgid "Not billed interventions"
 msgstr ""
 
-#: inc/directhelpdesk.class.php:61
+#: inc/directhelpdesk.class.php:84
 msgid "Add an unbilled intervention"
 msgstr ""
 
-#: inc/directhelpdesk.class.php:167
+#: inc/directhelpdesk.class.php:190
 msgid "Dashboard"
 msgstr ""
 
-#: inc/directhelpdesk.class.php:406
+#: inc/directhelpdesk.class.php:258
+msgid ""
+"Tag billed interventions and create a ticket ? this action is irreversible"
+msgstr ""
+
+#: inc/directhelpdesk.class.php:460
 msgid "Is billed"
 msgstr ""
 
