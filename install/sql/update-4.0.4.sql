@@ -13,3 +13,12 @@ CREATE TABLE `glpi_plugin_manageentities_directhelpdesks` (
     KEY `tickets_id` (`tickets_id`),
     KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+CREATE TABLE `glpi_plugin_manageentities_directhelpdesks_tickets` (
+    `id` int unsigned NOT NULL auto_increment,
+    `tickets_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_tickets (id)',
+    `plugin_manageentities_directhelpdesks_id` int unsigned NOT NULL default '0',
+    PRIMARY KEY  (`id`),
+    KEY `tickets_id` (`tickets_id`),
+    KEY `plugin_manageentities_directhelpdesks_id` (`plugin_manageentities_directhelpdesks_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

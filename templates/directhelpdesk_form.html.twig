@@ -13,20 +13,39 @@
     {% set target       = params['target'] ?? item.getFormURL() %}
     {% set withtemplate = params['withtemplate'] ?? "" %}
     {% set item_type = item.getType() %}
-
+    {% set field_options = {
+        'required': true,
+    } %}
     <div class="card-body d-flex">
         <div class="col-9 flex-column">
             <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                 <div class="row flex-row align-items-start flex-grow-1">
                     <div class="row flex-row">
-                        {% if item.isField('name') %}
-                            {{ fields.autoNameField(
-                                "name",
-                                item,
-                                (item_type == 'Contact' ? __('Surname') : __('Name')),
-                            withtemplate
-                            ) }}
+
+                        {% if is_multi_entities_mode() %}
+                            {% if item.isNewItem() %}
+                                {{ fields.dropdownField(
+                                    'Entity',
+                                    'entities_id',
+                                    item.fields['entities_id'],
+                                    _n('Entity', 'Entities', 1),
+                                ) }}
+                            {% else %}
+                                {% set entity_html %}
+                                    {{ call('Entity::badgeCompletenameLinkById', [item.fields['entities_id']])|raw }}
+                                {% endset %}
+
+                                {{ fields.field(
+                                    '',
+                                    entity_html,
+                                    _n('Entity', 'Entities', 1),
+                                    field_options|merge({
+                                        'add_field_class': 'd-flex align-items-center',
+                                    })
+                                ) }}
+                            {% endif %}
                         {% endif %}
+
 
                         {% if item.isField('users_id') %}
                             {{ fields.dropdownField(
@@ -37,27 +56,55 @@
                                 {
                                     'entity': item.fields['entities_id'],
                                     'right': 'all',
+                                    'required': true
                                 }
                             ) }}
                         {% endif %}
 
 
                         {% if item.isField('date') %}
-                            {{ fields.dateField('date', item.fields['date'], __('Date'), {
-                            }) }}
+                            {{ fields.dateField(
+                                'date',
+                                item.fields['date'],
+                                __('Date'),
+                                field_options
+                            ) }}
+                        {% endif %}
+
+                        {% if item.isField('actiontime') %}
+                            {{ fields.dropdownTimestampField(
+                                'actiontime',
+                                item.fields['actiontime'],
+                                __('Duration'),
+                                field_options
+                            ) }}
+                        {% endif %}
+
+                        {% if item.isField('name') %}
+                            {{ fields.autoNameField(
+                                'name',
+                                item,
+                                (item_type == 'Contact' ? __('Surname') : __('Title')),
+                            withtemplate,
+                            field_options
+                            ) }}
                         {% endif %}
 
                         {% if item.isField('comment') %}
                             {{ fields.textareaField(
-                                "comment",
+                                'comment',
                                 item.fields['comment'],
-                                _n('Comment', 'Comments', 2),
+                                _n('Comment', 'Comments', get_plural_number()),
+                                field_options
                             ) }}
                         {% endif %}
 
 
                          {% if item.isField('is_billed') %}
-                         {{ fields.dropdownYesNo('is_billed', item.fields['is_billed'], __('Is billed', 'manageentities')) }}
+                         {{ fields.dropdownYesNo('is_billed',
+                             item.fields['is_billed'],
+                             __('Is billed', 'manageentities'),
+                             field_options) }}
                          {% endif %}
 
                         {% if item.isField('tickets_id') %}

@@ -32,7 +32,7 @@ include('../../../inc/includes.php');
 Session::checkLoginUser();
 
 if (Session::getCurrentInterface() == 'central') {
-    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesgeneratecri");
+    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesdirecthelpdesk");
 } else {
     if (Plugin::isPluginActive('servicecatalog')) {
         PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));

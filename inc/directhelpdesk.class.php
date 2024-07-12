@@ -36,16 +36,39 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
 
    static $rightname = 'plugin_manageentities';
 
+    public    $dohistory  = true;
     public static function getTypeName($nb = 0)
     {
         return __('Not billed interventions', 'manageentities');
     }
 
     /**
+     * @param array $options
+     *
+     * @return array
+     */
+    function defineTabs($options = []) {
+
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Log', $ong, $options);
+
+        return $ong;
+    }
+    /**
      * @return string
      */
     static function getIcon() {
         return "ti ti-file-euro";
+    }
+
+    static function UpdateBilledInterventions($item) {
+        global $DB;
+
+//        $item->input['_created_from_directhelpdesk'] = true;
+//        Toolbox::logInfo($item);
+//die();
+        return true;
     }
 
    static function loadModal() {
@@ -169,35 +192,42 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
             echo "</tr>";
             $entities = $_SESSION["glpiactiveentities"];
             $directs = [];
+            $techs = [];
             foreach ($items as $item) {
-
                 if (!in_array($item["entities_id"], $entities)) {
                     continue;
                 }
                 if (isset($directs[$item['entities_id']])) {
                     $directs[$item['entities_id']] += $item['actiontime'];
+                    if (!in_array($item['users_id'], $techs[$item['entities_id']])) {
+                        $techs[$item['entities_id']][] = $item['users_id'];
+                    }
                 } else {
                     $directs[$item['entities_id']] = $item['actiontime'];
+                    $techs[$item['entities_id']][] = $item['users_id'];
                 }
             }
+            arsort($directs);
 
-            $rowCount = 0;
             $columnCount = 0;
             foreach ($directs as $entities_id => $actiontime) {
                 $sum = 0;
                 $datas = [];
+                $tech_interventions = [];
                 if ($columnCount % 3 == 0) {
                     if ($columnCount > 0) {
                         echo "</tr>";
                     }
                     echo "<tr class='tab_bg_1'>";
-                    $rowCount++;
                 }
 
                 echo "<td class='center' style='border: #e9e9e9 5px solid;background: white;'>";
 
                 $actiontime = ($actiontime * 0.5) / 14400;
                 $sum += $actiontime;
+                if (is_array($techs[$entities_id]) && count($techs[$entities_id])) {
+                    $tech_interventions = $techs[$entities_id];
+                }
 
                 $entity = new Entity();
                 $entity->getFromDB($entities_id);
@@ -205,18 +235,28 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
 
                 $datas[] = [
                     'value' => $sum,
-                    'name' => $name
+//                    'name' => $name
                 ];
 
                 $dataSet = json_encode($datas);
-                $hours = _n('Hour', 'Hours', 2);
-
-                echo "<div id='container$entities_id' style='min-height: 250px;width: 400px;'>";
+                $hour = lcfirst(_n('Hour', 'Hours', 1));
+                $hours = lcfirst(_n('Hour', 'Hours', 2));
+                echo "<div style='margin-bottom: -50px;'>";
+                echo $name;
                 echo "</div>";
-                if ($sum >= 0.5) {
-                    echo "<button class='btn btn-danger' style='margin-bottom: 10px;margin-top: -20px;'>";
-                    echo __('Create a ticket');
-                    echo "</button>";
+                echo "<div id='container$entities_id' style='min-height: 230px;width: 400px;'>";
+
+                echo "</div>";
+                if ($sum >= 0.4) {
+                    echo "<div style='margin-bottom: 10px;margin-left:-20px;'>";
+                    Html::showSimpleForm(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/directhelpdesk.form.php',
+                        'create_ticket',
+                        __('Create a ticket'),
+                        ['entities_id' => $entities_id],
+                        '',
+                        "class='btn btn btn-danger'",
+                    __('Tag billed interventions and create a ticket ? this action is irreversible', 'manageentities'));
+                    echo "</div>";
                 }
                 echo "<script type='text/javascript'>
 
@@ -227,10 +267,11 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
                 });
                 var app = {};
                 var hours = '$hours';
+                var hour = '$hour';
                 var option;
 
                 option = {
-
+height: '100%',
                     tooltip: {
                         formatter: '{a} <br/>{b} : {c}%'
                     },
@@ -281,18 +322,18 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
                                 axisLabel: {
                                     color: '#464646',
                                     fontSize: 13,
-                                    distance: -90,
+                                    distance: -30,
                                     rotate: 'tangential',
                                     formatter: function (value) {
-                                        if (value === 0.5) {
-                                            return '4 ' + hours;
-                                        } else if (value === 0.375) {
-                                            return '3 ' + hours;
-                                        } else if (value === 0.25) {
-                                            return '2 ' + hours;
-                                        } else if (value === 0.125) {
-                                            return '1 ' + hours;
-                                        }
+//                                        if (value === 0.5) {
+//                                            return '4 ' + hours;
+//                                        } else if (value === 0.375) {
+//                                            return '3 ' + hours;
+//                                        } else if (value === 0.25) {
+//                                            return '2 ' + hours;
+//                                        } else if (value === 0.125) {
+//                                            return '1 ' + hour;
+//                                        }
                                     return '';
                                     }
                                 },
@@ -302,18 +343,21 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
                                 },
                                 detail: {
                                     fontSize: 16,
-                                    offsetCenter: [0, '-35%'],
+                                    offsetCenter: [0, '-5%'],
                                     valueAnimation: true,
                                     formatter: function (value) {
-                                        if (value > 0.375 && value === 0.5) {
-                                            return '4 ' + hours;
+                                        if (value > 0.375 && value < 0.5) {
+                                            return '< 4 ' + hours;
                                         } else if (value > 0.25 && value <= 0.375) {
-                                            return '3 ' + hours;
+                                            return '>= 3 ' + hours;
                                         } else if (value > 0.125 && value <= 0.25) {
-                                            return '2 ' + hours;
+                                            return '>= 2 ' + hours;
                                         } else if (value <= 0.125) {
-                                            return '1 ' + hours;
+                                            return '>= 1 ' + hour;
+                                        } else if (value >= 0.5) {
+                                            return '>= 4 ' + hours;
                                         }
+//                                        return value;
                                     },
                                     color: 'inherit'
                                 },
@@ -329,6 +373,16 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
                 window.addEventListener('resize', myChart.resize);
 
           </script>";
+                $url = PLUGIN_MANAGEENTITIES_WEBDIR. "/pics/tag.png";
+
+                echo "<div class='tech-tag-div'>";
+                foreach ($tech_interventions as $data) {
+                    echo "<div class='tech-tag' style='background: url($url) no-repeat;'>";
+                    echo getUserName($data);
+                    echo "</div>";
+                }
+                echo "</div>";
+
                 echo "</td>";
                 $columnCount++;
             }

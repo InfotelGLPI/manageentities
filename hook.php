@@ -285,7 +285,8 @@ function plugin_manageentities_uninstall() {
               "glpi_plugin_manageentities_companies",
               "glpi_plugin_manageentities_entitylogos",
               "glpi_plugin_manageentities_interventionskateholders",
-       "glpi_plugin_manageentities_directhelpdesks"];
+       "glpi_plugin_manageentities_directhelpdesks",
+       "glpi_plugin_manageentities_directhelpdesks_tickets"];
 
    foreach ($tables as $table)
       $DB->doQuery("DROP TABLE IF EXISTS `$table`;");

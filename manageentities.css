@@ -179,3 +179,18 @@ a.manageentities_href {
    font-weight: normal;
    padding: 5px 19px 5px 19px;
 }
+
+.tech-tag-div {
+   margin-top: -20px;
+   float: right;
+   min-height: 50px;
+}
+
+.tech-tag {
+   padding: 2px 16px 16px 16px;
+   height: 22px;
+   text-shadow: 1px 1px #fff;
+   border-radius: 2px;
+   font-size: 12px;
+
+}
