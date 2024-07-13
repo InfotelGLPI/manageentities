@@ -28,18 +28,21 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
 use Glpi\Application\View\TemplateRenderer;
-class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
 
-   static $rightname = 'plugin_manageentities';
+class PluginManageentitiesDirecthelpdesk extends CommonDBTM
+{
 
-    public    $dohistory  = true;
+    static $rightname = 'plugin_manageentities';
+
+    public $dohistory = true;
+
     public static function getTypeName($nb = 0)
     {
-        return __('Not billed interventions', 'manageentities');
+        return _n('Not billed intervention', 'Not billed interventions', $nb, 'manageentities');
     }
 
     /**
@@ -47,22 +50,25 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
      *
      * @return array
      */
-    function defineTabs($options = []) {
-
+    function defineTabs($options = [])
+    {
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
     }
+
     /**
      * @return string
      */
-    static function getIcon() {
+    static function getIcon()
+    {
         return "ti ti-file-euro";
     }
 
-    static function UpdateBilledInterventions($item) {
+    static function UpdateBilledInterventions($item)
+    {
         global $DB;
 
 //        $item->input['_created_from_directhelpdesk'] = true;
@@ -74,131 +80,245 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
     /**
      * @return string form HTML
      */
-   static function loadModal() {
+    static function loadModal()
+    {
+        $form = "<form action='" . self::getFormURL() . "' method='post'>";
+        $form .= "<div class='modal' tabindex='-1' id='directhelpdesk-modal'>";
+        $form .= "<div class='modal-dialog'>";
+        $form .= "<div class='modal-content'>";
 
-       $form = "<form action='".self::getFormURL()."' method='post'>";
-       $form .= "<div class='modal' tabindex='-1' id='directhelpdesk-modal'>";
-       $form .= "<div class='modal-dialog'>";
-       $form .= "<div class='modal-content'>";
+        $form .= "<div class='modal-header'>";
+        $form .= "<h5 class='modal-title'>";
+        $form .= "<i class='ti ti-file-euro me-2'></i>";
+        $form .= __('Add an unbilled intervention', 'manageentities');
+        $form .= "</h5>";
+        $form .= "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='" . __(
+                'Close'
+            ) . "'></button>";
+        $form .= "</div>";
 
-       $form .= "<div class='modal-header'>";
-       $form .= "<h5 class='modal-title'>";
-       $form .= "<i class='fas fa-plus me-2'></i>";
-       $form .= __('Add an unbilled intervention', 'manageentities');
-       $form .= "</h5>";
-       $form .= "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='".__('Close')."'></button>";
-       $form .= "</div>";
+        $name = "";
+        $form .= "<div class='modal-body'>";
+        $form .= "<table class='tab_cadre'>";
 
-       $name = "";
-       $form .= "<div class='modal-body'>";
-       $form .= "<table class='tab_cadre'>";
+        $form .= "<tr class='tab_bg_1'>";
+        $form .= "<td>" . Entity::getTypeName() . " <span class='red'>*</span></td>";
+        $form .= "<td>";
+        $opt = [
+            'name' => 'entities_id',
+            'display' => false
+        ];
+//       $opt['on_change'] = 'this.form.submit()';
 
-       $form .= "<tr class='tab_bg_1'>";
-       $form .= "<td>" . Entity::getTypeName() . " <span class='red'>*</span></td>";
-       $form .= "<td colspan='4'>";
-       $opt = [
-           'name' => 'entities_id',
-           'display' => false
-       ];
-       $form .= Entity::dropdown($opt);
-       $form .= "</td>";
-       $form .= "</tr>";
+        $form .= Entity::dropdown($opt);
+        $form .= "</td>";
+        $form .= "</tr>";
 
-       $form .= "<tr class='tab_bg_1'>";
-       $form .= "<td>" . __('Title') . " <span class='red'>*</span></td>";
-       $form .= "<td colspan='4'>";
-       $form .= Html::input('name', ['size'  => 40]);
-       $form .= "</td>";
-       $form .= "</tr>";
+        $form .= "<tr class='tab_bg_1'>";
+        $form .= "<td>" . __('Title') . " <span class='red'>*</span></td>";
+        $form .= "<td>";
 
-       $form .= "<tr class='tab_bg_1'>";
-       $form .= "<td>" . __('Description') . " <span class='red'>*</span></td>";
-       $form .= "<td colspan='4'>";
-       $form .= Html::textarea([
-           'name'            => 'comment',
-           'cols'            => '40',
-           'rows'            => '10',
-           'enable_ricktext' => false,
-           'display' => false
-       ]);
-       $form .= "</td>";
-       $form .= "</tr>";
+        $opt = [
+            'name' => 'name',
+            'display' => false
+        ];
+        $conditions = [
+            'OR' => [
+                'is_incident' => 1,
+                'is_request' => 1,
+            ]
+        ];
+        $opt['condition'] = $conditions;
+//       $opt['entity'] = $options["entities_id"];
+        $form .= ITILCategory::dropdown($opt);
+//       $form .= Html::input('name', ['size'  => 40]);
+        $form .= "</td>";
+        $form .= "</tr>";
 
-       $form .= "<tr class='tab_bg_1'>";
-       $form .= "<td>";
-       $form .= __("Date")." <span class='red'>*</span>";
-       $form .= "</td>";
-       $form .= "<td colspan='4'>";
-       $form .= Html::showDateField("date", [
-           'value'      => date("Y-m-d"),
-           'maybeempty' => true,
-           'canedit'    => true,
-           'display' => false
-       ]);
-       $form .= "</td>";
-       $form .= "</tr>";
+        $form .= "<tr class='tab_bg_1'>";
+        $form .= "<td>" . __('Description') . " </td>";
+        $form .= "<td colspan='4'>";
+        $form .= Html::textarea([
+            'name' => 'comment',
+            'cols' => '40',
+            'rows' => '10',
+            'enable_ricktext' => false,
+            'display' => false
+        ]);
+        $form .= "</td>";
+        $form .= "</tr>";
 
-       $form .= "<tr class='tab_bg_1'><td>";
-       $form .= "<i class='fas fa-stopwatch fa-fw me-1' title='".__('Duration')."'> </i><span class='red'>*</span></td>";
-       $form .= "<td>";
-       $form .= Dropdown::showTimeStamp("actiontime", [
-           'min' => 0,
-           'max' => 50 * HOUR_TIMESTAMP,
-           'display' => false
-       ]);
-       $form .= "</td>";
-       $form .= "<td>";
-       $form .= "<i class='fas fa-ticket-alt fa-fw me-1' title='".__('Linked ticket')."'></i></td>";
-       $form .= "<td>";
-       //TODO only opened tickets for selected entity
-       $linkparam = [
-           'name'        => 'tickets_id',
+        $form .= "<tr class='tab_bg_1'>";
+        $form .= "<td>";
+        $form .= __("Date") . " <span class='red'>*</span>";
+        $form .= "</td>";
+        $form .= "<td>";
+        $form .= Html::showDateField("date", [
+            'value' => date("Y-m-d"),
+            'maybeempty' => true,
+            'canedit' => true,
+            'display' => false
+        ]);
+        $form .= "</td>";
+        $form .= "</tr>";
+
+        $form .= "<tr class='tab_bg_1'><td>";
+        $form .= "<i class='fas fa-stopwatch fa-fw me-1' title='" . __(
+                'Duration'
+            ) . "'> </i><span class='red'>*</span></td>";
+        $form .= "<td>";
+        $form .= Dropdown::showTimeStamp("actiontime", [
+            'min' => 0,
+            'max' => 50 * HOUR_TIMESTAMP,
+            'display' => false
+        ]);
+        $form .= "</td>";
+
+        $form .= "</tr>";
+
+        $form .= "<tr class='tab_bg_1'><td>";
+        $form .= "<i class='fas fa-ticket-alt fa-fw me-1' title='" . __('Linked ticket') . "'></i></td>";
+        $form .= "<td>";
+        //TODO only opened tickets for selected entity
+        $linkparam = [
+            'name' => 'tickets_id',
 //           'rand'        => $rand,
 //           'used'        => $excludedTicketIds,
-           'displaywith' => ['id'],
-           'display'     => false
-       ];
-       $form .= Ticket::dropdown($linkparam);
-       $form .= "</td></tr>";
+            'displaywith' => ['id'],
+            'display' => false
+        ];
+        $form .= Ticket::dropdown($linkparam);
+        $form .= "</td></tr>";
 
-       $form .= "<tr class='tab_bg_1 center'><td colspan='4'>";
-       $form .= Html::hidden('users_id', ['value' => Session::getLoginUserID()]);
-       $form .= Html::submit(_sx('button', 'Post'), ['name' => 'add', 'class' => 'btn btn-primary']);
-       $form .= "</td></tr>";
+        $form .= "<tr class='tab_bg_1 center'><td>";
+        $form .= Html::hidden('users_id', ['value' => Session::getLoginUserID()]);
+        $form .= Html::submit(_sx('button', 'Post'), ['name' => 'add', 'class' => 'btn btn-primary']);
+        $form .= "</td></tr>";
 
-       $form .= "</table>";
+        $form .= "</table>";
 
 
-       $form .= "</div>";
+        $form .= "</div>";
 
-       $form .= "</div>";
-       $form .= "</div>";
-       $form .= "</div>";
-       $form .= Html::closeForm(false);
+        $form .= "</div>";
+        $form .= "</div>";
+        $form .= "</div>";
+        $form .= Html::closeForm(false);
 
-       return $form;
-   }
+        return $form;
+    }
 
-    function showForm($ID, $options = []) {
+    function prepareInputForAdd($input)
+    {
+        if (!$this->checkMandatoryFields($input)) {
+            return false;
+        }
 
+        if (isset($input['name']) && $input['name'] > 0) {
+            $cat = new ITILCategory();
+            $cat->getFromDB($input['name']);
+            $input['name'] = $cat->getName();
+        }
+
+        return $input;
+    }
+
+    function post_addItem()
+    {
+        if (isset($this->input["tickets_id"])) {
+            $ticket = new PluginManageentitiesDirecthelpdesk_Ticket();
+            $input['plugin_manageentities_directhelpdesks_id'] = $this->getID();
+            $input['tickets_id'] = $this->input["tickets_id"];
+            $ticket->add($input);
+        }
+    }
+
+    function post_updateItem($history = true)
+    {
+        if (isset($this->input["tickets_id"])) {
+            $ticket = new PluginManageentitiesDirecthelpdesk_Ticket();
+
+            if ($ticket->getFromDBByCrit(['plugin_manageentities_directhelpdesks_id' => $this->getID()])) {
+                $input['plugin_manageentities_directhelpdesks_id'] = $this->getID();
+                $ticket->deleteByCriteria($input);
+            }
+
+            if ($this->input["tickets_id"] > 0
+                && !$ticket->getFromDBByCrit(['plugin_manageentities_directhelpdesks_id' => $this->getID()])) {
+                $input['plugin_manageentities_directhelpdesks_id'] = $this->getID();
+                $input['tickets_id'] = $this->input["tickets_id"];
+                $ticket->add($input);
+            }
+        }
+    }
+
+    /**
+     * checkMandatoryFields
+     *
+     * @param type $input
+     *
+     * @return boolean
+     */
+    function checkMandatoryFields($input)
+    {
+        $msg = [];
+        $checkKo = false;
+
+        $mandatory_fields = [
+            'name' => __('Title'),
+            'date' => __('Date'),
+            'actiontime' => __('Duration')
+        ];
+
+        foreach ($input as $key => $value) {
+            if (array_key_exists($key, $mandatory_fields)) {
+                if (empty($value) || $value == 'NULL') {
+                    $msg[] = $mandatory_fields[$key];
+                    $checkKo = true;
+                }
+            }
+        }
+
+        if ($checkKo) {
+            Session::addMessageAfterRedirect(
+                sprintf(__("Mandatory fields are not filled. Please correct: %s"), implode(', ', $msg)),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if (isset($this->input['entities_id']) && $this->input['entities_id'] == 0) {
+            Session::addMessageAfterRedirect(
+                __('You cannot add an intervention on this entity', 'manageentities'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    function showForm($ID, $options = [])
+    {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_form.html.twig', [
-            'item'   => $this,
+            'item' => $this,
             'params' => $options,
         ]);
 
         return true;
     }
 
-    static function showDashboard() {
-
+    static function showDashboard()
+    {
         echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/echarts.js");
         echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/theme/azul.js");
 
         $direct = new PluginManageentitiesDirecthelpdesk();
 
         if ($items = $direct->find(['is_billed' => 0])) {
-
             echo "<table class='tab_cadre' style='width: 70%'>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<th colspan='3'>";
@@ -264,13 +384,25 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM {
                 echo "</div>";
                 if ($sum >= 0.4) {
                     echo "<div style='margin-bottom: 10px;margin-left:-20px;'>";
-                    Html::showSimpleForm(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/directhelpdesk.form.php',
-                        'create_ticket',
-                        __('Create a ticket'),
-                        ['entities_id' => $entities_id],
-                        '',
-                        "class='btn btn btn-danger'",
-                    __('Tag billed interventions and create a ticket ? this action is irreversible', 'manageentities'));
+                    echo "<a href=\"#\" data-bs-toggle='modal' class='btn btn btn-danger' data-bs-target='#createticket$entities_id'>".__('Create a ticket')."</a>";
+                    echo Ajax::createIframeModalWindow('createticket' . $entities_id,
+                        PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/directhelpdesk.php?action=createticket&entities_id=" . $entities_id,
+                        ['title' =>__('Create a ticket'),
+                            'display' => false]);
+
+//
+//                    Html::showSimpleForm(
+//                        PLUGIN_MANAGEENTITIES_WEBDIR . '/front/directhelpdesk.form.php',
+//                        'create_ticket',
+//                        __('Create a ticket'),
+//                        ['entities_id' => $entities_id],
+//                        '',
+//                        "class='btn btn btn-danger'",
+//                        __(
+//                            'Tag billed interventions and create a ticket ? this action is irreversible',
+//                            'manageentities'
+//                        )
+//                    );
                     echo "</div>";
                 }
                 echo "<script type='text/javascript'>
@@ -388,7 +520,7 @@ height: '100%',
                 window.addEventListener('resize', myChart.resize);
 
           </script>";
-                $url = PLUGIN_MANAGEENTITIES_WEBDIR. "/pics/tag.png";
+                $url = PLUGIN_MANAGEENTITIES_WEBDIR . "/pics/tag.png";
 
                 echo "<div class='tech-tag-div'>";
                 foreach ($tech_interventions as $data) {
@@ -412,96 +544,103 @@ height: '100%',
             echo "</table>";
         }
     }
+
     /**
      * @return array
      */
-    function rawSearchOptions() {
-
+    function rawSearchOptions()
+    {
         $tab = [];
 
         $tab[] = [
-            'id'   => 'common',
+            'id' => 'common',
             'name' => self::getTypeName(2)
         ];
 
         $tab[] = [
-            'id'            => '1',
-            'table'         => $this->getTable(),
-            'field'         => 'name',
-            'name'          => __('Name'),
-            'datatype'      => 'itemlink',
+            'id' => '1',
+            'table' => $this->getTable(),
+            'field' => 'name',
+            'name' => __('Name'),
+            'datatype' => 'itemlink',
             'itemlink_type' => $this->getType(),
         ];
 
         $tab[] = [
-            'id'       => '4',
-            'table'    => $this->getTable(),
-            'field'    => 'date',
-            'name'     => __('Date'),
+            'id' => '4',
+            'table' => $this->getTable(),
+            'field' => 'date',
+            'name' => __('Date'),
             'datatype' => 'date',
         ];
 
 
         $tab[] = [
-            'id'       => '8',
-            'table'    => $this->getTable(),
-            'field'    => 'comment',
-            'name'     => __('Comments'),
+            'id' => '8',
+            'table' => $this->getTable(),
+            'field' => 'comment',
+            'name' => __('Comments'),
             'datatype' => 'text',
         ];
 
         $tab[] = [
-            'id'                 => '9',
-            'table'              => $this->getTable(),
-            'field'              => 'actiontime',
-            'name'               => __('Duration'),
-            'datatype'           => 'timestamp',
-            'massiveaction'      => false
+            'id' => '9',
+            'table' => $this->getTable(),
+            'field' => 'actiontime',
+            'name' => __('Duration'),
+            'datatype' => 'timestamp'
         ];
 
         $tab[] = [
-            'id'       => '10',
-            'table'    => 'glpi_users',
-            'field'    => 'name',
-            'name'     => __('User'),
+            'id' => '10',
+            'table' => 'glpi_users',
+            'field' => 'name',
+            'name' => __('User'),
             'datatype' => 'dropdown',
-            'right'    => 'all',
+            'right' => 'all',
         ];
 
         $tab[] = [
-            'id'       => '11',
-            'table'    => $this->getTable(),
-            'field'    => 'is_billed',
-            'name'     => __('Is billed', 'manageentities'),
+            'id' => '11',
+            'table' => $this->getTable(),
+            'field' => 'is_billed',
+            'name' => __('Is billed', 'manageentities'),
             'datatype' => 'bool',
         ];
 
+        $tab[] = [
+            'id' => '12',
+            'table' => 'glpi_tickets',
+            'field' => 'name',
+            'name' => __('Linked ticket'),
+            'datatype' => 'dropdown',
+            'right' => 'all',
+        ];
+
 
         $tab[] = [
-            'id'       => '30',
-            'table'    => $this->getTable(),
-            'field'    => 'id',
-            'name'     => __('ID'),
+            'id' => '30',
+            'table' => $this->getTable(),
+            'field' => 'id',
+            'name' => __('ID'),
             'datatype' => 'number',
         ];
 
         $tab[] = [
-            'id'       => '80',
-            'table'    => 'glpi_entities',
-            'field'    => 'completename',
-            'name'     => __('Entity'),
+            'id' => '80',
+            'table' => 'glpi_entities',
+            'field' => 'completename',
+            'name' => __('Entity'),
             'datatype' => 'dropdown',
         ];
 
         $tab[] = [
-            'id'    => '81',
+            'id' => '81',
             'table' => 'glpi_entities',
             'field' => 'entities_id',
-            'name'  => __('Entity') . "-" . __('ID'),
+            'name' => __('Entity') . "-" . __('ID'),
         ];
 
         return $tab;
     }
-
-   //TODO Add mandatory fields on add
 }

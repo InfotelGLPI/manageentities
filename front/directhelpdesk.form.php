@@ -33,40 +33,60 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
     $direct = new PluginManageentitiesDirecthelpdesk();
 
     if (isset($_POST["create_ticket"])) {
-        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesdirecthelpdesk");
-        $options['entities_id'] = $_POST['entities_id'];
-        $direct = new PluginManageentitiesDirecthelpdesk();
-        $options['content'] = "";
-        $options['_created_from_directhelpdesk'] = true;
-        if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $_POST['entities_id']])) {
-            $sum = 0;
-            foreach ($items as $item) {
+        $ticket = new Ticket();
+        $items = $_POST["select"];
+        $sum = 0;
+        $options['content'] = '';
+        foreach ($items as $item => $check) {
+            if ($check == "on") {
+                $direct = new PluginManageentitiesDirecthelpdesk();
+                $direct->getFromDB($item);
 
-                $inputd['id'] = $item['id'];
-                $inputd['is_billed'] = 1;
-                $direct->update($inputd);
-
-                $actiontime = $item['actiontime'];
+                $actiontime = $direct->fields['actiontime'];
                 $sum += $actiontime;
-                $options['name'] = __('New intervention', 'manageentities')." : ".CommonITILObject::getActionTime($sum);
-                $options['content'] .= Html::convDate($item['date'])." : ".$item['name']." - ".getUserName($item['users_id'])." (".CommonITILObject::getActionTime($actiontime).")<br>";
+                $options['entities_id'] = $_POST["entities_id"];
+                $options['name'] = __('New intervention', 'manageentities') . " : " . CommonITILObject::getActionTime(
+                        $sum
+                    );
+                $options['content'] .= Html::convDate(
+                        $direct->fields['date']
+                    ) . " : " . $direct->fields['name'] . " - " . getUserName(
+                        $direct->fields['users_id']
+                    ) . " (" . CommonITILObject::getActionTime($actiontime) . ")<br>";
             }
         }
-        $ticket = new Ticket();
-        $ticket->showForm(0, $options);
-        Html::footer();
+        $newID = $ticket->add($options);
+
+        foreach ($items as $item => $check) {
+            if ($check == "on") {
+                if ($newID > 0) {
+                    $inputd['id'] = $item;
+                    $inputd['is_billed'] = 1;
+                    $inputd['tickets_id'] = $newID;
+                    $direct->update($inputd);
+                }
+            }
+        }
+//        Toolbox::logInfo($options);
+        Html::redirect($ticket->getLinkURL());
+
+//        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesdirecthelpdesk");
+//        $options['entities_id'] = $_POST['entities_id'];
+//        $direct = new PluginManageentitiesDirecthelpdesk();
+//        $options['content'] = "";
+//        $options['_created_from_directhelpdesk'] = true;
+
+//        $ticket = new Ticket();
+//        $ticket->showForm(0, $options);
+//        Html::footer();
     } elseif (isset($_POST["add"])) {
         $inter = $direct->add($_POST);
-        if (isset($_POST["tickets_id"])) {
-            $ticket = new PluginManageentitiesDirecthelpdesk_Ticket();
-            $input['plugin_manageentities_directhelpdesks_id'] = $inter;
-            $input['tickets_id'] = $_POST["tickets_id"];
-            $ticket->add($input);
-        }
+
         Html::back();
     } elseif (isset($_POST["update"])) {
         $direct->check($_POST["id"], UPDATE);
         $direct->update($_POST);
+
         Html::back();
     } elseif (isset($_POST["delete"])) {
         $direct->delete($_POST, 1);

@@ -37,7 +37,7 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return __('Not billed interventions', 'manageentities');
+        return _n('Not billed intervention', 'Not billed interventions',$nb ,'manageentities');
     }
 
     /**
@@ -56,15 +56,22 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
 
     function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-        if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
-            return self::getTypeName(1);
+        if ($item->getType() == 'Ticket') {
+
+            if (self::countForTicket($item) > 0) {
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    return self::createTabEntry(_n('Not billed intervention', 'Not billed interventions',self::countForTicket($item) ,'manageentities'), self::countForTicket($item));
+                }
+                return self::getTypeName(self::countForTicket($item));
+            } else {
+                return self::getTypeName(1);
+            }
         }
         return '';
     }
 
     static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
-//TODO
         if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
 
             $self = new self();
@@ -94,5 +101,44 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
             }
         }
         return true;
+    }
+
+    static function selectDirectHeldeskForTicket($entities_id) {
+
+        $direct = new PluginManageentitiesDirecthelpdesk();
+        if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities_id], ['date'])) {
+
+            echo "<form method='post' action='" . $direct->getFormURL() . "'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<th>" . __('Select', 'manageentities') . "</th>";
+            echo "<th>" . __('Title') . "</th>";
+            echo "<th>" . __('Date') . "</th>";
+            echo "<th>" . __('Technician') . "</th>";
+            echo "<th>" . __('Duration') . "</th>";
+            echo "<th>" . __('Description') . "</th>";
+            echo "</tr>";
+
+            foreach ($items as $item) {
+                echo "<tr class='tab_bg_1'>";
+                echo "<td>";
+                $id = $item['id'];
+                Html::showCheckbox(['name' => 'select['.$id.']', 'value' => 0]);
+                echo "</td>";
+                echo "<td>" . $item['name'] . "</td>";
+                echo "<td>" . Html::convDate($item['date']) . "</td>";
+                echo "<td>" . getUserName($item['users_id']) . "</td>";
+                echo "<td>" . CommonITILObject::getActionTime($item['actiontime']) . "</td>";
+                echo "<td>" . $item['comment'] . "</td>";
+                echo "</tr>";
+            }
+            echo "<tr><th colspan='6'>";
+            echo Html::hidden('entities_id', ['value' => $entities_id]);
+            echo "<div class='center'>";
+            echo Html::submit(_sx('button', 'Post'), ['name' => 'create_ticket', 'class' => 'btn btn-primary me-2']);
+            echo "</div></th></tr>";
+            echo "</table>";
+            Html::closeForm();
+        }
     }
 }

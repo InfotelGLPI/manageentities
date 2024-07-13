@@ -225,6 +225,8 @@ CREATE TABLE `glpi_plugin_manageentities_directhelpdesks` (
     `date` timestamp NULL DEFAULT NULL,
     `actiontime` int NOT NULL DEFAULT '0',
     `tickets_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_tickets (id)',
+    `date_mod` timestamp NULL DEFAULT NULL,
+    `date_creation` timestamp NULL DEFAULT NULL,
     PRIMARY KEY  (`id`),
     KEY `entities_id` (`entities_id`),
     KEY `tickets_id` (`tickets_id`),

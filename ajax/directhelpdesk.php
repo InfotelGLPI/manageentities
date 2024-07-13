@@ -32,6 +32,15 @@ include('../../../inc/includes.php');
 Html::header_nocache();
 Session::checkLoginUser();
 
-if (Session::getCurrentInterface() == 'central') {
-    echo PluginManageentitiesDirecthelpdesk::loadModal();
+if (isset($_GET['action']) && $_GET['action'] == 'createticket') {
+    Html::popHeader(__('Create a ticket'), $_SERVER['PHP_SELF']);
+
+    PluginManageentitiesDirecthelpdesk_Ticket::selectDirectHeldeskForTicket($_GET['entities_id']);
+
+    Html::popFooter();
+} else {
+    if (Session::getCurrentInterface() == 'central') {
+        echo PluginManageentitiesDirecthelpdesk::loadModal();
+    }
 }
+
