@@ -36,7 +36,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
         $ticket = new Ticket();
         $items = $_POST["select"];
         $sum = 0;
-        $options['content'] = '';
+        $input['content'] = '';
         foreach ($items as $item => $check) {
             if ($check == "on") {
                 $direct = new PluginManageentitiesDirecthelpdesk();
@@ -44,18 +44,22 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 
                 $actiontime = $direct->fields['actiontime'];
                 $sum += $actiontime;
-                $options['entities_id'] = $_POST["entities_id"];
-                $options['name'] = __('New intervention', 'manageentities') . " : " . CommonITILObject::getActionTime(
+                $input['entities_id'] = $_POST["entities_id"];
+                $input['name'] = __('New intervention', 'manageentities') . " : " . CommonITILObject::getActionTime(
                         $sum
                     );
-                $options['content'] .= Html::convDate(
+                $input['content'] .= Html::convDate(
                         $direct->fields['date']
                     ) . " : " . $direct->fields['name'] . " - " . getUserName(
                         $direct->fields['users_id']
                     ) . " (" . CommonITILObject::getActionTime($actiontime) . ")<br>";
+
+                $input['_users_id_assign'][] = $direct->fields['users_id'];
             }
         }
-        $newID = $ticket->add($options);
+
+        $input['content'] = Toolbox::addslashes_deep($input['content']);
+        $newID = $ticket->add($input);
 
         foreach ($items as $item => $check) {
             if ($check == "on") {
@@ -67,7 +71,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
                 }
             }
         }
-//        Toolbox::logInfo($options);
+
         Html::redirect($ticket->getLinkURL());
 
 //        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesdirecthelpdesk");
