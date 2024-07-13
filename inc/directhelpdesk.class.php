@@ -376,7 +376,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 $dataSet = json_encode($datas);
                 $hour = lcfirst(_n('Hour', 'Hours', 1));
                 $hours = lcfirst(_n('Hour', 'Hours', 2));
-                echo "<div style='margin-bottom: -50px;'>";
+                echo "<div style='margin-bottom: -50px;margin-top: 10px;'>";
                 echo $name;
                 echo "</div>";
                 echo "<div id='container$entities_id' style='min-height: 230px;width: 400px;'>";
