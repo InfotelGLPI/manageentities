@@ -45,6 +45,7 @@ if (Session::getCurrentInterface() == 'central') {
 PluginManageentitiesDirecthelpdesk::showDashboard();
 
 //TODO select entity from simplified interface ?
+$_GET['is_billed'] = 0;
 Search::show('PluginManageentitiesDirecthelpdesk');
 
 if (Session::getCurrentInterface() != 'central'
