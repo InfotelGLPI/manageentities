@@ -406,10 +406,10 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 echo "<div style='margin-bottom: -50px;margin-top: 10px;'>";
                 echo $name;
                 echo "</div>";
-                echo "<div id='container$entities_id' style='min-height: 230px;width: 400px;'>";
+                echo "<div id='container$entities_id' style='min-height: 250px;width: 400px;'>";
 
                 echo "</div>";
-                echo "<div style='margin-bottom: 10px;margin-left:10px;margin-top: -20px;'>";
+                echo "<div style='margin-bottom: 10px;margin-left:10px;'>";
                 if ($sum >= 0.4) {
                     echo "<a href=\"#\" data-bs-toggle='modal' class='btn btn-danger' data-bs-target='#createticket$entities_id'>";
                 } else {
@@ -435,7 +435,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 var option;
 
                 option = {
-height: '100%',
+//                    height: '100%',
                     tooltip: {
                         formatter: '{a} <br/>{b} : {c}%'
                     },
@@ -445,7 +445,7 @@ height: '100%',
                                 startAngle: 180,
                                 endAngle: 0,
                                 center: ['50%', '75%'],
-                                radius: '90%',
+                                radius: '95%',
                                 min: 0,
                                 max: 0.5,
                                 splitNumber: 8,

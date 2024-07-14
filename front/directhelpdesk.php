@@ -60,7 +60,7 @@ if (!isset($_GET['checkbox3'])) {
 $checkbox2State = isset($_GET['checkbox2']) ? $_GET['checkbox2'] : '0';
 $checkbox3State = isset($_GET['checkbox3']) ? $_GET['checkbox3'] : '0';
 
-echo "<div class='center' style='margin-bottom: 20px;'>";
+echo "<div class='center' style='margin-top: 10px;margin-bottom: 20px;'>";
 echo "<form>";
 
 echo "<label>";
