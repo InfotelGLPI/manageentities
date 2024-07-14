@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-13 14:33+0000\n"
+"POT-Creation-Date: 2024-07-14 09:33+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2024\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -60,7 +60,7 @@ msgstr[2] "Statuts du contrat"
 msgid "Manage your contracts"
 msgstr "Gérer vos contrats"
 
-#: setup.php:107 inc/config.class.php:263 inc/cri.class.php:39
+#: setup.php:105 inc/config.class.php:263 inc/cri.class.php:39
 #: inc/cridetail.class.php:303 inc/profile.class.php:104
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -68,18 +68,18 @@ msgstr[0] "Rapport d'intervention"
 msgstr[1] "Rapports d'intervention"
 msgstr[2] "Rapports d'intervention"
 
-#: setup.php:108 inc/report.class.php:107
+#: setup.php:106 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr "Rapport concernant l'occupation des techniciens"
 
-#: setup.php:110 inc/report.class.php:212
+#: setup.php:108 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr "Rapport concernant les déplacements des techniciens"
 
-#: setup.php:167 front/addelements.form.php:36 front/config.form.php:42
+#: setup.php:165 front/addelements.form.php:36 front/config.form.php:42
 #: front/cridetail.form.php:46 front/cridetail.form.php:49
-#: front/cridetail.form.php:51 front/directhelpdesk.form.php:98
-#: front/directhelpdesk.form.php:101 front/directhelpdesk.form.php:103
+#: front/cridetail.form.php:51 front/directhelpdesk.form.php:102
+#: front/directhelpdesk.form.php:105 front/directhelpdesk.form.php:107
 #: front/directhelpdesk.php:35 front/directhelpdesk.php:38
 #: front/directhelpdesk.php:40 front/entity.php:42 front/entity.php:45
 #: front/entity.php:47 front/generatecri.form.php:84 front/generatecri.php:35
@@ -156,6 +156,14 @@ msgstr "Génération du rapport d'intervention"
 #: inc/addelementsview.class.php:240 inc/addelementsview.class.php:3110
 msgid "New intervention"
 msgstr "Nouvelle prestation"
+
+#: front/directhelpdesk.php:69
+msgid "2 hours minimum"
+msgstr "2 heures minimum"
+
+#: front/directhelpdesk.php:76
+msgid "3 hours minimum"
+msgstr "3 heures minimum"
 
 #: front/entity.form.php:40
 msgid "No picture uploaded"
@@ -1219,7 +1227,7 @@ msgstr[0] "Client"
 msgstr[1] "Clients"
 msgstr[2] "Clients"
 
-#: inc/directhelpdesk.class.php:45 inc/directhelpdesk_ticket.class.php:40
+#: inc/directhelpdesk.class.php:48 inc/directhelpdesk_ticket.class.php:40
 #: inc/directhelpdesk_ticket.class.php:63
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
@@ -1227,19 +1235,19 @@ msgstr[0] "Intervention non facturée"
 msgstr[1] "Interventions non facturées"
 msgstr[2] "Interventions non facturées"
 
-#: inc/directhelpdesk.class.php:93
+#: inc/directhelpdesk.class.php:101
 msgid "Add an unbilled intervention"
 msgstr "Ajouter une intervention non facturée"
 
-#: inc/directhelpdesk.class.php:293
+#: inc/directhelpdesk.class.php:301
 msgid "You cannot add an intervention on this entity"
 msgstr "Vous ne pouvez pas ajouter d'intervention dans cette entité"
 
-#: inc/directhelpdesk.class.php:325
+#: inc/directhelpdesk.class.php:333
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: inc/directhelpdesk.class.php:607
+#: inc/directhelpdesk.class.php:610
 msgid "Is billed"
 msgstr "Est facturée"
 
