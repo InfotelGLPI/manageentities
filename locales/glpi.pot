@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-14 11:00+0000\n"
+"POT-Creation-Date: 2024-07-14 14:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -492,7 +492,7 @@ msgid "Document list"
 msgstr ""
 
 #: inc/addelementsview.class.php:1553 inc/contract.class.php:192
-#: inc/entity.class.php:685 inc/followup.class.php:613
+#: inc/entity.class.php:695 inc/followup.class.php:613
 #: inc/followup.class.php:698 inc/gantt.class.php:289
 msgid "Date of signature"
 msgstr ""
@@ -651,7 +651,7 @@ msgid_plural "Companies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/company.class.php:123 inc/entity.class.php:293
+#: inc/company.class.php:123 inc/entity.class.php:303
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
@@ -956,7 +956,7 @@ msgstr ""
 msgid "Associated intervention reports"
 msgstr ""
 
-#: inc/cridetail.class.php:404 inc/entity.class.php:426
+#: inc/cridetail.class.php:404 inc/entity.class.php:436
 msgid "All reports"
 msgstr ""
 
@@ -1211,11 +1211,11 @@ msgstr ""
 msgid "You cannot add an intervention on this entity"
 msgstr ""
 
-#: inc/directhelpdesk.class.php:624
+#: inc/directhelpdesk.class.php:630
 msgid "Is billed"
 msgstr ""
 
-#: inc/directhelpdesk_ticket.class.php:114
+#: inc/directhelpdesk_ticket.class.php:115
 msgid "Select"
 msgstr ""
 
@@ -1235,7 +1235,7 @@ msgstr ""
 msgid "Monthly follow-up"
 msgstr ""
 
-#: inc/entity.class.php:84 inc/entity.class.php:265
+#: inc/entity.class.php:84 inc/entity.class.php:275
 msgid "Data administrative"
 msgstr ""
 
@@ -1247,33 +1247,33 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: inc/entity.class.php:120 inc/entity.class.php:614
+#: inc/entity.class.php:120 inc/entity.class.php:624
 msgid "References"
 msgstr ""
 
-#: inc/entity.class.php:236
+#: inc/entity.class.php:246
 msgid "Portal"
 msgstr ""
 
-#: inc/entity.class.php:300
+#: inc/entity.class.php:310
 msgctxt "button"
 msgid "Update logo"
 msgstr ""
 
-#: inc/entity.class.php:383
+#: inc/entity.class.php:393
 msgctxt "button"
 msgid "Update administrative data"
 msgstr ""
 
-#: inc/entity.class.php:402
+#: inc/entity.class.php:412
 msgid "Associated interventions"
 msgstr ""
 
-#: inc/entity.class.php:419
+#: inc/entity.class.php:429
 msgid "Processed interventions"
 msgstr ""
 
-#: inc/entity.class.php:420
+#: inc/entity.class.php:430
 msgid "To be processed interventions"
 msgstr ""
 
