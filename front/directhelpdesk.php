@@ -41,8 +41,52 @@ if (Session::getCurrentInterface() == 'central') {
     }
 }
 
-//TODO select entity from simplified interface ?
-PluginManageentitiesDirecthelpdesk::showDashboard();
+echo Html::scriptBlock("
+    function reloadPageWithParam(namecheck) {
+    if (namecheck == 'checkbox3') {
+      var param = document.getElementById('checkbox3').checked ? '1' : '0';
+      window.location.href = '?checkbox3=' + param;
+    }  
+    if (namecheck == 'checkbox2') {
+      var param = document.getElementById('checkbox2').checked ? '1' : '0';
+      window.location.href = '?checkbox2=' + param;
+    }
+    }");
+
+if (!isset($_GET['checkbox3'])) {
+    $_GET['checkbox3'] = 1;
+}
+
+$checkbox2State = isset($_GET['checkbox2']) ? $_GET['checkbox2'] : '0';
+$checkbox3State = isset($_GET['checkbox3']) ? $_GET['checkbox3'] : '0';
+
+echo "<div class='center'>";
+echo "<form>";
+
+echo "<label>";
+$checked2 = $checkbox2State === '1' ? 'checked' : '';
+echo "<input type='checkbox' id='checkbox2' onclick='reloadPageWithParam(\"checkbox2\")' $checked2 >";
+echo __("2 hours minimum", "manageentities");
+echo "</label>";
+
+
+echo " <label>";
+$checked3 = $checkbox3State === '1' ? 'checked' : '';
+echo "<input type='checkbox' id='checkbox3' onclick='reloadPageWithParam(\"checkbox3\")' $checked3 >";
+echo __("3 hours minimum", "manageentities");
+echo "</label>";
+echo "</form>";
+echo "</div>";
+
+if ($checkbox3State === '1') {
+    $min = PluginManageentitiesDirecthelpdesk::THREE_HOUR;
+} else if ($checkbox2State === '1') {
+    $min = PluginManageentitiesDirecthelpdesk::TWO_HOUR;
+} else {
+    $min = 0;
+}
+
+PluginManageentitiesDirecthelpdesk::showDashboard($min);
 
 //TODO select entity from simplified interface ?
 $_GET['is_billed'] = 0;

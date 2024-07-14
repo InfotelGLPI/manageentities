@@ -60,8 +60,6 @@ function plugin_init_manageentities()
             'preUpdateDocument'
         ]
     ];
-    $PLUGIN_HOOKS['pre_item_add']['manageentities'] = ['Ticket' => ['PluginManageentitiesDirecthelpdesk', 'UpdateBilledInterventions']];
-
     $PLUGIN_HOOKS['item_update']['manageentities'] = ['Document' => ['PluginManageentitiesEntity', 'UpdateDocument']];
 
     $PLUGIN_HOOKS['item_transfer']['manageentities'] = 'plugin_item_transfer_manageentities';

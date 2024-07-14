@@ -40,6 +40,9 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
 
     public $dohistory = true;
 
+    const ONE_HOUR = 3600;
+    const TWO_HOUR = 7200;
+    const THREE_HOUR = 10800;
     public static function getTypeName($nb = 0)
     {
         return _n('Not billed intervention', 'Not billed interventions', $nb, 'manageentities');
@@ -60,21 +63,26 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
     }
 
     /**
+     * @return array
+     */
+    static function getMenuContent() {
+
+        $menu = [];
+
+        $menu['title'] = self::getMenuName();
+        $menu['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR."/front/directhelpdesk.php?checkbox3=1";
+        $menu['links']['search'] = self::getSearchURL(false);
+        $menu['icon'] = self::getIcon();
+
+        return $menu;
+    }
+
+    /**
      * @return string
      */
     static function getIcon()
     {
         return "ti ti-file-euro";
-    }
-
-    static function UpdateBilledInterventions($item)
-    {
-        global $DB;
-
-//        $item->input['_created_from_directhelpdesk'] = true;
-//        Toolbox::logInfo($item);
-//die();
-        return true;
     }
 
     /**
@@ -311,7 +319,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
         return true;
     }
 
-    static function showDashboard()
+    static function showDashboard($min_sum)
     {
         echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/echarts.js");
         echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/theme/azul.js");
@@ -343,13 +351,21 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 }
             }
             arsort($directs);
-
+            if ($min_sum > 0) {
+                foreach ($directs as $entities_id => $actiontime) {
+                    if ($actiontime < $min_sum) {
+                        unset($directs[$entities_id]);
+                        unset($techs[$entities_id]);
+                    }
+                }
+            }
             $columnCount = 0;
+            $nbcol = 4;
             foreach ($directs as $entities_id => $actiontime) {
                 $sum = 0;
                 $datas = [];
                 $tech_interventions = [];
-                if ($columnCount % 3 == 0) {
+                if ($columnCount % $nbcol == 0) {
                     if ($columnCount > 0) {
                         echo "</tr>";
                     }
@@ -390,19 +406,6 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                         ['title' =>__('Create a ticket'),
                             'display' => false]);
 
-//
-//                    Html::showSimpleForm(
-//                        PLUGIN_MANAGEENTITIES_WEBDIR . '/front/directhelpdesk.form.php',
-//                        'create_ticket',
-//                        __('Create a ticket'),
-//                        ['entities_id' => $entities_id],
-//                        '',
-//                        "class='btn btn btn-danger'",
-//                        __(
-//                            'Tag billed interventions and create a ticket ? this action is irreversible',
-//                            'manageentities'
-//                        )
-//                    );
                     echo "</div>";
                 }
                 echo "<script type='text/javascript'>
@@ -534,8 +537,8 @@ height: '100%',
                 $columnCount++;
             }
 
-            if ($columnCount % 3 != 0) {
-                for ($i = 0; $i < (3 - $columnCount % 3); $i++) {
+            if ($columnCount % $nbcol != 0) {
+                for ($i = 0; $i < ($nbcol - $columnCount % $nbcol); $i++) {
                     echo "<td></td>";
                 }
                 echo "</tr>";
