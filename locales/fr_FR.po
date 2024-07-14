@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-14 09:33+0000\n"
+"POT-Creation-Date: 2024-07-14 10:55+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2024\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -1239,15 +1239,11 @@ msgstr[2] "Interventions non facturées"
 msgid "Add an unbilled intervention"
 msgstr "Ajouter une intervention non facturée"
 
-#: inc/directhelpdesk.class.php:301
+#: inc/directhelpdesk.class.php:315
 msgid "You cannot add an intervention on this entity"
 msgstr "Vous ne pouvez pas ajouter d'intervention dans cette entité"
 
-#: inc/directhelpdesk.class.php:333
-msgid "Dashboard"
-msgstr "Dashboard"
-
-#: inc/directhelpdesk.class.php:610
+#: inc/directhelpdesk.class.php:624
 msgid "Is billed"
 msgstr "Est facturée"
 
