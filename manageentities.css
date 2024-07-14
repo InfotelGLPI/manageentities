@@ -181,7 +181,7 @@ a.manageentities_href {
 }
 
 .tech-tag-div {
-   margin-top: -20px;
+   /*margin-top: -20px;*/
    float: right;
    min-height: 50px;
 }
@@ -194,3 +194,4 @@ a.manageentities_href {
    font-size: 12px;
 
 }
+

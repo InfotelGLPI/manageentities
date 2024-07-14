@@ -216,6 +216,20 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
         return $form;
     }
 
+    public static function getDefaultSearchRequest()
+    {
+        $search = ['criteria' => [ 0 => ['field'      => 11,
+            'searchtype' => 'equals',
+            'value'      => '0'
+        ]
+        ],
+            'sort'     => 4,
+            'order'    => 'ASC'
+        ];
+
+        return $search;
+    }
+
     function prepareInputForAdd($input)
     {
         if (!$this->checkMandatoryFields($input)) {
@@ -327,12 +341,9 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
         $direct = new PluginManageentitiesDirecthelpdesk();
 
         if ($items = $direct->find(['is_billed' => 0])) {
-            echo "<table class='tab_cadre' style='width: 70%'>";
-            echo "<tr class='tab_bg_1 center'>";
-            echo "<th colspan='3'>";
-            echo __('Dashboard', 'manageentities');
-            echo "</th>";
-            echo "</tr>";
+
+            echo "<div class='container-fluid d-flex flex-column'>";
+
             $entities = $_SESSION["glpiactiveentities"];
             $directs = [];
             $techs = [];
@@ -367,12 +378,12 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 $tech_interventions = [];
                 if ($columnCount % $nbcol == 0) {
                     if ($columnCount > 0) {
-                        echo "</tr>";
+                        echo "</div>";
                     }
-                    echo "<tr class='tab_bg_1'>";
+                    echo "<div class='mb-3 row' style='margin-top: -10px;'>";
                 }
 
-                echo "<td class='center' style='border: #e9e9e9 5px solid;background: white;'>";
+                echo "<div class='form-group col-sm center' style='margin-right:5px;margin-bottom: 5px;min-width:400px;max-width:400px;border: #e9e9e9 5px solid;background: white;'>";
 
                 $actiontime = ($actiontime * 0.5) / 14400;
                 $sum += $actiontime;
@@ -398,16 +409,19 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 echo "<div id='container$entities_id' style='min-height: 230px;width: 400px;'>";
 
                 echo "</div>";
+                echo "<div style='margin-bottom: 10px;margin-left:10px;margin-top: -20px;'>";
                 if ($sum >= 0.4) {
-                    echo "<div style='margin-bottom: 10px;margin-left:-20px;'>";
-                    echo "<a href=\"#\" data-bs-toggle='modal' class='btn btn btn-danger' data-bs-target='#createticket$entities_id'>".__('Create a ticket')."</a>";
+                    echo "<a href=\"#\" data-bs-toggle='modal' class='btn btn-danger' data-bs-target='#createticket$entities_id'>";
+                } else {
+                    echo "<a href=\"#\" class='btn btn-light disabled' style='color:lightgrey!important' role='button' aria-disabled='true'>";
+                }
+                    echo __('Create a ticket');
+                    echo "</a>";
                     echo Ajax::createIframeModalWindow('createticket' . $entities_id,
                         PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/directhelpdesk.php?action=createticket&entities_id=" . $entities_id,
                         ['title' =>__('Create a ticket'),
                             'display' => false]);
-
-                    echo "</div>";
-                }
+                echo "</div>";
                 echo "<script type='text/javascript'>
 
                 var dom = document.getElementById('container$entities_id');
@@ -533,18 +547,18 @@ height: '100%',
                 }
                 echo "</div>";
 
-                echo "</td>";
+                echo "</div>";
                 $columnCount++;
             }
 
             if ($columnCount % $nbcol != 0) {
                 for ($i = 0; $i < ($nbcol - $columnCount % $nbcol); $i++) {
-                    echo "<td></td>";
+                    echo "<div class='col'></div>";
                 }
-                echo "</tr>";
+                echo "</div>";
             }
 
-            echo "</table>";
+            echo "</div>";
         }
     }
 
