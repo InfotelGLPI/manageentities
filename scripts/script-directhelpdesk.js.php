@@ -10,7 +10,7 @@ if (Session::getCurrentInterface() == 'central') {
 
 $(window).load(function() {
     const newDiv = document.createElement('div');
-    newDiv.classList.add('center');
+    //newDiv.classList.add('center');
     const newButton = document.createElement('button');
     const add_text = "<?php echo $add_text ?>";
 
@@ -20,6 +20,7 @@ $(window).load(function() {
     newButton.classList.add('btn-sm');
     newButton.classList.add('btn-primary');
     newButton.classList.add('me-1');
+    newButton.style['margin-left'] = '70px';
     newDiv.appendChild(newButton);
     // Get the existing button element with the specific class
     const existingButton = document.querySelector('.trigger-fuzzy');

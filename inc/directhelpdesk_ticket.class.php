@@ -111,32 +111,39 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
             echo "<form method='post' action='" . $direct->getFormURL() . "'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
-            echo "<th>" . __('Select', 'manageentities') . "</th>";
+            if (Session::getCurrentInterface() == 'central') {
+                echo "<th>" . __('Select', 'manageentities') . "</th>";
+            }
             echo "<th>" . __('Title') . "</th>";
             echo "<th>" . __('Date') . "</th>";
             echo "<th>" . __('Technician') . "</th>";
             echo "<th>" . __('Duration') . "</th>";
-            echo "<th>" . __('Description') . "</th>";
+//            echo "<th>" . __('Description') . "</th>";
             echo "</tr>";
 
             foreach ($items as $item) {
                 echo "<tr class='tab_bg_1'>";
-                echo "<td>";
-                $id = $item['id'];
-                Html::showCheckbox(['name' => 'select['.$id.']', 'value' => 0]);
-                echo "</td>";
+                if (Session::getCurrentInterface() == 'central') {
+                    echo "<td>";
+                    $id = $item['id'];
+                    Html::showCheckbox(['name' => 'select[' . $id . ']', 'value' => 0]);
+                    echo "</td>";
+                }
                 echo "<td>" . $item['name'] . "</td>";
                 echo "<td>" . Html::convDate($item['date']) . "</td>";
                 echo "<td>" . getUserName($item['users_id']) . "</td>";
                 echo "<td>" . CommonITILObject::getActionTime($item['actiontime']) . "</td>";
-                echo "<td>" . $item['comment'] . "</td>";
+//                echo "<td>" . $item['comment'] . "</td>";
                 echo "</tr>";
             }
-            echo "<tr><th colspan='6'>";
-            echo Html::hidden('entities_id', ['value' => $entities_id]);
-            echo "<div class='center'>";
-            echo Html::submit(_sx('button', 'Post'), ['name' => 'create_ticket', 'class' => 'btn btn-primary me-2']);
-            echo "</div></th></tr>";
+            if (Session::getCurrentInterface() == 'central') {
+                echo "<tr><th colspan='5'>";
+                echo Html::hidden('entities_id', ['value' => $entities_id]);
+                echo "<div class='center'>";
+                echo Html::submit(_sx('button', 'Post'), ['name' => 'create_ticket', 'class' => 'btn btn-primary me-2']
+                );
+                echo "</div></th></tr>";
+            }
             echo "</table>";
             Html::closeForm();
         }

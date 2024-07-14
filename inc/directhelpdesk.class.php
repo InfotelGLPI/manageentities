@@ -333,7 +333,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
         return true;
     }
 
-    static function showDashboard($min_sum)
+    static function showDashboard($min_sum = 0)
     {
         echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/echarts.js");
         echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/theme/azul.js");
@@ -409,19 +409,25 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 echo "<div id='container$entities_id' style='min-height: 250px;width: 400px;'>";
 
                 echo "</div>";
-                echo "<div style='margin-bottom: 10px;margin-left:10px;'>";
-                if ($sum >= 0.4) {
-                    echo "<a href=\"#\" data-bs-toggle='modal' class='btn btn-danger' data-bs-target='#createticket$entities_id'>";
-                } else {
-                    echo "<a href=\"#\" class='btn btn-light disabled' style='color:lightgrey!important' role='button' aria-disabled='true'>";
-                }
+                if (Session::getCurrentInterface() == 'central') {
+                    echo "<div style='margin-bottom: 10px;margin-left:10px;'>";
+                    if ($sum >= 0.4) {
+                        echo "<a href=\"#\" data-bs-toggle='modal' class='btn btn-danger' data-bs-target='#createticket$entities_id'>";
+                    } else {
+                        echo "<a href=\"#\" class='btn btn-light disabled' style='color:lightgrey!important' role='button' aria-disabled='true'>";
+                    }
                     echo __('Create a ticket');
                     echo "</a>";
-                    echo Ajax::createIframeModalWindow('createticket' . $entities_id,
+                    echo Ajax::createIframeModalWindow(
+                        'createticket' . $entities_id,
                         PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/directhelpdesk.php?action=createticket&entities_id=" . $entities_id,
-                        ['title' =>__('Create a ticket'),
-                            'display' => false]);
-                echo "</div>";
+                        [
+                            'title' => __('Create a ticket'),
+                            'display' => false
+                        ]
+                    );
+                    echo "</div>";
+                }
                 echo "<script type='text/javascript'>
 
                 var dom = document.getElementById('container$entities_id');

@@ -147,10 +147,20 @@ class PluginManageentitiesEntity extends CommonGLPI {
             case 1 :
                $followUp->showCriteriasForm($_GET);
                PluginManageentitiesFollowUp::showFollowUp($_GET);
+
+                $direct = new PluginManageentitiesDirecthelpdesk();
+                if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities], ['date'])) {
+                    echo "<h4 style='margin-top: 10px;margin-bottom: 20px;'>";
+                    echo PluginManageentitiesDirecthelpdesk::getTypeName(2);
+                    echo "</h4>";
+                    PluginManageentitiesDirecthelpdesk::showDashboard();
+                    PluginManageentitiesDirecthelpdesk_Ticket::selectDirectHeldeskForTicket($entities);
+                }
                break;
             case 2 :
                $monthly->showHeader($_GET);
                PluginManageentitiesMonthly::showMonthly($_GET);
+
                break;
             case 3 :
                PluginManageentitiesGantt::showGantt($_GET);

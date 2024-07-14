@@ -88,9 +88,6 @@ if ($checkbox3State === '1') {
 
 PluginManageentitiesDirecthelpdesk::showDashboard($min);
 
-//TODO select entity from simplified interface ?
-
-$itemtype = 'PluginManageentitiesDirecthelpdesk';
 Search::show('PluginManageentitiesDirecthelpdesk');
 
 if (Session::getCurrentInterface() != 'central'
