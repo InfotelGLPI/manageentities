@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-14 14:00+0000\n"
+"POT-Creation-Date: 2024-07-15 14:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,7 +68,7 @@ msgstr ""
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:165 front/addelements.form.php:36 front/config.form.php:42
+#: setup.php:167 front/addelements.form.php:36 front/config.form.php:42
 #: front/cridetail.form.php:46 front/cridetail.form.php:49
 #: front/cridetail.form.php:51 front/directhelpdesk.form.php:102
 #: front/directhelpdesk.form.php:105 front/directhelpdesk.form.php:107
@@ -1211,7 +1211,7 @@ msgstr ""
 msgid "You cannot add an intervention on this entity"
 msgstr ""
 
-#: inc/directhelpdesk.class.php:630
+#: inc/directhelpdesk.class.php:635
 msgid "Is billed"
 msgstr ""
 
