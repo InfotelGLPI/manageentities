@@ -118,7 +118,9 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
             echo "<th>" . __('Date') . "</th>";
             echo "<th>" . __('Technician') . "</th>";
             echo "<th>" . __('Duration') . "</th>";
-//            echo "<th>" . __('Description') . "</th>";
+            if (Session::getCurrentInterface() == 'central') {
+                echo "<th>" . __('Description') . "</th>";
+            }
             echo "</tr>";
 
             foreach ($items as $item) {
@@ -133,11 +135,13 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
                 echo "<td>" . Html::convDate($item['date']) . "</td>";
                 echo "<td>" . getUserName($item['users_id']) . "</td>";
                 echo "<td>" . CommonITILObject::getActionTime($item['actiontime']) . "</td>";
-//                echo "<td>" . $item['comment'] . "</td>";
+                if (Session::getCurrentInterface() == 'central') {
+                    echo "<td>" . $item['comment'] . "</td>";
+                }
                 echo "</tr>";
             }
             if (Session::getCurrentInterface() == 'central') {
-                echo "<tr><th colspan='5'>";
+                echo "<tr><th colspan='6'>";
                 echo Html::hidden('entities_id', ['value' => $entities_id]);
                 echo "<div class='center'>";
                 echo Html::submit(_sx('button', 'Post'), ['name' => 'create_ticket', 'class' => 'btn btn-primary me-2']

@@ -135,9 +135,11 @@ function plugin_init_manageentities()
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
             $PLUGIN_HOOKS['add_javascript']['manageentities'] = [
                 'scripts/scripts-manageentities.js',
-                'scripts/script-directhelpdesk.js.php',
                 'scripts/jquery.form.js'
             ];
+            if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
+                $PLUGIN_HOOKS['add_javascript']['manageentities'][] = 'scripts/script-directhelpdesk.js.php';
+            }
         }
 
         if (class_exists('PluginManageentitiesDirecthelpdesk')) { // only if plugin activated

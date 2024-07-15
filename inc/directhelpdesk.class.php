@@ -411,7 +411,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 echo "</div>";
                 if (Session::getCurrentInterface() == 'central') {
                     echo "<div style='margin-bottom: 10px;margin-left:10px;'>";
-                    if ($sum >= 0.4) {
+                    if ($sum >= 0.375) {
                         echo "<a href=\"#\" data-bs-toggle='modal' class='btn btn-danger' data-bs-target='#createticket$entities_id'>";
                     } else {
                         echo "<a href=\"#\" class='btn btn-light disabled' style='color:lightgrey!important' role='button' aria-disabled='true'>";
@@ -429,7 +429,11 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                     echo "</div>";
                 }
                 echo "<script type='text/javascript'>
-
+                function format(data)
+                {
+                    data = parseFloat(data).toFixed(2);
+                    return data;
+                }
                 var dom = document.getElementById('container$entities_id');
                 var myChart = echarts.init(dom, null, {
                     renderer: 'canvas',
@@ -439,14 +443,15 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                 var hours = '$hours';
                 var hour = '$hour';
                 var option;
-
                 option = {
 //                    height: '100%',
                     tooltip: {
-                        formatter: '{a} <br/>{b} : {c}%'
+//                        formatter: '{a} <br/>{b} : {c} ' + hours
+                        valueFormatter: value => format(((value * 14400)/0.5)/3600) + ' '+ hours
                     },
                     series: [
                             {
+                                name: '$name',
                                 type: 'gauge',
                                 startAngle: 180,
                                 endAngle: 0,
@@ -636,8 +641,8 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
             'table' => 'glpi_tickets',
             'field' => 'name',
             'name' => __('Linked ticket'),
-            'datatype' => 'dropdown',
-            'right' => 'all',
+            'datatype' => 'itemlink',
+            'itemlink_type' => 'Ticket',
         ];
 
 
