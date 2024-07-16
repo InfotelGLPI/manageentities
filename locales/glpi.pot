@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-15 14:29+0000\n"
+"POT-Creation-Date: 2024-07-16 06:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1211,7 +1211,7 @@ msgstr ""
 msgid "You cannot add an intervention on this entity"
 msgstr ""
 
-#: inc/directhelpdesk.class.php:635
+#: inc/directhelpdesk.class.php:636
 msgid "Is billed"
 msgstr ""
 
