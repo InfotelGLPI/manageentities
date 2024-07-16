@@ -428,6 +428,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
                     );
                     echo "</div>";
                 }
+                $name = addslashes($name);
                 echo "<script type='text/javascript'>
                 function format(data)
                 {
