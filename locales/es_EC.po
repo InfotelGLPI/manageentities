@@ -725,7 +725,7 @@ msgstr "Lista de empresas predeterminada para supervisión general"
 
 #: inc/config.class.php:142
 msgid "Display comments from the company in the CRI"
-msgstr "Mostrar comentarios de la empresa en el CRI"
+msgstr "Mostrar comentarios de la empresa en el Informe de Intervención"
 
 #: inc/config.class.php:147
 msgid "CRI generation form"
