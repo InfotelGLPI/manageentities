@@ -974,7 +974,7 @@ msgstr "Intervención con contrato"
 
 #: inc/cridetail.class.php:203
 msgid "Associated ticket"
-msgstr "Ticket asociado"
+msgstr "Caso asociado"
 
 #: inc/cridetail.class.php:400
 msgid "Associated intervention reports"
