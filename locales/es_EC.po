@@ -741,7 +741,7 @@ msgstr "Mostrar PDF"
 
 #: inc/config.class.php:159
 msgid "State of ticket created"
-msgstr "Estado de ticket creado"
+msgstr "Estado del Caso creado"
 
 #: inc/config.class.php:165
 msgid "Default duration"
