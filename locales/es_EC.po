@@ -50,9 +50,9 @@ msgstr[2] "Tipo de intervención"
 #: inc/followup.class.php:1087
 msgid "State of contract"
 msgid_plural "States of contracts"
-msgstr[0] "Situación de los contratos"
-msgstr[1] "Situación de los contratos"
-msgstr[2] "Situación de los contratos"
+msgstr[0] "Estado del contrato"
+msgstr[1] "Estados de los contratos"
+msgstr[2] "Estados de los contratos"
 
 #: hook.php:669 inc/servicecatalog.class.php:72
 #: inc/servicecatalog.class.php:79
