@@ -1188,7 +1188,7 @@ msgstr "Anualidad del cliente"
 
 #: inc/dashboard.class.php:60 inc/dashboard.class.php:239
 msgid "Tickets without CRI"
-msgstr "Tickets sin CRI"
+msgstr "Casos sin Informe de Intervención"
 
 #: inc/dashboard.class.php:63 inc/dashboard.class.php:289
 msgid "Interventions with old contract"
