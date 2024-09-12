@@ -1016,7 +1016,7 @@ msgstr "Periodos de contrato"
 
 #: inc/cridetail.class.php:854 inc/cridetail.class.php:1257
 msgid "Ticket not validated"
-msgstr "Ticket no validado"
+msgstr "Caso no validado"
 
 #: inc/cridetail.class.php:862 inc/cridetail.class.php:1264
 msgid "Type of service contract missing"
