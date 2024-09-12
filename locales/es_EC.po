@@ -729,7 +729,7 @@ msgstr "Mostrar comentarios de la empresa en el CRI"
 
 #: inc/config.class.php:147
 msgid "CRI generation form"
-msgstr "Forma de generación CRI"
+msgstr "Formulario de generación de Informe de Intervención"
 
 #: inc/config.class.php:149
 msgid "Use Non-accomplished tasks informations"
