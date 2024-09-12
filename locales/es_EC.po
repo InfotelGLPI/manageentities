@@ -139,7 +139,7 @@ msgstr "Número de horas por día"
 #: ajax/linkactions.php:48
 msgid ""
 "Only ticket accepted are taking into account for consumption calculation"
-msgstr "Solo tomar en cuenta los Casos aceptados para el cálculo de consumo"
+msgstr "Solo tomar en cuenta para el cálculo de consumo los Casos aceptados"
 
 #: front/config.form.php:61
 msgid "Please activate the plugin"
