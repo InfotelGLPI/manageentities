@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 06:15+0000\n"
+"POT-Creation-Date: 2024-11-07 07:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1197,7 +1197,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: inc/directhelpdesk.class.php:48 inc/directhelpdesk_ticket.class.php:40
-#: inc/directhelpdesk_ticket.class.php:63
+#: inc/directhelpdesk_ticket.class.php:65
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] ""
@@ -1215,7 +1215,7 @@ msgstr ""
 msgid "Is billed"
 msgstr ""
 
-#: inc/directhelpdesk_ticket.class.php:115
+#: inc/directhelpdesk_ticket.class.php:117
 msgid "Select"
 msgstr ""
 
