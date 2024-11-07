@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-15 10:28+0000\n"
+"POT-Creation-Date: 2024-07-16 06:15+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Soporte Infraestructura Standby, 2024\n"
 "Language-Team: Spanish (Ecuador) (https://app.transifex.com/infotelGLPI/teams/79674/es_EC/)\n"
@@ -33,7 +33,7 @@ msgstr "Intervención programada"
 msgid "Study and advice"
 msgstr "Estudio y asesoramiento"
 
-#: hook.php:558 inc/addelementsview.class.php:2319 inc/cri.class.php:162
+#: hook.php:567 inc/addelementsview.class.php:2319 inc/cri.class.php:162
 #: inc/cridetail.class.php:198 inc/cridetail.class.php:411
 #: inc/cridetail.class.php:508 inc/cridetail.class.php:892
 #: inc/criprice.class.php:336 inc/critype.class.php:39
@@ -43,23 +43,23 @@ msgstr[0] "Tipo de intervención"
 msgstr[1] "Tipo de intervención"
 msgstr[2] "Tipo de intervención"
 
-#: hook.php:559 inc/addelementsview.class.php:1951
+#: hook.php:568 inc/addelementsview.class.php:1951
 #: inc/contractday.class.php:137 inc/contractday.class.php:403
 #: inc/contractday.class.php:594 inc/contractstate.class.php:39
 #: inc/followup.class.php:731 inc/followup.class.php:733
 #: inc/followup.class.php:1087
 msgid "State of contract"
 msgid_plural "States of contracts"
-msgstr[0] "Situación de los contratos"
-msgstr[1] "Situación de los contratos"
-msgstr[2] "Situación de los contratos"
+msgstr[0] "Estado del contrato"
+msgstr[1] "Estados de los contratos"
+msgstr[2] "Estados de los contratos"
 
-#: hook.php:659 inc/servicecatalog.class.php:72
+#: hook.php:669 inc/servicecatalog.class.php:72
 #: inc/servicecatalog.class.php:79
 msgid "Manage your contracts"
 msgstr "Administra tus contratos"
 
-#: setup.php:89 inc/config.class.php:263 inc/cri.class.php:39
+#: setup.php:105 inc/config.class.php:263 inc/cri.class.php:39
 #: inc/cridetail.class.php:303 inc/profile.class.php:104
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -67,17 +67,20 @@ msgstr[0] "Informe de intervención"
 msgstr[1] "Informes de intervenciones"
 msgstr[2] "Informes de intervenciones"
 
-#: setup.php:90 inc/report.class.php:107
+#: setup.php:106 inc/report.class.php:107
 msgid "Report on the movement of technicians"
 msgstr "Informe sobre la movilización de técnicos"
 
-#: setup.php:91 inc/report.class.php:212
+#: setup.php:108 inc/report.class.php:212
 msgid "Report concerning the occupation of the technicians"
 msgstr "Informe sobre la ocupación de los técnicos"
 
-#: setup.php:136 front/addelements.form.php:36 front/config.form.php:42
+#: setup.php:167 front/addelements.form.php:36 front/config.form.php:42
 #: front/cridetail.form.php:46 front/cridetail.form.php:49
-#: front/cridetail.form.php:51 front/entity.php:42 front/entity.php:45
+#: front/cridetail.form.php:51 front/directhelpdesk.form.php:102
+#: front/directhelpdesk.form.php:105 front/directhelpdesk.form.php:107
+#: front/directhelpdesk.php:35 front/directhelpdesk.php:38
+#: front/directhelpdesk.php:40 front/entity.php:42 front/entity.php:45
 #: front/entity.php:47 front/generatecri.form.php:84 front/generatecri.php:35
 #: front/generatecri.php:38 front/generatecri.php:40 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
@@ -136,7 +139,7 @@ msgstr "Número de horas por día"
 #: ajax/linkactions.php:48
 msgid ""
 "Only ticket accepted are taking into account for consumption calculation"
-msgstr "Solo tomar en cuenta los Casos aceptados para el cálculo de consumo"
+msgstr "Solo tomar en cuenta para el cálculo de consumo los Casos aceptados"
 
 #: front/config.form.php:61
 msgid "Please activate the plugin"
@@ -145,6 +148,19 @@ msgstr "Por favor active el complemento"
 #: front/cri.form.php:36 inc/cri.class.php:274 inc/cridetail.class.php:313
 msgid "Generation of the intervention report"
 msgstr "Generar informe de intervención"
+
+#: front/directhelpdesk.form.php:48 inc/addelementsview.class.php:224
+#: inc/addelementsview.class.php:240 inc/addelementsview.class.php:3110
+msgid "New intervention"
+msgstr "Nueva intervención"
+
+#: front/directhelpdesk.php:69
+msgid "2 hours minimum"
+msgstr "2 horas mínimo"
+
+#: front/directhelpdesk.php:76
+msgid "3 hours minimum"
+msgstr "3 horas mínimo"
 
 #: front/entity.form.php:40
 msgid "No picture uploaded"
@@ -457,11 +473,6 @@ msgctxt "button"
 msgid "Next >"
 msgstr "Siguiente"
 
-#: inc/addelementsview.class.php:224 inc/addelementsview.class.php:240
-#: inc/addelementsview.class.php:3110
-msgid "New intervention"
-msgstr "Nueva intervención"
-
 #: inc/addelementsview.class.php:604
 msgctxt "button"
 msgid "Add only the entity"
@@ -493,7 +504,7 @@ msgid "Document list"
 msgstr "Lista de documentos"
 
 #: inc/addelementsview.class.php:1553 inc/contract.class.php:192
-#: inc/entity.class.php:685 inc/followup.class.php:613
+#: inc/entity.class.php:695 inc/followup.class.php:613
 #: inc/followup.class.php:698 inc/gantt.class.php:289
 msgid "Date of signature"
 msgstr "Fecha de la firma"
@@ -583,7 +594,7 @@ msgstr "Añadir un nuevo precio"
 #: inc/addelementsview.class.php:2323 inc/addelementsview.class.php:2430
 #: inc/criprice.class.php:45 inc/criprice.class.php:78
 #: inc/criprice.class.php:174 inc/criprice.class.php:340
-#: inc/critype.class.php:80 inc/monthly.class.php:417
+#: inc/critype.class.php:79 inc/monthly.class.php:417
 msgid "Daily rate"
 msgstr "Tarifa por día"
 
@@ -657,7 +668,7 @@ msgstr[0] "Compañias"
 msgstr[1] "Compañías"
 msgstr[2] "Compañías"
 
-#: inc/company.class.php:123 inc/entity.class.php:293
+#: inc/company.class.php:123 inc/entity.class.php:303
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (formato JPG o JPEG)"
 
@@ -714,11 +725,11 @@ msgstr "Lista de empresas predeterminada para supervisión general"
 
 #: inc/config.class.php:142
 msgid "Display comments from the company in the CRI"
-msgstr "Mostrar comentarios de la empresa en el CRI"
+msgstr "Mostrar comentarios de la empresa en el Informe de Intervención"
 
 #: inc/config.class.php:147
 msgid "CRI generation form"
-msgstr "Forma de generación CRI"
+msgstr "Formulario de generación de Informe de Intervención"
 
 #: inc/config.class.php:149
 msgid "Use Non-accomplished tasks informations"
@@ -730,7 +741,7 @@ msgstr "Mostrar PDF"
 
 #: inc/config.class.php:159
 msgid "State of ticket created"
-msgstr "Estado de ticket creado"
+msgstr "Estado del Caso creado"
 
 #: inc/config.class.php:165
 msgid "Default duration"
@@ -963,13 +974,13 @@ msgstr "Intervención con contrato"
 
 #: inc/cridetail.class.php:203
 msgid "Associated ticket"
-msgstr "Ticket asociado"
+msgstr "Caso asociado"
 
 #: inc/cridetail.class.php:400
 msgid "Associated intervention reports"
 msgstr "Informes de intervención asociados"
 
-#: inc/cridetail.class.php:404 inc/entity.class.php:426
+#: inc/cridetail.class.php:404 inc/entity.class.php:436
 msgid "All reports"
 msgstr "Todos los reportes"
 
@@ -1005,7 +1016,7 @@ msgstr "Periodos de contrato"
 
 #: inc/cridetail.class.php:854 inc/cridetail.class.php:1257
 msgid "Ticket not validated"
-msgstr "Ticket no validado"
+msgstr "Caso no validado"
 
 #: inc/cridetail.class.php:862 inc/cridetail.class.php:1264
 msgid "Type of service contract missing"
@@ -1177,7 +1188,7 @@ msgstr "Anualidad del cliente"
 
 #: inc/dashboard.class.php:60 inc/dashboard.class.php:239
 msgid "Tickets without CRI"
-msgstr "Tickets sin CRI"
+msgstr "Casos sin Informe de Intervención"
 
 #: inc/dashboard.class.php:63 inc/dashboard.class.php:289
 msgid "Interventions with old contract"
@@ -1211,6 +1222,30 @@ msgstr[0] "Cliente"
 msgstr[1] "Clientes"
 msgstr[2] "Clientes"
 
+#: inc/directhelpdesk.class.php:48 inc/directhelpdesk_ticket.class.php:40
+#: inc/directhelpdesk_ticket.class.php:63
+msgid "Not billed intervention"
+msgid_plural "Not billed interventions"
+msgstr[0] "Intervención no facturada"
+msgstr[1] "Intervenciones no facturadas"
+msgstr[2] "Intervenciones no facturadas"
+
+#: inc/directhelpdesk.class.php:101
+msgid "Add an unbilled intervention"
+msgstr "Añadir una intervención no facturada"
+
+#: inc/directhelpdesk.class.php:315
+msgid "You cannot add an intervention on this entity"
+msgstr "No puedes agregar una intervención en esta entidad"
+
+#: inc/directhelpdesk.class.php:636
+msgid "Is billed"
+msgstr "Sí se factura"
+
+#: inc/directhelpdesk_ticket.class.php:115
+msgid "Select"
+msgstr "Seleccionar"
+
 #: inc/entity.class.php:39
 msgid "Client management"
 msgid_plural "Clients management"
@@ -1228,7 +1263,7 @@ msgstr "Seguimiento general"
 msgid "Monthly follow-up"
 msgstr "Seguimiento mensual"
 
-#: inc/entity.class.php:84 inc/entity.class.php:265
+#: inc/entity.class.php:84 inc/entity.class.php:275
 msgid "Data administrative"
 msgstr "Datos administrativos"
 
@@ -1240,33 +1275,33 @@ msgstr "Planificación de clientes"
 msgid "Accounts"
 msgstr "Cuentas"
 
-#: inc/entity.class.php:120 inc/entity.class.php:614
+#: inc/entity.class.php:120 inc/entity.class.php:624
 msgid "References"
 msgstr "Referencias"
 
-#: inc/entity.class.php:236
+#: inc/entity.class.php:246
 msgid "Portal"
 msgstr "Portal"
 
-#: inc/entity.class.php:300
+#: inc/entity.class.php:310
 msgctxt "button"
 msgid "Update logo"
 msgstr "Actualizar logo"
 
-#: inc/entity.class.php:383
+#: inc/entity.class.php:393
 msgctxt "button"
 msgid "Update administrative data"
 msgstr "Actualizar datos administrativos"
 
-#: inc/entity.class.php:402
+#: inc/entity.class.php:412
 msgid "Associated interventions"
 msgstr "Intervenciones asociadas"
 
-#: inc/entity.class.php:419
+#: inc/entity.class.php:429
 msgid "Processed interventions"
 msgstr "Intervenciones procesadas"
 
-#: inc/entity.class.php:420
+#: inc/entity.class.php:430
 msgid "To be processed interventions"
 msgstr "Intervenciones a procesar"
 
