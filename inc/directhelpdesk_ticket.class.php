@@ -56,7 +56,9 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
 
     function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-        if ($item->getType() == 'Ticket') {
+        if ($item->getType() == 'Ticket'
+            && isset($_SESSION['glpiactiveprofile']['interface'])
+            && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
 
             if (self::countForTicket($item) > 0) {
                 if ($_SESSION['glpishow_count_on_tabs']) {

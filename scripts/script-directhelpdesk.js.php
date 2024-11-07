@@ -4,6 +4,7 @@ use Glpi\Event;
 include('../../../inc/includes.php');
 header('Content-Type: text/javascript');
 $add_text = __('Add');
+$add_text_collapsed = __('A');
 $modalUrl = PLUGIN_MANAGEENTITIES_WEBDIR.'/ajax/directhelpdesk.php';
 if (Session::getCurrentInterface() == 'central') {
 ?>
@@ -13,14 +14,22 @@ $(window).load(function() {
     //newDiv.classList.add('center');
     const newButton = document.createElement('button');
     const add_text = "<?php echo $add_text ?>";
+    const add_text_collapsed = "<?php echo $add_text_collapsed ?>";
 
     newButton.id ='launch-directhelpdesk-modal';
-    newButton.textContent = add_text;
+
     newButton.classList.add('btn');
     newButton.classList.add('btn-sm');
     newButton.classList.add('btn-primary');
     newButton.classList.add('me-1');
-    newButton.style['margin-left'] = '70px';
+    var collapsed = $('body').hasClass('navbar-collapsed');
+    if (collapsed == true) {
+        newButton.textContent = add_text_collapsed;
+    } else {
+        newButton.style['margin-left'] = '70px';
+        newButton.textContent = add_text;
+    }
+
     newDiv.appendChild(newButton);
     // Get the existing button element with the specific class
     const existingButton = document.querySelector('.trigger-fuzzy');
@@ -54,7 +63,22 @@ $(window).load(function() {
             modal.style.display = 'none';
         }
     }
+
+    $('.reduce-menu').on('click', function(event) {
+        var collapsed = $('body').hasClass('navbar-collapsed');
+        if (collapsed == true) {
+            newButton.style['margin-left'] = '70px';
+            newButton.textContent = add_text;
+        } else {
+            newButton.style['margin-left'] = '0px';
+            newButton.textContent = add_text_collapsed;
+        }
+
+        newDiv.appendChild(newButton);
+    });
 })
+
+
 
 <?php
 }
