@@ -133,7 +133,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
    }
 
 } else {
-   Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 Html::footer();

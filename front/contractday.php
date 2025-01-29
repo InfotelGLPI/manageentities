@@ -38,7 +38,7 @@ if ($contractday->canView()) {
    Search::show("PluginManageentitiesContractday");
 
 } else {
-   Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 Html::footer();

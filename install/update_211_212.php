@@ -43,7 +43,7 @@ function update211to212() {
    `logos_id` int(11) default 0 COMMENT 'RELATION to glpi_documents',
    PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->queryOrDie($query, "ADD glpi_plugin_manageentities_entitylogos");
+   $DB->doQuery($query, "ADD glpi_plugin_manageentities_entitylogos");
 
    $migration->executeMigration();
 

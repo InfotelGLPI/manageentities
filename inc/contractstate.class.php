@@ -39,11 +39,13 @@ class PluginManageentitiesContractState extends CommonDropdown {
       return _n('State of contract', 'States of contracts', $nb, 'manageentities');
    }
 
-   static function canView() {
+   static function canView(): bool
+   {
       return Session::haveRight(self::$rightname, READ);
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 

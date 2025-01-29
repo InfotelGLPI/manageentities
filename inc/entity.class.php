@@ -27,6 +27,8 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -43,11 +45,13 @@ class PluginManageentitiesEntity extends CommonGLPI {
       return "fas fa-user-tie";
    }
 
-   static function canView() {
+   static function canView(): bool
+   {
       return Session::haveRight(self::$rightname, READ);
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
@@ -235,7 +239,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                      SET `date_mod` = '" . $_SESSION["glpi_plugin_manageentities_date_mod"] . "'
                      WHERE `id` ='" . $item->getField('id') . "' ";
 
-         $DB->query($query);
+         $DB->doQuery($query);
       }
 
       return true;
@@ -287,7 +291,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
                 FROM `glpi_plugin_manageentities_entitylogos` 
                 WHERE `entities_id` = '" . $entity->fields["id"] . "';";
 
-         if ($result = $DB->query($query)) {
+         if ($result = $DB->doQuery($query)) {
             $number = $DB->numrows($result);
             if ($number != 0) {
                while ($ligne = $DB->fetchAssoc($result)) {
@@ -454,7 +458,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
         ORDER BY date DESC
         LIMIT 10";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $i      = 0;
       $number = $DB->numrows($result);
 
@@ -492,7 +496,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
         ORDER BY date DESC
         LIMIT 10";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $i      = 0;
       $number = $DB->numrows($result);
 
@@ -582,7 +586,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
          $menu['links']['config'] = PluginManageentitiesConfig::getFormURL(false);
          //Link to config page in admin plugins list
          $menu['config_page']  = PluginManageentitiesConfig::getFormURL(false);
-         $menu['links']['add'] = PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR . '/front/addelements.form.php';
+         $menu['links']['add'] = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php';
       }
 
       $menu['options']['contractday']['title']           = PluginManageentitiesContractDay::getTypeName(2);
@@ -625,12 +629,21 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
       echo "<table class='tab_cadre' width='60%'>";
 
-      $result = $DB->request("SELECT `entities_id`, min(`date_signature`) as signature, YEAR(`date_signature`) as year
-                  FROM `glpi_plugin_manageentities_contracts` 
-                  WHERE `date_signature` IS NOT NULL 
-                  AND `entities_id` IN (" . implode(",", $instID) . ")
-                  GROUP BY `entities_id`
-                  ORDER BY year DESC");
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'entities_id',
+//               ['MIN' => 'date_signature AS signature'],
+           QueryFunction::min('date_signature', 'signature'),
+               QueryFunction::year('date_signature', 'year')
+           ],
+           'FROM'      => 'glpi_plugin_manageentities_contracts',
+           'WHERE'     => [
+               'NOT'       => ['date_signature' => null],
+//               'entities_id'  => $instID
+           ],
+           'GROUPBY'   => 'entities_id',
+           'ORDERBY'    => 'year DESC'
+       ]);
 
       $year        = "";
       $debug       = [];
@@ -638,7 +651,7 @@ class PluginManageentitiesEntity extends CommonGLPI {
       $entity      = new Entity();
       $i           = 0;
 
-      foreach ($result as $data) {
+       foreach ($iterator as $data) {
 
          if ($entity->getFromDB($data['entities_id'])) {
             $debug[$data['entities_id']] = ['name'      => $entity->getName(),
@@ -664,9 +677,15 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
             echo "<td>" . $entity->getName() . "</td>";
 
-            if ($entity_logo->getFromDBByCrit(['entities_id' => $data['entities_id']])) {
+            if ($logos = $entity_logo->find(['entities_id' => $data['entities_id']])) {
 
-               echo "<td><img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $entity_logo->fields["logos_id"] . "'></td>";
+               echo "<td>";
+               foreach ($logos as $logo) {
+                   echo "<img height='50px' alt=\"" . __s('Picture') . "\" 
+                src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $logo["logos_id"] . "'>";
+               }
+
+                echo "</td>";
             } else {
                echo "<td></td>";
             }
@@ -676,7 +695,6 @@ class PluginManageentitiesEntity extends CommonGLPI {
                echo "</tr>";
             }
          }
-         $result->next();
       }
       if ($i % 2 != 0) {
          echo "<td colspan='2'></td>";

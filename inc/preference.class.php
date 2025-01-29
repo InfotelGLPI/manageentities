@@ -40,7 +40,7 @@ class PluginManageentitiesPreference extends CommonDBTM {
    static function checkIfPreferenceExists($users_id) {
       global $DB;
 
-      $result = $DB->query("SELECT `id`
+      $result = $DB->doQuery("SELECT `id`
                 FROM `glpi_plugin_manageentities_preferences`
                 WHERE `users_id` = '" . $users_id . "' ");
       if ($DB->numrows($result) > 0)
@@ -61,7 +61,7 @@ class PluginManageentitiesPreference extends CommonDBTM {
    static function checkPreferenceValue($users_id) {
       global $DB;
 
-      $result = $DB->query("SELECT *
+      $result = $DB->doQuery("SELECT *
                 FROM `glpi_plugin_manageentities_preferences`
                 WHERE `users_id` = '" . $users_id . "' ");
       if ($DB->numrows($result) > 0)
@@ -135,7 +135,7 @@ class PluginManageentitiesPreference extends CommonDBTM {
                WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
                GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $users  = [];
       while ($data = $DB->fetchAssoc($result)) {
          $users[$data['id']] = $data['realname'] . " " . $data['firstname'];

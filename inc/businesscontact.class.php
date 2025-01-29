@@ -35,54 +35,78 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
 
    static $rightname = 'plugin_manageentities';
 
-   static function canView() {
+   static function canView(): bool
+   {
       return Session::haveRight(self::$rightname, READ);
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
-   function addContactByDefault($users_id, $entities_id) {
-
-      global $DB;
-
-      $query  = "SELECT *
-        FROM `" . $this->getTable() . "`
-        WHERE `entities_id` = '" . $entities_id . "' ";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-
-      if ($number) {
-         while ($data = $DB->fetchArray($result)) {
-
-            $query_nodefault  = "UPDATE `" . $this->getTable() . "`
-            SET `is_default` = '0' WHERE `id` = '" . $data["id"] . "' ";
-            $result_nodefault = $DB->query($query_nodefault);
-         }
-      }
-
-      $query_default  = "UPDATE `" . $this->getTable() . "`
-        SET `is_default` = '1' WHERE `id` ='" . $users_id . "' ";
-      $result_default = $DB->query($query_default);
-   }
+//   function addContactByDefault($users_id, $entities_id) {
+//
+//      global $DB;
+//
+//      $query  = "SELECT *
+//        FROM `" . $this->getTable() . "`
+//        WHERE `entities_id` = '" . $entities_id . "' ";
+//      $result = $DB->doQuery($query);
+//      $number = $DB->numrows($result);
+//
+//      if ($number) {
+//         while ($data = $DB->fetchArray($result)) {
+//
+//            $query_nodefault  = "UPDATE `" . $this->getTable() . "`
+//            SET `is_default` = '0' WHERE `id` = '" . $data["id"] . "' ";
+//            $result_nodefault = $DB->doQuery($query_nodefault);
+//         }
+//      }
+//
+//      $query_default  = "UPDATE `" . $this->getTable() . "`
+//        SET `is_default` = '1' WHERE `id` ='" . $users_id . "' ";
+//      $result_default = $DB->doQuery($query_default);
+//   }
 
    function showBusiness($instID) {
       global $DB, $CFG_GLPI;
 
       $entitiesId = "'" . implode("', '", $instID) . "'";
-      $query      = "SELECT  `glpi_users`.*, `" . $this->getTable() . "`.`id` as users_id, `" . $this->getTable() . "`.`is_default`, `glpi_useremails`.`email`
-        FROM `" . $this->getTable() . "`, `glpi_users`, `glpi_useremails`
-        WHERE `" . $this->getTable() . "`.`users_id`=`glpi_users`.`id`
-        AND `glpi_users`.`id` = `glpi_useremails`.`users_id`
-        AND `" . $this->getTable() . "`.`entities_id` IN ($entitiesId)
-        GROUP BY `" . $this->getTable() . "`.`users_id`
-        ORDER BY `glpi_users`.`name`";
 
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+       $iterator = $DB->request([
+           'SELECT'    => [
+               $this->getTable().'.id as users_id',
+               $this->getTable().'.is_default',
+               'glpi_users.*',
+               'glpi_useremails.email',
+           ],
+           'FROM'      => $this->getTable(),
+           'LEFT JOIN'       => [
+               'glpi_users' => [
+                   'ON' => [
+                       $this->getTable() => 'users_id',
+                       'glpi_users'          => 'id'
+                   ]
+               ]
+           ],
+           'LEFT JOIN'       => [
+               'glpi_useremails' => [
+                   'ON' => [
+                       'glpi_useremails' => 'users_id',
+                       'glpi_users'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               $this->getTable().'entities_id'  => $entitiesId
+           ],
+           'GROUPBY'   => $this->getTable().'users_id',
+           'ORDERBY'   => 'glpi_users.name',
+       ]);
+
       echo "<br>";
-      if ($number) {
+       if (count($iterator) > 0) {
          echo "<form method='post' action=\"./entity.php\">";
          echo "<div align='center'><table class='tab_cadre_me center'>";
          echo "<tr><th colspan='6'>";
@@ -100,7 +124,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
             echo "<th>&nbsp;</th>";
          echo "</tr>";
 
-         while ($data = $DB->fetchArray($result)) {
+           foreach ($iterator as $data) {
             $ID = $data["users_id"];
             echo "<tr class='tab_bg_1'>";
             echo "<td class='left'><a href='" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["id"] . "'>" . $data["realname"] . " " . $data["firstname"] . "</a></td>";

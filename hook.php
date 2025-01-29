@@ -346,7 +346,7 @@ function plugin_manageentities_forceGroupBy($type) {
 function plugin_manageentities_giveItem($type, $ID, $data, $num) {
    global $DB;
 
-   $searchopt =& Search::getOptions($type);
+   $searchopt = Search::getOptions($type);
    $table     = $searchopt[$ID]["table"];
    $field     = $searchopt[$ID]["field"];
    switch ($type) {
@@ -643,7 +643,7 @@ function plugin_manageentities_postinit() {
 
 function plugin_manageentities_displayConfigItem($type, $ID, $data, $num) {
 
-   $searchopt =& Search::getOptions($type);
+   $searchopt = Search::getOptions($type);
    $table     = $searchopt[$ID]["table"];
    $field     = $searchopt[$ID]["field"];
 

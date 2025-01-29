@@ -59,7 +59,7 @@ function update202to203() {
                   AND `glpi_plugin_manageentities_contractdays`.`entities_id` = `glpi_plugin_manageentities_criprices`.`entities_id`
                   AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_critypes_id` != 0)";
 
-   if ($result = $DB->query($query)) {
+   if ($result = $DB->doQuery($query)) {
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetchAssoc($result)) {
             if (isset($check[$data['contractdays_id']]) && in_array($data['critypes_id'], $check[$data['contractdays_id']])) {
@@ -68,7 +68,7 @@ function update202to203() {
             $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
                             (`entities_id` ,`plugin_manageentities_critypes_id` ,`price` ,`plugin_manageentities_contractdays_id`, `is_default`)
                             VALUES ('" . $data['entities_id'] . "', '" . $data['critypes_id'] . "', '" . $data['price'] . "', '" . $data['contractdays_id'] . "', '1')";
-            $DB->query($query);
+            $DB->doQuery($query);
             $check[$data['contractdays_id']][] = $data['critypes_id'];
          }
       }
@@ -88,7 +88,7 @@ function update202to203() {
                   AND `glpi_plugin_manageentities_cridetails`.`entities_id` = `glpi_plugin_manageentities_criprices`.`entities_id`
                   AND `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id` != 0)";
 
-   if ($result = $DB->query($query)) {
+   if ($result = $DB->doQuery($query)) {
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetchAssoc($result)) {
             if (isset($check[$data['contractdays_id']]) && in_array($data['critypes_id'], $check[$data['contractdays_id']])) {
@@ -100,7 +100,7 @@ function update202to203() {
             $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
                       (`entities_id` ,`plugin_manageentities_critypes_id` ,`price` ,`plugin_manageentities_contractdays_id`, `is_default`)
                       VALUES ('" . $data['entities_id'] . "', '" . $data['critypes_id'] . "', '" . $data['price'] . "', '" . $data['contractdays_id'] . "', '0')";
-            $DB->query($query);
+            $DB->doQuery($query);
             $check2[$data['contractdays_id']][] = $data['critypes_id'];
          }
       }
@@ -108,7 +108,7 @@ function update202to203() {
 
    // CLEAN glpi_plugin_manageentities_criprices
    $query = "DELETE FROM `glpi_plugin_manageentities_criprices` WHERE `plugin_manageentities_contractdays_id` = 0;";
-   $DB->query($query);
+   $DB->doQuery($query);
 
    return true;
 }

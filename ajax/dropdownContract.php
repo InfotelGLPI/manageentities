@@ -33,7 +33,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_POST["contracts_id"])) {
-   exit();
+    throw new \Glpi\Exception\Http\NotFoundHttpException();
 }
 
 if (isset($_POST["contracts_id"])) {

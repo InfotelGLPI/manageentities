@@ -35,11 +35,13 @@ class PluginManageentitiesContact extends CommonDBTM {
 
    static $rightname = 'plugin_manageentities';
 
-   static function canView() {
+   static function canView(): bool
+   {
       return Session::haveRight(self::$rightname, READ);
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
@@ -59,7 +61,7 @@ class PluginManageentitiesContact extends CommonDBTM {
       $query  = "SELECT *
         FROM `" . $this->getTable() . "`
         WHERE `entities_id` = '" . $entities_id . "' ";
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
 
       if ($number) {
@@ -67,13 +69,13 @@ class PluginManageentitiesContact extends CommonDBTM {
 
             $query_nodefault  = "UPDATE `" . $this->getTable() . "`
             SET `is_default` = 0 WHERE `id` = '" . $data["id"] . "' ";
-            $result_nodefault = $DB->query($query_nodefault);
+            $result_nodefault = $DB->doQuery($query_nodefault);
          }
       }
 
       $query_default  = "UPDATE `" . $this->getTable() . "`
         SET `is_default` = 1 WHERE `id` ='" . $contacts_id . "' ";
-      $result_default = $DB->query($query_default);
+      $result_default = $DB->doQuery($query_default);
    }
 
    /**
@@ -95,7 +97,7 @@ class PluginManageentitiesContact extends CommonDBTM {
         AND `" . $this->getTable() . "`.`entities_id` IN ($entitiesId)
         ORDER BY `glpi_contacts`.`name`";
 
-      $result = $DB->query($query);
+      $result = $DB->doQuery($query);
       $number = $DB->numrows($result);
 
       if ($number) {

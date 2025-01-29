@@ -119,15 +119,27 @@ class PluginManageentitiesConfig extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` as users_id
-        FROM `glpi_plugin_manageentities_businesscontacts`, `glpi_users`
-        WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
-        GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
-
-      $result = $DB->query($query);
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'glpi_plugin_manageentities_businesscontacts.id as users_id',
+               'glpi_users.*',
+               'glpi_users.realname',
+               'glpi_users.firstname',
+           ],
+           'FROM'      => 'glpi_plugin_manageentities_businesscontacts',
+           'LEFT JOIN'       => [
+               'glpi_users' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_businesscontacts' => 'users_id',
+                       'glpi_users'          => 'id'
+                   ]
+               ]
+           ],
+           'GROUPBY'   => 'glpi_plugin_manageentities_businesscontacts.users_id',
+       ]);
 
       $users = [];
-      while ($data = $DB->fetchAssoc($result)) {
+       foreach ($iterator as $data) {
          $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
       }
       echo "<tr class='tab_bg_1 top'><td>" . __('Default Business list for general monitoring', 'manageentities') . "</td>";

@@ -58,11 +58,13 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       return "fas fa-user-tie";
    }
 
-   static function canView() {
+   static function canView(): bool
+   {
       return Session::haveRight(self::$rightname, READ);
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
@@ -242,7 +244,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       WHERE `plugin_manageentities_critypes_id` = '" . $plugin_manageentities_critypes_id . "'
       AND `contracts_id` = '" . $contracts_id . "'
       AND `entities_id` = '" . $entities_id . "' ";
-      if ($result = $DB->query($query)) {
+      if ($result = $DB->doQuery($query)) {
          if ($DB->numrows($result) != 1) {
             return false;
          }
@@ -786,7 +788,7 @@ class PluginManageentitiesContractDay extends CommonDBTM {
             $queryCheck .= " AND `glpi_plugin_manageentities_contractdays`.`id` != '" . $input['id'] . "'";
          }
 
-         if ($resultCheck = $DB->query($queryCheck)) {
+         if ($resultCheck = $DB->doQuery($queryCheck)) {
             if ($DB->numrows($resultCheck) != 0) {// If the period exists return false
                while ($data = $DB->fetchAssoc($resultCheck)) {
                   $output[] = $data;

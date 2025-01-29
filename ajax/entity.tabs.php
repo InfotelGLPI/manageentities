@@ -103,6 +103,4 @@ switch ($_POST['plugin_manageentities_tab']) {
       break;
 }
 
-Html::ajaxFooter();
-
 ?>

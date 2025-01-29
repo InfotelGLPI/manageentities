@@ -39,11 +39,13 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
       return _n('Management of task category', 'Management of task categories', $nb, 'manageentities');
    }
 
-   static function canView() {
+   static function canView(): bool
+   {
       return Session::haveRight(self::$rightname, READ);
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
@@ -80,7 +82,7 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
 
       $query = "SELECT * FROM `glpi_plugin_manageentities_taskcategories`
                WHERE `taskcategories_id` = '" . $taskcategories_id . "' ";
-      if ($result = $DB->query($query)) {
+      if ($result = $DB->doQuery($query)) {
          if ($DB->numrows($result) != 1) {
             return false;
          }

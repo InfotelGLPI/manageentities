@@ -52,7 +52,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
    }
 
 } else {
-   Html::header(__('Setup'), '', "config", "plugins");
+   Html::header(__('Setup'), '', "config", "plugin");
    echo "<div class='alert alert-important alert-warning d-flex'>";
    echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
    Html::footer();

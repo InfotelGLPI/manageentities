@@ -70,7 +70,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
         $menu = [];
 
         $menu['title'] = self::getMenuName();
-        $menu['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR."/front/directhelpdesk.php?checkbox3=1";
+        $menu['page'] = PLUGIN_MANAGEENTITIES_WEBDIR."/front/directhelpdesk.php?checkbox3=1";
         $menu['links']['search'] = self::getSearchURL(false);
         $menu['icon'] = self::getIcon();
 
@@ -335,7 +335,10 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
 
     static function showDashboard($min_sum = 0)
     {
-        echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/echarts.js");
+        global $CFG_GLPI;
+
+        echo Html::script($CFG_GLPI['root_doc']."/lib/echarts.js");
+//        Html::requireJs('charts');
         echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/theme/azul.js");
 
         $direct = new PluginManageentitiesDirecthelpdesk();

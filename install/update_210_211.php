@@ -61,7 +61,7 @@ function update210to211() {
                KEY `users_id` (`users_id`),
                KEY `entities_id` (`entities_id`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->queryOrDie($query_businesscontacts, "ADD glpi_plugin_manageentities_businesscontacts");
+   $DB->doQuery($query_businesscontacts, "ADD glpi_plugin_manageentities_businesscontacts");
 
 
    $query_companies = "
@@ -75,13 +75,13 @@ function update210to211() {
                PRIMARY KEY  (`id`),
                KEY `logo_id` (`logo_id`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->queryOrDie($query_companies, "ADD glpi_plugin_manageentities_companies");
+   $DB->doQuery($query_companies, "ADD glpi_plugin_manageentities_companies");
 
    if ($DB->fieldExists("glpi_plugin_manageentities_configs", "company_address")) {
       $dbu   = new DbUtils();
       $datas = $dbu->getAllDataFromTable("glpi_plugin_manageentities_configs");
       $data  = reset($datas);
-      $DB->queryOrDie("INSERT INTO `glpi_plugin_manageentities_companies`(`address`, `entity_id`, `recursive`) VALUES ('" . $data['company_address'] . "', 0, 1)", "Migration company_address");
+      $DB->doQuery("INSERT INTO `glpi_plugin_manageentities_companies`(`address`, `entity_id`, `recursive`) VALUES ('" . $data['company_address'] . "', 0, 1)", "Migration company_address");
 
       $migration->dropField("glpi_plugin_manageentities_configs", "company_address");
    }

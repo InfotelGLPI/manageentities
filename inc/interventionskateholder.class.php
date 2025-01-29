@@ -39,11 +39,13 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM {
       return _n('User affected', 'Users affected', $nb, 'manageentities');
    }
 
-   static function canView() {
+   static function canView(): bool
+   {
       return Session::haveRight(self::$rightname, READ);
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 

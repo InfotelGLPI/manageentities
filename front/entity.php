@@ -28,6 +28,8 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 include('../../../inc/includes.php');
 
 $PluginManageentitiesContract        = new PluginManageentitiesContract();
@@ -141,7 +143,7 @@ if ($PluginManageentitiesEntity->canView()
    }
 
 } else {
-   Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 if (Session::getCurrentInterface() != 'central'

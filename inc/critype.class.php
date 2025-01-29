@@ -39,11 +39,13 @@ class PluginManageentitiesCriType extends CommonDropdown {
       return _n('Intervention type', 'Intervention types', $nb, 'manageentities');
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
-   static function canView() {
+   static function canView(): bool
+   {
       $config = PluginManageentitiesConfig::getInstance();
       if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
          return Session::haveRight(self::$rightname, READ);

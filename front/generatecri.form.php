@@ -27,6 +27,8 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 include('../../../inc/includes.php');
 Session::checkLoginUser();
 
@@ -74,7 +76,7 @@ if (isset($_POST['generatecri'])) {
 
 
    } else {
-      Html::displayRightError();
+       throw new AccessDeniedHttpException();
    }
 
 } else if (isset($_GET['download'])) {

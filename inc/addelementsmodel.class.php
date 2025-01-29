@@ -387,7 +387,7 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $query = $arr['query'];
 
                if ($query != null) {
-                  $result = $DB->query($query);
+                  $result = $DB->doQuery($query);
                   $number = $DB->numrows($result);
                } else {
                   $number = false;
@@ -1015,31 +1015,54 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
          $sort = "`assocdate`";
       }
 
-      $query = "SELECT `glpi_documents_items`.`id` AS assocID,
-                       `glpi_documents_items`.`date_mod` AS assocdate,
-                       `glpi_entities`.`id` AS entityID,
-                       `glpi_entities`.`completename` AS entity,
-                       `glpi_documentcategories`.`completename` AS headings,
-                       `glpi_documents`.*
-                FROM `glpi_documents_items`
-                LEFT JOIN `glpi_documents`
-                          ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
-                LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                LEFT JOIN `glpi_documentcategories`
-                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
-                WHERE `glpi_documents_items`.`items_id` = '$ID'
-                      AND `glpi_documents_items`.`itemtype` = '" . $item->getType() . "' ";
+       $criteria = [
+           'SELECT' => ['glpi_documents_items.id AS assocID',
+               'glpi_documents_items.date_mod AS assocdate',
+               'glpi_entities.id AS entityID',
+               'glpi_entities.completename AS entity',
+               'glpi_documentcategories.completename AS headings',
+               'glpi_documents.*'],
+           'FROM' => 'glpi_documents_items',
+           'LEFT JOIN'       => [
+               'glpi_documents' => [
+                   'ON' => [
+                       'glpi_documents_items' => 'documents_id',
+                       'glpi_documents'          => 'id'
+                   ]
+               ]
+           ],
+           'LEFT JOIN'       => [
+               'glpi_entities' => [
+                   'ON' => [
+                       'glpi_documents' => 'entities_id',
+                       'glpi_entities'          => 'id'
+                   ]
+               ]
+           ],
+           'LEFT JOIN'       => [
+               'glpi_documentcategories' => [
+                   'ON' => [
+                       'glpi_documents' => 'documentcategories_id',
+                       'glpi_documentcategories'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE' => [
+               'glpi_documents_items.items_id' => $ID,
+               'glpi_documents_items.itemtype' => $item->getType(),
+           ],
+           'ORDERBY'   => $sort.' '.$order,
+       ];
+       if (Session::getLoginUserID()) {
+           $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+                   'glpi_documents'
+               );
+       }else {
+               // Anonymous access from FAQ
+           $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_documents.entities_id' => 0];
+           }
 
-      if (Session::getLoginUserID()) {
-         $query .= $dbu->getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
-      } else {
-         // Anonymous access from FAQ
-         $query .= " AND `glpi_documents`.`entities_id`= '0' ";
-      }
-
-      $query .= " ORDER BY $sort $order ";
-
-      return ["query"     => $query,
+      return ["query"     => $criteria,
               "rand"      => $rand,
               "linkparam" => $linkparam];
    }

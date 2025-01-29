@@ -43,11 +43,13 @@ class PluginManageentitiesGantt extends CommonDBTM {
       return "fas fa-user-tie";
    }
 
-   static function canView() {
+   static function canView(): bool
+   {
       return Session::haveRight(self::$rightname, READ);
    }
 
-   static function canCreate() {
+   static function canCreate(): bool
+   {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
@@ -77,18 +79,22 @@ class PluginManageentitiesGantt extends CommonDBTM {
 
          // Prepare for display
          $data = [];
+
          foreach ($todisplay as $key => $val) {
             $temp = [];
 
             $color = 'ganttGreen';
 
-            $beginDate = strtotime($val['from']); // or your date as well
-            $endDate   = strtotime($val['to']);
+             $date_end = strtotime($_SESSION['glpi_currenttime']);
+             $date_start = strtotime('-1 year', strtotime($date_end));
+
+            $beginDate = (!empty($val['from'])) ? strtotime($val['from']):$date_start; // or your date as well
+            $endDate   = (!empty($val['to'])) ? strtotime($val['to']):$date_end;
             $datediff  = $beginDate - $endDate;
             $nbDays    = abs(floor($datediff / (60 * 60 * 24)));
 
-            $nbMonth = ((date('Y', strtotime($val['to'])) - date('Y', strtotime($val['from']))) * 12) + (date('m', strtotime($val['to'])) - date('m', strtotime($val['from']))) + 1;
-            $nbWeeks = self::datediffInWeeks(date('m/d/Y', strtotime($val['from'])), date('m/d/Y', strtotime($val['to'])));
+            $nbMonth = ((date('Y', $endDate) - date('Y', $beginDate)) * 12) + (date('m', $endDate) - date('m', $beginDate)) + 1;
+            $nbWeeks = self::datediffInWeeks(date('m/d/Y', $beginDate), date('m/d/Y', $endDate));
             $nbHours = $nbDays * 24;
 
             $color = $val['type'] . $val['id'];
@@ -107,9 +113,9 @@ class PluginManageentitiesGantt extends CommonDBTM {
                             'desc'   => $val['desc'],
                             'values' => [[
                                             'id' => $val['id'], 'from'
-                                                 => "/Date(" . strtotime($val['from']) . "000)/",
+                                                 => "/Date(" . $beginDate . "000)/",
                                             'to'
-                                                 => "/Date(" . strtotime($val['to']) . "000)/",
+                                                 => "/Date(" . $endDate . "000)/",
                                             'desc'
                                                  => $val['desc'],
                                             'label'
@@ -146,9 +152,9 @@ class PluginManageentitiesGantt extends CommonDBTM {
                            'desc'   => $val['link'],
                            'values' => [['id'  => 't' . $val['id'],
                                          'from'
-                                               => "/Date(" . (strtotime($val['from']) * 1000) . ")/",
+                                               => "/Date(" . ($beginDate * 1000) . ")/",
                                          'to'
-                                               => "/Date(" . (strtotime($val['to']) * 1000) . ")/",
+                                               => "/Date(" . ($endDate * 1000) . ")/",
                                          'desc'
                                                => $val['desc'],
                                          'label'

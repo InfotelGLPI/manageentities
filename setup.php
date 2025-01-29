@@ -29,11 +29,15 @@
 
 define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.4');
 
+global $CFG_GLPI;
+
+use Glpi\Plugin\Hooks;
+
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
     define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
     define("PLUGIN_MANAGEENTITIES_NOTFULL_DIR", Plugin::getPhpDir("manageentities", false));
-    define("PLUGIN_MANAGEENTITIES_WEBDIR", Plugin::getWebDir("manageentities"));
-    define("PLUGIN_MANAGEENTITIES_NOTFULL_WEBDIR", Plugin::getWebDir("manageentities", false));
+    $root = $CFG_GLPI['root_doc'] . '/plugins/manageentities';
+    define("PLUGIN_MANAGEENTITIES_WEBDIR", $root);
 }
 
 include_once PLUGIN_MANAGEENTITIES_DIR . "/vendor/autoload.php";
@@ -129,16 +133,16 @@ function plugin_init_manageentities()
 
         $PLUGIN_HOOKS['post_item_form']['manageentities'] = ['PluginManageentitiesTicketTask', 'postForm'];
         // Add specific files to add to the header : javascript or css
-        $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css", "style.css"];
+        $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css", "style.css"];
 
         if (isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-            $PLUGIN_HOOKS['add_javascript']['manageentities'] = [
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'] = [
                 'scripts/scripts-manageentities.js',
                 'scripts/jquery.form.js'
             ];
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
-                $PLUGIN_HOOKS['add_javascript']['manageentities'][] = 'scripts/script-directhelpdesk.js.php';
+                $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js.php';
             }
         }
 
@@ -154,7 +158,7 @@ function plugin_init_manageentities()
 //          && strpos($_SERVER['REQUEST_URI'], 'id=') !== false
 //          && Session::haveRight("plugin_manageentities", READ)) {
 //
-//         $PLUGIN_HOOKS['add_javascript']['manageentities'][] = 'scripts/manageentities_load_scripts.js';
+//         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/manageentities_load_scripts.js';
 //      }
         $PLUGIN_HOOKS['post_init']['manageentities'] = 'plugin_manageentities_postinit';
     }
@@ -172,8 +176,8 @@ function plugin_version_manageentities()
         'homepage' => 'https://github.com/InfotelGLPI/manageentities',
         'requirements' => [
             'glpi' => [
-                'min' => '10.0.11',
-                'max' => '11.0',
+                'min' => '11.0',
+                'max' => '12.0',
                 'dev' => false
             ]
         ]

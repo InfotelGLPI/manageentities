@@ -212,21 +212,6 @@ class PluginManageentitiesProfile extends Profile
         }
     }
 
-    /**
-     * Initialize profiles, and migrate it necessary
-     */
-    public static function changeProfile()
-    {
-        global $DB;
-
-        foreach ($DB->request("SELECT *
-                           FROM `glpi_profilerights` 
-                           WHERE `profiles_id`='" . $_SESSION['glpiactiveprofile']['id'] . "' 
-                              AND `name` LIKE '%plugin_manageentities%'") as $prof) {
-            $_SESSION['glpiactiveprofile'][$prof['name']] = $prof['rights'];
-        }
-    }
-
     public static function createFirstAccess($profiles_id)
     {
         self::addDefaultProfileInfos(

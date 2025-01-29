@@ -44,7 +44,7 @@ if (Session::haveRight("ticket", CREATE)) {
    $generatecri = new PluginManageentitiesGenerateCRI();
    $generatecri->showWizard($ticket = new Ticket(), $_SESSION['glpiactive_entity']);
 } else {
-   Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 if (Session::getCurrentInterface() != 'central'

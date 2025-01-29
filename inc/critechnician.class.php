@@ -33,42 +33,65 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginManageentitiesCriTechnician extends CommonDBTM {
 
-   function checkIfTechnicianExists($ID) {
-      global $DB;
-
-      $result = $DB->query("SELECT `id`
-                FROM `" . $this->getTable() . "`
-                WHERE `tickets_id` = '" . $ID . "' ");
-      if ($DB->numrows($result) > 0)
-         return $DB->result($result, 0, "id");
-      else
-         return 0;
-   }
-
-   function addDefaultTechnician($user_id, $ID) {
-
-      $input["users_id"]   = $user_id;
-      $input["tickets_id"] = $ID;
-
-      return $this->add($input);
-   }
+//   function checkIfTechnicianExists($ID) {
+//      global $DB;
+//
+//       $iterator = $DB->request([
+//           'SELECT'    => [
+//               'id'
+//           ],
+//           'FROM'      => $this->getTable(),
+//           'WHERE'     => [
+//               'tickets_id'  => $ID
+//           ],
+//       ]);
+//
+//       if (count($iterator) > 0) {
+//           foreach ($iterator as $data) {
+//               return $data['id'];
+//           }
+//       }
+//      else
+//         return 0;
+//   }
+//
+//   function addDefaultTechnician($user_id, $ID) {
+//
+//      $input["users_id"]   = $user_id;
+//      $input["tickets_id"] = $ID;
+//
+//      return $this->add($input);
+//   }
 
    function getTechnicians($tickets_id, $remove_tag = false) {
       global $DB;
 
       $dbu    = new DbUtils();
       $techs  = [];
-      $query  = "SELECT `users_id_tech` as users_id,
-                       `glpi_users`.`name`,
-                       `glpi_users`.`realname`,
-                       `glpi_users`.`firstname`
-               FROM `glpi_tickettasks`
-               LEFT JOIN `glpi_users`
-                 ON(`glpi_users`.`id`=`glpi_tickettasks`.`users_id_tech`)
-               WHERE `tickets_id` = '" . $tickets_id . "'";
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetchArray($result)) {
+
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'glpi_tickettasks.users_id_tech as users_id',
+               'glpi_users.name',
+               'glpi_users.realname',
+               'glpi_users.firstname',
+           ],
+           'FROM'      => 'glpi_tickettasks',
+           'LEFT JOIN'       => [
+               'glpi_users' => [
+                   'ON' => [
+                       'glpi_tickettasks' => 'users_id_tech',
+                       'glpi_users'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               'tickets_id'  => $tickets_id
+           ],
+       ]);
+
+       if (count($iterator) > 0) {
+           foreach ($iterator as $data) {
             if ($data['users_id'] != 0) {
                if ($remove_tag) {
                   $techs['notremove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
@@ -81,17 +104,29 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
          }
       }
 
-      $query  = "SELECT `users_id` as users_id,
-                       `glpi_users`.`name`,
-                       `glpi_users`.`realname`,
-                       `glpi_users`.`firstname`
-               FROM `glpi_plugin_manageentities_critechnicians`
-               LEFT JOIN `glpi_users`
-                 ON(`glpi_users`.`id`=`glpi_plugin_manageentities_critechnicians`.`users_id`)
-               WHERE `tickets_id` = '" . $tickets_id . "' ";
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
-         while ($data = $DB->fetchArray($result)) {
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'glpi_plugin_manageentities_critechnicians.users_id as users_id',
+               'glpi_users.name',
+               'glpi_users.realname',
+               'glpi_users.firstname',
+           ],
+           'FROM'      => 'glpi_plugin_manageentities_critechnicians',
+           'LEFT JOIN'       => [
+               'glpi_users' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_critechnicians' => 'users_id',
+                       'glpi_users'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               'tickets_id'  => $tickets_id
+           ],
+       ]);
+
+       if (count($iterator) > 0) {
+           foreach ($iterator as $data) {
             if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {
                if ($remove_tag) {
                   $techs['remove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
