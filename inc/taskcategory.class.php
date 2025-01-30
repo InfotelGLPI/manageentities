@@ -54,11 +54,15 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
 
       if ($item->getType() == 'TaskCategory') {
          if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-            return __('Entities portal', 'manageentities');
+          return self::createTabEntry(__('Entities portal', 'manageentities'));
          }
       }
       return '';
    }
+
+    static function getIcon() {
+        return "fas fa-user-tie";
+    }
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
@@ -68,32 +72,13 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
          $ID   = $item->getField('id');
          $self = new self();
 
-         if (!$self->getFromDBByTaskCategory($ID)) {
+         if (!$self->getFromDBByCrit(['taskcategories_id' => $ID])) {
             $self->createAccess($item->getField('id'));
          }
          $self->showForm($item->getField('id'), ['target' =>
                                                     PLUGIN_MANAGEENTITIES_WEBDIR . "/front/taskcategory.form.php"]);
       }
       return true;
-   }
-
-   function getFromDBByTaskCategory($taskcategories_id) {
-      global $DB;
-
-      $query = "SELECT * FROM `glpi_plugin_manageentities_taskcategories`
-               WHERE `taskcategories_id` = '" . $taskcategories_id . "' ";
-      if ($result = $DB->doQuery($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetchAssoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         } else {
-            return false;
-         }
-      }
-      return false;
    }
 
    function createAccess($ID) {
@@ -107,7 +92,7 @@ class PluginManageentitiesTaskCategory extends CommonDBTM {
 
       $taskCategory = new TaskCategory();
       if ($ID) {
-         $this->getFromDBByTaskCategory($ID);
+          $this->getFromDBByCrit(['taskcategories_id' => $ID]);
          $taskCategory->getFromDB($ID);
          $canUpdate = $taskCategory->can($ID, UPDATE);
       }

@@ -221,7 +221,10 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
    function showSelectPriceDropdown($critypes_id, $entities_id) {
       $data = [Dropdown::EMPTY_VALUE];
       if (!empty($critypes_id)) {
-         $dataForEntity = $this->getItems(0, 0, "`" . $this->getTable() . "`.`plugin_manageentities_critypes_id`=" . $critypes_id . " AND `" . $this->getTable() . "`.`entities_id`=" . $entities_id);
+
+          $condition = [$this->getTable().'.plugin_manageentities_critypes_id' => $critypes_id,
+              $this->getTable().'.entities_id' => $entities_id,];
+         $dataForEntity = $this->getItems(0, 0, $condition);
          if (!empty($dataForEntity)) {
             foreach ($dataForEntity as $val) {
                $data[$val['price']] = Html::formatNumber($val['price']);
@@ -390,81 +393,69 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
     * @global type  $DB
     *
     */
-   function getItems($contractdays_id = 0, $cri_types_id = 0, $condition = '') {
+   function getItems($contractdays_id = 0, $cri_types_id = 0, $condition = []) {
       global $DB;
 
       $output = [];
 
-      $query = "SELECT `" . $this->getTable() . "`.`id`,
-                       `" . $this->getTable() . "`.`price`,
-                       `" . $this->getTable() . "`.`plugin_manageentities_contractdays_id`,
-                       `glpi_plugin_manageentities_contractdays`.`name` as contractdays_name,
-                       `" . $this->getTable() . "`.`plugin_manageentities_critypes_id`,
-                       `" . $this->getTable() . "`.`entities_id`,
-                       `glpi_entities`.`completename` as entities_name,   
-                       `" . $this->getTable() . "`.`is_default`,
-                       `glpi_plugin_manageentities_critypes`.`name` as critypes_name
-               FROM `" . $this->getTable() . "`
-               INNER JOIN `glpi_plugin_manageentities_critypes`
-                  ON(`" . $this->getTable() . "`.`plugin_manageentities_critypes_id` = `glpi_plugin_manageentities_critypes`.`id`)
-               INNER JOIN `glpi_plugin_manageentities_contractdays`
-                  ON(`" . $this->getTable() . "`.`plugin_manageentities_contractdays_id` = `glpi_plugin_manageentities_contractdays`.`id`)
-               INNER JOIN `glpi_entities`
-                  ON(`" . $this->getTable() . "`.`entities_id` = `glpi_entities`.`id`)";
+       $criteria = [
+           'SELECT'    => [
+               $this->getTable().'.id',
+               $this->getTable().'.price',
+               $this->getTable().'.plugin_manageentities_contractdays_id',
+               $this->getTable().'.plugin_manageentities_critypes_id',
+               $this->getTable().'.entities_id',
+               $this->getTable().'.is_default',
+               'glpi_plugin_manageentities_contractdays.name as contractdays_name',
+               'glpi_entities.completename as entities_name',
+               'glpi_plugin_manageentities_critypes.name as critypes_name',
+           ],
+           'FROM'      => $this->getTable(),
+           'INNER JOIN'       => [
+               'glpi_plugin_manageentities_critypes' => [
+                   'ON' => [
+                       $this->getTable() => 'plugin_manageentities_critypes_id',
+                       'glpi_plugin_manageentities_critypes'          => 'id'
+                   ]
+               ],
+               'glpi_plugin_manageentities_contractdays' => [
+                   'ON' => [
+                       $this->getTable() => 'plugin_manageentities_contractdays_id',
+                       'glpi_plugin_manageentities_contractdays'          => 'id'
+                   ]
+               ],
+               'glpi_entities' => [
+                   'ON' => [
+                       $this->getTable() => 'entities_id',
+                       'glpi_entities'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [],
+           'ORDERBY'   => ['glpi_plugin_manageentities_critypes.name'],
+       ];
 
       if ($contractdays_id > 0) {
-         $query .= " AND `" . $this->getTable() . "`.`plugin_manageentities_contractdays_id` = '" . $contractdays_id . "' ";
+          $criteria['WHERE'] = $criteria['WHERE'] + [$this->getTable().'.plugin_manageentities_contractdays_id' => $contractdays_id];
       }
 
       if ($cri_types_id > 0) {
-         $query .= " AND `" . $this->getTable() . "`.`plugin_manageentities_critypes_id` = '" . $cri_types_id . "' ";
+          $criteria['WHERE'] = $criteria['WHERE'] + [$this->getTable().'.plugin_manageentities_critypes_id' => $cri_types_id];
       }
 
-      if (!empty($condition)) {
-         $query .= "AND " . $condition;
+      if (count($condition) > 0) {
+          $criteria['WHERE'] = $criteria['WHERE'] + $condition;
       }
 
-      $query .= " ORDER BY `glpi_plugin_manageentities_critypes`.`name`";
+       $iterator = $DB->request($criteria);
 
-      $result = $DB->doQuery($query);
-      if ($DB->numrows($result) != 0) {
-         while ($data = $DB->fetchAssoc($result)) {
+       if (count($iterator) > 0) {
+           foreach ($iterator as $data) {
             $output[$data['id']] = $data;
          }
       }
 
       return $output;
-   }
-
-   /**
-    * Get price data for cri types
-    *
-    * @param type  $plugin_manageentities_critypes_id
-    * @param type  $entities_id
-    *
-    * @return boolean
-    * @global type $DB
-    *
-    */
-   function getFromDBbyType($plugin_manageentities_critypes_id, $entities_id) {
-      global $DB;
-
-      $query = "SELECT *
-      FROM `" . $this->getTable() . "`
-      WHERE `plugin_manageentities_critypes_id` = '" . $plugin_manageentities_critypes_id . "'
-      AND `entities_id` = '" . $entities_id . "' ";
-      if ($result = $DB->doQuery($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetchAssoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         } else {
-            return false;
-         }
-      }
-      return false;
    }
 
 
@@ -475,7 +466,8 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
     */
    function addCriPrice($values) {
 
-      if ($this->getFromDBbyType($values["plugin_manageentities_critypes_id"], $values["entities_id"])) {
+      if ($this->getFromDBByCrit(['plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
+          'entities_id' => $values["entities_id"]])) {
          $this->update(['id'    => $this->fields['id'],
                         'price' => $values["price"]]);
 
@@ -495,7 +487,6 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
     *
     */
    function setDefault($input) {
-      global $DB;
 
       if (isset($input['is_default']) && $input['is_default']) {
          $data     = $this->getItems($input['plugin_manageentities_contractdays_id']);
@@ -509,8 +500,9 @@ class PluginManageentitiesCriPrice extends CommonDBTM {
             }
          }
 
-         $query = "UPDATE `" . $this->getTable() . "` SET `is_default` = 0 WHERE `id` IN ('" . implode("','", $items_id) . "');";
-         $DB->doQuery($query);
+          foreach ($items_id as $key => $val) {
+              $this->update(['is_default' => 0, 'id' => $val]);
+          }
       }
 
       return $input;

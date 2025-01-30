@@ -64,9 +64,9 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     return self::createTabEntry(_n('Not billed intervention', 'Not billed interventions',self::countForTicket($item) ,'manageentities'), self::countForTicket($item));
                 }
-                return self::getTypeName(self::countForTicket($item));
+                return self::createTabEntry(self::getTypeName(self::countForTicket($item)));
             } else {
-                return self::getTypeName(1);
+                return self::createTabEntry(self::getTypeName(1));
             }
         }
         return '';

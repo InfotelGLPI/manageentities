@@ -387,8 +387,8 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                $query = $arr['query'];
 
                if ($query != null) {
-                  $result = $DB->doQuery($query);
-                  $number = $DB->numrows($result);
+                   $iterator = $DB->request($query);
+                  $number = count($iterator);
                } else {
                   $number = false;
                }
@@ -1029,17 +1029,13 @@ class PluginManageentitiesAddElementsModel extends CommonGLPIModel {
                        'glpi_documents_items' => 'documents_id',
                        'glpi_documents'          => 'id'
                    ]
-               ]
-           ],
-           'LEFT JOIN'       => [
+               ],
                'glpi_entities' => [
                    'ON' => [
                        'glpi_documents' => 'entities_id',
                        'glpi_entities'          => 'id'
                    ]
-               ]
-           ],
-           'LEFT JOIN'       => [
+               ],
                'glpi_documentcategories' => [
                    'ON' => [
                        'glpi_documents' => 'documentcategories_id',

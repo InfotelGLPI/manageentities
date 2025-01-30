@@ -40,13 +40,23 @@ class PluginManageentitiesPreference extends CommonDBTM {
    static function checkIfPreferenceExists($users_id) {
       global $DB;
 
-      $result = $DB->doQuery("SELECT `id`
-                FROM `glpi_plugin_manageentities_preferences`
-                WHERE `users_id` = '" . $users_id . "' ");
-      if ($DB->numrows($result) > 0)
-         return $DB->result($result, 0, "id");
-      else
-         return 0;
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'id'
+           ],
+           'FROM'      => 'glpi_plugin_manageentities_preferences',
+           'WHERE'     => [
+               'users_id'  => $users_id
+           ],
+       ]);
+
+       if (count($iterator) > 0) {
+           foreach ($iterator as $data) {
+               return $data["id"];
+           }
+       }
+       return 0;
+
    }
 
    static function addDefaultPreference($users_id) {
@@ -61,13 +71,22 @@ class PluginManageentitiesPreference extends CommonDBTM {
    static function checkPreferenceValue($users_id) {
       global $DB;
 
-      $result = $DB->doQuery("SELECT *
-                FROM `glpi_plugin_manageentities_preferences`
-                WHERE `users_id` = '" . $users_id . "' ");
-      if ($DB->numrows($result) > 0)
-         return $DB->result($result, 0, "show_on_load");
-      else
-         return 0;
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'show_on_load'
+           ],
+           'FROM'      => 'glpi_plugin_manageentities_preferences',
+           'WHERE'     => [
+               'users_id'  => $users_id
+           ],
+       ]);
+
+       if (count($iterator) > 0) {
+           foreach ($iterator as $data) {
+               return $data["show_on_load"];
+           }
+       }
+       return 0;
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -129,15 +148,27 @@ class PluginManageentitiesPreference extends CommonDBTM {
       }
       echo "</td></tr>";
 
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'glpi_plugin_manageentities_businesscontacts.id as users_id',
+               'glpi_users.*',
+               'glpi_users.realname',
+               'glpi_users.firstname',
+           ],
+           'FROM'      => 'glpi_plugin_manageentities_businesscontacts',
+           'LEFT JOIN'       => [
+               'glpi_users' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_businesscontacts' => 'users_id',
+                       'glpi_users'          => 'id'
+                   ]
+               ]
+           ],
+           'GROUPBY'   => 'glpi_plugin_manageentities_businesscontacts.users_id',
+       ]);
 
-      $query = "SELECT  `glpi_users`.*, `glpi_plugin_manageentities_businesscontacts`.`id` as users_id
-               FROM `glpi_plugin_manageentities_businesscontacts`, `glpi_users`
-               WHERE `glpi_plugin_manageentities_businesscontacts`.`users_id`=`glpi_users`.`id`
-               GROUP BY `glpi_plugin_manageentities_businesscontacts`.`users_id`";
-
-      $result = $DB->doQuery($query);
-      $users  = [];
-      while ($data = $DB->fetchAssoc($result)) {
+       $users = [];
+       foreach ($iterator as $data) {
          $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
       }
       echo "<tr class='tab_bg_1 center'><td>" . __('Default list of Business for the general monitoring', 'manageentities') . "</td>";

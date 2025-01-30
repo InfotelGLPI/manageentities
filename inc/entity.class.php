@@ -28,6 +28,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\RichText\RichText;
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -74,28 +75,26 @@ class PluginManageentitiesEntity extends CommonGLPI {
          $config                  = new PluginManageentitiesConfig();
 
          if ($followUp->canView()) {
-            $tabs[1] = __('General follow-up', 'manageentities');
+            $tabs[1] = PluginManageentitiesFollowUp::createTabEntry(__('General follow-up', 'manageentities'));
          }
 
          if ($monthly->canView() && Session::getCurrentInterface() == 'central') {
-            $tabs[2] = __('Monthly follow-up', 'manageentities');
+            $tabs[2] = PluginManageentitiesMonthly::createTabEntry(__('Monthly follow-up', 'manageentities'));
          }
 
          if ($gantt->canView()) {
-            $tabs[3] = __('GANTT');
+            $tabs[3] = PluginManageentitiesGantt::createTabEntry(__('GANTT'));
          }
 
-         $tabs[4] = __('Data administrative', 'manageentities');
+         $tabs[4] = self::createTabEntry(__('Data administrative', 'manageentities'));
 
          if (Session::haveRight("contract", READ)) {
-            $tabs[5] = _n('Contract', 'Contracts', 2);
+            $tabs[5] = PluginManageentitiesContract::createTabEntry(_n('Contract', 'Contracts', 2));
          }
 
-         if (!Session::haveRight("ticket", Ticket::READALL)
-             && !Session::haveRight("ticket", Ticket::READASSIGN)
-             && Session::getCurrentInterface() != 'helpdesk') {
-            $tabs[6] = __('Client planning', 'manageentities');
-         }
+//          if (Session::getCurrentInterface() != 'helpdesk') {
+//            $tabs[6] = self::createTabEntry(__('Client planning', 'manageentities'));
+//         }
 
          // ajout de la configuration du plugin
          $config = PluginManageentitiesConfig::getInstance();
@@ -103,25 +102,25 @@ class PluginManageentitiesEntity extends CommonGLPI {
              || (Session::getCurrentInterface() == 'helpdesk'
                  && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
             if ($PluginManageentitiesCri->canView()) {
-               $tabs[7] = __("Interventions reports", 'manageentities');
+               $tabs[7] = PluginManageentitiesCriDetail::createTabEntry(__("Interventions reports", 'manageentities'));
             }
          } elseif (Session::getCurrentInterface() == 'helpdesk'
                    && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
-            $tabs[7] = _n('Period of contract', 'Periods of contract', 2, 'manageentities');
+            $tabs[7] = PluginManageentitiesCriDetail::createTabEntry(_n('Period of contract', 'Periods of contract', 2, 'manageentities'));
          }
 
          if (Session::haveRight("document", UPDATE)) {
-            $tabs[8] = _n('Document', 'Documents', 2);
+            $tabs[8] = Document::createTabEntry(_n('Document', 'Documents', 2));
          }
 
          if (Plugin::isPluginActive('accounts')) {
             if (Session::haveRight("plugin_accounts", READ)) {
-               $tabs[10] = __('Accounts', 'manageentities');
+               $tabs[10] = PluginAccountsAccount::createTabEntry(__('Accounts', 'manageentities'));
             }
          }
 
          if (Session::getCurrentInterface() != 'helpdesk' && $this->canview()) {
-            $tabs[11] = __('References', 'manageentities');
+            $tabs[11] = self::createTabEntry(__('References', 'manageentities'));
          }
          return $tabs;
       }
@@ -164,7 +163,6 @@ class PluginManageentitiesEntity extends CommonGLPI {
             case 2 :
                $monthly->showHeader($_GET);
                PluginManageentitiesMonthly::showMonthly($_GET);
-
                break;
             case 3 :
                PluginManageentitiesGantt::showGantt($_GET);
@@ -176,14 +174,14 @@ class PluginManageentitiesEntity extends CommonGLPI {
                $PluginManageentitiesContract->showContracts($entities);
                break;
             case 6:
-               $PluginManageentitiesEntity->showTickets($entities);
+//               $PluginManageentitiesEntity->showTickets($entities);
                break;
             case 7:
                $config = PluginManageentitiesConfig::getInstance();
                if ((Session::getCurrentInterface() == 'central')
                    || (Session::getCurrentInterface() == 'helpdesk'
                        && $config->fields['choice_intervention'] == PluginManageentitiesConfig::REPORT_INTERVENTION)) {
-                  $PluginManageentitiesCriDetail->showReports(0, 0, $entities, ['condition' => "`glpi_plugin_manageentities_contractstates`.`is_closed` != 1 "]);
+                  $PluginManageentitiesCriDetail->showReports(0, 0, $entities, ['glpi_plugin_manageentities_contractstates.is_closed' => ['<>', 1]]);
                } elseif (Session::getCurrentInterface() == 'helpdesk'
                          && $config->fields['choice_intervention'] == PluginManageentitiesConfig::PERIOD_INTERVENTION) {
                   $PluginManageentitiesCriDetail->showPeriod(0, 0, $entities);
@@ -233,13 +231,12 @@ class PluginManageentitiesEntity extends CommonGLPI {
       global $DB;
 
       $config = new PluginManageentitiesConfig();
-      if ($item->getField('id') && $config->GetfromDB(1)) {
+      if ($item->getField('id')
+          && $config->GetfromDB(1)) {
 
-         $query = "UPDATE `glpi_documents`
-                     SET `date_mod` = '" . $_SESSION["glpi_plugin_manageentities_date_mod"] . "'
-                     WHERE `id` ='" . $item->getField('id') . "' ";
-
-         $DB->doQuery($query);
+          $doc = new Document();
+          $doc->update(['id' => $item->getField('id'),
+              'date_mod' => $_SESSION["glpi_plugin_manageentities_date_mod"]]);
       }
 
       return true;
@@ -287,18 +284,10 @@ class PluginManageentitiesEntity extends CommonGLPI {
          echo "</th>";
          echo "<td>";
 
-         $query = "SELECT * 
-                FROM `glpi_plugin_manageentities_entitylogos` 
-                WHERE `entities_id` = '" . $entity->fields["id"] . "';";
-
-         if ($result = $DB->doQuery($query)) {
-            $number = $DB->numrows($result);
-            if ($number != 0) {
-               while ($ligne = $DB->fetchAssoc($result)) {
-                  echo "<img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $ligne["logos_id"] . "'>";
-               }
-            }
-         }
+          $logo = new PluginManageentitiesEntityLogo();
+          if ($logo->getFromDBbyCrit(['entities_id' => $entity->fields["id"]])) {
+              echo "<img height='50px' alt=\"" . __s('Picture') . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $logo->fields["logos_id"] . "'>";
+          }
          echo "</td>";
 
 
@@ -410,169 +399,180 @@ class PluginManageentitiesEntity extends CommonGLPI {
 
    }
 
-   function showTickets($instID) {
-      global $DB, $CFG_GLPI;
+//   function showTickets($instID) {
+//      global $DB, $CFG_GLPI;
+//
+//       if (Session::getCurrentInterface() == 'helpdesk') {
+//           return false;
+//       }
+//
+//      PluginManageentitiesEntity::showManageentitiesHeader(__('Associated interventions', 'manageentities'));
+//
+//      if (!Session::haveRight("ticket", Ticket::READALL)
+//          && !Session::haveRight("ticket", Ticket::READASSIGN)
+//          && Session::getCurrentInterface() != 'helpdesk') {
+//         return false;
+//      }
+//
+//      $config = PluginManageentitiesConfig::getInstance();
+//
+//      echo "<div align='spaced'><table class='tab_cadrehov'>";
+//      echo "<tr><th>" . __('Processed interventions', 'manageentities');
+//      echo "</th><th>" . __('To be processed interventions', 'manageentities');
+//
+//       echo " <a href='" . $CFG_GLPI["root_doc"] . "/front/ticket.php?is_deleted=0&field[0]=12&searchtype[0]=equals&contains[0]=notold&itemtype=Ticket&start=0'>";
+//       echo __('All reports', 'manageentities') . "</a>";
+//
+//      echo "</th></tr>";
+//
+//      //Tickets solved or closed with CRI
+//      echo "<tr class='tab_bg_1'><td width='50%' valign='top'>";
+//
+//      //avec CRI
+//
+//       $statuses = [Ticket::SOLVED,
+//           Ticket::CLOSED];
+//
+//       $criteriaclosed = [
+//           'SELECT'    => [
+//               'id'
+//           ],
+//           'FROM'      => 'glpi_tickets',
+//           'WHERE'     => [
+//               'is_deleted'  => 0,
+//               'entities_id' => $instID,
+//               'status'     => $statuses
+//           ],
+//           'GROUPBY'   => 'id',
+//           'ORDERBY'   => 'date DESC',
+//           'LIMIT'    => '10'
+//       ];
+//
+//       if ($config->fields['needvalidationforcri'] == 1) {
+//           $criteriaclosed['WHERE'] = $criteriaclosed['WHERE'] + ['glpi_tickets.global_validation' => CommonITILValidation::ACCEPTED];
+//       }
+//
+//       $iteratorclosed = $DB->request($criteriaclosed);
+//
+//       if (count($iteratorclosed) > 0) {
+//         echo "<table class='plugin_manageentities_tab_cadrehov' width='100%'>";
+//
+//         echo "<tr><th></th>";
+//         echo "<th>" . __('Title') . "</th>";
+//         echo "<th width='75px'>" . __('Requester') . "</th>";
+//         echo "<th>" . __('Status') . "</th>";
+//         echo "<th>" . __('Description') . "</th></tr>";
+//         Session::initNavigateListItems("Ticket");
+//
+//           foreach ($iteratorclosed as $dataclosed) {
+//            $ID = $dataclosed['id'];
+//            Session::addToNavigateListItems("Ticket", $ID);
+//            $this->showJobVeryShort($ID);
+//         }
+//         echo "</table>";
+//      }
+//
+//      //Tickets assign, plan, new or waiting
+//      echo "</td><td width='50%' valign='top'>";
+//
+//      $statuses = [Ticket::INCOMING,
+//          Ticket::PLANNED,
+//          Ticket::ASSIGNED,
+//          Ticket::WAITING];
+//
+//       $iterator = $DB->request([
+//           'SELECT'    => [
+//               'id'
+//           ],
+//           'FROM'      => 'glpi_tickets',
+//           'WHERE'     => [
+//               'is_deleted'  => 0,
+//               'entities_id' => $instID,
+//               'status'     => $statuses
+//           ],
+//           'ORDERBY'   => 'date DESC',
+//           'LIMIT'    => '10'
+//       ]);
+//
+//       if (count($iterator) > 0) {
+//         echo "<table class='plugin_manageentities_tab_cadrehov' width='100%'>";
+//
+//         echo "<tr><th></th>";
+//         echo "<th>" . __('Title') . "</th>";
+//         echo "<th width='75px'>" . __('Requester') . "</th>";
+//         echo "<th>" . __('Status') . "</th>";
+//         echo "<th>" . __('Description') . "</th></tr>";
+//           foreach ($iterator as $data) {
+//            $ID = $data['id'];
+//            $this->showJobVeryShort($ID);
+//         }
+//         echo "</table>";
+//      }
+//
+//      echo "</td></tr>";
+//      echo "</table></div>";
+//   }
 
-      PluginManageentitiesEntity::showManageentitiesHeader(__('Associated interventions', 'manageentities'));
-
-      $instID = "'" . implode("', '", $instID) . "'";
-
-      if (!Session::haveRight("ticket", Ticket::READALL)
-          && !Session::haveRight("ticket", Ticket::READASSIGN)
-          && Session::getCurrentInterface() != 'helpdesk') {
-         return false;
-      }
-
-      $config = PluginManageentitiesConfig::getInstance();
-      $and    = '';
-      if ($config->fields['needvalidationforcri'] == 1) {
-         $and = " AND `glpi_tickets`.`global_validation` = 'accepted' ";
-      }
-
-      echo "<div align='spaced'><table class='tab_cadrehov'>";
-      echo "<tr><th>" . __('Processed interventions', 'manageentities');
-      echo "</th><th>" . __('To be processed interventions', 'manageentities');
-
-      if (Session::haveRight("ticket", Ticket::READALL)
-          || Session::haveRight("ticket", Ticket::READASSIGN)
-          || Session::getCurrentInterface() == 'helpdesk') {
-         echo " <a href='" . $CFG_GLPI["root_doc"] . "/front/ticket.php?is_deleted=0&field[0]=12&searchtype[0]=equals&contains[0]=notold&itemtype=Ticket&start=0'>";
-         echo __('All reports', 'manageentities') . "</a>";
-      }
-
-      echo "</th></tr>";
-
-      //Tickets solved or closed with CRI
-      echo "<tr class='tab_bg_1'><td width='50%' valign='top'>";
-
-      //avec CRI
-      $query = "SELECT `glpi_tickets`.`id`
-        FROM `glpi_tickets`
-        LEFT JOIN `glpi_documents` ON (`glpi_documents`.`tickets_id`
-                     = `glpi_tickets`.`id`)
-        WHERE `glpi_tickets`.`entities_id` IN (" . $instID . ")
-        AND (`status` = '" . Ticket::SOLVED . "' OR `status` = '" . Ticket::CLOSED . "')
-        AND `glpi_tickets`.`is_deleted` = 0
-         $and
-        GROUP BY `id`
-        ORDER BY date DESC
-        LIMIT 10";
-
-      $result = $DB->doQuery($query);
-      $i      = 0;
-      $number = $DB->numrows($result);
-
-      if ($number > 0) {
-         echo "<table class='plugin_manageentities_tab_cadrehov' width='100%'>";
-
-         echo "<tr><th></th>";
-         echo "<th>" . __('Title') . "</th>";
-         echo "<th width='75px'>" . __('Requester') . "</th>";
-         echo "<th>" . __('Status') . "</th>";
-         echo "<th>" . __('Description') . "</th></tr>";
-         Session::initNavigateListItems("Ticket");
-
-         while ($i < $number) {
-            $ID = $DB->result($result, $i, "id");
-            Session::addToNavigateListItems("Ticket", $ID);
-            $this->showJobVeryShort($ID);
-            $i++;
-         }
-         echo "</table>";
-      }
-
-      //Tickets assign, plan, new or waiting
-      echo "</td><td width='50%' valign='top'>";
-
-      $query = "SELECT `id`
-        FROM `glpi_tickets`
-        WHERE `entities_id` IN (" . $instID . ")
-        AND (`status` = '" . Ticket::INCOMING . "' 
-            OR `status` = '" . Ticket::PLANNED . "' 
-            OR `status` = '" . Ticket::ASSIGNED . "' 
-            OR `status` = '" . Ticket::WAITING . "')
-        AND `is_deleted` = 0
-        
-        ORDER BY date DESC
-        LIMIT 10";
-
-      $result = $DB->doQuery($query);
-      $i      = 0;
-      $number = $DB->numrows($result);
-
-      if ($number > 0) {
-         echo "<table class='plugin_manageentities_tab_cadrehov' width='100%'>";
-
-         echo "<tr><th></th>";
-         echo "<th>" . __('Title') . "</th>";
-         echo "<th width='75px'>" . __('Requester') . "</th>";
-         echo "<th>" . __('Status') . "</th>";
-         echo "<th>" . __('Description') . "</th></tr>";
-         while ($i < $number) {
-            $ID = $DB->result($result, $i, "id");
-            $this->showJobVeryShort($ID);
-            $i++;
-         }
-         echo "</table>";
-      }
-
-      echo "</td></tr>";
-      echo "</table></div>";
-   }
-
-   function showJobVeryShort($ID) {
-      global $CFG_GLPI;
-
-      $dbu = new DbUtils();
-      // Prints a job in short form
-      // Should be called in a <table>-segment
-      // Print links or not in case of user view
-
-      // Make new job object and fill it from database, if success, print it
-      $job       = new Ticket;
-      $viewusers = Session::haveRight("user", READ);
-      if ($job->getfromDBwithData($ID, 0)) {
-         $bgcolor = $CFG_GLPI["priority_" . $job->fields["priority"]];
-
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' bgcolor='$bgcolor' >id: " . $job->fields["id"] . "</td>";
-
-         echo "<td>";
-         echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" . $job->fields["id"] . "\">";
-         echo $job->fields["name"] . "</a></td>";
-
-         echo "<td class='center b'>";
-         $users = $job->getUsers(CommonItilActor::REQUESTER);
-         if (count($users)) {
-            foreach ($users as $d) {
-               $userdata = $dbu->getUserName($d['users_id'], 2);
-               echo "<strong>" . $userdata['name'] . "</strong>&nbsp;";
-               if ($viewusers) {
-                  Html::showToolTip($userdata["comment"], ['link' => $userdata["link"]]);
-               }
-               echo "<br>";
-            }
-         }
-
-         $groups = $job->getGroups(CommonItilActor::REQUESTER);
-         if (count($groups)) {
-            foreach ($groups as $k => $d) {
-               echo Dropdown::getDropdownName("glpi_groups", $k);
-               echo "<br>";
-            }
-         }
-
-         echo "</td>";
-         echo "<td class='center'>" . Ticket::getStatus($job->fields["status"]) . "</td>";
-
-         echo "<td>" . Html::resume_text($job->fields["content"], $CFG_GLPI["cut"]);
-         echo "</td>";
-         // Finish Line
-         echo "</tr>";
-      } else {
-         echo "<tr class='tab_bg_2'><td colspan='6' ><i>" . __('No ticket in progress.') . "</i></td></tr>";
-      }
-   }
+//   function showJobVeryShort($ID) {
+//      global $CFG_GLPI;
+//
+//      $dbu = new DbUtils();
+//      // Prints a job in short form
+//      // Should be called in a <table>-segment
+//      // Print links or not in case of user view
+//
+//      // Make new job object and fill it from database, if success, print it
+//      $job       = new Ticket;
+//      $viewusers = Session::haveRight("user", READ);
+//      if ($job->getfromDBwithData($ID, 0)) {
+//         $bgcolor = $CFG_GLPI["priority_" . $job->fields["priority"]];
+//
+//         echo "<tr class='tab_bg_2'>";
+//         echo "<td class='center' bgcolor='$bgcolor' >id: " . $job->fields["id"] . "</td>";
+//
+//         echo "<td>";
+//         echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" . $job->fields["id"] . "\">";
+//         echo $job->fields["name"] . "</a></td>";
+//
+//         echo "<td class='center b'>";
+//         $users = $job->getUsers(CommonItilActor::REQUESTER);
+//
+//         if (count($users)) {
+//            foreach ($users as $u) {
+//               echo "<strong>" . getUserName($u['users_id']) . "</strong>&nbsp;";
+//                $user = new User();
+//                $user->getFromDB($u['users_id']);
+//               if ($viewusers) {
+//                   Html::showToolTip(
+//                       $user->getInfoCard(),
+//                       [
+//                           'link'    => $user->getLinkURL(),
+//                       ]
+//                   );
+//               }
+//               echo "<br>";
+//            }
+//         }
+//
+//         $groups = $job->getGroups(CommonItilActor::REQUESTER);
+//         if (count($groups)) {
+//            foreach ($groups as $k => $d) {
+//               echo Dropdown::getDropdownName("glpi_groups", $k);
+//               echo "<br>";
+//            }
+//         }
+//
+//         echo "</td>";
+//         echo "<td class='center'>" . Ticket::getStatus($job->fields["status"]) . "</td>";
+//
+//         echo "<td>" . Html::resume_text(RichText::getTextFromHtml($job->fields["content"]), $CFG_GLPI["cut"]);
+//         echo "</td>";
+//         // Finish Line
+//         echo "</tr>";
+//      } else {
+//         echo "<tr class='tab_bg_2'><td colspan='6' ><i>" . __('No ticket in progress.') . "</i></td></tr>";
+//      }
+//   }
 
    static function getMenuContent() {
 

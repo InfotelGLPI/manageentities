@@ -35,27 +35,6 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
 
    static $rightname = 'plugin_manageentities';
 
-
-   function getFromDBByEntity($entities_id) {
-      global $DB;
-
-      $query = "SELECT *
-                FROM `" . $this->getTable() . "`
-                WHERE `entities_id` = '$entities_id' ";
-
-      if ($result = $DB->doQuery($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetchAssoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         }
-         return false;
-      }
-      return false;
-   }
-
    /**
     * Add a logo for entity
     *
@@ -75,7 +54,7 @@ class PluginManageentitiesEntityLogo extends CommonDBTM {
       }
 
       if ($values["entities_id"]) {
-         if ($this->getFromDBByEntity($values["entities_id"])) {
+         if ($this->getFromDBByCrit(['entities_id' => $values["entities_id"]])) {
 
             $values['id'] = $this->fields['id'];
             $doc          = new Document();

@@ -325,13 +325,11 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
 
       if (!isset($this->entite[0]->fields["id"])) $this->entite[0]->fields["id"] = 0;
       if (!isset($this->entite[0]->fields["name"])) $this->entite[0]->fields["name"] = __('Root entity');
-      $query = "SELECT *
-        FROM `glpi_plugin_manageentities_contacts`
-        WHERE `entities_id` = " . $this->entite[0]->fields["id"] . "
-        AND `is_default` = 1";
 
-      $result = $DB->doQuery($query);
-      while ($data = $DB->fetchArray($result)) {
+       $contact = new PluginManageentitiesContact();
+       $contacts = $contact->find(['entities_id' => $this->entite[0]->fields["id"],
+           'is_default' => 1]);
+      foreach ($contacts as $data) {
          $contact = new Contact();
          $contact->getFromDB($data["contacts_id"]);
          $manager = $contact->fields["firstname"] . " " . $contact->fields["name"];

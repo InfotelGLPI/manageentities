@@ -471,8 +471,11 @@ function plugin_item_transfer_manageentities($parm) {
                if (!empty($allPrices)) {
                   foreach ($allPrices as $onePrice) {
                      //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
-                     $newPrice = $criPrice->getFromDBbyType($onePluginContractDays['plugin_manageentities_critypes_id'],
-                                                            $contract->fields['entities_id']);
+//                     $newPrice = $criPrice->getFromDBbyType($onePluginContractDays['plugin_manageentities_critypes_id'],
+//                                                            $contract->fields['entities_id']);
+
+                      $newPrice = $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id' => $onePluginContractDays['plugin_manageentities_critypes_id'],
+                          'entities_id' => $contract->fields["entities_id"]]);
                      if (!$newPrice) {
                         $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
                                         'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
@@ -500,8 +503,10 @@ function plugin_item_transfer_manageentities($parm) {
                if (!empty($allPrices)) {
                   foreach ($allPrices as $onePrice) {
                      //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
-                     $newPrice = $criPrice->getFromDBbyType($onePluginCriDetail['plugin_manageentities_critypes_id'],
-                                                            $contract->fields['entities_id']);
+//                     $newPrice = $criPrice->getFromDBbyType($onePluginCriDetail['plugin_manageentities_critypes_id'],
+//                                                            $contract->fields['entities_id']);
+                      $newPrice = $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id' => $onePluginCriDetail['plugin_manageentities_critypes_id'],
+                          'entities_id' => $contract->fields["entities_id"]]);
                      if (!$newPrice) {
                         $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
                                         'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],

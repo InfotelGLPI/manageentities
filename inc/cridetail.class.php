@@ -40,13 +40,13 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-user-tie";
+      return "ti ti-headset";
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType() == 'Ticket'
           && Session::haveRight("plugin_manageentities_cri_create", READ)) {
-         return PluginManageentitiesCri::getTypeName(1);
+         return self::createTabEntry(PluginManageentitiesCri::getTypeName(1));
       } else if ($item->getType() == 'PluginManageentitiesContractDay') {
 
          return self::createTabEntry(__('Linked interventions', 'manageentities'), self::countForContract($item));
@@ -61,46 +61,14 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      global $CFG_GLPI, $DB;
-
-      $config = PluginManageentitiesConfig::getInstance();
-      $and    = "";
-      $join   = "";
 
       if ($item->getType() == 'Ticket') {
-         if ($config->fields['use_publictask'] == '1') {
-            $and = " AND `is_private` = 0 ";
-         }
-
-         if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) {
-            $join = " LEFT JOIN `glpi_plugin_manageentities_taskcategories`
-                        ON (`glpi_plugin_manageentities_taskcategories`.`taskcategories_id` =
-                        `glpi_tickettasks`.`taskcategories_id`)";
-            //            $and=" AND `glpi_plugin_manageentities_taskcategories`.`is_usedforcount` = 1";// Comment to show task with categories not computed
-         }
-
-
-         $cpt    = 0;
-         $query  = "SELECT COUNT(*) AS cpt
-                  FROM `glpi_tickettasks` $join
-                  WHERE `glpi_tickettasks`.`tickets_id` = '" . $item->getField('id') . "' $and";
-         $result = $DB->doQuery($query);
-         while ($data = $DB->fetchArray($result)) {
-            $cpt = $data["cpt"];
-         }
-         //if ($cpt != 0) {
          if (Session::getCurrentInterface() == 'central') {
-            //               if($config->fields['linktocontract']=='1'){
             self::showForTicket($item);
-            //               }
          }
          self::showReports($item, $item->getField('id'));
-         //} else {
-         //   echo __("Impossible generation, you didn't create a scheduled task", 'manageentities');
-         //   echo "<br>";
-         //}
-      } else if ($item->getType() == 'PluginManageentitiesContractDay') {
 
+      } else if ($item->getType() == 'PluginManageentitiesContractDay') {
          echo self::showForContractDay($item);
       }
       return true;
@@ -154,26 +122,72 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       // ajout de la configuration du plugin
       $config = PluginManageentitiesConfig::getInstance();
 
-      $query = "SELECT `glpi_documents`.*,`glpi_tickets_users`.`users_id`, `glpi_entities`.`id` AS entity, `" . $this->getTable() . "`.`date`, `" . $this->getTable() . "`.`technicians`, `" . $this->getTable() . "`.`plugin_manageentities_critypes_id`, `" . $this->getTable() . "`.`withcontract`, `" . $this->getTable() . "`.`contracts_id`, `" . $this->getTable() . "`.`realtime` "
-               . " FROM `glpi_documents` "
-               . " LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id` = `glpi_entities`.`id`)"
-               . " LEFT JOIN `glpi_tickets` ON (`glpi_documents`.`tickets_id` = `glpi_tickets`.`id`)"
-               . " LEFT JOIN `glpi_tickets_users` ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`)"
-               . " LEFT JOIN `glpi_plugin_manageentities_cridetails` ON (`glpi_documents`.`id` = `" . $this->getTable() . "`.`documents_id`) "
-               . " LEFT JOIN `glpi_plugin_manageentities_critechnicians` ON (`glpi_documents`.`tickets_id` = `glpi_plugin_manageentities_critechnicians`.`tickets_id`) "
-               . " WHERE `glpi_tickets_users`.`type` = " . Ticket::ASSIGNED . " AND `documentcategories_id` = '" . $config->fields["documentcategories_id"] . "' AND `" . $this->getTable() . "`.`date` >= '" . $date1 . "' AND `" . $this->getTable() . "`.`date` <= '" . $date2 . "' "
-               . " AND `glpi_tickets`.`is_deleted` = 0 ";
-      if ($usertype != "group")
-         $query .= " AND (`glpi_tickets_users`.`users_id` ='" . $technum . "' OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $technum . "') ";
+       $criteria = [
+           'SELECT'    => [
+               'glpi_documents.*',
+               'glpi_tickets_users.users_id',
+               'glpi_entities.id AS entity',
+               $this->getTable() .'.date',
+               $this->getTable() .'.technicians',
+               $this->getTable() .'.plugin_manageentities_critypes_id',
+               $this->getTable() .'.withcontract',
+               $this->getTable() .'.contracts_id',
+               $this->getTable() .'.realtime',
+           ],
+           'FROM'      => 'glpi_documents',
+           'LEFT JOIN'       => [
+               'glpi_entities' => [
+                   'ON' => [
+                       'glpi_documents' => 'entities_id',
+                       'glpi_entities'          => 'id'
+                   ]
+               ],
+               'glpi_tickets' => [
+                   'ON' => [
+                       'glpi_documents' => 'tickets_id',
+                       'glpi_contracts'          => 'id'
+                   ]
+               ],
+               'glpi_tickets_users' => [
+                   'ON' => [
+                       'glpi_tickets_users' => 'tickets_id',
+                       'glpi_tickets'          => 'id'
+                   ]
+               ],
+               $this->getTable() => [
+                   'ON' => [
+                       $this->getTable() => 'documents_id',
+                       'glpi_documents'          => 'id'
+                   ]
+               ],
+               'glpi_plugin_manageentities_critechnicians' => [
+                   'ON' => [
+                       'glpi_documents' => 'tickets_id',
+                       'glpi_plugin_manageentities_critechnicians' => 'tickets_id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               'glpi_tickets_users.type' => Ticket::ASSIGNED,
+               'glpi_tickets'.'.is_deleted'  => 0,
+               'glpi_documents'.'.documentcategories_id'  => $config->fields["documentcategories_id"],
+               $this->getTable().'.date' => ['>=', $date1],
+               $this->getTable().'.date' => ['<=', $date2],
 
-      $query .= $dbu->getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
+           ],
+           'GROUPBY'   => ['glpi_documents.tickets_id'],
+           'ORDERBY'   => [$this->getTable().'.date ASC'],
+       ];
 
-      //if ($usertype=="group")
-      $query .= " GROUP BY `glpi_documents`.`tickets_id` ";
-      $query .= "ORDER BY `" . $this->getTable() . "`.`date` ASC";
+       if ($usertype != "group") {
+           $criteria['WHERE'] = $criteria['WHERE'] + ['OR' => ['glpi_tickets_users.users_id' => $technum
+               , 'glpi_plugin_manageentities_critechnicians.users_id' => $technum]];
+       }
+       $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+               'glpi_documents'
+           );
 
-      $result = $DB->doQuery($query);
-      $number = $DB->numrows($result);
+       $iterator = $DB->request($criteria);
 
       if (Session::isMultiEntitiesMode()) {
          $colsup = 1;
@@ -181,7 +195,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          $colsup = 0;
       }
 
-      if ($number != "0") {
+       if (count($iterator) > 0) {
 
          echo "<form method='post' action=\"./front/entity.php\">";
          echo "<div align='center'><table class='tab_cadre center' width='95%'>";
@@ -205,7 +219,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
          echo "<th width='100px'>" . __('File') . "</th>";
          echo "</tr>";
          $i = 0;
-         while ($data = $DB->fetchArray($result)) {
+           foreach ($iterator as $data) {
             $i++;
             $class = " class='tab_bg_2 ";
             if ($i % 2) {
@@ -354,57 +368,81 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    }
 
    //shows CRI from ticket or from entity portal
-   static function showReports($item, $instID, $entity = -1, $options = []) {
+   static function showReports($item, $instID, $entity = -1, $condition = []) {
       global $DB, $CFG_GLPI;
-
-      $params['condition'] = '1';
-
-      foreach ($options as $key => $val) {
-         $params[$key] = $val;
-      }
-
-      if ($entity != -1)
-         $entity = "'" . implode("', '", $entity) . "'";
 
       $config = new PluginManageentitiesConfig();
       $ticket = new Ticket();
       $ticket->getFromDB($instID);
 
       if ($config->getFromDB(1)) {
-         $query = "SELECT `glpi_documents`.*, 
-                        `glpi_plugin_manageentities_cridetails`.`date`, 
-                        `glpi_plugin_manageentities_cridetails`.`technicians`, 
-                        `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_critypes_id`, 
-                        `glpi_plugin_manageentities_cridetails`.`withcontract`, 
-                        `glpi_plugin_manageentities_cridetails`.`contracts_id`, 
-                        `glpi_plugin_manageentities_cridetails`.`realtime`
-           FROM `glpi_documents`
-           LEFT JOIN `glpi_plugin_manageentities_cridetails` ON (`glpi_documents`.`id` = `glpi_plugin_manageentities_cridetails`.`documents_id`)
-           LEFT JOIN `glpi_plugin_manageentities_contractdays` ON (`glpi_plugin_manageentities_contractdays`.`id` = `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id`)
-           LEFT JOIN `glpi_plugin_manageentities_contractstates` ON (`glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id` = `glpi_plugin_manageentities_contractstates`.`id`)
-           WHERE `glpi_documents`.`documentcategories_id` = '" . $config->fields["documentcategories_id"] . "'
-           AND ((" . $params['condition'] . ")
-           OR ISNULL(plugin_manageentities_contractstates_id))";
 
-         if ($entity != -1)
-            $query .= " AND `glpi_documents`.`entities_id` IN (" . $entity . ") "; else
-            $query .= " AND `glpi_documents`.`tickets_id` = '" . $instID . "' ";
-         $query .= " ORDER BY `glpi_plugin_manageentities_cridetails`.`date` DESC LIMIT 10";
+          $criteria = [
+              'SELECT' => ['glpi_documents.*',
+                  'glpi_plugin_manageentities_cridetails.date',
+                  'glpi_plugin_manageentities_cridetails.technicians',
+                  'glpi_plugin_manageentities_cridetails.plugin_manageentities_critypes_id',
+                  'glpi_plugin_manageentities_cridetails.withcontract',
+                  'glpi_plugin_manageentities_cridetails.contracts_id',
+                  'glpi_plugin_manageentities_cridetails.realtime'],
+              'FROM' => 'glpi_documents',
+              'LEFT JOIN'       => [
+                  'glpi_plugin_manageentities_cridetails' => [
+                      'ON' => [
+                          'glpi_plugin_manageentities_cridetails' => 'documents_id',
+                          'glpi_documents'          => 'id'
+                      ]
+                  ],
+                  'glpi_plugin_manageentities_contractdays' => [
+                      'ON' => [
+                          'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id',
+                          'glpi_plugin_manageentities_contractdays'          => 'id'
+                      ]
+                  ],
+                  'glpi_plugin_manageentities_contractstates' => [
+                      'ON' => [
+                          'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                          'glpi_plugin_manageentities_contractstates'          => 'id'
+                      ]
+                  ]
+              ],
+              'WHERE' => [
+                  'glpi_documents.documentcategories_id' => $config->fields["documentcategories_id"],
 
-         $result = $DB->doQuery($query);
-         $number = $DB->numrows($result);
+              ],
+              'ORDERBY'   => 'glpi_plugin_manageentities_cridetails.date DESC',
+              'LIMIT' => 10
+          ];
+          if (count($condition) > 0) {
+              $criteria['WHERE'] = $criteria['WHERE'] + ['OR' => [
+                      ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => 'NULL'],
+                      $condition
+                  ]];
+          } else {
+              $criteria['WHERE'] = $criteria['WHERE'] + ['OR' => [
+                      ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => 'NULL'],
+                  ]];
+          }
+          if ($entity != -1) {
+              $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_documents.entities_id' => $entity];
+          }
+          if ($instID > 0) {
+              $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_documents.tickets_id' => $instID];
+          }
 
-         if ($number != 0) {
+          $iterator = $DB->request($criteria);
+
+          if (count($iterator) > 0) {
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='8'>" . __('Associated intervention reports', 'manageentities');
+            echo "<tr class='tab_bg_1'><th colspan='8'>" . __('Associated intervention reports', 'manageentities');
 
             if (Session::haveRight("document", READ)) {
                echo " <a href='" . $CFG_GLPI["root_doc"] . "/front/document.php?contains%5B0%5D=cri&amp;field%5B0%5D=1&amp;sort=19&amp;deleted=0&amp;start=0'>";
                echo __('All reports', 'manageentities') . "</a>";
             }
             echo "</th></tr>";
-            echo "<tr>";
+            echo "<tr class='tab_bg_1'>";
             echo "<th>" . __('Date') . "</th>";
             echo "<th>" . __('Technicians', 'manageentities') . "</th>";
             if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
@@ -417,7 +455,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             echo "<th width='100px'>" . __('File') . "</th>";
             echo "</tr>";
 
-            while ($data = $DB->fetchArray($result)) {
+            foreach ($iterator as $data) {
                echo "<tr class='tab_bg_1" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
                echo "<td class='center'>" . Html::convdate($data["date"]) . "</td>";
                echo "<td class='center'>" . $data["technicians"] . "</td>";
@@ -453,7 +491,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             if ($entity == -1) {
                echo "<tr class='tab_bg_1'>";
                echo "<td class='center' colspan='8'>";
-               self::addReports($item, $options);
+               self::addReports($item);
                echo "</td>";
                echo "</tr>";
             }
@@ -464,7 +502,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             echo __('No item found');
             echo "</div>";
             if ($entity == -1) {
-               self::addReports($item, $options);
+               self::addReports($item);
             }
          }
       }
@@ -472,32 +510,38 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
    //shows CRI from ticket or from entity portal
    static function showPeriod($item, $instID, $entity = -1, $options = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
+
       $colspan = 8;
       $config  = PluginManageentitiesConfig::getInstance();
 
-      if ($entity != -1)
-         $entity = "'" . implode("', '", $entity) . "'";
+       $contract = new PluginManageentitiesContract();
+       $contracts = $contract->find(['entities_id' => $entity]);
 
-      $query_contracts = "SELECT `glpi_contracts`.*
-          FROM `glpi_contracts`
-          WHERE `entities_id` IN (" . $entity . ") ";
+       foreach ($contracts as $data_contract) {
 
-      $result_contracts = $DB->doQuery($query_contracts);
+           $iterator = $DB->request([
+               'SELECT'    => [
+                   'COUNT' => 'glpi_plugin_manageentities_contractdays.*'
+               ],
+               'FROM'      => 'glpi_plugin_manageentities_contractdays',
+               'LEFT JOIN'       => [
+                   'glpi_plugin_manageentities_contractstates' => [
+                       'ON' => [
+                           'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                           'glpi_plugin_manageentities_contractstates'          => 'id'
+                       ]
+                   ]
+               ],
+               'WHERE'     => [
+                   'contracts_id' =>  $data_contract["id"],
+                   'entities_id'  => $entity,
+                   'glpi_plugin_manageentities_contractstates.is_closed' => ['<>', 1]
+               ],
+               'ORDERBY' => 'glpi_plugin_manageentities_contractdays.begin_date` DESC'
+           ]);
 
-      while ($data_contract = $DB->fetchArray($result_contracts)) {
-         $query = "SELECT `glpi_plugin_manageentities_contractdays`.*
-          FROM `glpi_plugin_manageentities_contractdays`
-          LEFT JOIN `glpi_plugin_manageentities_contractstates` ON `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id` = `glpi_plugin_manageentities_contractstates`.`id`
-          WHERE `contracts_id` =" . $data_contract["id"] . " 
-          AND `entities_id` IN (" . $entity . ")
-          AND `glpi_plugin_manageentities_contractstates`.`is_closed` != 1
-          ORDER BY `glpi_plugin_manageentities_contractdays`.`begin_date` DESC";
-
-         $result = $DB->doQuery($query);
-         $number = $DB->numrows($result);
-
-         if ($number != 0) {
+           if (count($iterator) > 0) {
             echo "<div align='center'>";
             echo "<table class='tab_cadre_fixe' cellpadding='5'>";
             echo "<tr>";
@@ -516,7 +560,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             }
             echo "<th>" . __('To compute', 'manageentities') . "</th>";
             echo "</tr>";
-            while ($data = $DB->fetchArray($result)) {
+               foreach ($iterator as $data) {
 
                $data['contractdays_id'] = $data['id'];
                $options['sorting_date'] = true;
@@ -680,7 +724,8 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       $default_critypes_name = '';
       $default_critypes_id   = 0;
       $cri_price             = new PluginManageentitiesCriPrice();
-      $price_data            = $cri_price->getItems($contractDayValues["contractdays_id"], 0, "`glpi_plugin_manageentities_criprices`.`is_default`='1'");
+      $condition = ['glpi_plugin_manageentities_criprices.is_default' => 1];
+      $price_data            = $cri_price->getItems($contractDayValues["contractdays_id"], 0, $condition);
       if (!empty($price_data)) {
          $price_data            = reset($price_data);
          $price                 = $price_data["price"];
@@ -1021,22 +1066,30 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
 
          $criDetail = new PluginManageentitiesCriDetail();
 
-         $query = "SELECT `glpi_documents`.`id` AS doc_id,
-                          `glpi_documents`.`tickets_id` AS doc_tickets_id,
-                          `glpi_plugin_manageentities_cridetails`.`id` AS cri_id,
-                          `glpi_plugin_manageentities_cridetails`.`tickets_id` AS cri_tickets_id
-              FROM `glpi_documents`
-              LEFT JOIN `glpi_plugin_manageentities_cridetails`
-                  ON (`glpi_documents`.`id` = `glpi_plugin_manageentities_cridetails`.`documents_id`)
-              WHERE `glpi_documents`.`documentcategories_id` = '" .
-                  $config->fields["documentcategories_id"] . "'
-                 AND `glpi_documents`.`tickets_id` = '" . $ticket->fields['id'] . "'";
+          $iterator = $DB->request([
+              'SELECT'    => [
+                  'glpi_documents.id AS doc_id',
+                  'glpi_documents.tickets_id AS doc_tickets_id',
+                  'glpi_plugin_manageentities_cridetails.id AS cri_id',
+                  'glpi_plugin_manageentities_cridetails.tickets_id AS cri_tickets_id',
+              ],
+              'FROM'      => 'glpi_documents',
+              'LEFT JOIN'       => [
+                  'glpi_plugin_manageentities_cridetails' => [
+                      'ON' => [
+                          'glpi_plugin_manageentities_cridetails' => 'documents_id',
+                          'glpi_documents'          => 'id'
+                      ]
+                  ]
+              ],
+              'WHERE'     => [
+                  'glpi_documents.documentcategories_id' =>  $config->fields["documentcategories_id"],
+                  'glpi_documents.tickets_id'  =>  $ticket->fields['id']
+              ],
+          ]);
 
-         $result = $DB->doQuery($query);
-         $number = $DB->numrows($result);
-
-         if ($number != 0) {
-            while ($data = $DB->fetchArray($result)) {
+          if (count($iterator) > 0) {
+              foreach ($iterator as $data) {
                if ($data['cri_tickets_id'] == '0') {
                   $criDetail->update(['id'         => $data['cri_id'],
                                       'tickets_id' => $data['doc_tickets_id']]);
@@ -1099,6 +1152,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             echo "<td class='center' colspan='2'>";
             echo Html::hidden('id', ['value' => $cridetail['id']]);
             echo Html::submit(_sx('button', 'Update'), ['name' => 'updatecridetail', 'class' => 'btn btn-primary']);
+            echo "&nbsp;";
             echo Html::submit(_sx('button', 'Delete permanently'), ['name' => 'delcridetail', 'class' => 'btn btn-primary']);
             echo "</td>";
          }
@@ -1111,28 +1165,39 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
    }
 
    static function showContractLinkDropdown($cridetail, $entities_id, $type = 'ticket') {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $contract = new contract();
       $contract->getEmpty();
       $rand  = mt_rand();
       $width = 300;
 
-      $query = "SELECT DISTINCT(`glpi_contracts`.`id`),
-                       `glpi_contracts`.`name`,
-                       `glpi_contracts`.`num`,
-                       `glpi_plugin_manageentities_contracts`.`contracts_id`,
-                       `glpi_plugin_manageentities_contracts`.`id` as ID_us,
-                       `glpi_plugin_manageentities_contracts`.`is_default` as is_default
-               FROM `glpi_contracts`
-               LEFT JOIN `glpi_plugin_manageentities_contracts`
-                    ON (`glpi_plugin_manageentities_contracts`.`contracts_id` = `glpi_contracts`.`id`)
-               WHERE `glpi_plugin_manageentities_contracts`.`entities_id` = '" . $entities_id . "' 
-                      AND `glpi_contracts`.`is_deleted` = 0 
-               ORDER BY `glpi_contracts`.`name` ";
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'glpi_contracts.id',
+               'glpi_contracts.num',
+               'glpi_contracts.name',
+               'glpi_plugin_manageentities_contracts.contracts_id',
+               'glpi_plugin_manageentities_contracts.id AS ID_us',
+               'glpi_plugin_manageentities_contracts.is_default AS is_default',
+           ],
+           'DISTINCT'        => true,
+           'FROM'      => 'glpi_contracts',
+           'LEFT JOIN'       => [
+               'glpi_plugin_manageentities_contracts' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_contracts' => 'contracts_id',
+                       'glpi_contracts'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               'glpi_plugin_manageentities_contracts.entities_id' =>  $entities_id,
+               'glpi_contracts.is_deleted'  =>  0
+           ],
+           'ORDERBY'     => 'glpi_contracts.name'
+       ]);
 
-      $result              = $DB->doQuery($query);
-      $number              = $DB->numrows($result);
       $selected            = false;
       $contractSelected    = 0;
       $contractdaySelected = 0;
@@ -1142,11 +1207,11 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<th>" . __('Intervention with contract', 'manageentities') . "</th>";
       echo "<td>";
-      if ($number) {
+       if (count($iterator) > 0) {
          if ($type == 'ticket') {
             $elements = [Dropdown::EMPTY_VALUE];
             $value    = 0;
-            while ($data = $DB->fetchArray($result)) {
+             foreach ($iterator as $data) {
                if ((isset($cridetail['contracts_id']) ? $cridetail['contracts_id'] : 0) == $data["id"]) {
                   $selected            = true;
                   $contractSelected    = $cridetail['contracts_id'];
@@ -1167,7 +1232,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
             }
             $rand = Dropdown::showFromArray('contracts_id', $elements, ['value' => $value, 'width' => $width]);
          } else {
-            while ($data = $DB->fetchArray($result)) {
+             foreach ($iterator as $data) {
                if ($cridetail['contracts_id'] == $data["id"]) {
                   $contractSelected    = $cridetail['contracts_id'];
                   $contractdaySelected = $cridetail["plugin_manageentities_contractdays_id"];
@@ -1218,7 +1283,9 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
       echo "</tr>";
       echo "</table>";
 
-      return ['contractSelected' => $contractSelected, 'contractdaySelected' => $contractdaySelected, 'is_contract' => $number];
+      return ['contractSelected' => $contractSelected,
+          'contractdaySelected' => $contractdaySelected,
+          'is_contract' => count($iterator)];
    }
 
    function checkMandatoryFields($input) {

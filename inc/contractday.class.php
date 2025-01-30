@@ -226,37 +226,6 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       return $ong;
    }
 
-   /**
-    *
-    * @param type  $plugin_manageentities_critypes_id
-    * @param type  $contracts_id
-    * @param type  $entities_id
-    *
-    * @return boolean
-    * @global type $DB
-    *
-    */
-   function getFromDBbyTypeAndContract($plugin_manageentities_critypes_id, $contracts_id, $entities_id) {
-      global $DB;
-
-      $query = "SELECT *
-      FROM `" . $this->getTable() . "`
-      WHERE `plugin_manageentities_critypes_id` = '" . $plugin_manageentities_critypes_id . "'
-      AND `contracts_id` = '" . $contracts_id . "'
-      AND `entities_id` = '" . $entities_id . "' ";
-      if ($result = $DB->doQuery($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetchAssoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         } else {
-            return false;
-         }
-      }
-      return false;
-   }
 
    /**
     * Add number day in contractday
@@ -265,8 +234,10 @@ class PluginManageentitiesContractDay extends CommonDBTM {
     */
    function addNbDay($values) {
 
-      if ($this->getFromDBbyTypeAndContract($values["plugin_manageentities_critypes_id"], $values["contracts_id"], $values["entities_id"])) {
-
+//      if ($this->getFromDBbyTypeAndContract($values["plugin_manageentities_critypes_id"], $values["contracts_id"], $values["entities_id"])) {
+      if ($this->getFromDBByCrit(['plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
+              'contracts_id' => $values["contracts_id"],
+              'entities_id' => $values["entities_id"]])) {
          $this->update([
                           'id'          => $this->fields['id'],
                           'nbday'       => $values["nbday"],
@@ -433,7 +404,8 @@ class PluginManageentitiesContractDay extends CommonDBTM {
       echo "</td>";
 
       if (($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) ||
-          ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR && $pluginContract['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
+          ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR
+              && $pluginContract['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_UNLIMITED)) {
          echo "<td>" . __('Total remaining', 'manageentities') . "</td>";
          echo "<td>";
          echo Html::formatNumber($resultCriDetail['resultOther']['reste']);
@@ -690,29 +662,48 @@ class PluginManageentitiesContractDay extends CommonDBTM {
    }
 
    static function queryOldContractDaywithInterventions($date) {
-      global $DB;
 
-      $query = "SELECT `glpi_plugin_manageentities_cridetails`.`contracts_id`,
-                 `glpi_entities`.`name` AS entities_name,
-                 `glpi_plugin_manageentities_cridetails`.`tickets_id`,
-                 `glpi_plugin_manageentities_cridetails`.`id` AS cridetails_id,
-                 `glpi_plugin_manageentities_cridetails`.`date` as cridetails_date,
-                 `glpi_tickets`.`name` AS tickets_name ,
-                  `glpi_plugin_manageentities_contractdays`.`name`, 
-                  `glpi_plugin_manageentities_contractdays`.`id`, 
-                  `glpi_plugin_manageentities_contractdays`.`end_date`"
-               . " FROM `glpi_plugin_manageentities_cridetails` "
-               . " LEFT JOIN `glpi_tickets` 
-               ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickets`.`id`)"
-               . " LEFT JOIN `glpi_entities` 
-               ON (`glpi_plugin_manageentities_cridetails`.`entities_id` = `glpi_entities`.`id`) "
-               . " LEFT JOIN `glpi_plugin_manageentities_contractdays` 
-               ON (`glpi_plugin_manageentities_contractdays`.`id` = `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id`)"
-               . " WHERE `glpi_tickets`.`is_deleted` = 0 
-                  AND `glpi_plugin_manageentities_contractdays`.`end_date` < '" . $date . "'
-                  AND `glpi_plugin_manageentities_cridetails`.`date` > '" . $date . "'  ";
+       $criteria = [
+           'SELECT' => [
+               'glpi_plugin_manageentities_cridetails.contracts_id',
+               'glpi_entities.name AS entities_name',
+               'glpi_plugin_manageentities_cridetails.tickets_id',
+               'glpi_plugin_manageentities_cridetails.id AS cridetails_id',
+               'glpi_plugin_manageentities_cridetails.date AS cridetails_date',
+               'glpi_tickets.name AS tickets_name',
+               'glpi_plugin_manageentities_contractdays.name',
+               'glpi_plugin_manageentities_contractdays.id',
+               'glpi_plugin_manageentities_contractdays.end_date',
+           ],
+           'FROM' => 'glpi_plugin_manageentities_cridetails',
+           'LEFT JOIN'       => [
+               'glpi_tickets' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+                       'glpi_tickets' => 'id'
+                   ]
+               ],
+               'glpi_entities' => [
+                   'ON' => [
+                       'glpi_entities' => 'id',
+                       'glpi_plugin_manageentities_cridetails' => 'entities_id'
+                   ]
+               ],
+               'glpi_plugin_manageentities_contractdays' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id',
+                       'glpi_plugin_manageentities_contractdays' => 'id'
+                   ]
+               ],
+           ],
+           'WHERE' => [
+               'glpi_tickets.is_deleted' => 0,
+               'glpi_plugin_manageentities_contractdays.end_date' => ['<=', $date],
+           'glpi_plugin_manageentities_cridetails.date' => ['>', $date],
+           ],
+       ];
 
-      return $query;
+      return $criteria;
    }
 
    function setSessionValues() {
@@ -768,8 +759,12 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
       $config = PluginManageentitiesConfig::getInstance();
 
-      if (isset($input['end_date']) && isset($input['begin_date']) && !$config->fields['allow_same_periods'] && $input['end_date'] != null) {
-         if ($input['end_date'] != 'NULL' && strtotime($input['end_date']) < strtotime($input['begin_date'])) {
+      if (isset($input['end_date'])
+          && isset($input['begin_date'])
+          && !$config->fields['allow_same_periods']
+          && $input['end_date'] != null) {
+         if ($input['end_date'] != 'NULL'
+             && strtotime($input['end_date']) < strtotime($input['begin_date'])) {
             Session::addMessageAfterRedirect(__('End date cannot be less than begin date', 'manageentities'), true, ERROR);
             return false;
          }
@@ -779,26 +774,36 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
          $output = [];
 
-         $queryCheck = "SELECT `glpi_plugin_manageentities_contractdays`.`begin_date`,`glpi_plugin_manageentities_contractdays`.`end_date`
-                           FROM `glpi_plugin_manageentities_contractdays`
-                           WHERE `glpi_plugin_manageentities_contractdays`.`entities_id` ='" . $input['entities_id'] . "' 
-                           AND `glpi_plugin_manageentities_contractdays`.`contracts_id` = '" . $input['contracts_id'] . "'";
+          $criteria = [
+              'SELECT'    => [
+                  'begin_date',
+                  'end_date',
+              ],
+              'FROM'      => 'glpi_plugin_manageentities_contractdays',
+              'WHERE'     => [
+                  'entities_id' =>  $input['entities_id'],
+                  'contracts_id' =>  $input['contracts_id'],
+              ],
+          ];
 
-         if (isset($input['id'])) {
-            $queryCheck .= " AND `glpi_plugin_manageentities_contractdays`.`id` != '" . $input['id'] . "'";
-         }
+          if (isset($input['id'])) {
+              $criteria['WHERE'] = $criteria['WHERE'] + ['id' => ['<>', $input['id']]];
+          }
 
-         if ($resultCheck = $DB->doQuery($queryCheck)) {
-            if ($DB->numrows($resultCheck) != 0) {// If the period exists return false
-               while ($data = $DB->fetchAssoc($resultCheck)) {
+          $iterator = $DB->request($criteria);
+
+          if (count($iterator) > 0) {
+              foreach ($iterator as $data) {
                   $output[] = $data;
-               }
-            }
-         }
+              }
+          }
 
          foreach ($output as $date) {
-            if (!((strtotime($input['begin_date']) < strtotime($date['begin_date']) && strtotime($input['end_date']) < strtotime($date['begin_date']))
-                  || (strtotime($input['begin_date']) > strtotime($date['end_date']) && (strtotime($input['end_date']) > strtotime($date['end_date']) || $input['end_date'] == 'NULL')))) {
+            if (!((strtotime($input['begin_date']) < strtotime($date['begin_date'])
+                    && strtotime($input['end_date']) < strtotime($date['begin_date']))
+                  || (strtotime($input['begin_date']) > strtotime($date['end_date'])
+                    && (strtotime($input['end_date']) > strtotime($date['end_date'])
+                        || $input['end_date'] == 'NULL')))) {
 
                Session::addMessageAfterRedirect(sprintf(__('The contract period %s already exists', 'manageentities'), Html::convDate($input['begin_date']) . ' - ' . Html::convDate($input['end_date'])), true, ERROR);
                return false;
@@ -845,5 +850,38 @@ class PluginManageentitiesContractDay extends CommonDBTM {
 
       return true;
    }
+
+    static function checkRemainingOpenContractDays($contracts_id) {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT'    => [
+                'COUNT' => 'glpi_plugin_manageentities_contractdays.id AS count'
+            ],
+            'FROM'      => 'glpi_plugin_manageentities_contractdays',
+            'LEFT JOIN'       => [
+                'glpi_plugin_manageentities_contractstates' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                        'glpi_plugin_manageentities_contractstates'          => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_plugin_manageentities_contractdays.contracts_id' =>  $contracts_id,
+                'glpi_plugin_manageentities_contractstates.is_active'  => 1
+            ],
+        ]);
+
+        if (count($iterator) > 0) {
+            foreach ($iterator as $data) {
+                if ($data['count'] > 0) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
 }

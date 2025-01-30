@@ -61,7 +61,7 @@ switch ($_POST['plugin_manageentities_tab']) {
       break;
    case "tickets" :
       $_SESSION['glpi_plugin_manageentities_tab'] = "tickets";
-      $PluginManageentitiesEntity->showTickets($entities);
+//      $PluginManageentitiesEntity->showTickets($entities);
       break;
    case "reports":
       $_SESSION['glpi_plugin_manageentities_tab'] = "reports";
@@ -88,7 +88,7 @@ switch ($_POST['plugin_manageentities_tab']) {
       $_SESSION['glpi_plugin_manageentities_tab'] = "all";
       $PluginManageentitiesEntity->showDescription($entities);
       $PluginManageentitiesContact->showContacts($entities);
-      $PluginManageentitiesEntity->showTickets($entities);
+//      $PluginManageentitiesEntity->showTickets($entities);
       if ($PluginManageentitiesCri->canView())
          $PluginManageentitiesCriDetail->showReports(0, 0, $entities);
       if (Session::haveRight("Document", READ) && $entity->can($entities, READ)) {

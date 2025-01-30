@@ -45,34 +45,8 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
       return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
    }
 
-//   function addContactByDefault($users_id, $entities_id) {
-//
-//      global $DB;
-//
-//      $query  = "SELECT *
-//        FROM `" . $this->getTable() . "`
-//        WHERE `entities_id` = '" . $entities_id . "' ";
-//      $result = $DB->doQuery($query);
-//      $number = $DB->numrows($result);
-//
-//      if ($number) {
-//         while ($data = $DB->fetchArray($result)) {
-//
-//            $query_nodefault  = "UPDATE `" . $this->getTable() . "`
-//            SET `is_default` = '0' WHERE `id` = '" . $data["id"] . "' ";
-//            $result_nodefault = $DB->doQuery($query_nodefault);
-//         }
-//      }
-//
-//      $query_default  = "UPDATE `" . $this->getTable() . "`
-//        SET `is_default` = '1' WHERE `id` ='" . $users_id . "' ";
-//      $result_default = $DB->doQuery($query_default);
-//   }
-
    function showBusiness($instID) {
       global $DB, $CFG_GLPI;
-
-      $entitiesId = "'" . implode("', '", $instID) . "'";
 
        $iterator = $DB->request([
            'SELECT'    => [
@@ -88,9 +62,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
                        $this->getTable() => 'users_id',
                        'glpi_users'          => 'id'
                    ]
-               ]
-           ],
-           'LEFT JOIN'       => [
+               ],
                'glpi_useremails' => [
                    'ON' => [
                        'glpi_useremails' => 'users_id',
@@ -99,9 +71,9 @@ class PluginManageentitiesBusinessContact extends CommonDBTM {
                ]
            ],
            'WHERE'     => [
-               $this->getTable().'entities_id'  => $entitiesId
+               $this->getTable().'.entities_id'  => $instID
            ],
-           'GROUPBY'   => $this->getTable().'users_id',
+           'GROUPBY'   => $this->getTable().'.users_id',
            'ORDERBY'   => 'glpi_users.name',
        ]);
 

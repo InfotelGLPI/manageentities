@@ -53,6 +53,10 @@ class PluginManageentitiesContract extends CommonDBTM {
       return __('Type of management', 'manageentities');
    }
 
+    static function getIcon() {
+        return "ti ti-contract";
+    }
+
    static function canView(): bool
    {
       return Session::haveRight(self::$rightname, READ);
@@ -146,26 +150,15 @@ class PluginManageentitiesContract extends CommonDBTM {
    }
 
    function addContractByDefault($id, $entities_id) {
-      global $DB;
 
-      $query  = "SELECT *
-        FROM `" . $this->getTable() . "`
-        WHERE `entities_id` IN (" . $entities_id . ") ";
-      $result = $DB->doQuery($query);
-      $number = $DB->numrows($result);
+       $contracts = $this->find(['entities_id' => $entities_id]);
 
-      if ($number) {
-         while ($data = $DB->fetchArray($result)) {
-
-            $query_nodefault = "UPDATE `" . $this->getTable() . "`
-            SET `is_default` = 0 WHERE `id` = " . $data["id"];
-            $DB->doQuery($query_nodefault);
+      if (count($contracts) > 0) {
+          foreach ($contracts as $data) {
+            $this->update(['is_default' => 0, 'id' => $data["id"]]);
          }
       }
-
-      $query_default = "UPDATE `" . $this->getTable() . "`
-        SET `is_default` = 1 WHERE `id` = $id";
-      $DB->doQuery($query_default);
+       $this->update(['is_default' => 1, 'id' => $id]);
    }
 
    static function showForContract(Contract $contract) {
@@ -292,24 +285,37 @@ class PluginManageentitiesContract extends CommonDBTM {
 
       PluginManageentitiesEntity::showManageentitiesHeader(__('Associated assistance contracts', 'manageentities'));
 
-      $entitiesID = "'" . implode("', '", $instID) . "'";
+       $this->displayAlertforEntity($instID);
+
       $config     = PluginManageentitiesConfig::getInstance();
 
-      $query  = "SELECT `glpi_contracts`.*,
-                       `" . $this->getTable() . "`.`contracts_id`,
-                       `" . $this->getTable() . "`.`management`,
-                       `" . $this->getTable() . "`.`contract_type`,
-                       `" . $this->getTable() . "`.`is_default`,
-                       `" . $this->getTable() . "`.`id` as myid
-        FROM `" . $this->getTable() . "`, `glpi_contracts`
-        WHERE `" . $this->getTable() . "`.`contracts_id` = `glpi_contracts`.`id`
-        AND `glpi_contracts`.`is_deleted` = 0
-        AND `" . $this->getTable() . "`.`entities_id` IN (" . $entitiesID . ")
-        ORDER BY `glpi_contracts`.`begin_date`, `glpi_contracts`.`name`";
-      $result = $DB->doQuery($query);
-      $number = $DB->numrows($result);
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'glpi_contracts.*',
+               $this->getTable().'.contracts_id',
+               $this->getTable().'.management',
+               $this->getTable().'.contract_type',
+               $this->getTable().'.is_default',
+               $this->getTable().'.id as myid',
+           ],
+           'FROM'      => $this->getTable(),
+           'LEFT JOIN'       => [
+               'glpi_contracts' => [
+                   'ON' => [
+                       $this->getTable() => 'contracts_id',
+                       'glpi_contracts'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               'glpi_contracts.is_deleted' =>  0,
+               $this->getTable().'.entities_id'  => $instID
+           ],
+           'ORDERBY'   => ['glpi_contracts.begin_date',
+               'glpi_contracts.name'],
+       ]);
 
-      if ($number) {
+       if (count($iterator) > 0) {
          echo "<form method='post' action=\"./entity.php\">";
          echo "<div align='center'><table class='tab_cadre_me center'>";
          echo "<tr><th>" . __('Name') . "</th>";
@@ -318,7 +324,8 @@ class PluginManageentitiesContract extends CommonDBTM {
          if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
             echo "<th>" . __('Mode of management', 'manageentities') . "</th>";
             echo "<th>" . __('Type of service contract', 'manageentities') . "</th>";
-         } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+         } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY
+             && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
             echo "<th>" . __('Type of service contract', 'manageentities') . "</th>";
          }
          echo "<th>" . __('Used by default', 'manageentities') . "</th>";
@@ -328,7 +335,8 @@ class PluginManageentitiesContract extends CommonDBTM {
 
          $used = [];
 
-         while ($data = $DB->fetchArray($result)) {
+           foreach ($iterator as $data) {
+
             $used[] = $data["contracts_id"];
 
             echo "<tr class='" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
@@ -340,7 +348,8 @@ class PluginManageentitiesContract extends CommonDBTM {
             if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
                echo "<td class='center'>" . self::getContractManagement($data["management"]) . "</td>";
                echo "<td class='center'>" . self::getContractType($data['contract_type']) . "</td>";
-            } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+            } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY
+                && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                echo "<td class='center'></td>";
                //               echo "<td class='center'>".self::getContractType($data['contract_type'])."</td>";
             }
@@ -374,7 +383,8 @@ class PluginManageentitiesContract extends CommonDBTM {
          if ($this->canCreate() && sizeof($instID) == 1) {
             if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
                echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
-            } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+            } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY
+                && $config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             } else {
                echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
@@ -418,6 +428,100 @@ class PluginManageentitiesContract extends CommonDBTM {
          Html::closeForm();
       }
    }
+
+    function displayAlertforEntity($instID)
+    {
+        global $DB;
+
+        $alert = "";
+        $iterator = $DB->request([
+            'SELECT' => [
+                'glpi_contracts.*',
+                $this->getTable() . '.contracts_id',
+                $this->getTable() . '.management',
+                $this->getTable() . '.contract_type',
+                $this->getTable() . '.is_default',
+                $this->getTable() . '.id as myid',
+            ],
+            'FROM' => $this->getTable(),
+            'LEFT JOIN' => [
+                'glpi_contracts' => [
+                    'ON' => [
+                        $this->getTable() => 'contracts_id',
+                        'glpi_contracts' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'glpi_contracts.is_deleted' => 0,
+                $this->getTable() . '.entities_id' => $instID
+            ],
+            'ORDERBY' => [
+                'glpi_contracts.begin_date',
+                'glpi_contracts.name'
+            ],
+        ]);
+
+        $resultCriDetail = [];
+        $reste = 0;
+        if (count($iterator) > 0) {
+
+            foreach ($iterator as $data) {
+                $criteriad = [
+                    'SELECT' => [
+                        'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
+                        'glpi_plugin_manageentities_contractdays.report AS report',
+                        'glpi_plugin_manageentities_contractdays.nbday AS nbday',
+                    ],
+                    'FROM' => 'glpi_plugin_manageentities_contractdays',
+                    'LEFT JOIN' => [
+                        'glpi_contracts' => [
+                            'ON' => [
+                                'glpi_contracts' => 'id',
+                                'glpi_plugin_manageentities_contractdays' => 'contracts_id'
+                            ]
+                        ],
+                        'glpi_plugin_manageentities_contractstates' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                                'glpi_plugin_manageentities_contractstates' => 'id'
+                            ]
+                        ],
+                    ],
+                    'WHERE' => [
+                        'glpi_plugin_manageentities_contractstates.is_closed' => 0,
+                        'glpi_plugin_manageentities_contractdays.contracts_id' => $data["contracts_id"],
+                    ]
+                ];
+                $iteratord = $DB->request($criteriad);
+
+                if (count($iteratord) > 0) {
+                    foreach ($iteratord as $datad) {
+                        $dataContractDay['contracts_id'] = $data['contracts_id'];
+                        $dataContractDay['entities_id'] = $data['entities_id'];
+                        $dataContractDay['contractdays_id'] = $datad['contractdays_id'];
+                        $dataContractDay['nbday'] = $datad['nbday'];
+                        $dataContractDay['report'] = $datad['report'];
+                        $resultCriDetail = PluginManageentitiesCriDetail::getCriDetailData(
+                            $dataContractDay,
+                            ["contract_type_id" => $data["contract_type"]]
+                        );
+                        $reste += $resultCriDetail['resultOther']['reste'];
+                    }
+
+                }
+            }
+
+            if ($reste == 0) {
+                $alert .= "<div class='alert alert-danger d-flex'>";
+                $alert .= "<b>" . __(
+                        "Please note that there are no more contracts with days available for this customer.",
+                        "manageentities"
+                    ) . "</b></div>";
+            }
+        }
+        echo $alert;
+    }
 
    /**
     * Dropdown list contract management
@@ -552,21 +656,63 @@ class PluginManageentitiesContract extends CommonDBTM {
    static function checkRemainingOpenContractDays($contracts_id) {
       global $DB;
 
-      $query = "SELECT count(*) as count
-                FROM `glpi_plugin_manageentities_contractdays`
-                LEFT JOIN `glpi_plugin_manageentities_contractstates`
-                    ON (`glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id` = `glpi_plugin_manageentities_contractstates`.`id`)
-                WHERE `glpi_plugin_manageentities_contractdays`.`contracts_id` = " . $contracts_id . " 
-                AND `glpi_plugin_manageentities_contractstates`.`is_active` = 1";
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'COUNT' => 'glpi_plugin_manageentities_contractdays.id AS count'
+           ],
+           'FROM'      => 'glpi_plugin_manageentities_contractdays',
+           'LEFT JOIN'       => [
+               'glpi_plugin_manageentities_contractstates' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                       'glpi_plugin_manageentities_contractstates'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               'glpi_plugin_manageentities_contractdays.contracts_id' =>  $contracts_id,
+               'glpi_plugin_manageentities_contractstates.is_active'  => 1
+           ],
+       ]);
 
-      $result = $DB->doQuery($query);
-      while ($data = $DB->fetchArray($result)) {
-         if ($data['count'] > 0) {
-            return true;
-         }
-      }
+       if (count($iterator) > 0) {
+           foreach ($iterator as $data) {
+               if ($data['count'] > 0) {
+                   return true;
+               }
+           }
+       }
 
       return false;
    }
 
+    /**
+     * Display contents at the begining of item forms.
+     *
+     * @param array $params Array with "item" and "options" keys
+     *
+     * @return void
+     */
+    static public function preItemForm($params) {
+        $item = $params['item'];
+        $options = $params['options'];
+
+        if (isset($item->input['entities_id'])) {
+            $entities_id = $item->input['entities_id'];
+        }
+        $out = "";
+        if (isset($entities_id)) {
+            $sons = getSonsOf("glpi_entities", $entities_id);
+            if (count($sons) > 1) {
+                return false;
+            }
+            $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
+            $self = new PluginManageentitiesContract();
+            $out .= $self->displayAlertforEntity($entities_id);
+            $out .= '</th></tr>';
+        }
+
+
+        echo $out;
+    }
 }

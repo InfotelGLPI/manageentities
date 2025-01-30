@@ -1067,6 +1067,8 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
     */
    public static function getDescriptionFromTasks($ticket_id) {
       global $DB, $CFG_GLPI;
+
+
       $config = PluginManageentitiesConfig::getInstance();
 
       /*
@@ -1074,35 +1076,42 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
        * Préremplissage avec les informations des suivis non privés.
        */
       $desc = "";
-      $join = "";
-      $and = "";
-      $query = "";
+       $criteria = [
+           'SELECT'    => [
+               'begin',
+               'content',
+               'end',
+           ],
+           'FROM'      => 'glpi_tickettasks',
 
-      if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-         $join = " LEFT JOIN `glpi_plugin_manageentities_taskcategories`
-                        ON (`glpi_plugin_manageentities_taskcategories`.`taskcategories_id` =
-                        `glpi_tickettasks`.`taskcategories_id`)";
-         $and = " AND `glpi_plugin_manageentities_taskcategories`.`is_usedforcount` = 1";
-      }
+           'WHERE'     => [
+               'tickets_id' =>  $ticket_id,
+           ],
+       ];
 
-      if ($config->fields['use_publictask'] == PluginManageentitiesConfig::HOUR) {
-         $query = "SELECT `content`, `begin`, `end`
-                   FROM `glpi_tickettasks` $join
-                   WHERE `tickets_id` = '" . $ticket_id . "'
-                   AND `is_private` = 0 $and";
-      } else {
-         $query = "SELECT `content`, `begin`, `end`
-                   FROM `glpi_tickettasks` $join
-                   WHERE `tickets_id` = '" . $ticket_id . "' $and";
-      }
+       if ($config->fields['use_publictask'] == PluginManageentitiesConfig::HOUR) {
+           $criteria['WHERE'] = $criteria['WHERE'] + ['is_private' => 0];
+       }
 
-      $result = $DB->doQuery($query);
-      $number = $DB->numrows($result);
-      if ($number) {
-         while ($data = $DB->fetchArray($result)) {
-            $desc .= $data["content"] . "\n\n";
-         }
-      }
+       if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+           $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + ['LEFT JOIN'       => [
+                   'glpi_plugin_manageentities_taskcategories' => [
+                       'ON' => [
+                           'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                           'glpi_tickettasks'          => 'taskcategories_id'
+                       ],
+                   ]
+               ]];
+           $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
+       }
+
+
+       $iterator = $DB->request($criteria);
+       if (count($iterator) > 0) {
+           foreach ($iterator as $data) {
+               $desc .= $data["content"] . "\n\n";
+           }
+       }
 
       return $desc;
    }
@@ -1165,28 +1174,39 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
     * @throws \GlpitestSQLError
     */
    static function showContractLinkDropdown($entities_id, $type = 'ticket') {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
-      $contract = new contract();
+      $contract = new Contract();
       $contract->getEmpty();
       $rand = mt_rand();
       $width = 300;
 
-      $query = "SELECT DISTINCT(`glpi_contracts`.`id`),
-                       `glpi_contracts`.`name`,
-                       `glpi_contracts`.`num`,
-                       `glpi_plugin_manageentities_contracts`.`contracts_id`,
-                       `glpi_plugin_manageentities_contracts`.`id` as ID_us,
-                       `glpi_plugin_manageentities_contracts`.`is_default` as is_default
-               FROM `glpi_contracts`
-               LEFT JOIN `glpi_plugin_manageentities_contracts`
-                    ON (`glpi_plugin_manageentities_contracts`.`contracts_id` = `glpi_contracts`.`id`)
-               WHERE `glpi_plugin_manageentities_contracts`.`entities_id` = '" . $entities_id . "' 
-                     AND `glpi_contracts`.`is_deleted` = 0 
-               ORDER BY `glpi_contracts`.`name` ";
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'glpi_contracts.id',
+               'glpi_contracts.name',
+               'glpi_contracts.num',
+               'glpi_plugin_manageentities_contracts.contracts_id',
+               'glpi_plugin_manageentities_contracts.id as ID_us',
+               'glpi_plugin_manageentities_contracts.id as is_default',
+           ],
+           'DISTINCT' => true,
+           'FROM'      => 'glpi_contracts',
+           'LEFT JOIN'       => [
+               'glpi_plugin_manageentities_contracts' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_contracts' => 'contracts_id',
+                       'glpi_contracts'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               'glpi_contracts.is_deleted' =>  0,
+               'glpi_plugin_manageentities_contracts'.'.entities_id'  => $entities_id
+           ],
+           'ORDERBY'   => ['glpi_contracts.name'],
+       ]);
 
-      $result = $DB->doQuery($query);
-      $number = $DB->numrows($result);
       $selected = false;
       $contractSelected = 0;
       $contractdaySelected = 0;
@@ -1195,11 +1215,11 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Intervention with contract', 'manageentities') . "</td>";
       echo "<td>";
-      if ($number) {
+       if (count($iterator) > 0) {
          if ($type == 'ticket') {
             $elements = [Dropdown::EMPTY_VALUE];
             $value = 0;
-            while ($data = $DB->fetchArray($result)) {
+             foreach ($iterator as $data) {
                if ($data["id"]) {
                   $selected = true;
                   $value = $data["id"];
@@ -1217,7 +1237,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
             }
             $rand = Dropdown::showFromArray('contracts_id', $elements, ['value' => $value, 'width' => $width]);
          } else {
-            while ($data = $DB->fetchArray($result)) {
+             foreach ($iterator as $data) {
             }
             if ($contractSelected) {
                echo Dropdown::getDropdownName('glpi_contracts', $contractSelected);
@@ -1227,7 +1247,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
          echo __('No active contracts', 'manageentities');
       }
 
-      if ($number) {
+       if (count($iterator) > 0) {
 
          // Tooltip for contract
          if (!empty($contractSelected)) {
@@ -1267,7 +1287,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI {
 
          return ['contractSelected' => $contractSelected,
             'contractdaySelected' => $contractdaySelected,
-            'is_contract' => $number];
+            'is_contract' => count($iterator)];
       }
    }
 

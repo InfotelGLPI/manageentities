@@ -40,7 +40,7 @@ class PluginManageentitiesGantt extends CommonDBTM {
    }
 
    static function getIcon() {
-      return "fas fa-user-tie";
+      return "ti ti-align-box-left-stretch";
    }
 
    static function canView(): bool

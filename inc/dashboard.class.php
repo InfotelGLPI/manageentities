@@ -258,13 +258,12 @@ class PluginManageentitiesDashboard extends CommonGLPI
                             __('End date')];
                 $widget->setTabNames($headers);
 
-                $result = $DB->doQuery($query);
-                $nb     = $DB->numrows($result);
+                $iterator = $DB->request($query);
 
                 $datas = [];
                 $i     = 0;
-                if ($nb) {
-                    while ($data = $DB->fetchAssoc($result)) {
+                if (count($iterator) > 0) {
+                    foreach ($iterator as $data) {
                         $datas[$i]["date"] = Html::convDateTime($data['cridetails_date']);
 
                         $datas[$i]["entity"] = $data['entities_name'];
@@ -544,8 +543,9 @@ class PluginManageentitiesDashboard extends CommonGLPI
                         $list[$num]['contracts_id']         = $dataContract['contracts_id'];
                         $list[$num]['contract_begin_date']  = Html::convDate($dataContract['contract_begin_date']);
                         $list[$num]['show_on_global_gantt'] = $dataContract['show_on_global_gantt'];
-
+                        $i = 0;
                         foreach ($iteratord as $dataContractDay) {
+                            $i++;
                             if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Daily
                                 $dataContractDay["contract_type"] = $dataContract["contract_type"];
                             }

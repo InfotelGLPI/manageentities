@@ -56,26 +56,15 @@ class PluginManageentitiesContact extends CommonDBTM {
     */
    function addContactByDefault($contacts_id, $entities_id) {
 
-      global $DB;
+       $contacts = $this->find(['entities_id' => $entities_id]);
 
-      $query  = "SELECT *
-        FROM `" . $this->getTable() . "`
-        WHERE `entities_id` = '" . $entities_id . "' ";
-      $result = $DB->doQuery($query);
-      $number = $DB->numrows($result);
+       if (count($contacts) > 0) {
+           foreach ($contacts as $data) {
+               $this->update(['is_default' => 0, 'id' => $data["id"]]);
+           }
+       }
+       $this->update(['is_default' => 1, 'id' => $contacts_id]);
 
-      if ($number) {
-         while ($data = $DB->fetchArray($result)) {
-
-            $query_nodefault  = "UPDATE `" . $this->getTable() . "`
-            SET `is_default` = 0 WHERE `id` = '" . $data["id"] . "' ";
-            $result_nodefault = $DB->doQuery($query_nodefault);
-         }
-      }
-
-      $query_default  = "UPDATE `" . $this->getTable() . "`
-        SET `is_default` = 1 WHERE `id` ='" . $contacts_id . "' ";
-      $result_default = $DB->doQuery($query_default);
    }
 
    /**
@@ -89,18 +78,29 @@ class PluginManageentitiesContact extends CommonDBTM {
    function showContacts($instID) {
       global $DB, $CFG_GLPI;
 
-      $entitiesId = "'" . implode("', '", $instID) . "'";
-      $query      = "SELECT `glpi_contacts`.*, `" . $this->getTable() . "`.`id` as contacts_id, `" . $this->getTable() . "`.`is_default`
-        FROM `" . $this->getTable() . "`, `glpi_contacts`
-        WHERE `" . $this->getTable() . "`.`contacts_id`=`glpi_contacts`.`id`
-        AND `glpi_contacts`.`is_deleted` = 0
-        AND `" . $this->getTable() . "`.`entities_id` IN ($entitiesId)
-        ORDER BY `glpi_contacts`.`name`";
+       $iterator = $DB->request([
+           'SELECT'    => [
+               'glpi_contacts.*',
+               $this->getTable().'.contacts_id',
+               $this->getTable().'.is_default',
+           ],
+           'FROM'      => $this->getTable(),
+           'LEFT JOIN'       => [
+               'glpi_contacts' => [
+                   'ON' => [
+                       $this->getTable() => 'contacts_id',
+                       'glpi_contacts'          => 'id'
+                   ]
+               ]
+           ],
+           'WHERE'     => [
+               'glpi_contacts.is_deleted' =>  0,
+               $this->getTable().'.entities_id'  => $instID
+           ],
+           'ORDERBY'   => ['glpi_contacts.name'],
+       ]);
 
-      $result = $DB->doQuery($query);
-      $number = $DB->numrows($result);
-
-      if ($number) {
+       if (count($iterator) > 0) {
          echo "<form method='post' action=\"./entity.php\">";
          echo "<div align='center'><table class='tab_cadre_me center'>";
          echo "<tr><th colspan='6'>";
@@ -117,7 +117,7 @@ class PluginManageentitiesContact extends CommonDBTM {
             echo "<th>&nbsp;</th>";
          echo "</tr>";
 
-         while ($data = $DB->fetchArray($result)) {
+           foreach ($iterator as $data) {
             $ID = $data["contacts_id"];
             echo "<tr class='tab_bg_1'>";
             echo "<td class='left'><a href='" . $CFG_GLPI["root_doc"] . "/front/contact.form.php?id=" . $data["id"] . "'>" . $data["name"] . " " . $data["firstname"] . "</a></td>";

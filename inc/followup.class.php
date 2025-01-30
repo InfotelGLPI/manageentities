@@ -42,9 +42,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM
         return __('General follow-up', 'manageentities');
     }
 
-    static function getIcon()
-    {
-        return "fas fa-user-tie";
+    static function getIcon() {
+        return "ti ti-vocabulary";
     }
 
     static function canView(): bool
@@ -115,24 +114,6 @@ class PluginManageentitiesFollowUp extends CommonDBTM
         $preferences = $plugin_pref->find(['users_id' => Session::getLoginUserID()]);
         $preferences = reset($preferences);
 
-//      if (isset($options['contract_states']) && $options['contract_states'] != '0') {
-//         $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", $options['contract_states']) . "') ";
-//      } elseif (isset($preferences['contract_states']) && $preferences['contract_states'] != NULL) {
-//         $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", json_decode($preferences['contract_states'], true)) . "') ";
-//      } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != NULL) {
-//         $contractState .= " AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`  IN ('" . implode("','", json_decode($config_states['contract_states'], true)) . "') ";
-//      }
-//
-//
-//      if (isset($options['business_id']) && $options['business_id'] != '0') {
-//         $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id` IN ('" . implode("','", $options['business_id']) . "') ";
-//      } elseif (isset($preferences['business_id']) && $preferences['business_id'] != NULL) {
-//         $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id` IN ('" . implode("','", json_decode($preferences['business_id'], true)) . "') ";
-//      } elseif (isset($config_states['business_id']) && $config_states['business_id'] != NULL) {
-//         $queryBusiness .= " AND `glpi_plugin_manageentities_businesscontacts`.`users_id`  IN ('" . implode("','", json_decode($config_states['business_id'], true)) . "') ";
-//      }
-
-
         $criteria = [
             'SELECT' => [
                 'glpi_entities.id AS entities_id',
@@ -149,8 +130,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                 ]
             ],
             'WHERE' => [
-                'NOT' => ['glpi_entities.name' => null],
-                'NOT' => ['glpi_entities.id' => null]
+                'NOT' => ['glpi_entities.name' => 'NULL'],
+                'NOT' => ['glpi_entities.id' => 'NULL']
             ],
             'ORDERBY' => 'glpi_entities.name',
         ];
@@ -209,7 +190,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                 ];
 
                 if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Hourly
-                    $criteriac['SELECT'] = $criteriac['SELECT'] + ['glpi_plugin_manageentities_contracts.contract_type AS contract_type'];
+                    $criteriac['SELECT'] = array_merge($criteriac['SELECT'] ,['glpi_plugin_manageentities_contracts.contract_type AS contract_type']);
                     $criteriac['WHERE'] = $criteriac['WHERE'] + ['glpi_plugin_manageentities_contracts.contract_type' => $types_contracts];
                 }
 
@@ -265,7 +246,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                     ];
 
                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {// Hourly
-                        $criteriad['SELECT'] = $criteriad['SELECT'] + ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type'];
+                        $criteriad['SELECT'] = array_merge($criteriad['SELECT'] ,['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']);
                         $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.contract_type' => $types_contracts];
                     }
 
@@ -352,7 +333,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM
 
                    if (isset($options['begin_date_before']) && $options['begin_date_before'] != '') {
                        $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.begin_date' =>
-                               ['<=', new QueryExpression("ADDDATE(" . $options['begin_date_before'] . " , INTERVAL 1 DAY)")]];
+                               ['<=', new QueryExpression("ADDDATE('" . $options['begin_date_before'] . "' , INTERVAL 1 DAY)")]];
                    }
 
                    if (isset($options['end_date_after']) && $options['end_date_after'] != '') {
@@ -364,7 +345,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                    if (isset($options['end_date_before']) && $options['end_date_before'] != '') {
 
                        $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.end_date' =>
-                               ['<=', new QueryExpression("ADDDATE(" . $options['end_date_before'] . " , INTERVAL 1 DAY)")]];
+                               ['<=', new QueryExpression("ADDDATE('" . $options['end_date_before'] . "' , INTERVAL 1 DAY)")]];
                        $endDate       = $options['end_date_before'];
                    }
 
@@ -409,8 +390,9 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                         foreach ($iteratord as $dataContractDay) {
                             $i++;
                             $name_period = "";
-                            $dataContractDay["contract_type"] = $dataContract["contract_type"];
-
+                            if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Hourly
+                                $dataContractDay["contract_type"] = $dataContract["contract_type"];
+                            }
                             if (Session::getCurrentInterface() == 'central') {
                                 $link_period = Toolbox::getItemTypeFormURL("PluginManageentitiesContractDay");
                                 $name_period = "<a class='ganttWhite' href='" . $link_period . "?id=" . $dataContractDay["contractdays_id"] . "&showFromPlugin=1'>";
@@ -499,7 +481,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                                 }
 
                                 if (!empty($dataContractDay['end_date'])) {
-                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + ['date' => ['>=', new QueryExpression("ADDDATE(" . $dataContractDay['end_date'] . " , INTERVAL 1 DAY)")]];
+                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + ['date' => ['>=', new QueryExpression("ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)")]];
                                 }
 
                             } else {
@@ -530,7 +512,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                                 }
 
                                 if (!empty($dataContractDay['end_date'])) {
-                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + ['glpi_plugin_manageentities_cridetails.date' => ['>=', new QueryExpression("ADDDATE(" . $dataContractDay['end_date'] . " , INTERVAL 1 DAY)")]];
+                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + ['glpi_plugin_manageentities_cridetails.date' => ['>=', new QueryExpression("ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)")]];
                                 }
                             }
 

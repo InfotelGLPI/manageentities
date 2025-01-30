@@ -30,6 +30,9 @@
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use \Glpi\DBAL\QueryUnion;
 
 class PluginManageentitiesCri extends CommonDBTM {
 
@@ -38,6 +41,10 @@ class PluginManageentitiesCri extends CommonDBTM {
    static function getTypeName($nb = 0) {
       return _n('Intervention report', 'Intervention reports', $nb, 'manageentities');
    }
+
+    static function getIcon() {
+        return "ti ti-headset";
+    }
 
    function showForm($ID, $options = []) {
       global $DB, $CFG_GLPI;
@@ -209,31 +216,40 @@ class PluginManageentitiesCri extends CommonDBTM {
           * Préremplissage avec les informations des suivis non privés.
           */
          $desc = "";
-         $join = "";
-         $and  = "";
+          $criteria = [
+              'SELECT'    => [
+                  'begin',
+                  'content',
+                  'end',
+              ],
+              'FROM'      => 'glpi_tickettasks',
 
-         if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-            $join = " LEFT JOIN `glpi_plugin_manageentities_taskcategories`
-                        ON (`glpi_plugin_manageentities_taskcategories`.`taskcategories_id` =
-                        `glpi_tickettasks`.`taskcategories_id`)";
-            $and  = " AND `glpi_plugin_manageentities_taskcategories`.`is_usedforcount` = 1";
-         }
+              'WHERE'     => [
+                  'tickets_id' =>  $ID,
+              ],
+          ];
 
          if ($config->fields['use_publictask'] == PluginManageentitiesConfig::HOUR) {
-            $query = "SELECT `content`, `begin`, `end`
-                   FROM `glpi_tickettasks` $join
-                   WHERE `tickets_id` = '" . $ID . "'
-                   AND `is_private` = 0 $and";
-         } else {
-            $query = "SELECT `content`, `begin`, `end`
-                   FROM `glpi_tickettasks` $join
-                   WHERE `tickets_id` = '" . $ID . "' $and";
+             $criteria['WHERE'] = $criteria['WHERE'] + ['is_private' => 0];
          }
 
-         $result = $DB->doQuery($query);
-         $number = $DB->numrows($result);
-         if ($number) {
-            while ($data = $DB->fetchArray($result)) {
+          if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+              $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + ['LEFT JOIN'       => [
+                      'glpi_plugin_manageentities_taskcategories' => [
+                          'ON' => [
+                              'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                              'glpi_tickettasks'          => 'taskcategories_id'
+                          ],
+                      ]
+                  ]];
+              $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
+          }
+
+
+          $iterator = $DB->request($criteria);
+
+          if (count($iterator) > 0) {
+              foreach ($iterator as $data) {
                $desc .= $data["content"] . "\n\n";
             }
             $desc = substr($desc, 0, strlen($desc) - 2); // Suppression des retours chariot pour le dernier suivi...
@@ -396,32 +412,63 @@ class PluginManageentitiesCri extends CommonDBTM {
 
             /* Du ... au ... */
             //configuration only public task
-            $where = "";
-            $join  = "";
 
-            if ($config->fields['use_publictask'] == '1') {
-               $where = " AND `is_private` = 0";
-            }
+             $criteria1 = ['SELECT' =>  [
+                 new QueryExpression("MAX(glpi_tickettasks.end) AS " . $DB->quoteName('max_date')),
+                 new QueryExpression("MIN(glpi_tickettasks.begin) AS " . $DB->quoteName('min_date'))
+             ],
+                 'FROM'   => 'glpi_tickettasks',
+                 'LEFT JOIN'       => [
+                     'glpi_plugin_manageentities_taskcategories' => [
+                         'ON' => [
+                             'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                             'glpi_tickettasks'          => 'taskcategories_id'
+                         ]
+                     ]
+                 ],
+                 'WHERE'  => ['glpi_tickettasks.tickets_id' => $p['REPORT_ID']
+                 ]
+             ];
+             if ($config->fields['use_publictask'] == '1') {
+                 $criteria1['WHERE'] = $criteria1['WHERE'] + ['is_private' => 0];
+             }
 
-            $join = " LEFT JOIN `glpi_plugin_manageentities_taskcategories`
-                        ON (`glpi_plugin_manageentities_taskcategories`.`taskcategories_id` =
-                        gf.taskcategories_id)";
+             $queries[] = $criteria1;
 
-            $query = "SELECT MAX(max_date) AS max_date, MIN(min_date) AS min_date
-                 FROM (
-                       SELECT MAX(gf.end) AS max_date, MIN(gf.begin) AS min_date
-                         FROM glpi_tickettasks gf $join
-                        WHERE gf.tickets_id = '" . $p['REPORT_ID'] . "' $where
-                        UNION 
-                       SELECT MAX(gf.date) AS max_date, MIN(gf.date) AS min_date
-                            FROM glpi_tickettasks gf $join
-                           WHERE gf.tickets_id = '" . $p['REPORT_ID'] . "' $where
-                      ) t";
+             $criteria2 = ['SELECT' =>  [
+                 new QueryExpression("MAX(glpi_tickettasks.date) AS " . $DB->quoteName('max_date')),
+                 new QueryExpression("MIN(glpi_tickettasks.date) AS " . $DB->quoteName('min_date')),
+             ],
+                 'FROM'   => 'glpi_tickettasks',
+                 'LEFT JOIN'       => [
+                     'glpi_plugin_manageentities_taskcategories' => [
+                         'ON' => [
+                             'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                             'glpi_tickettasks'          => 'taskcategories_id'
+                         ]
+                     ]
+                 ],
+                 'WHERE'  => ['glpi_tickettasks.tickets_id' => $p['REPORT_ID']
+                 ]
+             ];
+             if ($config->fields['use_publictask'] == '1') {
+                 $criteria2['WHERE'] = $criteria2['WHERE'] + ['is_private' => 0];
+             }
 
-            $result = $DB->doQuery($query);
-            $number = $DB->numrows($result);
-            if ($number) {
-               while ($data = $DB->fetchArray($result)) {
+             $queries[] = $criteria2;
+
+             $criteria = [
+                 'SELECT'    => [
+                     new QueryExpression("MAX(max_date) AS " . $DB->quoteName('max_date')),
+                     new QueryExpression("MIN(min_date) AS " . $DB->quoteName('min_date')),
+                 ],
+                 'FROM'   => new QueryUnion($queries),
+             ];
+
+             $iterator = $DB->request($criteria);
+
+             if (count($iterator) > 0) {
+                 foreach ($iterator as $data) {
                   $infos_date[1] = $data["min_date"];
                   $infos_date[2] = $data["max_date"];
                }
@@ -431,18 +478,11 @@ class PluginManageentitiesCri extends CommonDBTM {
             // Forfait
 
             $temps_passes = [];
-            //configuration by day
-            if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
-               $nbhour    = $config->fields["hourbyday"];
-               $condition = "";
-            } else {
-               //configuration by hour
-               $nbhour    = 1;
-               $condition = "AND `glpi_plugin_manageentities_taskcategories`.`is_usedforcount` = 1";
-            }
-            $result  = self::getTempsPasses($join, $where, $p, $condition, $nbhour);
+
+
+            $result  = self::getTempsPasses($p);
             $cpt_tps = 0;
-            while ($data = $DB->fetchArray($result)) {
+             foreach ($result as $data) {
                $un_temps_passe = [];
 
                if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
@@ -516,38 +556,69 @@ class PluginManageentitiesCri extends CommonDBTM {
             /* Année et mois de l'intervention (post du ticket). */
             $infos_date    = [];
             $infos_date[0] = $job->fields["date"];
-
+             $queries = [];
             // Not Forfait
             if (($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) ||
-                (isset($contract_days->fields['contract_type']) && $contract_days->fields['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT)) {
+                (isset($contract_days->fields['contract_type'])
+                    && $contract_days->fields['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT)) {
                /* Du ... au ... */
                //configuration only public task
-               $where = "";
-               $join  = "";
+                $criteria1 = ['SELECT' =>  [
+                    new QueryExpression("MAX(glpi_tickettasks.end) AS " . $DB->quoteName('max_date')),
+                    new QueryExpression("MIN(glpi_tickettasks.begin) AS " . $DB->quoteName('min_date'))
+                ],
+                    'FROM'   => 'glpi_tickettasks',
+                    'LEFT JOIN'       => [
+                        'glpi_plugin_manageentities_taskcategories' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                                'glpi_tickettasks'          => 'taskcategories_id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'  => ['glpi_tickettasks.tickets_id' => $p['REPORT_ID']
+                    ]
+                ];
+                if ($config->fields['use_publictask'] == '1') {
+                    $criteria1['WHERE'] = $criteria1['WHERE'] + ['is_private' => 0];
+                }
 
-               if ($config->fields['use_publictask'] == '1') {
-                  $where = " AND `is_private` = 0";
-               }
+                $queries[] = $criteria1;
 
-               $join = " LEFT JOIN `glpi_plugin_manageentities_taskcategories`
-                        ON (`glpi_plugin_manageentities_taskcategories`.`taskcategories_id` =
-                        gf.taskcategories_id)";
+                $criteria2 = ['SELECT' =>  [
+                    new QueryExpression("MAX(glpi_tickettasks.date) AS " . $DB->quoteName('max_date')),
+                    new QueryExpression("MIN(glpi_tickettasks.date) AS " . $DB->quoteName('min_date')),
+                ],
+                    'FROM'   => 'glpi_tickettasks',
+                    'LEFT JOIN'       => [
+                        'glpi_plugin_manageentities_taskcategories' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                                'glpi_tickettasks'          => 'taskcategories_id'
+                            ]
+                        ]
+                    ],
+                    'WHERE'  => ['glpi_tickettasks.tickets_id' => $p['REPORT_ID']
+                    ]
+                ];
+                if ($config->fields['use_publictask'] == '1') {
+                    $criteria2['WHERE'] = $criteria2['WHERE'] + ['is_private' => 0];
+                }
 
-               $query = "SELECT MAX(max_date) AS max_date, MIN(min_date) AS min_date
-                 FROM (
-                       SELECT MAX(gf.end) AS max_date, MIN(gf.begin) AS min_date
-                         FROM glpi_tickettasks gf $join
-                        WHERE gf.tickets_id = '" . $p['REPORT_ID'] . "' $where
-                        UNION 
-                       SELECT MAX(gf.date) AS max_date, MIN(gf.date) AS min_date
-                            FROM glpi_tickettasks gf $join
-                           WHERE gf.tickets_id = '" . $p['REPORT_ID'] . "' $where
-                      ) t";
+                $queries[] = $criteria2;
 
-               $result = $DB->doQuery($query);
-               $number = $DB->numrows($result);
-               if ($number) {
-                  while ($data = $DB->fetchArray($result)) {
+                $criteria = [
+                    'SELECT'    => [
+                        new QueryExpression("MAX(max_date) AS " . $DB->quoteName('max_date')),
+                            new QueryExpression("MIN(min_date) AS " . $DB->quoteName('min_date')),
+                    ],
+                    'FROM'   => new QueryUnion($queries),
+                ];
+
+                $iterator = $DB->request($criteria);
+
+                if (count($iterator) > 0) {
+                    foreach ($iterator as $data) {
                      $infos_date[1] = $data["min_date"];
                      $infos_date[2] = $data["max_date"];
                   }
@@ -587,24 +658,12 @@ class PluginManageentitiesCri extends CommonDBTM {
                $PDF->setIntervention();
             }
 
-            //configuration by day
-            if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
-               $nbhour    = $config->fields["hourbyday"];
-               $condition = "";
-            } else {
-               //configuration by hour
-               $nbhour    = 1;
-               $condition = "AND `glpi_plugin_manageentities_taskcategories`.`is_usedforcount` = 1";
-            }
-
-            /* Récupération des suivis du ticket pour la gestion des temps passés. */
-            // Not Forfait
             if (($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) ||
                 (isset($contract_days->fields['contract_type']) && $contract_days->fields['contract_type'] != PluginManageentitiesContract::CONTRACT_TYPE_FORFAIT)) {
-               $result       = self::getTempsPasses($join, $where, $p, $condition, $nbhour);
+               $result       = self::getTempsPasses($p);
                $temps_passes = [];
                $cpt_tps      = 0;
-               while ($data = $DB->fetchArray($result)) {
+                foreach ($result as $data) {
                   $un_temps_passe = [];
                   if (($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) && (isset($manageentities_contract_data['contract_type']) && $manageentities_contract_data['contract_type'] == PluginManageentitiesContract::CONTRACT_TYPE_INTERVENTION)) {
                      $un_temps_passe[4] = 1;
@@ -612,7 +671,8 @@ class PluginManageentitiesCri extends CommonDBTM {
 
                      if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
                         // If the category of the task is not used and is hourly for count we set value to 0
-                        if ($data["is_usedforcount"] == 0 && $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR)
+                        if ($data["is_usedforcount"] == 0
+                            && $config->fields['hourorday'] == PluginManageentitiesConfig::HOUR)
                            $un_temps_passe[4] = 0;
                         else
                            $un_temps_passe[4] = round($data["tps_passes"], 2);
@@ -853,54 +913,112 @@ class PluginManageentitiesCri extends CommonDBTM {
     * @global type $DB
     *
     */
-   function getTempsPasses($join, $where, $p, $condition, $nbhour) {
+   function getTempsPasses($p) {
       global $DB;
 
-      $query  = "SELECT taskcat,
-                             date,
-                             date_debut,
-                             date_fin,
-                             heure_debut,
-                             heure_fin,
-                             actiontime,
-                             tps_passes,
-                             is_usedforcount
-                 FROM (
-                       SELECT gf.id,
-                              gf.taskcategories_id AS taskcat,
-                              gf.date AS date,
-                              gf.begin AS date_debut,
-                              gf.end AS date_fin,
-                              gf.begin AS heure_debut,
-                              gf.end AS heure_fin,
-                              gf.actiontime as actiontime,
-                              ((gf.actiontime/3600) / " .
-                $nbhour . ") AS tps_passes,
-                              `glpi_plugin_manageentities_taskcategories`.`is_usedforcount` AS is_usedforcount
-                     FROM glpi_tickettasks gf $join
-                        WHERE gf.tickets_id = " . $p['REPORT_ID'] . " $where
-                        $condition
-                        
-                          UNION
-                       SELECT gf2.id,
-                              gf2.taskcategories_id AS taskcat,
-                              gf2.date AS date,
-                              gf2.date AS date_debut,
-                              gf2.date AS date_fin,
-                              '-' AS heure_debut,
-                              '-' AS heure_fin,
-                              '-' AS actiontime,
-                              ((gf2.actiontime/3600) / " .
-                $nbhour . ") AS tps_passes,
-                              '-' AS is_usedforcount
-                       FROM glpi_tickettasks gf2
-                        WHERE gf2.tickets_id = " . $p['REPORT_ID'] . " 
-                         
-                          AND gf2.id NOT IN (SELECT DISTINCT id FROM glpi_tickettasks gtp2)
-                      ) t
-                  ORDER BY t.date_debut ASC";
-      $result = $DB->doQuery($query);
-      return $result;
+       $config = PluginManageentitiesConfig::getInstance();
+
+       //configuration by day
+       if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {
+           $nbhour    = $config->fields["hourbyday"];
+           $condition = "";
+       } else {
+           //configuration by hour
+           $nbhour    = 1;
+       }
+
+       $criteria1 = [
+           'SELECT' => [
+               'glpi_tickettasks.id',
+               'glpi_tickettasks.taskcategories_id AS taskcat',
+               'glpi_tickettasks.date AS date',
+               'glpi_tickettasks.begin AS date_debut',
+               'glpi_tickettasks.end AS date_fin',
+               'glpi_tickettasks.begin AS heure_debut',
+               'glpi_tickettasks.end AS heure_fin',
+               'glpi_tickettasks.actiontime as actiontime',
+               new QueryExpression("(glpi_tickettasks.actiontime/3600)/" . $DB->quoteValue($nbhour)." AS " . $DB->quoteName('tps_passes')),
+               'glpi_plugin_manageentities_taskcategories.is_usedforcount as is_usedforcount',
+           ],
+           'FROM' => 'glpi_tickettasks',
+           'LEFT JOIN' => [
+               'glpi_plugin_manageentities_taskcategories' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                       'glpi_tickettasks'          => 'taskcategories_id'
+                   ]
+               ]
+           ],
+           'WHERE'  => ['glpi_tickettasks.tickets_id' => $p['REPORT_ID']
+           ]
+       ];
+       if ($config->fields['use_publictask'] == '1') {
+           $criteria1['WHERE'] = $criteria1['WHERE'] + ['is_private' => 0];
+       }
+
+       if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+           $criteria1['WHERE'] = $criteria1['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
+       }
+
+       $queries[] = $criteria1;
+
+       $criteria2 = ['SELECT' => [
+           'glpi_tickettasks.id',
+           'glpi_tickettasks.taskcategories_id AS taskcat',
+           'glpi_tickettasks.date AS date',
+           'glpi_tickettasks.begin AS date_debut',
+           'glpi_tickettasks.end AS date_fin',
+           'glpi_tickettasks.begin AS heure_debut',
+           'glpi_tickettasks.end AS heure_fin',
+           'glpi_tickettasks.actiontime as actiontime',
+           new QueryExpression("(glpi_tickettasks.actiontime/3600)/" . $DB->quoteValue($nbhour)." AS " . $DB->quoteName('tps_passes')),
+           'glpi_plugin_manageentities_taskcategories.is_usedforcount as is_usedforcount',
+       ],
+           'FROM'   => 'glpi_tickettasks',
+           'LEFT JOIN'       => [
+               'glpi_plugin_manageentities_taskcategories' => [
+                   'ON' => [
+                       'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                       'glpi_tickettasks'          => 'taskcategories_id'
+                   ]
+               ]
+           ],
+           'WHERE' => [
+               'glpi_tickettasks.tickets_id' => $p['REPORT_ID'],
+               'NOT' => [
+                   'glpi_tickettasks.id' => new QuerySubQuery([
+                       'SELECT' => 'id',
+                       'DISTINCT' => true,
+                       'FROM' => 'glpi_tickettasks',
+                   ])
+               ],
+           ],
+           'ORDERBY' => 'date_debut ASC',
+       ];
+       if ($config->fields['use_publictask'] == '1') {
+           $criteria2['WHERE'] = $criteria2['WHERE'] + ['is_private' => 0];
+       }
+
+       $queries[] = $criteria2;
+
+       $criteria = [
+           'SELECT'    => [
+               'taskcat',
+               'date',
+               'date_debut',
+               'date_fin',
+               'heure_debut',
+               'heure_fin',
+               'actiontime',
+               'tps_passes',
+               'is_usedforcount',
+           ],
+           'FROM'   => new QueryUnion($queries),
+       ];
+
+       $iterator = $DB->request($criteria);
+
+      return $iterator;
    }
 
    function CleanFiles($dir) {
