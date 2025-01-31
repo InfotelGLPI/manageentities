@@ -50,13 +50,15 @@ class PluginManageentitiesProfile extends Profile
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == 'Profile') {
-            $ID   = $item->getID();
+            $ID = $item->getID();
             $prof = new self();
 
             self::addDefaultProfileInfos(
                 $ID,
-                ['plugin_manageentities'            => ALLSTANDARDRIGHT,
-                 'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT]
+                [
+                    'plugin_manageentities' => ALLSTANDARDRIGHT,
+                    'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT
+                ]
             );
             $prof->showForm($ID);
         }
@@ -77,9 +79,11 @@ class PluginManageentitiesProfile extends Profile
         $profile->getFromDB($profiles_id);
 
         $rights = $this->getAllRights();
-        $profile->displayRightsChoiceMatrix($rights, ['canedit'       => $canedit,
-                                                      'default_class' => 'tab_bg_2',
-                                                      'title'         => __('General')]);
+        $profile->displayRightsChoiceMatrix($rights, [
+            'canedit' => $canedit,
+            'default_class' => 'tab_bg_2',
+            'title' => __('General')
+        ]);
         if ($canedit
             && $closeform) {
             echo "<div class='center'>";
@@ -96,14 +100,16 @@ class PluginManageentitiesProfile extends Profile
     public static function getAllRights($all = false)
     {
         $rights = [
-           ['itemtype' => 'PluginManageentitiesEntity',
-            'label'    => __('Entities portal', 'manageentities'),
-            'field'    => 'plugin_manageentities'
-           ],
-           ['itemtype' => 'PluginManageentitiesCriDetail',
-            'label'    => _n('Intervention report', 'Intervention reports', 1, 'manageentities'),
-            'field'    => 'plugin_manageentities_cri_create'
-           ]
+            [
+                'itemtype' => 'PluginManageentitiesEntity',
+                'label' => __('Entities portal', 'manageentities'),
+                'field' => 'plugin_manageentities'
+            ],
+            [
+                'itemtype' => 'PluginManageentitiesCriDetail',
+                'label' => _n('Intervention report', 'Intervention reports', 1, 'manageentities'),
+                'field' => 'plugin_manageentities_cri_create'
+            ]
         ];
 
         return $rights;
@@ -146,15 +152,20 @@ class PluginManageentitiesProfile extends Profile
         if (!$DB->tableExists('glpi_plugin_manageentities_profiles')) {
             return true;
         }
-        $dbu   = new DbUtils();
+        $dbu = new DbUtils();
         $datas = $dbu->getAllDataFromTable('glpi_plugin_manageentities_profiles');
 
         foreach ($datas as $profile_data) {
-            $matching = ['manageentities' => 'plugin_manageentities',
-                         'cri_create'     => 'plugin_manageentities_cri_create'];
+            $matching = [
+                'manageentities' => 'plugin_manageentities',
+                'cri_create' => 'plugin_manageentities_cri_create'
+            ];
             // Search existing rights
-            $used           = [];
-            $existingRights = $dbu->getAllDataFromTable('glpi_profilerights', ["`profiles_id`" => $profile_data['profiles_id']]);
+            $used = [];
+            $existingRights = $dbu->getAllDataFromTable(
+                'glpi_profilerights',
+                ["`profiles_id`" => $profile_data['profiles_id']]
+            );
             foreach ($existingRights as $right) {
                 $used[$right['profiles_id']][$right['name']] = $right['rights'];
             }
@@ -163,12 +174,12 @@ class PluginManageentitiesProfile extends Profile
             foreach ($matching as $old => $new) {
                 if (isset($used[$profile_data['profiles_id']][$new])) {
                     $DB->update('glpi_profilerights', ['rights' => self::translateARight($profile_data[$old])], [
-                        'name'        => $new,
+                        'name' => $new,
                         'profiles_id' => $profile_data['profiles_id']
                     ]);
                 } else {
                     $DB->add('glpi_profilerights', ['rights' => self::translateARight($profile_data[$old])], [
-                        'name'        => $new,
+                        'name' => $new,
                         'profiles_id' => $profile_data['profiles_id']
                     ]);
                 }
@@ -183,14 +194,14 @@ class PluginManageentitiesProfile extends Profile
     {
         global $DB;
         $profile = new self();
-        $dbu     = new DbUtils();
+        $dbu = new DbUtils();
 
         //Add new rights in glpi_profilerights table
         foreach ($profile->getAllRights(true) as $data) {
             if ($dbu->countElementsInTable(
-                "glpi_profilerights",
-                ["name" => $data['field']]
-            ) == 0) {
+                    "glpi_profilerights",
+                    ["name" => $data['field']]
+                ) == 0) {
                 ProfileRight::addProfileRights([$data['field']]);
             }
         }
@@ -216,8 +227,10 @@ class PluginManageentitiesProfile extends Profile
     {
         self::addDefaultProfileInfos(
             $profiles_id,
-            ['plugin_manageentities'            => ALLSTANDARDRIGHT,
-             'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT],
+            [
+                'plugin_manageentities' => ALLSTANDARDRIGHT,
+                'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT
+            ],
             true
         );
     }
@@ -245,24 +258,28 @@ class PluginManageentitiesProfile extends Profile
     public static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false)
     {
         $profileRight = new ProfileRight();
-        $dbu          = new DbUtils();
+        $dbu = new DbUtils();
 
         foreach ($rights as $right => $value) {
             if ($dbu->countElementsInTable(
-                'glpi_profilerights',
-                ["profiles_id" => $profiles_id,
-                 "name"        => $right]
-            ) && $drop_existing) {
+                    'glpi_profilerights',
+                    [
+                        "profiles_id" => $profiles_id,
+                        "name" => $right
+                    ]
+                ) && $drop_existing) {
                 $profileRight->deleteByCriteria(['profiles_id' => $profiles_id, 'name' => $right]);
             }
             if (!$dbu->countElementsInTable(
                 'glpi_profilerights',
-                ["profiles_id" => $profiles_id,
-                 "name"        => $right]
+                [
+                    "profiles_id" => $profiles_id,
+                    "name" => $right
+                ]
             )) {
                 $myright['profiles_id'] = $profiles_id;
-                $myright['name']        = $right;
-                $myright['rights']      = $value;
+                $myright['name'] = $right;
+                $myright['rights'] = $value;
                 $profileRight->add($myright);
 
                 //Add right to the current session

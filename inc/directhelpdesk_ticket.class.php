@@ -28,8 +28,9 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
+
 class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
 {
 
@@ -37,7 +38,7 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Not billed intervention', 'Not billed interventions',$nb ,'manageentities');
+        return _n('Not billed intervention', 'Not billed interventions', $nb, 'manageentities');
     }
 
     /**
@@ -48,21 +49,31 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
         return "ti ti-file-euro";
     }
 
-    static function countForTicket($item) {
+    static function countForTicket($item)
+    {
         $dbu = new DbUtils();
-        return $dbu->countElementsInTable('glpi_plugin_manageentities_directhelpdesks_tickets',
-            ["`tickets_id`" => $item->getID()]);
+        return $dbu->countElementsInTable(
+            'glpi_plugin_manageentities_directhelpdesks_tickets',
+            ["`tickets_id`" => $item->getID()]
+        );
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-
+    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
         if ($item->getType() == 'Ticket'
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-
             if (self::countForTicket($item) > 0) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(_n('Not billed intervention', 'Not billed interventions',self::countForTicket($item) ,'manageentities'), self::countForTicket($item));
+                    return self::createTabEntry(
+                        _n(
+                            'Not billed intervention',
+                            'Not billed interventions',
+                            self::countForTicket($item),
+                            'manageentities'
+                        ),
+                        self::countForTicket($item)
+                    );
                 }
                 return self::createTabEntry(self::getTypeName(self::countForTicket($item)));
             } else {
@@ -72,31 +83,29 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
         return '';
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-
+    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
         if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
-
             $self = new self();
             if ($items = $self->find(['tickets_id' => $item->getID()])) {
-
                 echo "<table class='tab_cadre_fixe'>";
                 echo "<tr class='tab_bg_1'>";
-                echo "<th>".__('Title')."</th>";
-                echo "<th>".__('Date')."</th>";
-                echo "<th>".__('Technician')."</th>";
-                echo "<th>".__('Duration')."</th>";
-                echo "<th>".__('Description')."</th>";
+                echo "<th>" . __('Title') . "</th>";
+                echo "<th>" . __('Date') . "</th>";
+                echo "<th>" . __('Technician') . "</th>";
+                echo "<th>" . __('Duration') . "</th>";
+                echo "<th>" . __('Description') . "</th>";
                 echo "</tr>";
                 foreach ($items as $item) {
                     $direct = new PluginManageentitiesDirecthelpdesk();
                     $direct->getFromDB($item['plugin_manageentities_directhelpdesks_id']);
                     $actiontime = $direct->fields['actiontime'];
                     echo "<tr class='tab_bg_1'>";
-                    echo "<td>".$direct->fields['name']."</td>";
-                    echo "<td>".Html::convDate($direct->fields['date'])."</td>";
-                    echo "<td>".getUserName($direct->fields['users_id'])."</td>";
-                    echo "<td>".CommonITILObject::getActionTime($actiontime)."</td>";
-                    echo "<td>".$direct->fields['comment']."</td>";
+                    echo "<td>" . $direct->fields['name'] . "</td>";
+                    echo "<td>" . Html::convDate($direct->fields['date']) . "</td>";
+                    echo "<td>" . getUserName($direct->fields['users_id']) . "</td>";
+                    echo "<td>" . CommonITILObject::getActionTime($actiontime) . "</td>";
+                    echo "<td>" . $direct->fields['comment'] . "</td>";
                     echo "</tr>";
                 }
                 echo "</table>";
@@ -105,11 +114,10 @@ class PluginManageentitiesDirecthelpdesk_Ticket extends CommonDBTM
         return true;
     }
 
-    static function selectDirectHeldeskForTicket($entities_id) {
-
+    static function selectDirectHeldeskForTicket($entities_id)
+    {
         $direct = new PluginManageentitiesDirecthelpdesk();
         if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities_id], ['date'])) {
-
             echo "<form method='post' action='" . $direct->getFormURL() . "'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";

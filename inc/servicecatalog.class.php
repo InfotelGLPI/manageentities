@@ -28,62 +28,66 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
 
-class PluginManageentitiesServicecatalog extends CommonGLPI {
+class PluginManageentitiesServicecatalog extends CommonGLPI
+{
 
-   static $rightname = 'plugin_manageentities';
+    static $rightname = 'plugin_manageentities';
 
-   var $dohistory = false;
+    var $dohistory = false;
 
-   static function canUse() {
-      $PluginManageentitiesEntity = new PluginManageentitiesEntity();
-      return $PluginManageentitiesEntity->canView();
-   }
+    static function canUse()
+    {
+        $PluginManageentitiesEntity = new PluginManageentitiesEntity();
+        return $PluginManageentitiesEntity->canView();
+    }
 
-   /**
-    * @return string
-    */
-   static function getMenuLink() {
-      global $CFG_GLPI;
+    /**
+     * @return string
+     */
+    static function getMenuLink()
+    {
+        global $CFG_GLPI;
 
-      return PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
-   }
+        return PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
+    }
 
-   /**
-    * @return string
-    */
-   static function getNavBarLink() {
-      global $CFG_GLPI;
+    /**
+     * @return string
+     */
+    static function getNavBarLink()
+    {
+        global $CFG_GLPI;
 
-      return PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/entity.php";
-   }
+        return PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/entity.php";
+    }
 
-   static function getMenuLogo() {
+    static function getMenuLogo()
+    {
+        return PluginManageentitiesEntity::getIcon();
+    }
 
-      return PluginManageentitiesEntity::getIcon();
-
-   }
-
-   static function getMenuTitle() {
-
-      return __('Manage your contracts', 'manageentities');
-
-   }
+    static function getMenuTitle()
+    {
+        return __('Manage your contracts', 'manageentities');
+    }
 
 
-   static function getMenuComment() {
+    static function getMenuComment()
+    {
+        return __('Manage your contracts', 'manageentities');
+    }
 
-      return __('Manage your contracts', 'manageentities');
-   }
+    static function getLinkList()
+    {
+        return "";
+    }
 
-   static function getLinkList() {
-      return "";
-   }
-
-   static function getList() {
-      return "";
-   }
+    static function getList()
+    {
+        return "";
+    }
 }

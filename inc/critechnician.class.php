@@ -28,10 +28,11 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesCriTechnician extends CommonDBTM {
+class PluginManageentitiesCriTechnician extends CommonDBTM
+{
 
 //   function checkIfTechnicianExists($ID) {
 //      global $DB;
@@ -63,82 +64,103 @@ class PluginManageentitiesCriTechnician extends CommonDBTM {
 //      return $this->add($input);
 //   }
 
-   function getTechnicians($tickets_id, $remove_tag = false) {
-      global $DB;
+    function getTechnicians($tickets_id, $remove_tag = false)
+    {
+        global $DB;
 
-      $dbu    = new DbUtils();
-      $techs  = [];
+        $dbu = new DbUtils();
+        $techs = [];
 
-       $iterator = $DB->request([
-           'SELECT'    => [
-               'glpi_tickettasks.users_id_tech as users_id',
-               'glpi_users.name',
-               'glpi_users.realname',
-               'glpi_users.firstname',
-           ],
-           'FROM'      => 'glpi_tickettasks',
-           'LEFT JOIN'       => [
-               'glpi_users' => [
-                   'ON' => [
-                       'glpi_tickettasks' => 'users_id_tech',
-                       'glpi_users'          => 'id'
-                   ]
-               ]
-           ],
-           'WHERE'     => [
-               'tickets_id'  => $tickets_id
-           ],
-       ]);
+        $iterator = $DB->request([
+            'SELECT' => [
+                'glpi_tickettasks.users_id_tech as users_id',
+                'glpi_users.name',
+                'glpi_users.realname',
+                'glpi_users.firstname',
+            ],
+            'FROM' => 'glpi_tickettasks',
+            'LEFT JOIN' => [
+                'glpi_users' => [
+                    'ON' => [
+                        'glpi_tickettasks' => 'users_id_tech',
+                        'glpi_users' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'tickets_id' => $tickets_id
+            ],
+        ]);
 
-       if (count($iterator) > 0) {
-           foreach ($iterator as $data) {
-            if ($data['users_id'] != 0) {
-               if ($remove_tag) {
-                  $techs['notremove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
-                                                                                $data["name"], $data["realname"], $data["firstname"], 0);
-               } else {
-                  $techs[$data['users_id']] = $dbu->formatUserName($data["users_id"],
-                                                                   $data["name"], $data["realname"], $data["firstname"], 0);
-               }
+        if (count($iterator) > 0) {
+            foreach ($iterator as $data) {
+                if ($data['users_id'] != 0) {
+                    if ($remove_tag) {
+                        $techs['notremove'][$data['users_id']] = $dbu->formatUserName(
+                            $data["users_id"],
+                            $data["name"],
+                            $data["realname"],
+                            $data["firstname"],
+                            0
+                        );
+                    } else {
+                        $techs[$data['users_id']] = $dbu->formatUserName(
+                            $data["users_id"],
+                            $data["name"],
+                            $data["realname"],
+                            $data["firstname"],
+                            0
+                        );
+                    }
+                }
             }
-         }
-      }
+        }
 
-       $iterator = $DB->request([
-           'SELECT'    => [
-               'glpi_plugin_manageentities_critechnicians.users_id as users_id',
-               'glpi_users.name',
-               'glpi_users.realname',
-               'glpi_users.firstname',
-           ],
-           'FROM'      => 'glpi_plugin_manageentities_critechnicians',
-           'LEFT JOIN'       => [
-               'glpi_users' => [
-                   'ON' => [
-                       'glpi_plugin_manageentities_critechnicians' => 'users_id',
-                       'glpi_users'          => 'id'
-                   ]
-               ]
-           ],
-           'WHERE'     => [
-               'tickets_id'  => $tickets_id
-           ],
-       ]);
+        $iterator = $DB->request([
+            'SELECT' => [
+                'glpi_plugin_manageentities_critechnicians.users_id as users_id',
+                'glpi_users.name',
+                'glpi_users.realname',
+                'glpi_users.firstname',
+            ],
+            'FROM' => 'glpi_plugin_manageentities_critechnicians',
+            'LEFT JOIN' => [
+                'glpi_users' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_critechnicians' => 'users_id',
+                        'glpi_users' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'tickets_id' => $tickets_id
+            ],
+        ]);
 
-       if (count($iterator) > 0) {
-           foreach ($iterator as $data) {
-            if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {
-               if ($remove_tag) {
-                  $techs['remove'][$data['users_id']] = $dbu->formatUserName($data["users_id"],
-                                                                             $data["name"], $data["realname"], $data["firstname"], 0);
-               } else {
-                  $techs[$data['users_id']] = $dbu->formatUserName($data["users_id"],
-                                                                   $data["name"], $data["realname"], $data["firstname"], 0);
-               }
+        if (count($iterator) > 0) {
+            foreach ($iterator as $data) {
+                if ($data['users_id'] != 0 && !isset($techs['notremove'][$data['users_id']])) {
+                    if ($remove_tag) {
+                        $techs['remove'][$data['users_id']] = $dbu->formatUserName(
+                            $data["users_id"],
+                            $data["name"],
+                            $data["realname"],
+                            $data["firstname"],
+                            0
+                        );
+                    } else {
+                        $techs[$data['users_id']] = $dbu->formatUserName(
+                            $data["users_id"],
+                            $data["name"],
+                            $data["realname"],
+                            $data["firstname"],
+                            0
+                        );
+                    }
+                }
             }
-         }
-      }
+        }
 
-      return $techs;
-   }
+        return $techs;
+    }
 }

@@ -32,84 +32,91 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesDropdown extends Dropdown {
+class PluginManageentitiesDropdown extends Dropdown
+{
 
-   static $rightname = 'plugin_manageentities';
+    static $rightname = 'plugin_manageentities';
 
-   //Empty value displayed in a dropdown
-   const EMPTY_VALUE = '-----';
+    //Empty value displayed in a dropdown
+    const EMPTY_VALUE = '-----';
 
-   /**
-    * Dropdown numbers
-    *
-    * @param $myname          select name
-    * @param $options   array of additionnal options :
-    *     - value              default value (default 0)
-    *     - rand               random value
-    *     - min                min value (default 0)
-    *     - max                max value (default 100)
-    *     - step               step used (default 1)
-    *     - toadd     array    of values to add at the beginning
-    *     - unit      string   unit to used
-    *     - display   boolean  if false get string
-    *     - width              specific width needed (default 80%)
-    *     - on_change string / value to transmit to "onChange"
-    *     - used      array / Already used items ID: not to display in dropdown (default empty)
-    **@since version 0.84
-    *
-    */
-   static function showNumber($myname, $options = []) {
-      global $CFG_GLPI;
+    /**
+     * Dropdown numbers
+     *
+     * @param $myname          select name
+     * @param $options   array of additionnal options :
+     *     - value              default value (default 0)
+     *     - rand               random value
+     *     - min                min value (default 0)
+     *     - max                max value (default 100)
+     *     - step               step used (default 1)
+     *     - toadd     array    of values to add at the beginning
+     *     - unit      string   unit to used
+     *     - display   boolean  if false get string
+     *     - width              specific width needed (default 80%)
+     *     - on_change string / value to transmit to "onChange"
+     *     - used      array / Already used items ID: not to display in dropdown (default empty)
+     **@since version 0.84
+     *
+     */
+    static function showNumber($myname, $options = [])
+    {
+        global $CFG_GLPI;
 
-      $p['value']     = 0;
-      $p['rand']      = mt_rand();
-      $p['min']       = 0;
-      $p['max']       = 100;
-      $p['step']      = 1;
-      $p['toadd']     = [];
-      $p['unit']      = '';
-      $p['display']   = true;
-      $p['width']     = '';
-      $p['on_change'] = '';
-      $p['used']      = [];
+        $p['value'] = 0;
+        $p['rand'] = mt_rand();
+        $p['min'] = 0;
+        $p['max'] = 100;
+        $p['step'] = 1;
+        $p['toadd'] = [];
+        $p['unit'] = '';
+        $p['display'] = true;
+        $p['width'] = '';
+        $p['on_change'] = '';
+        $p['used'] = [];
 
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
-         }
-      }
-      if (($p['value'] < $p['min']) && !isset($p['toadd'][$p['value']])) {
-         $p['value'] = $p['min'];
-      }
+        if (is_array($options) && count($options)) {
+            foreach ($options as $key => $val) {
+                $p[$key] = $val;
+            }
+        }
+        if (($p['value'] < $p['min']) && !isset($p['toadd'][$p['value']])) {
+            $p['value'] = $p['min'];
+        }
 
-      $field_id = Html::cleanId("dropdown_" . $myname . $p['rand']);
-      if (!isset($p['toadd'][$p['value']])) {
-         $valuename = self::getValueWithUnit($p['value'], $p['unit']);
-      } else {
-         $valuename = $p['toadd'][$p['value']];
-      }
-      $param = ['value'     => $p['value'],
-                'valuename' => $valuename,
-                'width'     => $p['width'],
-                'on_change' => $p['on_change'],
-                'used'      => $p['used'],
-                'unit'      => $p['unit'],
-                'min'       => $p['min'],
-                'max'       => $p['max'],
-                'step'      => $p['step'],
-                'toadd'     => $p['toadd']];
+        $field_id = Html::cleanId("dropdown_" . $myname . $p['rand']);
+        if (!isset($p['toadd'][$p['value']])) {
+            $valuename = self::getValueWithUnit($p['value'], $p['unit']);
+        } else {
+            $valuename = $p['toadd'][$p['value']];
+        }
+        $param = [
+            'value' => $p['value'],
+            'valuename' => $valuename,
+            'width' => $p['width'],
+            'on_change' => $p['on_change'],
+            'used' => $p['used'],
+            'unit' => $p['unit'],
+            'min' => $p['min'],
+            'max' => $p['max'],
+            'step' => $p['step'],
+            'toadd' => $p['toadd']
+        ];
 
-      $out = Html::jsAjaxDropdown($myname, $field_id,
-                                  PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/getDropdownNumber.php",
-                                  $param);
+        $out = Html::jsAjaxDropdown(
+            $myname,
+            $field_id,
+            PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/getDropdownNumber.php",
+            $param
+        );
 
-      if ($p['display']) {
-         echo $out;
-         return $p['rand'];
-      }
-      return $out;
-   }
+        if ($p['display']) {
+            echo $out;
+            return $p['rand'];
+        }
+        return $out;
+    }
 }

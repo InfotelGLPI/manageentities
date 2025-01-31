@@ -28,47 +28,53 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesTicketTask extends CommonDBTM {
+class PluginManageentitiesTicketTask extends CommonDBTM
+{
 
-   var $dohistory = false;
+    var $dohistory = false;
 
-   static $rightname = "plugin_manageentities";
+    static $rightname = "plugin_manageentities";
 
-   static public function postForm($params) {
-      global $CFG_GLPI;
+    static public function postForm($params)
+    {
+        global $CFG_GLPI;
 
-      $tickettask = $params['item'];
-      switch ($tickettask->getType()) {
-         case 'TicketTask':
+        $tickettask = $params['item'];
+        switch ($tickettask->getType()) {
+            case 'TicketTask':
 
-            $rand = mt_rand();
-            echo '<tr class="tab_bg_1"><td colspan="3"></td>';
-            echo '<td>';
-            echo "<div class='fa-label right' style='width:300px;margin-right: 0;margin-left: auto;'>";
-            $value = $tickettask->fields['date'];
-            if (!empty($tickettask->fields['begin'])) {
-               $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
-            }
-            $randDate      = Html::showDateTimeField('new_date', ['value'   => $value,
-                                                                  'rand'    => $rand,
-                                                                  'mintime' => $CFG_GLPI["planning_begin"],
-                                                                  'maxtime' => $CFG_GLPI["planning_end"]]);
-            $params        = json_encode(['root_doc'       => PLUGIN_MANAGEENTITIES_WEBDIR,
-                                          //                                       'new_date_id'    => 'showdate' . $randDate,
-                                          'tickets_id'     => $tickettask->fields['tickets_id'],
-                                          'tickettasks_id' => $tickettask->fields['id']]);
-            $tickettask_id = $tickettask->fields['id'];
-            echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);'>";
-            echo "<i class='far fa-clone fa-fw pointer'
+                $rand = mt_rand();
+                echo '<tr class="tab_bg_1"><td colspan="3"></td>';
+                echo '<td>';
+                echo "<div class='fa-label right' style='width:300px;margin-right: 0;margin-left: auto;'>";
+                $value = $tickettask->fields['date'];
+                if (!empty($tickettask->fields['begin'])) {
+                    $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
+                }
+                $randDate = Html::showDateTimeField('new_date', [
+                    'value' => $value,
+                    'rand' => $rand,
+                    'mintime' => $CFG_GLPI["planning_begin"],
+                    'maxtime' => $CFG_GLPI["planning_end"]
+                ]);
+                $params = json_encode([
+                    'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
+                    //                                       'new_date_id'    => 'showdate' . $randDate,
+                    'tickets_id' => $tickettask->fields['tickets_id'],
+                    'tickettasks_id' => $tickettask->fields['id']
+                ]);
+                $tickettask_id = $tickettask->fields['id'];
+                echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);'>";
+                echo "<i class='far fa-clone fa-fw pointer'
             title='" . _sx('button', 'Duplicate') . "'></i>";
 
-            echo "</span>";
-            echo '</div>';
-            echo '</td></tr>';
-            break;
-      }
-   }
+                echo "</span>";
+                echo '</div>';
+                echo '</td></tr>';
+                break;
+        }
+    }
 }

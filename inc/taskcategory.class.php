@@ -28,105 +28,115 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesTaskCategory extends CommonDBTM {
+class PluginManageentitiesTaskCategory extends CommonDBTM
+{
 
-   static $rightname = 'dropdown';
+    static $rightname = 'dropdown';
 
-   static function getTypeName($nb = 0) {
-      return _n('Management of task category', 'Management of task categories', $nb, 'manageentities');
-   }
+    static function getTypeName($nb = 0)
+    {
+        return _n('Management of task category', 'Management of task categories', $nb, 'manageentities');
+    }
 
-   static function canView(): bool
-   {
-      return Session::haveRight(self::$rightname, READ);
-   }
+    static function canView(): bool
+    {
+        return Session::haveRight(self::$rightname, READ);
+    }
 
-   static function canCreate(): bool
-   {
-      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
-   }
+    static function canCreate(): bool
+    {
+        return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
+    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      $config = PluginManageentitiesConfig::getInstance();
+    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        $config = PluginManageentitiesConfig::getInstance();
 
-      if ($item->getType() == 'TaskCategory') {
-         if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-          return self::createTabEntry(__('Entities portal', 'manageentities'));
-         }
-      }
-      return '';
-   }
+        if ($item->getType() == 'TaskCategory') {
+            if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
+                return self::createTabEntry(__('Entities portal', 'manageentities'));
+            }
+        }
+        return '';
+    }
 
-    static function getIcon() {
+    static function getIcon()
+    {
         return "fas fa-user-tie";
     }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      global $CFG_GLPI;
+    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        global $CFG_GLPI;
 
-      if ($item->getType() == 'TaskCategory') {
-         $ID   = $item->getField('id');
-         $self = new self();
+        if ($item->getType() == 'TaskCategory') {
+            $ID = $item->getField('id');
+            $self = new self();
 
-         if (!$self->getFromDBByCrit(['taskcategories_id' => $ID])) {
-            $self->createAccess($item->getField('id'));
-         }
-         $self->showForm($item->getField('id'), ['target' =>
-                                                    PLUGIN_MANAGEENTITIES_WEBDIR . "/front/taskcategory.form.php"]);
-      }
-      return true;
-   }
+            if (!$self->getFromDBByCrit(['taskcategories_id' => $ID])) {
+                $self->createAccess($item->getField('id'));
+            }
+            $self->showForm($item->getField('id'), [
+                'target' =>
+                    PLUGIN_MANAGEENTITIES_WEBDIR . "/front/taskcategory.form.php"
+            ]);
+        }
+        return true;
+    }
 
-   function createAccess($ID) {
+    function createAccess($ID)
+    {
+        $this->add([
+            'taskcategories_id' => $ID
+        ]);
+    }
 
-      $this->add([
-                    'taskcategories_id' => $ID]);
-   }
+    function showForm($ID, $options = [])
+    {
+        if (!self::canView()) {
+            return false;
+        }
 
-   function showForm($ID, $options = []) {
-      if (!self::canView()) return false;
+        $taskCategory = new TaskCategory();
+        if ($ID) {
+            $this->getFromDBByCrit(['taskcategories_id' => $ID]);
+            $taskCategory->getFromDB($ID);
+            $canUpdate = $taskCategory->can($ID, UPDATE);
+        }
 
-      $taskCategory = new TaskCategory();
-      if ($ID) {
-          $this->getFromDBByCrit(['taskcategories_id' => $ID]);
-         $taskCategory->getFromDB($ID);
-         $canUpdate = $taskCategory->can($ID, UPDATE);
-      }
+        $rand = mt_rand();
 
-      $rand = mt_rand();
-
-      echo "<form name='taskCategory_form$rand' id='taskCategory_form$rand' method='post'
+        echo "<form name='taskCategory_form$rand' id='taskCategory_form$rand' method='post'
             action='" . $options['target'] . "'>";
 
-      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+        echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='2'>";
+        echo "<tr><th colspan='2'>";
 
-      echo __('Management of task category', 'manageentities') . " - " . $taskCategory->fields["name"];
+        echo __('Management of task category', 'manageentities') . " - " . $taskCategory->fields["name"];
 
-      echo "</th></tr>";
+        echo "</th></tr>";
 
-      echo "<tr class='tab_bg_2'>";
+        echo "<tr class='tab_bg_2'>";
 
-      echo "<td>" . __('Use for calculation of intervention report', 'manageentities') . "</td><td>";
-      Dropdown::showYesNo("is_usedforcount", $this->fields["is_usedforcount"]);
-      echo "</td>";
-      echo "</tr>";
+        echo "<td>" . __('Use for calculation of intervention report', 'manageentities') . "</td><td>";
+        Dropdown::showYesNo("is_usedforcount", $this->fields["is_usedforcount"]);
+        echo "</td>";
+        echo "</tr>";
 
-      echo Html::hidden('id', ['value' => $this->fields["id"]]);
+        echo Html::hidden('id', ['value' => $this->fields["id"]]);
 
-      $options['canedit'] = false;
+        $options['canedit'] = false;
 
-      if ($canUpdate) {
-         $options['canedit'] = true;
-      }
-      $options['candel']  = false;
-      $options['colspan'] = '1';
-      $this->showFormButtons($options);
-
-   }
+        if ($canUpdate) {
+            $options['canedit'] = true;
+        }
+        $options['candel'] = false;
+        $options['colspan'] = '1';
+        $this->showFormButtons($options);
+    }
 }

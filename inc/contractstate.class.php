@@ -28,96 +28,111 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesContractState extends CommonDropdown {
+class PluginManageentitiesContractState extends CommonDropdown
+{
 
-   static $rightname = 'plugin_manageentities';
+    static $rightname = 'plugin_manageentities';
 
-   static function getTypeName($nb = 0) {
-      return _n('State of contract', 'States of contracts', $nb, 'manageentities');
-   }
+    static function getTypeName($nb = 0)
+    {
+        return _n('State of contract', 'States of contracts', $nb, 'manageentities');
+    }
 
-   static function canView(): bool
-   {
-      return Session::haveRight(self::$rightname, READ);
-   }
+    static function canView(): bool
+    {
+        return Session::haveRight(self::$rightname, READ);
+    }
 
-   static function canCreate(): bool
-   {
-      return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
-   }
+    static function canCreate(): bool
+    {
+        return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
+    }
 
-   function getAdditionalFields() {
-      return [['name'  => 'is_active',
-               'label' => __('Active'),
-               'type'  => 'bool'],
-              ['name'  => 'is_closed',
-               'label' => __('Closed'),
-               'type'  => 'bool'],
-              ['name'  => 'color',
-               'label' => __('Color', 'manageentities'),
-               'type'  => 'text'],
-      ];
-   }
+    function getAdditionalFields()
+    {
+        return [
+            [
+                'name' => 'is_active',
+                'label' => __('Active'),
+                'type' => 'bool'
+            ],
+            [
+                'name' => 'is_closed',
+                'label' => __('Closed'),
+                'type' => 'bool'
+            ],
+            [
+                'name' => 'color',
+                'label' => __('Color', 'manageentities'),
+                'type' => 'text'
+            ],
+        ];
+    }
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
-         'id'       => '14',
-         'table'    => $this->getTable(),
-         'field'    => 'is_active',
-         'name'     => __('Active'),
-         'datatype' => 'bool'
-      ];
+        $tab[] = [
+            'id' => '14',
+            'table' => $this->getTable(),
+            'field' => 'is_active',
+            'name' => __('Active'),
+            'datatype' => 'bool'
+        ];
 
-      $tab[] = [
-         'id'       => '15',
-         'table'    => $this->getTable(),
-         'field'    => 'is_closed',
-         'name'     => __('Closed'),
-         'datatype' => 'bool'
-      ];
+        $tab[] = [
+            'id' => '15',
+            'table' => $this->getTable(),
+            'field' => 'is_closed',
+            'name' => __('Closed'),
+            'datatype' => 'bool'
+        ];
 
-      $tab[] = [
-         'id'       => '17',
-         'table'    => $this->getTable(),
-         'field'    => 'color',
-         'name'     => __('Color', 'manageentities'),
-         'datatype' => 'bool'
-      ];
+        $tab[] = [
+            'id' => '17',
+            'table' => $this->getTable(),
+            'field' => 'color',
+            'name' => __('Color', 'manageentities'),
+            'datatype' => 'bool'
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   public function prepareInputForAdd($input) {
-      return $this->checkColor($input);
-   }
+    public function prepareInputForAdd($input)
+    {
+        return $this->checkColor($input);
+    }
 
-   public function prepareInputForUpdate($input) {
-      return $this->checkColor($input);
-   }
+    public function prepareInputForUpdate($input)
+    {
+        return $this->checkColor($input);
+    }
 
-   function checkColor($input) {
-      if (!preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $input['color'])) {
-         Session::addMessageAfterRedirect(__('Color field is not correct', 'manageentities'), true, ERROR);
-         return [];
-      }
-      return $input;
-   }
+    function checkColor($input)
+    {
+        if (!preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $input['color'])) {
+            Session::addMessageAfterRedirect(__('Color field is not correct', 'manageentities'), true, ERROR);
+            return [];
+        }
+        return $input;
+    }
 
-   static function getOpenedStates() {
-      $out  = [];
-      $dbu  = new DbUtils();
-      $data = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractstates', ["`is_active`" => 1]);
-      if (!empty($data)) {
-         foreach ($data as $val) {
-            $out[] = $val['id'];
-         }
-      }
+    static function getOpenedStates()
+    {
+        $out = [];
+        $dbu = new DbUtils();
+        $data = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractstates', ["`is_active`" => 1]);
+        if (!empty($data)) {
+            foreach ($data as $val) {
+                $out[] = $val['id'];
+            }
+        }
 
-      return $out;
-   }
+        return $out;
+    }
 }

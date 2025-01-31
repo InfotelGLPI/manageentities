@@ -44,6 +44,11 @@ abstract class CommonGLPIView {
 
    }
 
+    public static function jsGetElementbyID($id)
+    {
+        return "$('#$id')";
+    }
+
    /* ------------------------------------------------------------------------------------
     *    Utility
     * ------------------------------------------------------------------------------------ */
@@ -71,7 +76,7 @@ abstract class CommonGLPIView {
          $divReturned = $idDivAjax;
       }
 
-      echo Html::jsGetElementbyID($divReturned) . ".load(\n
+      echo self::jsGetElementbyID($divReturned) . ".load(\n
             '" . $url . "'\n";
 
       echo ",{";
@@ -84,14 +89,14 @@ abstract class CommonGLPIView {
          }
          switch ($val[0]) {
             case "checkbox":
-               echo $val[1] . ":" . Html::jsGetElementbyID(Html::cleanId($key)) . ".is(':checked')";
+               echo $val[1] . ":" . self::jsGetElementbyID(Html::cleanId($key)) . ".is(':checked')";
                break;
             case "dropdown":
-               echo $val[1] . ":" . Html::jsGetElementbyID(Html::cleanId($key)) . ".val()";
+               echo $val[1] . ":" . self::jsGetElementbyID(Html::cleanId($key)) . ".val()";
                break;
             case "text":
             default:
-               echo $val[1] . ":" . Html::jsGetElementbyID(Html::cleanId($key)) . ".val()";
+               echo $val[1] . ":" . self::jsGetElementbyID(Html::cleanId($key)) . ".val()";
                break;
          }
       }

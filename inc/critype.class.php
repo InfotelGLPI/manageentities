@@ -28,90 +28,96 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesCriType extends CommonDropdown {
+class PluginManageentitiesCriType extends CommonDropdown
+{
 
-   static $rightname = 'plugin_manageentities';
+    static $rightname = 'plugin_manageentities';
 
-   static function getTypeName($nb = 0) {
-      return _n('Intervention type', 'Intervention types', $nb, 'manageentities');
-   }
+    static function getTypeName($nb = 0)
+    {
+        return _n('Intervention type', 'Intervention types', $nb, 'manageentities');
+    }
 
-   static function canCreate(): bool
-   {
-      return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
-   }
+    static function canCreate(): bool
+    {
+        return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
+    }
 
-   static function canView(): bool
-   {
-      $config = PluginManageentitiesConfig::getInstance();
-      if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
-         return Session::haveRight(self::$rightname, READ);
-      }
-   }
+    static function canView(): bool
+    {
+        $config = PluginManageentitiesConfig::getInstance();
+        if ($config->fields['useprice'] == PluginManageentitiesConfig::PRICE) {
+            return Session::haveRight(self::$rightname, READ);
+        }
+    }
 
-   function rawSearchOptions() {
+    function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab = parent::rawSearchOptions();
+        $tab[] = [
+            'id' => '12',
+            'table' => 'glpi_plugin_manageentities_contractdays',
+            'field' => 'name',
+            'forcegroupby' => true,
+            'name' => PluginManageentitiesContractDay::getTypeName(),
+            'datatype' => 'itemlink',
+            'joinparams' => [
+                'condition' =>
+                    "AND REFTABLE.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')",
+                'beforejoin' =>
+                    [
+                        'table' => 'glpi_plugin_manageentities_criprices',
+                        'joinparams' => ['jointype' => "child"]
+                    ]
+            ]
+        ];
 
-      $tab[] = [
-         'id'           => '12',
-         'table'        => 'glpi_plugin_manageentities_contractdays',
-         'field'        => 'name',
-         'forcegroupby' => true,
-         'name'         => PluginManageentitiesContractDay::getTypeName(),
-         'datatype'     => 'itemlink',
-         'joinparams'   => ['condition'  =>
-                               "AND REFTABLE.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')",
-                            'beforejoin' =>
-                               ['table'      => 'glpi_plugin_manageentities_criprices',
-                                'joinparams' => ['jointype' => "child"]
-                               ]
-         ]
-      ];
+        $tab[] = [
+            'id' => '13',
+            'table' => 'glpi_plugin_manageentities_criprices',
+            'field' => 'price',
+            'datatype' => 'number',
+            'forcegroupby' => true,
+            'name' => __('Daily rate', 'manageentities'),
+            /*'joinparams'   =>  ['jointype'  => "child",
+                                'condition' => "AND NEWTABLE.`entities_id` IN ('".implode("','", $_SESSION["glpiactiveentities"])."')"]*/
+        ];
+        /* OLD :
 
-      $tab[] = [
-         'id'           => '13',
-         'table'        => 'glpi_plugin_manageentities_criprices',
-         'field'        => 'price',
-         'datatype'     => 'number',
-         'forcegroupby' => true,
-         'name'         => __('Daily rate', 'manageentities'),
-         /*'joinparams'   =>  ['jointype'  => "child",
-                             'condition' => "AND NEWTABLE.`entities_id` IN ('".implode("','", $_SESSION["glpiactiveentities"])."')"]*/
-      ];
-      /* OLD :
+        $tab[13]['table']        = 'glpi_plugin_manageentities_criprices';
+        $tab[13]['field']        = 'price';
+        $tab[13]['datatype']     = 'number';
+        $tab[13]['forcegroupby'] = true;
+        $tab[13]['name']         = __('Daily rate', 'manageentities');
+        $tab[13]['joinparams']   = ['jointype'  => "child",
+                                         'condition' => "AND NEWTABLE.`entities_id` IN ('".implode("','", $_SESSION["glpiactiveentities"])."')"];
+        */
 
-      $tab[13]['table']        = 'glpi_plugin_manageentities_criprices';
-      $tab[13]['field']        = 'price';
-      $tab[13]['datatype']     = 'number';
-      $tab[13]['forcegroupby'] = true;
-      $tab[13]['name']         = __('Daily rate', 'manageentities');
-      $tab[13]['joinparams']   = ['jointype'  => "child",
-                                       'condition' => "AND NEWTABLE.`entities_id` IN ('".implode("','", $_SESSION["glpiactiveentities"])."')"];
-      */
+        return $tab;
+    }
 
-      return $tab;
-   }
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (!$withtemplate) {
-         switch ($item->getType()) {
-            case 'PluginManageentitiesCriType' :
-               return PluginManageentitiesCriType::getTypeName(1);
-         }
-      }
-      return '';
-   }
+    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        if (!$withtemplate) {
+            switch ($item->getType()) {
+                case 'PluginManageentitiesCriType' :
+                    return PluginManageentitiesCriType::getTypeName(1);
+            }
+        }
+        return '';
+    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      $criprice = new PluginManageentitiesCriPrice();
-      if ($item->getType() == 'PluginManageentitiesCriType') {
-         $criprice->showForCriType($item);
-      }
-      return true;
-   }
+    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        $criprice = new PluginManageentitiesCriPrice();
+        if ($item->getType() == 'PluginManageentitiesCriType') {
+            $criprice->showForCriType($item);
+        }
+        return true;
+    }
 }

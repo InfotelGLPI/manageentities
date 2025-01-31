@@ -43,6 +43,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
     const ONE_HOUR = 3600;
     const TWO_HOUR = 7200;
     const THREE_HOUR = 10800;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Not billed intervention', 'Not billed interventions', $nb, 'manageentities');
@@ -65,12 +66,12 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
     /**
      * @return array
      */
-    static function getMenuContent() {
-
+    static function getMenuContent()
+    {
         $menu = [];
 
         $menu['title'] = self::getMenuName();
-        $menu['page'] = PLUGIN_MANAGEENTITIES_WEBDIR."/front/directhelpdesk.php?checkbox3=1";
+        $menu['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/directhelpdesk.php?checkbox3=1";
         $menu['links']['search'] = self::getSearchURL(false);
         $menu['icon'] = self::getIcon();
 
@@ -218,13 +219,16 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
 
     public static function getDefaultSearchRequest()
     {
-        $search = ['criteria' => [ 0 => ['field'      => 11,
-            'searchtype' => 'equals',
-            'value'      => '0'
-        ]
-        ],
-            'sort'     => 4,
-            'order'    => 'ASC'
+        $search = [
+            'criteria' => [
+                0 => [
+                    'field' => 11,
+                    'searchtype' => 'equals',
+                    'value' => '0'
+                ]
+            ],
+            'sort' => 4,
+            'order' => 'ASC'
         ];
 
         return $search;
@@ -337,14 +341,13 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        echo Html::script($CFG_GLPI['root_doc']."/lib/echarts.js");
+        echo Html::script($CFG_GLPI['root_doc'] . "/lib/echarts.js");
 //        Html::requireJs('charts');
         echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/theme/azul.js");
 
         $direct = new PluginManageentitiesDirecthelpdesk();
 
         if ($items = $direct->find(['is_billed' => 0])) {
-
             echo "<div class='container-fluid d-flex flex-column'>";
 
             $entities = $_SESSION["glpiactiveentities"];

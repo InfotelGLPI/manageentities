@@ -32,6 +32,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 use Glpi\DBAL\QueryExpression;
+
 class PluginManageentitiesFollowUp extends CommonDBTM
 {
 
@@ -42,7 +43,8 @@ class PluginManageentitiesFollowUp extends CommonDBTM
         return __('General follow-up', 'manageentities');
     }
 
-    static function getIcon() {
+    static function getIcon()
+    {
         return "ti ti-vocabulary";
     }
 
@@ -119,7 +121,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                 'glpi_entities.id AS entities_id',
                 'glpi_entities.name AS entities_name'
             ],
-            'DISTINCT'        => true,
+            'DISTINCT' => true,
             'FROM' => 'glpi_contracts',
             'LEFT JOIN' => [
                 'glpi_entities' => [
@@ -190,7 +192,10 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                 ];
 
                 if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {// Hourly
-                    $criteriac['SELECT'] = array_merge($criteriac['SELECT'] ,['glpi_plugin_manageentities_contracts.contract_type AS contract_type']);
+                    $criteriac['SELECT'] = array_merge(
+                        $criteriac['SELECT'],
+                        ['glpi_plugin_manageentities_contracts.contract_type AS contract_type']
+                    );
                     $criteriac['WHERE'] = $criteriac['WHERE'] + ['glpi_plugin_manageentities_contracts.contract_type' => $types_contracts];
                 }
 
@@ -211,11 +216,11 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                             'glpi_plugin_manageentities_contractstates.color',
                         ],
                         'FROM' => 'glpi_plugin_manageentities_contractdays',
-                        'LEFT JOIN'       => [
+                        'LEFT JOIN' => [
                             'glpi_contracts' => [
                                 'ON' => [
                                     'glpi_contracts' => 'id',
-                                    'glpi_plugin_manageentities_contractdays'          => 'contracts_id'
+                                    'glpi_plugin_manageentities_contractdays' => 'contracts_id'
                                 ]
                             ],
                             'glpi_plugin_manageentities_contractstates' => [
@@ -246,7 +251,10 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                     ];
 
                     if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY) {// Hourly
-                        $criteriad['SELECT'] = array_merge($criteriad['SELECT'] ,['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']);
+                        $criteriad['SELECT'] = array_merge(
+                            $criteriad['SELECT'],
+                            ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']
+                        );
                         $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.contract_type' => $types_contracts];
                     }
 
@@ -288,66 +296,80 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                             ];
                     }
 
-                   if (isset($options['company_id']) && $options['company_id'] != '0') {
-                       $temp = 0;
-                       foreach ($options['company_id'] as $id) {
-                           $plugin_company = new PluginManageentitiesCompany();
-                           $company        = $plugin_company->find(['id' => $id]);
-                           $company        = reset($company);
-                           $sons           = [];
-                           if ($company['recursive'] == 1) {
-                               $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
-                           } else {
-                               $sons[0] = $company['entity_id'];
-                           }
-                       }
-                       $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                               'glpi_entities.id' => $sons
-                           ];
+                    if (isset($options['company_id']) && $options['company_id'] != '0') {
+                        $temp = 0;
+                        foreach ($options['company_id'] as $id) {
+                            $plugin_company = new PluginManageentitiesCompany();
+                            $company = $plugin_company->find(['id' => $id]);
+                            $company = reset($company);
+                            $sons = [];
+                            if ($company['recursive'] == 1) {
+                                $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
+                            } else {
+                                $sons[0] = $company['entity_id'];
+                            }
+                        }
+                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_entities.id' => $sons
+                            ];
+                    } elseif (isset($preferences['companies_id']) && $preferences['companies_id'] != null) {
+                        foreach (json_decode($preferences['companies_id'], true) as $id) {
+                            $sons = [];
+                            $plugin_company = new PluginManageentitiesCompany();
+                            $company = $plugin_company->find(['id' => $id]);
+                            $company = reset($company);
+                            if ($company['recursive'] == 1) {
+                                $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
+                            } else {
+                                $sons[0] = $company['entity_id'];
+                            }
+                        }
+                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_entities.id' => $sons
+                            ];
+                    }
 
-                   } elseif (isset($preferences['companies_id']) && $preferences['companies_id'] != NULL) {
+                    //$beginDateAfter $beginDateBefore $endDateAfter $endDateBefore
+                    if (isset($options['begin_date_after']) && $options['begin_date_after'] != '') {
+                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_plugin_manageentities_contractdays.begin_date' => [
+                                    '>=',
+                                    $options['begin_date_after']
+                                ]
+                            ];
+                        $beginDate = $options['begin_date_after'];
+                    }
 
-                       foreach (json_decode($preferences['companies_id'], true) as $id) {
-                           $sons           = [];
-                           $plugin_company = new PluginManageentitiesCompany();
-                           $company        = $plugin_company->find(['id' => $id]);
-                           $company        = reset($company);
-                           if ($company['recursive'] == 1) {
-                               $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
-                           } else {
-                               $sons[0] = $company['entity_id'];
-                           }
-                       }
-                       $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                               'glpi_entities.id' => $sons
-                           ];
-                   }
+                    if (isset($options['begin_date_before']) && $options['begin_date_before'] != '') {
+                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_plugin_manageentities_contractdays.begin_date' =>
+                                    [
+                                        '<=',
+                                        new QueryExpression(
+                                            "ADDDATE('" . $options['begin_date_before'] . "' , INTERVAL 1 DAY)"
+                                        )
+                                    ]
+                            ];
+                    }
 
-                   //$beginDateAfter $beginDateBefore $endDateAfter $endDateBefore
-                   if (isset($options['begin_date_after']) && $options['begin_date_after'] != '') {
-                       $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                               'glpi_plugin_manageentities_contractdays.begin_date' => ['>=', $options['begin_date_after']]
-                           ];
-                       $beginDate      = $options['begin_date_after'];
-                   }
+                    if (isset($options['end_date_after']) && $options['end_date_after'] != '') {
+                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_plugin_manageentities_contractdays.end_date' => ['>=', $options['end_date_after']]
+                            ];
+                    }
 
-                   if (isset($options['begin_date_before']) && $options['begin_date_before'] != '') {
-                       $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.begin_date' =>
-                               ['<=', new QueryExpression("ADDDATE('" . $options['begin_date_before'] . "' , INTERVAL 1 DAY)")]];
-                   }
-
-                   if (isset($options['end_date_after']) && $options['end_date_after'] != '') {
-                       $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                               'glpi_plugin_manageentities_contractdays.end_date' => ['>=', $options['end_date_after']]
-                           ];
-                   }
-
-                   if (isset($options['end_date_before']) && $options['end_date_before'] != '') {
-
-                       $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.end_date' =>
-                               ['<=', new QueryExpression("ADDDATE('" . $options['end_date_before'] . "' , INTERVAL 1 DAY)")]];
-                       $endDate       = $options['end_date_before'];
-                   }
+                    if (isset($options['end_date_before']) && $options['end_date_before'] != '') {
+                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_plugin_manageentities_contractdays.end_date' =>
+                                    [
+                                        '<=',
+                                        new QueryExpression(
+                                            "ADDDATE('" . $options['end_date_before'] . "' , INTERVAL 1 DAY)"
+                                        )
+                                    ]
+                            ];
+                        $endDate = $options['end_date_before'];
+                    }
 
                     $iteratord = $DB->request($criteriad);
 
@@ -464,55 +486,76 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                             $and = "";
 
                             if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) {
-
                                 $criteria_tik = [
-                                    'SELECT'    => [
+                                    'SELECT' => [
                                         'date',
                                     ],
-                                    'FROM'      => 'glpi_tickets',
-                                    'WHERE'     => [
-                                        'glpi_tickets.entities_id'  => $dataEntity['entities_id'],
-                                        'glpi_tickets.is_deleted'  => 0
+                                    'FROM' => 'glpi_tickets',
+                                    'WHERE' => [
+                                        'glpi_tickets.entities_id' => $dataEntity['entities_id'],
+                                        'glpi_tickets.is_deleted' => 0
                                     ],
                                 ];
 
                                 if (!empty($dataContractDay['begin_date'])) {
-                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + ['date' => ['>=', $dataContractDay['begin_date']]];
+                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
+                                            'date' => [
+                                                '>=',
+                                                $dataContractDay['begin_date']
+                                            ]
+                                        ];
                                 }
 
                                 if (!empty($dataContractDay['end_date'])) {
-                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + ['date' => ['>=', new QueryExpression("ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)")]];
+                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
+                                            'date' => [
+                                                '>=',
+                                                new QueryExpression(
+                                                    "ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)"
+                                                )
+                                            ]
+                                        ];
                                 }
-
                             } else {
-
                                 $criteria_tik = [
-                                    'SELECT'    => [
+                                    'SELECT' => [
                                         'glpi_plugin_manageentities_cridetails.date',
                                     ],
-                                    'FROM'      => 'glpi_plugin_manageentities_cridetails',
-                                    'LEFT JOIN'       => [
+                                    'FROM' => 'glpi_plugin_manageentities_cridetails',
+                                    'LEFT JOIN' => [
                                         'glpi_tickets' => [
                                             'ON' => [
                                                 'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                                                'glpi_tickets'          => 'id'
+                                                'glpi_tickets' => 'id'
                                             ]
                                         ]
                                     ],
-                                    'WHERE'     => [
-                                        'glpi_tickets.entities_id'  => $dataEntity['entities_id'],
-                                        'glpi_tickets.is_deleted'  => 0
+                                    'WHERE' => [
+                                        'glpi_tickets.entities_id' => $dataEntity['entities_id'],
+                                        'glpi_tickets.is_deleted' => 0
                                     ],
                                     'ORDERBY' => 'glpi_plugin_manageentities_cridetails.date DESC',
                                     'LIMIT' => 1,
                                 ];
 
                                 if (!empty($dataContractDay['begin_date'])) {
-                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + ['glpi_plugin_manageentities_cridetails.date' => ['>=', $dataContractDay['begin_date']]];
+                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
+                                            'glpi_plugin_manageentities_cridetails.date' => [
+                                                '>=',
+                                                $dataContractDay['begin_date']
+                                            ]
+                                        ];
                                 }
 
                                 if (!empty($dataContractDay['end_date'])) {
-                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + ['glpi_plugin_manageentities_cridetails.date' => ['>=', new QueryExpression("ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)")]];
+                                    $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
+                                            'glpi_plugin_manageentities_cridetails.date' => [
+                                                '>=',
+                                                new QueryExpression(
+                                                    "ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)"
+                                                )
+                                            ]
+                                        ];
                                 }
                             }
 
@@ -524,12 +567,12 @@ class PluginManageentitiesFollowUp extends CommonDBTM
                             }
 
                             $iterator_col = $DB->request([
-                                'SELECT'    => [
+                                'SELECT' => [
                                     'color',
                                 ],
-                                'FROM'      => 'glpi_plugin_manageentities_contractstates',
-                                'WHERE'     => [
-                                    'id'  => $dataContractDay['contractstates_id']
+                                'FROM' => 'glpi_plugin_manageentities_contractstates',
+                                'WHERE' => [
+                                    'id' => $dataContractDay['contractstates_id']
                                 ],
                             ]);
 
@@ -1941,20 +1984,20 @@ class PluginManageentitiesFollowUp extends CommonDBTM
 
 
             $iterator_use = $DB->request([
-                'SELECT'    => [
+                'SELECT' => [
                     'glpi_users.*',
                     'glpi_plugin_manageentities_businesscontacts.id AS users_id',
                 ],
-                'FROM'      => 'glpi_plugin_manageentities_businesscontacts',
-                'LEFT JOIN'       => [
+                'FROM' => 'glpi_plugin_manageentities_businesscontacts',
+                'LEFT JOIN' => [
                     'glpi_users' => [
                         'ON' => [
                             'glpi_plugin_manageentities_businesscontacts' => 'users_id',
-                            'glpi_users'          => 'id'
+                            'glpi_users' => 'id'
                         ]
                     ]
                 ],
-                'GROUPBY'     => 'glpi_plugin_manageentities_businesscontacts.users_id',
+                'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
             ]);
 
             if (count($iterator_use) > 0) {
