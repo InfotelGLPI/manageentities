@@ -1532,7 +1532,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
         $root_manage = PLUGIN_MANAGEENTITIES_WEBDIR;
         echo "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document") .
             "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
-        echo "<i class=\"fas fa-3x fa-plus-square\"></i></a>";
+        echo "<i class=\"ti ti-square-plus\" style=\"font-size:3em;\"></i></a>";
         echo "</td>";
         echo "</tr>";
         $this->showListPDFcontract();
@@ -3114,7 +3114,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
     private function showImgSaved($object, $text, $fakeId)
     {
         if (isset($object->fields['id']) && $object->fields['id'] > 0) {
-            return "&nbsp;&nbsp;<i class='fas fa-save' id='img_" . $object->getType(
+            return "&nbsp;&nbsp;<i class='ti ti-save' id='img_" . $object->getType(
                 ) . ($fakeId) . "' title='" . $text . "'></i>";
         } else {
             return "";
@@ -3320,13 +3320,13 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
         $alertTitle = "";
         switch ($messageType) {
             case Messages::MESSAGE_ERROR:
-                $srcImg = "fas fa-exclamation-triangle";
+                $srcImg = "ti ti-alert-triangle";
                 $color = "orange";
                 $alertTitle = $this->pModel->getMessage("message_error");
                 break;
             case Messages::MESSAGE_INFO:
             default:
-                $srcImg = "fas fa-info-circle";
+                $srcImg = "ti ti-info-circle";
                 $color = "forestgreen";
                 $alertTitle = $this->pModel->getMessage("message_info");
                 break;
@@ -3341,7 +3341,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
         echo "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>" . $message . "</div>";
 
         $this->showHeaderJS();
-        echo "var mTitle =  \"<i class='" . $srcImg . " fa-1x' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";";
+        echo "var mTitle =  \"<i class='" . $srcImg . " ' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";";
         echo "$( '#alert-message' ).dialog({
         autoOpen: false,
         height: " . ($height > 0 ? $height : 150) . ",

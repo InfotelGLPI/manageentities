@@ -138,7 +138,7 @@ class PluginManageentitiesCri extends CommonDBTM
                                           onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $options['modal'] . "\", " . json_encode(
                                     $params
                                 ) . ");'>
-                  <i class=\"far fa-trash-alt\" title=\"" . _sx('button', 'Delete permanently') . "\"></i>
+                  <i class=\"ti ti-trash\" title=\"" . _sx('button', 'Delete permanently') . "\"></i>
                   </a>";
                         } else {
                             $techs[] = $users_name;
@@ -176,7 +176,7 @@ class PluginManageentitiesCri extends CommonDBTM
                                           onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode(
                 $params
             ) . ");'>
-                  <i class=\"fas fa-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i>";
+                  <i class=\"ti ti-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i>";
 
         echo "</td>";
         echo "</tr>";

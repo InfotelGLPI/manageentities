@@ -41,9 +41,17 @@ class PluginManageentitiesProfile extends Profile
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == 'Profile') {
-            return __('Entities portal', 'manageentities');
+            return self::createTabEntry(__('Entities portal', 'manageentities'));
         }
         return '';
+    }
+
+    /**
+     * @return string
+     */
+    public static function getIcon()//self::createTabEntry(
+    {
+        return "ti ti-user-pentagon";
     }
 
 

@@ -46,7 +46,7 @@ $val         .= "<td colspan='5'>";
 $root_manage = PLUGIN_MANAGEENTITIES_WEBDIR;
 $val         .= "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document")
                 . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
-$val         .= "<i class=\"fas fa-3x fa-plus-square\"></i></a>";
+$val         .= "<i class=\"ti ti-square-plus\" style=\"font-size:3em;\"></i></a>";
 $val         .= "</td>";
 $val         .= "</tr>";
 $ele         = new PluginManageentitiesAddElementsView();
@@ -69,13 +69,13 @@ if ($infos["result"] == Status::ADDED) {
 }
 switch ($messageType) {
    case Messages::MESSAGE_ERROR:
-      $srcImg     = "fas fa-exclamation-triangle";
+      $srcImg     = "ti ti-alert-triangle";
       $color      = "orange";
       $alertTitle = $pModel->getMessage("message_error");
       break;
    case Messages::MESSAGE_INFO:
    default:
-      $srcImg     = "fas fa-info-circle";
+      $srcImg     = "ti ti-info-circle";
       $color      = "forestgreen";
       $alertTitle = $pModel->getMessage("message_info");
       break;
@@ -95,7 +95,7 @@ switch ($messageType) {
 //$this->showHeaderJS();
 $val .= Html::scriptBlock("
 $( \"body\" ).append(\"<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'> $message </div>\");
-var mTitle =  \"<i class='" . $srcImg . " fa-1x' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";
+var mTitle =  \"<i class='" . $srcImg . "' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";
 $( '#alert-message' ).dialog({
         autoOpen: false,
         height: " . 150 . ",

@@ -63,7 +63,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM
 
     static function getIcon()
     {
-        return "fas fa-user-tie";
+        return "ti ti-user-pentagon";
     }
 
     /**

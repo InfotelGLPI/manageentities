@@ -115,7 +115,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM
                         'deletebusiness',
                         _x('button', 'Delete permanently'),
                         ['id' => $ID],
-                        'fa-times-circle'
+                        'ti ti-circle-x'
                     );
                     echo "</td>";
                 }
@@ -130,7 +130,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM
                 echo "<i title=\"" . _sx(
                         'button',
                         'Add'
-                    ) . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i>";
+                    ) . "\" class=\"ti ti-square-plus\" style='cursor:pointer; margin-left:2px;'></i>";
                 echo "</a>";
                 echo "</td><td class='center'>";
                 echo Html::submit(_x('button', 'Add'), ['name' => 'addbusiness', 'class' => 'btn btn-primary']);
@@ -156,7 +156,7 @@ class PluginManageentitiesBusinessContact extends CommonDBTM
                 echo "<i title=\"" . _sx(
                         'button',
                         'Add'
-                    ) . "\" class=\"far fa-plus-square\" style='cursor:pointer; margin-left:2px;'></i>";
+                    ) . "\" class=\"ti ti-square-plus\" style='cursor:pointer; margin-left:2px;'></i>";
                 echo "</a>";
                 echo "</td><td class='center tab_bg_2'>";
                 echo Html::submit(_x('button', 'Add'), ['name' => 'addbusiness', 'class' => 'btn btn-primary']);

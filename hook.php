@@ -538,9 +538,10 @@ function plugin_item_transfer_manageentities($parm) {
 function plugin_manageentities_getDatabaseRelations() {
 
    if (Plugin::isPluginActive("manageentities"))
-      return ["glpi_plugin_manageentities_critypes"       => ["glpi_plugin_manageentities_criprices"    => "plugin_manageentities_critypes_id",
-                                                              "glpi_plugin_manageentities_cridetails"   => "plugin_manageentities_critypes_id",
-                                                              "glpi_plugin_manageentities_contractdays" => "plugin_manageentities_critypes_id"],
+      return [
+//          "glpi_plugin_manageentities_critypes"       => ["glpi_plugin_manageentities_criprices"    => "plugin_manageentities_critypes_id",
+//                                                              "glpi_plugin_manageentities_cridetails"   => "plugin_manageentities_critypes_id",
+//                                                              "glpi_plugin_manageentities_contractdays" => "plugin_manageentities_critypes_id"],
               "glpi_contracts"                            => ["glpi_plugin_manageentities_contracts"    => "contracts_id",
                                                               "glpi_plugin_manageentities_contractdays" => "contracts_id",
                                                               "glpi_plugin_manageentities_cridetails"   => "contracts_id"],
@@ -559,7 +560,7 @@ function plugin_manageentities_getDatabaseRelations() {
                                                               "glpi_plugin_manageentities_contractdays" => "entities_id",
                                                               "glpi_plugin_manageentities_cridetails"   => "entities_id",
                                                               "glpi_plugin_manageentities_entitylogos"  => "entities_id"],
-              "glpi_plugin_manageentities_contractstates" => ["glpi_plugin_manageentities_contractdays" => "plugin_manageentities_contractstates_id"],
+//              "glpi_plugin_manageentities_contractstates" => ["glpi_plugin_manageentities_contractdays" => "plugin_manageentities_contractstates_id"],
               "glpi_taskcategories"                       => ["glpi_plugin_manageentities_taskcategories" => "taskcategories_id"]];
    else
       return [];

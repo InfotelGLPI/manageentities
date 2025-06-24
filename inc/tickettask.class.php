@@ -49,7 +49,7 @@ class PluginManageentitiesTicketTask extends CommonDBTM
                 $rand = mt_rand();
                 echo '<tr class="tab_bg_1"><td colspan="3"></td>';
                 echo '<td>';
-                echo "<div class='fa-label right' style='width:300px;margin-right: 0;margin-left: auto;'>";
+                echo "<div class='ti ti-label right' style='width:300px;margin-right: 0;margin-left: auto;'>";
                 $value = $tickettask->fields['date'];
                 if (!empty($tickettask->fields['begin'])) {
                     $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
@@ -68,7 +68,7 @@ class PluginManageentitiesTicketTask extends CommonDBTM
                 ]);
                 $tickettask_id = $tickettask->fields['id'];
                 echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);'>";
-                echo "<i class='far fa-clone fa-fw pointer'
+                echo "<i class='ti ti-copy pointer'
             title='" . _sx('button', 'Duplicate') . "'></i>";
 
                 echo "</span>";

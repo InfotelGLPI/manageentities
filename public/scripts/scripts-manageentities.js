@@ -22,7 +22,7 @@ function showResponse(responseText, statusText, xhr, $form) {
 
 
 function showFormAddPDFContract(root_manage, textTitle, btnYes, btnNo) {
-    var mTitle = "<i class='fas fa-info-circle fa-1x'></i>&nbsp;" + textTitle;
+    var mTitle = "<i class='ti ti-info-circle'></i>&nbsp;" + textTitle;
     $("#form-add-contract").dialog({
         autoOpen: false,
         height: 400,
@@ -71,7 +71,7 @@ function showFormAddPDFContract(root_manage, textTitle, btnYes, btnNo) {
 }
 
 function showDialog(textTitle, btnName, message) {
-    var mTitle = "<i class='fas fa-info-circle fa-1x'></i>&nbsp;" + textTitle;
+    var mTitle = "<i class='ti ti-info-circle'></i>&nbsp;" + textTitle;
     $("#custom-dialog").dialog({
         autoOpen: false,
         height: 200,
@@ -96,7 +96,7 @@ function showDialog(textTitle, btnName, message) {
 }
 
 function alertCreateEntity(btnYes, btnNo, textTitle, txtFunction) {
-    var mTitle = "<i class='fas fa-exclamation-triangle fa-2x' style='color:orange'></i>&nbsp;" + textTitle + " ! ";
+    var mTitle = "<i class='ti ti-alert-triangle' style='font-size:2em;color:orange'></i>&nbsp;" + textTitle + " ! ";
     $("#alert-create-entity").dialog({
         autoOpen: false,
         height: 200,

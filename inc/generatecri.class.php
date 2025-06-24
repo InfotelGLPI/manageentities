@@ -77,7 +77,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI
      */
     static function getIcon()
     {
-        return "fab fa-wpforms";
+        return "ti ti-clipboard-text";
     }
 
     /**
@@ -481,7 +481,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI
         echo "<th colspan='4'>";
         echo __('Accomplished tasks informations', 'manageentities');
         echo "&nbsp&nbsp<a onclick='addTaskOnView(false);' style='cursor:pointer;' id='img_add_cci' name='' ";
-        echo "title='" . __('Add this Task', 'manageentities') . "'><i class='fa fa-plus-circle'></i></a>";
+        echo "title='" . __('Add this Task', 'manageentities') . "'><i class='ti ti-circle-plus'></i></a>";
         echo "</th>";
         echo "</tr>";
 
@@ -521,7 +521,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI
 
         echo "<td>" . __('Start date');
         echo "<br><br><span>" . __('Duration') . "</span>";
-        echo "<br><br><br><i class='fas fa-user fa-fw' title='" . _n('User', 'Users', 1) . "'></i>";
+        echo "<br><br><br><i class='ti ti-user' title='" . _n('User', 'Users', 1) . "'></i>";
         echo _n("Technician", "Technicians", 1, "manageentities");
         echo "<br><br><span>" . __('Category') . "</span>";
         echo "</td>";
@@ -724,7 +724,7 @@ class PluginManageentitiesGenerateCRI extends CommonGLPI
             function getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay,tasksCategory) {
               var  blocTask  = '<div data-index=\"' + taskCount + '\" style=\"margin: 10px; padding:10px; width:100 %; border:dashed;\" id=\"task_' + taskCount + '\" >';
                blocTask += '<tr class=\"tab_bg_1\">';
-               blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style = \"cursor:pointer;\" ><i style = \"float:right;\" class=\"fas fa-minus-circle\" ></i ></a> ';
+               blocTask += '<a onclick=\"removeBlockTask(' + taskCount + ');\" \"style = \"cursor:pointer;\" ><i style = \"float:right;\" class=\"ti ti-circle-minus\" ></i ></a> ';
                blocTask += '<span style = \"font-weight:bold; font-size: 15px;\" >" . __('Task') . " :</span><br> ';
                blocTask += '<span style = \"font-weight:bold;\" >" . __("Description", 'servicecatalog') . " : </span ><span> ' + description + ' </span><br> ';
                blocTask += '<span style = \"font-weight:bold;\"  " . __('Technician as assigned', 'manageentities') . " : </span><span id=\"user_tech_name' + taskCount +'\"></span><br> ';

@@ -213,7 +213,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
             echo "<i title=\"" . __(
                     "Delete",
                     "manageentities"
-                ) . "\" class=\"far fa-trash-alt\" id='delete_" . $user->fields['id'] . "'></i>";
+                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] . "'></i>";
             echo "</span>";
             echo "\";";
             echo "}";
@@ -342,7 +342,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
                             echo "<i title=\"" . __(
                                     "Delete",
                                     "manageentities"
-                                ) . "\" class=\"far fa-trash-alt\" id='delete_" . $user->fields['id'] . "' 
+                                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] . "' 
                      onclick=\"javascript:if (confirm('" . __(
                                     "This action is irreversible. Continue ?",
                                     'manageentities'
@@ -591,13 +591,13 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
         $alertTitle = "";
         switch ($messageType) {
             case ERROR:
-                $srcImg = "fas fa-exclamation-triangle";
+                $srcImg = "ti ti-alert-triangle";
                 $color = "orange";
                 $alertTitle = __("Warning");
                 break;
             case INFO:
             default:
-                $srcImg = "fas fa-info-circle";
+                $srcImg = "ti ti-info-circle";
                 $color = "forestgreen";
                 $alertTitle = _n("Information", "Informations", 1);
                 break;
@@ -612,7 +612,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
         echo "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>" . $message . "</div>";
 
         $this->showHeaderJS();
-        echo "var mTitle =  \"<i class='" . $srcImg . " fa-1x' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";";
+        echo "var mTitle =  \"<i class='" . $srcImg . " ' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";";
         echo "$( '#alert-message' ).dialog({
         autoOpen: false,
         height: " . ($height > 0 ? $height : 150) . ",

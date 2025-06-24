@@ -41,7 +41,7 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
 //         $rand = mt_rand();
 //         echo '<tr class="tab_bg_1"><td colspan="3"></td>';
 //         echo '<td style="padding-left:0px">';
-//         echo "<div class='fa-label'>";
+//         echo "<div class='ti ti-label'>";
 //         $value = $tickettask->fields['date'];
 //         if (!empty($tickettask->fields['begin'])) {
 //            $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
@@ -56,7 +56,7 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
 //                                       'tickettasks_id' => $_POST['tickettasks_id']]);
 //         $tickettask_id = $_POST['tickettasks_id'];
 //         echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);'>";
-//         echo "<i class='far fa-clone fa-fw pointer'
+//         echo "<i class='ti ti-copy pointer'
 //            title='" . _sx('button', 'Duplicate') . "'></i>";
 //
 //         echo "</span>";

@@ -172,7 +172,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
         $form .= "</tr>";
 
         $form .= "<tr class='tab_bg_1'><td>";
-        $form .= "<i class='fas fa-stopwatch fa-fw me-1' title='" . __(
+        $form .= "<i class='ti ti-clock-stop me-1' title='" . __(
                 'Duration'
             ) . "'> </i><span class='red'>*</span></td>";
         $form .= "<td>";
@@ -186,7 +186,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
         $form .= "</tr>";
 
         $form .= "<tr class='tab_bg_1'><td>";
-        $form .= "<i class='fas fa-ticket-alt fa-fw me-1' title='" . __('Linked ticket') . "'></i></td>";
+        $form .= "<i class='ti ti-ticket me-1' title='" . __('Linked ticket') . "'></i></td>";
         $form .= "<td>";
         //TODO only opened tickets for selected entity
         $linkparam = [
