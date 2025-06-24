@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-31 12:41+0000\n"
+"POT-Creation-Date: 2025-06-24 13:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Study and advice"
 msgstr ""
 
-#: hook.php:572 inc/addelementsview.class.php:2708 inc/cri.class.php:192
+#: hook.php:573 inc/addelementsview.class.php:2708 inc/cri.class.php:192
 #: inc/cridetail.class.php:233 inc/cridetail.class.php:498
 #: inc/cridetail.class.php:608 inc/cridetail.class.php:1082
 #: inc/criprice.class.php:384 inc/critype.class.php:41
@@ -39,7 +39,7 @@ msgid_plural "Intervention types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:573 inc/addelementsview.class.php:2279
+#: hook.php:574 inc/addelementsview.class.php:2279
 #: inc/contractday.class.php:142 inc/contractday.class.php:390
 #: inc/contractday.class.php:597 inc/contractstate.class.php:41
 #: inc/followup.class.php:1048 inc/followup.class.php:1058
@@ -49,12 +49,12 @@ msgid_plural "States of contracts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:674 inc/servicecatalog.class.php:75 inc/servicecatalog.class.php:81
+#: hook.php:675 inc/servicecatalog.class.php:75 inc/servicecatalog.class.php:81
 msgid "Manage your contracts"
 msgstr ""
 
 #: setup.php:109 inc/config.class.php:345 inc/cri.class.php:45
-#: inc/cridetail.class.php:356 inc/profile.class.php:110
+#: inc/cridetail.class.php:356 inc/profile.class.php:118
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] ""
@@ -79,7 +79,7 @@ msgstr ""
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
 #: inc/followup.class.php:1811 inc/generatecri.class.php:1217
 #: inc/monthly.class.php:832 inc/preference.class.php:99
-#: inc/profile.class.php:44 inc/profile.class.php:105
+#: inc/profile.class.php:44 inc/profile.class.php:113
 #: inc/taskcategory.class.php:60
 msgid "Entities portal"
 msgstr ""
