@@ -163,6 +163,7 @@ function plugin_init_manageentities()
         $PLUGIN_HOOKS['post_init']['manageentities'] = 'plugin_manageentities_postinit';
 
         $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities']    = [PluginManageentitiesContract::class, 'preItemForm'];
+        $PLUGIN_HOOKS[Hooks::PRE_ITEM_LIST]['manageentities']    = [PluginManageentitiesContract::class, 'preItemForm'];
     }
 }
 

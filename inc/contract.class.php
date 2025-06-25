@@ -523,6 +523,10 @@ class PluginManageentitiesContract extends CommonDBTM
                     ],
                     'WHERE' => [
                         'glpi_plugin_manageentities_contractstates.is_closed' => 0,
+                        'glpi_plugin_manageentities_contractdays.end_date' => [
+                            '>',
+                            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']))
+                        ],
                         'glpi_plugin_manageentities_contractdays.contracts_id' => $data["contracts_id"],
                     ]
                 ];
@@ -738,10 +742,18 @@ class PluginManageentitiesContract extends CommonDBTM
      */
     static public function preItemForm($params)
     {
-        $item = $params['item'];
-        $options = $params['options'];
+        if (isset($params['itemtype']) && ($params['itemtype'] == 'Ticket'
+                || $params['itemtype'] == 'Contract')) {
+            $entities_id = $_SESSION['glpiactive_entity'];
+        }
 
-        if (isset($item->input['entities_id'])) {
+        if (isset($params['item'])) {
+            $item = $params['item'];
+            $options = $params['options'];
+        }
+        if (isset($params['item'])
+            && ($item->getType() == 'Ticket' || $item->getType() == 'Contract')
+            && isset($item->input['entities_id'])) {
             $entities_id = $item->input['entities_id'];
         }
         $out = "";
