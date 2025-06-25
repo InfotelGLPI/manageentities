@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-24 13:30+0000\n"
+"POT-Creation-Date: 2025-06-25 11:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,7 +68,7 @@ msgstr ""
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: setup.php:173 front/addelements.form.php:36 front/config.form.php:42
+#: setup.php:174 front/addelements.form.php:36 front/config.form.php:42
 #: front/cridetail.form.php:46 front/cridetail.form.php:49
 #: front/cridetail.form.php:51 front/directhelpdesk.form.php:101
 #: front/directhelpdesk.form.php:104 front/directhelpdesk.form.php:106
@@ -753,8 +753,8 @@ msgstr ""
 msgid "Add a company"
 msgstr ""
 
-#: inc/config.class.php:338 inc/contract.class.php:624
-#: inc/contract.class.php:660
+#: inc/config.class.php:338 inc/contract.class.php:628
+#: inc/contract.class.php:664
 msgid "Hourly"
 msgstr ""
 
@@ -782,33 +782,33 @@ msgstr ""
 msgid "Used by default"
 msgstr ""
 
-#: inc/contract.class.php:550
+#: inc/contract.class.php:554
 msgid ""
 "Please note that there are no more contracts with days available for this "
 "customer."
 msgstr ""
 
-#: inc/contract.class.php:571 inc/contract.class.php:599
+#: inc/contract.class.php:575 inc/contract.class.php:603
 msgid "Quarterly"
 msgstr ""
 
-#: inc/contract.class.php:572 inc/contract.class.php:601
+#: inc/contract.class.php:576 inc/contract.class.php:605
 msgid "Annual"
 msgstr ""
 
-#: inc/contract.class.php:625 inc/contract.class.php:662
+#: inc/contract.class.php:629 inc/contract.class.php:666
 msgid "By intervention"
 msgstr ""
 
-#: inc/contract.class.php:631 inc/contract.class.php:666
+#: inc/contract.class.php:635 inc/contract.class.php:670
 msgid "Technical Assistance"
 msgstr ""
 
-#: inc/contract.class.php:632 inc/contract.class.php:668
+#: inc/contract.class.php:636 inc/contract.class.php:672
 msgid "Package"
 msgstr ""
 
-#: inc/contract.class.php:689
+#: inc/contract.class.php:693
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
