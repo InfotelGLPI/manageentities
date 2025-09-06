@@ -1033,8 +1033,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
         echo "<tr class='tab_bg_2'>";
         echo "<td colspan='4' class='right'>";
         //      echo "<input type='submit' class='submit' name='btnAddnewFormContact'  id='btnAddnewFormContact'  value='" . __ ( "Add another contact", "manageentities" ) . "' onclick=\"javascript:addAnotherContact();document.getElementById(this.id).style.visibility='hidden';\"/>";
-        echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddnewFormContact" . $rand . "'  
-      id='btnAddnewFormContact" . $rand . "'  
+        echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddnewFormContact" . $rand . "'
+      id='btnAddnewFormContact" . $rand . "'
       value='" . __(
                 "Add another contact",
                 "manageentities"
@@ -1937,7 +1937,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
             }
             echo " class='submit btn btn-primary manageentities_button' onclick='addContractManagementType();'>";
             echo "</td><td class='center' colspan='2'>";
-            echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnDeleteContractManagementType' id='btnDeleteContractManagementType' 
+            echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnDeleteContractManagementType' id='btnDeleteContractManagementType'
          value='" . _sx(
                     'button',
                     'Delete permanently'
@@ -2343,7 +2343,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
         echo "<table class='tab_cadre_fixe' >";
         echo "<tr class='tab_bg_2'>";
         echo "<td colspan='4' class='right'>";
-        echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddIntervention" . $idIntervention . "' 
+        echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddIntervention" . $idIntervention . "'
       id='btnAddIntervention" . $idIntervention . "' ";
 
         if (isset($currentContractday->fields["id"]) && $currentContractday->fields["id"] > 0) {
@@ -2360,11 +2360,11 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
 
         echo "<tr class='tab_bg_2'>";
         echo "<td colspan='4' class='right'>";
-        echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddnewFormIntervention" . $idIntervention . "'  
+        echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddnewFormIntervention" . $idIntervention . "'
       id='btnAddnewFormIntervention" . $idIntervention . "'  value='" . __(
                 "Add another intervention",
                 "manageentities"
-            ) . "' 
+            ) . "'
       onclick=\"javascript:addAnotherIntervention" . $idIntervention . "();\"/>";
         echo "</td> </tr>";
 
@@ -3114,7 +3114,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
     private function showImgSaved($object, $text, $fakeId)
     {
         if (isset($object->fields['id']) && $object->fields['id'] > 0) {
-            return "&nbsp;&nbsp;<i class='ti ti-save' id='img_" . $object->getType(
+            return "&nbsp;&nbsp;<i class='ti ti-device-floppy' id='img_" . $object->getType(
                 ) . ($fakeId) . "' title='" . $text . "'></i>";
         } else {
             return "";
@@ -3368,7 +3368,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
         echo "      return false;
       }
     });
-    
+
     $( '#alert-message' ).dialog( 'open' );";
 
 
@@ -3573,7 +3573,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
 
         echo "
            $('#" . $div . "').tabs('option', 'active', " . ($id - 1) . " );
-           
+
        ";
         $this->closeFormJS();
     }
@@ -3585,7 +3585,7 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
 
         echo "
            $('#mytabscontacts').tabs('option', 'active', " . $this->pModel->getNbContact() . " );
-           
+
        ";
         $this->closeFormJS();
     }

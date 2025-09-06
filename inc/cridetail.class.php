@@ -552,7 +552,7 @@ class PluginManageentitiesCriDetail extends CommonDBTM
                 echo "</table>";
             } else {
                 echo "<div class='center alert alert-important alert-info d-flex'>";
-                echo __('No item found');
+                echo __('No results found');
                 echo "</div>";
                 if ($entity == -1) {
                     self::addReports($item);
