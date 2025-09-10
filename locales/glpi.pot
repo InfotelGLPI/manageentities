@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-06 09:57+0000\n"
+"POT-Creation-Date: 2025-09-10 10:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,7 @@ msgstr ""
 #: front/generatecri.php:38 front/generatecri.php:40 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
 #: inc/followup.class.php:1811 inc/generatecri.class.php:1217
-#: inc/monthly.class.php:832 inc/preference.class.php:99
+#: inc/monthly.class.php:832 inc/preference.class.php:104
 #: inc/profile.class.php:44 inc/profile.class.php:113
 #: inc/taskcategory.class.php:60
 msgid "Entities portal"
@@ -492,7 +492,7 @@ msgid "Document list"
 msgstr ""
 
 #: inc/addelementsview.class.php:1817 inc/contract.class.php:199
-#: inc/entity.class.php:750 inc/followup.class.php:772
+#: inc/entity.class.php:752 inc/followup.class.php:772
 #: inc/followup.class.php:955 inc/gantt.class.php:337
 msgid "Date of signature"
 msgstr ""
@@ -652,7 +652,7 @@ msgid_plural "Companies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/company.class.php:131 inc/entity.class.php:313
+#: inc/company.class.php:131 inc/entity.class.php:315
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
@@ -759,7 +759,7 @@ msgid "Hourly"
 msgstr ""
 
 #: inc/config.class.php:346 inc/contractday.class.php:53
-#: inc/contractday.class.php:55 inc/entity.class.php:115
+#: inc/contractday.class.php:55 inc/entity.class.php:117
 #: inc/followup.class.php:1036
 msgid "Period of contract"
 msgid_plural "Periods of contract"
@@ -814,7 +814,7 @@ msgid_plural "Interventions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/contractday.class.php:50 inc/entity.class.php:109
+#: inc/contractday.class.php:50 inc/entity.class.php:111
 msgid "Interventions reports"
 msgstr ""
 
@@ -1226,44 +1226,44 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: inc/entity.class.php:44
+#: inc/entity.class.php:46
 msgid "Client management"
 msgid_plural "Clients management"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/entity.class.php:81 inc/followup.class.php:43
+#: inc/entity.class.php:83 inc/followup.class.php:43
 #: inc/followup.class.php:1811 inc/followup.class.php:1884
 msgid "General follow-up"
 msgstr ""
 
-#: inc/entity.class.php:85 inc/monthly.class.php:43 inc/monthly.class.php:832
+#: inc/entity.class.php:87 inc/monthly.class.php:43 inc/monthly.class.php:832
 #: inc/monthly.class.php:891
 msgid "Monthly follow-up"
 msgstr ""
 
-#: inc/entity.class.php:92 inc/entity.class.php:291
+#: inc/entity.class.php:94 inc/entity.class.php:293
 msgid "Data administrative"
 msgstr ""
 
-#: inc/entity.class.php:125
+#: inc/entity.class.php:127
 msgid "Accounts"
 msgstr ""
 
-#: inc/entity.class.php:130 inc/entity.class.php:665
+#: inc/entity.class.php:132 inc/entity.class.php:667
 msgid "References"
 msgstr ""
 
-#: inc/entity.class.php:262
+#: inc/entity.class.php:264
 msgid "Portal"
 msgstr ""
 
-#: inc/entity.class.php:321
+#: inc/entity.class.php:323
 msgctxt "button"
 msgid "Update logo"
 msgstr ""
 
-#: inc/entity.class.php:418
+#: inc/entity.class.php:420
 msgctxt "button"
 msgid "Update administrative data"
 msgstr ""
@@ -1373,40 +1373,40 @@ msgid_plural "Users affected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/interventionskateholder.class.php:156
+#: inc/interventionskateholder.class.php:164
 msgid "No stakeholders have been affected yet."
 msgstr ""
 
-#: inc/interventionskateholder.class.php:198
-#: inc/interventionskateholder.class.php:334
-#: inc/interventionskateholder.class.php:466
+#: inc/interventionskateholder.class.php:206
+#: inc/interventionskateholder.class.php:342
+#: inc/interventionskateholder.class.php:474
 msgid "Affected to"
 msgstr ""
 
-#: inc/interventionskateholder.class.php:214
-#: inc/interventionskateholder.class.php:343
+#: inc/interventionskateholder.class.php:222
+#: inc/interventionskateholder.class.php:351
 msgid "Delete"
 msgstr ""
 
-#: inc/interventionskateholder.class.php:222
-#: inc/interventionskateholder.class.php:347
+#: inc/interventionskateholder.class.php:230
+#: inc/interventionskateholder.class.php:355
 msgid "This action is irreversible. Continue ?"
 msgstr ""
 
-#: inc/interventionskateholder.class.php:284
-#: inc/interventionskateholder.class.php:291
-#: inc/interventionskateholder.class.php:300
-#: inc/interventionskateholder.class.php:307
+#: inc/interventionskateholder.class.php:292
+#: inc/interventionskateholder.class.php:299
+#: inc/interventionskateholder.class.php:308
+#: inc/interventionskateholder.class.php:315
 msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/interventionskateholder.class.php:374
+#: inc/interventionskateholder.class.php:382
 msgid "No skateholders have been affected yet."
 msgstr ""
 
-#: inc/interventionskateholder.class.php:453
+#: inc/interventionskateholder.class.php:461
 msgid "Add skateholders"
 msgstr ""
 
@@ -1451,23 +1451,23 @@ msgstr ""
 msgid "State of intervention"
 msgstr ""
 
-#: inc/preference.class.php:134
+#: inc/preference.class.php:139
 msgid "Launch the plugin Entities portal with GLPI launching"
 msgstr ""
 
-#: inc/preference.class.php:148
+#: inc/preference.class.php:153
 msgid "Status list contract for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:191
+#: inc/preference.class.php:196
 msgid "Default list of Business for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:210
+#: inc/preference.class.php:215
 msgid "Default list of companies for the general monitoring"
 msgstr ""
 
-#: inc/preference.class.php:246
+#: inc/preference.class.php:251
 msgid ""
 "Warning : If there are more than one plugin which be loaded at startup, then "
 "only the first will be used"
