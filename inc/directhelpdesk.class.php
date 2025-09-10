@@ -343,7 +343,7 @@ class PluginManageentitiesDirecthelpdesk extends CommonDBTM
 
         echo Html::script($CFG_GLPI['root_doc'] . "/lib/echarts.js");
 //        Html::requireJs('charts');
-        echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/echarts/theme/azul.js");
+        echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/echarts/theme/azul.js");
 
         $direct = new PluginManageentitiesDirecthelpdesk();
 

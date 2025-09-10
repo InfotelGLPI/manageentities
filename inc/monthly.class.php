@@ -919,7 +919,7 @@ class PluginManageentitiesMonthly extends CommonDBTM
 
         echo "</script>";
 
-        echo "<div align='spaced'><table class='tab_cadrehov center'>";
+        echo "<div align='spaced'><table class='tab_cadre_fixe center'>";
 
         echo "<tr class='tab_bg_2'>";
         echo "<td class='center'>" . __('Begin date') . "</td>";

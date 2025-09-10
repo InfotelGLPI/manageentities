@@ -51,6 +51,14 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
+    /**
+     * @return string
+     */
+    public static function getIcon()//self::createTabEntry(
+    {
+        return "ti ti-user-pentagon";
+    }
+
     static function countForItem(CommonDBTM $item)
     {
         $dbu = new DbUtils();
@@ -79,7 +87,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
                             self::countForItem($item)
                         );
                     } else {
-                        return PluginManageentitiesInterventionSkateholder::getTypeName($item);
+                        return self::createTabEntry(PluginManageentitiesInterventionSkateholder::getTypeName($item));
                     }
             }
         }
@@ -342,7 +350,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
                             echo "<i title=\"" . __(
                                     "Delete",
                                     "manageentities"
-                                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] . "' 
+                                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] . "'
                      onclick=\"javascript:if (confirm('" . __(
                                     "This action is irreversible. Continue ?",
                                     'manageentities'
@@ -410,8 +418,8 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        echo Html::css(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/jquery-ui/jquery-ui.min.css");
-        echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/jquery-ui/jquery-ui.min.js");
+        echo Html::css(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/jquery-ui/jquery-ui.min.css");
+        echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/jquery-ui/jquery-ui.min.js");
 
         if ($item->getType() == PluginManageentitiesInterventionSkateholder::getType()) {
             $idToUse = $item->fields['plugin_manageentities_contractdays_id'];
@@ -483,7 +491,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
             echo "<td>";
             $value = "dropdown_users_id_tech" . $idUser;
             echo Html::hidden('id_user', ['id' => 'id_user', 'value' => $value]);
-            echo "<input type='button' class='submit btn btn-primary' name='add_skateholder' id='add_skateholder' 
+            echo "<input type='button' class='submit btn btn-primary' name='add_skateholder' id='add_skateholder'
          value='" . _sx("button", "Add") . "' onclick='addSkateholder" . $idToUse . "();' />";
             echo "</td>";
             echo "</tr>";
@@ -636,7 +644,7 @@ class PluginManageentitiesInterventionSkateholder extends CommonDBTM
         echo "      return false;
       }
     });
-    
+
     $( '#alert-message' ).dialog( 'open' );";
 
 

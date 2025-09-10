@@ -105,7 +105,7 @@ class PluginManageentitiesCriType extends CommonDropdown
         if (!$withtemplate) {
             switch ($item->getType()) {
                 case 'PluginManageentitiesCriType' :
-                    return PluginManageentitiesCriType::getTypeName(1);
+                    return self::createTabEntry(PluginManageentitiesCriType::getTypeName(1));
             }
         }
         return '';

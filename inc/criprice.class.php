@@ -277,7 +277,7 @@ class PluginManageentitiesCriPrice extends CommonDBTM
         $data = $this->getItems(0, $item->getField('id'));
         if (!empty($data) && $canedit) {
             echo "<div class='center'>";
-            echo "<table class='tab_cadrehov'>";
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<th>" . PluginManageentitiesContractDay::getTypeName() . "</th>";
             echo "<th>" . __('Entity') . "</th>";

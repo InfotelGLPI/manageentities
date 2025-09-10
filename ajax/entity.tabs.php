@@ -26,6 +26,8 @@
  --------------------------------------------------------------------------
 // */
 
+use GlpiPlugin\Accounts\Account_Item;
+
 define('GLPI_ROOT', '../../..');
 include(GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -81,7 +83,7 @@ switch ($_POST['plugin_manageentities_tab']) {
       break;
    case "accounts":
       $_SESSION['glpi_plugin_manageentities_tab'] = "accounts";
-      $PluginAccountsAccount_Item                 = new PluginAccountsAccount_Item;
+      $PluginAccountsAccount_Item                 = new Account_Item();
       $PluginAccountsAccount_Item->showPluginFromItems('Entity', $entities, "");
       break;
    case "all":

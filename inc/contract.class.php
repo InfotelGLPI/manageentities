@@ -139,7 +139,7 @@ class PluginManageentitiesContract extends CommonDBTM
             if ($_SESSION['glpishow_count_on_tabs']) {
                 return self::createTabEntry(__('Contract detail', 'manageentities'), $pluginContractDays);
             }
-            return __('Contract detail', 'manageentities');
+            return self::createTabEntry(__('Contract detail', 'manageentities'));
         }
         return '';
     }
@@ -436,7 +436,7 @@ class PluginManageentitiesContract extends CommonDBTM
             Html::closeForm();
         } else {
             echo "<form method='post' action=\"./entity.php\">";
-            echo "<div align='center'><table class='tab_cadrehov center'>";
+            echo "<div align='center'><table class='tab_cadre_fixe center'>";
             echo "<tr><th colspan='3'>" . __('Associated assistance contracts', 'manageentities') . ":</th></tr>";
             echo "<tr><th>" . __('Name') . "</th>";
             echo "<th>" . _x('phone', 'Number') . "</th>";
@@ -753,15 +753,15 @@ class PluginManageentitiesContract extends CommonDBTM
         }
         if (isset($params['item'])
             && ($item->getType() == 'Ticket' || $item->getType() == 'Contract')
-            && isset($item->input['entities_id'])) {
-            $entities_id = $item->input['entities_id'];
+            && isset($item->fields['entities_id'])) {
+            $entities_id = $item->fields['entities_id'];
         }
         $out = "";
         if (isset($entities_id)) {
-            $sons = getSonsOf("glpi_entities", $entities_id);
-            if (count($sons) > 1) {
-                return false;
-            }
+//            $sons = getSonsOf("glpi_entities", $entities_id);
+//            if (count($sons) > 1) {
+//                return false;
+//            }
             $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
             $self = new PluginManageentitiesContract();
             $out .= $self->displayAlertforEntity($entities_id);

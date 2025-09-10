@@ -48,8 +48,8 @@ class    PluginManageentitiesAddElementsView extends CommonGLPIView
 
     public function showForm()
     {
-        echo Html::css(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/jquery-ui/jquery-ui.min.css");
-        echo Html::script(PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/lib/jquery-ui/jquery-ui.min.js");
+        echo Html::css(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/jquery-ui/jquery-ui.min.css");
+        echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/jquery-ui/jquery-ui.min.js");
 
         $this->showTitle();
         // addEntite

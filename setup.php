@@ -35,7 +35,7 @@ use Glpi\Plugin\Hooks;
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
     define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
-    define("PLUGIN_MANAGEENTITIES_NOTFULL_DIR", Plugin::getPhpDir("manageentities", false));
+//    define("PLUGIN_MANAGEENTITIES_WEBDIR", Plugin::getPhpDir("manageentities", false));
     $root = $CFG_GLPI['root_doc'] . '/plugins/manageentities';
     define("PLUGIN_MANAGEENTITIES_WEBDIR", $root);
 }
@@ -97,7 +97,7 @@ function plugin_init_manageentities()
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
             && !Plugin::isPluginActive('servicecatalog')) {
-            $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/entity.php";
+            $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
             $PLUGIN_HOOKS['helpdesk_menu_entry_icon']['manageentities'] = PluginManageentitiesEntity::getIcon();
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {

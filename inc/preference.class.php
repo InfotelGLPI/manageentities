@@ -91,12 +91,17 @@ class PluginManageentitiesPreference extends CommonDBTM
         return 0;
     }
 
+    static function getIcon()
+    {
+        return "ti ti-user-pentagon";
+    }
+
     function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == 'Preference'
             && isset($_SESSION["glpiactiveprofile"]["interface"])
             && $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
-            return __('Entities portal', 'manageentities');
+            return self::createTabEntry(__('Entities portal', 'manageentities'));
         }
         return '';
     }

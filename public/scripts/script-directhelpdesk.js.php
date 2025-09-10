@@ -9,41 +9,43 @@ $modalUrl = PLUGIN_MANAGEENTITIES_WEBDIR.'/ajax/directhelpdesk.php';
 if (Session::getCurrentInterface() == 'central') {
 ?>
 
-$(window).load(function() {
+$(window).on("load", function() {
     const newDiv = document.createElement('div');
-    //newDiv.classList.add('center');
     const newButton = document.createElement('button');
     const add_text = "<?php echo $add_text ?>";
     const add_text_collapsed = "<?php echo $add_text_collapsed ?>";
 
-    newButton.id ='launch-directhelpdesk-modal';
+    newButton.id = 'launch-directhelpdesk-modal';
+    newButton.classList.add('btn', 'btn-sm', 'btn-primary', 'me-1');
 
-    newButton.classList.add('btn');
-    newButton.classList.add('btn-sm');
-    newButton.classList.add('btn-primary');
-    newButton.classList.add('me-1');
-    var collapsed = $('body').hasClass('navbar-collapsed');
-    if (collapsed == true) {
-        newButton.textContent = add_text_collapsed;
-    } else {
-        newButton.style['margin-left'] = '70px';
-        newButton.textContent = add_text;
+    function updateButtonState() {
+        const collapsed = $('body').hasClass('navbar-collapsed');
+        if (collapsed) {
+            newButton.style.marginLeft = '0px';
+            newButton.textContent = add_text_collapsed;
+        } else {
+            newButton.style.marginLeft = '70px';
+            newButton.textContent = add_text;
+        }
     }
 
-    newDiv.appendChild(newButton);
-    // Get the existing button element with the specific class
-    const existingButton = document.querySelector('.trigger-fuzzy');
+    // état initial
+    updateButtonState();
 
-    // Insert the new button before the existing button
+    newDiv.appendChild(newButton);
+
+    // Insérer avant le bouton existant
+    const existingButton = document.querySelector('.trigger-fuzzy');
     existingButton.parentNode.insertBefore(newDiv, existingButton);
 
-    const btn = document.getElementById('launch-directhelpdesk-modal');
-    const page = document.querySelector("div[class='page']");
+    // Préparer la modal
+    const page = document.querySelector("div.page");
     const modalContainer = document.createElement('div');
     modalContainer.id = 'directhelpdeskmodalcontainer';
     page.append(modalContainer);
-    btn.onclick = function() {
-        // load modal if not present in the page
+
+    // clic sur le bouton
+    newButton.addEventListener('click', function() {
         if (!document.getElementById('directhelpdesk-modal')) {
             $('#directhelpdeskmodalcontainer').load(
                 '<?php echo $modalUrl ?>',
@@ -54,31 +56,21 @@ $(window).load(function() {
         } else {
             $("#directhelpdesk-modal").modal('show');
         }
-    }
-
-    // Fermer la modal lorsque l'utilisateur clique en dehors de la modal
-    window.onclick = function(event) {
-        const modal = $("#directhelpdesk-modal");
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    }
-
-    $('.reduce-menu').on('click', function(event) {
-        var collapsed = $('body').hasClass('navbar-collapsed');
-        if (collapsed == true) {
-            newButton.style['margin-left'] = '70px';
-            newButton.textContent = add_text;
-        } else {
-            newButton.style['margin-left'] = '0px';
-            newButton.textContent = add_text_collapsed;
-        }
-
-        newDiv.appendChild(newButton);
     });
-})
 
+    // Fermer la modal si clic en dehors
+    $(document).on('click', function(event) {
+        const modal = document.getElementById('directhelpdesk-modal');
+        if (modal && event.target === modal) {
+            $(modal).modal('hide');
+        }
+    });
 
+    // Gérer toggle du menu
+    $('.reduce-menu').on('click', function() {
+        updateButtonState();
+    });
+});
 
 <?php
 }

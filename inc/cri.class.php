@@ -134,7 +134,7 @@ class PluginManageentitiesCri extends CommonDBTM
                         if ($remove == 'remove') {
                             $params['tech_id'] = $users_id;
                             $techs[] = $users_name . "&nbsp;" .
-                                "<a class='pointer' name='deleteTech$rand' 
+                                "<a class='pointer' name='deleteTech$rand'
                                           onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $options['modal'] . "\", " . json_encode(
                                     $params
                                 ) . ");'>
@@ -172,7 +172,7 @@ class PluginManageentitiesCri extends CommonDBTM
             'right' => 'all',
             'width' => $width
         ]);
-        echo "&nbsp;<a class='pointer' name='add_tech$rand' 
+        echo "&nbsp;<a class='pointer' name='add_tech$rand'
                                           onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode(
                 $params
             ) . ");'>
@@ -294,7 +294,7 @@ class PluginManageentitiesCri extends CommonDBTM
                 $cols = 120;
                 $rows = 22;
 
-                echo Html::script("public/lib/tinymce.js");
+                echo Html::script("lib/tinymce.js");
                 Html::textarea([
                     'name' => 'REPORT_DESCRIPTION',
                     'value' => Glpi\RichText\RichText::getSafeHtml($desc, true),
@@ -317,7 +317,7 @@ class PluginManageentitiesCri extends CommonDBTM
 //                  $modal = $options['modal'];
 
                         echo "<input type='button' name='add_cri' value=\"" .
-                            __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button' 
+                            __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
                   onClick='manageentities_loadCriForm(\"addCri\", \"" . $options['modal'] . "\", " . json_encode(
                                 $params
                             ) . ");'>";
@@ -326,7 +326,7 @@ class PluginManageentitiesCri extends CommonDBTM
                 } elseif ($options['action'] == 'update_cri') {
                     if (!empty($technicians_id)) {
                         echo "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\"" .
-                            __('Regenerate the intervention report', 'manageentities') . "\" 
+                            __('Regenerate the intervention report', 'manageentities') . "\"
                   onClick='manageentities_loadCriForm(\"updateCri\", \"" . $options['modal'] . "\", " . json_encode(
                                 $params
                             ) . ");'>";
@@ -1019,7 +1019,7 @@ class PluginManageentitiesCri extends CommonDBTM
                     'toupdate' => $options['toupdate']
                 ];
                 echo "<p><input type='button' name='save_cri' value=\"" .
-                    __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button' 
+                    __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
                  onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode(
                         $params
                     ) . ");'></p>";

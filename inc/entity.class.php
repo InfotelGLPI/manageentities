@@ -29,6 +29,8 @@
 
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
+use GlpiPlugin\Accounts\Account;
+use GlpiPlugin\Accounts\Account_Item;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
@@ -122,7 +124,7 @@ class PluginManageentitiesEntity extends CommonGLPI
 
             if (Plugin::isPluginActive('accounts')) {
                 if (Session::haveRight("plugin_accounts", READ)) {
-                    $tabs[10] = PluginAccountsAccount::createTabEntry(__('Accounts', 'manageentities'));
+                    $tabs[10] = Account::createTabEntry(__('Accounts', 'manageentities'));
                 }
             }
 
@@ -209,7 +211,7 @@ class PluginManageentitiesEntity extends CommonGLPI
                 case 10:
                     foreach ($entities as $entity_id) {
                         $entity->getFromDB($entity_id);
-                        PluginAccountsAccount_Item::showForItem($entity);
+                        Account_Item::showForItem($entity);
                     }
                     break;
                 case 11:
@@ -448,7 +450,7 @@ class PluginManageentitiesEntity extends CommonGLPI
 //
 //      $config = PluginManageentitiesConfig::getInstance();
 //
-//      echo "<div align='spaced'><table class='tab_cadrehov'>";
+//      echo "<div align='spaced'><table class='tab_cadre_fixe'>";
 //      echo "<tr><th>" . __('Processed interventions', 'manageentities');
 //      echo "</th><th>" . __('To be processed interventions', 'manageentities');
 //
@@ -487,7 +489,7 @@ class PluginManageentitiesEntity extends CommonGLPI
 //       $iteratorclosed = $DB->request($criteriaclosed);
 //
 //       if (count($iteratorclosed) > 0) {
-//         echo "<table class='plugin_manageentities_tab_cadrehov' width='100%'>";
+//         echo "<table class='plugin_manageentities_tab_cadre_fixe' width='100%'>";
 //
 //         echo "<tr><th></th>";
 //         echo "<th>" . __('Title') . "</th>";
@@ -527,7 +529,7 @@ class PluginManageentitiesEntity extends CommonGLPI
 //       ]);
 //
 //       if (count($iterator) > 0) {
-//         echo "<table class='plugin_manageentities_tab_cadrehov' width='100%'>";
+//         echo "<table class='plugin_manageentities_tab_cadre_fixe' width='100%'>";
 //
 //         echo "<tr><th></th>";
 //         echo "<th>" . __('Title') . "</th>";
@@ -718,7 +720,7 @@ class PluginManageentitiesEntity extends CommonGLPI
                 if ($logos = $entity_logo->find(['entities_id' => $data['entities_id']])) {
                     echo "<td>";
                     foreach ($logos as $logo) {
-                        echo "<img height='50px' alt=\"" . __s('Picture') . "\" 
+                        echo "<img height='50px' alt=\"" . __s('Picture') . "\"
                 src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $logo["logos_id"] . "'>";
                     }
 

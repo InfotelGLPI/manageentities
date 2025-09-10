@@ -1889,7 +1889,7 @@ class PluginManageentitiesFollowUp extends CommonDBTM
             echo "<form method='post' name='criterias_form$rand' id='criterias_form$rand'
                action=\"./entity.php\">";
 
-            echo "<div align='spaced'><table class='tab_cadrehov'>";
+            echo "<div align='spaced'><table class='tab_cadre_fixe'>";
 
             echo "<tr class='tab_bg_1'>";
             if ((isset($_SESSION['glpiactive_entity_recursive'])

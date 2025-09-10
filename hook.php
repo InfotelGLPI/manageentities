@@ -291,7 +291,7 @@ function plugin_manageentities_uninstall() {
    foreach ($tables as $table)
       $DB->doQuery("DROP TABLE IF EXISTS `$table`;");
 
-   //old versions   
+   //old versions
    $tables = ["glpi_plugin_manageentity_contracts",
               "glpi_plugin_manageentity_documents",
               "glpi_plugin_manageentity_contacts",
@@ -357,9 +357,9 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num) {
                //               $manageentitiesCritypes->getFromDBByCrit(["id = $table.plugin_manageentities_critypes_id
                //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
 
-               $query = "SELECT * 
-                       FROM $table 
-                       WHERE  id = $table.plugin_manageentities_critypes_id 
+               $query = "SELECT *
+                       FROM $table
+                       WHERE  id = $table.plugin_manageentities_critypes_id
                        AND entities_id IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')";
 
                $result = $DB->doQuery($query);
@@ -671,22 +671,22 @@ function plugin_manageentities_redefine_menus($menu) {
                        "title" => PluginManageentitiesEntity::getTypeName(),
                        "icon" => PluginManageentitiesEntity::getIcon(),
                     ];
-   $infos['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/entity.php";
+   $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
    $infos['title'] = __('Manage your contracts', 'manageentities');
    $infos['icon'] = PluginManageentitiesEntity::getIcon();
    $menu['manageentities']['content']["manageentities_entities"] = $infos;
 
-   $infos['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/gantt.php";
+   $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/gantt.php";
    $infos['title'] = PluginManageentitiesGantt::getTypeName();
    $infos['icon'] = PluginManageentitiesGantt::getIcon();
    $menu['manageentities']['content']["manageentities_gantt"] = $infos;
 
-   $infos['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/administrativedatas.php";
+   $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/administrativedatas.php";
    $infos['title'] = PluginManageentitiesEntity::getTypeName();
    $infos['icon'] = PluginManageentitiesEntity::getIcon();
    $menu['manageentities']['content']["manageentities_admindatas"] = $infos;
 
-   $infos['page'] = PLUGIN_MANAGEENTITIES_NOTFULL_DIR . "/front/contractday.php";
+   $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/contractday.php";
    $infos['title'] = PluginManageentitiesContractDay::getTypeName();
    $infos['icon'] = PluginManageentitiesContractDay::getIcon();
    $menu['manageentities']['content']["manageentities_reports"] = $infos;
