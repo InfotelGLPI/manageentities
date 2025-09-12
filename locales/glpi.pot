@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-10 10:52+0000\n"
+"POT-Creation-Date: 2025-09-12 07:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,13 +69,13 @@ msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
 #: setup.php:174 front/addelements.form.php:36 front/config.form.php:42
-#: front/cridetail.form.php:46 front/cridetail.form.php:49
-#: front/cridetail.form.php:51 front/directhelpdesk.form.php:101
-#: front/directhelpdesk.form.php:104 front/directhelpdesk.form.php:106
-#: front/directhelpdesk.php:35 front/directhelpdesk.php:38
-#: front/directhelpdesk.php:40 front/entity.php:44 front/entity.php:47
-#: front/entity.php:49 front/generatecri.form.php:86 front/generatecri.php:35
-#: front/generatecri.php:38 front/generatecri.php:40 front/report.form.php:32
+#: front/cridetail.form.php:48 front/cridetail.form.php:51
+#: front/cridetail.form.php:53 front/directhelpdesk.form.php:103
+#: front/directhelpdesk.form.php:106 front/directhelpdesk.form.php:108
+#: front/directhelpdesk.php:37 front/directhelpdesk.php:40
+#: front/directhelpdesk.php:42 front/entity.php:45 front/entity.php:48
+#: front/entity.php:50 front/generatecri.form.php:86 front/generatecri.php:38
+#: front/generatecri.php:41 front/generatecri.php:43 front/report.form.php:32
 #: front/report_moving.form.php:32 front/report_occupation.form.php:32
 #: inc/followup.class.php:1811 inc/generatecri.class.php:1217
 #: inc/monthly.class.php:832 inc/preference.class.php:104
@@ -142,16 +142,16 @@ msgstr ""
 msgid "Generation of the intervention report"
 msgstr ""
 
-#: front/directhelpdesk.form.php:48 inc/addelementsview.class.php:257
+#: front/directhelpdesk.form.php:50 inc/addelementsview.class.php:257
 #: inc/addelementsview.class.php:278 inc/addelementsview.class.php:3550
 msgid "New intervention"
 msgstr ""
 
-#: front/directhelpdesk.php:69
+#: front/directhelpdesk.php:71
 msgid "2 hours minimum"
 msgstr ""
 
-#: front/directhelpdesk.php:76
+#: front/directhelpdesk.php:78
 msgid "3 hours minimum"
 msgstr ""
 
