@@ -27,6 +27,8 @@
  --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Servicecatalog\Main;
+
 include('../../../inc/includes.php');
 
 Session::checkLoginUser();
@@ -35,7 +37,7 @@ if (Session::getCurrentInterface() == 'central') {
     Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesdirecthelpdesk");
 } else {
     if (Plugin::isPluginActive('servicecatalog')) {
-        PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
+        Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
     } else {
         Html::helpHeader(__('Entities portal', 'manageentities'));
     }
@@ -46,7 +48,7 @@ echo Html::scriptBlock("
     if (namecheck == 'checkbox3') {
       var param = document.getElementById('checkbox3').checked ? '1' : '0';
       window.location.href = '?checkbox3=' + param;
-    }  
+    }
     if (namecheck == 'checkbox2') {
       var param = document.getElementById('checkbox2').checked ? '1' : '0';
       window.location.href = '?checkbox2=' + param;
@@ -92,7 +94,7 @@ Search::show('PluginManageentitiesDirecthelpdesk');
 
 if (Session::getCurrentInterface() != 'central'
     && Plugin::isPluginActive('servicecatalog')) {
-    PluginServicecatalogMain::showNavBarFooter('manageentities');
+    Main::showNavBarFooter('manageentities');
 }
 
 if (Session::getCurrentInterface() == 'central') {

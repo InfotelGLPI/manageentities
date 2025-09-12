@@ -27,6 +27,8 @@
  --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Servicecatalog\Main;
+
 include('../../../inc/includes.php');
 
 Session::checkLoginUser();
@@ -46,7 +48,7 @@ if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
 } else {
    if (Plugin::isPluginActive('servicecatalog')) {
-      PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
+      Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
    } else {
       Html::helpHeader(__('Entities portal', 'manageentities'));
    }
@@ -57,7 +59,7 @@ $cri->display($_GET);
 if (Session::getCurrentInterface() != 'central'
     && Plugin::isPluginActive('servicecatalog')) {
 
-   PluginServicecatalogMain::showNavBarFooter('manageentities');
+   Main::showNavBarFooter('manageentities');
 }
 
 if (Session::getCurrentInterface() == 'central') {

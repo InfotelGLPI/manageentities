@@ -29,6 +29,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Servicecatalog\Main;
 
 include('../../../inc/includes.php');
 
@@ -44,7 +45,7 @@ if (Session::getCurrentInterface() == 'central') {
    Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
 } else {
    if (Plugin::isPluginActive('servicecatalog')) {
-      PluginServicecatalogMain::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
+      Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
    } else {
       Html::helpHeader(__('Entities portal', 'manageentities'));
    }
@@ -149,7 +150,7 @@ if ($PluginManageentitiesEntity->canView()
 if (Session::getCurrentInterface() != 'central'
     && Plugin::isPluginActive('servicecatalog')) {
 
-   PluginServicecatalogMain::showNavBarFooter('manageentities');
+   Main::showNavBarFooter('manageentities');
 }
 
 if (Session::getCurrentInterface() == 'central') {
