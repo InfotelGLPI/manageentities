@@ -83,8 +83,8 @@ switch ($_POST['plugin_manageentities_tab']) {
       break;
    case "accounts":
       $_SESSION['glpi_plugin_manageentities_tab'] = "accounts";
-      $PluginAccountsAccount_Item                 = new Account_Item();
-      $PluginAccountsAccount_Item->showPluginFromItems('Entity', $entities, "");
+      $Account_Item                 = new Account_Item();
+      $Account_Item->showPluginFromItems('Entity', $entities, "");
       break;
    case "all":
       $_SESSION['glpi_plugin_manageentities_tab'] = "all";
