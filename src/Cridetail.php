@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
@@ -35,8 +36,6 @@ use CommonGLPI;
 use DbUtils;
 use Document;
 use Glpi\RichText\RichText;
-use GlpiPlugin\Manageentities\Config;
-use GlpiPlugin\Manageentities\Contract;
 use Html;
 use Planning;
 use Session;
@@ -49,20 +48,19 @@ if (!defined('GLPI_ROOT')) {
 
 class CriDetail extends CommonDBTM
 {
+    public static $rightname = "plugin_manageentities";
 
-    static $rightname = "plugin_manageentities";
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Intervention task', 'Intervention tasks', $nb, 'manageentities');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-headset";
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == 'Ticket'
             && Session::haveRight("plugin_manageentities_cri_create", READ)) {
@@ -73,7 +71,7 @@ class CriDetail extends CommonDBTM
         return '';
     }
 
-    static function countForContract($item)
+    public static function countForContract($item)
     {
         $dbu = new DbUtils();
         return $dbu->countElementsInTable(
@@ -82,7 +80,7 @@ class CriDetail extends CommonDBTM
         );
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == 'Ticket') {
             if (Session::getCurrentInterface() == 'central') {
@@ -95,7 +93,7 @@ class CriDetail extends CommonDBTM
         return true;
     }
 
-    function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input)
     {//si un document lié ne pas permettre l'update via le form self::showForTicket($item);
         if (isset($input['updatecridetail'])) {
             $criDetail = new CriDetail();
@@ -118,7 +116,7 @@ class CriDetail extends CommonDBTM
         return $input;
     }
 
-    function prepareInputForAdd($input)
+    public function prepareInputForAdd($input)
     {
         if (!$this->checkMandatoryFields($input)) {
             return false;
@@ -127,7 +125,7 @@ class CriDetail extends CommonDBTM
         return $input;
     }
 
-    function pre_deleteItem()
+    public function pre_deleteItem()
     {
         //si un document lié ne pas permettre le delete via le form self::showForTicket($item);
         if (isset($this->input['delcridetail'])) {
@@ -145,7 +143,7 @@ class CriDetail extends CommonDBTM
     }
 
     //Shows CRI from check date - report.form.php function
-    function showHelpdeskReports($usertype, $technum, $date1, $date2)
+    public function showHelpdeskReports($usertype, $technum, $date1, $date2)
     {
         global $DB, $CFG_GLPI;
 
@@ -170,33 +168,33 @@ class CriDetail extends CommonDBTM
                 'glpi_entities' => [
                     'ON' => [
                         'glpi_documents' => 'entities_id',
-                        'glpi_entities' => 'id'
-                    ]
+                        'glpi_entities' => 'id',
+                    ],
                 ],
                 'glpi_tickets' => [
                     'ON' => [
                         'glpi_documents' => 'tickets_id',
-                        'glpi_contracts' => 'id'
-                    ]
+                        'glpi_contracts' => 'id',
+                    ],
                 ],
                 'glpi_tickets_users' => [
                     'ON' => [
                         'glpi_tickets_users' => 'tickets_id',
-                        'glpi_tickets' => 'id'
-                    ]
+                        'glpi_tickets' => 'id',
+                    ],
                 ],
                 $this->getTable() => [
                     'ON' => [
                         $this->getTable() => 'documents_id',
-                        'glpi_documents' => 'id'
-                    ]
+                        'glpi_documents' => 'id',
+                    ],
                 ],
                 'glpi_plugin_manageentities_critechnicians' => [
                     'ON' => [
                         'glpi_documents' => 'tickets_id',
-                        'glpi_plugin_manageentities_critechnicians' => 'tickets_id'
-                    ]
-                ]
+                        'glpi_plugin_manageentities_critechnicians' => 'tickets_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_tickets_users.type' => Ticket::ASSIGNED,
@@ -212,16 +210,15 @@ class CriDetail extends CommonDBTM
 
         if ($usertype != "group") {
             $criteria['WHERE'] = $criteria['WHERE'] + [
-                    'OR' => [
-                        'glpi_tickets_users.users_id' => $technum
-                        ,
-                        'glpi_plugin_manageentities_critechnicians.users_id' => $technum
-                    ]
-                ];
+                'OR' => [
+                    'glpi_tickets_users.users_id' => $technum,
+                    'glpi_plugin_manageentities_critechnicians.users_id' => $technum,
+                ],
+            ];
         }
         $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-                'glpi_documents'
-            );
+            'glpi_documents'
+        );
 
         $iterator = $DB->request($criteria);
 
@@ -271,9 +268,9 @@ class CriDetail extends CommonDBTM
                 echo "<td class='center'>" . $data["technicians"] . "</td>";
                 if ($config->fields['useprice'] == Config::PRICE) {
                     echo "<td class='center'>" . \Dropdown::getDropdownName(
-                            "glpi_plugin_manageentities_critypes",
-                            $data['plugin_manageentities_critypes_id']
-                        ) . "</td>";
+                        "glpi_plugin_manageentities_critypes",
+                        $data['plugin_manageentities_critypes_id']
+                    ) . "</td>";
                 }
                 echo "<td class='center'>" . $data["realtime"] . "</td>";
                 echo "<td class='center'>" . \Dropdown::getYesNo($data["withcontract"]) . "</td>";
@@ -306,10 +303,10 @@ class CriDetail extends CommonDBTM
     }
 
     /**
-     * @param \Ticket $ticket
+     * @param Ticket $ticket
      * @param array $options
      */
-    static function addReports(Ticket $ticket, $options = [])
+    public static function addReports(Ticket $ticket, $options = [])
     {
         global $CFG_GLPI;
 
@@ -325,7 +322,7 @@ class CriDetail extends CommonDBTM
 
         $restrict = [
             "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $ticket->fields['entities_id'],
-            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $ticket->fields['id']
+            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $ticket->fields['id'],
         ];
         $dbu = new DbUtils();
         $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
@@ -333,31 +330,31 @@ class CriDetail extends CommonDBTM
 
         $generation_ok = false;
         if (Session::haveRight(
-                "plugin_manageentities_cri_create",
-                UPDATE
-            ) && (empty($cridetail) || (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) == 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
+            "plugin_manageentities_cri_create",
+            UPDATE
+        ) && (empty($cridetail) || ($cridetail['documents_id'] ?? 0) == 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
             $generation_ok = true;
         }
         //switch withoutcontract
         if (Session::haveRight(
-                "plugin_manageentities_cri_create",
-                UPDATE
-            ) && (empty($cridetail) || (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) == 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
+            "plugin_manageentities_cri_create",
+            UPDATE
+        ) && (empty($cridetail) || ($cridetail['documents_id'] ?? 0) == 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
             $generation_ok = true;
         }
 
         $regeneration_ok = false;
         if (Session::haveRight(
-                "plugin_manageentities_cri_create",
-                UPDATE
-            ) && (!empty($cridetail) || (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
+            "plugin_manageentities_cri_create",
+            UPDATE
+        ) && (!empty($cridetail) || ($cridetail['documents_id'] ?? 0) != 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
             $regeneration_ok = true;
         }
         //switch withoutcontract
         if (Session::haveRight(
-                "plugin_manageentities_cri_create",
-                UPDATE
-            ) && (!empty($cridetail) || (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
+            "plugin_manageentities_cri_create",
+            UPDATE
+        ) && (!empty($cridetail) || ($cridetail['documents_id'] ?? 0) != 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
             $regeneration_ok = true;
         }
 
@@ -394,13 +391,13 @@ class CriDetail extends CommonDBTM
                 'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
                 'toupdate' => "showCriDetail$rand",
                 'width' => 1000,
-                'height' => 550
+                'height' => 550,
             ];
 
             echo Html::submit($title, [
                 'name' => 'showCriForm',
                 'class' => 'btn btn-primary',
-                'onclick' => "manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");"
+                'onclick' => "manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");",
             ]);
 
             //         if (!isset($options['modal'])) {
@@ -410,10 +407,12 @@ class CriDetail extends CommonDBTM
 
         // DELETE
         if (Session::haveRight("plugin_manageentities_cri_create", UPDATE)
-            && (isset($cridetail['documents_id']) ? $cridetail['documents_id'] : 0) != 0) {
+            && ($cridetail['documents_id'] ?? 0) != 0) {
             echo "<form method='post' name='cridetail_form$rand' id='cridetail_form$rand'
                action='" . Toolbox::getItemTypeFormURL(Cri::class) . "' style='display:inline'>";
-            echo Html::submit(_sx('button', 'Delete permanently'), ['name' => 'purgedoc', 'class' => 'btn btn-primary']
+            echo Html::submit(
+                _sx('button', 'Delete permanently'),
+                ['name' => 'purgedoc', 'class' => 'btn btn-primary']
             );
             echo Html::hidden('documents_id', ['value' => $cridetail['documents_id']]);
             Html::closeForm();
@@ -428,7 +427,7 @@ class CriDetail extends CommonDBTM
     }
 
     //shows CRI from ticket or from entity portal
-    static function showReports($item, $instID, $entity = -1, $condition = [])
+    public static function showReports($item, $instID, $entity = -1, $condition = [])
     {
         global $DB, $CFG_GLPI;
 
@@ -445,49 +444,49 @@ class CriDetail extends CommonDBTM
                     'glpi_plugin_manageentities_cridetails.plugin_manageentities_critypes_id',
                     'glpi_plugin_manageentities_cridetails.withcontract',
                     'glpi_plugin_manageentities_cridetails.contracts_id',
-                    'glpi_plugin_manageentities_cridetails.realtime'
+                    'glpi_plugin_manageentities_cridetails.realtime',
                 ],
                 'FROM' => 'glpi_documents',
                 'LEFT JOIN' => [
                     'glpi_plugin_manageentities_cridetails' => [
                         'ON' => [
                             'glpi_plugin_manageentities_cridetails' => 'documents_id',
-                            'glpi_documents' => 'id'
-                        ]
+                            'glpi_documents' => 'id',
+                        ],
                     ],
                     'glpi_plugin_manageentities_contractdays' => [
                         'ON' => [
                             'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id',
-                            'glpi_plugin_manageentities_contractdays' => 'id'
-                        ]
+                            'glpi_plugin_manageentities_contractdays' => 'id',
+                        ],
                     ],
                     'glpi_plugin_manageentities_contractstates' => [
                         'ON' => [
                             'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-                            'glpi_plugin_manageentities_contractstates' => 'id'
-                        ]
-                    ]
+                            'glpi_plugin_manageentities_contractstates' => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     'glpi_documents.documentcategories_id' => $config->fields["documentcategories_id"],
 
                 ],
                 'ORDERBY' => 'glpi_plugin_manageentities_cridetails.date DESC',
-                'LIMIT' => 10
+                'LIMIT' => 10,
             ];
             if (count($condition) > 0) {
                 $criteria['WHERE'] = $criteria['WHERE'] + [
-                        'OR' => [
-                            ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => 'NULL'],
-                            $condition
-                        ]
-                    ];
+                    'OR' => [
+                        ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => 'NULL'],
+                        $condition,
+                    ],
+                ];
             } else {
                 $criteria['WHERE'] = $criteria['WHERE'] + [
-                        'OR' => [
-                            ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => 'NULL'],
-                        ]
-                    ];
+                    'OR' => [
+                        ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => 'NULL'],
+                    ],
+                ];
             }
             if ($entity != -1) {
                 $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_documents.entities_id' => $entity];
@@ -526,15 +525,15 @@ class CriDetail extends CommonDBTM
                     echo "<td class='center'>" . $data["technicians"] . "</td>";
                     if ($config->fields['useprice'] == Config::PRICE) {
                         echo "<td class='center'>" . \Dropdown::getDropdownName(
-                                "glpi_plugin_manageentities_critypes",
-                                $data['plugin_manageentities_critypes_id']
-                            ) . "</td>";
+                            "glpi_plugin_manageentities_critypes",
+                            $data['plugin_manageentities_critypes_id']
+                        ) . "</td>";
                     }
                     echo "<td class='center'>" . Html::formatNumber($data["realtime"], 0, 2) . "</td>";
                     echo "<td class='center'>" . \Dropdown::getYesNo($data["withcontract"]) . "</td>";
                     $num_contract = "";
                     if ($data["withcontract"]) {
-                        $contract = new \Contract;
+                        $contract = new \Contract();
                         $contract->getFromDB($data["contracts_id"]);
                         $num_contract = $contract->fields["num"];
                     }
@@ -578,7 +577,7 @@ class CriDetail extends CommonDBTM
     }
 
     //shows CRI from ticket or from entity portal
-    static function showPeriod($item, $instID, $entity = -1, $options = [])
+    public static function showPeriod($item, $instID, $entity = -1, $options = [])
     {
         global $DB;
 
@@ -591,23 +590,23 @@ class CriDetail extends CommonDBTM
         foreach ($contracts as $data_contract) {
             $iterator = $DB->request([
                 'SELECT' => [
-                    'COUNT' => 'glpi_plugin_manageentities_contractdays.*'
+                    'COUNT' => 'glpi_plugin_manageentities_contractdays.*',
                 ],
                 'FROM' => 'glpi_plugin_manageentities_contractdays',
                 'LEFT JOIN' => [
                     'glpi_plugin_manageentities_contractstates' => [
                         'ON' => [
                             'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-                            'glpi_plugin_manageentities_contractstates' => 'id'
-                        ]
-                    ]
+                            'glpi_plugin_manageentities_contractstates' => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     'contracts_id' => $data_contract["id"],
                     'entities_id' => $entity,
-                    'glpi_plugin_manageentities_contractstates.is_closed' => ['<>', 1]
+                    'glpi_plugin_manageentities_contractstates.is_closed' => ['<>', 1],
                 ],
-                'ORDERBY' => 'glpi_plugin_manageentities_contractdays.begin_date` DESC'
+                'ORDERBY' => 'glpi_plugin_manageentities_contractdays.begin_date` DESC',
             ]);
 
             if (count($iterator) > 0) {
@@ -615,9 +614,9 @@ class CriDetail extends CommonDBTM
                 echo "<table class='tab_cadre_fixe' cellpadding='5'>";
                 echo "<tr>";
                 echo "<tr><th colspan='" . $colspan . "'>" . __(
-                        'Intervention of contract',
-                        'manageentities'
-                    ) . " : " . $data_contract["name"] . "</th></tr>";
+                    'Intervention of contract',
+                    'manageentities'
+                ) . " : " . $data_contract["name"] . "</th></tr>";
                 echo "<tr>";
                 echo "<th>" . __('Date') . "</th>";
                 echo "<th>" . __('Object of intervention', 'manageentities') . "</th>";
@@ -639,9 +638,9 @@ class CriDetail extends CommonDBTM
 
                     if (sizeof($resultCriDetail['result']) > 0) {
                         echo "<tr  class='tab_bg_2'><td class='center' colspan='" . $colspan . "'>" . __(
-                                'Periods of contract',
-                                'manageentities'
-                            ) . " :  " . $data['name'] . "</td></tr>";
+                            'Periods of contract',
+                            'manageentities'
+                        ) . " :  " . $data['name'] . "</td></tr>";
                         foreach ($resultCriDetail['result'] as $dataCriDetail) {
                             echo "<tr class='tab_bg_1" . ($dataCriDetail["is_deleted"] == '1' ? "_2" : "") . "'>";
                             echo "<td>" . Html::convdate($dataCriDetail['tickets_date']) . "</td>";
@@ -657,8 +656,8 @@ class CriDetail extends CommonDBTM
                                 } else {
                                     echo "<td class='center'  width='100px'>" . $doc->getName() . "</td>";
                                 }
-                                if ($config->fields['hourorday'] == Config::HOUR ||
-                                    ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                                if ($config->fields['hourorday'] == Config::HOUR
+                                    || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
                                     echo "<td>" . Html::formatNumber($dataCriDetail['conso'], 0, 2) . "</td>";
                                 } else {
                                     echo "<td></td>";
@@ -668,12 +667,12 @@ class CriDetail extends CommonDBTM
                                 // Else no cri generated
                             } else {
                                 echo "<td>" . \Dropdown::getDropdownName(
-                                        'glpi_plugin_manageentities_critypes',
-                                        $dataCriDetail['plugin_manageentities_critypes_id']
-                                    ) . "</td>";
+                                    'glpi_plugin_manageentities_critypes',
+                                    $dataCriDetail['plugin_manageentities_critypes_id']
+                                ) . "</td>";
                                 echo "<td class='center'  width='100px'></td>";
-                                if ($config->fields['hourorday'] == Config::HOUR ||
-                                    ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                                if ($config->fields['hourorday'] == Config::HOUR
+                                    || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
                                     echo "<td>" . Html::formatNumber($dataCriDetail['conso'], 0, 2) . "</td>";
                                 } else {
                                     echo "<td>" . \Dropdown::EMPTY_VALUE . "</td>";
@@ -683,21 +682,21 @@ class CriDetail extends CommonDBTM
 
                             if ($dataCriDetail['pricecri']) {
                                 echo "<td>";
-                                if ($config->fields['hourorday'] == Config::HOUR ||
-                                    ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                                if ($config->fields['hourorday'] == Config::HOUR
+                                    || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
                                     echo Html::formatNumber($dataCriDetail['pricecri'], 0, 2);
                                 } else {
                                     echo \Dropdown::EMPTY_VALUE;
                                 }
 
                                 echo "</td>";
-                                if ($config->fields['hourorday'] == Config::HOUR ||
-                                    ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                                if ($config->fields['hourorday'] == Config::HOUR
+                                    || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
                                     echo "<td>" . Html::formatNumber(
-                                            $dataCriDetail['pricecri'] * $dataCriDetail['conso'],
-                                            0,
-                                            2
-                                        ) . "</td>";
+                                        $dataCriDetail['pricecri'] * $dataCriDetail['conso'],
+                                        0,
+                                        2
+                                    ) . "</td>";
                                 } else {
                                     echo "<td>" . \Dropdown::EMPTY_VALUE . "</td>";
                                 }
@@ -715,7 +714,7 @@ class CriDetail extends CommonDBTM
         }
     }
 
-    static function getCriDetailData($contractDayValues = [], $options = [])
+    public static function getCriDetailData($contractDayValues = [], $options = [])
     {
         global $DB;
         $params['condition'] = '1';
@@ -741,7 +740,7 @@ class CriDetail extends CommonDBTM
             'reste_montant' => 0,
             'depass' => 0,
             'reste' => 0,
-            'forfait' => 0
+            'forfait' => 0,
         ];
 
         $criteria = [
@@ -764,27 +763,27 @@ class CriDetail extends CommonDBTM
                 'glpi_plugin_manageentities_critypes' => [
                     'ON' => [
                         'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_critypes_id',
-                        'glpi_plugin_manageentities_critypes' => 'id'
-                    ]
+                        'glpi_plugin_manageentities_critypes' => 'id',
+                    ],
                 ],
                 'glpi_documents' => [
                     'ON' => [
                         'glpi_plugin_manageentities_cridetails' => 'documents_id',
-                        'glpi_documents' => 'id'
-                    ]
+                        'glpi_documents' => 'id',
+                    ],
                 ],
                 'glpi_tickets' => [
                     'ON' => [
                         'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                        'glpi_tickets' => 'id'
-                    ]
+                        'glpi_tickets' => 'id',
+                    ],
                 ],
                 'glpi_tickettasks' => [
                     'ON' => [
                         'glpi_tickets' => 'id',
-                        'glpi_tickettasks' => 'tickets_id'
-                    ]
-                ]
+                        'glpi_tickettasks' => 'tickets_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_plugin_manageentities_cridetails.contracts_id' => $contractDayValues["contracts_id"],
@@ -801,23 +800,21 @@ class CriDetail extends CommonDBTM
         if (isset($options['begin_date'])) {
             $options['begin_date'] .= ' 00:00:00';
             $criteria['WHERE'] = $criteria['WHERE'] + [
-                    'OR' => [
-                        'glpi_tickettasks.begin' => ['>=', $options['begin_date']]
-                        ,
-                        'glpi_tickettasks.begin' => 'NULL'
-                    ]
-                ];
+                'OR' => [
+                    'glpi_tickettasks.begin' => ['>=', $options['begin_date']],
+                    'glpi_tickettasks.begin' => 'NULL',
+                ],
+            ];
         }
 
         if (isset($options['end_date'])) {
             $options['end_date'] .= ' 23:59:59';
             $criteria['WHERE'] = $criteria['WHERE'] + [
-                    'OR' => [
-                        'glpi_tickettasks.end' => ['<=', $options['end_date']]
-                        ,
-                        'glpi_tickettasks.end' => 'NULL'
-                    ]
-                ];
+                'OR' => [
+                    'glpi_tickettasks.end' => ['<=', $options['end_date']],
+                    'glpi_tickettasks.end' => 'NULL',
+                ],
+            ];
         }
 
         if (isset($options['sorting_date'])) {
@@ -830,7 +827,7 @@ class CriDetail extends CommonDBTM
 
         $restrict = [
             "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contractDayValues["entities_id"],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"]
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"],
         ];
         $dbu = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
@@ -885,8 +882,8 @@ class CriDetail extends CommonDBTM
                         'glpi_plugin_manageentities_cridetails' => [
                             'ON' => [
                                 'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                                'glpi_tickettasks' => 'tickets_id'
-                            ]
+                                'glpi_tickettasks' => 'tickets_id',
+                            ],
                         ],
                     ],
                     'WHERE' => [
@@ -899,33 +896,31 @@ class CriDetail extends CommonDBTM
 
                 if (isset($options['begin_date'])) {
                     $criteria['WHERE'] = $criteria['WHERE'] + [
-                            'OR' => [
-                                'glpi_tickettasks.begin' => ['>=', $options['begin_date']]
-                                ,
-                                'glpi_tickettasks.begin' => 'NULL'
-                            ]
-                        ];
+                        'OR' => [
+                            'glpi_tickettasks.begin' => ['>=', $options['begin_date']],
+                            'glpi_tickettasks.begin' => 'NULL',
+                        ],
+                    ];
                 }
 
                 if (isset($options['end_date'])) {
                     $criteria['WHERE'] = $criteria['WHERE'] + [
-                            'OR' => [
-                                'glpi_tickettasks.end' => ['<=', $options['end_date']]
-                                ,
-                                'glpi_tickettasks.end' => 'NULL'
-                            ]
-                        ];
+                        'OR' => [
+                            'glpi_tickettasks.end' => ['<=', $options['end_date']],
+                            'glpi_tickettasks.end' => 'NULL',
+                        ],
+                    ];
                 }
 
                 if ($config->fields['hourorday'] == Config::HOUR) {
                     $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + [
-                            'glpi_plugin_manageentities_taskcategories' => [
-                                'ON' => [
-                                    'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                                    'glpi_tickettasks' => 'taskcategories_id'
-                                ]
-                            ]
-                        ];
+                        'glpi_plugin_manageentities_taskcategories' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                                'glpi_tickettasks' => 'taskcategories_id',
+                            ],
+                        ],
+                    ];
                     $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
                 }
                 $iterator = $DB->request($criteria);
@@ -1036,7 +1031,7 @@ class CriDetail extends CommonDBTM
         return ['result' => $tabResults, 'resultOther' => $tabOther];
     }
 
-    static function setConso($actiontime, $conso, $config, $dataCriDetail, $pluginContract, $numberTask = 0)
+    public static function setConso($actiontime, $conso, $config, $dataCriDetail, $pluginContract, $numberTask = 0)
     {
         $tmp = 0;
 
@@ -1059,16 +1054,16 @@ class CriDetail extends CommonDBTM
                 $conso += $tmp;
             } else {
                 $conso = "<div style='color:red;'>" . __(
-                        'Type of service contract missing',
-                        'manageentities'
-                    ) . "</div>";
+                    'Type of service contract missing',
+                    'manageentities'
+                ) . "</div>";
             }
         }
 
         return $conso;
     }
 
-    static function showForContractDay(ContractDay $contractDay)
+    public static function showForContractDay(ContractDay $contractDay)
     {
         global $PDF;
 
@@ -1089,9 +1084,9 @@ class CriDetail extends CommonDBTM
             if (sizeof($resultCriDetail['result']) > 0) {
                 echo "<tr>";
                 echo "<tr><th colspan='" . $colspan . "'>" . __(
-                        'Intervention periods of contract',
-                        'manageentities'
-                    ) . "</th></tr>";
+                    'Intervention periods of contract',
+                    'manageentities'
+                ) . "</th></tr>";
                 echo "<tr>";
                 echo "<th>" . __('Date') . "</th>";
                 echo "<th>" . __('Object of intervention', 'manageentities') . "</th>";
@@ -1109,9 +1104,9 @@ class CriDetail extends CommonDBTM
                     }
                 } else {
                     echo "<th>" . _x('Quantity', 'Number') . " " . __(
-                            'of this intervention',
-                            'manageentities'
-                        ) . "</th>";
+                        'of this intervention',
+                        'manageentities'
+                    ) . "</th>";
                     echo "<th>" . __('Technicians', 'manageentities') . "</th>";
                     echo "<th>" . __('Applied rate', 'manageentities') . "</th>";
                 }
@@ -1137,9 +1132,9 @@ class CriDetail extends CommonDBTM
                         // Else no cri generated
                     } else {
                         echo "<td>" . \Dropdown::getDropdownName(
-                                'glpi_plugin_manageentities_critypes',
-                                $dataCriDetail['plugin_manageentities_critypes_id']
-                            ) . "</td>";
+                            'glpi_plugin_manageentities_critypes',
+                            $dataCriDetail['plugin_manageentities_critypes_id']
+                        ) . "</td>";
                         echo "<td class='center'  width='100px'></td>";
                         echo "<td>" . Html::formatNumber($dataCriDetail['conso'], false) . "</td>";
                         echo "<td>" . $dataCriDetail['tech'] . "</td>";
@@ -1150,9 +1145,9 @@ class CriDetail extends CommonDBTM
                         echo Html::formatNumber($dataCriDetail['pricecri'], false);
                         echo "</td>";
                         echo "<td>" . Html::formatNumber(
-                                $dataCriDetail['pricecri'] * $dataCriDetail['conso'],
-                                false
-                            ) . "</td>";
+                            $dataCriDetail['pricecri'] * $dataCriDetail['conso'],
+                            false
+                        ) . "</td>";
                     } else {
                         echo "<td colspan='2'>";
                         echo "</td>";
@@ -1162,9 +1157,9 @@ class CriDetail extends CommonDBTM
 
                 echo "<tr class='tab_bg_2'>";
                 echo "<td colspan='" . ($colspan - 1) . "' class='right'><b>" . __(
-                        'Total yearly consumption',
-                        'manageentities'
-                    ) . " : </b></td>";
+                    'Total yearly consumption',
+                    'manageentities'
+                ) . " : </b></td>";
                 echo "<td><b>" . Html::formatNumber($resultCriDetail['resultOther']['tot_amount'], false) . "</b></td>";
                 $nbtheoricaldays = 0;
                 if ($resultCriDetail['resultOther']['default_criprice'] > 0) {
@@ -1172,9 +1167,9 @@ class CriDetail extends CommonDBTM
                 }
                 echo "<tr class='tab_bg_2'>";
                 echo "<td colspan='" . ($colspan - 1) . "' align='right'><b>" . __(
-                        'Estimated number of remaining days',
-                        'manageentities'
-                    ) . " : </b></td>";
+                    'Estimated number of remaining days',
+                    'manageentities'
+                ) . " : </b></td>";
                 echo "<td><b>" . Html::formatNumber($nbtheoricaldays, false) . "</b></td>";
                 echo "</tr>";
             } else {
@@ -1219,12 +1214,12 @@ class CriDetail extends CommonDBTM
     }
 
     /**
-     * @param \Ticket $ticket
+     * @param Ticket $ticket
      *
      * @return false
      * @throws \GlpitestSQLError
      */
-    static function showForTicket(Ticket $ticket)
+    public static function showForTicket(Ticket $ticket)
     {
         global $DB;
 
@@ -1253,13 +1248,13 @@ class CriDetail extends CommonDBTM
                     'glpi_plugin_manageentities_cridetails' => [
                         'ON' => [
                             'glpi_plugin_manageentities_cridetails' => 'documents_id',
-                            'glpi_documents' => 'id'
-                        ]
-                    ]
+                            'glpi_documents' => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     'glpi_documents.documentcategories_id' => $config->fields["documentcategories_id"],
-                    'glpi_documents.tickets_id' => $ticket->fields['id']
+                    'glpi_documents.tickets_id' => $ticket->fields['id'],
                 ],
             ]);
 
@@ -1268,7 +1263,7 @@ class CriDetail extends CommonDBTM
                     if ($data['cri_tickets_id'] == '0') {
                         $criDetail->update([
                             'id' => $data['cri_id'],
-                            'tickets_id' => $data['doc_tickets_id']
+                            'tickets_id' => $data['doc_tickets_id'],
                         ]);
                     }
                 }
@@ -1277,7 +1272,7 @@ class CriDetail extends CommonDBTM
 
         $restrict = [
             "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $ticket->fields['entities_id'],
-            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $ticket->fields['id']
+            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $ticket->fields['id'],
         ];
 
         $dbu = new DbUtils();
@@ -1350,7 +1345,7 @@ class CriDetail extends CommonDBTM
         }
     }
 
-    static function showContractLinkDropdown($cridetail, $entities_id, $type = 'ticket')
+    public static function showContractLinkDropdown($cridetail, $entities_id, $type = 'ticket')
     {
         global $DB;
 
@@ -1374,15 +1369,15 @@ class CriDetail extends CommonDBTM
                 'glpi_plugin_manageentities_contracts' => [
                     'ON' => [
                         'glpi_plugin_manageentities_contracts' => 'contracts_id',
-                        'glpi_contracts' => 'id'
-                    ]
-                ]
+                        'glpi_contracts' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_plugin_manageentities_contracts.entities_id' => $entities_id,
-                'glpi_contracts.is_deleted' => 0
+                'glpi_contracts.is_deleted' => 0,
             ],
-            'ORDERBY' => 'glpi_contracts.name'
+            'ORDERBY' => 'glpi_contracts.name',
         ]);
 
         $selected = false;
@@ -1399,7 +1394,7 @@ class CriDetail extends CommonDBTM
                 $elements = [\Dropdown::EMPTY_VALUE];
                 $value = 0;
                 foreach ($iterator as $data) {
-                    if ((isset($cridetail['contracts_id']) ? $cridetail['contracts_id'] : 0) == $data["id"]) {
+                    if (($cridetail['contracts_id'] ?? 0) == $data["id"]) {
                         $selected = true;
                         $contractSelected = $cridetail['contracts_id'];
                         $contractdaySelected = $cridetail["plugin_manageentities_contractdays_id"];
@@ -1410,7 +1405,7 @@ class CriDetail extends CommonDBTM
                     }
 
                     if (Contract::checkRemainingOpenContractDays($data["id"])
-                        || (isset($cridetail['contracts_id']) ? $cridetail['contracts_id'] : 0) == $data["id"]) {
+                        || ($cridetail['contracts_id'] ?? 0) == $data["id"]) {
                         $elements[$data["id"]] = $data["name"] . " - " . $data["num"];
                     }
                 }
@@ -1439,7 +1434,7 @@ class CriDetail extends CommonDBTM
             $contract->getFromDB($contractSelected);
             Html::showToolTip($contract->fields['comment'], [
                 'link' => $contract->getLinkURL(),
-                'linktarget' => '_blank'
+                'linktarget' => '_blank',
             ]);
         }
 
@@ -1448,7 +1443,7 @@ class CriDetail extends CommonDBTM
             'contracts_id' => '__VALUE__',
             'contractdays_id' => $contractdaySelected,
             'current_contracts_id' => $contractSelected,
-            'width' => $width
+            'width' => $width,
         ];
         Ajax::updateItemOnSelectEvent(
             "dropdown_contracts_id$rand",
@@ -1469,7 +1464,7 @@ class CriDetail extends CommonDBTM
         echo "<td>";
         $restrict = [
             'entities_id' => $contract->fields['entities_id'],
-            'contracts_id' => $contractSelected
+            'contracts_id' => $contractSelected,
         ];
         $restrict += ['NOT' => ['plugin_manageentities_contractstates_id' => 2]];//Closed contract was 8, is now 2
         if ($type == 'ticket') {
@@ -1478,7 +1473,7 @@ class CriDetail extends CommonDBTM
                 'name' => 'plugin_manageentities_contractdays_id',
                 'value' => $contractdaySelected,
                 'condition' => $restrict,
-                'width' => $width
+                'width' => $width,
             ]);
             echo "</span>";
         } else {
@@ -1491,18 +1486,18 @@ class CriDetail extends CommonDBTM
         return [
             'contractSelected' => $contractSelected,
             'contractdaySelected' => $contractdaySelected,
-            'is_contract' => count($iterator)
+            'is_contract' => count($iterator),
         ];
     }
 
-    function checkMandatoryFields($input)
+    public function checkMandatoryFields($input)
     {
         $msg = [];
         $checkKo = false;
         if (isset($input['withcontract']) && $input['withcontract']) {
             $mandatory_fields = [
                 'contracts_id' => __('Contract'),
-                'plugin_manageentities_contractdays_id' => __('Periods of contract', 'manageentities')
+                'plugin_manageentities_contractdays_id' => __('Periods of contract', 'manageentities'),
             ];
 
             foreach ($input as $key => $value) {
@@ -1526,7 +1521,7 @@ class CriDetail extends CommonDBTM
         return true;
     }
 
-    static function computeInDays($actiontime, $config, $dataCriDetail, $pluginContract, $numberTask)
+    public static function computeInDays($actiontime, $config, $dataCriDetail, $pluginContract, $numberTask)
     {
         // Compute conso on tickets
         if ($config->fields['hourorday'] == Config::DAY) {//configuration by day
@@ -1553,7 +1548,7 @@ class CriDetail extends CommonDBTM
      * Items need to have an unique index beginning by the begin date of the item to display
      * needed to be correcly displayed
      **/
-    static function populatePlanning($options = [])
+    public static function populatePlanning($options = [])
     {
         global $DB, $CFG_GLPI;
 
@@ -1680,14 +1675,14 @@ class CriDetail extends CommonDBTM
                     Html::resume_text($data["content"], $CFG_GLPI["cut"])
                 );
                 $interv[$key]["actiontime"] = $data["actiontime"];
-                $interv[$key]["url"] = $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" .
-                    $data['tickets_id'];
-                $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
-                    "?action=edit_event_form" .
-                    "&itemtype=TicketTask&parentitemtype=Ticket" .
-                    "&parentid=" . $data['tickets_id'] .
-                    "&id=" . $data['id'] .
-                    "&url=" . $interv[$key]["url"];
+                $interv[$key]["url"] = $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id="
+                    . $data['tickets_id'];
+                $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php"
+                    . "?action=edit_event_form"
+                    . "&itemtype=TicketTask&parentitemtype=Ticket"
+                    . "&parentid=" . $data['tickets_id']
+                    . "&id=" . $data['id']
+                    . "&url=" . $interv[$key]["url"];
                 $cri = new TicketTask();
                 $cri->getFromDB($data["id"]);
                 $interv[$key]["editable"] = $cri->canUpdateItem();
@@ -1704,7 +1699,7 @@ class CriDetail extends CommonDBTM
      *
      * @return Nothing (display function)
      **/
-    static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
         global $CFG_GLPI;
 
@@ -1724,9 +1719,9 @@ class CriDetail extends CommonDBTM
             }
             if ($val["actiontime"]) {
                 $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(
-                        $val['actiontime'],
-                        false
-                    ) . "<br>";
+                    $val['actiontime'],
+                    false
+                ) . "<br>";
             }
 
             $html .= "<div class='event-description'>" . $val["content"] . "</div>";
@@ -1736,9 +1731,9 @@ class CriDetail extends CommonDBTM
             }
             if ($val["actiontime"]) {
                 $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(
-                        $val['actiontime'],
-                        false
-                    ) . "<br>";
+                    $val['actiontime'],
+                    false
+                ) . "<br>";
             }
 
             //$html.= "<div class='event-description'>".$val["content"]."</div>";
@@ -1747,7 +1742,7 @@ class CriDetail extends CommonDBTM
                 $val["content"],
                 [
                     'applyto' => "cri_" . $val["id"] . $rand,
-                    'display' => false
+                    'display' => false,
                 ]
             );
         }

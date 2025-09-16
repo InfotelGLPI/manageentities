@@ -41,21 +41,20 @@ if (!defined('GLPI_ROOT')) {
 
 class Config extends CommonDBTM
 {
-
     private static $instance;
 
-    const DAY = 0;
-    const HOUR = 1;
-    const NOPRICE = 0;
-    const PRICE = 1;
-    const REPORT_INTERVENTION = 0;
-    const PERIOD_INTERVENTION = 1;
+    public const DAY = 0;
+    public const HOUR = 1;
+    public const NOPRICE = 0;
+    public const PRICE = 1;
+    public const REPORT_INTERVENTION = 0;
+    public const PERIOD_INTERVENTION = 1;
 
-    function showConfigForm()
+    public function showConfigForm()
     {
         global $DB, $CFG_GLPI;
-        echo "<form name='form' method='post' action='" .
-            Toolbox::getItemTypeFormURL(Config::class) . "'>";
+        echo "<form name='form' method='post' action='"
+            . Toolbox::getItemTypeFormURL(Config::class) . "'>";
 
         echo "<div class='center'><table class='tab_cadre_fixe'  cellspacing='2' cellpadding='2'>";
         echo "<tr><th colspan='2'>" . __('Options', 'manageentities') . "</th></tr>";
@@ -69,7 +68,7 @@ class Config extends CommonDBTM
         echo "<td>";
         \Dropdown::show('DocumentCategory', [
             'name' => "documentcategories_id",
-            'value' => $this->fields["documentcategories_id"]
+            'value' => $this->fields["documentcategories_id"],
         ]);
         echo "</td></tr>";
 
@@ -116,17 +115,17 @@ class Config extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1 top'><td>" . __(
-                'Only public task are visible on intervention report',
-                'manageentities'
-            ) . "</td>";
+            'Only public task are visible on intervention report',
+            'manageentities'
+        ) . "</td>";
         echo "<td>";
         \Dropdown::showYesNo("use_publictask", $this->fields["use_publictask"]);
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1 top'><td>" . __(
-                'Allow periods on the same interval of dates',
-                'manageentities'
-            ) . "</td>";
+            'Allow periods on the same interval of dates',
+            'manageentities'
+        ) . "</td>";
         echo "<td>";
         \Dropdown::showYesNo("allow_same_periods", $this->fields["allow_same_periods"]);
         echo "</td></tr>";
@@ -144,9 +143,9 @@ class Config extends CommonDBTM
         }
 
         echo "<tr class='tab_bg_1 top'><td>" . __(
-                'List of default statuses for general monitoring',
-                'manageentities'
-            ) . "</td>";
+            'List of default statuses for general monitoring',
+            'manageentities'
+        ) . "</td>";
         echo "<td>";
         if ($this->fields["contract_states"] == null) {
             \Dropdown::showFromArray(
@@ -175,9 +174,9 @@ class Config extends CommonDBTM
                 'glpi_users' => [
                     'ON' => [
                         'glpi_plugin_manageentities_businesscontacts' => 'users_id',
-                        'glpi_users' => 'id'
-                    ]
-                ]
+                        'glpi_users' => 'id',
+                    ],
+                ],
             ],
             'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
         ]);
@@ -187,9 +186,9 @@ class Config extends CommonDBTM
             $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
         }
         echo "<tr class='tab_bg_1 top'><td>" . __(
-                'Default Business list for general monitoring',
-                'manageentities'
-            ) . "</td>";
+            'Default Business list for general monitoring',
+            'manageentities'
+        ) . "</td>";
         echo "<td>";
         if ($this->fields["business_id"] == null) {
             \Dropdown::showFromArray(
@@ -207,9 +206,9 @@ class Config extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1 top'><td>" . __(
-                'Display comments from the company in the CRI',
-                'manageentities'
-            ) . "</td>";
+            'Display comments from the company in the CRI',
+            'manageentities'
+        ) . "</td>";
         echo "<td>";
         \Dropdown::showYesNo("comment", $this->fields["comment"]);
         echo "</td></tr>";
@@ -217,9 +216,9 @@ class Config extends CommonDBTM
         echo "<tr><th colspan='2'>" . __('CRI generation form', 'manageentities') . "</th></tr>";
 
         echo "<tr class='tab_bg_1 top'><td>" . __(
-                'Use Non-accomplished tasks informations',
-                'manageentities'
-            ) . "</td>";
+            'Use Non-accomplished tasks informations',
+            'manageentities'
+        ) . "</td>";
         echo "<td>";
         \Dropdown::showYesNo("non_accomplished_tasks", $this->fields["non_accomplished_tasks"]);
         echo "</td></tr>";
@@ -241,7 +240,7 @@ class Config extends CommonDBTM
             'value' => $this->fields["default_duration"],
             'min' => 0,
             'max' => 50 * HOUR_TIMESTAMP,
-            'emptylabel' => __('Specify an end date')
+            'emptylabel' => __('Specify an end date'),
         ]);
         echo "<br><div id='date_end$rand'></div>";
         echo "</td></tr>";
@@ -253,7 +252,7 @@ class Config extends CommonDBTM
             'min' => 0,
             'emptylabel' => "0h",
             'max' => 23.5 * HOUR_TIMESTAMP,
-            'step' => MINUTE_TIMESTAMP * 30
+            'step' => MINUTE_TIMESTAMP * 30,
         ]);
         echo "<br><div id='date_end$rand'></div>";
         echo "</td></tr>";
@@ -265,7 +264,7 @@ class Config extends CommonDBTM
             'min' => 0,
             'emptylabel' => "0h",
             'max' => 23.5 * HOUR_TIMESTAMP,
-            'step' => MINUTE_TIMESTAMP * 30
+            'step' => MINUTE_TIMESTAMP * 30,
         ]);
         echo "<br><div id='date_end$rand'></div>";
         echo "</td></tr>";
@@ -278,9 +277,9 @@ class Config extends CommonDBTM
         echo Html::hidden('id', ['value' => 1]);
         echo "<tr class='tab_bg_1 center'><td colspan='2'>
             <span style=\"font-weight:bold; color:red\">" . __(
-                'Warning: changing the configuration daily or hourly impacts the types of contract',
-                'manageentities'
-            ) . "</td></span></tr>";
+            'Warning: changing the configuration daily or hourly impacts the types of contract',
+            'manageentities'
+        ) . "</td></span></tr>";
         echo "<tr class='tab_bg_2 center'><td colspan='2'>";
         echo Html::submit(_sx('button', 'Save'), ['name' => 'update_config', 'class' => 'btn btn-primary']);
         echo "</td></tr>";
@@ -289,7 +288,7 @@ class Config extends CommonDBTM
         Html::closeForm();
     }
 
-    function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input)
     {
         if (isset($input['contract_states'])) {
             $input['contract_states'] = json_encode($input['contract_states']);
@@ -304,7 +303,7 @@ class Config extends CommonDBTM
         return $input;
     }
 
-    function showFormCompany()
+    public function showFormCompany()
     {
         //add a company
         Company::addNewCompany(['title' => __('Add a company', 'manageentities')]);
@@ -332,26 +331,26 @@ class Config extends CommonDBTM
         echo "</div>";
     }
 
-    function isCommentCri()
+    public function isCommentCri()
     {
         $config = new Config();
         $config->GetFromDB(1);
         return $config->fields['comment'];
     }
 
-    function getConfigType()
+    public function getConfigType()
     {
         return ([
             self::DAY => _x('periodicity', 'Daily'),
-            self::HOUR => __('Hourly', 'manageentities')
+            self::HOUR => __('Hourly', 'manageentities'),
         ]);
     }
 
-    function dropdownConfigChoiceIntervention($name, $value = 0)
+    public function dropdownConfigChoiceIntervention($name, $value = 0)
     {
         $configTypes = [
             self::REPORT_INTERVENTION => _n('Intervention report', 'Intervention reports', 2, 'manageentities'),
-            self::PERIOD_INTERVENTION => _n('Period of contract', 'Periods of contract', 2, 'manageentities')
+            self::PERIOD_INTERVENTION => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
         ];
 
         if (!empty($configTypes)) {

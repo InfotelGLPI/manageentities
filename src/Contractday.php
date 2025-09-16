@@ -31,8 +31,6 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use DbUtils;
-use GlpiPlugin\Manageentities\Config;
-use GlpiPlugin\Manageentities\Contract;
 use Html;
 use Session;
 use Toolbox;
@@ -43,13 +41,12 @@ if (!defined('GLPI_ROOT')) {
 
 class ContractDay extends CommonDBTM
 {
-
-    static $rightname = 'plugin_manageentities';
+    public static $rightname = 'plugin_manageentities';
 
     // From CommonDBTM
     public $dohistory = true;
 
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         $config = Config::getInstance();
         $Cri = new Cri();
@@ -65,22 +62,22 @@ class ContractDay extends CommonDBTM
         return _n('Period of contract', 'Periods of contract', $nb, 'manageentities');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-user-pentagon";
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $config = Config::getInstance();
 
@@ -88,7 +85,7 @@ class ContractDay extends CommonDBTM
 
         $tab[] = [
             'id' => 'common',
-            'name' => ContractDay::getTypeName(1)
+            'name' => ContractDay::getTypeName(1),
         ];
 
         $tab[] = [
@@ -97,7 +94,7 @@ class ContractDay extends CommonDBTM
             'field' => 'name',
             'name' => __('Name'),
             'datatype' => 'itemlink',
-            'itemlink_type' => $this->getType()
+            'itemlink_type' => $this->getType(),
         ];
 
         $tab[] = [
@@ -105,7 +102,7 @@ class ContractDay extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'begin_date',
             'name' => __('Start date'),
-            'datatype' => 'date'
+            'datatype' => 'date',
         ];
 
         $tab[] = [
@@ -113,7 +110,7 @@ class ContractDay extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'end_date',
             'name' => __('End date'),
-            'datatype' => 'date'
+            'datatype' => 'date',
         ];
 
         $tab[] = [
@@ -121,7 +118,7 @@ class ContractDay extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'nbday',
             'name' => __('Initial credit', 'manageentities'),
-            'datatype' => 'decimal'
+            'datatype' => 'decimal',
         ];
 
         //      $tab[5]['table']    = 'glpi_plugin_manageentities_critypes';
@@ -134,7 +131,7 @@ class ContractDay extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'report',
             'name' => __('Postponement', 'manageentities'),
-            'datatype' => 'decimal'
+            'datatype' => 'decimal',
         ];
 
         $tab[] = [
@@ -142,7 +139,7 @@ class ContractDay extends CommonDBTM
             'table' => 'glpi_contracts',
             'field' => 'name',
             'name' => __('Contract'),
-            'datatype' => 'dropdown'
+            'datatype' => 'dropdown',
         ];
 
         $tab[] = [
@@ -150,7 +147,7 @@ class ContractDay extends CommonDBTM
             'table' => 'glpi_plugin_manageentities_contractstates',
             'field' => 'name',
             'name' => __('State of contract', 'manageentities'),
-            'datatype' => 'dropdown'
+            'datatype' => 'dropdown',
         ];
 
         $tab[] = [
@@ -159,7 +156,7 @@ class ContractDay extends CommonDBTM
             'field' => 'id',
             'credit_remaining' => true,
             'name' => __('Credit remaining', 'manageentities'),
-            'datatype' => 'specific'
+            'datatype' => 'specific',
         ];
 
         if ($config->fields['hourorday'] == Config::DAY) {
@@ -168,7 +165,7 @@ class ContractDay extends CommonDBTM
                 'table' => $this->getTable(),
                 'field' => 'contract_type',
                 'name' => __('Type of service contract', 'manageentities'),
-                'datatype' => 'specific'
+                'datatype' => 'specific',
             ];
         }
 
@@ -176,7 +173,7 @@ class ContractDay extends CommonDBTM
             'id' => '30',
             'table' => $this->getTable(),
             'field' => 'id',
-            'name' => __('ID')
+            'name' => __('ID'),
         ];
 
         if (Session::getCurrentInterface() == 'central') {
@@ -185,7 +182,7 @@ class ContractDay extends CommonDBTM
                 'table' => 'glpi_entities',
                 'field' => 'completename',
                 'name' => _n('Entity', 'Entities', 1),
-                'datatype' => 'dropdown'
+                'datatype' => 'dropdown',
             ];
         }
 
@@ -197,7 +194,7 @@ class ContractDay extends CommonDBTM
      * @param $values
      * @param $options   array
      **/
-    static function getSpecificValueToDisplay($field, $values, $options = [])
+    public static function getSpecificValueToDisplay($field, $values, $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -227,7 +224,7 @@ class ContractDay extends CommonDBTM
     /**
      * Display tab for each contractDay
      * */
-    function defineTabs($options = [])
+    public function defineTabs($options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -246,25 +243,25 @@ class ContractDay extends CommonDBTM
      *
      * @param type $values
      */
-    function addNbDay($values)
+    public function addNbDay($values)
     {
-//      if ($this->getFromDBbyTypeAndContract($values["plugin_manageentities_critypes_id"], $values["contracts_id"], $values["entities_id"])) {
+        //      if ($this->getFromDBbyTypeAndContract($values["plugin_manageentities_critypes_id"], $values["contracts_id"], $values["entities_id"])) {
         if ($this->getFromDBByCrit([
             'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
             'contracts_id' => $values["contracts_id"],
-            'entities_id' => $values["entities_id"]
+            'entities_id' => $values["entities_id"],
         ])) {
             $this->update([
                 'id' => $this->fields['id'],
                 'nbday' => $values["nbday"],
-                'entities_id' => $values["entities_id"]
+                'entities_id' => $values["entities_id"],
             ]);
         } else {
             $this->add([
                 'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
                 'contracts_id' => $values["contracts_id"],
                 'nbday' => $values["nbday"],
-                'entities_id' => $values["entities_id"]
+                'entities_id' => $values["entities_id"],
             ]);
         }
     }
@@ -279,7 +276,7 @@ class ContractDay extends CommonDBTM
      *
      * @return boolean item found
      * */
-    function showForm($ID, $options = [])
+    public function showForm($ID, $options = [])
     {
         global $CFG_GLPI;
 
@@ -329,7 +326,7 @@ class ContractDay extends CommonDBTM
 
         $restrict = [
             "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'],
         ];
         $dbu = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
@@ -343,15 +340,15 @@ class ContractDay extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Contract') . "</td>";
         $link = Toolbox::getItemTypeFormURL('Contract');
-        $contract_name = "<a href='" . $link . "?id=" . $contract->fields['id'] . "'>" .
-            $contract->fields['name'] . "</a>";
+        $contract_name = "<a href='" . $link . "?id=" . $contract->fields['id'] . "'>"
+            . $contract->fields['name'] . "</a>";
         echo "<td>" . $contract_name . "</td>";
 
         if ($config->fields['hourorday'] == Config::DAY) {
             echo "<td>" . __(
-                    'Type of service contract',
-                    'manageentities'
-                ) . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
+                'Type of service contract',
+                'manageentities'
+            ) . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
             Contract::dropdownContractType("contract_type", $this->fields['contract_type']);
         } else {
             echo "</td><td colspan='2'></td>";
@@ -367,8 +364,8 @@ class ContractDay extends CommonDBTM
             || ($config->fields['hourorday'] == Config::HOUR
                 && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
             echo "<td>" . __('Postponement', 'manageentities') . "</td>";
-            echo "<td><input type='text' name='report' value='" .
-                Html::formatNumber($this->fields["report"]) . "'size='5'>";
+            echo "<td><input type='text' name='report' value='"
+                . Html::formatNumber($this->fields["report"]) . "'size='5'>";
             echo "&nbsp;" . $unit;
             echo "</td>";
         } else {
@@ -387,22 +384,22 @@ class ContractDay extends CommonDBTM
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Initial credit', 'manageentities') . "</td>";
-        if (($config->fields['hourorday'] == Config::DAY) ||
-            ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-            echo "<td><input type='text' name='nbday' value='" .
-                Html::formatNumber($this->fields["nbday"]) . "'size='5'>";
+        if (($config->fields['hourorday'] == Config::DAY)
+            || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
+            echo "<td><input type='text' name='nbday' value='"
+                . Html::formatNumber($this->fields["nbday"]) . "'size='5'>";
         } else {
             echo "<td>";
         }
         echo "&nbsp;" . $unit;
         echo "</td>";
         echo "<td>" . __(
-                'State of contract',
-                'manageentities'
-            ) . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
+            'State of contract',
+            'manageentities'
+        ) . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
         \Dropdown::show(ContractState::class, [
             'value' => $this->fields['plugin_manageentities_contractstates_id'],
-            'entity' => $this->fields["entities_id"]
+            'entity' => $this->fields["entities_id"],
         ]);
         echo "</td></tr>";
 
@@ -423,19 +420,19 @@ class ContractDay extends CommonDBTM
         echo "<td>" . __('Total consummated', 'manageentities') . "</td>";
         echo "<td>";
         echo Html::formatNumber($conso);
-        if (($config->fields['hourorday'] == Config::DAY) ||
-            ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
+        if (($config->fields['hourorday'] == Config::DAY)
+            || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
             echo "&nbsp;" . $unit;
         } else {
             echo "&nbsp;" . Contract::getUnitContractType(
-                    $config,
-                    Contract::CONTRACT_TYPE_HOUR
-                );
+                $config,
+                Contract::CONTRACT_TYPE_HOUR
+            );
         }
         echo "</td>";
 
-        if (($config->fields['hourorday'] == Config::DAY) ||
-            ($config->fields['hourorday'] == Config::HOUR
+        if (($config->fields['hourorday'] == Config::DAY)
+            || ($config->fields['hourorday'] == Config::HOUR
                 && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
             echo "<td>" . __('Total remaining', 'manageentities') . "</td>";
             echo "<td>";
@@ -491,7 +488,7 @@ class ContractDay extends CommonDBTM
             'value' => $this->fields["comment"],
             'cols' => 40,
             'rows' => 5,
-            'enable_richtext' => false
+            'enable_richtext' => false,
         ]);
         echo "</td><td></td><td></td></tr>";
         echo "</tr>";
@@ -508,7 +505,7 @@ class ContractDay extends CommonDBTM
      * @param Contract $contract
      * @param type $options
      */
-    static function addNewContractDay(\Contract $contract, $options = [])
+    public static function addNewContractDay(\Contract $contract, $options = [])
     {
         $contract_id = $contract->fields['id'];
         $canEdit = $contract->can($contract_id, UPDATE);
@@ -519,8 +516,8 @@ class ContractDay extends CommonDBTM
 
             $addButton = "<form method='post' name='contractDays_form'.$rand.'' id='contractDays_form" . $rand . "'
                action='" . Toolbox::getItemTypeFormURL(
-                    ContractDay::class
-                ) . "?contract_id=" . $contract->fields['id'] . "'>";
+                ContractDay::class
+            ) . "?contract_id=" . $contract->fields['id'] . "'>";
             $addButton .= Html::hidden('contract_id', ['value' => $contract_id]);
             $addButton .= Html::hidden('id', ['value' => '']);
             $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'addperiod', 'class' => 'btn btn-primary']);
@@ -543,7 +540,7 @@ class ContractDay extends CommonDBTM
         }
     }
 
-    static function showForContract(\Contract $contract)
+    public static function showForContract(\Contract $contract)
     {
         $rand = mt_rand();
         $canView = $contract->can($contract->fields['id'], READ);
@@ -562,13 +559,13 @@ class ContractDay extends CommonDBTM
         $restrict = [
             "`entities_id`" => $contract->fields['entities_id'],
             "`contracts_id`" => $contract->fields['id'],
-            'ORDER' => '`date_signature` ASC'
+            'ORDER' => '`date_signature` ASC',
         ];
 
         $restrict_days = [
             "`entities_id`" => $contract->fields['entities_id'],
             "`contracts_id`" => $contract->fields['id'],
-            'ORDER' => '`begin_date` ASC, `name`'
+            'ORDER' => '`begin_date` ASC, `name`',
         ];
 
         $dbu = new DbUtils();
@@ -600,18 +597,18 @@ class ContractDay extends CommonDBTM
             }
             echo "<th>" . __('Begin date') . "</th>";
             echo "<th>" . __('End date') . "</th>";
-            if (($config->fields['hourorday'] == Config::DAY) ||
-                ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
+            if (($config->fields['hourorday'] == Config::DAY)
+                || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
                 echo "<th>" . __('Initial credit', 'manageentities') . "</th>";
             }
             echo "<th>" . __('State of contract', 'manageentities') . "</th>";
-            if (($config->fields['hourorday'] == Config::DAY) ||
-                ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
+            if (($config->fields['hourorday'] == Config::DAY)
+                || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
                 echo "<th>" . __('Postponement', 'manageentities') . "</th>";
             }
             echo "<th>" . __('Total consummated', 'manageentities') . "</th>";
-            if (($config->fields['hourorday'] == Config::DAY) ||
-                ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
+            if (($config->fields['hourorday'] == Config::DAY)
+                || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
                 echo "<th>" . __('Total remaining', 'manageentities') . "</th>";
                 echo "<th>" . __('Total exceeding', 'manageentities') . "</th>";
             }
@@ -637,8 +634,8 @@ class ContractDay extends CommonDBTM
                 //type of contract
                 if ($config->fields['hourorday'] == Config::DAY) {
                     echo "<td>" . Contract::getContractType(
-                            $contractday->fields['contract_type']
-                        ) . "</td>";
+                        $contractday->fields['contract_type']
+                    ) . "</td>";
                 }
                 // Begin
                 echo "<td>" . Html::convDate($pluginContractDay['begin_date']) . "</td>";
@@ -646,8 +643,8 @@ class ContractDay extends CommonDBTM
                 echo "<td>" . Html::convDate($pluginContractDay['end_date']) . "</td>";
                 // Nb day
                 echo "<td>";
-                if (($config->fields['hourorday'] == Config::DAY) ||
-                    ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
+                if (($config->fields['hourorday'] == Config::DAY)
+                    || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
                     echo Html::formatNumber($pluginContractDay['nbday']);
                     echo "</td><td>";
                 }
@@ -657,8 +654,8 @@ class ContractDay extends CommonDBTM
                     $pluginContractDay['plugin_manageentities_contractstates_id']
                 );
                 // Report
-                if (($config->fields['hourorday'] == Config::DAY) ||
-                    ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
+                if (($config->fields['hourorday'] == Config::DAY)
+                    || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
                     echo "</td><td class='center'>";
                     echo Html::formatNumber($pluginContractDay['report']);
                 }
@@ -675,8 +672,8 @@ class ContractDay extends CommonDBTM
                 }
                 echo Html::formatNumber($conso);
                 // Depass
-                if (($config->fields['hourorday'] == Config::DAY) ||
-                    ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
+                if (($config->fields['hourorday'] == Config::DAY)
+                    || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
                     echo "</td><td class='center'>";
                     echo Html::formatNumber($resultCriDetail['resultOther']['reste']);
                     echo "</td><td class='center'>";
@@ -688,7 +685,7 @@ class ContractDay extends CommonDBTM
 
                 if ($criprice->getFromDBByCrit([
                     'plugin_manageentities_contractdays_id' => $contractDay->fields['id'],
-                    'is_default' => 1
+                    'is_default' => 1,
                 ])) {
                     echo Html::formatNumber($criprice->fields["price"], false);
                 }
@@ -707,7 +704,7 @@ class ContractDay extends CommonDBTM
         }
     }
 
-    static function queryOldContractDaywithInterventions($date)
+    public static function queryOldContractDaywithInterventions($date)
     {
         $criteria = [
             'SELECT' => [
@@ -726,20 +723,20 @@ class ContractDay extends CommonDBTM
                 'glpi_tickets' => [
                     'ON' => [
                         'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                        'glpi_tickets' => 'id'
-                    ]
+                        'glpi_tickets' => 'id',
+                    ],
                 ],
                 'glpi_entities' => [
                     'ON' => [
                         'glpi_entities' => 'id',
-                        'glpi_plugin_manageentities_cridetails' => 'entities_id'
-                    ]
+                        'glpi_plugin_manageentities_cridetails' => 'entities_id',
+                    ],
                 ],
                 'glpi_plugin_manageentities_contractdays' => [
                     'ON' => [
                         'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id',
-                        'glpi_plugin_manageentities_contractdays' => 'id'
-                    ]
+                        'glpi_plugin_manageentities_contractdays' => 'id',
+                    ],
                 ],
             ],
             'WHERE' => [
@@ -752,7 +749,7 @@ class ContractDay extends CommonDBTM
         return $criteria;
     }
 
-    function setSessionValues()
+    public function setSessionValues()
     {
         if (isset($_SESSION['plugin_manageentities']['contractday']) && !empty($_SESSION['plugin_manageentities']['contractday'])) {
             foreach ($_SESSION['plugin_manageentities']['contractday'] as $key => $val) {
@@ -763,7 +760,7 @@ class ContractDay extends CommonDBTM
     }
 
 
-    function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input)
     {
         (isset($input['charged']) && $input['charged'] == true) ? $input['charged'] = 1 : $input['charged'] = 0;
 
@@ -777,7 +774,7 @@ class ContractDay extends CommonDBTM
         return $input;
     }
 
-    function prepareInputForAdd($input)
+    public function prepareInputForAdd($input)
     {
         (isset($input['charged']) && $input['charged'] == true) ? $input['charged'] = 1 : $input['charged'] = 0;
 
@@ -881,7 +878,7 @@ class ContractDay extends CommonDBTM
      *
      * @return boolean
      */
-    function checkMandatoryFields($input)
+    public function checkMandatoryFields($input)
     {
         $msg = [];
         $checkKo = false;
@@ -890,7 +887,7 @@ class ContractDay extends CommonDBTM
 
         $mandatory_fields = [
             'plugin_manageentities_contractstates_id' => ContractState::getTypeName(),
-            'begin_date' => __('Begin date')
+            'begin_date' => __('Begin date'),
         ];
 
         if ($config->fields['hourorday'] == Config::DAY) {
@@ -918,26 +915,26 @@ class ContractDay extends CommonDBTM
         return true;
     }
 
-    static function checkRemainingOpenContractDays($contracts_id)
+    public static function checkRemainingOpenContractDays($contracts_id)
     {
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => [
-                'COUNT' => 'glpi_plugin_manageentities_contractdays.id AS count'
+                'COUNT' => 'glpi_plugin_manageentities_contractdays.id AS count',
             ],
             'FROM' => 'glpi_plugin_manageentities_contractdays',
             'LEFT JOIN' => [
                 'glpi_plugin_manageentities_contractstates' => [
                     'ON' => [
                         'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-                        'glpi_plugin_manageentities_contractstates' => 'id'
-                    ]
-                ]
+                        'glpi_plugin_manageentities_contractstates' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_plugin_manageentities_contractdays.contracts_id' => $contracts_id,
-                'glpi_plugin_manageentities_contractstates.is_active' => 1
+                'glpi_plugin_manageentities_contractstates.is_active' => 1,
             ],
         ]);
 

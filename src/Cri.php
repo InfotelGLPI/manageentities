@@ -34,10 +34,8 @@ use DbUtils;
 use Document;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
-use \Glpi\DBAL\QueryUnion;
+use Glpi\DBAL\QueryUnion;
 use Glpi\RichText\RichText;
-use GlpiPlugin\Manageentities\Config;
-use GlpiPlugin\Manageentities\Contract;
 use Html;
 use Session;
 use Ticket;
@@ -51,20 +49,19 @@ if (!defined('GLPI_ROOT')) {
 
 class Cri extends CommonDBTM
 {
+    public static $rightname = 'plugin_manageentities_cri_create';
 
-    static $rightname = 'plugin_manageentities_cri_create';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Intervention report', 'Intervention reports', $nb, 'manageentities');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-headset";
     }
 
-    function showForm($ID, $options = [])
+    public function showForm($ID, $options = [])
     {
         global $DB, $CFG_GLPI;
 
@@ -80,15 +77,15 @@ class Cri extends CommonDBTM
             'toupdate' => $options['toupdate'],
             'pdf_action' => $options['action'],
             'width' => 1000,
-            'height' => 550
+            'height' => 550,
         ];
 
         //      Entity::showManageentitiesHeader(__('Interventions reports', 'manageentities'));
 
         echo "<div class='red styleContractTitle' style='display:none' id='manageentities_cri_error'></div>";
 
-        echo "<form action=\"" . PLUGIN_MANAGEENTITIES_WEBDIR .
-            "/front/cri.form.php\" method=\"post\" name=\"formReport\">";
+        echo "<form action=\"" . PLUGIN_MANAGEENTITIES_WEBDIR
+            . "/front/cri.form.php\" method=\"post\" name=\"formReport\">";
 
         // Champ caché pour l'identifiant du ticket.
         echo Html::hidden('REPORT_ID', ['value' => $ID]);
@@ -103,7 +100,7 @@ class Cri extends CommonDBTM
         echo "<td colspan='2'>";
         $restrict = [
             "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'],
-            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id']
+            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id'],
         ];
         $dbu = new DbUtils();
         $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
@@ -122,7 +119,7 @@ class Cri extends CommonDBTM
             $contractSelected = [
                 'contractSelected' => 0,
                 'contractdaySelected' => 0,
-                'is_contract' => 0
+                'is_contract' => 0,
             ];
         }
         echo "</td>";
@@ -147,8 +144,8 @@ class Cri extends CommonDBTM
                         $rand = mt_rand();
                         if ($remove == 'remove') {
                             $params['tech_id'] = $users_id;
-                            $techs[] = $users_name . "&nbsp;" .
-                                "<a class='pointer' name='deleteTech$rand'
+                            $techs[] = $users_name . "&nbsp;"
+                                . "<a class='pointer' name='deleteTech$rand'
                                           onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $options['modal'] . "\", " . json_encode(
                                     $params
                                 ) . ");'>
@@ -162,9 +159,9 @@ class Cri extends CommonDBTM
                 echo implode('<br>', $techs);
             } else {
                 echo "<span style=\"font-weight:bold; color:red\">" . __(
-                        'Please assign a technician to your tasks',
-                        'manageentities'
-                    ) . "</span>";
+                    'Please assign a technician to your tasks',
+                    'manageentities'
+                ) . "</span>";
             }
         }
 
@@ -184,12 +181,12 @@ class Cri extends CommonDBTM
             'entity' => $job->fields["entities_id"],
             'used' => $used,
             'right' => 'all',
-            'width' => $width
+            'width' => $width,
         ]);
         echo "&nbsp;<a class='pointer' name='add_tech$rand'
                                           onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode(
-                $params
-            ) . ");'>
+            $params
+        ) . ");'>
                   <i class=\"ti ti-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i>";
 
         echo "</td>";
@@ -220,7 +217,7 @@ class Cri extends CommonDBTM
 
                 \Dropdown::showFromArray('REPORT_ACTIVITE', $critypes_data, [
                     'value' => $critypes_default,
-                    'width' => $width
+                    'width' => $width,
                 ]);
                 echo "</td>";
                 echo "</tr>";
@@ -232,7 +229,7 @@ class Cri extends CommonDBTM
             $contract = new Contract();
             if ($contract->getFromDBByCrit([
                 'contracts_id' => $contractSelected['contractSelected'],
-                'entities_id' => $job->fields["entities_id"]
+                'entities_id' => $job->fields["entities_id"],
             ])) {
                 if ($contract->fields['moving_management']) {
                     echo "<tr class='tab_bg_1'>";
@@ -242,7 +239,7 @@ class Cri extends CommonDBTM
                     echo "<td colspan='2'>";
                     \Dropdown::showNumber('number_moving', [
                         'value' => $cridetail['number_moving'],
-                        'width' => $width
+                        'width' => $width,
                     ]);
                     echo "</td>";
                     echo "</tr>";
@@ -277,15 +274,15 @@ class Cri extends CommonDBTM
 
             if ($config->fields['hourorday'] == Config::HOUR) {
                 $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + [
-                        'LEFT JOIN' => [
-                            'glpi_plugin_manageentities_taskcategories' => [
-                                'ON' => [
-                                    'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                                    'glpi_tickettasks' => 'taskcategories_id'
-                                ],
-                            ]
-                        ]
-                    ];
+                    'LEFT JOIN' => [
+                        'glpi_plugin_manageentities_taskcategories' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                                'glpi_tickettasks' => 'taskcategories_id',
+                            ],
+                        ],
+                    ],
+                ];
                 $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
             }
 
@@ -327,11 +324,11 @@ class Cri extends CommonDBTM
                 // action empty : add cri
                 if (empty($options['action'])) {
                     if (!empty($technicians_id)) {
-//                  Html::requireJs('glpi_dialog');
-//                  $modal = $options['modal'];
+                        //                  Html::requireJs('glpi_dialog');
+                        //                  $modal = $options['modal'];
 
-                        echo "<input type='button' name='add_cri' value=\"" .
-                            __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
+                        echo "<input type='button' name='add_cri' value=\""
+                            . __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
                   onClick='manageentities_loadCriForm(\"addCri\", \"" . $options['modal'] . "\", " . json_encode(
                                 $params
                             ) . ");'>";
@@ -339,8 +336,8 @@ class Cri extends CommonDBTM
                     // action not empty : update cri
                 } elseif ($options['action'] == 'update_cri') {
                     if (!empty($technicians_id)) {
-                        echo "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\"" .
-                            __('Regenerate the intervention report', 'manageentities') . "\"
+                        echo "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\""
+                            . __('Regenerate the intervention report', 'manageentities') . "\"
                   onClick='manageentities_loadCriForm(\"updateCri\", \"" . $options['modal'] . "\", " . json_encode(
                                 $params
                             ) . ");'>";
@@ -368,7 +365,7 @@ class Cri extends CommonDBTM
         Html::closeForm();
     }
 
-    function isTask($tickets_id)
+    public function isTask($tickets_id)
     {
         $tickettask = new \TicketTask();
         $tasks = $tickettask->find(['tickets_id' => $tickets_id]);
@@ -392,7 +389,7 @@ class Cri extends CommonDBTM
      * @global type $CFG_GLPI
      *
      */
-    function generatePdf($params, $options = [])
+    public function generatePdf($params, $options = [])
     {
         global $PDF, $DB, $CFG_GLPI;
 
@@ -463,20 +460,20 @@ class Cri extends CommonDBTM
                 $criteria1 = [
                     'SELECT' => [
                         new QueryExpression("MAX(glpi_tickettasks.end) AS " . $DB->quoteName('max_date')),
-                        new QueryExpression("MIN(glpi_tickettasks.begin) AS " . $DB->quoteName('min_date'))
+                        new QueryExpression("MIN(glpi_tickettasks.begin) AS " . $DB->quoteName('min_date')),
                     ],
                     'FROM' => 'glpi_tickettasks',
                     'LEFT JOIN' => [
                         'glpi_plugin_manageentities_taskcategories' => [
                             'ON' => [
                                 'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                                'glpi_tickettasks' => 'taskcategories_id'
-                            ]
-                        ]
+                                'glpi_tickettasks' => 'taskcategories_id',
+                            ],
+                        ],
                     ],
                     'WHERE' => [
-                        'glpi_tickettasks.tickets_id' => $p['REPORT_ID']
-                    ]
+                        'glpi_tickettasks.tickets_id' => $p['REPORT_ID'],
+                    ],
                 ];
                 if ($config->fields['use_publictask'] == '1') {
                     $criteria1['WHERE'] = $criteria1['WHERE'] + ['is_private' => 0];
@@ -494,13 +491,13 @@ class Cri extends CommonDBTM
                         'glpi_plugin_manageentities_taskcategories' => [
                             'ON' => [
                                 'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                                'glpi_tickettasks' => 'taskcategories_id'
-                            ]
-                        ]
+                                'glpi_tickettasks' => 'taskcategories_id',
+                            ],
+                        ],
                     ],
                     'WHERE' => [
-                        'glpi_tickettasks.tickets_id' => $p['REPORT_ID']
-                    ]
+                        'glpi_tickettasks.tickets_id' => $p['REPORT_ID'],
+                    ],
                 ];
                 if ($config->fields['use_publictask'] == '1') {
                     $criteria2['WHERE'] = $criteria2['WHERE'] + ['is_private' => 0];
@@ -553,15 +550,15 @@ class Cri extends CommonDBTM
                     }
                     if ($data["date_debut"] == null && $data["date_fin"] == null) {
                         $un_temps_passe[0] = substr($data["date"], 8, 2) . "/" . substr(
-                                $data["date"],
-                                5,
-                                2
-                            ) . "/" . substr($data["date"], 0, 4);
+                            $data["date"],
+                            5,
+                            2
+                        ) . "/" . substr($data["date"], 0, 4);
                         $un_temps_passe[1] = ($data["date"] == "-") ? "-" : substr($data["date"], 11, 2) . ":" . substr(
-                                $data["date"],
-                                14,
-                                2
-                            );
+                            $data["date"],
+                            14,
+                            2
+                        );
                         //calculating the end date
                         if ($config->fields['hourorday'] == Config::HOUR) {
                             $date = date(
@@ -572,37 +569,37 @@ class Cri extends CommonDBTM
                             //daily
                             $date = date(
                                 'Y-m-d H:i:s',
-                                strtotime($data["date"] . " + " . $un_temps_passe[4] * $nbhour . " hours")
+                                strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] . " hours")
                             );
                         }
 
                         $un_temps_passe[2] = substr($date, 8, 2) . "/" . substr($date, 5, 2) . "/" . substr(
-                                $date,
-                                0,
-                                4
-                            );
+                            $date,
+                            0,
+                            4
+                        );
                         $un_temps_passe[3] = ($date == "-") ? "-" : substr($date, 11, 2) . ":" . substr($date, 14, 2);
                     } else {
                         $un_temps_passe[0] = substr($data["date_debut"], 8, 2) . "/" . substr(
-                                $data["date_debut"],
-                                5,
-                                2
-                            ) . "/" . substr($data["date_debut"], 0, 4);
+                            $data["date_debut"],
+                            5,
+                            2
+                        ) . "/" . substr($data["date_debut"], 0, 4);
                         $un_temps_passe[1] = ($data["heure_debut"] == "-") ? "-" : substr(
-                                $data["heure_debut"],
-                                11,
-                                2
-                            ) . ":" . substr($data["heure_debut"], 14, 2);
+                            $data["heure_debut"],
+                            11,
+                            2
+                        ) . ":" . substr($data["heure_debut"], 14, 2);
                         $un_temps_passe[2] = substr($data["date_fin"], 8, 2) . "/" . substr(
-                                $data["date_fin"],
-                                5,
-                                2
-                            ) . "/" . substr($data["date_fin"], 0, 4);
+                            $data["date_fin"],
+                            5,
+                            2
+                        ) . "/" . substr($data["date_fin"], 0, 4);
                         $un_temps_passe[3] = ($data["heure_fin"] == "-") ? "-" : substr(
-                                $data["heure_fin"],
-                                11,
-                                2
-                            ) . ":" . substr($data["heure_fin"], 14, 2);
+                            $data["heure_fin"],
+                            11,
+                            2
+                        ) . ":" . substr($data["heure_fin"], 14, 2);
                     }
 
                     $temps_passes[$cpt_tps] = $un_temps_passe;
@@ -658,28 +655,28 @@ class Cri extends CommonDBTM
                 $infos_date[0] = $job->fields["date"];
                 $queries = [];
                 // Not Forfait
-                if (($config->fields['hourorday'] == Config::HOUR) ||
-                    (isset($contract_days->fields['contract_type'])
+                if (($config->fields['hourorday'] == Config::HOUR)
+                    || (isset($contract_days->fields['contract_type'])
                         && $contract_days->fields['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
                     /* Du ... au ... */
                     //configuration only public task
                     $criteria1 = [
                         'SELECT' => [
                             new QueryExpression("MAX(glpi_tickettasks.end) AS " . $DB->quoteName('max_date')),
-                            new QueryExpression("MIN(glpi_tickettasks.begin) AS " . $DB->quoteName('min_date'))
+                            new QueryExpression("MIN(glpi_tickettasks.begin) AS " . $DB->quoteName('min_date')),
                         ],
                         'FROM' => 'glpi_tickettasks',
                         'LEFT JOIN' => [
                             'glpi_plugin_manageentities_taskcategories' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                                    'glpi_tickettasks' => 'taskcategories_id'
-                                ]
-                            ]
+                                    'glpi_tickettasks' => 'taskcategories_id',
+                                ],
+                            ],
                         ],
                         'WHERE' => [
-                            'glpi_tickettasks.tickets_id' => $p['REPORT_ID']
-                        ]
+                            'glpi_tickettasks.tickets_id' => $p['REPORT_ID'],
+                        ],
                     ];
                     if ($config->fields['use_publictask'] == '1') {
                         $criteria1['WHERE'] = $criteria1['WHERE'] + ['is_private' => 0];
@@ -697,13 +694,13 @@ class Cri extends CommonDBTM
                             'glpi_plugin_manageentities_taskcategories' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                                    'glpi_tickettasks' => 'taskcategories_id'
-                                ]
-                            ]
+                                    'glpi_tickettasks' => 'taskcategories_id',
+                                ],
+                            ],
                         ],
                         'WHERE' => [
-                            'glpi_tickettasks.tickets_id' => $p['REPORT_ID']
-                        ]
+                            'glpi_tickettasks.tickets_id' => $p['REPORT_ID'],
+                        ],
                     ];
                     if ($config->fields['use_publictask'] == '1') {
                         $criteria2['WHERE'] = $criteria2['WHERE'] + ['is_private' => 0];
@@ -744,7 +741,7 @@ class Cri extends CommonDBTM
                 $infos_entite[0] = $entite;
 
                 if ($p['CONTRAT']) {
-                    $contract = new \Contract;
+                    $contract = new \Contract();
                     $contract->getFromDB($p['CONTRAT']);
                     $infos_entite[1] = $contract->fields["num"];
                     $sous_contrat = true;
@@ -761,8 +758,8 @@ class Cri extends CommonDBTM
                     $PDF->setIntervention();
                 }
 
-                if (($config->fields['hourorday'] == Config::HOUR) ||
-                    (isset($contract_days->fields['contract_type']) && $contract_days->fields['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                if (($config->fields['hourorday'] == Config::HOUR)
+                    || (isset($contract_days->fields['contract_type']) && $contract_days->fields['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
                     $result = self::getTempsPasses($p);
                     $temps_passes = [];
                     $cpt_tps = 0;
@@ -790,15 +787,15 @@ class Cri extends CommonDBTM
                         }
                         if ($data["date_debut"] == null && $data["date_fin"] == null) {
                             $un_temps_passe[0] = substr($data["date"], 8, 2) . "/" . substr(
-                                    $data["date"],
-                                    5,
-                                    2
-                                ) . "/" . substr($data["date"], 0, 4);
+                                $data["date"],
+                                5,
+                                2
+                            ) . "/" . substr($data["date"], 0, 4);
                             $un_temps_passe[1] = ($data["date"] == "-") ? "-" : substr(
-                                    $data["date"],
-                                    11,
-                                    2
-                                ) . ":" . substr($data["date"], 14, 2);
+                                $data["date"],
+                                11,
+                                2
+                            ) . ":" . substr($data["date"], 14, 2);
                             //calculating the end date
                             if ($config->fields['hourorday'] == Config::HOUR) {
                                 $date = date(
@@ -809,41 +806,41 @@ class Cri extends CommonDBTM
                                 //daily
                                 $date = date(
                                     'Y-m-d H:i:s',
-                                    strtotime($data["date"] . " + " . $un_temps_passe[4] * $nbhour . " hours")
+                                    strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] . " hours")
                                 );
                             }
 
                             $un_temps_passe[2] = substr($date, 8, 2) . "/" . substr($date, 5, 2) . "/" . substr(
-                                    $date,
-                                    0,
-                                    4
-                                );
+                                $date,
+                                0,
+                                4
+                            );
                             $un_temps_passe[3] = ($date == "-") ? "-" : substr($date, 11, 2) . ":" . substr(
-                                    $date,
-                                    14,
-                                    2
-                                );
+                                $date,
+                                14,
+                                2
+                            );
                         } else {
                             $un_temps_passe[0] = substr($data["date_debut"], 8, 2) . "/" . substr(
-                                    $data["date_debut"],
-                                    5,
-                                    2
-                                ) . "/" . substr($data["date_debut"], 0, 4);
+                                $data["date_debut"],
+                                5,
+                                2
+                            ) . "/" . substr($data["date_debut"], 0, 4);
                             $un_temps_passe[1] = ($data["heure_debut"] == "-") ? "-" : substr(
-                                    $data["heure_debut"],
-                                    11,
-                                    2
-                                ) . ":" . substr($data["heure_debut"], 14, 2);
+                                $data["heure_debut"],
+                                11,
+                                2
+                            ) . ":" . substr($data["heure_debut"], 14, 2);
                             $un_temps_passe[2] = substr($data["date_fin"], 8, 2) . "/" . substr(
-                                    $data["date_fin"],
-                                    5,
-                                    2
-                                ) . "/" . substr($data["date_fin"], 0, 4);
+                                $data["date_fin"],
+                                5,
+                                2
+                            ) . "/" . substr($data["date_fin"], 0, 4);
                             $un_temps_passe[3] = ($data["heure_fin"] == "-") ? "-" : substr(
-                                    $data["heure_fin"],
-                                    11,
-                                    2
-                                ) . ":" . substr($data["heure_fin"], 14, 2);
+                                $data["heure_fin"],
+                                11,
+                                2
+                            ) . ":" . substr($data["heure_fin"], 14, 2);
                         }
 
                         $temps_passes[$cpt_tps] = $un_temps_passe;
@@ -894,7 +891,7 @@ class Cri extends CommonDBTM
                         $PDF->SetNombreDeplacement($time_deplacement);
                     } else {
                         $time_in_sec = $manageentities_contract_data['duration_moving'];
-                        $time_deplacement = (($time_in_sec * $p['number_moving'] / HOUR_TIMESTAMP) / $nbhour);
+                        $time_deplacement = (($time_in_sec * $p['number_moving'] / HOUR_TIMESTAMP) / $config->fields['hourbyday']);
                         $PDF->SetNombreDeplacement($PDF->TotalTpsPassesArrondis($time_deplacement));
                     }
                 }
@@ -931,7 +928,7 @@ class Cri extends CommonDBTM
             $input["users_id"] = Session::getLoginUserID();
             $input["tickets_id"] = $p['REPORT_ID'];
 
-            $doc = new Document;
+            $doc = new Document();
             if (empty($p['documents_id'])) {
                 $newdoc = $doc->add($input);
             } else {
@@ -963,7 +960,7 @@ class Cri extends CommonDBTM
 
             $restrict = [
                 "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'],
-                "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id']
+                "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id'],
             ];
             $dbu = new DbUtils();
             $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
@@ -1030,10 +1027,10 @@ class Cri extends CommonDBTM
                     'job' => $job->fields['id'],
                     'form' => 'formReport',
                     'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
-                    'toupdate' => $options['toupdate']
+                    'toupdate' => $options['toupdate'],
                 ];
-                echo "<p><input type='button' name='save_cri' value=\"" .
-                    __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
+                echo "<p><input type='button' name='save_cri' value=\""
+                    . __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
                  onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode(
                         $params
                     ) . ");'></p>";
@@ -1062,7 +1059,7 @@ class Cri extends CommonDBTM
      * @global type $DB
      *
      */
-    function getTempsPasses($p)
+    public function getTempsPasses($p)
     {
         global $DB;
 
@@ -1099,13 +1096,13 @@ class Cri extends CommonDBTM
                 'glpi_plugin_manageentities_taskcategories' => [
                     'ON' => [
                         'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                        'glpi_tickettasks' => 'taskcategories_id'
-                    ]
-                ]
+                        'glpi_tickettasks' => 'taskcategories_id',
+                    ],
+                ],
             ],
             'WHERE' => [
-                'glpi_tickettasks.tickets_id' => $p['REPORT_ID']
-            ]
+                'glpi_tickettasks.tickets_id' => $p['REPORT_ID'],
+            ],
         ];
         if ($config->fields['use_publictask'] == '1') {
             $criteria1['WHERE'] = $criteria1['WHERE'] + ['is_private' => 0];
@@ -1139,9 +1136,9 @@ class Cri extends CommonDBTM
                 'glpi_plugin_manageentities_taskcategories' => [
                     'ON' => [
                         'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                        'glpi_tickettasks' => 'taskcategories_id'
-                    ]
-                ]
+                        'glpi_tickettasks' => 'taskcategories_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_tickettasks.tickets_id' => $p['REPORT_ID'],
@@ -1150,7 +1147,7 @@ class Cri extends CommonDBTM
                         'SELECT' => 'id',
                         'DISTINCT' => true,
                         'FROM' => 'glpi_tickettasks',
-                    ])
+                    ]),
                 ],
             ],
             'ORDERBY' => 'date_debut ASC',
@@ -1181,7 +1178,7 @@ class Cri extends CommonDBTM
         return $iterator;
     }
 
-    function CleanFiles($dir)
+    public function CleanFiles($dir)
     {
         //Efface les fichiers temporaires
         $t = time();
@@ -1196,7 +1193,7 @@ class Cri extends CommonDBTM
         closedir($h);
     }
 
-    function send($doc)
+    public function send($doc)
     {
         $file = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
 
@@ -1210,7 +1207,7 @@ class Cri extends CommonDBTM
         header("Content-disposition: filename=\"" . $doc->fields['filename'] . "\"");
         header("Content-type: " . $doc->fields['mime']);
 
-        readfile($file) or die ("Error opening file $file");
+        readfile($file) or die("Error opening file $file");
     }
 
 }

@@ -664,9 +664,9 @@ class CriPDF extends Fpdf
      * Peut étre améliorée afin de boucler (while) sur les tranches pour ne pas avoir une suite de
      * if, else if.
      *
-     * @param Total é arrondir.
+     * @param int Total à arrondir.
      *
-     * @return Le total arrondi selon la régle de gestion.
+     * @return int Le total arrondi selon la régle de gestion.
      */
     function TotalTpsPassesArrondis($a_arrondir)
     {

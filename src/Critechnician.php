@@ -30,7 +30,6 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
-use GlpiPlugin\Manageentities\Config;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");

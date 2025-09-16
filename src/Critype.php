@@ -59,6 +59,7 @@ class CriType extends CommonDropdown
         if ($config->fields['useprice'] == Config::PRICE) {
             return Session::haveRight(self::$rightname, READ);
         }
+        return false;
     }
 
     function rawSearchOptions()

@@ -34,7 +34,6 @@ use DbUtils;
 use Html;
 use Session;
 use CommonGLPI;
-use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\Entity;
 
 if (!defined('GLPI_ROOT')) {
