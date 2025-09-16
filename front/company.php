@@ -28,16 +28,16 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\Company;
+use GlpiPlugin\Manageentities\Entity;
 
-include('../../../inc/includes.php');
+Html::header(Company::getTypeName(2), '', "management", Entity::class, "company");
 
-Html::header(PluginManageentitiesCompany::getTypeName(2), '', "management", "pluginmanageentitiesentity", "company");
-
-$company = new PluginManageentitiesCompany();
+$company = new Company();
 $company->checkGlobal(READ);
 
 if ($company->canView()) {
-   Search::show("PluginManageentitiesCompany");
+   Search::show(Company::class);
 
 } else {
     throw new AccessDeniedHttpException();

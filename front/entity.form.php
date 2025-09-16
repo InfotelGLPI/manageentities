@@ -27,10 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\EntityLogo;
 
-$logo = new PluginManageentitiesEntityLogo();
+$logo = new EntityLogo();
 
+global $CFG_GLPI;
 
 if (isset($_POST["add"])) {
 

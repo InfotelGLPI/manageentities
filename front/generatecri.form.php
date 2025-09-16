@@ -28,12 +28,14 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\Cri;
+use GlpiPlugin\Manageentities\Config;
+use GlpiPlugin\Manageentities\GenerateCRI;
 
-include('../../../inc/includes.php');
 Session::checkLoginUser();
 
-$PluginManageentitiesGenerateCri = new PluginManageentitiesGenerateCri();
-$PluginManageentitiesCri         = new PluginManageentitiesCri();
+$GenerateCri = new GenerateCri();
+$Cri         = new Cri();
 $ticket                          = new Ticket();
 
 if (count($_SESSION["glpiactiveentities"]) > 1
@@ -52,20 +54,20 @@ if (count($_SESSION["glpiactiveentities"]) > 1
 if (isset($_POST['generatecri'])) {
    if (Session::haveRight('ticket', CREATE)) {
 
-      $ko = $PluginManageentitiesGenerateCri->checkMandatoryFields($_POST);
+      $ko = $GenerateCri->checkMandatoryFields($_POST);
       if (!$ko) {
-         $ticket_id = $PluginManageentitiesGenerateCri->createTicketAndAssociateContract($_POST);
+         $ticket_id = $GenerateCri->createTicketAndAssociateContract($_POST);
          if ($ticket_id) {
-            $PluginManageentitiesGenerateCri->createTasks($_POST, $ticket_id);
-            $config = PluginManageentitiesConfig::getInstance();
+             $GenerateCri->createTasks($_POST, $ticket_id);
+            $config = Config::getInstance();
             $ticket->update(['id'     => $ticket_id,
                              'status' => $config->getField('ticket_state')]);
             if (isset($_POST['description-undone']) && $_POST['description-undone'] != '') {
                $_POST['content'] = $_POST['description-undone'];
-               $PluginManageentitiesGenerateCri->createTicketTaskUndone($_POST, $ticket_id);
+                $GenerateCri->createTicketTaskUndone($_POST, $ticket_id);
             }
             //            $_POST['download'] = true;
-            $PluginManageentitiesGenerateCri->generateCri($_POST, $ticket_id, $PluginManageentitiesCri);
+             $GenerateCri->generateCri($_POST, $ticket_id, $Cri);
             if (!$config->getField('get_pdf_cri')) {
                Html::back();
             }
@@ -81,15 +83,15 @@ if (isset($_POST['generatecri'])) {
 
 } else if (isset($_GET['download'])) {
    $ticket_id = $_GET['tickets_id'];
-   $PluginManageentitiesGenerateCri->generateCri($_POST, $ticket_id, $PluginManageentitiesCri);
+    $GenerateCri->generateCri($_POST, $ticket_id, $Cri);
 } else {
-   Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesgeneratecri");
+   Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", GenerateCri::class);
    $ticket->fields['itilcategories_id'] = $_POST['itilcategories_id'] ?? 0;
    $ticket->fields['type']              = $_POST['type'] ?? '';
    $_SESSION['glpiactive_entity']       = $_POST['entities_id'] ?? 0;
    $_SESSION['glpiactive_entity']       = $_POST['entities_id'] ?? 0;
 
-   $PluginManageentitiesGenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity']);
+    $GenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity']);
    Html::footer();
 
 }

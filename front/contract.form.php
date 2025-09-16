@@ -27,10 +27,12 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\Entity;
 
-$contractday = new PluginManageentitiesContractDay();
-$contract    = new PluginManageentitiesContract();
+$contractday = new ContractDay();
+$contract    = new Contract();
 
 if (isset($_POST["addcontract"])) {
    $contract->check(-1, UPDATE);
@@ -64,7 +66,7 @@ if (isset($_POST["addcontract"])) {
 } else {
    $contract->checkGlobal(READ);
 
-   Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
+   Html::header(ContractDay::getTypeName(2), '', "management", Entity::class, "contractday");
    $contract->display($_GET);
 
    Html::footer();

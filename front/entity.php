@@ -29,20 +29,22 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\BusinessContact;
 use GlpiPlugin\Servicecatalog\Main;
+use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\Contact;
+use GlpiPlugin\Manageentities\Entity;
 
-include('../../../inc/includes.php');
-
-$PluginManageentitiesContract        = new PluginManageentitiesContract();
-$PluginManageentitiesContact         = new PluginManageentitiesContact();
-$PluginManageentitiesEntity          = new PluginManageentitiesEntity();
-$PluginManageentitiesBusinessContact = new PluginManageentitiesBusinessContact();
+$Contract        = new Contract();
+$Contact         = new Contact();
+$ManageentitiesEntity          = new Entity();
+$BusinessContact = new BusinessContact();
 
 if (!isset($_POST["entities_id"]))
    $_POST["entities_id"] = "";
 
 if (Session::getCurrentInterface() == 'central') {
-   Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
+   Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
 } else {
    if (Plugin::isPluginActive('servicecatalog')) {
       Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
@@ -51,47 +53,47 @@ if (Session::getCurrentInterface() == 'central') {
    }
 }
 
-if ($PluginManageentitiesEntity->canView()
+if ($ManageentitiesEntity->canView()
     || Session::haveRight("config", UPDATE)) {
 
    if (isset($_POST["addcontracts"])) {
-      if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContract->add($_POST);
+      if ($ManageentitiesEntity->canCreate())
+          $Contract->add($_POST);
       Html::back();
 
    } else if (isset($_POST["deletecontracts"])) {
-      if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContract->delete(['id' => $_POST["id"]]);
+      if ($ManageentitiesEntity->canCreate())
+          $Contract->delete(['id' => $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["contractbydefault"])) {
-      if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContract->addContractByDefault($_POST["myid"], $_POST["entities_id"]);
+      if ($ManageentitiesEntity->canCreate())
+          $Contract->addContractByDefault($_POST["myid"], $_POST["entities_id"]);
       Html::back();
 
    } else if (isset($_POST["addcontacts"])) {
-      if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContact->add($_POST);
+      if ($ManageentitiesEntity->canCreate())
+          $Contact->add($_POST);
       Html::back();
 
    } else if (isset($_POST["deletecontacts"])) {
-      if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContact->delete(['id' => $_POST["id"]]);
+      if ($ManageentitiesEntity->canCreate())
+          $Contact->delete(['id' => $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["addbusiness"])) {
-      if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesBusinessContact->add($_POST);
+      if ($ManageentitiesEntity->canCreate())
+          $BusinessContact->add($_POST);
       Html::back();
 
    } else if (isset($_POST["deletebusiness"])) {
-      if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesBusinessContact->delete(['id' => $_POST["id"]]);
+      if ($ManageentitiesEntity->canCreate())
+          $BusinessContact->delete(['id' => $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["contactbydefault"])) {
-      if ($PluginManageentitiesEntity->canCreate())
-         $PluginManageentitiesContact->addContactByDefault($_POST["contacts_id"], $_POST["entities_id"]);
+      if ($ManageentitiesEntity->canCreate())
+          $Contact->addContactByDefault($_POST["contacts_id"], $_POST["entities_id"]);
       Html::back();
 
    } else {
@@ -138,7 +140,7 @@ if ($PluginManageentitiesEntity->canView()
                      "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
                      "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0];
 
-         $entity = new PluginManageentitiesEntity();
+         $entity = new Entity();
          $entity->display($options);
       }
    }

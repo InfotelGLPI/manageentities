@@ -27,11 +27,14 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\InterventionSkateholder;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
-$interventionStakeholder = new PluginManageentitiesInterventionSkateholder();
+$interventionStakeholder = new InterventionSkateholder();
 
 if (isset($_POST['action']) && $_POST['action'] != "") {
    switch ($_POST['action']) {
@@ -90,9 +93,9 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
 
       case "delete_user_datas":
          if (isset($_POST['skateholder_id']) && $_POST['skateholder_id'] > 0) {
-            $interventionStakeholder = new PluginManageentitiesInterventionSkateholder();
+            $interventionStakeholder = new InterventionSkateholder();
             $interventionStakeholder->getFromDB($_POST['skateholder_id']);
-            $intervention = new PluginManageentitiesContractDay();
+            $intervention = new ContractDay();
             $intervention->getFromDB($_POST['contractdays_id']);
 
             if ($interventionStakeholder->delete($interventionStakeholder->fields)) {

@@ -32,10 +32,24 @@ define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.4');
 global $CFG_GLPI;
 
 use Glpi\Plugin\Hooks;
+use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\CriDetail;
+use GlpiPlugin\Manageentities\CriPrice;
+use GlpiPlugin\Manageentities\Directhelpdesk;
+use GlpiPlugin\Manageentities\Directhelpdesk_Ticket;
+use GlpiPlugin\Manageentities\GenerateCRI;
+use GlpiPlugin\Manageentities\InterventionSkateholder;
+use GlpiPlugin\Manageentities\Preference;
+use GlpiPlugin\Manageentities\Profile;
+use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\Servicecatalog;
+use GlpiPlugin\Manageentities\TaskCategory;
+use GlpiPlugin\Manageentities\TicketTask;
+use GlpiPlugin\Mydashboard\Dashboard;
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
     define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
-//    define("PLUGIN_MANAGEENTITIES_WEBDIR", Plugin::getPhpDir("manageentities", false));
     $root = $CFG_GLPI['root_doc'] . '/plugins/manageentities';
     define("PLUGIN_MANAGEENTITIES_WEBDIR", $root);
 }
@@ -48,7 +62,7 @@ function plugin_init_manageentities()
     global $PLUGIN_HOOKS, $CFG_GLPI;
 
     $PLUGIN_HOOKS['csrf_compliant']['manageentities'] = true;
-    $PLUGIN_HOOKS['change_profile']['manageentities'] = ['PluginManageentitiesProfile', 'initProfile'];
+    $PLUGIN_HOOKS['change_profile']['manageentities'] = [Profile::class, 'initProfile'];
 
     $PLUGIN_HOOKS['pre_item_purge']['manageentities'] = [
         'Entity' => 'plugin_pre_item_purge_manageentities',
@@ -60,49 +74,49 @@ function plugin_init_manageentities()
 
     $PLUGIN_HOOKS['pre_item_update']['manageentities'] = [
         'Document' => [
-            'PluginManageentitiesEntity',
+            Entity::class,
             'preUpdateDocument'
         ]
     ];
-    $PLUGIN_HOOKS['item_update']['manageentities'] = ['Document' => ['PluginManageentitiesEntity', 'UpdateDocument']];
+    $PLUGIN_HOOKS['item_update']['manageentities'] = ['Document' => [Entity::class, 'UpdateDocument']];
 
     $PLUGIN_HOOKS['item_transfer']['manageentities'] = 'plugin_item_transfer_manageentities';
 
     if (Session::getLoginUserID()) {
-        Plugin::registerClass('PluginManageentitiesProfile', ['addtabon' => 'Profile']);
-        Plugin::registerClass('PluginManageentitiesContract', ['addtabon' => 'Contract']);
-        Plugin::registerClass('PluginManageentitiesCriDetail', [
+        Plugin::registerClass(Profile::class, ['addtabon' => 'Profile']);
+        Plugin::registerClass(Contract::class, ['addtabon' => 'Contract']);
+        Plugin::registerClass(CriDetail::class, [
             'addtabon' => 'Ticket',
             'planning_types' => true
         ]);
-        Plugin::registerClass('PluginManageentitiesDirecthelpdesk_Ticket', ['addtabon' => 'Ticket']);
+        Plugin::registerClass(Directhelpdesk_Ticket::class, ['addtabon' => 'Ticket']);
 
-        Plugin::registerClass('PluginManageentitiesTaskCategory', ['addtabon' => 'TaskCategory']);
+        Plugin::registerClass(TaskCategory::class, ['addtabon' => 'TaskCategory']);
         Plugin::registerClass(
-            'PluginManageentitiesInterventionSkateholder',
-            ['addtabon' => 'PluginManageentitiesContractDay']
+            InterventionSkateholder::class,
+            ['addtabon' => ContractDay::class]
         );
-        Plugin::registerClass('PluginManageentitiesCriPrice', ['addtabon' => 'PluginManageentitiesContractDay']);
+        Plugin::registerClass(CriPrice::class, ['addtabon' =>  ContractDay::class]);
 
         if (Plugin::isPluginActive('servicecatalog')) {
-            $PLUGIN_HOOKS['servicecatalog']['manageentities'] = ['PluginManageentitiesServicecatalog'];
+            $PLUGIN_HOOKS['servicecatalog']['manageentities'] = [Servicecatalog::class];
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
             $PLUGIN_HOOKS['menu_toadd']['manageentities'] = [
                 'helpdesk' => [
-                    PluginManageentitiesGenerateCRI::class,
-                    PluginManageentitiesDirecthelpdesk::class,
+                    GenerateCRI::class,
+                    Directhelpdesk::class,
                 ]
             ];
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
             && !Plugin::isPluginActive('servicecatalog')) {
             $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
-            $PLUGIN_HOOKS['helpdesk_menu_entry_icon']['manageentities'] = PluginManageentitiesEntity::getIcon();
+            $PLUGIN_HOOKS['helpdesk_menu_entry_icon']['manageentities'] = Entity::getIcon();
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
-            Plugin::registerClass('PluginManageentitiesPreference', ['addtabon' => 'Preference']); //See #413
-            $PLUGIN_HOOKS['menu_toadd']['manageentities']['management'] = 'PluginManageentitiesEntity';
+            Plugin::registerClass(Preference::class, ['addtabon' => 'Preference']); //See #413
+            $PLUGIN_HOOKS['menu_toadd']['manageentities']['management'] = Entity::class;
 
             // Reports
             $PLUGIN_HOOKS['reports']['manageentities'] = [
@@ -127,11 +141,11 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS['config_page']['manageentities'] = 'front/config.form.php';
         }
 
-        if (Plugin::isPluginActive('servicecatalog')) {
-            $PLUGIN_HOOKS['mydashboard']['manageentities'] = ["PluginManageentitiesDashboard"];
+        if (Plugin::isPluginActive('mydashboard')) {
+            $PLUGIN_HOOKS['mydashboard']['manageentities'] = [Dashboard::class];
         }
 
-        $PLUGIN_HOOKS['post_item_form']['manageentities'] = ['PluginManageentitiesTicketTask', 'postForm'];
+        $PLUGIN_HOOKS['post_item_form']['manageentities'] = [TicketTask::class, 'postForm'];
         // Add specific files to add to the header : javascript or css
         $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css", "style.css"];
 
@@ -146,7 +160,7 @@ function plugin_init_manageentities()
             }
         }
 
-        if (class_exists('PluginManageentitiesDirecthelpdesk')) { // only if plugin activated
+        if (class_exists(Directhelpdesk::class)) { // only if plugin activated
             $PLUGIN_HOOKS['plugin_datainjection_populate']['manageentities']
                 = 'plugin_datainjection_populate_manageentities';
         }
@@ -162,8 +176,8 @@ function plugin_init_manageentities()
 //      }
         $PLUGIN_HOOKS['post_init']['manageentities'] = 'plugin_manageentities_postinit';
 
-        $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities']    = [PluginManageentitiesContract::class, 'preItemForm'];
-        $PLUGIN_HOOKS[Hooks::PRE_ITEM_LIST]['manageentities']    = [PluginManageentitiesContract::class, 'preItemForm'];
+        $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities']    = [Contract::class, 'preItemForm'];
+        $PLUGIN_HOOKS[Hooks::PRE_ITEM_LIST]['manageentities']    = [Contract::class, 'preItemForm'];
     }
 }
 

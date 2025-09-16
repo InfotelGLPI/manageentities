@@ -27,13 +27,16 @@
  --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Manageentities\AddElementsView;
+use GlpiPlugin\Manageentities\Entity;
+
 include('../../../inc/includes.php');
 
 if (Plugin::isPluginActive("manageentities")
     && Session::haveRight('plugin_manageentities', UPDATE)) {
 
-   $addElementsView = new PluginManageentitiesAddElementsView();
-   Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
+   $addElementsView = new AddElementsView();
+   Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
    $addElementsView->showForm();
    Html::footer();
 

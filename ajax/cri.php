@@ -27,7 +27,10 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+
+use GlpiPlugin\Manageentities\Cri;
+use GlpiPlugin\Manageentities\CriDetail;
+use GlpiPlugin\Manageentities\CriTechnician;
 
 Html::header_nocache();
 Session::checkLoginUser();
@@ -35,48 +38,48 @@ Session::checkLoginUser();
 
 switch ($_POST['action']) {
    case 'showCriForm' :
-      $PluginManageentitiesCri = new PluginManageentitiesCri();
+      $Cri = new Cri();
       $params                  = $_POST["params"];
 
-      $PluginManageentitiesCri->showForm($params["job"], ['action'   => $params["pdf_action"],
+       $Cri->showForm($params["job"], ['action'   => $params["pdf_action"],
                                                           'modal'    => $_POST["modal"],
                                                           'toupdate' => $params["toupdate"]]);
       break;
 
    case 'addTech':
-      $PluginManageentitiesCri = new PluginManageentitiesCri();
-      if ($PluginManageentitiesCri->canCreate()) {
+       $Cri = new Cri();
+      if ($Cri->canCreate()) {
          $input  = json_decode(stripslashes($_POST["formInput"]));
          $params = $_POST["params"];
 
          $toadd["users_id"]                 = $input->users_id;
          $toadd["tickets_id"]               = $params["job"];
-         $PluginManageentitiesCriTechnician = new PluginManageentitiesCriTechnician();
-         $PluginManageentitiesCriTechnician->add($toadd);
+          $CriTechnician = new CriTechnician();
+          $CriTechnician->add($toadd);
 
-         $PluginManageentitiesCri->showForm($params["job"], ['action'   => $params["pdf_action"],
+          $Cri->showForm($params["job"], ['action'   => $params["pdf_action"],
                                                              'modal'    => $_POST["modal"],
                                                              'toupdate' => $params["toupdate"]]);
       }
       break;
 
    case 'deleteTech':
-      $PluginManageentitiesCri = new PluginManageentitiesCri();
-      if ($PluginManageentitiesCri->canCreate()) {
+       $Cri = new Cri();
+      if ($Cri->canCreate()) {
          $input                             = json_decode(stripslashes($_POST["formInput"]));
          $params                            = $_POST["params"];
-         $PluginManageentitiesCriTechnician = new PluginManageentitiesCriTechnician();
-         $PluginManageentitiesCriTechnician->deleteByCriteria(['users_id' => $params['tech_id']]);
+         $CriTechnician = new CriTechnician();
+          $CriTechnician->deleteByCriteria(['users_id' => $params['tech_id']]);
 
-         $PluginManageentitiesCri->showForm($params["job"], ['action'   => $params["pdf_action"],
+          $Cri->showForm($params["job"], ['action'   => $params["pdf_action"],
                                                              'modal'    => $_POST["modal"],
                                                              'toupdate' => $params["toupdate"]]);
       }
       break;
 
    case 'addCri':
-      $PluginManageentitiesCri = new PluginManageentitiesCri();
-      if ($PluginManageentitiesCri->canCreate()) {
+       $Cri = new Cri();
+      if ($Cri->canCreate()) {
 
          $input                     = json_decode(stripslashes($_POST["formInput"]));
          $input->REPORT_DESCRIPTION = urldecode($input->REPORT_DESCRIPTION);
@@ -84,14 +87,14 @@ switch ($_POST['action']) {
          $input->enregistrement     = false;
          if (isset($input->REPORT_ACTIVITE) && $input->REPORT_ACTIVITE) {
             $input->REPORT_ACTIVITE_ID = $input->REPORT_ACTIVITE;
-            $PluginManageentitiesCri->generatePdf($input,
+             $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
          } elseif (isset($input->WITHOUTCONTRACT) && $input->WITHOUTCONTRACT) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
             $input->REPORT_ACTIVITE = $ticket->fields['name'];
-            $PluginManageentitiesCri->generatePdf($input,
+             $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
          } else {
@@ -102,8 +105,8 @@ switch ($_POST['action']) {
       break;
 
    case 'updateCri':
-      $PluginManageentitiesCri = new PluginManageentitiesCri();
-      if ($PluginManageentitiesCri->canCreate()) {
+       $Cri = new Cri();
+      if ($Cri->canCreate()) {
          $input  = json_decode(stripslashes($_POST["formInput"]));
          $params = $_POST["params"];
 
@@ -111,12 +114,12 @@ switch ($_POST['action']) {
          if (isset($input->REPORT_ACTIVITE)) {
             // Purge cri
             $input->REPORT_ACTIVITE_ID = $input->REPORT_ACTIVITE;
-            $criDetail                 = new PluginManageentitiesCriDetail();
+            $criDetail                 = new CriDetail();
             $data_criDetail            = $criDetail->find(['tickets_id' => $input->REPORT_ID]);
             $data_criDetail            = reset($data_criDetail);
             $input->documents_id       = $data_criDetail['documents_id'];
             // Generate a new cri
-            $PluginManageentitiesCri->generatePdf($input,
+             $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
 
@@ -124,7 +127,7 @@ switch ($_POST['action']) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
             $input->REPORT_ACTIVITE = $ticket->fields['name'];
-            $PluginManageentitiesCri->generatePdf($input,
+             $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
          } else {
@@ -135,20 +138,20 @@ switch ($_POST['action']) {
       break;
 
    case 'saveCri':
-      $PluginManageentitiesCri = new PluginManageentitiesCri();
-      if ($PluginManageentitiesCri->canCreate()) {
+       $Cri = new Cri();
+      if ($Cri->canCreate()) {
          $input                 = json_decode(stripslashes($_POST["formInput"]));
          $params                = $_POST["params"];
          $input->enregistrement = true;
          if ($input->REPORT_ACTIVITE) {
-            $PluginManageentitiesCri->generatePdf($input,
+             $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
          } elseif (isset($input->WITHOUTCONTRACT) && $input->WITHOUTCONTRACT) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
             $input->REPORT_ACTIVITE = $ticket->fields['name'];
-            $PluginManageentitiesCri->generatePdf($input,
+             $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
          } else {

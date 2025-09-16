@@ -27,14 +27,14 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\CriPrice;
 
 Html::header_nocache();
 Session::checkLoginUser();
 
 switch ($_POST['action']) {
    case 'loadPrice' :
-      $criprice = new PluginManageentitiesCriPrice();
+      $criprice = new CriPrice();
       $criprice->showSelectPriceDropdown($_POST['critypes_id'], $_POST['entities_id']);
       break;
 }

@@ -27,11 +27,12 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\GenerateCRI;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST["entities_id"])) {
-   PluginManageentitiesGenerateCRI::showContractLinkDropdown($_POST["entities_id"]);
+   GenerateCRI::showContractLinkDropdown($_POST["entities_id"]);
 }

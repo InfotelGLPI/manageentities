@@ -27,13 +27,16 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use Glpi\Exception\Http\NotFoundHttpException;
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\ContractState;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_POST["contracts_id"])) {
-    throw new \Glpi\Exception\Http\NotFoundHttpException();
+    throw new NotFoundHttpException();
 }
 
 if (isset($_POST["contracts_id"])) {
@@ -47,12 +50,12 @@ if (isset($_POST["contracts_id"])) {
    }
 
    if ($contractdays_id == 0) {
-      $contractday = new PluginManageentitiesContractDay();
+      $contractday = new ContractDay();
       $restrict    = ['entities_id'  => $contract->fields['entities_id'],
                       'contracts_id' => $_POST["contracts_id"],
                       [
                          'OR' => [
-                            ['plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates()],
+                            ['plugin_manageentities_contractstates_id' => ContractState::getOpenedStates()],
                             ['id' => $contractdays_id]
                          ]
                       ]];
@@ -73,12 +76,12 @@ if (isset($_POST["contracts_id"])) {
                 'contracts_id' => $_POST["contracts_id"],
                 [
                    'OR' => [
-                      ['plugin_manageentities_contractstates_id' => PluginManageentitiesContractState::getOpenedStates()],
+                      ['plugin_manageentities_contractstates_id' => ContractState::getOpenedStates()],
                       ['id' => $contractdays_id]
                    ]
                 ]];
 
-   Dropdown::show('PluginManageentitiesContractDay', ['name'      => 'plugin_manageentities_contractdays_id',
+   Dropdown::show(ContractDay::class, ['name'      => 'plugin_manageentities_contractdays_id',
                                                       'value'     => $contractdays_id,
                                                       'condition' => $restrict,
                                                       'width'     => $_POST['width']]);

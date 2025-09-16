@@ -28,8 +28,7 @@
  */
 
 use Glpi\Exception\Http\BadRequestHttpException;
-
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\Cri;
 
 Session::checkLoginUser();
 
@@ -44,7 +43,7 @@ if (isset($_GET["file"])) { // for other file
       ) {
          $send = GLPI_DOC_DIR . "/" . $_GET["file"];
       }
-      $cri = new PluginManageentitiesCri();
+      $cri = new Cri();
       if ($send && file_exists($send)) {
          $doc                     = new Document();
          $doc->fields['filepath'] = $_GET["file"];

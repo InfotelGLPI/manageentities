@@ -27,7 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\Report;
 
 Html::header(__('Entities portal', 'manageentities'), '', "plugins", "manageentities");
 
@@ -53,10 +55,10 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
 }
 
 
-Report::title();
+\Report::title();
 
-$PluginManageentitiesEntity = new PluginManageentitiesEntity();
-if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDATE)) {
+$Entity = new Entity();
+if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
 
    if (isset($_POST["send"])) {
 
@@ -71,7 +73,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "<tr class='tab_bg_2'><td class='right'>";
       echo __('Entity') . " :</td><td>";
 
-      $entity    = new Entity();
+      $entity    = new \Entity();
 //      $data      = [Dropdown::EMPTY_VALUE];
       $condition = ['id' => $_SESSION["glpiactiveentities"]];
       $data      = $entity->find($condition);
@@ -95,7 +97,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "</table>";
       Html::closeForm();
       echo "</div>";
-      $report = new PluginManageentitiesReport();
+      $report = new Report();
       $report->showMovingReports($_POST["entities_id"], $_POST['category_id'], $_POST["date1"], $_POST["date2"]);
 
    } else {

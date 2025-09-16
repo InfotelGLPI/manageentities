@@ -27,12 +27,11 @@
  --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Manageentities\Directhelpdesk;
 use GlpiPlugin\Servicecatalog\Main;
 
-include('../../../inc/includes.php');
-
 if (Session::haveRight("plugin_manageentities", UPDATE)) {
-    $direct = new PluginManageentitiesDirecthelpdesk();
+    $direct = new Directhelpdesk();
 
     if (isset($_POST["create_ticket"])) {
         $ticket = new Ticket();
@@ -41,7 +40,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
         $input['content'] = '';
         foreach ($items as $item => $check) {
             if ($check == "on") {
-                $direct = new PluginManageentitiesDirecthelpdesk();
+                $direct = new Directhelpdesk();
                 $direct->getFromDB($item);
 
                 $actiontime = $direct->fields['actiontime'];
@@ -75,9 +74,9 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 
         Html::redirect($ticket->getLinkURL());
 
-//        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesdirecthelpdesk");
+//        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "Directhelpdesk::class);
 //        $options['entities_id'] = $_POST['entities_id'];
-//        $direct = new PluginManageentitiesDirecthelpdesk();
+//        $direct = new Directhelpdesk();
 //        $options['content'] = "";
 //        $options['_created_from_directhelpdesk'] = true;
 
@@ -100,7 +99,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
         $direct->checkGlobal(READ);
 
         if (Session::getCurrentInterface() == 'central') {
-            Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesdirecthelpdesk");
+            Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", Directhelpdesk::class);
         } else {
             if (Plugin::isPluginActive('servicecatalog')) {
                 Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));

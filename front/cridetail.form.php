@@ -28,8 +28,7 @@
  */
 
 use GlpiPlugin\Servicecatalog\Main;
-
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\Entity;
 
 Session::checkLoginUser();
 
@@ -45,7 +44,7 @@ $cri = new TicketTask();
 $cri->checkGlobal(READ);
 
 if (Session::getCurrentInterface() == 'central') {
-   Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
+   Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
 } else {
    if (Plugin::isPluginActive('servicecatalog')) {
       Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));

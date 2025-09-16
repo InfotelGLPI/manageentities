@@ -27,7 +27,8 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+
+use Ramsey\Uuid\Uuid;
 
 Html::header_nocache();
 Session::checkLoginUser();
@@ -77,7 +78,7 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
             $tickettask->fields['plan']    = ['begin'     => $tickettask->fields['begin'],
                                               '_duration' => $tickettask->fields['actiontime'],
                                               'users_id'  => $tickettask->fields['users_id_tech']];
-            $tickettask->fields['uuid']    = \Ramsey\Uuid\Uuid::uuid4();
+            $tickettask->fields['uuid']    = Uuid::uuid4();
 
             if ($id = $tickettask->add($tickettask->fields)) {
                echo json_encode(['tickettasks_id' => $id]);

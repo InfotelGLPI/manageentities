@@ -27,9 +27,10 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\Company;
+use GlpiPlugin\Manageentities\Entity;
 
-$company = new PluginManageentitiesCompany();
+$company = new Company();
 
 if (isset($_POST["add"])) {
    $company->check(-1, CREATE);
@@ -48,7 +49,7 @@ if (isset($_POST["add"])) {
    $company->delete($_POST, 1);
    $company->redirectToList();
 } else {
-   Html::header(PluginManageentitiesCompany::getTypeName(2), '', "management", "pluginmanageentitiesentity", "company");
+   Html::header(Company::getTypeName(2), '', "management", Entity::class, "company");
    $company->display($_GET);
    Html::footer();
 }

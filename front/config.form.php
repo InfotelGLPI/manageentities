@@ -27,11 +27,12 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\Config;
+use GlpiPlugin\Manageentities\Entity;
 
 if (Plugin::isPluginActive("manageentities")) {
    if (Session::haveRight("plugin_manageentities", UPDATE)) {
-      $config = new PluginManageentitiesConfig();
+      $config = new Config();
 
       if (isset($_POST["update_config"])) {
          Session::checkRight("config", UPDATE);
@@ -39,7 +40,7 @@ if (Plugin::isPluginActive("manageentities")) {
          Html::back();
 
       } else {
-         Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
+         Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
          $config->GetFromDB(1);
          $config->showConfigForm();
          //$config->showDetails();

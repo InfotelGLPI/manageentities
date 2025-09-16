@@ -27,10 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+
+use GlpiPlugin\Manageentities\CriPrice;
 
 if (Session::haveRight("plugin_manageentities", UPDATE)) {
-   $criprice = new PluginManageentitiesCriPrice();
+   $criprice = new CriPrice();
 
    if (isset($_POST["add"])) {
       Session::checkRight("contract", CREATE);

@@ -27,19 +27,24 @@
 // */
 
 use GlpiPlugin\Accounts\Account_Item;
+use GlpiPlugin\Manageentities\Cri;
+use GlpiPlugin\Manageentities\CriDetail;
+use GlpiPlugin\Manageentities\Followup;
+use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\Contact;
+use GlpiPlugin\Manageentities\Contract;
 
 define('GLPI_ROOT', '../../..');
-include(GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-$entity                        = new Entity();
-$PluginManageentitiesEntity    = new PluginManageentitiesEntity();
-$PluginManageentitiesContact   = new PluginManageentitiesContact();
-$PluginManageentitiesContract  = new PluginManageentitiesContract();
-$PluginManageentitiesCri       = new PluginManageentitiesCri();
-$PluginManageentitiesCriDetail = new PluginManageentitiesCriDetail();
-$followUp                      = new PluginManageentitiesFollowUp();
+$entity                        = new \Entity();
+$ManagementitiesEntity    = new Entity();
+$Contact   = new Contact();
+$Contract  = new Contract();
+$Cri       = new Cri();
+$CriDetail = new CriDetail();
+$followUp                      = new Followup();
 
 if (!isset($_POST['plugin_manageentities_tab']))
    $_POST['plugin_manageentities_tab'] = $_SESSION['glpi_plugin_manageentities_tab'];
@@ -58,16 +63,16 @@ switch ($_POST['plugin_manageentities_tab']) {
       break;
    case "description" :
       $_SESSION['glpi_plugin_manageentities_tab'] = "description";
-      $PluginManageentitiesEntity->showDescription($entities);
-      $PluginManageentitiesContact->showContacts($entities);
+       $ManagementitiesEntity->showDescription($entities);
+       $Contact->showContacts($entities);
       break;
    case "tickets" :
       $_SESSION['glpi_plugin_manageentities_tab'] = "tickets";
-//      $PluginManageentitiesEntity->showTickets($entities);
+//      $ManagementitiesEntity->showTickets($entities);
       break;
    case "reports":
       $_SESSION['glpi_plugin_manageentities_tab'] = "reports";
-      $PluginManageentitiesCriDetail->showReports(0, 0, $entities);
+       $CriDetail->showReports(0, 0, $entities);
       break;
    case "documents":
       $_SESSION['glpi_plugin_manageentities_tab'] = "documents";
@@ -78,7 +83,7 @@ switch ($_POST['plugin_manageentities_tab']) {
    case "contract":
       $_SESSION['glpi_plugin_manageentities_tab'] = "contract";
       if (Session::haveRight("Contract", READ)) {
-         $PluginManageentitiesContract->showContracts($entities);
+          $Contract->showContracts($entities);
       }
       break;
    case "accounts":
@@ -88,16 +93,16 @@ switch ($_POST['plugin_manageentities_tab']) {
       break;
    case "all":
       $_SESSION['glpi_plugin_manageentities_tab'] = "all";
-      $PluginManageentitiesEntity->showDescription($entities);
-      $PluginManageentitiesContact->showContacts($entities);
-//      $PluginManageentitiesEntity->showTickets($entities);
-      if ($PluginManageentitiesCri->canView())
-         $PluginManageentitiesCriDetail->showReports(0, 0, $entities);
+       $ManagementitiesEntity->showDescription($entities);
+       $Contact->showContacts($entities);
+//      $ManagementitiesEntity->showTickets($entities);
+      if ($Cri->canView())
+         $CriDetail->showReports(0, 0, $entities);
       if (Session::haveRight("Document", READ) && $entity->can($entities, READ)) {
          Document::showAssociated($entity);
       }
       if (Session::haveRight("Contract", READ)) {
-         $PluginManageentitiesContract->showContracts($entities);
+          $Contract->showContracts($entities);
       }
 
       break;

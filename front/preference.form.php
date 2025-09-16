@@ -27,11 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\Preference;
 
 //Save user preferences
 if (isset ($_POST['update_user_preferences_manageentities'])) {
-   $pref = new PluginManageentitiesPreference();
+   $pref = new Preference();
    $pref->update($_POST);
    Html::back();
 }

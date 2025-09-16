@@ -27,12 +27,12 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\AddElementsModel;
 
 Html::header_nocache();
 Session::checkLoginUser();
 
-$pModel = PluginManageentitiesAddElementsModel::getInstance();
+$pModel = AddElementsModel::getInstance();
 
 switch ($_POST ['action']) {
    case Action::REINIT_FORMS:

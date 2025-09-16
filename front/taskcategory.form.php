@@ -27,11 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use GlpiPlugin\Manageentities\TaskCategory;
 
 Session::checkRight("dropdown", READ);
 
-$taskCategory = new PluginManageentitiesTaskCategory();
+$taskCategory = new TaskCategory();
 
 //Save profile
 if (isset ($_POST['update'])) {

@@ -27,17 +27,18 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use Glpi\Exception\Http\NotFoundHttpException;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 $AJAX_INCLUDE = 1;
 Session::checkLoginUser();
 
 if (!isset($_POST['type'])) {
-    throw new \Glpi\Exception\Http\NotFoundHttpException();
+    throw new NotFoundHttpException();
 }
 if (!isset($_POST['parenttype'])) {
-    throw new \Glpi\Exception\Http\NotFoundHttpException();
+    throw new NotFoundHttpException();
 }
 
 $dbu = new DbUtils();

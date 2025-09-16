@@ -27,9 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\CriDetail;
+use GlpiPlugin\Manageentities\Entity;
 
-Html::header(__('Entities portal', 'manageentities'), '', "management", "pluginmanageentitiesentity");
+Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
 
 if (isset($_GET)) $tab = $_GET;
 if (empty($tab) && isset($_POST)) $tab = $_POST;
@@ -56,8 +58,8 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
 
 Report::title();
 
-$PluginManageentitiesEntity = new PluginManageentitiesEntity();
-if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDATE)) {
+$Entity = new \Entity();
+if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
 
    if (isset($_POST["choice_tech"])) {
 
@@ -81,8 +83,8 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "</table>";
       Html::closeForm();
       echo "</div>";
-      $PluginManageentitiesCriDetail = new PluginManageentitiesCriDetail();
-      $PluginManageentitiesCriDetail->showHelpdeskReports($_POST["usertype"], $owner, $_POST["date1"], $_POST["date2"]);
+      $CriDetail = new CriDetail();
+       $CriDetail->showHelpdeskReports($_POST["usertype"], $owner, $_POST["date1"], $_POST["date2"]);
 
    } else {
 

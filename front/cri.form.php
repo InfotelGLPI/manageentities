@@ -27,7 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use Glpi\Event;
+use GlpiPlugin\Manageentities\Cri;
+use GlpiPlugin\Manageentities\CriDetail;
 
 Session::checkLoginUser();
 if (!isset($_POST["cri"])) $_POST["cri"] = "";
@@ -35,12 +37,11 @@ if (!isset($_GET["action"])) $_GET["action"] = "";
 
 Html::popHeader(__('Generation of the intervention report', 'manageentities'));
 
-$PluginManageentitiesCri           = new PluginManageentitiesCri();
-$PluginManageentitiesCriTechnician = new PluginManageentitiesCriTechnician();
-$criDetail                         = new PluginManageentitiesCriDetail();
+$Cri           = new Cri();
+$criDetail                         = new CriDetail();
 
 if (isset($_POST["addcridetail"])) {
-   if ($PluginManageentitiesCri->canCreate()) {
+   if ($Cri->canCreate()) {
       $criDetail->add($_POST);
    }
    if(strpos($_SERVER['HTTP_REFERER'],"generatecri.form.php") > 0){
@@ -50,7 +51,7 @@ if (isset($_POST["addcridetail"])) {
    }
 
 } else if (isset($_POST["updatecridetail"])) {
-   if ($PluginManageentitiesCri->canCreate()) {
+   if ($Cri->canCreate()) {
       if (isset($_POST['withcontract']) && !$_POST['withcontract']) {
          $_POST['contracts_id']                          = 0;
          $_POST['plugin_manageentities_contractdays_id'] = 0;
@@ -60,7 +61,7 @@ if (isset($_POST["addcridetail"])) {
    Html::back();
 
 } else if (isset($_POST["delcridetail"])) {
-   if ($PluginManageentitiesCri->canCreate()) {
+   if ($Cri->canCreate()) {
       $criDetail->delete($_POST);
    }
    Html::back();
@@ -69,14 +70,14 @@ if (isset($_POST["addcridetail"])) {
    $doc         = new Document();
    $input['id'] = $_POST['documents_id'];
    if ($doc->delete($input, 1)) {
-      \Glpi\Event::log($input['id'], "documents", 4, "document", $_SESSION["glpiname"] . " " . __('Delete permanently'));
+      Event::log($input['id'], "documents", 4, "document", $_SESSION["glpiname"] . " " . __('Delete permanently'));
    }
    Html::back();
 
 }
 
 else {
-   $PluginManageentitiesCri->showForm($_GET["job"], ['action' => $_GET["action"]]);
+    $Cri->showForm($_GET["job"], ['action' => $_GET["action"]]);
 }
 
 Html::popFooter();

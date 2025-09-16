@@ -27,7 +27,10 @@
  --------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+
+use GlpiPlugin\Manageentities\AddElementsModel;
+use GlpiPlugin\Manageentities\AddElementsView;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkCentralAccess();
@@ -44,15 +47,15 @@ $val         .= __("Add a document");
 $val         .= "</td>";
 $val         .= "<td colspan='5'>";
 $root_manage = PLUGIN_MANAGEENTITIES_WEBDIR;
-$val         .= "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document")
+$val         .= "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document", "manageentities")
                 . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
-$val         .= "<i class=\"ti ti-square-plus\" style=\"font-size:3em;\"></i></a>";
+$val         .= "<i class=\"ti ti-square-plus\" style=\"font-size:2em;\"></i></a>";
 $val         .= "</td>";
 $val         .= "</tr>";
-$ele         = new PluginManageentitiesAddElementsView();
+$ele         = new AddElementsView();
 $val         .= $ele->showListPDFcontract(false);
 
-$pModel     = PluginManageentitiesAddElementsModel::getInstance();
+$pModel     = AddElementsModel::getInstance();
 $srcImg     = "";
 $alertTitle = "";
 

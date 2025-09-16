@@ -28,14 +28,13 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\GenerateCRI;
 use GlpiPlugin\Servicecatalog\Main;
-
-include('../../../inc/includes.php');
 
 Session::checkLoginUser();
 
 if (Session::getCurrentInterface() == 'central') {
-   Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "pluginmanageentitiesgeneratecri");
+   Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", GenerateCRI::class);
 } else {
    if (Plugin::isPluginActive('servicecatalog')) {
       Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
@@ -44,7 +43,7 @@ if (Session::getCurrentInterface() == 'central') {
    }
 }
 if (Session::haveRight("ticket", CREATE)) {
-   $generatecri = new PluginManageentitiesGenerateCRI();
+   $generatecri = new GenerateCRI();
    $generatecri->showWizard($ticket = new Ticket(), $_SESSION['glpiactive_entity']);
 } else {
     throw new AccessDeniedHttpException();

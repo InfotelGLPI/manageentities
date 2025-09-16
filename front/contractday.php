@@ -27,15 +27,17 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\Entity;
 
-Html::header(PluginManageentitiesContractDay::getTypeName(2), '', "management", "pluginmanageentitiesentity", "contractday");
+Html::header(ContractDay::getTypeName(2), '', "management", Entity::class, "contractday");
 
-$contractday = new PluginManageentitiesContractday();
+$contractday = new Contractday();
 $contractday->checkGlobal(READ);
 
 if ($contractday->canView()) {
-   Search::show("PluginManageentitiesContractday");
+   Search::show(Contractday::class);
 
 } else {
     throw new AccessDeniedHttpException();

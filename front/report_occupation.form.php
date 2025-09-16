@@ -27,7 +27,9 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\Report;
 
 Html::header(__('Entities portal', 'manageentities'), '', "plugins", "manageentities");
 
@@ -51,9 +53,11 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
    $_POST["date2"] = $tmp;
 }
 $dbu = new DbUtils();
-Report::title();
-$PluginManageentitiesEntity = new PluginManageentitiesEntity();
-if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDATE)) {
+
+\Report::title();
+
+$Entity = new Entity();
+if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
 
    if (isset($_POST["send"])) {
       echo "<div align='center'><form action=\"report_occupation.form.php\" method=\"post\">";
@@ -94,7 +98,7 @@ if ($PluginManageentitiesEntity->canView() || Session::haveRight("config", UPDAT
       echo "</div>";
 
       if (isset($_POST['techs'])) {
-         $report = new PluginManageentitiesReport();
+         $report = new Report();
          $report->showOccupationReports($_POST['techs'], $_POST["date1"], $_POST["date2"]);
       }
 

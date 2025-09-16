@@ -27,13 +27,25 @@
  --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Manageentities\Config;
+use GlpiPlugin\Manageentities\Contact;
+use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\ContractState;
+use GlpiPlugin\Manageentities\CriDetail;
+use GlpiPlugin\Manageentities\CriPrice;
+use GlpiPlugin\Manageentities\CriTechnician;
+use GlpiPlugin\Manageentities\CriType;
+use GlpiPlugin\Manageentities\DirecthelpdeskInjection;
+use GlpiPlugin\Manageentities\Followup;
+use GlpiPlugin\Manageentities\Gantt;
+use GlpiPlugin\Manageentities\Monthly;
+use GlpiPlugin\Manageentities\Profile;
+use GlpiPlugin\Manageentities\Preference;
+use GlpiPlugin\Manageentities\TaskCategory;
+
 function plugin_manageentities_install() {
    global $DB;
-
-   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/profile.class.php");
-   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/preference.class.php");
-   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/config.class.php");
-   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/cridetail.class.php");
 
    $dbu       = new DbUtils();
    $update    = false;
@@ -189,10 +201,10 @@ function plugin_manageentities_install() {
    }
 
    if ($update190) {
-      $config = PluginManageentitiesConfig::getInstance();
+      $config = Config::getInstance();
       if ($config->fields["backup"] == 1) {
 
-         $criDetail = new PluginManageentitiesCriDetail();
+         $criDetail = new CriDetail();
 
          $query = "SELECT `glpi_documents`.`id` AS doc_id,
                           `glpi_documents`.`tickets_id` AS doc_tickets_id,
@@ -252,13 +264,13 @@ function plugin_manageentities_install() {
       mkdir($rep_files_manageentities);
 
 
-   PluginManageentitiesProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
-   PluginManageentitiesProfile::initProfile();
+   Profile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
+   Profile::initProfile();
    $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_manageentities_profiles`;");
 
-   $pref_ID = PluginManageentitiesPreference::checkIfPreferenceExists(Session::getLoginUserID());
+   $pref_ID = Preference::checkIfPreferenceExists(Session::getLoginUserID());
    if ($pref_ID) {
-      $pref_value = PluginManageentitiesPreference::checkPreferenceValue(Session::getLoginUserID());
+      $pref_value = Preference::checkPreferenceValue(Session::getLoginUserID());
       if ($pref_value == 1) {
          $_SESSION["glpi_plugin_manageentities_loaded"] = 0;
       }
@@ -311,10 +323,8 @@ function plugin_manageentities_uninstall() {
 
    Toolbox::deleteDir($rep_files_manageentities);
 
-   include_once(PLUGIN_MANAGEENTITIES_DIR . "/inc/profile.class.php");
-
-   PluginManageentitiesProfile::removeRightsFromSession();
-   PluginManageentitiesProfile::removeRightsFromDB();
+   Profile::removeRightsFromSession();
+   Profile::removeRightsFromDB();
 
    return true;
 }
@@ -335,7 +345,7 @@ function plugin_manageentities_forceGroupBy($type) {
 
    return true;
    switch ($type) {
-      case 'PluginManageentitiesCriType' :
+       case CriType::class :
          return true;
          break;
 
@@ -350,10 +360,10 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num) {
    $table     = $searchopt[$ID]["table"];
    $field     = $searchopt[$ID]["field"];
    switch ($type) {
-      case 'PluginManageentitiesCriType':
+      case CriType::class :
          switch ($table . '.' . $field) {
             case "glpi_plugin_manageentities_criprices.price" :
-               //               $manageentitiesCritypes = new PluginManageentitiesCriType();
+               //               $manageentitiesCritypes = new CriType();
                //               $manageentitiesCritypes->getFromDBByCrit(["id = $table.plugin_manageentities_critypes_id
                //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
 
@@ -387,50 +397,46 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num) {
 // Hook done on purge item case
 function plugin_pre_item_purge_manageentities($item) {
 
-   $PluginManageentitiesConfig    = new PluginManageentitiesConfig();
-   $PluginManageentitiesCriDetail = new PluginManageentitiesCriDetail();
-   $PluginManageentitiesEntity    = new PluginManageentitiesEntity();
-
    switch (get_class($item)) {
       case 'Entity' :
-         $temp = new PluginManageentitiesContract();
+         $temp = new Contract();
          $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
 
-         $temp = new PluginManageentitiesContact();
+         $temp = new Contact();
          $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
 
-         $temp = new PluginManageentitiesCriPrice();
+         $temp = new CriPrice();
          $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
 
-         $temp = new PluginManageentitiesContractDay();
+         $temp = new ContractDay();
          $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
 
-         $temp = new PluginManageentitiesCriDetail();
+         $temp = new CriDetail();
          $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
          break;
       case 'Ticket' :
-         $temp = new PluginManageentitiesCriTechnician();
+         $temp = new CriTechnician();
          $temp->deleteByCriteria(['tickets_id' => $item->getField('id')]);
 
-         $temp = new PluginManageentitiesCriDetail();
+         $temp = new CriDetail();
          $temp->deleteByCriteria(['tickets_id' => $item->getField('id')]);
          break;
       case 'Contract' :
-         $temp = new PluginManageentitiesContract();
+         $temp = new Contract();
          $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
 
-         $temp = new PluginManageentitiesContractDay();
+         $temp = new ContractDay();
          $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
 
-         $temp = new PluginManageentitiesCriDetail();
+         $temp = new CriDetail();
          $temp->deleteByCriteria(['contracts_id' => $item->getField('id')]);
          break;
       case 'Contact' :
-         $temp = new PluginManageentitiesContact();
+         $temp = new Contact();
          $temp->deleteByCriteria(['contacts_id' => $item->getField('id')]);
          break;
       case 'TaskCategory' :
-         $temp = new PluginManageentitiesTaskCategory();
+         $temp = new TaskCategory();
          $temp->deleteByCriteria(['taskcategories_id' => $item->getField('id')]);
          break;
    }
@@ -444,7 +450,7 @@ function plugin_item_transfer_manageentities($parm) {
       case 'Contract' :
          $contract = new Contract();
          $contract->getFromDB($parm['id']);
-         $pluginContract     = new PluginManageentitiesContract();
+         $pluginContract     = new Contract();
          $old_entity         = '';
          $restrict           = ["`glpi_plugin_manageentities_contracts`.`contracts_id`" => $parm['id']];
          $allPluginContracts = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contracts', $restrict);
@@ -458,12 +464,12 @@ function plugin_item_transfer_manageentities($parm) {
             }
          }
 
-         $contractDay           = new PluginManageentitiesContractDay();
+         $contractDay           = new ContractDay();
          $condition             = ["`glpi_plugin_manageentities_contractdays`.`contracts_id`" => $parm['id']];
          $allPluginContractDays = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractdays', $condition);
          if (!empty($allPluginContractDays)) {
             foreach ($allPluginContractDays as $onePluginContractDays) {
-               $criPrice  = new PluginManageentitiesCriPrice();
+               $criPrice  = new CriPrice();
                $cond      = ["`glpi_plugin_manageentities_criprices`.`entities_id`"                       => $old_entity,
                              "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`" =>
                                 $onePluginContractDays['plugin_manageentities_critypes_id']];
@@ -490,12 +496,12 @@ function plugin_item_transfer_manageentities($parm) {
             }
          }
 
-         $criDetail           = new PluginManageentitiesCriDetail();
+         $criDetail           = new CriDetail();
          $restr               = ["`glpi_plugin_manageentities_cridetails`.`contracts_id`" => $parm['id']];
          $allPluginCriDetails = $dbu->getAllDataFromTable('glpi_plugin_manageentities_cridetails', $restr);
          if (!empty($allPluginCriDetails)) {
             foreach ($allPluginCriDetails as $onePluginCriDetail) {
-               $criPrice  = new PluginManageentitiesCriPrice();
+               $criPrice  = new CriPrice();
                $cond      = ["`glpi_plugin_manageentities_criprices`.`entities_id`"                       => $old_entity,
                              "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`" =>
                                 $onePluginCriDetail['plugin_manageentities_critypes_id']];
@@ -570,8 +576,8 @@ function plugin_manageentities_getDatabaseRelations() {
 function plugin_manageentities_getDropdown() {
 
    if (Plugin::isPluginActive("manageentities"))
-      return ['PluginManageentitiesCriType'       => __('Intervention type', 'manageentities'),
-              'PluginManageentitiesContractState' => __('State of contract', 'manageentities')];
+      return [CriType::class       => __('Intervention type', 'manageentities'),
+              ContractState::class => __('State of contract', 'manageentities')];
    else
       return [];
 }
@@ -579,16 +585,16 @@ function plugin_manageentities_getDropdown() {
 // Do special actions for dynamic report
 function plugin_manageentities_dynamicReport($parm) {
 
-   if ($parm["item_type"] == 'PluginManageentitiesFollowUp'
+   if ($parm["item_type"] == Followup::class
        && isset($parm["display_type"])) {
 
-      PluginManageentitiesFollowUp::showFollowUp($parm);
+      Followup::showFollowUp($parm);
 
       return true;
-   } else if ($parm["item_type"] == 'PluginManageentitiesMonthly'
+   } else if ($parm["item_type"] == Monthly::class
               && isset($parm["display_type"])) {
 
-      PluginManageentitiesMonthly::showMonthly($parm);
+      Monthly::showMonthly($parm);
 
       return true;
    }
@@ -644,7 +650,7 @@ function plugin_manageentities_postinit() {
 
 
    $PLUGIN_HOOKS['item_purge']['manageentities']["Document"]
-      = ['PluginManageentitiesEntityLogo', 'cleanForItem'];
+      = [EntityLogo::class, 'cleanForItem'];
 }
 
 function plugin_manageentities_displayConfigItem($type, $ID, $data, $num) {
@@ -668,27 +674,27 @@ function plugin_manageentities_redefine_menus($menu) {
    }
 
    $menu["manageentities"] = [
-                       "title" => PluginManageentitiesEntity::getTypeName(),
-                       "icon" => PluginManageentitiesEntity::getIcon(),
+                       "title" => Entity::getTypeName(),
+                       "icon" => Entity::getIcon(),
                     ];
    $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
    $infos['title'] = __('Manage your contracts', 'manageentities');
-   $infos['icon'] = PluginManageentitiesEntity::getIcon();
+   $infos['icon'] = Entity::getIcon();
    $menu['manageentities']['content']["manageentities_entities"] = $infos;
 
    $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/gantt.php";
-   $infos['title'] = PluginManageentitiesGantt::getTypeName();
-   $infos['icon'] = PluginManageentitiesGantt::getIcon();
+   $infos['title'] = Gantt::getTypeName();
+   $infos['icon'] = Gantt::getIcon();
    $menu['manageentities']['content']["manageentities_gantt"] = $infos;
 
    $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/administrativedatas.php";
-   $infos['title'] = PluginManageentitiesEntity::getTypeName();
-   $infos['icon'] = PluginManageentitiesEntity::getIcon();
+   $infos['title'] = Entity::getTypeName();
+   $infos['icon'] = Entity::getIcon();
    $menu['manageentities']['content']["manageentities_admindatas"] = $infos;
 
    $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/contractday.php";
-   $infos['title'] = PluginManageentitiesContractDay::getTypeName();
-   $infos['icon'] = PluginManageentitiesContractDay::getIcon();
+   $infos['title'] = ContractDay::getTypeName();
+   $infos['icon'] = ContractDay::getIcon();
    $menu['manageentities']['content']["manageentities_reports"] = $infos;
 
    return $menu;
@@ -697,5 +703,5 @@ function plugin_manageentities_redefine_menus($menu) {
 function plugin_datainjection_populate_manageentities()
 {
     global $INJECTABLE_TYPES;
-    $INJECTABLE_TYPES['PluginManageentitiesDirecthelpdeskInjection'] = 'directhelpdesks';
+    $INJECTABLE_TYPES[DirecthelpdeskInjection::class] = 'directhelpdesks';
 }

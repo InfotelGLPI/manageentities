@@ -27,7 +27,8 @@
  --------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+use GlpiPlugin\Manageentities\Config;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -38,26 +39,26 @@ if (!defined('GLPI_ROOT')) {
 if (isset($_POST["action"])) {
    switch ($_POST["action"]) {
       case 'title_show_hourorday' :
-         $config = PluginManageentitiesConfig::getInstance();
+         $config = Config::getInstance();
          switch ($_POST["hourorday"]) {
-            case PluginManageentitiesConfig::DAY :
+            case Config::DAY :
                echo __('Number of hours by day', 'manageentities');
 
                break;
-            case PluginManageentitiesConfig::HOUR :
+            case Config::HOUR :
                echo __('Only ticket accepted are taking into account for consumption calculation', 'manageentities');
 
                break;
          }
          break;
       case 'value_show_hourorday' :
-         $config = PluginManageentitiesConfig::getInstance();
+         $config = Config::getInstance();
          switch ($_POST["hourorday"]) {
-            case PluginManageentitiesConfig::DAY :
+            case Config::DAY :
                echo Html::input('hourbyday', ['value' => $config->fields["hourbyday"], 'size' => 5]);
                echo Html::hidden('needvalidationforcri', ['value' => 0]);
                break;
-            case PluginManageentitiesConfig::HOUR :
+            case Config::HOUR :
                Dropdown::showYesNo("needvalidationforcri", $config->fields["needvalidationforcri"]);
                echo Html::hidden('hourbyday', ['value' => 0]);
                break;
