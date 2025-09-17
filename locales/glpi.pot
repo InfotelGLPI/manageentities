@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-16 10:33+0000\n"
+"POT-Creation-Date: 2025-09-17 09:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1199,7 +1199,7 @@ msgstr ""
 msgid "Is billed"
 msgstr ""
 
-#: src/Directhelpdesk_ticket.php:134
+#: src/Directhelpdesk_ticket.php:143
 msgid "Select"
 msgstr ""
 
