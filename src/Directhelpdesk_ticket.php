@@ -94,6 +94,7 @@ class Directhelpdesk_Ticket extends CommonDBTM
 
     static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+
         if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
             $self = new self();
             if ($items = $self->find(['tickets_id' => $item->getID()])) {
@@ -118,7 +119,15 @@ class Directhelpdesk_Ticket extends CommonDBTM
                     echo "</tr>";
                 }
                 echo "</table>";
+            } else {
+                echo "<div class='center alert alert-info d-flex'>";
+                echo __('No results found');
+                echo "</div>";
             }
+        } else {
+            echo "<div class='center alert alert-info d-flex'>";
+            echo __('No results found');
+            echo "</div>";
         }
         return true;
     }
