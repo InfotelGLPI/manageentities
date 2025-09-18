@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-17 09:24+0000\n"
+"POT-Creation-Date: 2025-09-18 07:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Study and advice"
 msgstr ""
 
-#: hook.php:572 src/Addelementsview.php:2732 src/Cri.php:203
+#: hook.php:572 src/Addelementsview.php:2731 src/Cri.php:203
 #: src/Cridetail.php:246 src/Cridetail.php:513 src/Cridetail.php:623
 #: src/Cridetail.php:1093 src/Criprice.php:395 src/Critype.php:48
 msgid "Intervention type"
@@ -38,7 +38,7 @@ msgid_plural "Intervention types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:573 src/Addelementsview.php:2303 src/Contractday.php:149
+#: hook.php:573 src/Addelementsview.php:2302 src/Contractday.php:149
 #: src/Contractday.php:397 src/Contractday.php:604 src/Contractstate.php:48
 #: src/Followup.php:1061 src/Followup.php:1071 src/Followup.php:1937
 msgid "State of contract"
@@ -88,7 +88,7 @@ msgstr ""
 msgid "Please add this intervention before adding another."
 msgstr ""
 
-#: ajax/addelements.listener.php:521 src/Addelementsview.php:3301
+#: ajax/addelements.listener.php:521 src/Addelementsview.php:3300
 msgid "Update all previous elements"
 msgstr ""
 
@@ -130,7 +130,7 @@ msgid ""
 "Only ticket accepted are taking into account for consumption calculation"
 msgstr ""
 
-#: ajax/updateDocumentList.php:50 src/Addelementsview.php:1557
+#: ajax/updateDocumentList.php:50 src/Addelementsview.php:1556
 msgid "Add a document"
 msgstr ""
 
@@ -142,8 +142,8 @@ msgstr ""
 msgid "Generation of the intervention report"
 msgstr ""
 
-#: front/directhelpdesk.form.php:49 src/Addelementsview.php:274
-#: src/Addelementsview.php:295 src/Addelementsview.php:3575
+#: front/directhelpdesk.form.php:49 src/Addelementsview.php:273
+#: src/Addelementsview.php:294 src/Addelementsview.php:3574
 msgid "New intervention"
 msgstr ""
 
@@ -412,12 +412,12 @@ msgid "This action is irreversible, Continue ?"
 msgstr ""
 
 #: src/Addelementsmodel.php:436 src/Addelementsmodel.php:466
-#: src/Addelementsview.php:769
+#: src/Addelementsview.php:768
 msgid "Update this entity"
 msgstr ""
 
 #: src/Addelementsmodel.php:622 src/Addelementsmodel.php:647
-#: src/Addelementsview.php:1540
+#: src/Addelementsview.php:1539
 msgid "Update this contract only"
 msgstr ""
 
@@ -429,204 +429,204 @@ msgstr ""
 msgid "Update this intervention only"
 msgstr ""
 
-#: src/Addelementsmodel.php:1276 src/Addelementsview.php:2885
-#: src/Addelementsview.php:3219
+#: src/Addelementsmodel.php:1276 src/Addelementsview.php:2884
+#: src/Addelementsview.php:3218
 msgid "Update this price"
 msgid_plural "Update these prices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Addelementsview.php:95
+#: src/Addelementsview.php:94
 msgid "Add elements form"
 msgstr ""
 
-#: src/Addelementsview.php:115 src/Addelementsview.php:866
-#: src/Addelementsview.php:1214 src/Addelementsview.php:1251
-#: src/Addelementsview.php:2094 src/Addelementsview.php:2185
+#: src/Addelementsview.php:114 src/Addelementsview.php:865
+#: src/Addelementsview.php:1213 src/Addelementsview.php:1250
+#: src/Addelementsview.php:2093 src/Addelementsview.php:2184
 msgid "New entity"
 msgstr ""
 
-#: src/Addelementsview.php:143 src/Addelementsview.php:161
-#: src/Addelementsview.php:3571
+#: src/Addelementsview.php:142 src/Addelementsview.php:160
+#: src/Addelementsview.php:3570
 msgid "New contact"
 msgstr ""
 
-#: src/Addelementsview.php:200 src/Addelementsview.php:2148
-#: src/Addelementsview.php:2204 src/Addelementsview.php:2968
+#: src/Addelementsview.php:199 src/Addelementsview.php:2147
+#: src/Addelementsview.php:2203 src/Addelementsview.php:2967
 msgid "New contract"
 msgstr ""
 
-#: src/Addelementsview.php:221
+#: src/Addelementsview.php:220
 msgctxt "button"
 msgid "Next >"
 msgstr ""
 
-#: src/Addelementsview.php:771
+#: src/Addelementsview.php:770
 msgctxt "button"
 msgid "Add only the entity"
 msgstr ""
 
-#: src/Addelementsview.php:895 src/Addelementsview.php:1241
-#: src/Addelementsview.php:2121
+#: src/Addelementsview.php:894 src/Addelementsview.php:1240
+#: src/Addelementsview.php:2120
 msgid "New entity created previously"
 msgstr ""
 
-#: src/Addelementsview.php:1043
+#: src/Addelementsview.php:1042
 msgid "Update this contact"
 msgstr ""
 
-#: src/Addelementsview.php:1045
+#: src/Addelementsview.php:1044
 msgid "Add only the contact"
 msgstr ""
 
-#: src/Addelementsview.php:1058
+#: src/Addelementsview.php:1057
 msgid "Add another contact"
 msgstr ""
 
-#: src/Addelementsview.php:1542
+#: src/Addelementsview.php:1541
 msgid "Add only the contract"
 msgstr ""
 
-#: src/Addelementsview.php:1648 src/Addelementsview.php:3037
+#: src/Addelementsview.php:1647 src/Addelementsview.php:3036
 msgid "Document list"
 msgstr ""
 
-#: src/Addelementsview.php:1841 src/Contract.php:208 src/Entity.php:587
+#: src/Addelementsview.php:1840 src/Contract.php:208 src/Entity.php:587
 #: src/Followup.php:785 src/Followup.php:968 src/Gantt.php:348
 msgid "Date of signature"
 msgstr ""
 
-#: src/Addelementsview.php:1852 src/Contract.php:212 src/Followup.php:795
+#: src/Addelementsview.php:1851 src/Contract.php:212 src/Followup.php:795
 #: src/Followup.php:989 src/Gantt.php:352
 msgid "Date of renewal"
 msgstr ""
 
-#: src/Addelementsview.php:1866 src/Contract.php:218 src/Contract.php:356
+#: src/Addelementsview.php:1865 src/Contract.php:218 src/Contract.php:356
 #: src/Followup.php:806 src/Followup.php:1009 src/Monthly.php:494
 msgid "Mode of management"
 msgstr ""
 
-#: src/Addelementsview.php:1873 src/Addelementsview.php:2212
+#: src/Addelementsview.php:1872 src/Addelementsview.php:2211
 #: src/Contract.php:221 src/Contract.php:357 src/Contract.php:360
 #: src/Contractday.php:167 src/Contractday.php:349 src/Contractday.php:894
 #: src/Followup.php:811 src/Followup.php:1018
 msgid "Type of service contract"
 msgstr ""
 
-#: src/Addelementsview.php:1884 src/Contract.php:227
+#: src/Addelementsview.php:1883 src/Contract.php:227
 msgid "Contract is imported in GLPI"
 msgstr ""
 
-#: src/Addelementsview.php:1895 src/Contract.php:239
+#: src/Addelementsview.php:1894 src/Contract.php:239
 msgid "Show on GANTT"
 msgstr ""
 
-#: src/Addelementsview.php:1905 src/Contract.php:244
+#: src/Addelementsview.php:1904 src/Contract.php:244
 msgid "Refacturable costs"
 msgstr ""
 
-#: src/Addelementsview.php:1915 src/Contract.php:254
+#: src/Addelementsview.php:1914 src/Contract.php:254
 msgid "Movement management"
 msgstr ""
 
-#: src/Addelementsview.php:1938 src/Contract.php:273
+#: src/Addelementsview.php:1937 src/Contract.php:273
 msgid "Duration of moving"
 msgstr ""
 
-#: src/Addelementsview.php:2174
+#: src/Addelementsview.php:2173
 msgid "New contract created previously"
 msgstr ""
 
-#: src/Addelementsview.php:2231
+#: src/Addelementsview.php:2230
 msgid "Period name"
 msgstr ""
 
-#: src/Addelementsview.php:2241 src/Contractday.php:133 src/Contractday.php:366
+#: src/Addelementsview.php:2240 src/Contractday.php:133 src/Contractday.php:366
 #: src/Contractday.php:607
 msgid "Postponement"
 msgstr ""
 
-#: src/Addelementsview.php:2283 src/Contractday.php:120 src/Contractday.php:386
+#: src/Addelementsview.php:2282 src/Contractday.php:120 src/Contractday.php:386
 #: src/Contractday.php:602 src/Followup.php:1101 src/Gantt.php:411
 #: src/Monthly.php:498
 msgid "Initial credit"
 msgstr ""
 
-#: src/Addelementsview.php:2357 src/Contractday.php:468 src/Monthly.php:357
+#: src/Addelementsview.php:2356 src/Contractday.php:468 src/Monthly.php:357
 #: src/Monthly.php:367 src/Monthly.php:370
 msgid "Already charged"
 msgstr ""
 
-#: src/Addelementsview.php:2374
+#: src/Addelementsview.php:2373
 msgid "Update this intervention"
 msgstr ""
 
-#: src/Addelementsview.php:2376
+#: src/Addelementsview.php:2375
 msgid "Add only the intervention"
 msgstr ""
 
-#: src/Addelementsview.php:2389
+#: src/Addelementsview.php:2388
 msgid "Add another intervention"
 msgstr ""
 
-#: src/Addelementsview.php:2594 src/Criprice.php:346
+#: src/Addelementsview.php:2593 src/Criprice.php:346
 msgid "Add a new price"
 msgstr ""
 
-#: src/Addelementsview.php:2736 src/Addelementsview.php:2851
+#: src/Addelementsview.php:2735 src/Addelementsview.php:2850
 #: src/Criprice.php:58 src/Criprice.php:95 src/Criprice.php:204
 #: src/Criprice.php:399 src/Critype.php:93 src/Monthly.php:506
 msgid "Daily rate"
 msgstr ""
 
-#: src/Addelementsview.php:2738 src/Addelementsview.php:2853
+#: src/Addelementsview.php:2737 src/Addelementsview.php:2852
 #: src/Criprice.php:60 src/Criprice.php:97 src/Criprice.php:206
 #: src/Criprice.php:401 src/Monthly.php:508
 msgid "Hourly rate"
 msgstr ""
 
-#: src/Addelementsview.php:2740 src/Addelementsview.php:2869
+#: src/Addelementsview.php:2739 src/Addelementsview.php:2868
 #: src/Criprice.php:217 src/Criprice.php:403 src/Criprice.php:705
 msgid "Is default"
 msgstr ""
 
-#: src/Addelementsview.php:2887 src/Addelementsview.php:3213
+#: src/Addelementsview.php:2886 src/Addelementsview.php:3212
 msgid "Add this price"
 msgid_plural "Add these prices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Addelementsview.php:2893
+#: src/Addelementsview.php:2892
 msgid "Delete this price"
 msgid_plural "Delete these prices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Addelementsview.php:3281
+#: src/Addelementsview.php:3280
 msgid "Reinitialize forms"
 msgstr ""
 
-#: src/Addelementsview.php:3304
+#: src/Addelementsview.php:3303
 msgid "Add all previous elements"
 msgstr ""
 
-#: src/Addelementsview.php:3926
+#: src/Addelementsview.php:3925
 msgid "The previous entity will be added, continue ?"
 msgstr ""
 
-#: src/Addelementsview.php:3933
+#: src/Addelementsview.php:3932
 msgid "The previous contract will be added, continue ?"
 msgstr ""
 
-#: src/Addelementsview.php:3940
+#: src/Addelementsview.php:3939
 msgid "The previous entity and contract will be added, continue ?"
 msgstr ""
 
-#: src/Addelementsview.php:3947
+#: src/Addelementsview.php:3946
 msgid "All previous elements will be added, continue ?"
 msgstr ""
 
-#: src/Addelementsview.php:3954
+#: src/Addelementsview.php:3953
 msgid "All previous elements will be updated, continue ?"
 msgstr ""
 
