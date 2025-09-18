@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-include_once(PLUGIN_MANAGEENTITIES_DIR . '/common/CommonGLPIModel.php');
+include_once(PLUGIN_MANAGEENTITIES_DIR . '/Common/CommonGLPIModel.php');
 
 // Enumeration like for Errors
 class Errors extends CommonGLPIErrors

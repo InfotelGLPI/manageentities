@@ -38,7 +38,6 @@ use DbUtils;
 use Document;
 use Document_Item;
 use DocumentCategory;
-//use GlpiPlugin\Manageentities\Common\CommonGLPIView;
 use Html;
 use Infocom;
 use PluginPresalesBusiness;
@@ -51,7 +50,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-include_once(PLUGIN_MANAGEENTITIES_DIR . '/common/CommonGLPIView.php');
+include_once(PLUGIN_MANAGEENTITIES_DIR . '/Common/CommonGLPIView.php');
 
 class AddElementsView extends CommonGLPIView
 {
