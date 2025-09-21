@@ -116,7 +116,7 @@ class Dashboard extends CommonGLPI
                 if (Plugin::isPluginActive("manageentities")) {
                     $link_contract = Toolbox::getItemTypeFormURL("Contract");
                     $link_contract_day = Toolbox::getItemTypeFormURL(ContractDay::class);
-                    $entity = new Entity();
+                    $entity = new \Entity();
                     $contracts = self::queryFollowUpSimplified($_SESSION['glpiactiveentities'], []);
                     //               Toolbox::logDebug($contracts);
                     $datas = [];
@@ -386,7 +386,7 @@ class Dashboard extends CommonGLPI
                 if (Plugin::isPluginActive("manageentities")) {
                     $link_contract = Toolbox::getItemTypeFormURL("Contract");
                     $link_contract_day = Toolbox::getItemTypeFormURL(ContractDay::class);
-                    $entity = new Entity();
+                    $entity = new \Entity();
                     $contracts = self::queryFollowUpSimplified($_SESSION['glpiactiveentities'], []);
                     $datas = [];
                     if (!empty($contracts)) {

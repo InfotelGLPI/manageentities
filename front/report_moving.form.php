@@ -113,7 +113,7 @@ if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
       echo "<tr class='tab_bg_2'><td class='right'>";
       echo __('Entity') . " :</td><td>";
 
-      $entity    = new Entity();
+      $entity    = new \Entity();
 //      $data      = [Dropdown::EMPTY_VALUE];
       $condition = ['id' => $_SESSION["glpiactiveentities"]];
       $data      = $entity->find($condition);

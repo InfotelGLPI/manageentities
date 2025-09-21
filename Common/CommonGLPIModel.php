@@ -157,8 +157,6 @@ abstract class CommonGLPIModel
      *
      *
      *
-     * @param CommonGLPIErrors $error : the error to get
-     * @param CommonGLPIErrors $type : the type of error to get
      * @param int              $opt : if set, check if a special element of the array is on error
      */
     public function isOnError($error, $type, $opt = null)
@@ -194,10 +192,6 @@ abstract class CommonGLPIModel
     /**
      * This function allows to add an error to the model.
      *
-     * @param CommonGLPIError $id : the error to add
-     * @param CommonGLPIError $type : the type of error to add
-     * @param boolean         $val : the value (true for an error, otherwise false)
-     * @param int             $opt : if set, used to specified an error on a special element
      *    identified by the id $opt
      */
     public function addError($id, $type, $val, $opt = null)
@@ -215,10 +209,6 @@ abstract class CommonGLPIModel
     /**
      * This function allows to delete an error from the model.
      *
-     * @param CommonGLPIError $id : the error to delete
-     * @param CommonGLPIError $type : the error type to delete
-     * @param int             $opt : if set, delete the error of the special element identified by
-     *    the id $opt
      */
     public function deleteError($id, $type, $opt = null)
     {

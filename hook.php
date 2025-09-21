@@ -37,6 +37,7 @@ use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\CriTechnician;
 use GlpiPlugin\Manageentities\CriType;
 use GlpiPlugin\Manageentities\DirecthelpdeskInjection;
+use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
 use GlpiPlugin\Manageentities\Gantt;
 use GlpiPlugin\Manageentities\Monthly;

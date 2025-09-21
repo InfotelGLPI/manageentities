@@ -188,7 +188,7 @@ function plugin_version_manageentities()
         'name' => __('Entities portal', 'manageentities'),
         'version' => PLUGIN_MANAGEENTITIES_VERSION,
         'oldname' => 'manageentity',
-        'author' => "<a href='http://blogglpi.infotel.com'>Infotel</a>",
+        'author' => "<a href='https//blogglpi.infotel.com'>Infotel</a>, Xavier CAILLAUD",
         'license' => 'GPLv2+',
         'homepage' => 'https://github.com/InfotelGLPI/manageentities',
         'requirements' => [
