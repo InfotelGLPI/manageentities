@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-18 07:24+0000\n"
+"POT-Creation-Date: 2025-09-21 14:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: hook.php:58 hook.php:74 hook.php:89
+#: hook.php:59 hook.php:75 hook.php:90
 msgid "Urgent intervention"
 msgstr ""
 
-#: hook.php:60 hook.php:76 hook.php:91
+#: hook.php:61 hook.php:77 hook.php:92
 msgid "Scheduled intervention"
 msgstr ""
 
-#: hook.php:62 hook.php:78 hook.php:93
+#: hook.php:63 hook.php:79 hook.php:94
 msgid "Study and advice"
 msgstr ""
 
-#: hook.php:572 src/Addelementsview.php:2731 src/Cri.php:203
+#: hook.php:573 src/Addelementsview.php:2731 src/Cri.php:203
 #: src/Cridetail.php:246 src/Cridetail.php:513 src/Cridetail.php:623
 #: src/Cridetail.php:1093 src/Criprice.php:395 src/Critype.php:48
 msgid "Intervention type"
@@ -38,7 +38,7 @@ msgid_plural "Intervention types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:573 src/Addelementsview.php:2302 src/Contractday.php:149
+#: hook.php:574 src/Addelementsview.php:2302 src/Contractday.php:149
 #: src/Contractday.php:397 src/Contractday.php:604 src/Contractstate.php:48
 #: src/Followup.php:1061 src/Followup.php:1071 src/Followup.php:1937
 msgid "State of contract"
@@ -46,7 +46,7 @@ msgid_plural "States of contracts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:679 src/Servicecatalog.php:80 src/Servicecatalog.php:86
+#: hook.php:680 src/Servicecatalog.php:80 src/Servicecatalog.php:86
 msgid "Manage your contracts"
 msgstr ""
 
