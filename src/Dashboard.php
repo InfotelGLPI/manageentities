@@ -679,7 +679,7 @@ class Dashboard extends CommonGLPI
                             );
 
                             if (Session::getCurrentInterface() == 'helpdesk'
-                                && $dataContractDay["contract_type"] == sContract::CONTRACT_TYPE_UNLIMITED) {
+                                && $dataContractDay["contract_type"] == Contract::CONTRACT_TYPE_UNLIMITED) {
                                 $credit = Contract::getContractType(
                                     $dataContractDay["contract_type"]
                                 );

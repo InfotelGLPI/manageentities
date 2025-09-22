@@ -38,76 +38,77 @@ define('GLPI_ROOT', '../../..');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-$entity                        = new \Entity();
-$ManagementitiesEntity    = new Entity();
-$Contact   = new Contact();
-$Contract  = new Contract();
-$Cri       = new Cri();
+$entity = new \Entity();
+$ManagementitiesEntity = new Entity();
+$Contact = new Contact();
+$Contract = new Contract();
+$Cri = new Cri();
 $CriDetail = new CriDetail();
-$followUp                      = new Followup();
+$followUp = new Followup();
 
-if (!isset($_POST['plugin_manageentities_tab']))
-   $_POST['plugin_manageentities_tab'] = $_SESSION['glpi_plugin_manageentities_tab'];
+if (!isset($_POST['plugin_manageentities_tab'])) {
+    $_POST['plugin_manageentities_tab'] = $_SESSION['glpi_plugin_manageentities_tab'];
+}
 
 if (Session::getCurrentInterface() != 'helpdesk') {
-   $entities = $_SESSION["glpiactiveentities"];
+    $entities = $_SESSION["glpiactiveentities"];
 } else {
-   $entities = [$_SESSION["glpiactive_entity"]];
+    $entities = [$_SESSION["glpiactive_entity"]];
 }
 
 switch ($_POST['plugin_manageentities_tab']) {
-   case "follow-up" :
-      $_SESSION['glpi_plugin_manageentities_tab'] = "follow-up";
-      $followUp->showCriteriasForm($_POST);
-      $followUp->showFollowUp($entities, $_POST);
-      break;
-   case "description" :
-      $_SESSION['glpi_plugin_manageentities_tab'] = "description";
-       $ManagementitiesEntity->showDescription($entities);
-       $Contact->showContacts($entities);
-      break;
-   case "tickets" :
-      $_SESSION['glpi_plugin_manageentities_tab'] = "tickets";
+    case "follow-up" :
+        $_SESSION['glpi_plugin_manageentities_tab'] = "follow-up";
+        $followUp->showCriteriasForm($_POST);
+        $followUp->showFollowUp($entities, $_POST);
+        break;
+    case "description" :
+        $_SESSION['glpi_plugin_manageentities_tab'] = "description";
+        $ManagementitiesEntity->showDescription($entities);
+        $Contact->showContacts($entities);
+        break;
+    case "tickets" :
+        $_SESSION['glpi_plugin_manageentities_tab'] = "tickets";
 //      $ManagementitiesEntity->showTickets($entities);
-      break;
-   case "reports":
-      $_SESSION['glpi_plugin_manageentities_tab'] = "reports";
-       $CriDetail->showReports(0, 0, $entities);
-      break;
-   case "documents":
-      $_SESSION['glpi_plugin_manageentities_tab'] = "documents";
-      if (Session::haveRight("Document", READ) && $entity->can($entities, READ)) {
-         Document::showAssociated($entity);
-      }
-      break;
-   case "contract":
-      $_SESSION['glpi_plugin_manageentities_tab'] = "contract";
-      if (Session::haveRight("Contract", READ)) {
-          $Contract->showContracts($entities);
-      }
-      break;
-   case "accounts":
-      $_SESSION['glpi_plugin_manageentities_tab'] = "accounts";
-      $Account_Item                 = new Account_Item();
-      $Account_Item->showPluginFromItems('Entity', $entities, "");
-      break;
-   case "all":
-      $_SESSION['glpi_plugin_manageentities_tab'] = "all";
-       $ManagementitiesEntity->showDescription($entities);
-       $Contact->showContacts($entities);
+        break;
+    case "reports":
+        $_SESSION['glpi_plugin_manageentities_tab'] = "reports";
+        $CriDetail->showReports(0, 0, $entities);
+        break;
+    case "documents":
+        $_SESSION['glpi_plugin_manageentities_tab'] = "documents";
+        if (Session::haveRight("Document", READ) && $entity->can($entities, READ)) {
+            Document_Item::showForItem($entity);
+        }
+        break;
+    case "contract":
+        $_SESSION['glpi_plugin_manageentities_tab'] = "contract";
+        if (Session::haveRight("Contract", READ)) {
+            $Contract->showContracts($entities);
+        }
+        break;
+    case "accounts":
+        $_SESSION['glpi_plugin_manageentities_tab'] = "accounts";
+        Account_Item::showForItem($entities);
+        break;
+    case "all":
+        $_SESSION['glpi_plugin_manageentities_tab'] = "all";
+        $ManagementitiesEntity->showDescription($entities);
+        $Contact->showContacts($entities);
 //      $ManagementitiesEntity->showTickets($entities);
-      if ($Cri->canView())
-         $CriDetail->showReports(0, 0, $entities);
-      if (Session::haveRight("Document", READ) && $entity->can($entities, READ)) {
-         Document::showAssociated($entity);
-      }
-      if (Session::haveRight("Contract", READ)) {
-          $Contract->showContracts($entities);
-      }
+        if ($Cri->canView()) {
+            $CriDetail->showReports(0, 0, $entities);
+        }
+        if (Session::haveRight("Document", READ) && $entity->can($entities, READ)) {
+            Document_Item::showForItem($entity);
+        }
+        if (Session::haveRight("Contract", READ)) {
+            $Contract->showContracts($entities);
+        }
 
-      break;
-   default :
-      break;
+        break;
+    default :
+        break;
 }
 
 ?>
