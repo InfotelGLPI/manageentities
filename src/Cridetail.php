@@ -230,7 +230,7 @@ class CriDetail extends CommonDBTM
 
         if (count($iterator) > 0) {
             echo "<form method='post' action=\"./front/entity.php\">";
-            echo "<div align='center'><table class='tab_cadre center' width='95%'>";
+            echo "<div class='center'><table class='tab_cadre center' width='95%'>";
             echo "<tr><th colspan='" . (12 + $colsup) . "'>" . Cri::getTypeName(2) . "&nbsp;";
             if ($usertype != "group") {
                 echo " -" . $dbu->getusername($technum) . "&nbsp;";
@@ -1183,7 +1183,7 @@ class CriDetail extends CommonDBTM
             $colspan = $colspan - 1;
 
             if (sizeof($resultCriDetail['result']) != 0) {
-                echo "<div align='center'>";
+                echo "<div class='center'>";
                 echo "<table class='tab_cadre_fixe' cellpadding='5'>";
                 echo "<tr>";
                 echo "<th colspan='4'>" . __('Intervention periods of contract', 'manageentities') . "</th></tr>";

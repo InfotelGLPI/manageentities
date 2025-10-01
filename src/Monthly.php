@@ -869,7 +869,7 @@ class Monthly extends CommonDBTM
         $contractstate = new ContractState();
         $contracts = $contractstate->find();
         $nb = count($contracts);
-        echo "<div align='center'>";
+        echo "<div class='center'>";
         echo "<table class='tab_cadre'><tr><th colspan='10'>" . __('Caption') . "</th></tr>";
         /*$i = 0;
         foreach ($contracts as $contract){
@@ -908,7 +908,7 @@ class Monthly extends CommonDBTM
         echo "<form method='post' name='criterias_form$rand' id='criterias_form$rand'
                action=\"./entity.php\">";
         echo "<div class='plugin_manageentities_color' ><table style='margin: 0px auto 5px auto;'>";
-        echo "<tr><td colspan='2' align='center' name='year'></td></tr>";
+        echo "<tr><td colspan='2' class='center' name='year'></td></tr>";
         echo "<tr><td>";
         echo "<ul id='last_year'></ul></td>";
         echo "<td><ul id='manageentities-months-list'></ul>";

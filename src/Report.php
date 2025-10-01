@@ -108,7 +108,7 @@ class Report extends CommonDBTM
 
         if (!empty($resultat)) {
             echo "<form method='post' action=\"./front/entity.php\">";
-            echo "<div align='center'><table class='tab_cadre center' width='95%'>";
+            echo "<div class='center'><table class='tab_cadre center' width='95%'>";
             echo "<tr><th colspan='4'>" . __('Report on the movement of technicians', 'manageentities') . "</th></tr>";
             echo "<tr>";
 
@@ -214,7 +214,7 @@ class Report extends CommonDBTM
 
         if (!empty($resultat)) {
             echo "<form method='post' action=\"./front/entity.php\">";
-            echo "<div align='center'><table class='tab_cadre center' width='95%'>";
+            echo "<div class='center'><table class='tab_cadre center' width='95%'>";
             echo "<tr><th colspan='" . (count($techs) + 3) . "'>" . __(
                     'Report concerning the occupation of the technicians',
                     'manageentities'

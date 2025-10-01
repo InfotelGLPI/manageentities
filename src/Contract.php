@@ -348,7 +348,7 @@ class Contract extends CommonDBTM
 
         if (count($iterator) > 0) {
             echo "<form method='post' action=\"./entity.php\">";
-            echo "<div align='center'><table class='tab_cadre_me center'>";
+            echo "<div class='center'><table class='tab_cadre_me center'>";
             echo "<tr><th>" . __('Name') . "</th>";
             echo "<th>" . _x('phone', 'Number') . "</th>";
             echo "<th>" . __('Comments') . "</th>";
@@ -445,7 +445,7 @@ class Contract extends CommonDBTM
             Html::closeForm();
         } else {
             echo "<form method='post' action=\"./entity.php\">";
-            echo "<div align='center'><table class='tab_cadre_fixe center'>";
+            echo "<div class='center'><table class='tab_cadre_fixe center'>";
             echo "<tr><th colspan='3'>" . __('Associated assistance contracts', 'manageentities') . ":</th></tr>";
             echo "<tr><th>" . __('Name') . "</th>";
             echo "<th>" . _x('phone', 'Number') . "</th>";

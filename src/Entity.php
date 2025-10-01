@@ -286,7 +286,7 @@ class Entity extends CommonGLPI
 
             //      self::showManageentitiesHeader(__('Data administrative', 'manageentities'));
 
-            echo "<div align='center'>";
+            echo "<div class='center'>";
             echo "<table width='100%'>";
             echo "<tr><td width='55%' style='vertical-align: top;' >";
 

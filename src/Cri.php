@@ -89,7 +89,7 @@ class Cri extends CommonDBTM
 
         // Champ caché pour l'identifiant du ticket.
         echo Html::hidden('REPORT_ID', ['value' => $ID]);
-        echo "<div align='center'>";
+        echo "<div class='center'>";
         echo "<table class='tab_cadre_fixe'>";
 
         /* Information complémentaire déterminant si sous contrat ou non. */

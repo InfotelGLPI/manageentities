@@ -1876,7 +1876,7 @@ class Followup extends CommonDBTM
         $contractstate = new ContractState();
         $contracts = $contractstate->find();
         $nb = count($contracts);
-        echo "<div align='center'>";
+        echo "<div class='center'>";
         echo "<table class='tab_cadre'><tr><th colspan='20'>" . __('Caption') . "</th></tr>";
         $i = 0;
         foreach ($contracts as $contract) {

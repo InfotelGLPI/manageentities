@@ -63,7 +63,7 @@ if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
 
    if (isset($_POST["choice_tech"])) {
 
-      echo "<div align='center'><form action=\"report.form.php\" method=\"post\">";
+      echo "<div class='center'><form action=\"report.form.php\" method=\"post\">";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
       echo __('Start date') . " :</td><td>";
       Html::showDateField("date1", ['value' => $_POST["date1"]]);
@@ -88,7 +88,7 @@ if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
 
    } else {
 
-      echo "<div align='center'><form action=\"report.form.php\" method=\"post\">";
+      echo "<div class='center'><form action=\"report.form.php\" method=\"post\">";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
       echo __('Start date') . " :</td><td>";
       Html::showDateField("date1", ['value' => $_POST["date1"]]);

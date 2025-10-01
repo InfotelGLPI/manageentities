@@ -137,7 +137,7 @@ class Preference extends CommonDBTM
         $self = new self();
         $self->getFromDB($ID);
         echo "<form action='" . $target . "' method='post'>";
-        echo "<div align='center'>";
+        echo "<div class='center'>";
 
         echo "<table class='tab_cadre_fixe' cellpadding='5'>";
         echo "<tr><th colspan='2'>" . $data['name'] . " - " . $data['version'] . "</th></tr>";

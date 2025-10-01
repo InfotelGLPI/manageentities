@@ -311,7 +311,7 @@ class Config extends CommonDBTM
 
         $plugin_company = new Company();
         $result = $plugin_company->find();
-        echo "<div align='center'>";
+        echo "<div class='center'>";
         echo "<table class='tab_cadre_fixe' cellpadding='5'>";
         echo "<tr><th colspan='2'>" . _n('Company', 'Companies', 2, 'manageentities') . "</th></tr>";
 
