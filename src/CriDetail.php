@@ -946,7 +946,7 @@ class CriDetail extends CommonDBTM
                         // Set conso per techs
                         $tmp = self::setConso($dataTask['actiontime'], 0, $config, $dataCriDetail, $pluginContract, 1);
 
-                        $round = round($tmp, 2);
+                        $round = round($tmp, 2,PHP_ROUND_HALF_UP);
 
                         $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += $PDF->TotalTpsPassesArrondis(
                             $round

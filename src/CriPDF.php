@@ -755,7 +755,7 @@ class CriPDF extends Fpdf
     {
         $nb_lg_necessaires = 1;
         if (strlen($une_ligne) > $this->nb_carac_ligne) {
-            $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne);
+            $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne,0,PHP_ROUND_HALF_UP);
         }
         if (($nb_lg_necessaires * $this->line_height) > $this->GetSeuilSaut()) {
             $this->Cell(
@@ -871,7 +871,7 @@ class CriPDF extends Fpdf
     {
         $nb_lg_necessaires = 1;
         if (strlen($une_ligne) > $this->nb_carac_ligne) {
-            $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne);
+            $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne,0,PHP_ROUND_HALF_UP);
         }
         if (($nb_lg_necessaires * $this->line_height) > $this->GetSeuilSaut()) {
             $this->Cell(
@@ -1206,8 +1206,8 @@ class CriPDF extends Fpdf
             }
             // ---------------------
             // Teste les dimensions tenant dans la zone
-            $W_test = round($W_Src * ($H_max / $H_Src));
-            $H_test = round($H_Src * ($W_max / $W_Src));
+            $W_test = round($W_Src * ($H_max / $H_Src),0,PHP_ROUND_HALF_UP);
+            $H_test = round($H_Src * ($W_max / $W_Src),0,PHP_ROUND_HALF_UP);
             // ---------------------
             // si l'image est plus petite que la zone
             if ($W_Src < $W_max && $H_Src < $H_max) {

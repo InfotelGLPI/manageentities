@@ -538,14 +538,14 @@ class Cri extends CommonDBTM
                         if ($data["is_usedforcount"] == 0 && $config->fields['hourorday'] == Config::HOUR) {
                             $un_temps_passe[4] = 0;
                         } else {
-                            $un_temps_passe[4] = round($data["tps_passes"], 2);
+                            $un_temps_passe[4] = round($data["tps_passes"], 2,PHP_ROUND_HALF_UP);
                         }
                     } else {
                         // If the category of the task is not used and is hourly for count we set value to 0
                         if ($data["is_usedforcount"] == 0 && $config->fields['hourorday'] == Config::HOUR) {
                             $un_temps_passe[4] = 0;
                         } else {
-                            $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($data["tps_passes"], 2));
+                            $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($data["tps_passes"], 2,PHP_ROUND_HALF_UP));
                         } //arrondir au quart
                     }
                     if ($data["date_debut"] == null && $data["date_fin"] == null) {
@@ -774,14 +774,14 @@ class Cri extends CommonDBTM
                                     && $config->fields['hourorday'] == Config::HOUR) {
                                     $un_temps_passe[4] = 0;
                                 } else {
-                                    $un_temps_passe[4] = round($data["tps_passes"], 2);
+                                    $un_temps_passe[4] = round($data["tps_passes"], 2,PHP_ROUND_HALF_UP);
                                 }
                             } else {
                                 // If the category of the task is not used and is hourly for count we set value to 0
                                 if ($data["is_usedforcount"] == 0 && $config->fields['hourorday'] == Config::HOUR) {
                                     $un_temps_passe[4] = 0;
                                 } else {
-                                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($data["tps_passes"], 2));
+                                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($data["tps_passes"], 2,PHP_ROUND_HALF_UP));
                                 } //arrondir au quart
                             }
                         }
@@ -865,7 +865,7 @@ class Cri extends CommonDBTM
                     $un_temps_passe[1] = '';
                     $un_temps_passe[2] = Html::convDate($contract_days->fields['end_date']);
                     $un_temps_passe[3] = '';
-                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($contract_days->fields['nbday'], 2));
+                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($contract_days->fields['nbday'], 2,PHP_ROUND_HALF_UP));
                     $temps_passes[] = $un_temps_passe;
 
                     if ($config->fields['useprice'] == Config::NOPRICE) {

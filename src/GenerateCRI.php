@@ -1497,7 +1497,7 @@ class GenerateCRI extends CommonGLPI
         if ($duration > self::MINUTE) {
             return gmdate("i:s", $duration);
         }
-        return round($duration, 3) . 's';
+        return round($duration, 3,PHP_ROUND_HALF_UP) . 's';
     }
 
     /**
