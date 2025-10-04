@@ -38,15 +38,15 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * Class DirecthelpdeskInjection
+ * Class DirectHelpdeskInjection
  */
-class DirecthelpdeskInjection extends Directhelpdesk
+class DirectHelpdeskInjection extends DirectHelpdesk
     implements PluginDatainjectionInjectionInterface
 {
 
     public static function getTable($classname = null)
     {
-        return Directhelpdesk::getTable();
+        return DirectHelpdesk::getTable();
     }
 
     /**

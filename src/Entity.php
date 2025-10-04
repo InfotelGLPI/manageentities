@@ -167,13 +167,13 @@ class Entity extends CommonGLPI
                     $followUp->showCriteriasForm($_GET);
                     Followup::showFollowUp($_GET);
 
-                    $direct = new Directhelpdesk();
+                    $direct = new DirectHelpdesk();
                     if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities], ['date'])) {
                         echo "<h4 style='margin-top: 10px;margin-bottom: 20px;'>";
-                        echo Directhelpdesk::getTypeName(2);
+                        echo DirectHelpdesk::getTypeName(2);
                         echo "</h4>";
-                        Directhelpdesk::showDashboard();
-                        Directhelpdesk_Ticket::selectDirectHeldeskForTicket($entities);
+                        DirectHelpdesk::showDashboard();
+                        DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($entities);
                     }
                     break;
                 case 2:

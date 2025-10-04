@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-class Directhelpdesk extends CommonDBTM
+class DirectHelpdesk extends CommonDBTM
 {
 
     static $rightname = 'plugin_manageentities';
@@ -260,7 +260,7 @@ class Directhelpdesk extends CommonDBTM
     function post_addItem()
     {
         if (isset($this->input["tickets_id"])) {
-            $ticket = new Directhelpdesk_Ticket();
+            $ticket = new DirectHelpdesk_Ticket();
             $input['plugin_manageentities_directhelpdesks_id'] = $this->getID();
             $input['tickets_id'] = $this->input["tickets_id"];
             $ticket->add($input);
@@ -270,7 +270,7 @@ class Directhelpdesk extends CommonDBTM
     function post_updateItem($history = true)
     {
         if (isset($this->input["tickets_id"])) {
-            $ticket = new Directhelpdesk_Ticket();
+            $ticket = new DirectHelpdesk_Ticket();
 
             if ($ticket->getFromDBByCrit(['plugin_manageentities_directhelpdesks_id' => $this->getID()])) {
                 $input['plugin_manageentities_directhelpdesks_id'] = $this->getID();
@@ -353,7 +353,7 @@ class Directhelpdesk extends CommonDBTM
 //        Html::requireJs('charts');
         echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/echarts/theme/azul.js");
 
-        $direct = new Directhelpdesk();
+        $direct = new DirectHelpdesk();
 
         if ($items = $direct->find(['is_billed' => 0])) {
             echo "<div class='container-fluid d-flex flex-column'>";

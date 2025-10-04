@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-class Directhelpdesk_Ticket extends CommonDBTM
+class DirectHelpdesk_Ticket extends CommonDBTM
 {
 
     static $rightname = 'plugin_manageentities';
@@ -107,7 +107,7 @@ class Directhelpdesk_Ticket extends CommonDBTM
                 echo "<th>" . __('Description') . "</th>";
                 echo "</tr>";
                 foreach ($items as $item) {
-                    $direct = new Directhelpdesk();
+                    $direct = new DirectHelpdesk();
                     $direct->getFromDB($item['plugin_manageentities_directhelpdesks_id']);
                     $actiontime = $direct->fields['actiontime'];
                     echo "<tr class='tab_bg_1'>";
@@ -134,7 +134,7 @@ class Directhelpdesk_Ticket extends CommonDBTM
 
     static function selectDirectHeldeskForTicket($entities_id)
     {
-        $direct = new Directhelpdesk();
+        $direct = new DirectHelpdesk();
         if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities_id], ['date'])) {
             echo "<form method='post' action='" . $direct->getFormURL() . "'>";
             echo "<table class='tab_cadre_fixe'>";

@@ -28,8 +28,8 @@
  */
 
 
-use GlpiPlugin\Manageentities\Directhelpdesk;
-use GlpiPlugin\Manageentities\Directhelpdesk_Ticket;
+use GlpiPlugin\Manageentities\DirectHelpdesk;
+use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 
 Html::header_nocache();
 Session::checkLoginUser();
@@ -37,12 +37,12 @@ Session::checkLoginUser();
 if (isset($_GET['action']) && $_GET['action'] == 'createticket') {
     Html::popHeader(__('Create a ticket'), $_SERVER['PHP_SELF']);
 
-    Directhelpdesk_Ticket::selectDirectHeldeskForTicket($_GET['entities_id']);
+    DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($_GET['entities_id']);
 
     Html::popFooter();
 } else {
     if (Session::getCurrentInterface() == 'central') {
-        echo Directhelpdesk::loadModal();
+        echo DirectHelpdesk::loadModal();
     }
 }
 

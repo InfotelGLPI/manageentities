@@ -27,13 +27,13 @@
  --------------------------------------------------------------------------
  */
 
-use GlpiPlugin\Manageentities\Directhelpdesk;
+use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Servicecatalog\Main;
 
 Session::checkLoginUser();
 
 if (Session::getCurrentInterface() == 'central') {
-    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", Directhelpdesk::class);
+    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", DirectHelpdesk::class);
 } else {
     if (Plugin::isPluginActive('servicecatalog')) {
         Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
@@ -80,16 +80,16 @@ echo "</form>";
 echo "</div>";
 
 if ($checkbox3State === '1') {
-    $min = Directhelpdesk::THREE_HOUR;
+    $min = DirectHelpdesk::THREE_HOUR;
 } else if ($checkbox2State === '1') {
-    $min = Directhelpdesk::TWO_HOUR;
+    $min = DirectHelpdesk::TWO_HOUR;
 } else {
     $min = 0;
 }
 
-Directhelpdesk::showDashboard($min);
+DirectHelpdesk::showDashboard($min);
 
-Search::show(Directhelpdesk::class);
+Search::show(DirectHelpdesk::class);
 
 if (Session::getCurrentInterface() != 'central'
     && Plugin::isPluginActive('servicecatalog')) {

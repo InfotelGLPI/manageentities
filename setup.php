@@ -36,8 +36,8 @@ use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriPrice;
-use GlpiPlugin\Manageentities\Directhelpdesk;
-use GlpiPlugin\Manageentities\Directhelpdesk_Ticket;
+use GlpiPlugin\Manageentities\DirectHelpdesk;
+use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\GenerateCRI;
 use GlpiPlugin\Manageentities\InterventionSkateholder;
 use GlpiPlugin\Manageentities\Preference;
@@ -89,7 +89,7 @@ function plugin_init_manageentities()
             'addtabon' => 'Ticket',
             'planning_types' => true
         ]);
-        Plugin::registerClass(Directhelpdesk_Ticket::class, ['addtabon' => 'Ticket']);
+        Plugin::registerClass(DirectHelpdesk_Ticket::class, ['addtabon' => 'Ticket']);
 
         Plugin::registerClass(TaskCategory::class, ['addtabon' => 'TaskCategory']);
         Plugin::registerClass(
@@ -105,7 +105,7 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS['menu_toadd']['manageentities'] = [
                 'helpdesk' => [
                     GenerateCRI::class,
-                    Directhelpdesk::class,
+                    DirectHelpdesk::class,
                 ]
             ];
         }
@@ -160,7 +160,7 @@ function plugin_init_manageentities()
             }
         }
 
-        if (class_exists(Directhelpdesk::class)) { // only if plugin activated
+        if (class_exists(DirectHelpdesk::class)) { // only if plugin activated
             $PLUGIN_HOOKS['plugin_datainjection_populate']['manageentities']
                 = 'plugin_datainjection_populate_manageentities';
         }

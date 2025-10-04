@@ -27,11 +27,11 @@
  --------------------------------------------------------------------------
  */
 
-use GlpiPlugin\Manageentities\Directhelpdesk;
+use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Servicecatalog\Main;
 
 if (Session::haveRight("plugin_manageentities", UPDATE)) {
-    $direct = new Directhelpdesk();
+    $direct = new DirectHelpdesk();
 
     if (isset($_POST["create_ticket"])) {
         $ticket = new Ticket();
@@ -40,7 +40,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
         $input['content'] = '';
         foreach ($items as $item => $check) {
             if ($check == "on") {
-                $direct = new Directhelpdesk();
+                $direct = new DirectHelpdesk();
                 $direct->getFromDB($item);
 
                 $actiontime = $direct->fields['actiontime'];
@@ -74,9 +74,9 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 
         Html::redirect($ticket->getLinkURL());
 
-//        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "Directhelpdesk::class);
+//        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "DirectHelpdesk::class);
 //        $options['entities_id'] = $_POST['entities_id'];
-//        $direct = new Directhelpdesk();
+//        $direct = new DirectHelpdesk();
 //        $options['content'] = "";
 //        $options['_created_from_directhelpdesk'] = true;
 
@@ -99,7 +99,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
         $direct->checkGlobal(READ);
 
         if (Session::getCurrentInterface() == 'central') {
-            Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", Directhelpdesk::class);
+            Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", DirectHelpdesk::class);
         } else {
             if (Plugin::isPluginActive('servicecatalog')) {
                 Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));

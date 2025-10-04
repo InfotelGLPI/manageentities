@@ -36,7 +36,7 @@ use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\CriTechnician;
 use GlpiPlugin\Manageentities\CriType;
-use GlpiPlugin\Manageentities\DirecthelpdeskInjection;
+use GlpiPlugin\Manageentities\DirectHelpdeskInjection;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
 use GlpiPlugin\Manageentities\Gantt;
@@ -702,5 +702,5 @@ function plugin_manageentities_redefine_menus($menu)
 function plugin_datainjection_populate_manageentities()
 {
     global $INJECTABLE_TYPES;
-    $INJECTABLE_TYPES[DirecthelpdeskInjection::class] = 'directhelpdesks';
+    $INJECTABLE_TYPES[DirectHelpdeskInjection::class] = 'directhelpdesks';
 }
