@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Manageentities - Accounts plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-02 08:03+0000\n"
+"POT-Creation-Date: 2025-10-04 14:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -398,6 +398,25 @@ msgstr[1] ""
 
 #: src/CriPrice.php:227
 msgid "Select an existing price"
+msgstr ""
+
+#: src/DirectHelpdesk.php:57 src/DirectHelpdesk_Ticket.php:50
+#: src/DirectHelpdesk_Ticket.php:79
+msgid "Not billed intervention"
+msgid_plural "Not billed interventions"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/DirectHelpdesk.php:110
+msgid "Add an unbilled intervention"
+msgstr ""
+
+#: src/DirectHelpdesk.php:327
+msgid "You cannot add an intervention on this entity"
+msgstr ""
+
+#: src/DirectHelpdesk.php:650
+msgid "Is billed"
 msgstr ""
 
 #: src/CriPDF.php:223 src/CriPDF.php:573 src/CriDetail.php:1107
@@ -1169,26 +1188,7 @@ msgstr ""
 msgid "Color field is not correct"
 msgstr ""
 
-#: src/Directhelpdesk.php:57 src/Directhelpdesk_Ticket.php:50
-#: src/Directhelpdesk_Ticket.php:79
-msgid "Not billed intervention"
-msgid_plural "Not billed interventions"
-msgstr[0] ""
-msgstr[1] ""
-
-#: src/Directhelpdesk.php:110
-msgid "Add an unbilled intervention"
-msgstr ""
-
-#: src/Directhelpdesk.php:327
-msgid "You cannot add an intervention on this entity"
-msgstr ""
-
-#: src/Directhelpdesk.php:650
-msgid "Is billed"
-msgstr ""
-
-#: src/Directhelpdesk_Ticket.php:143
+#: src/DirectHelpdesk_Ticket.php:143
 msgid "Select"
 msgstr ""
 
