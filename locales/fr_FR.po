@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-08 15:24+0200\n"
+"POT-Creation-Date: 2025-10-10 13:54+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2025\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -193,8 +193,8 @@ msgstr "Liste complète"
 msgid "Allow periods on the same interval of dates"
 msgstr "Autoriser les interventions sur un même intervalle de date"
 
-#: src/AddElementsView.php:2356 src/ContractDay.php:468 src/Monthly.php:357
-#: src/Monthly.php:367 src/Monthly.php:370
+#: src/AddElementsView.php:2356 src/Monthly.php:357 src/Monthly.php:367
+#: src/Monthly.php:370 src/ContractDay.php:468
 msgid "Already charged"
 msgstr "Déjà facturé"
 
@@ -331,8 +331,8 @@ msgid "CRI generation form"
 msgstr "Formulaire de génération de CRI"
 
 #: src/Dashboard.php:230 src/Dashboard.php:294 src/Dashboard.php:346
-#: src/Followup.php:741 src/Followup.php:852 src/GenerateCRI.php:269
-#: src/Monthly.php:489
+#: src/Followup.php:741 src/Followup.php:852 src/Monthly.php:489
+#: src/GenerateCRI.php:269
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -358,7 +358,7 @@ msgstr "Couleur"
 msgid "Color field is not correct"
 msgstr "Le champ de couleur est incorrect"
 
-#: src/Company.php:54 src/Config.php:316 src/Followup.php:2074
+#: src/Company.php:54 src/Followup.php:2074 src/Config.php:316
 msgid "Company"
 msgid_plural "Companies"
 msgstr[0] "Société"
@@ -442,11 +442,11 @@ msgstr "Le type de gestion du contrat a bien été mis à jour"
 msgid "Contract name already exists."
 msgstr "Ce contrat existe déjà."
 
-#: src/CriDetail.php:517 src/CriPDF.php:504
+#: src/CriPDF.php:504 src/CriDetail.php:517
 msgid "Contract number"
 msgstr "N° du contrat"
 
-#: src/Followup.php:772 src/Followup.php:945 src/Gantt.php:344
+#: src/Gantt.php:344 src/Followup.php:772 src/Followup.php:945
 msgid "Contract present"
 msgstr "Contrat présent"
 
@@ -474,8 +474,8 @@ msgstr "Crédit restant"
 msgid "Crossed time"
 msgstr "Temps passé"
 
-#: src/CriDetail.php:248 src/CriDetail.php:515 src/CriDetail.php:625
-#: src/CriDetail.php:1098 src/CriPDF.php:534
+#: src/CriPDF.php:534 src/CriDetail.php:248 src/CriDetail.php:515
+#: src/CriDetail.php:625 src/CriDetail.php:1098
 msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
@@ -524,13 +524,13 @@ msgstr "Données administratives"
 msgid "Date of"
 msgstr "Date de"
 
-#: src/AddElementsView.php:1851 src/Contract.php:212 src/Followup.php:795
-#: src/Followup.php:989 src/Gantt.php:352
+#: src/AddElementsView.php:1851 src/Gantt.php:352 src/Followup.php:795
+#: src/Followup.php:989 src/Contract.php:212
 msgid "Date of renewal"
 msgstr "Date de reconduction"
 
-#: src/AddElementsView.php:1840 src/Contract.php:208 src/Entity.php:587
-#: src/Followup.php:785 src/Followup.php:968 src/Gantt.php:348
+#: src/AddElementsView.php:1840 src/Gantt.php:348 src/Followup.php:785
+#: src/Followup.php:968 src/Entity.php:587 src/Contract.php:208
 msgid "Date of signature"
 msgstr "Date de signature"
 
@@ -613,18 +613,18 @@ msgstr "La date de début ne peut pas être inférieure à la date de fin"
 msgid "End date must be after the begin date !"
 msgstr "La date de fin doit être postérieure à la date de début!"
 
-#: front/addelements.form.php:39 front/config.form.php:43
-#: front/cridetail.form.php:47 front/cridetail.form.php:50
-#: front/cridetail.form.php:52 front/directhelpdesk.form.php:102
+#: setup.php:188 front/directhelpdesk.form.php:102
 #: front/directhelpdesk.form.php:105 front/directhelpdesk.form.php:107
+#: front/report_occupation.form.php:34 front/config.form.php:43
+#: front/addelements.form.php:39 front/report_moving.form.php:34
 #: front/directhelpdesk.php:36 front/directhelpdesk.php:39
-#: front/directhelpdesk.php:41 front/entity.php:47 front/entity.php:50
-#: front/entity.php:52 front/generatecri.form.php:88 front/generatecri.php:37
-#: front/generatecri.php:40 front/generatecri.php:42 front/report.form.php:34
-#: front/report_moving.form.php:34 front/report_occupation.form.php:34
-#: setup.php:188 src/Followup.php:1824 src/GenerateCRI.php:1240
-#: src/Monthly.php:846 src/Preference.php:111 src/Profile.php:54
-#: src/Profile.php:123 src/TaskCategory.php:68
+#: front/directhelpdesk.php:41 front/cridetail.form.php:47
+#: front/cridetail.form.php:50 front/cridetail.form.php:52 front/entity.php:47
+#: front/entity.php:50 front/entity.php:52 front/report.form.php:34
+#: front/generatecri.form.php:88 front/generatecri.php:37
+#: front/generatecri.php:40 front/generatecri.php:42 src/Profile.php:54
+#: src/Profile.php:123 src/Followup.php:1824 src/Monthly.php:846
+#: src/TaskCategory.php:68 src/GenerateCRI.php:1240 src/Preference.php:111
 msgid "Entities portal"
 msgstr "Portail Clients"
 
@@ -680,8 +680,8 @@ msgstr "du"
 msgid "GANTT"
 msgstr "GANTT"
 
-#: src/Entity.php:93 src/Followup.php:56 src/Followup.php:1824
-#: src/Followup.php:1897
+#: src/Followup.php:56 src/Followup.php:1824 src/Followup.php:1897
+#: src/Entity.php:93
 msgid "General follow-up"
 msgstr "Suivi général"
 
@@ -702,7 +702,7 @@ msgstr "Générer le rapport d'intervention"
 msgid "Generation of the intervention report"
 msgstr "Génération du rapport d'intervention"
 
-#: src/ContractDay.php:459 src/Followup.php:1171
+#: src/Followup.php:1171 src/ContractDay.php:459
 msgid "Guaranteed package"
 msgstr "Forfait garanti"
 
@@ -744,9 +744,9 @@ msgstr "Les informations ont bien été ajoutées."
 msgid "Informations successfully deleted."
 msgstr "Les informations ont bien été supprimées"
 
-#: src/AddElementsView.php:2282 src/ContractDay.php:120
-#: src/ContractDay.php:386 src/ContractDay.php:602 src/Followup.php:1101
-#: src/Gantt.php:411 src/Monthly.php:498
+#: src/AddElementsView.php:2282 src/Gantt.php:411 src/Followup.php:1101
+#: src/Monthly.php:498 src/ContractDay.php:120 src/ContractDay.php:386
+#: src/ContractDay.php:602
 msgid "Initial credit"
 msgstr "Crédit initial"
 
@@ -773,8 +773,8 @@ msgstr "Intervention des prestations"
 msgid "Intervention periods of contract"
 msgstr "Interventions de la prestation du contrat"
 
-#: setup.php:123 src/Config.php:352 src/Cri.php:56 src/CriDetail.php:369
-#: src/Profile.php:128
+#: setup.php:123 src/Profile.php:128 src/Config.php:352 src/Cri.php:56
+#: src/CriDetail.php:369
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] "Rapport d'intervention"
@@ -800,9 +800,9 @@ msgstr[0] "Tâche d'intervention"
 msgstr[1] "Tâches d'interventions"
 msgstr[2] "Tâches d'interventions"
 
-#: hook.php:573 src/AddElementsView.php:2731 src/Cri.php:203
-#: src/CriDetail.php:246 src/CriDetail.php:513 src/CriDetail.php:623
-#: src/CriDetail.php:1093 src/CriPrice.php:395 src/CriType.php:48
+#: hook.php:583 src/AddElementsView.php:2731 src/CriPrice.php:395
+#: src/CriType.php:48 src/Cri.php:203 src/CriDetail.php:246
+#: src/CriDetail.php:513 src/CriDetail.php:623 src/CriDetail.php:1093
 msgid "Intervention type"
 msgid_plural "Intervention types"
 msgstr[0] "Type d'intervention"
@@ -814,7 +814,7 @@ msgstr[2] "Types d'intervention"
 msgid "Intervention with contract"
 msgstr "Intervention sous contrat"
 
-#: src/ContractDay.php:57 src/Entity.php:121
+#: src/Entity.php:121 src/ContractDay.php:57
 msgid "Interventions reports"
 msgstr "Rapports d'interventions"
 
@@ -861,7 +861,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
-#: hook.php:680 src/Servicecatalog.php:80 src/Servicecatalog.php:86
+#: hook.php:690 src/Servicecatalog.php:80 src/Servicecatalog.php:86
 msgid "Manage your contracts"
 msgstr "Gérer vos contrats"
 
@@ -872,13 +872,13 @@ msgstr[0] "Gestion des catégories de tâches"
 msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
-#: src/AddElementsView.php:1865 src/Contract.php:218 src/Contract.php:356
-#: src/Followup.php:806 src/Followup.php:1009 src/Monthly.php:494
+#: src/AddElementsView.php:1865 src/Followup.php:806 src/Followup.php:1009
+#: src/Monthly.php:494 src/Contract.php:218 src/Contract.php:356
 msgid "Mode of management"
 msgstr "Mode de gestion"
 
-#: src/Entity.php:97 src/Monthly.php:57 src/Monthly.php:846
-#: src/Monthly.php:905
+#: src/Monthly.php:57 src/Monthly.php:846 src/Monthly.php:905
+#: src/Entity.php:97
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
 
@@ -992,7 +992,7 @@ msgstr "Prestations de contrat en cours sans jours restants"
 msgid "Options"
 msgstr "Options"
 
-#: src/Cri.php:117 src/CriDetail.php:1293 src/CriPDF.php:515
+#: src/CriPDF.php:515 src/Cri.php:117 src/CriDetail.php:1293
 msgid "Out of contract"
 msgstr "Hors contrat"
 
@@ -1008,8 +1008,8 @@ msgstr "Page"
 msgid "Period name"
 msgstr "Nom de la prestation"
 
-#: src/Config.php:353 src/ContractDay.php:60 src/ContractDay.php:62
-#: src/Entity.php:127 src/Followup.php:1049
+#: src/Followup.php:1049 src/Config.php:353 src/Entity.php:127
+#: src/ContractDay.php:60 src/ContractDay.php:62
 msgid "Period of contract"
 msgid_plural "Periods of contract"
 msgstr[0] "Prestation du contrat"
@@ -1138,7 +1138,7 @@ msgstr "Nombre de jours restants par contrat client"
 msgid "Remaining on "
 msgstr "Restant au"
 
-#: src/ContractDay.php:476 src/Followup.php:1180 src/Followup.php:1685
+#: src/Followup.php:1180 src/Followup.php:1685 src/ContractDay.php:476
 msgid "Remaining total (amount)"
 msgstr "Total restant (montant)"
 
@@ -1197,11 +1197,11 @@ msgstr "Nom de la société"
 msgid "Stakeholder successfully updated."
 msgstr "L'intervenant a bien été ajouté."
 
-#: hook.php:574 src/AddElementsView.php:2302 src/ContractDay.php:149
-#: src/ContractDay.php:397 src/ContractDay.php:604 src/ContractState.php:48
-#: src/Followup.php:1061 src/Followup.php:1071 src/Followup.php:1937
+#: hook.php:584 src/AddElementsView.php:2302 src/Followup.php:1061
+#: src/Followup.php:1071 src/Followup.php:1937 src/ContractState.php:48
+#: src/ContractDay.php:149 src/ContractDay.php:397 src/ContractDay.php:604
 msgid "State of contract"
-msgid_plural "States of contracts"
+msgid_plural "States of contract"
 msgstr[0] "Statut du contrat"
 msgstr[1] "Statuts du contrat"
 msgstr[2] "Statuts du contrat"
@@ -1249,9 +1249,9 @@ msgstr[2] "Intervenants"
 msgid "Technician as assigned"
 msgstr "Technicien assigné"
 
-#: src/Cri.php:134 src/CriDetail.php:244 src/CriDetail.php:511
-#: src/CriDetail.php:626 src/CriDetail.php:1099 src/CriDetail.php:1110
-#: src/CriDetail.php:1193 src/Report.php:224
+#: src/Report.php:224 src/Cri.php:134 src/CriDetail.php:244
+#: src/CriDetail.php:511 src/CriDetail.php:626 src/CriDetail.php:1099
+#: src/CriDetail.php:1110 src/CriDetail.php:1193
 msgid "Technicians"
 msgstr "Intervenants"
 
@@ -1330,13 +1330,13 @@ msgstr "Total (en heures)"
 msgid "Total Guaranteed package"
 msgstr "Total forfait garanti"
 
-#: src/ContractDay.php:420 src/ContractDay.php:609 src/Followup.php:1110
-#: src/Followup.php:1638 src/Gantt.php:412
+#: src/Gantt.php:412 src/Followup.php:1110 src/Followup.php:1638
+#: src/ContractDay.php:420 src/ContractDay.php:609
 msgid "Total consummated"
 msgstr "Total consommé"
 
-#: src/ContractDay.php:445 src/ContractDay.php:613 src/Followup.php:1150
-#: src/Followup.php:1656 src/Monthly.php:527
+#: src/Followup.php:1150 src/Followup.php:1656 src/Monthly.php:527
+#: src/ContractDay.php:445 src/ContractDay.php:613
 msgid "Total exceeding"
 msgstr "Total dépassement"
 
@@ -1352,8 +1352,8 @@ msgstr "Nombre de forfait de déplacement"
 msgid "Total production"
 msgstr "Total consommation mensuelle"
 
-#: src/ContractDay.php:437 src/ContractDay.php:612 src/Dashboard.php:166
-#: src/Dashboard.php:438 src/Followup.php:1140 src/Followup.php:1647
+#: src/Dashboard.php:166 src/Dashboard.php:438 src/Followup.php:1140
+#: src/Followup.php:1647 src/ContractDay.php:437 src/ContractDay.php:612
 msgid "Total remaining"
 msgstr "Total restant"
 
@@ -1373,7 +1373,7 @@ msgstr "Déplacement"
 msgid "Travel (in days)"
 msgstr "Déplacement (en jours)"
 
-#: src/ContractDay.php:596 src/Followup.php:1083 src/Monthly.php:496
+#: src/Followup.php:1083 src/Monthly.php:496 src/ContractDay.php:596
 msgid "Type of contract"
 msgstr "Type de contrat"
 
@@ -1382,9 +1382,9 @@ msgid "Type of management"
 msgstr "Type de gestion"
 
 #: src/AddElementsView.php:1872 src/AddElementsView.php:2211
-#: src/Contract.php:221 src/Contract.php:357 src/Contract.php:360
-#: src/ContractDay.php:167 src/ContractDay.php:349 src/ContractDay.php:894
-#: src/Followup.php:811 src/Followup.php:1018
+#: src/Followup.php:811 src/Followup.php:1018 src/Contract.php:221
+#: src/Contract.php:357 src/Contract.php:360 src/ContractDay.php:167
+#: src/ContractDay.php:349 src/ContractDay.php:894
 msgid "Type of service contract"
 msgstr "Type de contrat de service"
 
@@ -1414,13 +1414,13 @@ msgstr "Mettre à jour ce contact"
 msgid "Update this contact only"
 msgstr "Mettre à jour ce contact"
 
-#: src/AddElementsModel.php:622 src/AddElementsModel.php:647
-#: src/AddElementsView.php:1539
+#: src/AddElementsView.php:1539 src/AddElementsModel.php:622
+#: src/AddElementsModel.php:647
 msgid "Update this contract only"
 msgstr "Mettre à jour ce contrat"
 
-#: src/AddElementsModel.php:436 src/AddElementsModel.php:466
-#: src/AddElementsView.php:768
+#: src/AddElementsView.php:768 src/AddElementsModel.php:436
+#: src/AddElementsModel.php:466
 msgid "Update this entity"
 msgstr "Mettre à jour cette entité"
 
@@ -1432,8 +1432,8 @@ msgstr "Mettre à jour cette prestation"
 msgid "Update this intervention only"
 msgstr "Mettre à jour cette prestation"
 
-#: src/AddElementsModel.php:1276 src/AddElementsView.php:2884
-#: src/AddElementsView.php:3218
+#: src/AddElementsView.php:2884 src/AddElementsView.php:3218
+#: src/AddElementsModel.php:1276
 msgid "Update this price"
 msgid_plural "Update these prices"
 msgstr[0] "Mettre à jour ce tarif"
@@ -1516,7 +1516,7 @@ msgstr "à"
 msgid "of period of contract"
 msgstr "de la prestation de contrat"
 
-#: src/CriDetail.php:1107 src/CriPDF.php:223 src/CriPDF.php:573
+#: src/CriPDF.php:223 src/CriPDF.php:573 src/CriDetail.php:1107
 msgid "of this intervention"
 msgstr "d'intervention"
 
