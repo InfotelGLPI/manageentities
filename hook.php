@@ -324,9 +324,19 @@ function plugin_manageentities_addLeftJoin($type, $ref_table, $new_table, $linkf
 
     switch ($new_table) {
         case "glpi_plugin_manageentities_criprices":
-            $out = " LEFT JOIN `$new_table` ON (`$ref_table`.`id` = `$new_table`.`plugin_manageentities_critypes_id` AND `$new_table`.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')) ";
+            $out['LEFT JOIN'] = [
+                $new_table => [
+                    'ON' => [
+                        $ref_table  => 'id',
+                        $new_table  => 'plugin_manageentities_critypes_id', [
+                            'AND' => [
+                                $new_table.'.entities_id' => $_SESSION["glpiactiveentities"],
+                            ],
+                        ],
+                    ],
+                ],
+            ];
             return $out;
-         break;
     }
 
     return "";
