@@ -505,8 +505,7 @@ class Dashboard extends CommonGLPI
                 ]
             ],
             'WHERE' => [
-                'NOT' => ['glpi_entities.name' => null],
-                'NOT' => ['glpi_entities.id' => null]
+                'NOT' => ['glpi_entities.name' => null, 'glpi_entities.id' => null]
             ],
             'ORDERBY' => 'glpi_entities.name',
         ];

@@ -145,8 +145,7 @@ class Followup extends CommonDBTM
                 ]
             ],
             'WHERE' => [
-                'NOT' => ['glpi_entities.name' => 'NULL'],
-                'NOT' => ['glpi_entities.id' => 'NULL']
+                'NOT' => ['glpi_entities.name' => 'NULL', 'glpi_entities.id' => 'NULL']
             ],
             'ORDERBY' => 'glpi_entities.name',
         ];
