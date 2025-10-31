@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-22 12:22+0000\n"
+"POT-Creation-Date: 2025-10-31 17:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -345,6 +345,12 @@ msgstr ""
 msgid "Color field is not correct"
 msgstr ""
 
+#: templates/directhelpdesk_form.html.twig:97
+msgid "Comment"
+msgid_plural "Comments"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/Company.php:54 src/Followup.php:2073 src/Config.php:316
 msgid "Company"
 msgid_plural "Companies"
@@ -503,6 +509,10 @@ msgstr ""
 msgid "Data administrative"
 msgstr ""
 
+#: templates/directhelpdesk_form.html.twig:69
+msgid "Date"
+msgstr ""
+
 #: src/CriPDF.php:543 src/CriPDF.php:547
 msgid "Date of"
 msgstr ""
@@ -583,6 +593,10 @@ msgstr ""
 msgid "Document successfully added"
 msgstr ""
 
+#: templates/directhelpdesk_form.html.twig:78
+msgid "Duration"
+msgstr ""
+
 #: src/AddElementsView.php:1937 src/Contract.php:273
 msgid "Duration of moving"
 msgstr ""
@@ -609,6 +623,12 @@ msgstr ""
 #: src/TaskCategory.php:68 src/GenerateCRI.php:1240 src/Preference.php:111
 msgid "Entities portal"
 msgstr ""
+
+#: templates/directhelpdesk_form.html.twig:31 templates/directhelpdesk_form.html.twig:41
+msgid "Entity"
+msgid_plural "Entities"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/AddElementsModel.php:361
 msgid "Entity and contact successfully added"
@@ -800,7 +820,7 @@ msgstr ""
 msgid "Interventions with old contract"
 msgstr ""
 
-#: src/DirectHelpdesk.php:650
+#: src/DirectHelpdesk.php:650 templates/directhelpdesk_form.html.twig:105
 msgid "Is billed"
 msgstr ""
 
@@ -1192,6 +1212,10 @@ msgstr ""
 msgid "Subtotal"
 msgstr ""
 
+#: templates/directhelpdesk_form.html.twig:87
+msgid "Surname"
+msgstr ""
+
 #: src/GenerateCRI.php:717
 msgid "Task category must be defined"
 msgstr ""
@@ -1267,6 +1291,10 @@ msgstr ""
 
 #: src/Report.php:225
 msgid "Time justified"
+msgstr ""
+
+#: templates/directhelpdesk_form.html.twig:87
+msgid "Title"
 msgstr ""
 
 #: src/CriPDF.php:406
