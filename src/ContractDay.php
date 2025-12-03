@@ -576,8 +576,8 @@ class ContractDay extends CommonDBTM
         if (count($pluginContractDays)) {
             echo "<div class='left'>";
             if ($canEdit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = ['item' => __CLASS__, 'container' => 'mass' . __CLASS__ . $rand];
+                Html::openMassiveActionsForm('masscontractday'  . $rand);
+                $massiveactionparams = ['item' => __CLASS__, 'container' => 'masscontractday' . $rand];
                 Html::showMassiveActions($massiveactionparams);
             }
             echo "<table class='tab_cadre_fixe'>";
@@ -588,7 +588,7 @@ class ContractDay extends CommonDBTM
             echo "<tr>";
             echo "<th width='10'>";
             if ($canEdit) {
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+                echo Html::getCheckAllAsCheckbox('masscontractday'  . $rand);
             }
             echo "</th>";
             echo "<th>" . ContractDay::getTypeName(1) . "</th>";

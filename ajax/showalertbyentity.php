@@ -27,22 +27,15 @@
  --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Manageentities\Contract;
 
-use GlpiPlugin\Manageentities\DirectHelpdesk;
-use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
-
+header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
+
 Session::checkLoginUser();
 
-if (isset($_GET['action']) && $_GET['action'] == 'createticket') {
-    Html::popHeader(__('Create a ticket'), $_SERVER['PHP_SELF']);
-
-    DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($_GET['entities_id']);
-
-    Html::popFooter();
-} else {
-    if (Session::getCurrentInterface() == 'central') {
-        DirectHelpdesk::loadModal();
-    }
+if (isset($_POST["entities_id"])) {
+    $contract = new Contract();
+    echo $alert = $contract->displayAlertforEntity($_POST['entities_id']);
 }
 

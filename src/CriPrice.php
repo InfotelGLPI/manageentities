@@ -371,11 +371,11 @@ class CriPrice extends CommonDBTM
 
         echo "<div class='left'>";
         if ($canedit) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+            Html::openMassiveActionsForm('masscriprice' . $rand);
             $massiveactionparams = [
                 'item' => __CLASS__,
                 'container' =>
-                    'mass' . __CLASS__ . $rand
+                    'masscriprice'  . $rand
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -384,7 +384,7 @@ class CriPrice extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<th width='10'>";
         if ($canedit) {
-            echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            echo Html::getCheckAllAsCheckbox('masscriprice'  . $rand);
         }
         echo "</th>";
         if (Session::isMultiEntitiesMode()) {

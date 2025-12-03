@@ -999,7 +999,7 @@ class CriDetail extends CommonDBTM
         }
 
         //Rest number / depass
-        $tabOther['reste'] = ($contractDayValues["nbday"] + $contractDayValues["report"]) - $tot_conso;
+        $tabOther['reste'] = (number_format($contractDayValues["nbday"], 0) + number_format($contractDayValues["report"], 0)) - $tot_conso;
         if ($tabOther['reste'] < 0) {
             $tabOther['depass'] = abs($tabOther['reste']);
             $tabOther['reste'] = 0;

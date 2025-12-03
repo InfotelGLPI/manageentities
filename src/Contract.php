@@ -565,7 +565,7 @@ class Contract extends CommonDBTM
                     ) . "</b></div>";
             }
         }
-        echo $alert;
+        return $alert;
     }
 
     /**
@@ -772,9 +772,18 @@ class Contract extends CommonDBTM
 //                return false;
 //            }
             $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
-            $self = new Contract();
-            $out .= $self->displayAlertforEntity($entities_id);
+            $contract = new Contract();
+            $out .= $contract->displayAlertforEntity($entities_id);
             $out .= '</th></tr>';
+
+            if (isset($params['item'])
+                && ($item->getType() == 'Ticket')) {
+                $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
+                $direct = new DirectHelpdesk();
+                $out .= $direct->displayAlertforEntity($entities_id);
+                $out .= '</th></tr>';
+            }
+
         }
 
 
