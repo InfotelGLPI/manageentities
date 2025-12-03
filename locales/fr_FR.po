@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-31 17:58+0000\n"
+"POT-Creation-Date: 2025-12-03 13:09+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2025\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -845,7 +845,7 @@ msgstr "Rapports d'interventions"
 msgid "Interventions with old contract"
 msgstr "Interventions sur des contrats terminés"
 
-#: src/DirectHelpdesk.php:650 templates/directhelpdesk_form.html.twig:105
+#: src/DirectHelpdesk.php:669 templates/directhelpdesk_form.html.twig:105
 msgid "Is billed"
 msgstr "Est facturée"
 
@@ -1085,6 +1085,11 @@ msgid ""
 msgstr ""
 "Veuillez noter qu'il n'y a plus de contrats avec des jours disponibles pour "
 "ce client."
+
+#: src/DirectHelpdesk.php:728
+msgid "Please note that there are unbilled interventions for this customer."
+msgstr ""
+"Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
 
 #: src/Gantt.php:224
 msgid "Please wait"
@@ -1534,7 +1539,7 @@ msgstr "Libellé des activités"
 msgid "Year"
 msgstr "Année"
 
-#: src/DirectHelpdesk.php:327
+#: src/DirectHelpdesk.php:346
 msgid "You cannot add an intervention on this entity"
 msgstr "Vous ne pouvez pas ajouter d'intervention dans cette entité"
 
