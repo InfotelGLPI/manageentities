@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-03 13:09+0000\n"
+"POT-Creation-Date: 2025-12-05 11:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -319,7 +319,7 @@ msgstr ""
 msgid "CRI generation form"
 msgstr ""
 
-#: src/Dashboard.php:230 src/Dashboard.php:294 src/Dashboard.php:346
+#: src/Dashboard.php:232 src/Dashboard.php:296 src/Dashboard.php:348
 #: src/Followup.php:740 src/Followup.php:851 src/Monthly.php:489
 #: src/GenerateCRI.php:269
 msgid "Client"
@@ -327,7 +327,7 @@ msgid_plural "Clients"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Dashboard.php:79 src/Dashboard.php:242
+#: src/Dashboard.php:81 src/Dashboard.php:244
 msgid "Client annuary"
 msgstr ""
 
@@ -609,7 +609,7 @@ msgstr ""
 msgid "End date must be after the begin date !"
 msgstr ""
 
-#: setup.php:188 front/directhelpdesk.form.php:102
+#: setup.php:186 front/directhelpdesk.form.php:102
 #: front/directhelpdesk.form.php:105 front/directhelpdesk.form.php:107
 #: front/report_occupation.form.php:34 front/config.form.php:43
 #: front/addelements.form.php:39 front/report_moving.form.php:34
@@ -799,7 +799,7 @@ msgid_plural "Intervention tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:584 src/AddElementsView.php:2731 src/CriPrice.php:395
+#: hook.php:661 src/AddElementsView.php:2731 src/CriPrice.php:395
 #: src/CriType.php:48 src/Cri.php:203 src/CriDetail.php:246
 #: src/CriDetail.php:513 src/CriDetail.php:623 src/CriDetail.php:1093
 msgid "Intervention type"
@@ -816,7 +816,7 @@ msgstr ""
 msgid "Interventions reports"
 msgstr ""
 
-#: src/Dashboard.php:89 src/Dashboard.php:380
+#: src/Dashboard.php:91 src/Dashboard.php:382
 msgid "Interventions with old contract"
 msgstr ""
 
@@ -859,7 +859,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: hook.php:691 src/Servicecatalog.php:80 src/Servicecatalog.php:86
+#: hook.php:768 src/Servicecatalog.php:80 src/Servicecatalog.php:86
 msgid "Manage your contracts"
 msgstr ""
 
@@ -977,7 +977,7 @@ msgid ""
 "Only ticket accepted are taking into account for consumption calculation"
 msgstr ""
 
-#: src/Dashboard.php:94 src/Dashboard.php:451
+#: src/Dashboard.php:96 src/Dashboard.php:453
 msgid "Opened contract prestations without remaining days"
 msgstr ""
 
@@ -1059,8 +1059,8 @@ msgstr ""
 msgid "Please wait"
 msgstr ""
 
-#: src/Dashboard.php:177 src/Dashboard.php:240 src/Dashboard.php:326
-#: src/Dashboard.php:448
+#: src/Dashboard.php:179 src/Dashboard.php:242 src/Dashboard.php:328
+#: src/Dashboard.php:450
 msgid "Plugin is not activated"
 msgstr ""
 
@@ -1077,8 +1077,8 @@ msgstr ""
 msgid "Predefined task informations"
 msgstr ""
 
-#: src/Dashboard.php:165 src/Dashboard.php:296 src/Dashboard.php:348
-#: src/Dashboard.php:437
+#: src/Dashboard.php:167 src/Dashboard.php:298 src/Dashboard.php:350
+#: src/Dashboard.php:439
 msgid "Prestation"
 msgstr ""
 
@@ -1122,7 +1122,7 @@ msgstr ""
 msgid "Reinitialize forms"
 msgstr ""
 
-#: src/Dashboard.php:74 src/Dashboard.php:180
+#: src/Dashboard.php:76 src/Dashboard.php:182
 msgid "Remaining days number by opened client contracts"
 msgstr ""
 
@@ -1164,7 +1164,7 @@ msgstr ""
 msgid "Save the intervention report"
 msgstr ""
 
-#: hook.php:62 hook.php:78 hook.php:93
+#: hook.php:63 hook.php:79 hook.php:94
 msgid "Scheduled intervention"
 msgstr ""
 
@@ -1188,7 +1188,7 @@ msgstr ""
 msgid "Stakeholder successfully updated."
 msgstr ""
 
-#: hook.php:585 src/AddElementsView.php:2302 src/Followup.php:1060
+#: hook.php:662 src/AddElementsView.php:2302 src/Followup.php:1060
 #: src/Followup.php:1070 src/Followup.php:1936 src/ContractState.php:48
 #: src/ContractDay.php:149 src/ContractDay.php:397 src/ContractDay.php:604
 msgid "State of contract"
@@ -1208,7 +1208,7 @@ msgstr ""
 msgid "Status list contract for the general monitoring"
 msgstr ""
 
-#: hook.php:64 hook.php:80 hook.php:95
+#: hook.php:65 hook.php:81 hook.php:96
 msgid "Study and advice"
 msgstr ""
 
@@ -1224,7 +1224,7 @@ msgstr ""
 msgid "Task category must be defined"
 msgstr ""
 
-#: src/Dashboard.php:162 src/Dashboard.php:434
+#: src/Dashboard.php:164 src/Dashboard.php:436
 msgid "Team"
 msgstr ""
 
@@ -1289,7 +1289,7 @@ msgstr ""
 msgid "Ticket not validated"
 msgstr ""
 
-#: src/Dashboard.php:84 src/Dashboard.php:329
+#: src/Dashboard.php:86 src/Dashboard.php:331
 msgid "Tickets without CRI"
 msgstr ""
 
@@ -1348,7 +1348,7 @@ msgstr ""
 msgid "Total production"
 msgstr ""
 
-#: src/Dashboard.php:166 src/Dashboard.php:438 src/Followup.php:1139
+#: src/Dashboard.php:168 src/Dashboard.php:440 src/Followup.php:1139
 #: src/Followup.php:1646 src/ContractDay.php:437 src/ContractDay.php:612
 msgid "Total remaining"
 msgstr ""
@@ -1435,7 +1435,7 @@ msgid_plural "Update these prices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:60 hook.php:76 hook.php:91
+#: hook.php:61 hook.php:77 hook.php:92
 msgid "Urgent intervention"
 msgstr ""
 
