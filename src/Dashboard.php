@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
@@ -29,23 +30,24 @@
 
 namespace GlpiPlugin\Manageentities;
 
+use AllowDynamicProperties;
 use CommonGLPI;
 use CommonITILObject;
 use DbUtils;
-use GlpiPlugin\Manageentities\Config;
-use GlpiPlugin\Manageentities\Contract;
-use GlpiPlugin\Manageentities\Entity;
-use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Mydashboard\Datatable;
 use GlpiPlugin\Mydashboard\Helper;
-use GlpiPlugin\Mydashboard\Html as MydashboardHtml;
 use GlpiPlugin\Mydashboard\Menu;
+use GlpiPlugin\Mydashboard\Html as MydashboardHtml;
 use GlpiPlugin\Mydashboard\Widget;
 use Html;
 use Plugin;
 use Session;
 use Toolbox;
 
+/**
+ * Class Dashboard
+ */
+#[AllowDynamicProperties]
 class Dashboard extends CommonGLPI
 {
     public $widgets = [];
@@ -58,13 +60,13 @@ class Dashboard extends CommonGLPI
         $this->options = $options;
     }
 
-    public function init()
-    {
+    public function init() {
+
     }
 
 
     /**
-     * @return \array[][]
+     * @return array
      */
     public function getWidgetsForItem()
     {
@@ -73,27 +75,27 @@ class Dashboard extends CommonGLPI
                 $this->getType() . "1" => [
                     "title" => __("Remaining days number by opened client contracts", "manageentities"),
                     "type" => Widget::$TABLE,
-                    "comment" => ""
+                    "comment" => "",
                 ],
                 $this->getType() . "2" => [
                     "title" => __("Client annuary", "manageentities"),
                     "type" => Widget::$TABLE,
-                    "comment" => ""
+                    "comment" => "",
                 ],
                 $this->getType() . "3" => [
                     "title" => __("Tickets without CRI", "manageentities"),
                     "type" => Widget::$TABLE,
-                    "comment" => ""
+                    "comment" => "",
                 ],
                 $this->getType() . "4" => [
                     "title" => __("Interventions with old contract", "manageentities"),
                     "type" => Widget::$TABLE,
-                    "comment" => ""
+                    "comment" => "",
                 ],
                 $this->getType() . "5" => [
                     "title" => __("Opened contract prestations without remaining days", "manageentities"),
                     "type" => Widget::$TABLE,
-                    "comment" => ""
+                    "comment" => "",
                 ],
             ],
         ];
@@ -165,7 +167,7 @@ class Dashboard extends CommonGLPI
                         __('Prestation', 'manageentities'),
                         __('Total remaining', 'manageentities'),
                         __('Total'),
-                        __('End date')
+                        __('End date'),
                     ];
 
                     $widget = new Datatable();
@@ -198,23 +200,23 @@ class Dashboard extends CommonGLPI
                             'glpi_plugin_manageentities_contacts' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_contacts' => 'contacts_id',
-                                    'glpi_contacts' => 'id'
-                                ]
+                                    'glpi_contacts' => 'id',
+                                ],
                             ],
                             'glpi_entities' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_contacts' => 'entities_id',
-                                    'glpi_entities' => 'id'
-                                ]
+                                    'glpi_entities' => 'id',
+                                ],
                             ],
                         ],
                         'WHERE' => [
                             'glpi_contacts.name' => ['<>', ''],
                             'glpi_entities.name' => ['<>', ''],
                             'glpi_contacts.is_deleted' => 0,
-//                            'glpi_contacts.phone' => ['<>', 'NULL'],
-//                            'glpi_contacts.mobile' => ['<>', 'NULL'],
-//                            'glpi_contacts.name' => ['<>', 'NULL'],
+                            //                            'glpi_contacts.phone' => ['<>', 'NULL'],
+                            //                            'glpi_contacts.mobile' => ['<>', 'NULL'],
+                            //                            'glpi_contacts.name' => ['<>', 'NULL'],
                         ],
                         'ORDERBY' => ['glpi_entities.name',
                             'glpi_contacts.name',
@@ -231,7 +233,7 @@ class Dashboard extends CommonGLPI
                         __('First name'),
                         __('Name'),
                         __('Phone'),
-                        __('Mobile phone')
+                        __('Mobile phone'),
                     ];
                     $widget->setTabNames($headers);
 
@@ -263,27 +265,27 @@ class Dashboard extends CommonGLPI
                             'glpi_tickets' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                                    'glpi_tickets' => 'id'
-                                ]
+                                    'glpi_tickets' => 'id',
+                                ],
                             ],
                             'glpi_entities' => [
                                 'ON' => [
                                     'glpi_tickets' => 'entities_id',
-                                    'glpi_entities' => 'id'
-                                ]
+                                    'glpi_entities' => 'id',
+                                ],
                             ],
                             'glpi_plugin_manageentities_contractdays' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id',
-                                    'glpi_plugin_manageentities_contractdays' => 'id'
-                                ]
+                                    'glpi_plugin_manageentities_contractdays' => 'id',
+                                ],
                             ],
                         ],
                         'WHERE' => [
                             'glpi_plugin_manageentities_cridetails.plugin_manageentities_contractdays_id' => ['<>', 0],
                             'glpi_tickets.is_deleted' => 0,
                             'glpi_plugin_manageentities_cridetails.documents_id' => 0,
-                            ['glpi_tickets.status' => ['NOT IN', [CommonITILObject::SOLVED, CommonITILObject::CLOSED]]]
+                            ['glpi_tickets.status' => ['NOT IN', [CommonITILObject::SOLVED, CommonITILObject::CLOSED]]],
                         ],
                         'ORDERBY' => ['glpi_tickets.date DESC'],
                     ];
@@ -293,7 +295,7 @@ class Dashboard extends CommonGLPI
                         __('Opening date'),
                         _n('Client', 'Clients', 1, 'manageentities'),
                         __('Title'),
-                        __('Prestation', 'manageentities')
+                        __('Prestation', 'manageentities'),
                     ];
                     $widget->setTabNames($headers);
 
@@ -346,7 +348,7 @@ class Dashboard extends CommonGLPI
                     _n('Client', 'Clients', 1, 'manageentities'),
                     __('Ticket'),
                     __('Prestation', 'manageentities'),
-                    __('End date')
+                    __('End date'),
                 ];
                 $widget->setTabNames($headers);
 
@@ -378,7 +380,7 @@ class Dashboard extends CommonGLPI
                 $widget->setOption("bSort", false);
                 $widget->toggleWidgetRefresh();
                 $widget->setWidgetTitle(__("Interventions with old contract", "manageentities"));
-//
+                //
                 return $widget;
                 break;
             case $this->getType() . "5":
@@ -436,7 +438,7 @@ class Dashboard extends CommonGLPI
                         __('Contract'),
                         __('Prestation', 'manageentities'),
                         __('Total remaining', 'manageentities'),
-                        __('Total')
+                        __('Total'),
                     ];
 
                     $widget = new Datatable();
@@ -471,13 +473,13 @@ class Dashboard extends CommonGLPI
                 Contract::CONTRACT_TYPE_NULL,
                 Contract::CONTRACT_TYPE_HOUR,
                 Contract::CONTRACT_TYPE_INTERVENTION,
-                Contract::CONTRACT_TYPE_UNLIMITED
+                Contract::CONTRACT_TYPE_UNLIMITED,
             ];
         } else {// Daily
             $types_contracts = [
                 Contract::CONTRACT_TYPE_NULL,
                 Contract::CONTRACT_TYPE_AT,
-                Contract::CONTRACT_TYPE_FORFAIT
+                Contract::CONTRACT_TYPE_FORFAIT,
             ];
         }
 
@@ -492,7 +494,7 @@ class Dashboard extends CommonGLPI
         $criteria = [
             'SELECT' => [
                 'glpi_entities.id AS entities_id',
-                'glpi_entities.name AS entities_name'
+                'glpi_entities.name AS entities_name',
             ],
             'DISTINCT' => true,
             'FROM' => 'glpi_contracts',
@@ -500,12 +502,12 @@ class Dashboard extends CommonGLPI
                 'glpi_entities' => [
                     'ON' => [
                         'glpi_contracts' => 'entities_id',
-                        'glpi_entities' => 'id'
-                    ]
-                ]
+                        'glpi_entities' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
-                'NOT' => ['glpi_entities.name' => null, 'glpi_entities.id' => null]
+                'NOT' => ['glpi_entities.name' => null, 'glpi_entities.id' => null],
             ],
             'ORDERBY' => 'glpi_entities.name',
         ];
@@ -541,9 +543,9 @@ class Dashboard extends CommonGLPI
                         'glpi_plugin_manageentities_contracts' => [
                             'ON' => [
                                 'glpi_contracts' => 'id',
-                                'glpi_plugin_manageentities_contracts' => 'contracts_id'
-                            ]
-                        ]
+                                'glpi_plugin_manageentities_contracts' => 'contracts_id',
+                            ],
+                        ],
                     ],
                     'WHERE' => [
                         'glpi_contracts.entities_id' => $dataEntity['entities_id'],
@@ -579,14 +581,14 @@ class Dashboard extends CommonGLPI
                             'glpi_contracts' => [
                                 'ON' => [
                                     'glpi_contracts' => 'id',
-                                    'glpi_plugin_manageentities_contractdays' => 'contracts_id'
-                                ]
+                                    'glpi_plugin_manageentities_contractdays' => 'contracts_id',
+                                ],
                             ],
                             'glpi_plugin_manageentities_contractstates' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-                                    'glpi_plugin_manageentities_contractstates' => 'id'
-                                ]
+                                    'glpi_plugin_manageentities_contractstates' => 'id',
+                                ],
                             ],
                         ],
                         'WHERE' => [
@@ -610,18 +612,18 @@ class Dashboard extends CommonGLPI
                         $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => $options['contract_states']];
                     } elseif (isset($preferences['contract_states']) && $preferences['contract_states'] != null) {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
-                                    $preferences['contract_states'],
-                                    true
-                                )
-                            ];
+                            'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
+                                $preferences['contract_states'],
+                                true
+                            ),
+                        ];
                     } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
-                                    $config_states['contract_states'],
-                                    true
-                                )
-                            ];
+                            'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
+                                $config_states['contract_states'],
+                                true
+                            ),
+                        ];
                     }
 
                     $iteratord = $DB->request($criteriad);
@@ -721,7 +723,7 @@ class Dashboard extends CommonGLPI
 
         $tabOther = [
             'depass' => 0,
-            'reste' => 0
+            'reste' => 0,
         ];
 
         $criteria = [
@@ -735,15 +737,15 @@ class Dashboard extends CommonGLPI
                 'glpi_tickets' => [
                     'ON' => [
                         'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                        'glpi_tickets' => 'id'
-                    ]
+                        'glpi_tickets' => 'id',
+                    ],
                 ],
                 'glpi_tickettasks' => [
                     'ON' => [
                         'glpi_tickets' => 'id',
-                        'glpi_tickettasks' => 'tickets_id'
-                    ]
-                ]
+                        'glpi_tickettasks' => 'tickets_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_plugin_manageentities_cridetails.contracts_id' => $contractDayValues["contracts_id"],
@@ -761,7 +763,7 @@ class Dashboard extends CommonGLPI
 
         $restrict = [
             "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contractDayValues["entities_id"],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"]
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"],
         ];
 
         $dbu = new DbUtils();
@@ -781,8 +783,8 @@ class Dashboard extends CommonGLPI
                         'glpi_plugin_manageentities_cridetails' => [
                             'ON' => [
                                 'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                                'glpi_tickettasks' => 'tickets_id'
-                            ]
+                                'glpi_tickettasks' => 'tickets_id',
+                            ],
                         ],
                     ],
                     'WHERE' => [
@@ -794,13 +796,13 @@ class Dashboard extends CommonGLPI
                 ];
                 if ($config->fields['hourorday'] == Config::HOUR) {
                     $criteriat['LEFT JOIN'] = $criteriat['LEFT JOIN'] + [
-                            'glpi_plugin_manageentities_taskcategories' => [
-                                'ON' => [
-                                    'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                                    'glpi_tickettasks' => 'taskcategories_id'
-                                ]
-                            ]
-                        ];
+                        'glpi_plugin_manageentities_taskcategories' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                                'glpi_tickettasks' => 'taskcategories_id',
+                            ],
+                        ],
+                    ];
                     $criteriat['WHERE'] = $criteriat['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
                 }
 

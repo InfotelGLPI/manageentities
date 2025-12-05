@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.1.2');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.1.3');
 
 global $CFG_GLPI;
 
@@ -36,6 +36,7 @@ use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriPrice;
+use GlpiPlugin\Manageentities\Dashboard;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\GenerateCRI;
@@ -46,7 +47,6 @@ use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Servicecatalog;
 use GlpiPlugin\Manageentities\TaskCategory;
 use GlpiPlugin\Manageentities\TicketTask;
-use GlpiPlugin\Mydashboard\Dashboard;
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
     define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
@@ -141,9 +141,7 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS['config_page']['manageentities'] = 'front/config.form.php';
         }
 
-        if (Plugin::isPluginActive('mydashboard')) {
-            $PLUGIN_HOOKS['mydashboard']['manageentities'] = [Dashboard::class];
-        }
+        $PLUGIN_HOOKS['mydashboard']['manageentities'] = [Dashboard::class];
 
         $PLUGIN_HOOKS['post_item_form']['manageentities'] = [TicketTask::class, 'postForm'];
         // Add specific files to add to the header : javascript or css

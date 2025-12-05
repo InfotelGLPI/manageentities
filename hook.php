@@ -36,6 +36,7 @@ use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\CriTechnician;
 use GlpiPlugin\Manageentities\CriType;
+use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdeskInjection;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
@@ -244,6 +245,82 @@ function plugin_manageentities_install()
     //version 4.0.4
     if (!$DB->tableExists('glpi_plugin_manageentities_directhelpdesks')) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.4.sql");
+    }
+
+    $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.1.3.sql");
+
+    //DisplayPreferences Migration
+    $classes = ['PluginManageentitiesContractday' => Contractday::class,
+        'PluginManageentitiesCriType' => CriType::class,
+        'PluginManageentitiesDirecthelpdesk' => Directhelpdesk::class];
+
+    foreach ($classes as $old => $new) {
+        $displayusers = $DB->request([
+            'SELECT' => [
+                'users_id'
+            ],
+            'DISTINCT' => true,
+            'FROM' => 'glpi_displaypreferences',
+            'WHERE' => [
+                'itemtype' => $old,
+            ],
+        ]);
+
+        if (count($displayusers) > 0) {
+            foreach ($displayusers as $displayuser) {
+                $iterator = $DB->request([
+                    'SELECT' => [
+                        'num',
+                        'id'
+                    ],
+                    'FROM' => 'glpi_displaypreferences',
+                    'WHERE' => [
+                        'itemtype' => $old,
+                        'users_id' => $displayuser['users_id'],
+                        'interface' => 'central'
+                    ],
+                ]);
+
+                if (count($iterator) > 0) {
+                    foreach ($iterator as $data) {
+                        $iterator2 = $DB->request([
+                            'SELECT' => [
+                                'id'
+                            ],
+                            'FROM' => 'glpi_displaypreferences',
+                            'WHERE' => [
+                                'itemtype' => $new,
+                                'users_id' => $displayuser['users_id'],
+                                'num' => $data['num'],
+                                'interface' => 'central'
+                            ],
+                        ]);
+                        if (count($iterator2) > 0) {
+                            foreach ($iterator2 as $dataid) {
+                                $query = $DB->buildDelete(
+                                    'glpi_displaypreferences',
+                                    [
+                                        'id' => $dataid['id'],
+                                    ]
+                                );
+                                $DB->doQuery($query);
+                            }
+                        } else {
+                            $query = $DB->buildUpdate(
+                                'glpi_displaypreferences',
+                                [
+                                    'itemtype' => $new,
+                                ],
+                                [
+                                    'id' => $data['id'],
+                                ]
+                            );
+                            $DB->doQuery($query);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";

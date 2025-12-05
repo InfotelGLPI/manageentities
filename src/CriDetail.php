@@ -1683,7 +1683,7 @@ class CriDetail extends CommonDBTM
                     . "&parentid=" . $data['tickets_id']
                     . "&id=" . $data['id']
                     . "&url=" . $interv[$key]["url"];
-                $cri = new TicketTask();
+                $cri = new \TicketTask();
                 $cri->getFromDB($data["id"]);
                 $interv[$key]["editable"] = $cri->canUpdateItem();
             }
