@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-05 11:36+0000\n"
+"POT-Creation-Date: 2025-12-08 11:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -269,7 +269,7 @@ msgstr ""
 msgid "An error happened while saving the data."
 msgstr ""
 
-#: src/Contract.php:585 src/Contract.php:614
+#: src/Contract.php:586 src/Contract.php:615
 msgid "Annual"
 msgstr ""
 
@@ -311,7 +311,7 @@ msgstr ""
 msgid "Business"
 msgstr ""
 
-#: src/Contract.php:638 src/Contract.php:675
+#: src/Contract.php:639 src/Contract.php:676
 msgid "By intervention"
 msgstr ""
 
@@ -609,7 +609,7 @@ msgstr ""
 msgid "End date must be after the begin date !"
 msgstr ""
 
-#: setup.php:186 front/directhelpdesk.form.php:102
+#: setup.php:189 front/directhelpdesk.form.php:102
 #: front/directhelpdesk.form.php:105 front/directhelpdesk.form.php:107
 #: front/report_occupation.form.php:34 front/config.form.php:43
 #: front/addelements.form.php:39 front/report_moving.form.php:34
@@ -716,7 +716,7 @@ msgstr ""
 msgid "Hour of"
 msgstr ""
 
-#: src/Config.php:345 src/Contract.php:637 src/Contract.php:673
+#: src/Config.php:345 src/Contract.php:638 src/Contract.php:674
 msgid "Hourly"
 msgstr ""
 
@@ -752,7 +752,7 @@ msgstr ""
 msgid "Initial credit"
 msgstr ""
 
-#: src/Contract.php:702
+#: src/Contract.php:703
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
@@ -799,7 +799,7 @@ msgid_plural "Intervention tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: hook.php:661 src/AddElementsView.php:2731 src/CriPrice.php:395
+#: hook.php:663 src/AddElementsView.php:2731 src/CriPrice.php:395
 #: src/CriType.php:48 src/Cri.php:203 src/CriDetail.php:246
 #: src/CriDetail.php:513 src/CriDetail.php:623 src/CriDetail.php:1093
 msgid "Intervention type"
@@ -859,7 +859,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: hook.php:768 src/Servicecatalog.php:80 src/Servicecatalog.php:86
+#: hook.php:770 src/Servicecatalog.php:80 src/Servicecatalog.php:86
 msgid "Manage your contracts"
 msgstr ""
 
@@ -989,7 +989,7 @@ msgstr ""
 msgid "Out of contract"
 msgstr ""
 
-#: src/Contract.php:645 src/Contract.php:681
+#: src/Contract.php:646 src/Contract.php:682
 msgid "Package"
 msgstr ""
 
@@ -1045,7 +1045,7 @@ msgstr ""
 msgid "Please fill the contract period end date."
 msgstr ""
 
-#: src/Contract.php:563
+#: src/Contract.php:564
 msgid ""
 "Please note that there are no more contracts with days available for this "
 "customer."
@@ -1102,7 +1102,7 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
-#: src/Contract.php:584 src/Contract.php:612
+#: src/Contract.php:585 src/Contract.php:613
 msgid "Quarterly"
 msgstr ""
 
@@ -1188,7 +1188,7 @@ msgstr ""
 msgid "Stakeholder successfully updated."
 msgstr ""
 
-#: hook.php:662 src/AddElementsView.php:2302 src/Followup.php:1060
+#: hook.php:664 src/AddElementsView.php:2302 src/Followup.php:1060
 #: src/Followup.php:1070 src/Followup.php:1936 src/ContractState.php:48
 #: src/ContractDay.php:149 src/ContractDay.php:397 src/ContractDay.php:604
 msgid "State of contract"
@@ -1228,7 +1228,7 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
-#: src/Contract.php:644 src/Contract.php:679
+#: src/Contract.php:645 src/Contract.php:680
 msgid "Technical Assistance"
 msgstr ""
 
