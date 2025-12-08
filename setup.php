@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.1.3');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.1.4');
 
 global $CFG_GLPI;
 
@@ -173,9 +173,12 @@ function plugin_init_manageentities()
 //         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/manageentities_load_scripts.js';
 //      }
         $PLUGIN_HOOKS['post_init']['manageentities'] = 'plugin_manageentities_postinit';
-
-        $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities']    = [Contract::class, 'preItemForm'];
-        $PLUGIN_HOOKS[Hooks::PRE_ITEM_LIST]['manageentities']    = [Contract::class, 'preItemForm'];
+        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
+            && isset($_SESSION['glpiactiveprofile']['interface'])
+            && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+            $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities'] = [Contract::class, 'preItemForm'];
+            $PLUGIN_HOOKS[Hooks::PRE_ITEM_LIST]['manageentities'] = [Contract::class, 'preItemForm'];
+        }
     }
 }
 

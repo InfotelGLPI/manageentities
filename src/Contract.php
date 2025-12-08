@@ -497,7 +497,8 @@ class Contract extends CommonDBTM
             ],
             'WHERE' => [
                 'glpi_contracts.is_deleted' => 0,
-                $this->getTable() . '.entities_id' => $instID
+                'NOT'       => [$this->getTable() . '.date_signature' => null],
+                'glpi_contracts.entities_id' => $instID
             ],
             'ORDERBY' => [
                 'glpi_contracts.begin_date',
@@ -766,7 +767,9 @@ class Contract extends CommonDBTM
             $entities_id = $item->fields['entities_id'];
         }
         $out = "";
-        if (isset($entities_id)) {
+        if (isset($entities_id)
+            && $_SESSION['glpiactiveprofile']['interface'] == 'central'
+            && Session::haveRight('plugin_manageentities', UPDATE)) {
 //            $sons = getSonsOf("glpi_entities", $entities_id);
 //            if (count($sons) > 1) {
 //                return false;

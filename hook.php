@@ -323,6 +323,8 @@ function plugin_manageentities_install()
         }
     }
 
+    $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.1.4.sql");
+
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
     if (!is_dir($rep_files_manageentities)) {
         mkdir($rep_files_manageentities);
