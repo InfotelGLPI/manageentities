@@ -1196,13 +1196,13 @@ class AddElementsView extends CommonGLPIView
 
             $condition = $dbu->getEntitiesRestrictCriteria("glpi_entities");
 
-            if (isset($currentContract->fields['entities_id']) && isset(
-                $this->pModel->getEntity()->fields['id'] ?? ''
-            ) && $this->pModel->getEntity(
-            )->fields['id'] ?? '' > 0 && $currentContract->fields['entities_id'] == $this->pModel->getEntity(
-            )->fields['id'] ?? '' || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "") && isset(
-                $this->pModel->getEntity()->fields['id'] ?? ''
-            ) && $this->pModel->getEntity()->fields['id'] ?? '' > 0)) {
+            if (isset($currentContract->fields['entities_id'])
+                && isset($this->pModel->getEntity()->fields['id'])
+                && ($this->pModel->getEntity()->fields['id'] ?? '') > 0
+                && $currentContract->fields['entities_id'] == ($this->pModel->getEntity()->fields['id'] ?? '')
+                || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "")
+                    && isset($this->pModel->getEntity()->fields['id'])
+                    && ($this->pModel->getEntity()->fields['id'] ?? '') > 0)) {
                 echo " style='visibility:hidden;' ";
             }
             echo " >";
@@ -1221,12 +1221,12 @@ class AddElementsView extends CommonGLPIView
             $name = "previous_entity_for_contract";
             $check = 0;
             if (isset($currentContract->fields['entities_id'])
-                && isset($this->pModel->getEntity()->fields['id'])                                                                               
-                && $this->pModel->getEntity()->fields['id'] ?? '' > 0
-                && $currentContract->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
+                && isset($this->pModel->getEntity()->fields['id'])
+                && ($this->pModel->getEntity()->fields['id'] ?? '') > 0
+                && $currentContract->fields['entities_id'] == ($this->pModel->getEntity()->fields['id'] ?? '')
                 || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "")
-                    && isset($this->pModel->getEntity()->fields['id'] ?? '')
-                    && $this->pModel->getEntity()->fields['id'] ?? '' > 0)) {
+                    && isset($this->pModel->getEntity()->fields['id'])
+                    && ($this->pModel->getEntity()->fields['id'] ?? '') > 0)) {
                 $check = 1;
             }
             Html::showCheckbox([
