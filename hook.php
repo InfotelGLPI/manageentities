@@ -542,8 +542,8 @@ function plugin_item_transfer_manageentities($parm)
                 foreach ($allPluginContracts as $onePluginContract) {
                     $old_entity = $onePluginContract['entities_id'];
                     $pluginContract->update(['id'           => $onePluginContract['id'],
-                                        'contracts_id' => $contract->fields['id'],
-                                        'entities_id'  => $contract->fields['entities_id']]);
+                                        'contracts_id' => $contract->fields['id'] ?? '',
+                                        'entities_id'  => $contract->fields['entities_id'] ?? '']);
                 }
             }
 
@@ -561,20 +561,20 @@ function plugin_item_transfer_manageentities($parm)
                         foreach ($allPrices as $onePrice) {
                           //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
     //                     $newPrice = $criPrice->getFromDBbyType($onePluginContractDays['plugin_manageentities_critypes_id'],
-    //                                                            $contract->fields['entities_id']);
+    //                                                            $contract->fields['entities_id'] ?? '');
 
                             $newPrice = $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id' => $onePluginContractDays['plugin_manageentities_critypes_id'],
                             'entities_id' => $contract->fields["entities_id"]]);
                             if (!$newPrice) {
-                                    $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
+                                    $criPrice->add(['entities_id'                       => $contract->fields['entities_id'] ?? '',
                                         'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
                                         'price'                             => $onePrice['price']]);
                             }
                         }
                     }
                     $contractDay->update(['id'           => $onePluginContractDays['id'],
-                                     'contracts_id' => $contract->fields['id'],
-                                     'entities_id'  => $contract->fields['entities_id']]);
+                                     'contracts_id' => $contract->fields['id'] ?? '',
+                                     'entities_id'  => $contract->fields['entities_id'] ?? '']);
                 }
             }
 
@@ -592,11 +592,11 @@ function plugin_item_transfer_manageentities($parm)
                         foreach ($allPrices as $onePrice) {
                             //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
        //                     $newPrice = $criPrice->getFromDBbyType($onePluginCriDetail['plugin_manageentities_critypes_id'],
-       //                                                            $contract->fields['entities_id']);
+       //                                                            $contract->fields['entities_id'] ?? '');
                             $newPrice = $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id' => $onePluginCriDetail['plugin_manageentities_critypes_id'],
                             'entities_id' => $contract->fields["entities_id"]]);
                             if (!$newPrice) {
-                                $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
+                                $criPrice->add(['entities_id'                       => $contract->fields['entities_id'] ?? '',
                                        'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
                                        'price'                             => $onePrice['price']]);
                             }
@@ -606,16 +606,16 @@ function plugin_item_transfer_manageentities($parm)
                     $document = new Document();
                     $document->getFromDB($onePluginCriDetail['documents_id']);
                     $document->update(['id'          => $onePluginCriDetail['documents_id'],
-                                  'entities_id' => $contract->fields['entities_id']]);
+                                  'entities_id' => $contract->fields['entities_id'] ?? '']);
 
                     $ticket = new Ticket();
                     $ticket->getFromDB($onePluginCriDetail['tickets_id']);
                     $ticket->update(['id'          => $onePluginCriDetail['tickets_id'],
-                                'entities_id' => $contract->fields['entities_id']]);
+                                'entities_id' => $contract->fields['entities_id'] ?? '']);
 
                     $criDetail->update(['id'           => $onePluginCriDetail['id'],
-                                   'contracts_id' => $contract->fields['id'],
-                                   'entities_id'  => $contract->fields['entities_id']]);
+                                   'contracts_id' => $contract->fields['id'] ?? '',
+                                   'entities_id'  => $contract->fields['entities_id'] ?? '']);
                 }
             }
             break;

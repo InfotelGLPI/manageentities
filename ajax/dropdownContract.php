@@ -51,7 +51,7 @@ if (isset($_POST["contracts_id"])) {
 
    if ($contractdays_id == 0) {
       $contractday = new ContractDay();
-      $restrict    = ['entities_id'  => $contract->fields['entities_id'],
+      $restrict    = ['entities_id'  => $contract->fields['entities_id'] ?? '',
                       'contracts_id' => $_POST["contracts_id"],
                       [
                          'OR' => [
@@ -67,12 +67,12 @@ if (isset($_POST["contracts_id"])) {
          $contractdays_id = $datas['id'];
       }
    }
-   if (isset($contract->fields['states_id']) && $contract->fields['states_id'] > 0) {
-      echo __('Status') . " : " . Dropdown::getDropdownName("glpi_states", $contract->fields['states_id']);
+   if (isset($contract->fields['states_id']) && $contract->fields['states_id'] ?? '' > 0) {
+      echo __('Status') . " : " . Dropdown::getDropdownName("glpi_states", $contract->fields['states_id'] ?? '');
       echo "<br><br>";
    }
 
-   $restrict = ['entities_id'  => $contract->fields['entities_id'],
+   $restrict = ['entities_id'  => $contract->fields['entities_id'] ?? '',
                 'contracts_id' => $_POST["contracts_id"],
                 [
                    'OR' => [

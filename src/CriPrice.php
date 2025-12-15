@@ -176,7 +176,7 @@ class CriPrice extends CommonDBTM
         echo "<td>";
         $rand = \Dropdown::show(CriType::class, [
             'name' => 'plugin_manageentities_critypes_id',
-            'value' => $this->fields['plugin_manageentities_critypes_id'],
+            'value' => $this->fields['plugin_manageentities_critypes_id'] ?? '',
             'entity' => $options['parent']->getField('entities_id'),
             'used' => $used_critypes,
             'on_change' => 'manageentities_loadSelectPrice();'
@@ -217,7 +217,7 @@ class CriPrice extends CommonDBTM
         echo __('Is default', 'manageentities') . '&nbsp;';
         echo "</td>";
         echo "<td>";
-        \Dropdown::showYesNo('is_default', $this->fields['is_default']);
+        \Dropdown::showYesNo('is_default', $this->fields['is_default'] ?? '');
         echo Html::hidden('plugin_manageentities_contractdays_id', ['value' => $options['parent']->getField('id')]);
         echo Html::hidden('entities_id', ['value' => $options['parent']->getField('entities_id')]);
         echo "</td>";
@@ -229,7 +229,7 @@ class CriPrice extends CommonDBTM
         echo "<td>";
         echo "<div id='manageentities_loadPrice'>";
         $this->showSelectPriceDropdown(
-            $this->fields['plugin_manageentities_critypes_id'],
+            $this->fields['plugin_manageentities_critypes_id'] ?? '',
             $options['parent']->getField('entities_id')
         );
         echo "</div>";
@@ -283,7 +283,7 @@ class CriPrice extends CommonDBTM
             return false;
         }
 
-        $canedit = $item->can($item->fields['id'], UPDATE);
+        $canedit = $item->can($item->fields['id'] ?? '', UPDATE);
 
         $data = $this->getItems(0, $item->getField('id'));
         if (!empty($data) && $canedit) {
@@ -325,29 +325,29 @@ class CriPrice extends CommonDBTM
             return false;
         }
 
-        $canedit = $item->can($item->fields['id'], UPDATE);
+        $canedit = $item->can($item->fields['id'] ?? '', UPDATE);
 
         $rand = mt_rand();
 
         $data = $this->getItems($item->getField('id'));
 
         if ($canedit) {
-            echo "<div id='viewcriprice" . $item->fields['id'] . "_$rand'></div>\n";
+            echo "<div id='viewcriprice" . $item->fields['id'] ?? '' . "_$rand'></div>\n";
             self::getJSEdition(
-                "viewcriprice" . $item->fields['id'] . "_$rand",
-                "viewAddCriprice" . $item->fields['id'] . "_$rand",
+                "viewcriprice" . $item->fields['id'] ?? '' . "_$rand",
+                "viewAddCriprice" . $item->fields['id'] ?? '' . "_$rand",
                 $this->getType(),
                 -1,
                 ContractDay::class,
-                $item->fields['id']
+                $item->fields['id'] ?? ''
             );
             echo "<div class='center firstbloc'>" .
-                "<a class='submit btn btn-primary' href='javascript:viewAddCriprice" . $item->fields['id'] . "_$rand();'>";
+                "<a class='submit btn btn-primary' href='javascript:viewAddCriprice" . $item->fields['id'] ?? '' . "_$rand();'>";
             echo __('Add a new price', 'manageentities') . "</a></div>\n";
         }
 
         if (!empty($data)) {
-            $this->listItems($item->fields['id'], $data, $canedit, $rand);
+            $this->listItems($item->fields['id'] ?? '', $data, $canedit, $rand);
         }
     }
 
@@ -539,7 +539,7 @@ class CriPrice extends CommonDBTM
             'entities_id' => $values["entities_id"]
         ])) {
             $this->update([
-                'id' => $this->fields['id'],
+                'id' => $this->fields['id'] ?? '',
                 'price' => $values["price"]
             ]);
         } else {

@@ -494,7 +494,7 @@ class GenerateCRI extends CommonGLPI
                 echo "<span style='font-weight:bold;'>" . __('Technician group') . ": </span>";
                 echo "<span>" . $group->getField('name') . "</span><br>";
             }
-            echo Html::hidden('predefined-task', ['value' => $tasktemplate->fields['id']]);
+            echo Html::hidden('predefined-task', ['value' => $tasktemplate->fields['id'] ?? '']);
             echo "</div>";
             echo "</td>";
             echo "</tr>";
@@ -713,7 +713,7 @@ class GenerateCRI extends CommonGLPI
 
                 if (description == '' || begin == ''  || userIdTech == 0 || end === undefined  && duration == 0) {
                     alert('" . __('Content, end and begin date are mandatory for a task !', 'manageentities') . "');
-              } else if (tasksCategory == 0 && " . $config->fields['hourorday'] . " == " . Config::HOUR . " ) {
+              } else if (tasksCategory == 0 && " . $config->fields['hourorday'] ?? '' . " == " . Config::HOUR . " ) {
                     alert('" . __('Task category must be defined', 'manageentities') . "');
               } else if (end <= begin) {
                     alert('" . __('End date must be after the begin date !', 'manageentities') . "');
@@ -1329,7 +1329,7 @@ class GenerateCRI extends CommonGLPI
             if (!empty($contractSelected)) {
                 echo '&nbsp;';
                 $contract->getFromDB($contractSelected);
-                Html::showToolTip($contract->fields['comment'], [
+                Html::showToolTip($contract->fields['comment'] ?? '', [
                     'link' => $contract->getLinkURL(),
                     'linktarget' => '_blank'
                 ]);
@@ -1360,7 +1360,7 @@ class GenerateCRI extends CommonGLPI
             echo "<td>" . __('Periods of contract', 'manageentities') . "</td>";
             echo "<td>";
             $restrict = [
-                'entities_id' => $contract->fields['entities_id'],
+                'entities_id' => $contract->fields['entities_id'] ?? '',
                 'contracts_id' => $contractSelected
             ];
             $restrict += ['NOT' => ['plugin_manageentities_contractstates_id' => 2]]; //Closed contract was 8, is now 2

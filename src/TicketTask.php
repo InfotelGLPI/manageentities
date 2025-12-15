@@ -55,9 +55,9 @@ class TicketTask extends CommonDBTM
                 echo '<tr class="tab_bg_1"><td colspan="3"></td>';
                 echo '<td>';
                 echo "<div class='ti ti-label right' style='width:300px;margin-right: 0;margin-left: auto;'>";
-                $value = $tickettask->fields['date'];
-                if (!empty($tickettask->fields['begin'])) {
-                    $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
+                $value = $tickettask->fields['date'] ?? '';
+                if (!empty($tickettask->fields['begin'] ?? '')) {
+                    $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] ?? '' . ' + 1 DAY'));
                 }
                 $randDate = Html::showDateTimeField('new_date', [
                     'value' => $value,
@@ -68,10 +68,10 @@ class TicketTask extends CommonDBTM
                 $params = json_encode([
                     'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
                     //                                       'new_date_id'    => 'showdate' . $randDate,
-                    'tickets_id' => $tickettask->fields['tickets_id'],
-                    'tickettasks_id' => $tickettask->fields['id']
+                    'tickets_id' => $tickettask->fields['tickets_id'] ?? '',
+                    'tickettasks_id' => $tickettask->fields['id'] ?? ''
                 ]);
-                $tickettask_id = $tickettask->fields['id'];
+                $tickettask_id = $tickettask->fields['id'] ?? '';
                 echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);'>";
                 echo "<i class='ti ti-copy pointer'
             title='" . _sx('button', 'Duplicate') . "'></i>";

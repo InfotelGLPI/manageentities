@@ -87,7 +87,7 @@ if (isset($_POST['generatecri'])) {
 } else {
    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", GenerateCri::class);
    $ticket->fields['itilcategories_id'] = $_POST['itilcategories_id'] ?? 0;
-   $ticket->fields['type']              = $_POST['type'] ?? '';
+   $ticket->fields['type'] = $_POST['type'] ?? '';
    $_SESSION['glpiactive_entity']       = $_POST['entities_id'] ?? 0;
    $_SESSION['glpiactive_entity']       = $_POST['entities_id'] ?? 0;
 

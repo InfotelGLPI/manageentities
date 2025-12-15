@@ -302,7 +302,7 @@ switch ($_POST['action']) {
         $nbContact = $pModel->getNbContact();
 
 
-        if (!isset($contacts[$nbContact + 1]) && isset($contacts[$nbContact]->fields['id']) && $contacts[$nbContact]->fields['id'] > 0) {
+        if (!isset($contacts[$nbContact + 1]) && isset($contacts[$nbContact]->fields['id']) && $contacts[$nbContact]->fields['id'] ?? '' > 0) {
             $nbContact++;
             $pModel->setNbContact($nbContact);
 
@@ -328,7 +328,7 @@ switch ($_POST['action']) {
         $nbIntervention    = $pModel->getNbContractDays();
         $oldNbIntervention = $pModel->getNbContractDays();
 
-        if (!isset($interventions[$nbIntervention + 1]) && isset($interventions[$nbIntervention]->fields['id']) && $interventions[$nbIntervention]->fields['id'] > 0) {
+        if (!isset($interventions[$nbIntervention + 1]) && isset($interventions[$nbIntervention]->fields['id']) && $interventions[$nbIntervention]->fields['id'] ?? '' > 0) {
             $nbIntervention++;
             $pModel->setNbContractDays($nbIntervention);
             $currentContractday = $interventions[$oldNbIntervention];
@@ -403,11 +403,11 @@ switch ($_POST['action']) {
             $cprice     = $pModel->getCripriceFromDB($critypeId, $entitiesId);
             $pView->updateCriPrice($cprice, "price_" . $_POST ['fakeid_new_intervention']);
         } elseif (isset($_POST['new_intervention_critypes_id'])
-                && $_POST['new_intervention_critypes_id'] > 0
-                && isset($pModel->getEntity()->fields['id'])
-                && $pModel->getEntity()->fields['id'] > 0) {
+            && $_POST['new_intervention_critypes_id'] > 0
+            && isset($pModel->getEntity()->fields['id'])
+            && ($pModel->getEntity()->fields['id'] ?? '') > 0) {
             $critypeId  = $_POST['new_intervention_critypes_id'];
-            $entitiesId = $pModel->getEntity()->fields['id'];
+            $entitiesId = $pModel->getEntity()->fields['id'] ?? '';
             $cprice     = $pModel->getCripriceFromDB($critypeId, $entitiesId);
             $pView->updateCriPrice($cprice, "price_" . $_POST ['fakeid_new_intervention']);
         } else {

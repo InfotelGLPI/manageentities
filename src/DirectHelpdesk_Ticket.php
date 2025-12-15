@@ -108,13 +108,13 @@ class DirectHelpdesk_Ticket extends CommonDBTM
                 foreach ($items as $item) {
                     $direct = new DirectHelpdesk();
                     $direct->getFromDB($item['plugin_manageentities_directhelpdesks_id']);
-                    $actiontime = $direct->fields['actiontime'];
+                    $actiontime = $direct->fields['actiontime'] ?? '';
                     echo "<tr class='tab_bg_1'>";
-                    echo "<td>" . $direct->fields['name'] . "</td>";
-                    echo "<td>" . Html::convDate($direct->fields['date']) . "</td>";
-                    echo "<td>" . getUserName($direct->fields['users_id']) . "</td>";
+                    echo "<td>" . $direct->fields['name'] ?? '' . "</td>";
+                    echo "<td>" . Html::convDate($direct->fields['date'] ?? '') . "</td>";
+                    echo "<td>" . getUserName($direct->fields['users_id'] ?? '') . "</td>";
                     echo "<td>" . CommonITILObject::getActionTime($actiontime) . "</td>";
-                    echo "<td>" . $direct->fields['comment'] . "</td>";
+                    echo "<td>" . $direct->fields['comment'] ?? '' . "</td>";
                     echo "</tr>";
                 }
                 echo "</table>";

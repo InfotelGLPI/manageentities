@@ -252,7 +252,7 @@ class ContractDay extends CommonDBTM
             'entities_id' => $values["entities_id"],
         ])) {
             $this->update([
-                'id' => $this->fields['id'],
+                'id' => $this->fields['id'] ?? '',
                 'nbday' => $values["nbday"],
                 'entities_id' => $values["entities_id"],
             ]);
@@ -303,17 +303,17 @@ class ContractDay extends CommonDBTM
             $input = ['contract_id' => $contract_id];
             $this->check(-1, UPDATE, $input);
             $contract->getFromDB($contract_id);
-            $options['entities_id'] = $contract->fields['entities_id'];
+            $options['entities_id'] = $contract->fields['entities_id'] ?? '';
         }
 
         // Set session saved if exists
         $this->setSessionValues();
 
         //init values
-        if (empty($this->fields['nbday'])) {
+        if (empty($this->fields['nbday'] ?? '')) {
             $this->fields['nbday'] = 0;
         }
-        if (empty($this->fields['report'])) {
+        if (empty($this->fields['report'] ?? '')) {
             $this->fields['report'] = 0;
         }
 
@@ -325,8 +325,8 @@ class ContractDay extends CommonDBTM
         }
 
         $restrict = [
-            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'],
+            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'] ?? '',
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'] ?? '',
         ];
         $dbu = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
@@ -340,8 +340,8 @@ class ContractDay extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Contract') . "</td>";
         $link = Toolbox::getItemTypeFormURL('Contract');
-        $contract_name = "<a href='" . $link . "?id=" . $contract->fields['id'] . "'>"
-            . $contract->fields['name'] . "</a>";
+        $contract_name = "<a href='" . $link . "?id=" . $contract->fields['id'] ?? '' . "'>"
+            . $contract->fields['name'] ?? '' . "</a>";
         echo "<td>" . $contract_name . "</td>";
 
         if ($config->fields['hourorday'] == Config::DAY) {
@@ -349,7 +349,7 @@ class ContractDay extends CommonDBTM
                 'Type of service contract',
                 'manageentities'
             ) . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
-            Contract::dropdownContractType("contract_type", $this->fields['contract_type']);
+            Contract::dropdownContractType("contract_type", $this->fields['contract_type'] ?? '');
         } else {
             echo "</td><td colspan='2'></td>";
         }
@@ -357,7 +357,7 @@ class ContractDay extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . ContractDay::getTypeName(1) . "</td>";
         echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
+        echo Html::input('name', ['value' => $this->fields['name'] ?? '', 'size' => 40]);
         echo "</td>";
 
         if (($config->fields['hourorday'] == Config::DAY)
@@ -398,17 +398,17 @@ class ContractDay extends CommonDBTM
             'manageentities'
         ) . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
         \Dropdown::show(ContractState::class, [
-            'value' => $this->fields['plugin_manageentities_contractstates_id'],
+            'value' => $this->fields['plugin_manageentities_contractstates_id'] ?? '',
             'entity' => $this->fields["entities_id"],
         ]);
         echo "</td></tr>";
 
         echo Html::hidden('contracts_id', ['value' => $contract_id]);
         echo Html::hidden('contract_id', ['value' => $contract_id]);
-        echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id']]);
+        echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id'] ?? '']);
 
         // We get all cri detail data
-        $this->fields['contractdays_id'] = $this->fields['id'];
+        $this->fields['contractdays_id'] = $this->fields['id'] ?? '';
         $resultCriDetail = CriDetail::getCriDetailData($this->fields);
 
         foreach ($resultCriDetail['result'] as $dataCriDetail) {
@@ -452,7 +452,7 @@ class ContractDay extends CommonDBTM
         if ($config->fields['useprice'] == Config::PRICE) {
             //         echo "<td>".__('Intervention type by default', 'manageentities')."</td>";
             //         echo "<td>";
-            //         \Dropdown::show(CriType::class, ['value' => $this->fields['plugin_manageentities_critypes_id'],
+            //         \Dropdown::show(CriType::class, ['value' => $this->fields['plugin_manageentities_critypes_id'] ?? '',
             //             'entity' => $this->fields["entities_id"]]);
             //         echo "</td>";
 
@@ -507,7 +507,7 @@ class ContractDay extends CommonDBTM
      */
     public static function addNewContractDay(\Contract $contract, $options = [])
     {
-        $contract_id = $contract->fields['id'];
+        $contract_id = $contract->fields['id'] ?? '';
         $canEdit = $contract->can($contract_id, UPDATE);
         $addButton = "";
 
@@ -517,7 +517,7 @@ class ContractDay extends CommonDBTM
             $addButton = "<form method='post' name='contractDays_form'.$rand.'' id='contractDays_form" . $rand . "'
                action='" . Toolbox::getItemTypeFormURL(
                 ContractDay::class
-            ) . "?contract_id=" . $contract->fields['id'] . "'>";
+            ) . "?contract_id=" . $contract->fields['id'] ?? '' . "'>";
             $addButton .= Html::hidden('contract_id', ['value' => $contract_id]);
             $addButton .= Html::hidden('id', ['value' => '']);
             $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'addperiod', 'class' => 'btn btn-primary']);
@@ -543,9 +543,9 @@ class ContractDay extends CommonDBTM
     public static function showForContract(\Contract $contract)
     {
         $rand = mt_rand();
-        $canView = $contract->can($contract->fields['id'], READ);
-        $canEdit = $contract->can($contract->fields['id'], UPDATE);
-        $canCreate = $contract->can($contract->fields['id'], CREATE);
+        $canView = $contract->can($contract->fields['id'] ?? '', READ);
+        $canEdit = $contract->can($contract->fields['id'] ?? '', UPDATE);
+        $canCreate = $contract->can($contract->fields['id'] ?? '', CREATE);
         $config = Config::getInstance();
 
         if (!$canView) {
@@ -557,14 +557,14 @@ class ContractDay extends CommonDBTM
         }
 
         $restrict = [
-            "`entities_id`" => $contract->fields['entities_id'],
-            "`contracts_id`" => $contract->fields['id'],
+            "`entities_id`" => $contract->fields['entities_id'] ?? '',
+            "`contracts_id`" => $contract->fields['id'] ?? '',
             'ORDER' => '`date_signature` ASC',
         ];
 
         $restrict_days = [
-            "`entities_id`" => $contract->fields['entities_id'],
-            "`contracts_id`" => $contract->fields['id'],
+            "`entities_id`" => $contract->fields['entities_id'] ?? '',
+            "`contracts_id`" => $contract->fields['id'] ?? '',
             'ORDER' => '`begin_date` ASC, `name`',
         ];
 
@@ -634,7 +634,7 @@ class ContractDay extends CommonDBTM
                 //type of contract
                 if ($config->fields['hourorday'] == Config::DAY) {
                     echo "<td>" . Contract::getContractType(
-                        $contractday->fields['contract_type']
+                        $contractday->fields['contract_type'] ?? ''
                     ) . "</td>";
                 }
                 // Begin
@@ -664,7 +664,7 @@ class ContractDay extends CommonDBTM
                 echo "<td>";
                 $contractDay = new ContractDay();
                 $contractDay->getFromDB($pluginContractDay['id']);
-                $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
+                $contractDay->fields['contractdays_id'] = $contractDay->fields['id'] ?? '';
                 $resultCriDetail = CriDetail::getCriDetailData($contractDay->fields);
                 $conso = 0;
                 foreach ($resultCriDetail['result'] as $dataCriDetail) {
@@ -684,7 +684,7 @@ class ContractDay extends CommonDBTM
                 echo "</td><td class='center'>";
 
                 if ($criprice->getFromDBByCrit([
-                    'plugin_manageentities_contractdays_id' => $contractDay->fields['id'],
+                    'plugin_manageentities_contractdays_id' => $contractDay->fields['id'] ?? '',
                     'is_default' => 1,
                 ])) {
                     echo Html::formatNumber($criprice->fields["price"], false);
@@ -808,7 +808,7 @@ class ContractDay extends CommonDBTM
 
         if (isset($input['end_date'])
             && isset($input['begin_date'])
-            && !$config->fields['allow_same_periods']
+            && !$config->fields['allow_same_periods'] ?? ''
             && $input['end_date'] != null) {
             if ($input['end_date'] != 'NULL'
                 && strtotime($input['end_date']) < strtotime($input['begin_date'])) {

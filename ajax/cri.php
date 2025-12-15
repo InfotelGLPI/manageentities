@@ -93,7 +93,7 @@ switch ($_POST['action']) {
          } elseif (isset($input->WITHOUTCONTRACT) && $input->WITHOUTCONTRACT) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
-            $input->REPORT_ACTIVITE = $ticket->fields['name'];
+            $input->REPORT_ACTIVITE = $ticket->fields['name'] ?? '';
              $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
@@ -126,7 +126,7 @@ switch ($_POST['action']) {
          } elseif (isset($input->WITHOUTCONTRACT) && $input->WITHOUTCONTRACT) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
-            $input->REPORT_ACTIVITE = $ticket->fields['name'];
+            $input->REPORT_ACTIVITE = $ticket->fields['name'] ?? '';
              $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);
@@ -150,7 +150,7 @@ switch ($_POST['action']) {
          } elseif (isset($input->WITHOUTCONTRACT) && $input->WITHOUTCONTRACT) {
             $ticket = new Ticket();
             $ticket->getFromDB($params['job']);
-            $input->REPORT_ACTIVITE = $ticket->fields['name'];
+            $input->REPORT_ACTIVITE = $ticket->fields['name'] ?? '';
              $Cri->generatePdf($input,
                                                   ['modal'    => $_POST["modal"],
                                                    'toupdate' => $params["toupdate"]]);

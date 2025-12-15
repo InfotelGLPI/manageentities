@@ -43,19 +43,19 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
                 $direct = new DirectHelpdesk();
                 $direct->getFromDB($item);
 
-                $actiontime = $direct->fields['actiontime'];
+                $actiontime = $direct->fields['actiontime'] ?? '';
                 $sum += $actiontime;
                 $input['entities_id'] = $_POST["entities_id"];
                 $input['name'] = __('New intervention', 'manageentities') . " : " . CommonITILObject::getActionTime(
                         $sum
                     );
                 $input['content'] .= Html::convDate(
-                        $direct->fields['date']
-                    ) . " : " . $direct->fields['name'] . " - " . getUserName(
-                        $direct->fields['users_id']
+                        $direct->fields['date'] ?? ''
+                    ) . " : " . $direct->fields['name'] ?? '' . " - " . getUserName(
+                        $direct->fields['users_id'] ?? ''
                     ) . " (" . CommonITILObject::getActionTime($actiontime) . ")<br>";
 
-                $input['_users_id_assign'][] = $direct->fields['users_id'];
+                $input['_users_id_assign'][] = $direct->fields['users_id'] ?? '';
             }
         }
 

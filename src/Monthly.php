@@ -454,7 +454,7 @@ class Monthly extends CommonDBTM
         $count_tasks = 0;
         $nbColumn = 14;
         $dbu = new DbUtils();
-        if ($config->fields['useprice'] != Config::PRICE) {
+        if ($config->fields['useprice'] ?? '' != Config::PRICE) {
             $nbColumn = $nbColumn - 3;
         }
 
@@ -746,7 +746,7 @@ class Monthly extends CommonDBTM
             $message_body .= Search::showNewLine($output_type, ($row_num % 2));
 
             $colspan = 7;
-            if ($config->fields['useprice'] != Config::PRICE) {
+            if ($config->fields['useprice'] ?? '' != Config::PRICE) {
                 $colspan = $colspan - 1;
             }
             $message_body .= Search::showHeaderItem(
