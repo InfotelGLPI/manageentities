@@ -147,7 +147,7 @@ class Entity extends CommonGLPI
     }
 
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item->getType() == __CLASS__) {
             $ManageentitiesEntity = new Entity();
@@ -162,6 +162,7 @@ class Entity extends CommonGLPI
             } else {
                 $entities = [$_SESSION["glpiactive_entity"]];
             }
+
             switch ($tabnum) {
                 case 1:
                     $followUp->showCriteriasForm($_GET);

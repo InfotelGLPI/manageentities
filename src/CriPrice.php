@@ -126,7 +126,7 @@ class CriPrice extends CommonDBTM
      *
      * @return bool|true
      */
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         $criprice = new self();
 

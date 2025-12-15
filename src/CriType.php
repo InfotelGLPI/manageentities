@@ -120,7 +120,7 @@ class CriType extends CommonDropdown
     }
 
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         $criprice = new CriPrice();
         if ($item->getType() == CriType::class) {

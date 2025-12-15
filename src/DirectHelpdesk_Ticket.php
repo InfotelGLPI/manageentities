@@ -92,9 +92,8 @@ class DirectHelpdesk_Ticket extends CommonDBTM
         return '';
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
-
         if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
             $self = new self();
             if ($items = $self->find(['tickets_id' => $item->getID()])) {

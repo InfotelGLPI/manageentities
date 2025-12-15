@@ -105,7 +105,7 @@ class InterventionSkateholder extends CommonDBTM
     }
 
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         $interventionSkateholder = new InterventionSkateholder();
         if ($item->getType() == ContractDay::class) {
