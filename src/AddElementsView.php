@@ -419,7 +419,7 @@ class AddElementsView extends CommonGLPIView
             }
         }
         // Contract
-        if (isset($pModel->getContract()->fields['id'] ?? '') && $pModel->getContract()->fields['id'] ?? '' > 0) {
+        if (isset($pModel->getContract()->fields['id']) && ($pModel->getContract()->fields['id'] ?? '') > 0) {
             $formIds['contract'] = 1;
         } else {
             $formIds['contract'] = 0;
@@ -846,13 +846,13 @@ class AddElementsView extends CommonGLPIView
 
         echo "<div id='div_select_entity_for_contact" . $rand . "' ";
         if (isset($currentContact->fields['entities_id'])
-            && isset($this->pModel->getEntity()->fields['id'])                                                                                  
-            && $this->pModel->getEntity()->fields['id'] ?? '' > 0
-            && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
+            && isset($this->pModel->getEntity()->fields['id'])
+            && ($this->pModel->getEntity()->fields['id'] ?? '') > 0
+            && $currentContact->fields['entities_id'] == ($this->pModel->getEntity()->fields['id'] ?? '')
             || ((!isset($currentContact->fields['entities_id'])
                     || $currentContact->fields['entities_id'] == "")
-                && isset($this->pModel->getEntity()->fields['id'] ?? '')
-                && $this->pModel->getEntity()->fields['id'] ?? '' > 0)) {
+                && isset($this->pModel->getEntity()->fields['id'])
+                && ($this->pModel->getEntity()->fields['id'] ?? '') > 0)) {
             echo " style='visibility:hidden;' ";
         }
         echo ">";
@@ -874,13 +874,13 @@ class AddElementsView extends CommonGLPIView
         $name = "previous_entity_for_contact" . $rand;
         $check = 0;
         if (isset($currentContact->fields['entities_id'])
-            && isset($this->pModel->getEntity()->fields['id'])                                                                               
-            && $this->pModel->getEntity()->fields['id'] ?? '' > 0
-            && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
+            && isset($this->pModel->getEntity()->fields['id'])
+            && ($this->pModel->getEntity()->fields['id'] ?? '') > 0
+            && $currentContact->fields['entities_id'] == ($this->pModel->getEntity()->fields['id'] ?? '')
             || ((!isset($currentContact->fields['entities_id'])
                     || $currentContact->fields['entities_id'] == "")
-                && isset($this->pModel->getEntity()->fields['id'])                                                                                   
-                && $this->pModel->getEntity()->fields['id'] ?? '' > 0)) {
+                && isset($this->pModel->getEntity()->fields['id'])
+                && ($this->pModel->getEntity()->fields['id'] ?? '') > 0)) {
             $check = 1;
         }
         Html::showCheckbox([
