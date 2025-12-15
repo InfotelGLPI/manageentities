@@ -846,7 +846,7 @@ class AddElementsView extends CommonGLPIView
 
         echo "<div id='div_select_entity_for_contact" . $rand . "' ";
         if (isset($currentContact->fields['entities_id'])
-            && isset($this->pModel->getEntity()->fields['id'] ?? '')
+            && isset($this->pModel->getEntity()->fields['id'])                                                                                  
             && $this->pModel->getEntity()->fields['id'] ?? '' > 0
             && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
             || ((!isset($currentContact->fields['entities_id'])
@@ -874,12 +874,12 @@ class AddElementsView extends CommonGLPIView
         $name = "previous_entity_for_contact" . $rand;
         $check = 0;
         if (isset($currentContact->fields['entities_id'])
-            && isset($this->pModel->getEntity()->fields['id'] ?? '')
+            && isset($this->pModel->getEntity()->fields['id'])                                                                               
             && $this->pModel->getEntity()->fields['id'] ?? '' > 0
             && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
             || ((!isset($currentContact->fields['entities_id'])
                     || $currentContact->fields['entities_id'] == "")
-                && isset($this->pModel->getEntity()->fields['id'] ?? '')
+                && isset($this->pModel->getEntity()->fields['id'])                                                                                   
                 && $this->pModel->getEntity()->fields['id'] ?? '' > 0)) {
             $check = 1;
         }
@@ -1221,7 +1221,7 @@ class AddElementsView extends CommonGLPIView
             $name = "previous_entity_for_contract";
             $check = 0;
             if (isset($currentContract->fields['entities_id'])
-                && isset($this->pModel->getEntity()->fields['id'] ?? '')
+                && isset($this->pModel->getEntity()->fields['id'])                                                                               
                 && $this->pModel->getEntity()->fields['id'] ?? '' > 0
                 && $currentContract->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
                 || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "")
@@ -2075,7 +2075,7 @@ class AddElementsView extends CommonGLPIView
             echo "<div id='div_select_entity_for_intervention" . $rand . "' ";
 
             if (isset($currentContractday->fields['entities_id'])
-                && isset($this->pModel->getEntity()->fields['id'] ?? '')
+                && isset($this->pModel->getEntity()->fields['id'])                                                                              
                 && $this->pModel->getEntity()->fields['id'] ?? '' > 0
                 && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
                 || ((!isset($currentContractday->fields['entities_id'])
