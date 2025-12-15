@@ -56,7 +56,7 @@ class CriType extends CommonDropdown
     static function canView(): bool
     {
         $config = Config::getInstance();
-        if ($config->fields['useprice'] == Config::PRICE) {
+        if (isset($config->fields['useprice']) && $config->fields['useprice'] == Config::PRICE) {
             return Session::haveRight(self::$rightname, READ);
         }
         return false;
