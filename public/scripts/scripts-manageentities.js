@@ -54,7 +54,7 @@ function showFormAddPDFContract(root_manage, textTitle, btnYes, btnNo) {
                                 $("#tbl_list_pdf_contract").html(data);
                             }).fail(function (jqXHR, textStatus, errorThrown) {
                                 window.console.log(textStatus);
-                                window.console.log(errorThrown);
+                                window.console.error('[manageentities/public/scripts/scripts-manageentities.js] AJAX error:', errorThrown, jqXHR, textStatus);
                             });
 
                         }
