@@ -424,11 +424,11 @@ class AddElementsModel extends CommonGLPIModel
 
         $childEntity = new \Entity();
         if ($childEntity->getFromDB($_POST['new_entity_entities_id'])) {
-            $entity->fields['completename'] = $childEntity->fields['completename'] . " > " . $entity->fields['name'];
+            $entity->fields['completename'] = $childEntity->fields['completename'] ?? '' . " > " . $entity->fields['name'] ?? '';
         }
 
         // If entity already saved
-        if (isset($entity->fields['id']) && $entity->fields['id'] > 0) {
+        if (isset($entity->fields['id']) && $entity->fields['id'] ?? '' > 0) {
             // Update entity
             $datas = $this->persistData($entity, DBOperation::UPDATE);
             if (isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") {
@@ -436,7 +436,7 @@ class AddElementsModel extends CommonGLPIModel
                 $pView->changeBtnName("btnAddEntity", __("Update this entity", "manageentities"));
                 $pView->updateTabTitle(
                     1,
-                    $entity->fields['name'],
+                    $entity->fields['name'] ?? '',
                     "div#mytabsentity",
                     $entity,
                     $this->getMessage(ElementType::ENTITY, Status::SAVED)
@@ -466,7 +466,7 @@ class AddElementsModel extends CommonGLPIModel
                 $pView->changeBtnName("btnAddEntity", __("Update this entity", "manageentities"));
                 $pView->updateTabTitle(
                     1,
-                    $entity->fields['name'],
+                    $entity->fields['name'] ?? '',
                     "div#mytabsentity",
                     $entity,
                     $this->getMessage(ElementType::ENTITY, Status::SAVED),
@@ -515,15 +515,15 @@ class AddElementsModel extends CommonGLPIModel
 
         if (isset($_POST['_filename'])) {
             $contract = $this->getContract();
-            if (isset($contract->fields['id']) && $contract->fields['id'] > 0) {
+            if (isset($contract->fields['id']) && $contract->fields['id'] ?? '' > 0) {
                 $doc = new Document();
 
                 $input = [
                     "documentcategories_id" => $_POST['documentcategories_id'],
-                    "entities_id" => $contract->fields['entities_id'],
+                    "entities_id" => $contract->fields['entities_id'] ?? '',
                     "is_reccursive" => 0,
                     "itemtype" => $contract->getType(),
-                    "items_id" => $contract->fields['id'],
+                    "items_id" => $contract->fields['id'] ?? '',
                     "_no_message" => "true",
                     "_filename" => $_POST['_filename'],
                     "_tag_filename" => $_POST['_tag_filename'],
@@ -582,8 +582,8 @@ class AddElementsModel extends CommonGLPIModel
         if ($_POST['previous_entity_for_contract'] == "true") {
             $entity = $this->getEntity();
             // IF entity already created
-            if (isset($entity->fields['id']) && $entity->fields['id'] != "") {
-                $contract->fields['entities_id'] = $entity->fields['id'];
+            if (isset($entity->fields['id']) && $entity->fields['id'] ?? '' != "") {
+                $contract->fields['entities_id'] = $entity->fields['id'] ?? '';
             } else {
                 return [
                     "result" => Action::ADD_ONLY_ENTITY,
@@ -602,14 +602,14 @@ class AddElementsModel extends CommonGLPIModel
         }
 
         // If contract already created
-        if (isset($contract->fields['id']) && $contract->fields['id'] > 0) {
+        if (isset($contract->fields['id']) && $contract->fields['id'] ?? '' > 0) {
             // update contract
             $datas = $this->persistData($contract, DBOperation::UPDATE);
             if (isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") {
                 $this->setContract($contract);
                 $pView->updateTabTitle(
                     1,
-                    $contract->fields['name'],
+                    $contract->fields['name'] ?? '',
                     "div#mytabscontract",
                     $contract,
                     $this->getMessage(ElementType::CONTRACT, Status::SAVED)
@@ -703,7 +703,7 @@ class AddElementsModel extends CommonGLPIModel
         $contractManagementType = $this->getContractManagementType();
 
         // If contract management type already created
-        if (isset($contractManagementType->fields['id']) && $contractManagementType->fields['id'] > 0) {
+        if (isset($contractManagementType->fields['id']) && $contractManagementType->fields['id'] ?? '' > 0) {
             // update contract management type
             $datas = $this->persistData($contractManagementType, DBOperation::UPDATE);
             if (isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") {
@@ -712,7 +712,7 @@ class AddElementsModel extends CommonGLPIModel
                 $pView->changeElementVisibility("btnDeleteContractManagementType", true);
                 $pView->updateTabTitle(
                     1,
-                    $contract->fields['name'],
+                    $contract->fields['name'] ?? '',
                     "div#mytabscontract",
                     $contract,
                     $this->getMessage(ElementType::CONTRACT, Status::SAVED)
@@ -746,7 +746,7 @@ class AddElementsModel extends CommonGLPIModel
 
                 $pView->updateTabTitle(
                     1,
-                    $contract->fields['name'],
+                    $contract->fields['name'] ?? '',
                     "div#mytabscontract",
                     $contract,
                     $this->getMessage(ElementType::CONTRACT, Status::SAVED)
@@ -806,8 +806,8 @@ class AddElementsModel extends CommonGLPIModel
         if ($_POST['previous_entity_for_contact'] == "true") {
             $entity = $this->getEntity();
             // IF entity already created
-            if (isset($entity->fields['id']) && $entity->fields['id'] != "") {
-                $contact->fields['entities_id'] = $entity->fields['id'];
+            if (isset($entity->fields['id']) && $entity->fields['id'] ?? '' != "") {
+                $contact->fields['entities_id'] = $entity->fields['id'] ?? '';
             } else {
                 return [
                     "result" => Action::ADD_ONLY_ENTITY,
@@ -827,7 +827,7 @@ class AddElementsModel extends CommonGLPIModel
 
 
         // If contact already created
-        if (isset($contact->fields['id']) && $contact->fields['id'] > 0) {
+        if (isset($contact->fields['id']) && $contact->fields['id'] ?? '' > 0) {
             // update contact
             $datas = $this->persistData($contact, DBOperation::UPDATE);
 
@@ -943,8 +943,8 @@ class AddElementsModel extends CommonGLPIModel
         if ($_POST['previous_entity_for_intervention'] == "true") {
             $entity = $this->getEntity();
             // IF entity already created
-            if (isset($entity->fields['id']) && $entity->fields['id'] != "") {
-                $intervention->fields['entities_id'] = $entity->fields['id'];
+            if (isset($entity->fields['id']) && $entity->fields['id'] ?? '' != "") {
+                $intervention->fields['entities_id'] = $entity->fields['id'] ?? '';
             } else {
                 $arrayRes["result"] = Action::ADD_ONLY_ENTITY;
                 $cpt++;
@@ -963,8 +963,8 @@ class AddElementsModel extends CommonGLPIModel
 
         if (isset($_POST['previous_contract_for_intervention']) && $_POST['previous_contract_for_intervention'] == "true") {
             $contract = $this->getContract();
-            if (isset($contract->fields['id']) && $contract->fields['id'] != "") {
-                $intervention->fields['contracts_id'] = $contract->fields['id'];
+            if (isset($contract->fields['id']) && $contract->fields['id'] ?? '' != "") {
+                $intervention->fields['contracts_id'] = $contract->fields['id'] ?? '';
             } else {
                 $arrayRes["result"] = Action::ADD_ONLY_CONTRACT;
                 $cpt++;
@@ -995,14 +995,14 @@ class AddElementsModel extends CommonGLPIModel
         $price = $this->getCriPrice($_POST['fakeid_new_intervention']);
 
         // If intervention already created
-        if (isset($intervention->fields['id']) && $intervention->fields['id'] > 0) {
+        if (isset($intervention->fields['id']) && $intervention->fields['id'] ?? '' > 0) {
             // update intervention
             $tmpInter = new ContractDay();
 
-            $tmpInter->getFromDB($intervention->fields['id']);
-            $nbDaysBefore = $tmpInter->fields['nbday'];
+            $tmpInter->getFromDB($intervention->fields['id'] ?? '');
+            $nbDaysBefore = $tmpInter->fields['nbday'] ?? '';
             $datas = $this->persistData($intervention, DBOperation::UPDATE);
-            $nbDaysAfter = $intervention->fields['nbday'];
+            $nbDaysAfter = $intervention->fields['nbday'] ?? '';
             if (isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") {
                 $nbIntervention = $this->getNbContractDays();
                 $interventions[$_POST['fakeid_new_intervention']] = $intervention;
@@ -1034,19 +1034,19 @@ class AddElementsModel extends CommonGLPIModel
 
 
                 // Update criprices
-                if ($price != null && $intervention->fields['id'] <= 0) {
+                if ($price != null && $intervention->fields['id'] ?? '' <= 0) {
                     $cprice = new CriPrice();
                     $cprice->getEmpty();
                     $cprice->getFromDBByCrit([
-                        'entities_id' => $intervention->fields['entities_id'],
-                        'plugin_manageentities_critypes_id' => $intervention->fields['plugin_manageentities_critypes_id'],
+                        'entities_id' => $intervention->fields['entities_id'] ?? '',
+                        'plugin_manageentities_critypes_id' => $intervention->fields['plugin_manageentities_critypes_id'] ?? '',
                     ]);
 
-                    if (isset($cprice->fields['id']) && $cprice->fields['id'] > 0) {
+                    if (isset($cprice->fields['id']) && $cprice->fields['id'] ?? '' > 0) {
                         $typeInsert = DBOperation::UPDATE;
                     } else {
-                        $cprice->fields['entities_id'] = $intervention->fields['entities_id'];
-                        $cprice->fields['plugin_manageentities_critypes_id'] = $intervention->fields['plugin_manageentities_critypes_id'];
+                        $cprice->fields['entities_id'] = $intervention->fields['entities_id'] ?? '';
+                        $cprice->fields['plugin_manageentities_critypes_id'] = $intervention->fields['plugin_manageentities_critypes_id'] ?? '';
 
                         $typeInsert = DBOperation::ADD;
                     }
@@ -1083,7 +1083,7 @@ class AddElementsModel extends CommonGLPIModel
             if (isset($intervention->fields['id'])) {
                 unset($intervention->fields['id']);
             }
-            if (empty($intervention->fields['plugin_manageentities_critypes_id'])) {
+            if (empty($intervention->fields['plugin_manageentities_critypes_id'] ?? '')) {
                 unset($intervention->fields['plugin_manageentities_critypes_id']);
             }
             $datas = $this->persistData($intervention, DBOperation::ADD);
@@ -1180,14 +1180,14 @@ class AddElementsModel extends CommonGLPIModel
             $criPrice = new CriPrice();
             $criPrice->getFromDB($idCriPrice);
 
-            $oldId = $criPrice->fields['id'];
+            $oldId = $criPrice->fields['id'] ?? '';
 
             if (!isset($criPrice->fields['id']) || $criPrice->fields <= 0) {
                 $error = true;
             } else {
                 if ($criPrice->deleteFromDB($criPrice->fields)) {
                     $pView->deleteRowOnTable("row_criprice_" . $oldId);
-                    $this->removeCriPrice($tabIdIntervention, $criPrice->fields['plugin_manageentities_critypes_id']);
+                    $this->removeCriPrice($tabIdIntervention, $criPrice->fields['plugin_manageentities_critypes_id'] ?? '');
                     $error = false;
                 } else {
                     $error = true;
@@ -1216,7 +1216,7 @@ class AddElementsModel extends CommonGLPIModel
         $intervention = $this->getContractDay($tabIdIntervention);
 
         // If criprice already saved
-        if (isset($criPrice->fields['id']) && $criPrice->fields['id'] > 0) {
+        if (isset($criPrice->fields['id']) && $criPrice->fields['id'] ?? '' > 0) {
             // Update criprice
             $datas = $this->persistData($criPrice, DBOperation::UPDATE);
             if (isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true") {
@@ -1275,7 +1275,7 @@ class AddElementsModel extends CommonGLPIModel
                     "btn_add_cprice_" . $tabIdIntervention,
                     __("Update this price", "manageentities")
                 );
-                $pView->updateCPriceID($criPrice->fields['id']);
+                $pView->updateCPriceID($criPrice->fields['id'] ?? '');
                 $pView->updateListItems($intervention, $_POST['fakeid_new_intervention'], $criPrice, Status::ADDED);
 
                 $this->deleteError(Errors::ERROR_CRIPRICE, Errors::ERROR_ADD);
@@ -1353,7 +1353,7 @@ class AddElementsModel extends CommonGLPIModel
             return false;
         }
 
-        if (!$item->can($item->fields['id'], READ)) {
+        if (!$item->can($item->fields['id'] ?? '', READ)) {
             return false;
         }
 
@@ -1363,7 +1363,7 @@ class AddElementsModel extends CommonGLPIModel
         $linkparam = '';
 
         if (get_class($item) == 'Ticket') {
-            $linkparam = "&amp;tickets_id=" . $item->fields['id'];
+            $linkparam = "&amp;tickets_id=" . $item->fields['id'] ?? '';
         }
 
         $canedit = $item->canadditem('Document');
@@ -1439,8 +1439,8 @@ class AddElementsModel extends CommonGLPIModel
     {
         $mEntitiesContact = new Contact();
 
-        $mEntitiesContact->fields['contacts_id'] = $contact->fields['id'];
-        $mEntitiesContact->fields['entities_id'] = $contact->fields['entities_id'];
+        $mEntitiesContact->fields['contacts_id'] = $contact->fields['id'] ?? '';
+        $mEntitiesContact->fields['entities_id'] = $contact->fields['entities_id'] ?? '';
 
         switch ($typeInsert) {
             case DBOperation::ADD:
@@ -1455,9 +1455,9 @@ class AddElementsModel extends CommonGLPIModel
                 break;
 
             case DBOperation::UPDATE:
-                $mEntitiesContact->getFromDBByCrit(['contacts_id' => $contact->fields['id']]);
-                $mEntitiesContact->fields['contacts_id'] = $contact->fields['id'];
-                $mEntitiesContact->fields['entities_id'] = $contact->fields['entities_id'];
+                $mEntitiesContact->getFromDBByCrit(['contacts_id' => $contact->fields['id'] ?? '']);
+                $mEntitiesContact->fields['contacts_id'] = $contact->fields['id'] ?? '';
+                $mEntitiesContact->fields['entities_id'] = $contact->fields['entities_id'] ?? '';
 
                 if ($this->getContactManager() == $_POST['fakeid_new_contact']) {
                     $mEntitiesContact->fields['is_default'] = 1;
@@ -1472,8 +1472,8 @@ class AddElementsModel extends CommonGLPIModel
             case 'update-allothers':
                 $dbu = new DbUtils();
                 $condition = [
-                    "`entities_id`" => $contact->fields['entities_id'],
-                    'NOT' => ["`contacts_id`" => $contact->fields['id']],
+                    "`entities_id`" => $contact->fields['entities_id'] ?? '',
+                    'NOT' => ["`contacts_id`" => $contact->fields['id'] ?? ''],
                 ];
                 $contacts = $dbu->getAllDataFromTable(Contact::getTable(), $condition);
 
@@ -1489,8 +1489,8 @@ class AddElementsModel extends CommonGLPIModel
 
             case 'update--force-false':
                 $mEntitiesContact->getFromDBByCrit([
-                    'contacts_id' => $contact->fields['id'],
-                    'entities_id' => $contact->fields['entities_id'],
+                    'contacts_id' => $contact->fields['id'] ?? '',
+                    'entities_id' => $contact->fields['entities_id'] ?? '',
                 ]);
                 $mEntitiesContact->fields['is_default'] = 0;
                 $this->persistData($mEntitiesContact, DBOperation::UPDATE);
@@ -1508,8 +1508,8 @@ class AddElementsModel extends CommonGLPIModel
                 if ($object->getType() == \Entity::getType()) {
                     $tmpObj = clone $object;
                     $tmpObj->getEmpty();
-                    $tmpObj->getFromDBByCrit(['name' => $object->fields['name']]);
-                    if (isset($tmpObj->fields['id']) && $tmpObj->fields['id'] > 0) {
+                    $tmpObj->getFromDBByCrit(['name' => $object->fields['name'] ?? '']);
+                    if (isset($tmpObj->fields['id']) && $tmpObj->fields['id'] ?? '' > 0) {
                         return [
                             Status::NOT_ADDED => false,
                             'cause' => Errors::ERROR_NAME_EXIST,
@@ -1755,7 +1755,7 @@ class AddElementsModel extends CommonGLPIModel
             'entities_id' => $post['entities_id'],
             'plugin_manageentities_contractdays_id' => $post['plugin_manageentities_contractdays_id'],
         ]);
-        if (isset($criPrice->fields['id']) && $criPrice->fields['id'] > 0) {
+        if (isset($criPrice->fields['id']) && $criPrice->fields['id'] ?? '' > 0) {
             return $criPrice;
         } else {
             return null;
@@ -1779,7 +1779,7 @@ class AddElementsModel extends CommonGLPIModel
             'entities_id' => $entitiesId,
             'plugin_manageentities_critypes_id' => $critypeId,
         ]);
-        if (isset($cprice->fields['id']) && $cprice->fields['id'] > 0) {
+        if (isset($cprice->fields['id']) && $cprice->fields['id'] ?? '' > 0) {
             return $cprice;
         } else {
             return false;
@@ -1816,8 +1816,8 @@ class AddElementsModel extends CommonGLPIModel
     {
         $docType = new DocumentType();
         $docType->getFromDBByCrit(['ext' => $ext]);
-        if (isset($docType->fields['id']) && $docType->fields['id'] > 0) {
-            return $docType->fields['icon'];
+        if (isset($docType->fields['id']) && $docType->fields['id'] ?? '' > 0) {
+            return $docType->fields['icon'] ?? '';
         } else {
             return "";
         }

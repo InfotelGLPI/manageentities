@@ -99,7 +99,7 @@ class CriDetail extends CommonDBTM
             $criDetail = new CriDetail();
             $criDetail->getFromDB($input['id']);
 
-            if ($criDetail->fields['documents_id'] != 0 && $criDetail->fields['contracts_id'] != $input['contracts_id']) {
+            if ($criDetail->fields['documents_id'] ?? '' != 0 && $criDetail->fields['contracts_id'] ?? '' != $input['contracts_id']) {
                 Session::addMessageAfterRedirect(
                     __('Impossible action as an intervention report exists', 'manageentities'),
                     ERROR,
@@ -129,7 +129,7 @@ class CriDetail extends CommonDBTM
     {
         //si un document lié ne pas permettre le delete via le form self::showForTicket($item);
         if (isset($this->input['delcridetail'])) {
-            if ($this->fields['documents_id'] != '0') {
+            if ($this->fields['documents_id'] ?? '' != '0') {
                 Session::addMessageAfterRedirect(
                     __('Impossible action as an intervention report exists', 'manageentities'),
                     ERROR,
@@ -321,8 +321,8 @@ class CriDetail extends CommonDBTM
         }
 
         $restrict = [
-            "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $ticket->fields['entities_id'],
-            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $ticket->fields['id'],
+            "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $ticket->fields['entities_id'] ?? '',
+            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $ticket->fields['id'] ?? '',
         ];
         $dbu = new DbUtils();
         $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
@@ -387,7 +387,7 @@ class CriDetail extends CommonDBTM
             Html::requireJs('glpi_dialog');
             $params = [
                 'pdf_action' => $pdf_action,
-                'job' => $ticket->fields['id'],
+                'job' => $ticket->fields['id'] ?? '',
                 'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
                 'toupdate' => "showCriDetail$rand",
                 'width' => 1000,
@@ -1072,9 +1072,9 @@ class CriDetail extends CommonDBTM
         $PDF = new CriPDF('P', 'mm', 'A4');
 
         $manageentities_contract = new Contract();
-        $manageentities_contract->getFromDBByCrit(['contracts_id' => $contractDay->fields['contracts_id']]);
+        $manageentities_contract->getFromDBByCrit(['contracts_id' => $contractDay->fields['contracts_id'] ?? '']);
         // We get all cri detail data
-        $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
+        $contractDay->fields['contractdays_id'] = $contractDay->fields['id'] ?? '';
         $resultCriDetail = self::getCriDetailData($contractDay->fields);
 
         if ($config->fields['useprice'] == Config::PRICE) {
@@ -1094,7 +1094,7 @@ class CriDetail extends CommonDBTM
                 echo "<th>" . __('File') . "</th>";
                 if ($config->fields['hourorday'] == Config::DAY
                     || (isset($manageentities_contract->fields['contract_type'])
-                        && $manageentities_contract->fields['contract_type'] != Contract::CONTRACT_TYPE_INTERVENTION)) {
+                        && $manageentities_contract->fields['contract_type'] ?? '' != Contract::CONTRACT_TYPE_INTERVENTION)) {
                     echo "<th>" . __('Crossed time (itinerary including)', 'manageentities') . "</th>";
                     echo "<th>" . __('Technicians', 'manageentities') . "</th>";
                     if ($config->fields['hourorday'] == Config::DAY) {
@@ -1224,8 +1224,8 @@ class CriDetail extends CommonDBTM
         global $DB;
 
         $rand = mt_rand();
-        $canView = $ticket->can($ticket->fields['id'], READ);
-        $canEdit = $ticket->can($ticket->fields['id'], UPDATE);
+        $canView = $ticket->can($ticket->fields['id'] ?? '', READ);
+        $canEdit = $ticket->can($ticket->fields['id'] ?? '', UPDATE);
 
         $config = Config::getInstance();
 
@@ -1254,7 +1254,7 @@ class CriDetail extends CommonDBTM
                 ],
                 'WHERE' => [
                     'glpi_documents.documentcategories_id' => $config->fields["documentcategories_id"],
-                    'glpi_documents.tickets_id' => $ticket->fields['id'],
+                    'glpi_documents.tickets_id' => $ticket->fields['id'] ?? '',
                 ],
             ]);
 
@@ -1271,8 +1271,8 @@ class CriDetail extends CommonDBTM
         }
 
         $restrict = [
-            "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $ticket->fields['entities_id'],
-            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $ticket->fields['id'],
+            "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $ticket->fields['entities_id'] ?? '',
+            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $ticket->fields['id'] ?? '',
         ];
 
         $dbu = new DbUtils();
@@ -1311,15 +1311,15 @@ class CriDetail extends CommonDBTM
 
         echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";
         echo "<div id='contract' class='center' style='margin:0 auto; display:table'>";
-        $contractSelected = self::showContractLinkDropdown($cridetail, $ticket->fields['entities_id']);
+        $contractSelected = self::showContractLinkDropdown($cridetail, $ticket->fields['entities_id'] ?? '');
         echo "</div>";
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo Html::hidden('tickets_id', ['value' => $ticket->fields['id']]);
-        echo Html::hidden('entities_id', ['value' => $ticket->fields['entities_id']]);
-        echo Html::hidden('date', ['value' => $ticket->fields['date']]);
+        echo Html::hidden('tickets_id', ['value' => $ticket->fields['id'] ?? '']);
+        echo Html::hidden('entities_id', ['value' => $ticket->fields['entities_id'] ?? '']);
+        echo Html::hidden('date', ['value' => $ticket->fields['date'] ?? '']);
 
         if ($canEdit) {
             if (empty($cridetail)) {
@@ -1432,7 +1432,7 @@ class CriDetail extends CommonDBTM
         if (!empty($contractSelected)) {
             echo '&nbsp;';
             $contract->getFromDB($contractSelected);
-            Html::showToolTip($contract->fields['comment'], [
+            Html::showToolTip($contract->fields['comment'] ?? '', [
                 'link' => $contract->getLinkURL(),
                 'linktarget' => '_blank',
             ]);
@@ -1463,7 +1463,7 @@ class CriDetail extends CommonDBTM
         echo "<th>" . __('Periods of contract', 'manageentities') . "</th>";
         echo "<td>";
         $restrict = [
-            'entities_id' => $contract->fields['entities_id'],
+            'entities_id' => $contract->fields['entities_id'] ?? '',
             'contracts_id' => $contractSelected,
         ];
         $restrict += ['NOT' => ['plugin_manageentities_contractstates_id' => 2]];//Closed contract was 8, is now 2

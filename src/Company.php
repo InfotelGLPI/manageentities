@@ -108,7 +108,7 @@ class Company extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . Company::getTypeName(1) . "</td>";
         echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
+        echo Html::input('name', ['value' => $this->fields['name'] ?? '', 'size' => 40]);
         echo "</td>";
         echo "<td></td><td></td></tr>";
 
@@ -162,7 +162,7 @@ class Company extends CommonDBTM
         echo "<td>";
 
 
-        \Entity::dropdown(['name' => 'entity_id', 'value' => $this->fields['entity_id'], 'right' => 'all']);
+        \Entity::dropdown(['name' => 'entity_id', 'value' => $this->fields['entity_id'] ?? '', 'right' => 'all']);
         echo "&nbsp;" . __('Recursive') . "&nbsp";
         \Dropdown::showYesNo("recursive", $this->fields["recursive"]);
         echo "</td>";
@@ -348,7 +348,7 @@ class Company extends CommonDBTM
 
             // Check for duplicate
             if ($doc->getFromDBbyContent($entities_id, $filename)) {
-                if (!$doc->fields['is_blacklisted']) {
+                if (!$doc->fields['is_blacklisted'] ?? '') {
                     $docID = $doc->fields["id"];
                 }
                 // File already exist, we replace the tag by the existing one
@@ -413,7 +413,7 @@ class Company extends CommonDBTM
     static function getAddress($obj)
     {
         $plugin_company = new Company();
-        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
+        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id'] ?? '']);
         $company = reset($company);
         $dbu = new DbUtils();
         if ($company == false) {
@@ -422,7 +422,7 @@ class Company extends CommonDBTM
                 if ($data['recursive'] == 1) {
                     $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                     foreach ($sons as $son) {
-                        if ($son == $obj->entite[0]->fields['id']) {
+                        if ($son == $obj->entite[0]->fields['id'] ?? '') {
                             return $data['address'];
                         }
                     }
@@ -443,7 +443,7 @@ class Company extends CommonDBTM
     static function getLogo($obj)
     {
         $plugin_company = new Company();
-        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
+        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id'] ?? '']);
         $company = reset($company);
         $doc = new Document();
         $dbu = new DbUtils();
@@ -453,9 +453,9 @@ class Company extends CommonDBTM
                 if ($data['recursive'] == 1) {
                     $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                     foreach ($sons as $son) {
-                        if ($son == $obj->entite[0]->fields['id']) {
+                        if ($son == $obj->entite[0]->fields['id'] ?? '') {
                             if ($doc->getFromDB($data["logo_id"])) {
-                                return $doc->fields['filepath'];
+                                return $doc->fields['filepath'] ?? '';
                             }
                         }
                     }
@@ -464,7 +464,7 @@ class Company extends CommonDBTM
         } else {
             if ($company["logo_id"] != 0) {
                 $doc->getFromDB($company["logo_id"]);
-                return $doc->fields['filepath'];
+                return $doc->fields['filepath'] ?? '';
             }
         }
         return null;
@@ -480,7 +480,7 @@ class Company extends CommonDBTM
     static function getComment($obj)
     {
         $plugin_company = new Company();
-        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
+        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id'] ?? '']);
         $company = reset($company);
         $dbu = new DbUtils();
         if ($company == false) {
@@ -489,7 +489,7 @@ class Company extends CommonDBTM
                 if ($data['recursive'] == 1) {
                     $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
                     foreach ($sons as $son) {
-                        if ($son == $obj->entite[0]->fields['id']) {
+                        if ($son == $obj->entite[0]->fields['id'] ?? '') {
                             return $data['comment'];
                         }
                     }

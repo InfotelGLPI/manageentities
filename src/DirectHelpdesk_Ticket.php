@@ -92,9 +92,8 @@ class DirectHelpdesk_Ticket extends CommonDBTM
         return '';
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
-
         if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
             $self = new self();
             if ($items = $self->find(['tickets_id' => $item->getID()])) {
@@ -109,13 +108,13 @@ class DirectHelpdesk_Ticket extends CommonDBTM
                 foreach ($items as $item) {
                     $direct = new DirectHelpdesk();
                     $direct->getFromDB($item['plugin_manageentities_directhelpdesks_id']);
-                    $actiontime = $direct->fields['actiontime'];
+                    $actiontime = $direct->fields['actiontime'] ?? '';
                     echo "<tr class='tab_bg_1'>";
-                    echo "<td>" . $direct->fields['name'] . "</td>";
-                    echo "<td>" . Html::convDate($direct->fields['date']) . "</td>";
-                    echo "<td>" . getUserName($direct->fields['users_id']) . "</td>";
+                    echo "<td>" . $direct->fields['name'] ?? '' . "</td>";
+                    echo "<td>" . Html::convDate($direct->fields['date'] ?? '') . "</td>";
+                    echo "<td>" . getUserName($direct->fields['users_id'] ?? '') . "</td>";
                     echo "<td>" . CommonITILObject::getActionTime($actiontime) . "</td>";
-                    echo "<td>" . $direct->fields['comment'] . "</td>";
+                    echo "<td>" . $direct->fields['comment'] ?? '' . "</td>";
                     echo "</tr>";
                 }
                 echo "</table>";

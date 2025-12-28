@@ -1,0 +1,38 @@
+{
+  "name": "fpdf/fpdf",
+  "homepage": "https://github.com/coreydoughty/Fpdf",
+  "description": "FPDF Composer Wrapper",
+  "keywords": ["fpdf", "pdf", "wrapper"],
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Corey Doughty",
+      "email": "corey@doughty.ca"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0"
+  },
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Fpdf\\": "src/Fpdf"
+    }
+  },
+  "archive": {
+    "exclude": ["original"]
+  },
+  "extra": {
+    "laravel": {
+        "aliases": {
+            "FPDF": "Fpdf\\Fpdf"
+        }
+    }
+  }
+}

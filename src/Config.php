@@ -335,7 +335,7 @@ class Config extends CommonDBTM
     {
         $config = new Config();
         $config->GetFromDB(1);
-        return $config->fields['comment'];
+        return $config->fields['comment'] ?? '';
     }
 
     public function getConfigType()

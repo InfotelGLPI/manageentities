@@ -74,7 +74,7 @@ class InterventionSkateholder extends CommonDBTM
         $dbu = new DbUtils();
         return $dbu->countElementsInTable(
             'glpi_plugin_manageentities_interventionskateholders',
-            ["plugin_manageentities_contractdays_id" => $item->fields['id']]
+            ["plugin_manageentities_contractdays_id" => $item->fields['id'] ?? '']
         );
     }
 
@@ -105,20 +105,20 @@ class InterventionSkateholder extends CommonDBTM
     }
 
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         $interventionSkateholder = new InterventionSkateholder();
         if ($item->getType() == ContractDay::class) {
             $options = [];
-            if (isset($item->fields['id']) && $item->fields['id'] > 0) {
-                $options['rand'] = $item->fields['id'];
-                $_SESSION['glpi_plugin_manageentities_nbdays'] = $item->fields['nbday'];
+            if (isset($item->fields['id']) && $item->fields['id'] ?? '' > 0) {
+                $options['rand'] = $item->fields['id'] ?? '';
+                $_SESSION['glpi_plugin_manageentities_nbdays'] = $item->fields['nbday'] ?? '';
             } else {
                 $options['rand'] = 0;
                 $_SESSION['glpi_plugin_manageentities_nbdays'] = 0;
             }
             $interventionSkateholder->showForm($item, $options);
-            echo "<div id='divAjaxDisplay" . $item->fields['id'] . "'></div>";
+            echo "<div id='divAjaxDisplay" . $item->fields['id'] ?? '' . "'></div>";
         }
         return true;
     }
@@ -141,16 +141,16 @@ class InterventionSkateholder extends CommonDBTM
         global $CFG_GLPI;
 
         if ($item->getType() == InterventionSkateholder::getType()) {
-            $idToUse = $item->fields['plugin_manageentities_contractdays_id'];
-            $idDivAjax = "divAjaxDisplay" . $item->fields['plugin_manageentities_contractdays_id'];
+            $idToUse = $item->fields['plugin_manageentities_contractdays_id'] ?? '';
+            $idDivAjax = "divAjaxDisplay" . $item->fields['plugin_manageentities_contractdays_id'] ?? '';
         } else {
-            $idToUse = $item->fields['id'];
-            $idDivAjax = "divAjaxDisplay" . $item->fields['id'];
+            $idToUse = $item->fields['id'] ?? '';
+            $idDivAjax = "divAjaxDisplay" . $item->fields['id'] ?? '';
         }
 
         $user = new User();
-        $user->getFromDB($item->fields['users_id']);
-        $condition = ["`plugin_manageentities_contractdays_id`" => $item->fields['plugin_manageentities_contractdays_id']];
+        $user->getFromDB($item->fields['users_id'] ?? '');
+        $condition = ["`plugin_manageentities_contractdays_id`" => $item->fields['plugin_manageentities_contractdays_id'] ?? ''];
 
         $this->showHeaderJS();
 
@@ -158,7 +158,7 @@ class InterventionSkateholder extends CommonDBTM
 
         $dbu = new DbUtils();
         if ($toDelete) {
-            echo "var row = document.getElementById('row_" . $item->fields['id'] . "');";
+            echo "var row = document.getElementById('row_" . $item->fields['id'] ?? '' . "');";
             echo "row.parentNode.removeChild(row);";
             $cd = $dbu->getAllDataFromTable($this->getTable(), $condition);
             if (sizeof($cd) == 0) {
@@ -177,8 +177,8 @@ class InterventionSkateholder extends CommonDBTM
                 echo "}";
             }
         } else {
-            echo "if (document.getElementById('td_user_id" . $item->fields['id'] . "') != null){\n";
-            echo "   document.getElementById('td_user_id" . $item->fields['id'] . "').innerHTML = '" . $item->fields['number_affected_days'] . " " . _n(
+            echo "if (document.getElementById('td_user_id" . $item->fields['id'] ?? '' . "') != null){\n";
+            echo "   document.getElementById('td_user_id" . $item->fields['id'] ?? '' . "').innerHTML = '" . $item->fields['number_affected_days'] ?? '' . " " . _n(
                     "Day",
                     "Days",
                     2
@@ -189,7 +189,7 @@ class InterventionSkateholder extends CommonDBTM
             echo "   }";
 
             echo "row=tbl.insertRow(-1);\n";
-            echo "row.id='row_" . $item->fields['id'] . "';\n";
+            echo "row.id='row_" . $item->fields['id'] ?? '' . "';\n";
             echo "row.setAttribute('class','tab_bg_1');\n";
 
             // UserTitle
@@ -203,10 +203,10 @@ class InterventionSkateholder extends CommonDBTM
             echo "tmpCell=row.insertCell(1);";
             echo "tmpCell.innerHTML=\"";
             echo "<a href='" . $link . "' target='_blank'>" . $dbu->formatUserName(
-                    $user->fields['id'],
-                    $user->fields['name'],
-                    $user->fields['realname'],
-                    $user->fields['firstname']
+                    $user->fields['id'] ?? '',
+                    $user->fields['name'] ?? '',
+                    $user->fields['realname'] ?? '',
+                    $user->fields['firstname'] ?? ''
                 ) . "</a>";
             echo "\";";
 
@@ -219,9 +219,9 @@ class InterventionSkateholder extends CommonDBTM
 
             // NbDays
             echo "tmpCell=row.insertCell(3);";
-            echo "tmpCell.id='td_user_id" . $item->fields['id'] . "';";
+            echo "tmpCell.id='td_user_id" . $item->fields['id'] ?? '' . "';";
             echo "tmpCell.innerHTML=\"";
-            echo $item->fields['number_affected_days'] . "&nbsp;" . _n("Day", "Days", 2);
+            echo $item->fields['number_affected_days'] ?? '' . "&nbsp;" . _n("Day", "Days", 2);
             echo "\";";
 
             // Delete
@@ -231,15 +231,15 @@ class InterventionSkateholder extends CommonDBTM
             echo "<i title=\"" . __(
                     "Delete",
                     "manageentities"
-                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] . "'></i>";
+                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] ?? '' . "'></i>";
             echo "</span>";
             echo "\";";
             echo "}";
 
-            echo "document.getElementById('delete_" . $user->fields['id'] . "').onclick= function () {if (confirm('" . __(
+            echo "document.getElementById('delete_" . $user->fields['id'] ?? '' . "').onclick= function () {if (confirm('" . __(
                     "This action is irreversible. Continue ?",
                     'manageentities'
-                ) . "')){deleteSkateholder" . $idToUse . $item->fields['id'] . "();}};";
+                ) . "')){deleteSkateholder" . $idToUse . $item->fields['id'] ?? '' . "();}};";
         }
 
         $this->closeFormJS();
@@ -247,12 +247,12 @@ class InterventionSkateholder extends CommonDBTM
         if (!$toDelete) {
             $params['action'] = "delete_user_datas";
             $params['id_div_ajax'] = $idDivAjax;
-            $params['id_dp_nbdays'] = "nb_days" . $item->fields['plugin_manageentities_contractdays_id'];
-            $params['contractdays_id'] = $item->fields['plugin_manageentities_contractdays_id'];
-            $params['skateholder_id'] = $item->fields['id'];
+            $params['id_dp_nbdays'] = "nb_days" . $item->fields['plugin_manageentities_contractdays_id'] ?? '';
+            $params['contractdays_id'] = $item->fields['plugin_manageentities_contractdays_id'] ?? '';
+            $params['skateholder_id'] = $item->fields['id'] ?? '';
             $url = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
 
-            $this->showJSfunction("deleteSkateholder" . $idToUse . $item->fields['id'], $idDivAjax, $url, [], $params);
+            $this->showJSfunction("deleteSkateholder" . $idToUse . $item->fields['id'] ?? '', $idDivAjax, $url, [], $params);
         }
 
         if ($idDpNbdays != null) {
@@ -263,14 +263,14 @@ class InterventionSkateholder extends CommonDBTM
     private function listSkateholders($item, $options = [])
     {
         global $CFG_GLPI;
-        $ID = $item->fields['id'];
+        $ID = $item->fields['id'] ?? '';
 
         if ($item->getType() == InterventionSkateholder::getType()) {
-            $idToUse = $item->fields['plugin_manageentities_contractdays_id'];
-            $idDivAjax = "divAjaxDisplay" . $item->fields['plugin_manageentities_contractdays_id'];
+            $idToUse = $item->fields['plugin_manageentities_contractdays_id'] ?? '';
+            $idDivAjax = "divAjaxDisplay" . $item->fields['plugin_manageentities_contractdays_id'] ?? '';
         } else {
-            $idToUse = $item->fields['id'];
-            $idDivAjax = "divAjaxDisplay" . $item->fields['id'];
+            $idToUse = $item->fields['id'] ?? '';
+            $idDivAjax = "divAjaxDisplay" . $item->fields['id'] ?? '';
         }
 
         $contractday = new ContractDay();
@@ -279,15 +279,15 @@ class InterventionSkateholder extends CommonDBTM
             $contractday->getFromDB($ID);
         } else {
             // Create iteml
-            $canedit = $contractday->can($item->fields['id'], UPDATE);
+            $canedit = $contractday->can($item->fields['id'] ?? '', UPDATE);
             $contractday->getEmpty();
             $this->getEmpty();
-            $this->fields["plugin_manageentities_contractdays_id"] = $item->fields['id'];
+            $this->fields["plugin_manageentities_contractdays_id"] = $item->fields['id'] ?? '';
         }
 
 
-        if ($item->fields['id'] > 0) {
-            $condition = ["`plugin_manageentities_contractdays_id`" => $item->fields['id']];
+        if ($item->fields['id'] ?? '' > 0) {
+            $condition = ["`plugin_manageentities_contractdays_id`" => $item->fields['id'] ?? ''];
             $dbu = new DbUtils();
             $listSkateholders = $dbu->getAllDataFromTable($this->getTable(), $condition);
             echo "<div class='center first-bloc'>";
@@ -342,10 +342,10 @@ class InterventionSkateholder extends CommonDBTM
                         echo "<td>" . __("User") . "</td>";
                         echo "<td>";
                         echo "<a href='" . $link . "' target='_blank'>" . $dbu->formatUserName(
-                                $user->fields['id'],
-                                $user->fields['name'],
-                                $user->fields['realname'],
-                                $user->fields['firstname']
+                                $user->fields['id'] ?? '',
+                                $user->fields['name'] ?? '',
+                                $user->fields['realname'] ?? '',
+                                $user->fields['firstname'] ?? ''
                             ) . "</a>";
                         echo "</td>";
 
@@ -360,7 +360,7 @@ class InterventionSkateholder extends CommonDBTM
                             echo "<i title=\"" . __(
                                     "Delete",
                                     "manageentities"
-                                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] . "'
+                                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] ?? '' . "'
                      onclick=\"javascript:if (confirm('" . __(
                                     "This action is irreversible. Continue ?",
                                     'manageentities'
@@ -374,7 +374,7 @@ class InterventionSkateholder extends CommonDBTM
                         $params['action'] = "delete_user_datas";
                         $params['id_div_ajax'] = $idDivAjax;
                         $params['id_dp_nbdays'] = "nb_days" . $skateholder['plugin_manageentities_contractdays_id'];
-                        $params['contractdays_id'] = $item->fields['id'];
+                        $params['contractdays_id'] = $item->fields['id'] ?? '';
                         $params['skateholder_id'] = $skateholder['id'];
                         $url = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
 
@@ -432,11 +432,11 @@ class InterventionSkateholder extends CommonDBTM
         echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/jquery-ui/jquery-ui.min.js");
 
         if ($item->getType() == InterventionSkateholder::getType()) {
-            $idToUse = $item->fields['plugin_manageentities_contractdays_id'];
-            $idDivAjax = "tabskateholderajax" . $item->fields['plugin_manageentities_contractdays_id'];
+            $idToUse = $item->fields['plugin_manageentities_contractdays_id'] ?? '';
+            $idDivAjax = "tabskateholderajax" . $item->fields['plugin_manageentities_contractdays_id'] ?? '';
         } else {
-            $idToUse = $item->fields['id'];
-            $idDivAjax = "tabskateholderajax" . $item->fields['id'];
+            $idToUse = $item->fields['id'] ?? '';
+            $idDivAjax = "tabskateholderajax" . $item->fields['id'] ?? '';
         }
 
         if (!isset($options['display_list']) || $options['display_list'] != "false") {
@@ -449,9 +449,9 @@ class InterventionSkateholder extends CommonDBTM
                 $rand = $options['rand'];
             }
 
-            $ID = $item->fields['id'];
+            $ID = $item->fields['id'] ?? '';
             $contractday = new ContractDay();
-            $nbDays = $this->getNbAvailiableDay($item->fields['id']);
+            $nbDays = $this->getNbAvailiableDay($item->fields['id'] ?? '');
             $url = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
             $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDays;
 
@@ -461,7 +461,7 @@ class InterventionSkateholder extends CommonDBTM
                 // Create item
                 $contractday->getEmpty();
                 $this->getEmpty();
-                $this->fields["plugin_manageentities_contractdays_id"] = $item->fields['id'];
+                $this->fields["plugin_manageentities_contractdays_id"] = $item->fields['id'] ?? '';
             }
 
             echo "<div class='center first-bloc' " . (($nbDays > 0) ? "" : "style='display:none") . " id='global_form_content" . $idToUse . "'>";
@@ -518,7 +518,7 @@ class InterventionSkateholder extends CommonDBTM
                 'action' => "add_user_datas",
                 'id_dp_nbdays' => "dropdown_nb_days" . $idToUse,
                 'id_div_ajax' => $idDivAjax,
-                "contractdays_id" => $item->fields['id']
+                "contractdays_id" => $item->fields['id'] ?? ''
             ];
 
             $this->showJSfunction("addSkateholder" . $idToUse, $idDivAjax, $url, $listIds, $params);
@@ -586,7 +586,7 @@ class InterventionSkateholder extends CommonDBTM
     {
         $contractDay = new ContractDay();
         $contractDay->getFromDB($contractdays_id);
-        $nbMaxDays = $contractDay->fields['nbday'];
+        $nbMaxDays = $contractDay->fields['nbday'] ?? '';
 
         $condition = ["plugin_manageentities_contractdays_id" => $contractdays_id];
         $dbu = new DbUtils();

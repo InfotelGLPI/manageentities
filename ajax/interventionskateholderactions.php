@@ -50,8 +50,8 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
             $interventionStakeholder->getFromDBByCrit(['users_id'                              => $idUser,
                                                        'plugin_manageentities_contractdays_id' => $idContractdays]);
 
-            if (isset($interventionStakeholder->fields['id']) && $interventionStakeholder->fields['id'] > 0) {
-               $interventionStakeholder->fields['number_affected_days'] += $_POST['nb_days'];
+            if (isset($interventionStakeholder->fields['id']) && ($interventionStakeholder->fields['id'] ?? '') > 0) {
+               $interventionStakeholder->fields['number_affected_days'] = ($interventionStakeholder->fields['number_affected_days'] ?? 0) + ($_POST['nb_days'] ?? 0);
 
                if ($interventionStakeholder->update($interventionStakeholder->fields)) {
                   $nbDaysAfter                                   = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
@@ -70,8 +70,8 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                }
 
             } else {
-               $interventionStakeholder->fields['users_id']                              = $idUser;
-               $interventionStakeholder->fields['number_affected_days']                  = $nbDays;
+               $interventionStakeholder->fields['users_id'] = $idUser;
+               $interventionStakeholder->fields['number_affected_days'] = $nbDays;
                $interventionStakeholder->fields['plugin_manageentities_contractdays_id'] = $idContractdays;
 
                if ($interventionStakeholder->add($interventionStakeholder->fields)) {

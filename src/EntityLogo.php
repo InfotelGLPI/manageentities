@@ -68,7 +68,7 @@ class EntityLogo extends CommonDBTM
 
         if ($values["entities_id"]) {
             if ($this->getFromDBByCrit(['entities_id' => $values["entities_id"]])) {
-                $values['id'] = $this->fields['id'];
+                $values['id'] = $this->fields['id'] ?? '';
                 $doc = new Document();
                 $img = ["id" => $this->fields["logos_id"]];
                 $doc->delete($img, 1);
@@ -143,7 +143,7 @@ class EntityLogo extends CommonDBTM
 
             // Check for duplicate
             if ($doc->getFromDBbyContent($values['entities_id'], $filename)) {
-                if (!$doc->fields['is_blacklisted']) {
+                if (!$doc->fields['is_blacklisted'] ?? '') {
                     $docID = $doc->fields["id"];
                 }
                 // File already exist, we replace the tag by the existing one
@@ -158,7 +158,7 @@ class EntityLogo extends CommonDBTM
             } else {
                 $entity = new \Entity();
                 $entity->getFromDB($values['entities_id']);
-                $name = __('Logo', 'manageentities') . " " . $entity->fields['name'];
+                $name = __('Logo', 'manageentities') . " " . $entity->fields['name'] ?? '';
                 //TRANS: Default document to files attached to tickets : %d is the ticket id
                 $input2["name"] = addslashes($name);
 
@@ -213,7 +213,7 @@ class EntityLogo extends CommonDBTM
         $doc = new Document();
         if (is_array($logo) && count($logo) > 0) {
             if ($doc->getFromDB($logo["logos_id"])) {
-                return $doc->fields['filepath'];
+                return $doc->fields['filepath'] ?? '';
             }
         }
         return false;

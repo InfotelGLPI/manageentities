@@ -99,8 +99,8 @@ class Cri extends CommonDBTM
         echo "</th>";
         echo "<td colspan='2'>";
         $restrict = [
-            "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'],
-            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id'],
+            "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'] ?? '',
+            "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id'] ?? '',
         ];
         $dbu = new DbUtils();
         $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
@@ -108,7 +108,7 @@ class Cri extends CommonDBTM
         if (isset($cridetail['withcontract'])) {
             $contractSelected = CriDetail::showContractLinkDropdown(
                 $cridetail,
-                $job->fields['entities_id'],
+                $job->fields['entities_id'] ?? '',
                 'cri'
             );
         } else {
@@ -231,7 +231,7 @@ class Cri extends CommonDBTM
                 'contracts_id' => $contractSelected['contractSelected'],
                 'entities_id' => $job->fields["entities_id"],
             ])) {
-                if ($contract->fields['moving_management']) {
+                if ($contract->fields['moving_management'] ?? '') {
                     echo "<tr class='tab_bg_1'>";
                     echo "<th>";
                     echo __('Number of moving', 'manageentities');
@@ -346,7 +346,7 @@ class Cri extends CommonDBTM
             } else {
                 echo "<tr class='tab_bg_1'>";
                 echo "<td class='center red'>";
-                if ($config->fields['hourorday'] != Config::HOUR) {
+                if ($config->fields['hourorday'] ?? '' != Config::HOUR) {
                     echo __("Impossible generation, you didn't create a scheduled task", 'manageentities');
                 } else {
                     echo __('No tasks whose category can be used', 'manageentities');
@@ -569,7 +569,7 @@ class Cri extends CommonDBTM
                             //daily
                             $date = date(
                                 'Y-m-d H:i:s',
-                                strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] . " hours")
+                                strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] ?? '' . " hours")
                             );
                         }
 
@@ -657,7 +657,7 @@ class Cri extends CommonDBTM
                 // Not Forfait
                 if (($config->fields['hourorday'] == Config::HOUR)
                     || (isset($contract_days->fields['contract_type'])
-                        && $contract_days->fields['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                        && $contract_days->fields['contract_type'] ?? '' != Contract::CONTRACT_TYPE_FORFAIT)) {
                     /* Du ... au ... */
                     //configuration only public task
                     $criteria1 = [
@@ -728,8 +728,8 @@ class Cri extends CommonDBTM
                     $PDF->SetDateIntervention($infos_date);
                     // Forfait
                 } else {
-                    $infos_date[1] = $contract_days->fields['begin_date'];
-                    $infos_date[2] = $contract_days->fields['end_date'];
+                    $infos_date[1] = $contract_days->fields['begin_date'] ?? '';
+                    $infos_date[2] = $contract_days->fields['end_date'] ?? '';
 
                     $PDF->SetDateIntervention($infos_date);
                 }
@@ -759,7 +759,7 @@ class Cri extends CommonDBTM
                 }
 
                 if (($config->fields['hourorday'] == Config::HOUR)
-                    || (isset($contract_days->fields['contract_type']) && $contract_days->fields['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                    || (isset($contract_days->fields['contract_type']) && $contract_days->fields['contract_type'] ?? '' != Contract::CONTRACT_TYPE_FORFAIT)) {
                     $result = self::getTempsPasses($p);
                     $temps_passes = [];
                     $cpt_tps = 0;
@@ -806,7 +806,7 @@ class Cri extends CommonDBTM
                                 //daily
                                 $date = date(
                                     'Y-m-d H:i:s',
-                                    strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] . " hours")
+                                    strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] ?? '' . " hours")
                                 );
                             }
 
@@ -861,11 +861,11 @@ class Cri extends CommonDBTM
                     // Forfait
                 } else {
                     $PDF->SetForfait();
-                    $un_temps_passe[0] = Html::convDate($contract_days->fields['begin_date']);
+                    $un_temps_passe[0] = Html::convDate($contract_days->fields['begin_date'] ?? '');
                     $un_temps_passe[1] = '';
-                    $un_temps_passe[2] = Html::convDate($contract_days->fields['end_date']);
+                    $un_temps_passe[2] = Html::convDate($contract_days->fields['end_date'] ?? '');
                     $un_temps_passe[3] = '';
-                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($contract_days->fields['nbday'], 2,PHP_ROUND_HALF_UP));
+                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($contract_days->fields['nbday'] ?? '', 2,PHP_ROUND_HALF_UP));
                     $temps_passes[] = $un_temps_passe;
 
                     if ($config->fields['useprice'] == Config::NOPRICE) {
@@ -891,7 +891,7 @@ class Cri extends CommonDBTM
                         $PDF->SetNombreDeplacement($time_deplacement);
                     } else {
                         $time_in_sec = $manageentities_contract_data['duration_moving'];
-                        $time_deplacement = (($time_in_sec * $p['number_moving'] / HOUR_TIMESTAMP) / $config->fields['hourbyday']);
+                        $time_deplacement = (($time_in_sec * $p['number_moving'] / HOUR_TIMESTAMP) / $config->fields['hourbyday'] ?? '');
                         $PDF->SetNombreDeplacement($PDF->TotalTpsPassesArrondis($time_deplacement));
                     }
                 }
@@ -959,8 +959,8 @@ class Cri extends CommonDBTM
             $values["number_moving"] = $p['number_moving'];
 
             $restrict = [
-                "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'],
-                "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id'],
+                "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'] ?? '',
+                "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id'] ?? '',
             ];
             $dbu = new DbUtils();
             $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
@@ -1024,7 +1024,7 @@ class Cri extends CommonDBTM
                 echo Html::hidden('REPORT_ACTIVITE_ID', ['value' => $p['REPORT_ACTIVITE_ID']]);
 
                 $params = [
-                    'job' => $job->fields['id'],
+                    'job' => $job->fields['id'] ?? '',
                     'form' => 'formReport',
                     'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
                     'toupdate' => $options['toupdate'],
@@ -1195,7 +1195,7 @@ class Cri extends CommonDBTM
 
     public function send($doc)
     {
-        $file = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
+        $file = GLPI_DOC_DIR . "/" . $doc->fields['filepath'] ?? '';
 
         if (!file_exists($file)) {
             die("Error file " . $file . " does not exist");
@@ -1204,8 +1204,8 @@ class Cri extends CommonDBTM
         header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
         header('Pragma: private'); /// IE BUG + SSL
         header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-        header("Content-disposition: filename=\"" . $doc->fields['filename'] . "\"");
-        header("Content-type: " . $doc->fields['mime']);
+        header("Content-disposition: filename=\"" . $doc->fields['filename'] ?? '' . "\"");
+        header("Content-type: " . $doc->fields['mime'] ?? '');
 
         readfile($file) or die("Error opening file $file");
     }

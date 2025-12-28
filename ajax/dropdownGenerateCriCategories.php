@@ -1,3 +1,4 @@
+use GlpiPlugin\Manageentities\ITILCategory;
 <?php
 /*
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $

@@ -278,7 +278,7 @@ class CriPDF extends Fpdf
             $this->SetY($this->GetY() + $this->line_height);
         } else {
             $config = Config::getInstance();
-            if (!$config->fields['disable_date_header']) {
+            if (!$config->fields['disable_date_header'] ?? '') {
                 /* Date et heure. */
                 $this->CellValeur(
                     $largeur_date,

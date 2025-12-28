@@ -102,7 +102,7 @@ class AddElementsView extends CommonGLPIView
         echo "   <ul id='tabentitytitle'>";
 
         if (isset($this->pModel->getEntity()->fields['name'])
-            && $this->pModel->getEntity()->fields['name'] != ""
+            && ($this->pModel->getEntity()->fields['name'] ?? '') != ""
             && !$this->pModel->isOnError(Errors::ERROR_ENTITY, Errors::ERROR_ALL)) {
             echo "      <li> ";
             echo "<a href='#tabs-1'>" . $this->pModel->getEntity()->getField("name") . $this->showImgSaved(
@@ -130,10 +130,10 @@ class AddElementsView extends CommonGLPIView
             for ($i = 1; $i <= $this->pModel->getNbContact(); $i++) {
                 $contact = $this->pModel->getContacts($i);
                 if (($contact != null)
-                    && ((isset($contact->fields['name']) && $contact->fields['name'] != "") || (isset($contact->fields['firstname']) && $contact->fields['firstname'] != ""))
+                    && ((isset($contact->fields['name']) && $contact->fields['name'] ?? '' != "") || (isset($contact->fields['firstname']) && $contact->fields['firstname'] ?? '' != ""))
                     && !$this->pModel->isOnError(Errors::ERROR_CONTACT, Errors::ERROR_ALL)) {
                     echo "      <li>";
-                    echo "<a href='#tabs-" . ($i) . "'>" . $contact->fields['firstname'] . " " . $contact->fields['name'] . $this->showImgSaved(
+                    echo "<a href='#tabs-" . ($i) . "'>" . $contact->fields['firstname'] ?? '' . " " . $contact->fields['name'] ?? '' . $this->showImgSaved(
                         $this->pModel->getContacts($i),
                         $this->pModel->getMessage(ElementType::CONTACT, Status::SAVED),
                         $i
@@ -192,11 +192,11 @@ class AddElementsView extends CommonGLPIView
         $contract = $this->pModel->getContract();
         echo "<div id='mytabscontract' class='tab_cadre_fixe'>";
         echo "   <ul id='tabcontracttitle'>";
-        $strTitleTab = (isset($contract->fields['name']) && $contract->fields['name'] != "" && $this->pModel->getIsContractTemplate(
+        $strTitleTab = (isset($contract->fields['name']) && $contract->fields['name'] ?? '' != "" && $this->pModel->getIsContractTemplate(
         ) != 1 && !$this->pModel->isOnError(
             Errors::ERROR_CONTRACT,
             Errors::ERROR_ALL
-        )) ? $contract->fields['name'] : __("New contract", "manageentities");
+        )) ? $contract->fields['name'] ?? '' : __("New contract", "manageentities");
 
         echo "      <li> ";
         echo "<a href='#tabs-1'>" . $strTitleTab . $this->showImgSaved(
@@ -257,13 +257,13 @@ class AddElementsView extends CommonGLPIView
             echo "   <ul id='tabinterventiontitle'>";
             for ($i = 1; $i <= $this->pModel->getNbContractDays(); $i++) {
                 $intervention = $this->pModel->getContractDay($i);
-                if (($intervention != null) && ((isset($intervention->fields['name']) && $intervention->fields['name'] != "")) && !$this->pModel->isOnError(
+                if (($intervention != null) && ((isset($intervention->fields['name']) && $intervention->fields['name'] ?? '' != "")) && !$this->pModel->isOnError(
                     Errors::ERROR_INTERVENTION,
                     Errors::ERROR_ALL,
                     $i
                 )) {
                     echo "      <li>";
-                    echo "<a href='#tabs-" . ($i) . "'>" . $intervention->fields['name'] . $this->showImgSaved(
+                    echo "<a href='#tabs-" . ($i) . "'>" . $intervention->fields['name'] ?? '' . $this->showImgSaved(
                         $this->pModel->getContractDay($i),
                         $this->pModel->getMessage(ElementType::INTERVENTION, Status::SAVED),
                         $i
@@ -405,7 +405,7 @@ class AddElementsView extends CommonGLPIView
         // forms shown
         $formIds = [];
         // Entity
-        if (isset($pModel->getEntity()->fields['id']) && $pModel->getEntity()->fields['id'] > 0) {
+        if (isset($pModel->getEntity()->fields['id']) && ($pModel->getEntity()->fields['id'] ?? '') > 0) {
             $formIds['entity'] = 1;
         } else {
             $formIds['entity'] = 0;
@@ -413,13 +413,13 @@ class AddElementsView extends CommonGLPIView
         // Contacts
         $formIds['contacts'] = 0;
         foreach ($pModel->getContacts() as $contact) {
-            if (isset($contact->fields['id']) && $contact->fields['id'] > 0) {
+            if (isset($contact->fields['id']) && $contact->fields['id'] ?? '' > 0) {
                 $formIds['contacts'] = 1;
                 break;
             }
         }
         // Contract
-        if (isset($pModel->getContract()->fields['id']) && $pModel->getContract()->fields['id'] > 0) {
+        if (isset($pModel->getContract()->fields['id']) && ($pModel->getContract()->fields['id'] ?? '') > 0) {
             $formIds['contract'] = 1;
         } else {
             $formIds['contract'] = 0;
@@ -427,7 +427,7 @@ class AddElementsView extends CommonGLPIView
         // periods
         $formIds['interventions'] = 0;
         foreach ($pModel->getContractDay() as $contractDay) {
-            if (isset($contractDay->fields['id']) && $contractDay->fields['id'] > 0) {
+            if (isset($contractDay->fields['id']) && $contractDay->fields['id'] ?? '' > 0) {
                 $formIds['interventions'] = 1;
                 break;
             }
@@ -629,7 +629,7 @@ class AddElementsView extends CommonGLPIView
 
         $currentEntity = $this->pModel->getEntity();
 
-        if (!isset($currentEntity->fields['id']) || $currentEntity->fields['id'] <= 0) {
+        if (!isset($currentEntity->fields['id']) || $currentEntity->fields['id'] ?? '' <= 0) {
             $currentEntity->getEmpty();
         }
         $ID = -1;
@@ -847,12 +847,12 @@ class AddElementsView extends CommonGLPIView
         echo "<div id='div_select_entity_for_contact" . $rand . "' ";
         if (isset($currentContact->fields['entities_id'])
             && isset($this->pModel->getEntity()->fields['id'])
-            && $this->pModel->getEntity()->fields['id'] > 0
-            && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+            && ($this->pModel->getEntity()->fields['id'] ?? '') > 0
+            && $currentContact->fields['entities_id'] == ($this->pModel->getEntity()->fields['id'] ?? '')
             || ((!isset($currentContact->fields['entities_id'])
                     || $currentContact->fields['entities_id'] == "")
                 && isset($this->pModel->getEntity()->fields['id'])
-                && $this->pModel->getEntity()->fields['id'] > 0)) {
+                && ($this->pModel->getEntity()->fields['id'] ?? '') > 0)) {
             echo " style='visibility:hidden;' ";
         }
         echo ">";
@@ -875,12 +875,12 @@ class AddElementsView extends CommonGLPIView
         $check = 0;
         if (isset($currentContact->fields['entities_id'])
             && isset($this->pModel->getEntity()->fields['id'])
-            && $this->pModel->getEntity()->fields['id'] > 0
-            && $currentContact->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+            && ($this->pModel->getEntity()->fields['id'] ?? '') > 0
+            && $currentContact->fields['entities_id'] == ($this->pModel->getEntity()->fields['id'] ?? '')
             || ((!isset($currentContact->fields['entities_id'])
                     || $currentContact->fields['entities_id'] == "")
                 && isset($this->pModel->getEntity()->fields['id'])
-                && $this->pModel->getEntity()->fields['id'] > 0)) {
+                && ($this->pModel->getEntity()->fields['id'] ?? '') > 0)) {
             $check = 1;
         }
         Html::showCheckbox([
@@ -1144,7 +1144,7 @@ class AddElementsView extends CommonGLPIView
 
         // Template
 
-        if (!isset($currentContract->fields['id']) || $currentContract->fields['id'] <= 0) {
+        if (!isset($currentContract->fields['id']) || $currentContract->fields['id'] ?? '' <= 0) {
             echo "<tr class='tab_bg_1' id='row_contract_template'>";
             echo "<td>" . __("Templates") . "</td>";
             echo "<td colspan='3'>";
@@ -1196,13 +1196,13 @@ class AddElementsView extends CommonGLPIView
 
             $condition = $dbu->getEntitiesRestrictCriteria("glpi_entities");
 
-            if (isset($currentContract->fields['entities_id']) && isset(
-                $this->pModel->getEntity()->fields['id']
-            ) && $this->pModel->getEntity(
-            )->fields['id'] > 0 && $currentContract->fields['entities_id'] == $this->pModel->getEntity(
-            )->fields['id'] || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "") && isset(
-                $this->pModel->getEntity()->fields['id']
-            ) && $this->pModel->getEntity()->fields['id'] > 0)) {
+            if (isset($currentContract->fields['entities_id'])
+                && isset($this->pModel->getEntity()->fields['id'])
+                && ($this->pModel->getEntity()->fields['id'] ?? '') > 0
+                && $currentContract->fields['entities_id'] == ($this->pModel->getEntity()->fields['id'] ?? '')
+                || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "")
+                    && isset($this->pModel->getEntity()->fields['id'])
+                    && ($this->pModel->getEntity()->fields['id'] ?? '') > 0)) {
                 echo " style='visibility:hidden;' ";
             }
             echo " >";
@@ -1222,11 +1222,11 @@ class AddElementsView extends CommonGLPIView
             $check = 0;
             if (isset($currentContract->fields['entities_id'])
                 && isset($this->pModel->getEntity()->fields['id'])
-                && $this->pModel->getEntity()->fields['id'] > 0
-                && $currentContract->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+                && ($this->pModel->getEntity()->fields['id'] ?? '') > 0
+                && $currentContract->fields['entities_id'] == ($this->pModel->getEntity()->fields['id'] ?? '')
                 || ((!isset($currentContract->fields['entities_id']) || $currentContract->fields['entities_id'] == "")
                     && isset($this->pModel->getEntity()->fields['id'])
-                    && $this->pModel->getEntity()->fields['id'] > 0)) {
+                    && ($this->pModel->getEntity()->fields['id'] ?? '') > 0)) {
                 $check = 1;
             }
             Html::showCheckbox([
@@ -1310,8 +1310,8 @@ class AddElementsView extends CommonGLPIView
 
         $name = "$idDateBegin";
         echo Html::input($name, [
-            'value' => isset($currentContract->fields['begin_date']) && $currentContract->fields['begin_date'] != "NULL" && $currentContract->fields['begin_date']
-                ? date('d-m-Y', strtotime($currentContract->fields['begin_date']))
+            'value' => isset($currentContract->fields['begin_date']) && $currentContract->fields['begin_date'] ?? '' != "NULL" && $currentContract->fields['begin_date'] ?? ''
+                ? date('d-m-Y', strtotime($currentContract->fields['begin_date'] ?? ''))
                 : '',
             'id' => $name,
         ]);
@@ -1526,7 +1526,7 @@ class AddElementsView extends CommonGLPIView
         echo "</td></tr>";
 
 
-        if (isset($currentContract->fields['id']) && $currentContract->fields['id'] > 0) {
+        if (isset($currentContract->fields['id']) && $currentContract->fields['id'] ?? '' > 0) {
             $display = "style='display:table-row;'";
         } else {
             $display = "style='display:none;'";
@@ -1535,7 +1535,7 @@ class AddElementsView extends CommonGLPIView
         echo "<tr  class='tab_bg_2'>";
         echo "<td colspan='4' class='right'>";
         echo "<input form='' type='submit' class='submit btn btn-primary manageentities_button' name='btnAddContract' id='btnAddContract' value='";
-        if (isset($currentContract->fields['id']) && $currentContract->fields['id'] > 0) {
+        if (isset($currentContract->fields['id']) && $currentContract->fields['id'] ?? '' > 0) {
             echo "" . __("Update this contract only", "manageentities") . "' ";
         } else {
             echo "" . __("Add only the contract", "manageentities") . "' ";
@@ -1596,7 +1596,7 @@ class AddElementsView extends CommonGLPIView
         ];
 
         echo "<div id='" . $idDivAjax . "' style='text-align:center;'>";
-        if (isset($currentContract->fields['id']) && $currentContract->fields['id'] > 0) {
+        if (isset($currentContract->fields['id']) && $currentContract->fields['id'] ?? '' > 0) {
             $this->showFormAddContractManagementType($currentContract);
         }
         echo "</div>";
@@ -1740,12 +1740,12 @@ class AddElementsView extends CommonGLPIView
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __("Heading") . "</td>";
         echo "<td>";
-        if (isset($this->pModel->getContract()->fields['entities_id'])
-            && $this->pModel->getContract()->fields['entities_id'] > 0) {
+        if (null !== ($this->pModel->getContract()->fields['entities_id'] ?? null)
+            && $this->pModel->getContract()->fields['entities_id'] ?? '' > 0) {
             DocumentCategory::dropdown([
                 'entity' => $dbu->getSonsOf(
                     \Entity::getTable(),
-                    $this->pModel->getContract()->fields['entities_id']
+                    $this->pModel->getContract()->fields['entities_id'] ?? ''
                 ),
                 'comments' => false,
             ]);
@@ -1816,8 +1816,8 @@ class AddElementsView extends CommonGLPIView
         $this->pModel = AddElementsModel::getInstance();
 
         $rand = mt_rand();
-        $canView = $contract->can($contract->fields['id'], READ);
-        $canEdit = $contract->can($contract->fields['id'], UPDATE);
+        $canView = $contract->can($contract->fields['id'] ?? '', READ);
+        $canEdit = $contract->can($contract->fields['id'] ?? '', UPDATE);
         $config = Config::getInstance();
 
         if (!$canView) {
@@ -1825,8 +1825,8 @@ class AddElementsView extends CommonGLPIView
         }
 
         $restrict = [
-            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'],
+            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'] ?? '',
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'] ?? '',
         ];
         $dbu = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
@@ -1947,8 +1947,8 @@ class AddElementsView extends CommonGLPIView
         echo "</div></td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo Html::hidden('contracts_id', ['value' => $contract->fields['id']]);
-        echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id']]);
+        echo Html::hidden('contracts_id', ['value' => $contract->fields['id'] ?? '']);
+        echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id'] ?? '']);
 
         if ($canEdit) {
             echo "<td class='center' colspan='2'>";
@@ -1993,8 +1993,8 @@ class AddElementsView extends CommonGLPIView
         $params = [
             'action' => Action::ADD_CONTRACT_MANAGEMENT_TYPE,
             "id_div_ajax" => $idDivAjax,
-            "contracts_id" => $contract->fields['id'],
-            "entities_id" => $contract->fields['entities_id'],
+            "contracts_id" => $contract->fields['id'] ?? '',
+            "entities_id" => $contract->fields['entities_id'] ?? '',
         ];
 
         echo "<div id='" . $idDivAjax . "' style='text-align:center;'></div>";
@@ -2040,8 +2040,8 @@ class AddElementsView extends CommonGLPIView
         $options = ["contract_id" => ""];
 
         $restrict = [
-            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'],
+            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'] ?? '',
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'] ?? '',
         ];
 
         $dbu = new DbUtils();
@@ -2075,13 +2075,13 @@ class AddElementsView extends CommonGLPIView
             echo "<div id='div_select_entity_for_intervention" . $rand . "' ";
 
             if (isset($currentContractday->fields['entities_id'])
-                && isset($this->pModel->getEntity()->fields['id'])
-                && $this->pModel->getEntity()->fields['id'] > 0
-                && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+                && isset($this->pModel->getEntity()->fields['id'])                                                                              
+                && $this->pModel->getEntity()->fields['id'] ?? '' > 0
+                && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
                 || ((!isset($currentContractday->fields['entities_id'])
                         || $currentContractday->fields['entities_id'] == "")
-                    && isset($this->pModel->getEntity()->fields['id'])
-                    && $this->pModel->getEntity()->fields['id'] > 0)) {
+                    && null !== ($this->pModel->getEntity()->fields['id'] ?? null)
+                    && $this->pModel->getEntity()->fields['id'] ?? '' > 0)) {
                 echo " style='visibility:hidden;' ";
             }
             echo " >";
@@ -2100,13 +2100,13 @@ class AddElementsView extends CommonGLPIView
             $name = "previous_entity_for_intervention" . $rand;
             $check = 0;
             if (isset($currentContractday->fields['entities_id'])
-                && isset($this->pModel->getEntity()->fields['id'])
-                && $this->pModel->getEntity()->fields['id'] > 0
-                && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id']
+                && null !== ($this->pModel->getEntity()->fields['id'] ?? null)
+                && $this->pModel->getEntity()->fields['id'] ?? '' > 0
+                && $currentContractday->fields['entities_id'] == $this->pModel->getEntity()->fields['id'] ?? ''
                 || ((!isset($currentContractday->fields['entities_id'])
                         || $currentContractday->fields['entities_id'] == "")
-                    && isset($this->pModel->getEntity()->fields['id'])
-                    && $this->pModel->getEntity()->fields['id'] > 0)) {
+                    && null !== ($this->pModel->getEntity()->fields['id'] ?? null)
+                    && $this->pModel->getEntity()->fields['id'] ?? '' > 0)) {
                 $check = 1;
             }
             Html::showCheckbox([
@@ -2130,13 +2130,13 @@ class AddElementsView extends CommonGLPIView
 
 
             if (isset($currentContractday->fields['contracts_id'])
-                && isset($this->pModel->getContract()->fields['id'])
-                && $this->pModel->getContract()->fields['id'] > 0
-                && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id']
+                && null !== ($this->pModel->getContract()->fields['id'] ?? null)
+                && $this->pModel->getContract()->fields['id'] ?? '' > 0
+                && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id'] ?? ''
                 || ((!isset($currentContractday->fields['contracts_id'])
                         || $currentContractday->fields['contracts_id'] == "")
-                    && isset($this->pModel->getContract()->fields['id'])
-                    && $this->pModel->getContract()->fields['id'] > 0)) {
+                    && null !== ($this->pModel->getContract()->fields['id'] ?? null)
+                    && $this->pModel->getContract()->fields['id'] ?? '' > 0)) {
                 echo " style='visibility:hidden;' ";
             }
             echo " >";
@@ -2153,13 +2153,13 @@ class AddElementsView extends CommonGLPIView
             $name = "previous_contract_for_intervention" . $rand;
             $check = 0;
             if (isset($currentContractday->fields['contracts_id'])
-                && isset($this->pModel->getContract()->fields['id'])
-                && $this->pModel->getContract()->fields['id'] > 0
-                && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id']
+                && null !== ($this->pModel->getContract()->fields['id'] ?? null)
+                && $this->pModel->getContract()->fields['id'] ?? '' > 0
+                && $currentContractday->fields['contracts_id'] == $this->pModel->getContract()->fields['id'] ?? ''
                 || ((!isset($currentContractday->fields['contracts_id'])
                         || $currentContractday->fields['contracts_id'] == "")
-                    && isset($this->pModel->getContract()->fields['id'])
-                    && $this->pModel->getContract()->fields['id'] > 0)) {
+                    && null !== ($this->pModel->getContract()->fields['id'] ?? null)
+                    && $this->pModel->getContract()->fields['id'] ?? '' > 0)) {
                 $check = 1;
             }
             Html::showCheckbox([
@@ -2214,7 +2214,7 @@ class AddElementsView extends CommonGLPIView
             echo "<td id='div_select_contract_type" . $idIntervention . "'>";
             $idDpContractType = Contract::dropdownContractType(
                 "contract_type",
-                $currentContractday->fields['contract_type']
+                $currentContractday->fields['contract_type'] ?? ''
             );
             echo "</td>";
         } else {
@@ -2259,9 +2259,9 @@ class AddElementsView extends CommonGLPIView
         $name = "intervention_begin_date" . $idIntervention;
         echo Html::input($name, [
             'value' => (isset($currentContractday->fields['begin_date'])
-            && $currentContractday->fields['begin_date'] != "NULL"
-            && $currentContractday->fields['begin_date'] ? Html::convDate(
-                $currentContractday->fields['begin_date']
+            && $currentContractday->fields['begin_date'] ?? '' != "NULL"
+            && $currentContractday->fields['begin_date'] ?? '' ? Html::convDate(
+                $currentContractday->fields['begin_date'] ?? ''
             ) : ''),
             'id' => $name,
             'size' => 5,
@@ -2271,8 +2271,8 @@ class AddElementsView extends CommonGLPIView
         $name = "intervention_end_date" . $idIntervention;
         echo Html::input($name, [
             'value' => (isset($currentContractday->fields['end_date'])
-            && $currentContractday->fields['end_date'] != "NULL"
-            && $currentContractday->fields['end_date'] ? Html::convDate($currentContractday->fields['end_date']) : ''),
+            && $currentContractday->fields['end_date'] ?? '' != "NULL"
+            && $currentContractday->fields['end_date'] ?? '' ? Html::convDate($currentContractday->fields['end_date'] ?? '') : ''),
             'id' => $name,
             'size' => 5,
         ]);
@@ -2304,7 +2304,7 @@ class AddElementsView extends CommonGLPIView
         ) . "</td>";
         echo "<td id='div_select_contractstate" . $idIntervention . "'>";
         $idDpContractState = \Dropdown::show(ContractState::class, [
-            'value' => $currentContractday->fields['plugin_manageentities_contractstates_id'],
+            'value' => $currentContractday->fields['plugin_manageentities_contractstates_id'] ?? '',
             'entity' => $currentContractday->fields["entities_id"],
         ]);
 
@@ -2314,7 +2314,7 @@ class AddElementsView extends CommonGLPIView
 
 
         // We get all cri detail data
-        //      $currentContractday->fields['contractdays_id'] = isset($currentContractday->fields['id']) ? $currentContractday->fields['id'] : 0;
+        //      $currentContractday->fields['contractdays_id'] = isset($currentContractday->fields['id']) ? $currentContractday->fields['id'] ?? '' : 0;
         //      $resultCriDetail = CriDetail::getCriDetailData($currentContractday->fields);
         //      foreach($resultCriDetail['result'] as $dataCriDetail){
         //         //Conso
@@ -2327,7 +2327,7 @@ class AddElementsView extends CommonGLPIView
         //         Dropdown::show(CriType::class,
         //         array(
         //               'rand' => $rand,
-        //               'value' => $currentContractday->fields['plugin_manageentities_critypes_id'],
+        //               'value' => $currentContractday->fields['plugin_manageentities_critypes_id'] ?? '',
         //               'entity' => $currentContractday->fields["entities_id"],
         //               'on_change' => 'updateCriPrice'.$idIntervention.'()'));
         //         echo "</td>";
@@ -2341,8 +2341,8 @@ class AddElementsView extends CommonGLPIView
         //         echo "<td colspan='3'>";
         //         $arrCriprice = $this->pModel->getCriPrice($idIntervention);
         //
-        //         echo "<input type='text' name='price_".$idIntervention."' id='price_".$idIntervention."'  ";//value='".(isset($currentContractday->fields['name']) ? $currentContractday->fields['name']: '')."'  />";
-        //         echo " value='".$arrCriprice[$currentContractday->fields['plugin_manageentities_critypes_id']]."' disabled";
+        //         echo "<input type='text' name='price_".$idIntervention."' id='price_".$idIntervention."'  ";//value='".(isset($currentContractday->fields['name']) ? $currentContractday->fields['name'] ?? '': '')."'  />";
+        //         echo " value='".$arrCriprice[$currentContractday->fields['plugin_manageentities_critypes_id'] ?? '']."' disabled";
         //         echo " />";
         //         echo "</tr>";
         //         echo "<tr class='tab_bg_1'>";
@@ -2396,7 +2396,7 @@ class AddElementsView extends CommonGLPIView
         //      var_dump($this->pModel->getAllCriPrice());
 
 
-        if (isset($currentContractday->fields['id']) && $currentContractday->fields['id'] > 0) {
+        if (isset($currentContractday->fields['id']) && $currentContractday->fields['id'] ?? '' > 0) {
             $this->initCriPricesView($currentContractday, $idIntervention);
         }
 
@@ -2500,7 +2500,7 @@ class AddElementsView extends CommonGLPIView
         echo "<div id='" . $idDivStakeHoldersAjax . "' style='text-align:center;'>";
 
         $interventionSkateholder = new InterventionSkateholder();
-        if (isset($currentContractday->fields['id']) && $currentContractday->fields['id'] > 0) {
+        if (isset($currentContractday->fields['id']) && $currentContractday->fields['id'] ?? '' > 0) {
             $interventionSkateholder->displayTabContentForItem($currentContractday);
         }
         echo "</div>";
@@ -2533,7 +2533,7 @@ class AddElementsView extends CommonGLPIView
      */
     public function initCriPricesView($item, $fakeIdIntervention, $idCriPrice = -1)
     {
-        $idIntervention = $item->fields['id'];
+        $idIntervention = $item->fields['id'] ?? '';
         $this->pModel = AddElementsModel::getInstance();
 
         $this->showHeaderJS();
@@ -2555,7 +2555,7 @@ class AddElementsView extends CommonGLPIView
             return false;
         }
 
-        $canedit = $item->can($item->fields['id'], UPDATE);
+        $canedit = $item->can($item->fields['id'] ?? '', UPDATE);
 
         $rand = mt_rand();
 
@@ -2566,7 +2566,7 @@ class AddElementsView extends CommonGLPIView
         }
 
         $criPrice = new CriPrice();
-        $data = $criPrice->getItems($item->fields['id'], $start);
+        $data = $criPrice->getItems($item->fields['id'] ?? '', $start);
 
         if ($canedit) {
             echo "<div id='viewcriprice_" . $fakeIdIntervention . "'></div>\n";
@@ -2574,7 +2574,7 @@ class AddElementsView extends CommonGLPIView
             $params = [
                 'action' => Action::SHOW_FORM_CRI_PRICE,
                 "id_div_ajax" => "viewcriprice_" . $fakeIdIntervention,
-                "id_intervention" => isset($item->fields['id']) && $item->fields['id'] > 0 ? $item->fields['id'] : -1,
+                "id_intervention" => isset($item->fields['id']) && $item->fields['id'] ?? '' > 0 ? $item->fields['id'] ?? '' : -1,
                 "id_criprice" => $idCriPrice,
                 "parent" => ContractDay::class,
                 "fakeid_new_intervention" => $fakeIdIntervention,
@@ -2596,7 +2596,7 @@ class AddElementsView extends CommonGLPIView
         }
 
 
-        $this->listCriPrices($item->fields['id'], $data, $canedit, $rand, $idCriPrice, $fakeIdIntervention);
+        $this->listCriPrices($item->fields['id'] ?? '', $data, $canedit, $rand, $idCriPrice, $fakeIdIntervention);
     }
 
     /**
@@ -2612,34 +2612,34 @@ class AddElementsView extends CommonGLPIView
         switch ($status) {
             case Status::ADDED:
                 $criType = new CriType();
-                $criType->getFromDB($criPrice->fields['plugin_manageentities_critypes_id']);
+                $criType->getFromDB($criPrice->fields['plugin_manageentities_critypes_id'] ?? '');
 
                 $isDefault = $criPrice->fields['is_default'] == 0 ? __('No') : __('Yes');
-                $criTypeName = $criType->fields['name'];
+                $criTypeName = $criType->fields['name'] ?? '';
 
                 $cells = [
-                    "entity" => \Dropdown::getDropdownName("glpi_entities", $criPrice->fields['entities_id']),
-                    "cprice" => Html::formatNumber($criPrice->fields['price'], true),
+                    "entity" => \Dropdown::getDropdownName("glpi_entities", $criPrice->fields['entities_id'] ?? ''),
+                    "cprice" => Html::formatNumber($criPrice->fields['price'] ?? '', true),
                     "critype" => $criTypeName,
                     "is_default" => $isDefault,
-                    "id" => $criPrice->fields['id'],
+                    "id" => $criPrice->fields['id'] ?? '',
                 ];
 
-                $onclick = "showFormCriPrice" . $criPrice->fields['id'] . "()";
+                $onclick = "showFormCriPrice" . $criPrice->fields['id'] ?? '' . "()";
 
                 $params = [
                     'action' => Action::SHOW_FORM_CRI_PRICE,
                     "id_div_ajax" => "viewcriprice_" . $fakeIdIntervention,
-                    "id_intervention" => isset($item->fields['id']) && $item->fields['id'] > 0 ? $item->fields['id'] : -1,
+                    "id_intervention" => isset($item->fields['id']) && $item->fields['id'] ?? '' > 0 ? $item->fields['id'] ?? '' : -1,
                     "parent" => ContractDay::class,
                     "fakeid_new_intervention" => $fakeIdIntervention,
-                    "id_criprice" => $criPrice->fields['id'],
+                    "id_criprice" => $criPrice->fields['id'] ?? '',
                 ];
 
                 $listId = [];
 
                 $this->showJSfunction(
-                    "showFormCriPrice" . $criPrice->fields['id'],
+                    "showFormCriPrice" . $criPrice->fields['id'] ?? '',
                     "viewcriprice_" . $fakeIdIntervention,
                     $this->pModel->getUrl(),
                     $listId,
@@ -2654,7 +2654,7 @@ class AddElementsView extends CommonGLPIView
 
                 $this->addRowOnTable(
                     'tablelistcriprices' . $fakeIdIntervention,
-                    'row_criprice_' . $criPrice->fields['id'],
+                    'row_criprice_' . $criPrice->fields['id'] ?? '',
                     $cells,
                     null
                 );
@@ -2663,18 +2663,18 @@ class AddElementsView extends CommonGLPIView
             case Status::UPDATED:
 
                 $criType = new CriType();
-                $criType->getFromDB($criPrice->fields['plugin_manageentities_critypes_id']);
+                $criType->getFromDB($criPrice->fields['plugin_manageentities_critypes_id'] ?? '');
 
                 $isDefault = $criPrice->fields['is_default'] == 0 ? __('No') : __('Yes');
-                $criTypeName = $criType->fields['name'];
+                $criTypeName = $criType->fields['name'] ?? '';
 
                 $this->updateCellOnTable(
-                    'price_' . $criPrice->fields['id'],
-                    Html::formatNumber($criPrice->fields['price'], true)
+                    'price_' . $criPrice->fields['id'] ?? '',
+                    Html::formatNumber($criPrice->fields['price'] ?? '', true)
                 );
                 $this->updateCellOnTable(
-                    'is_default_' . $criPrice->fields['id'],
-                    \Dropdown::getYesNo($criPrice->fields['is_default'])
+                    'is_default_' . $criPrice->fields['id'] ?? '',
+                    \Dropdown::getYesNo($criPrice->fields['is_default'] ?? '')
                 );
 
                 break;
@@ -2684,9 +2684,9 @@ class AddElementsView extends CommonGLPIView
         //      $this->showHeaderJS();
         //       echo "
         //       if (document.getElementById('contentListCriPrices') != null){
-        //            $('#price_".$criPrice->fields['id']."').html(".Html::formatNumber($criPrice->fields['price'], true).");
-        //            $('#critypes_".$criPrice->fields['id']."').html('".$criTypeName."');
-        //            $('#is_default_".$criPrice->fields['id']."').html('".$isDefault."');
+        //            $('#price_".$criPrice->fields['id'] ?? ''."').html(".Html::formatNumber($criPrice->fields['price'] ?? '', true).");
+        //            $('#critypes_".$criPrice->fields['id'] ?? ''."').html('".$criTypeName."');
+        //            $('#is_default_".$criPrice->fields['id'] ?? ''."').html('".$isDefault."');
         //      }";
         //      $this->closeFormJS();
     }
@@ -2826,15 +2826,15 @@ class AddElementsView extends CommonGLPIView
         // Cri Type
         echo "<td>";
         echo CriType::getTypeName() . '&nbsp;' . $this->pModel->getMessage("mandatory_field");
-        $name = "id_criprice" . $item->fields['id'];
-        echo Html::hidden($name, ['id' => $name, 'value' => $item->fields['id']]);
+        $name = "id_criprice" . $item->fields['id'] ?? '';
+        echo Html::hidden($name, ['id' => $name, 'value' => $item->fields['id'] ?? '']);
 
         echo "</td>";
 
         echo "<td>";
         $idDpCriType = \Dropdown::show(CriType::class, [
             'name' => 'plugin_manageentities_critypes_id',
-            'value' => $item->fields['plugin_manageentities_critypes_id'],
+            'value' => $item->fields['plugin_manageentities_critypes_id'] ?? '',
             'entity' => $parent->getField('entities_id'),
             //         'used'      => $used_critypes,
             'rand' => $rand,
@@ -2856,7 +2856,7 @@ class AddElementsView extends CommonGLPIView
         echo "<td>";
         $name = "textfield_price" . $rand;
         echo Html::input($name, [
-            'value' => $item->fields['price'],
+            'value' => $item->fields['price'] ?? '',
             'id' => $name,
             'size' => 10,
         ]);
@@ -2869,8 +2869,8 @@ class AddElementsView extends CommonGLPIView
         echo "</td>";
         echo "<td>";
         $value = 1;
-        if (isset($item->fields['is_default']) && !empty($item->fields['is_default'])) {
-            $value = $item->fields['is_default'];
+        if (isset($item->fields['is_default']) && !empty($item->fields['is_default'] ?? '')) {
+            $value = $item->fields['is_default'] ?? '';
         }
         $idDpIsdefault = \Dropdown::showYesNo('is_default', $value);
         echo "</td>";
@@ -2880,14 +2880,14 @@ class AddElementsView extends CommonGLPIView
         echo "<tr class='tab_bg_2'>";
         echo "<td colspan='4' style='text-align: center'>";
         echo "<input type='button' class='submit btn btn-primary manageentities_button' name='btn_add_cprice_" . $rand . "' id='btn_add_cprice_" . $rand . "'";
-        if (isset($item->fields['id']) && $item->fields['id'] > 0) {
+        if (isset($item->fields['id']) && $item->fields['id'] ?? '' > 0) {
             echo "   value='" . _n('Update this price', 'Update these prices', 1, 'manageentities') . "'";
         } else {
             echo "   value='" . _n('Add this price', 'Add these prices', 1, 'manageentities') . "'";
         }
         echo "   onclick='addCriPrice" . $rand . "();'/>";
 
-        if (isset($item->fields['id']) && $item->fields['id'] > 0) {
+        if (isset($item->fields['id']) && $item->fields['id'] ?? '' > 0) {
             echo "<input type='button' class='submit btn btn-primary manageentities_button' style='margin-left:16px;' name='btn_delete_cprice_" . $rand . "' id='btn_delete_cprice_" . $rand . "'";
             echo "   value='" . _n('Delete this price', 'Delete these prices', 1, 'manageentities') . "'";
             echo "   onclick='deleteCriPrice" . $rand . "();'/>";
@@ -2934,7 +2934,7 @@ class AddElementsView extends CommonGLPIView
             "plugin_manageentities_contractdays_id" => $parent->getField('id'),
             "entities_id" => $parent->getField('entities_id'),
             "parent" => ContractDay::class,
-            "id_criprice" => isset($item->fields['id']) && $item->fields['id'] > 0 ? $item->fields['id'] : 0,
+            "id_criprice" => isset($item->fields['id']) && $item->fields['id'] ?? '' > 0 ? $item->fields['id'] ?? '' : 0,
             "fakeid_new_intervention" => $fakeIdIntervention,
             "inputfield" => "textfield_price" . $rand,
         ];
@@ -3006,21 +3006,21 @@ class AddElementsView extends CommonGLPIView
         $this->pModel = AddElementsModel::getInstance();
 
         $docItem = new Document_Item();
-        $docItem->getFromDBByCrit(['documents_id' => $doc->fields['id']]);
+        $docItem->getFromDBByCrit(['documents_id' => $doc->fields['id'] ?? '']);
 
         $docCategory = new DocumentCategory();
-        $docCategory->getFromDB($doc->fields['documentcategories_id']);
+        $docCategory->getFromDB($doc->fields['documentcategories_id'] ?? '');
         if (!isset($docCategory->fields['name']) || $docCategory->fields['name'] == null) {
             $docCategory->fields['name'] = "";
         }
 
         $entity = new \Entity();
-        $entity->getFromDB($doc->fields['entities_id']);
+        $entity->getFromDB($doc->fields['entities_id'] ?? '');
 
         $link = $doc->getLinkURL();
-        $downloadlink = $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $doc->fields['id'];
+        $downloadlink = $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $doc->fields['id'] ?? '';
 
-        //      $icon = $this->pModel->getIconSrcFromExtension($this->pModel->getFileExtension($doc->fields['filename']));
+        //      $icon = $this->pModel->getIconSrcFromExtension($this->pModel->getFileExtension($doc->fields['filename'] ?? ''));
 
         $this->showHeaderJS();
 
@@ -3068,7 +3068,7 @@ class AddElementsView extends CommonGLPIView
         echo "tmpCell.setAttribute('class','center');\n";
         echo "var tmpHref = document.createElement('a');";
         echo "tmpHref.innerHTML=\"";
-        echo $doc->fields['name'];
+        echo $doc->fields['name'] ?? '';
         echo "\";\n";
         echo "tmpHref.href=\"";
         echo $link;
@@ -3079,7 +3079,7 @@ class AddElementsView extends CommonGLPIView
         echo "tmpCell=row.insertCell(1);";
         echo "tmpCell.setAttribute('class','center');\n";
         echo "tmpCell.innerHTML=\"";
-        echo $entity->fields['completename'];
+        echo $entity->fields['completename'] ?? '';
         echo "\";";
 
         // Fichier
@@ -3095,7 +3095,7 @@ class AddElementsView extends CommonGLPIView
         echo "tmpHref = document.createElement('a');";
         echo "tmpHref.setAttribute('style','padding-left:5px;');\n";
         echo "tmpHref.innerHTML=\"";
-        echo $doc->fields['filename'];
+        echo $doc->fields['filename'] ?? '';
         echo "\";\n";
         echo "tmpHref.href=\"";
         echo $downloadlink;
@@ -3107,21 +3107,21 @@ class AddElementsView extends CommonGLPIView
         echo "tmpCell=row.insertCell(3);";
         echo "tmpCell.setAttribute('class','center');\n";
         echo "tmpCell.innerHTML=\"";
-        echo $docCategory->fields['name'];
+        echo $docCategory->fields['name'] ?? '';
         echo "\";";
 
         // Type MIME
         echo "tmpCell=row.insertCell(4);";
         echo "tmpCell.setAttribute('class','center');\n";
         echo "tmpCell.innerHTML=\"";
-        echo $doc->fields['mime'];
+        echo $doc->fields['mime'] ?? '';
         echo "\";";
 
         // Date
         echo "tmpCell=row.insertCell(5);";
         echo "tmpCell.setAttribute('class','center');\n";
         echo "tmpCell.innerHTML=\"";
-        echo Html::convDateTime($docItem->fields['date_mod']);
+        echo Html::convDateTime($docItem->fields['date_mod'] ?? '');
         echo "\";";
 
         $this->closeFormJS();
@@ -3136,7 +3136,7 @@ class AddElementsView extends CommonGLPIView
      */
     private function showImgSaved($object, $text, $fakeId)
     {
-        if (isset($object->fields['id']) && $object->fields['id'] > 0) {
+        if (isset($object->fields['id']) && $object->fields['id'] ?? '' > 0) {
             return "&nbsp;&nbsp;<i class='ti ti-device-floppy' id='img_" . $object->getType(
             ) . ($fakeId) . "' title='" . $text . "'></i>";
         } else {
@@ -3199,9 +3199,9 @@ class AddElementsView extends CommonGLPIView
                     echo "$(" . $post['inputfield'] . ").val('');";
                     echo "document.getElementById('id_criprice').value = 0;";
                 } else {
-                    echo "$(" . $post['inputfield'] . ").val('" . $price->fields['price'] . "');";
-                    if ($price->fields['id'] > 0) {
-                        echo "document.getElementById('id_criprice').value = " . $price->fields['id'] . ";";
+                    echo "$(" . $post['inputfield'] . ").val('" . $price->fields['price'] ?? '' . "');";
+                    if ($price->fields['id'] ?? '' > 0) {
+                        echo "document.getElementById('id_criprice').value = " . $price->fields['id'] ?? '' . ";";
                     }
                 }
                 $this->closeFormJS();
@@ -3255,7 +3255,7 @@ class AddElementsView extends CommonGLPIView
         if (null != $cprice && $cprice != false) {
             echo " if ($('#" . $inputId . "')){
                   $('#" . $inputId . "').prop('disabled', true);
-                  $('#" . $inputId . "').val(" . $cprice->fields['price'] . ");
+                  $('#" . $inputId . "').val(" . $cprice->fields['price'] ?? '' . ");
                 }";
         } else {
             echo " if ($('#" . $inputId . "')){
@@ -3479,8 +3479,8 @@ class AddElementsView extends CommonGLPIView
         echo "var tmpCell=null;";
 
 
-        //      "entity" => Dropdown::getDropdownName("glpi_entities", $criPrice->fields['entities_id']),
-        //               "cprice" => Html::formatNumber($criPrice->fields['price'], true),
+        //      "entity" => Dropdown::getDropdownName("glpi_entities", $criPrice->fields['entities_id'] ?? ''),
+        //               "cprice" => Html::formatNumber($criPrice->fields['price'] ?? '', true),
         //               "critype" => $criTypeName,
         //               "is_default" => $isDefault
 
@@ -3625,12 +3625,12 @@ class AddElementsView extends CommonGLPIView
     {
         $this->pModel = AddElementsModel::getInstance();
 
-        return ((isset($this->pModel->getEntity()->fields['id']) && $this->pModel->getEntity()->fields['id'] > 0)
-            || (isset($this->pModel->getContacts(1)->fields['id']) && $this->pModel->getContacts(1)->fields['id'] > 0)
-            || (isset($this->pModel->getContract()->fields['id']) && $this->pModel->getContract()->fields['id'] > 0)
-            || (isset($this->pModel->getContractDay(1)->fields['id']) && $this->pModel->getContractDay(
+        return ((null !== ($this->pModel->getEntity()->fields['id'] ?? null) && $this->pModel->getEntity()->fields['id'] ?? '' > 0)
+            || (null !== ($this->pModel->getContacts(1)->fields['id'] ?? null) && $this->pModel->getContacts(1)->fields['id'] ?? '' > 0)
+            || (null !== ($this->pModel->getContract()->fields['id'] ?? null) && $this->pModel->getContract()->fields['id'] ?? '' > 0)
+            || (null !== ($this->pModel->getContractDay(1)->fields['id'] ?? null) && $this->pModel->getContractDay(
                 1
-            )->fields['id'] > 0));
+            )->fields['id'] ?? '' > 0));
     }
 
     /**

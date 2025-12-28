@@ -137,7 +137,7 @@ class Dashboard extends CommonGLPI
                                             $entity->getFromDB($contract_data['entities_id']);
                                             $data["parent"] = $dbu->getTreeLeafValueName(
                                                 "glpi_entities",
-                                                $entity->fields['entities_id']
+                                                $entity->fields['entities_id'] ?? ''
                                             );
 
                                             $data["entities_id"] = $contract_data['entities_name'];
@@ -410,7 +410,7 @@ class Dashboard extends CommonGLPI
                                             $entity->getFromDB($contract_data['entities_id']);
                                             $data["parent"] = $dbu->getTreeLeafValueName(
                                                 "glpi_entities",
-                                                $entity->fields['entities_id']
+                                                $entity->fields['entities_id'] ?? ''
                                             );
 
                                             $data["entities_id"] = $contract_data['entities_name'];

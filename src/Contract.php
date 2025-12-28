@@ -141,8 +141,8 @@ class Contract extends CommonDBTM
             && !isset($withtemplate) || empty($withtemplate)) {
             $dbu = new DbUtils();
             $restrict = [
-                "`entities_id`" => $item->fields['entities_id'],
-                "`contracts_id`" => $item->fields['id']
+                "`entities_id`" => $item->fields['entities_id'] ?? '',
+                "`contracts_id`" => $item->fields['id'] ?? ''
             ];
             $pluginContractDays = $dbu->countElementsInTable("glpi_plugin_manageentities_contractdays", $restrict);
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -180,8 +180,8 @@ class Contract extends CommonDBTM
     static function showForContract(\Contract $contract)
     {
         $rand = mt_rand();
-        $canView = $contract->can($contract->fields['id'], READ);
-        $canEdit = $contract->can($contract->fields['id'], UPDATE);
+        $canView = $contract->can($contract->fields['id'] ?? '', READ);
+        $canEdit = $contract->can($contract->fields['id'] ?? '', UPDATE);
         $config = Config::getInstance();
 
         if (!$canView) {
@@ -189,8 +189,8 @@ class Contract extends CommonDBTM
         }
 
         $restrict = [
-            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']
+            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'] ?? '',
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'] ?? ''
         ];
         $dbu = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
@@ -281,8 +281,8 @@ class Contract extends CommonDBTM
         echo "</div></td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo Html::hidden('contracts_id', ['value' => $contract->fields['id']]);
-        echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id']]);
+        echo Html::hidden('contracts_id', ['value' => $contract->fields['id'] ?? '']);
+        echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id'] ?? '']);
 
         if ($canEdit) {
             if (empty($pluginContract)) {
@@ -764,7 +764,7 @@ class Contract extends CommonDBTM
         if (isset($params['item'])
             && ($item->getType() == 'Ticket' || $item->getType() == 'Contract')
             && isset($item->fields['entities_id'])) {
-            $entities_id = $item->fields['entities_id'];
+            $entities_id = $item->fields['entities_id'] ?? '';
         }
         $out = "";
         if (isset($entities_id)
