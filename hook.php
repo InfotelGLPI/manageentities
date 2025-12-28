@@ -46,7 +46,6 @@ use GlpiPlugin\Manageentities\Monthly;
 use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\TaskCategory;
-use function Safe\mkdir;
 
 function plugin_manageentities_install()
 {

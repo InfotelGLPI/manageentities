@@ -146,16 +146,16 @@ function plugin_init_manageentities()
 
         $PLUGIN_HOOKS['post_item_form']['manageentities'] = [TicketTask::class, 'postForm'];
         // Add specific files to add to the header : javascript or css
-        $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css", "style.css"];
+        $PLUGIN_HOOKS['add_css']['manageentities'] = ["manageentities.css", "style.css"];
 
         if (isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'] = [
+            $PLUGIN_HOOKS['add_javascript']['manageentities'] = [
                 'scripts/scripts-manageentities.js',
                 'scripts/jquery.form.js'
             ];
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
-                $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js.php';
+                $PLUGIN_HOOKS['add_javascript']['manageentities'][] = 'scripts/script-directhelpdesk.js.php';
             }
         }
 
@@ -177,8 +177,8 @@ function plugin_init_manageentities()
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-            $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities'] = [Contract::class, 'preItemForm'];
-            $PLUGIN_HOOKS[Hooks::PRE_ITEM_LIST]['manageentities'] = [Contract::class, 'preItemForm'];
+            $PLUGIN_HOOKS['pre_item_form']['manageentities'] = [Contract::class, 'preItemForm'];
+            $PLUGIN_HOOKS['pre_item_list']['manageentities'] = [Contract::class, 'preItemForm'];
         }
     }
 }
