@@ -121,17 +121,17 @@ class Monthly extends CommonDBTM
             'WHERE' => [
                 [
                     'OR' => [
-                        'glpi_tickettasks.end' => 'NULL',
-                        'glpi_tickettasks.end' => ['>=', $values['begin_date']]
+                        ['glpi_tickettasks.end' => 'NULL'],
+                        ['glpi_tickettasks.end' => ['>=', $values['begin_date']]]
                     ],
                 ],
                 [
                     'OR' => [
-                        'glpi_tickettasks.begin' => 'NULL',
-                        'glpi_tickettasks.begin' => [
+                        ['glpi_tickettasks.begin' => 'NULL'],
+                        ['glpi_tickettasks.begin' => [
                             '<=',
                             new QueryExpression("ADDDATE('" . $values['end_date'] . "', INTERVAL 1 DAY)")
-                        ]
+                        ]]
                     ],
                 ],
             ],
@@ -149,6 +149,7 @@ class Monthly extends CommonDBTM
 
         if ($nbTotEntity > 0) {
             foreach ($iterator as $dataEntity) {
+
                 $tabResults[$dataEntity['entities_id']]['entities_name'] = $dataEntity['entities_name'];
                 $tabResults[$dataEntity['entities_id']]['entities_id'] = $dataEntity['entities_id'];
 
@@ -215,14 +216,14 @@ class Monthly extends CommonDBTM
                         'glpi_plugin_manageentities_contractdays.entities_id' => $dataEntity["entities_id"],
                         [
                             'OR' => [
-                                'glpi_tickettasks.end' => 'NULL',
-                                'glpi_tickettasks.end' => ['<=', $values['end_date'] . " 23:59:59"]
+                                ['glpi_tickettasks.end' => 'NULL'],
+                                ['glpi_tickettasks.end' => ['<=', $values['end_date'] . " 23:59:59"]]
                             ],
                         ],
                         [
                             'OR' => [
-                                'glpi_tickettasks.begin' => 'NULL',
-                                'glpi_tickettasks.begin' => ['>=', $values['begin_date'] . " 00:00:00"]
+                                ['glpi_tickettasks.begin' => 'NULL'],
+                                ['glpi_tickettasks.begin' => ['>=', $values['begin_date'] . " 00:00:00"]]
                             ],
                         ],
                     ],
@@ -262,6 +263,7 @@ class Monthly extends CommonDBTM
 
 //             We get contract days datas
                 if ($nbContractDay > 0) {
+
                     foreach ($iteratord as $dataContractDay) {
                         $contract_credit = 0;
 
@@ -274,6 +276,7 @@ class Monthly extends CommonDBTM
                                 'end_date' => $values['end_date']
                             ]
                         );
+
                         $resultCriDetail_beforeMonth = CriDetail::getCriDetailData(
                             $dataContractDay,
                             [
@@ -285,6 +288,7 @@ class Monthly extends CommonDBTM
                         $remaining = $lastMonthRemaining = $resultCriDetail_beforeMonth['resultOther']['reste'];
 
                         if (sizeof($resultCriDetail['result']) > 0) {
+
                             // Credit
                             $credit = $dataContractDay['nbday'] + $dataContractDay['report'];
                             $contract_credit += $credit;

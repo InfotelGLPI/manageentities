@@ -168,8 +168,8 @@ class Followup extends CommonDBTM
 
         $iterator = $DB->request($criteria);
         $nbTotEntity = (count($iterator) > 0 ? count($iterator) : 0);
-
         if ($nbTotEntity > 0) {
+
             foreach ($iterator as $dataEntity) {
                 $criteriac = [
                     'SELECT' => [

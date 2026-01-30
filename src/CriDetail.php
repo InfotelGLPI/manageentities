@@ -404,7 +404,7 @@ class CriDetail extends CommonDBTM
             //            echo "<div id=\"$modal\" title=\"" . $title . "\" style=\"display:none;text-align:center\"></div>";
             //         }
         }
-
+        echo "&nbsp;";
         // DELETE
         if (Session::haveRight("plugin_manageentities_cri_create", UPDATE)
             && ($cridetail['documents_id'] ?? 0) != 0) {
@@ -479,12 +479,6 @@ class CriDetail extends CommonDBTM
                     'OR' => [
                         ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => 'NULL'],
                         $condition,
-                    ],
-                ];
-            } else {
-                $criteria['WHERE'] = $criteria['WHERE'] + [
-                    'OR' => [
-                        ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => 'NULL'],
                     ],
                 ];
             }
@@ -794,26 +788,26 @@ class CriDetail extends CommonDBTM
 
             ],
             'GROUPBY' => ['glpi_plugin_manageentities_cridetails.id'],
-            'ORDERBY' => [],
+//            'ORDERBY' => [],
         ];
 
         if (isset($options['begin_date'])) {
             $options['begin_date'] .= ' 00:00:00';
             $criteria['WHERE'] = $criteria['WHERE'] + [
-                'OR' => [
-                    'glpi_tickettasks.begin' => ['>=', $options['begin_date']],
-                    'glpi_tickettasks.begin' => 'NULL',
-                ],
+                    'OR' => [
+                        ['glpi_tickettasks.begin' => ['>=', $options['begin_date']]],
+                        ['glpi_tickettasks.begin' => 'NULL'],
+                    ],
             ];
         }
 
         if (isset($options['end_date'])) {
             $options['end_date'] .= ' 23:59:59';
             $criteria['WHERE'] = $criteria['WHERE'] + [
-                'OR' => [
-                    'glpi_tickettasks.end' => ['<=', $options['end_date']],
-                    'glpi_tickettasks.end' => 'NULL',
-                ],
+                    'OR' => [
+                        ['glpi_tickettasks.end' => ['<=', $options['end_date']]],
+                        ['glpi_tickettasks.end' => 'NULL'],
+                    ],
             ];
         }
 
@@ -849,6 +843,7 @@ class CriDetail extends CommonDBTM
         }
 
         if (count($iterator) > 0) {
+
             $taskCount++;
             foreach ($iterator as $dataCriDetail) {
                 // Get cridetail Cri Price if exists
@@ -897,8 +892,8 @@ class CriDetail extends CommonDBTM
                 if (isset($options['begin_date'])) {
                     $criteria['WHERE'] = $criteria['WHERE'] + [
                         'OR' => [
-                            'glpi_tickettasks.begin' => ['>=', $options['begin_date']],
-                            'glpi_tickettasks.begin' => 'NULL',
+                            ['glpi_tickettasks.begin' => ['>=', $options['begin_date']]],
+                            ['glpi_tickettasks.begin' => 'NULL'],
                         ],
                     ];
                 }
@@ -906,8 +901,8 @@ class CriDetail extends CommonDBTM
                 if (isset($options['end_date'])) {
                     $criteria['WHERE'] = $criteria['WHERE'] + [
                         'OR' => [
-                            'glpi_tickettasks.end' => ['<=', $options['end_date']],
-                            'glpi_tickettasks.end' => 'NULL',
+                            ['glpi_tickettasks.end' => ['<=', $options['end_date']]],
+                            ['glpi_tickettasks.end' => 'NULL'],
                         ],
                     ];
                 }
