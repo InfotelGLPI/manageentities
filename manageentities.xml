@@ -22,6 +22,11 @@
    </authors>
    <versions>
        <version>
+           <num>4.1.5</num>
+           <compatibility>~11.0</compatibility>
+           <download_url>https://github.com/InfotelGLPI/manageentities/releases/download/4.1.5/glpi-manageentities-4.1.5.tar.bz2</download_url>
+       </version>
+       <version>
            <num>4.1.4</num>
            <compatibility>~11.0</compatibility>
            <download_url>https://github.com/InfotelGLPI/manageentities/releases/download/4.1.4/glpi-manageentities-4.1.4.tar.bz2</download_url>
