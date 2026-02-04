@@ -509,6 +509,7 @@ class Contract extends CommonDBTM
         $resultCriDetail = [];
         $reste = 0;
         if (count($iterator) > 0) {
+
             foreach ($iterator as $data) {
                 $criteriad = [
                     'SELECT' => [
@@ -533,10 +534,10 @@ class Contract extends CommonDBTM
                     ],
                     'WHERE' => [
                         'glpi_plugin_manageentities_contractstates.is_closed' => 0,
-                        'glpi_plugin_manageentities_contractdays.end_date' => [
-                            '>',
-                            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']))
-                        ],
+//                        'glpi_plugin_manageentities_contractdays.end_date' => [
+//                            '>',
+//                            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']))
+//                        ],
                         'glpi_plugin_manageentities_contractdays.contracts_id' => $data["contracts_id"],
                     ]
                 ];
@@ -557,6 +558,7 @@ class Contract extends CommonDBTM
                     }
                 }
             }
+
 
             if ($reste == 0) {
                 $alert .= "<div class='alert alert-danger d-flex'>";
@@ -767,6 +769,7 @@ class Contract extends CommonDBTM
             $entities_id = $item->fields['entities_id'];
         }
         $out = "";
+
         if (isset($entities_id)
             && $_SESSION['glpiactiveprofile']['interface'] == 'central'
             && Session::haveRight('plugin_manageentities', UPDATE)) {
@@ -774,6 +777,7 @@ class Contract extends CommonDBTM
 //            if (count($sons) > 1) {
 //                return false;
 //            }
+
             $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
             $contract = new Contract();
             $out .= $contract->displayAlertforEntity($entities_id);

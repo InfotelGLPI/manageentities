@@ -368,8 +368,8 @@ class DirectHelpdesk extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        echo Html::script($CFG_GLPI['root_doc'] . "/lib/echarts.js");
-//        Html::requireJs('charts');
+
+        Html::requireJs('charts');
         echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/echarts/theme/azul.js");
 
         $direct = new DirectHelpdesk();

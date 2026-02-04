@@ -54,7 +54,7 @@ class TicketTask extends CommonDBTM
                 $rand = mt_rand();
                 echo '<tr class="tab_bg_1"><td colspan="3"></td>';
                 echo '<td>';
-                echo "<div class='ti ti-label right' style='width:300px;margin-right: 0;margin-left: auto;'>";
+                echo "<div class='label right' style='width:300px;margin-right: 0;margin-left: auto;'>";
                 $value = $tickettask->fields['date'];
                 if (!empty($tickettask->fields['begin'])) {
                     $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));

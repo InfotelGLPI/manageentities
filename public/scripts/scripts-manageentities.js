@@ -1,21 +1,21 @@
 $(document).ready(function () {
     var options = {
-        target: '#output1', // target element(s) to be updated with server response 
-        beforeSubmit: showRequest, // pre-submit callback 
-        success: showResponse  // post-submit callback 
+        target: '#output1', // target element(s) to be updated with server response
+        beforeSubmit: showRequest, // pre-submit callback
+        success: showResponse  // post-submit callback
     };
 
-    // bind form using 'ajaxForm' 
+    // bind form using 'ajaxForm'
     $('#form-add-contract').ajaxForm(options);
 });
 
-// pre-submit callback 
+// pre-submit callback
 function showRequest(formData, jqForm, options) {
     // Does nothing
     return true;
 }
 
-// post-submit callback 
+// post-submit callback
 function showResponse(responseText, statusText, xhr, $form) {
 // Does nothing
 }
@@ -326,16 +326,16 @@ function getManageentitiesFormData(form) {
 
 function manageentitiesShowMonth(formId, toupdate, monthNames, year, month) {
     $.each(monthNames, function (index, val) {
-        var monthClass = 'btn btn-info manageentities-button';
+        var monthClass = 'btn btn-xs btn-outline-info manageentities-button';
         if (index == 1) {
-            monthClass = 'btn btn-info manageentities-button manageentities-corner-left';
+            monthClass = 'btn btn-xs btn-outline-info manageentities-button manageentities-corner-left';
         }
 
         if (index == 12) {
-            monthClass = 'btn btn-info manageentities-button manageentities-corner-right';
+            monthClass = 'btn btn-xs btn-outline-info manageentities-button manageentities-corner-right';
         }
         if (month == index) {
-           monthClass = 'btn btn-info manageentities-button manageentities-state-active';
+           monthClass = 'btn btn-xs btn-outline-info manageentities-button active';
         }
         $('<a class="' + monthClass + '" href="#' + index + '_' + year + '">' + val + '</a>').click(function () {
             if (!$(this).hasClass('manageentities-state-disabled')) {
@@ -374,7 +374,7 @@ function searchManageentities(index, formId, year, monthNames) {
 }
 
 function lastYearManagesEntities(formId, element, year, monthNames) {
-    var monthClass = 'fc-button fc-button-agendaWeek fc-state-default';
+    var monthClass = 'btn btn-outline-info fc-button fc-button-agendaWeek fc-state-default';
     $('<a class=\"' + monthClass + ' manageentities_href\"  href=\"#' + (year - 1) + '\">' + (year - 1) + '</a>').click(function () {
         if (!$(this).hasClass('fc-state-disabled')) {
             $(this).removeClass('fc-state-hover');
@@ -400,7 +400,7 @@ function lastYearManagesEntities(formId, element, year, monthNames) {
 }
 
 function nextYearManagesEntities(formId, element, year, monthNames) {
-    var monthClass = 'fc-button fc-button-agendaWeek fc-state-default';
+    var monthClass = 'btn btn-outline-info fc-button fc-button-agendaWeek fc-state-default';
     $('<a class=\"' + monthClass + ' manageentities_href\"  href=\"#' + (year + 1) + '\">' + (year + 1) + '</a>').click(function () {
         if (!$(this).hasClass('fc-state-disabled')) {
             $(this).removeClass('fc-state-hover');
