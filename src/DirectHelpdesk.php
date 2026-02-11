@@ -370,6 +370,7 @@ class DirectHelpdesk extends CommonDBTM
 
 
         Html::requireJs('charts');
+        echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/echarts/echarts.js");
         echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/echarts/theme/azul.js");
 
         $direct = new DirectHelpdesk();

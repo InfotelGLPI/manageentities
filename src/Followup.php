@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id: HEADER 15930 2011-10-30 15:47:55Z tsmr $
  -------------------------------------------------------------------------
@@ -33,10 +34,6 @@ use CommonDBTM;
 use DbUtils;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\SearchEngine;
-use GlpiPlugin\Manageentities\Config;
-use GlpiPlugin\Manageentities\Contract;
-use GlpiPlugin\Manageentities\Entity;
-use GlpiPlugin\Manageentities\Preference;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
@@ -50,30 +47,29 @@ use Toolbox;
 
 class Followup extends CommonDBTM
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return __('General follow-up', 'manageentities');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-vocabulary";
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [READ, CREATE, UPDATE, DELETE]);
     }
 
-    static function queryFollowUp($instID, $options = [])
+    public static function queryFollowUp($instID, $options = [])
     {
         global $DB;
 
@@ -112,14 +108,14 @@ class Followup extends CommonDBTM
                 Contract::CONTRACT_TYPE_NULL,
                 Contract::CONTRACT_TYPE_HOUR,
                 Contract::CONTRACT_TYPE_INTERVENTION,
-                Contract::CONTRACT_TYPE_UNLIMITED
+                Contract::CONTRACT_TYPE_UNLIMITED,
             ];
         } else {// Daily
 
             $types_contracts = [
                 Contract::CONTRACT_TYPE_NULL,
                 Contract::CONTRACT_TYPE_AT,
-                Contract::CONTRACT_TYPE_FORFAIT
+                Contract::CONTRACT_TYPE_FORFAIT,
             ];
         }
 
@@ -134,7 +130,7 @@ class Followup extends CommonDBTM
         $criteria = [
             'SELECT' => [
                 'glpi_entities.id AS entities_id',
-                'glpi_entities.name AS entities_name'
+                'glpi_entities.name AS entities_name',
             ],
             'DISTINCT' => true,
             'FROM' => 'glpi_contracts',
@@ -142,12 +138,12 @@ class Followup extends CommonDBTM
                 'glpi_entities' => [
                     'ON' => [
                         'glpi_contracts' => 'entities_id',
-                        'glpi_entities' => 'id'
-                    ]
-                ]
+                        'glpi_entities' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
-                'NOT' => ['glpi_entities.name' => 'NULL', 'glpi_entities.id' => 'NULL']
+                'NOT' => ['glpi_entities.name' => 'NULL', 'glpi_entities.id' => 'NULL'],
             ],
             'ORDERBY' => 'glpi_entities.name',
         ];
@@ -192,9 +188,9 @@ class Followup extends CommonDBTM
                         'glpi_plugin_manageentities_contracts' => [
                             'ON' => [
                                 'glpi_contracts' => 'id',
-                                'glpi_plugin_manageentities_contracts' => 'contracts_id'
-                            ]
-                        ]
+                                'glpi_plugin_manageentities_contracts' => 'contracts_id',
+                            ],
+                        ],
                     ],
                     'WHERE' => [
                         'glpi_contracts.entities_id' => $dataEntity['entities_id'],
@@ -233,27 +229,27 @@ class Followup extends CommonDBTM
                             'glpi_contracts' => [
                                 'ON' => [
                                     'glpi_contracts' => 'id',
-                                    'glpi_plugin_manageentities_contractdays' => 'contracts_id'
-                                ]
+                                    'glpi_plugin_manageentities_contractdays' => 'contracts_id',
+                                ],
                             ],
                             'glpi_plugin_manageentities_contractstates' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-                                    'glpi_plugin_manageentities_contractstates' => 'id'
-                                ]
+                                    'glpi_plugin_manageentities_contractstates' => 'id',
+                                ],
                             ],
                             'glpi_plugin_manageentities_businesscontacts' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_contractdays' => 'entities_id',
-                                    'glpi_plugin_manageentities_businesscontacts' => 'entities_id'
-                                ]
+                                    'glpi_plugin_manageentities_businesscontacts' => 'entities_id',
+                                ],
                             ],
                             'glpi_entities' => [
                                 'ON' => [
                                     'glpi_plugin_manageentities_contractdays' => 'entities_id',
-                                    'glpi_entities' => 'id'
-                                ]
-                            ]
+                                    'glpi_entities' => 'id',
+                                ],
+                            ],
                         ],
                         'WHERE' => [
                             'glpi_contracts.entities_id' => $dataEntity['entities_id'],
@@ -279,14 +275,14 @@ class Followup extends CommonDBTM
                                 'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                     $preferences['contract_states'],
                                     true
-                                )
+                                ),
                             ];
                     } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
                                 'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                     $config_states['contract_states'],
                                     true
-                                )
+                                ),
                             ];
                     }
 
@@ -298,18 +294,20 @@ class Followup extends CommonDBTM
                                 'glpi_plugin_manageentities_businesscontacts.users_id' => json_decode(
                                     $preferences['contract_states'],
                                     true
-                                )
+                                ),
                             ];
                     } elseif (isset($config_states['business_id']) && $config_states['business_id'] != null) {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
                                 'glpi_plugin_manageentities_businesscontacts.users_id' => json_decode(
                                     $config_states['contract_states'],
                                     true
-                                )
+                                ),
                             ];
                     }
-
-                    if (isset($options['company_id']) && $options['company_id'] != '0') {
+                    $sons = [];
+                    if (isset($options['company_id'])
+                        && is_array($options['company_id'])
+                        && count($options['company_id']) > 0) {
                         $temp = 0;
                         foreach ($options['company_id'] as $id) {
                             $plugin_company = new Company();
@@ -323,9 +321,10 @@ class Followup extends CommonDBTM
                             }
                         }
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_entities.id' => $sons
+                                'glpi_entities.id' => $sons,
                             ];
-                    } elseif (isset($preferences['companies_id']) && $preferences['companies_id'] != null) {
+                    } elseif (isset($preferences['companies_id'])
+                        && $preferences['companies_id'] != null) {
                         foreach (json_decode($preferences['companies_id'], true) as $id) {
                             $sons = [];
                             $plugin_company = new Company();
@@ -338,7 +337,7 @@ class Followup extends CommonDBTM
                             }
                         }
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_entities.id' => $sons
+                                'glpi_entities.id' => $sons,
                             ];
                     }
 
@@ -347,39 +346,42 @@ class Followup extends CommonDBTM
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
                                 'glpi_plugin_manageentities_contractdays.begin_date' => [
                                     '>=',
-                                    $options['begin_date_after']
-                                ]
+                                    $options['begin_date_after'],
+                                ],
                             ];
                         $beginDate = $options['begin_date_after'];
                     }
 
                     if (isset($options['begin_date_before']) && $options['begin_date_before'] != '') {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.begin_date' =>
-                                    [
-                                        '<=',
-                                        new QueryExpression(
-                                            "ADDDATE('" . $options['begin_date_before'] . "' , INTERVAL 1 DAY)"
-                                        )
-                                    ]
+                                'glpi_plugin_manageentities_contractdays.begin_date'
+                                => [
+                                    '<=',
+                                    new QueryExpression(
+                                        "ADDDATE('" . $options['begin_date_before'] . "' , INTERVAL 1 DAY)"
+                                    ),
+                                ],
                             ];
                     }
 
                     if (isset($options['end_date_after']) && $options['end_date_after'] != '') {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.end_date' => ['>=', $options['end_date_after']]
+                                'glpi_plugin_manageentities_contractdays.end_date' => [
+                                    '>=',
+                                    $options['end_date_after']
+                                ],
                             ];
                     }
 
                     if (isset($options['end_date_before']) && $options['end_date_before'] != '') {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.end_date' =>
-                                    [
-                                        '<=',
-                                        new QueryExpression(
-                                            "ADDDATE('" . $options['end_date_before'] . "' , INTERVAL 1 DAY)"
-                                        )
-                                    ]
+                                'glpi_plugin_manageentities_contractdays.end_date'
+                                => [
+                                    '<=',
+                                    new QueryExpression(
+                                        "ADDDATE('" . $options['end_date_before'] . "' , INTERVAL 1 DAY)"
+                                    ),
+                                ],
                             ];
                         $endDate = $options['end_date_before'];
                     }
@@ -506,7 +508,7 @@ class Followup extends CommonDBTM
                                     'FROM' => 'glpi_tickets',
                                     'WHERE' => [
                                         'glpi_tickets.entities_id' => $dataEntity['entities_id'],
-                                        'glpi_tickets.is_deleted' => 0
+                                        'glpi_tickets.is_deleted' => 0,
                                     ],
                                 ];
 
@@ -514,8 +516,8 @@ class Followup extends CommonDBTM
                                     $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
                                             'date' => [
                                                 '>=',
-                                                $dataContractDay['begin_date']
-                                            ]
+                                                $dataContractDay['begin_date'],
+                                            ],
                                         ];
                                 }
 
@@ -525,8 +527,8 @@ class Followup extends CommonDBTM
                                                 '>=',
                                                 new QueryExpression(
                                                     "ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)"
-                                                )
-                                            ]
+                                                ),
+                                            ],
                                         ];
                                 }
                             } else {
@@ -539,13 +541,13 @@ class Followup extends CommonDBTM
                                         'glpi_tickets' => [
                                             'ON' => [
                                                 'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                                                'glpi_tickets' => 'id'
-                                            ]
-                                        ]
+                                                'glpi_tickets' => 'id',
+                                            ],
+                                        ],
                                     ],
                                     'WHERE' => [
                                         'glpi_tickets.entities_id' => $dataEntity['entities_id'],
-                                        'glpi_tickets.is_deleted' => 0
+                                        'glpi_tickets.is_deleted' => 0,
                                     ],
                                     'ORDERBY' => 'glpi_plugin_manageentities_cridetails.date DESC',
                                     'LIMIT' => 1,
@@ -555,8 +557,8 @@ class Followup extends CommonDBTM
                                     $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
                                             'glpi_plugin_manageentities_cridetails.date' => [
                                                 '>=',
-                                                $dataContractDay['begin_date']
-                                            ]
+                                                $dataContractDay['begin_date'],
+                                            ],
                                         ];
                                 }
 
@@ -566,8 +568,8 @@ class Followup extends CommonDBTM
                                                 '>=',
                                                 new QueryExpression(
                                                     "ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)"
-                                                )
-                                            ]
+                                                ),
+                                            ],
                                         ];
                                 }
                             }
@@ -585,7 +587,7 @@ class Followup extends CommonDBTM
                                 ],
                                 'FROM' => 'glpi_plugin_manageentities_contractstates',
                                 'WHERE' => [
-                                    'id' => $dataContractDay['contractstates_id']
+                                    'id' => $dataContractDay['contractstates_id'],
                                 ],
                             ]);
 
@@ -658,7 +660,7 @@ class Followup extends CommonDBTM
         return $list;
     }
 
-    static function showFollowUp($values)
+    public static function showFollowUp($values)
     {
         $results = self::queryFollowUp($_SESSION["glpiactive_entity"], $values);
         $list = [];
@@ -687,11 +689,11 @@ class Followup extends CommonDBTM
         $rows = [];
 
         $numrows = count($results);
-//        $end_display = $start + $_SESSION['glpilist_limit'];
-//        if (isset($_GET['export_all'])) {
-            $start = 0;
-            $end_display = $numrows;
-//        }
+        //        $end_display = $start + $_SESSION['glpilist_limit'];
+        //        if (isset($_GET['export_all'])) {
+        $start = 0;
+        $end_display = $numrows;
+        //        }
 
         $nbcols = 12;
         $row_num = 0;
@@ -727,9 +729,9 @@ class Followup extends CommonDBTM
             }
         }
 
-        $parameters = "begin_date_after=" . $values['begin_date_after'] . "&amp;begin_date_before=" .
-            $values['begin_date_before'] . "&amp;end_date_after=" . $values['end_date_after'] .
-            "&amp;end_date_before=" . $values['end_date_before']
+        $parameters = "begin_date_after=" . $values['begin_date_after'] . "&amp;begin_date_before="
+            . $values['begin_date_before'] . "&amp;end_date_after=" . $values['end_date_after']
+            . "&amp;end_date_before=" . $values['end_date_before']
             . $contract_states . "&amp;entities_id=" . $values['entities_id'] . "&amp;" . $business_ids . $company_ids;
 
         // Colspan
@@ -742,167 +744,108 @@ class Followup extends CommonDBTM
         if (!empty($results)) {
             if ($is_html_output && Session::getCurrentInterface() == 'central') {
                 self::showLegendary();
-//                self::printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters, Followup::class);
+                self::printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters, Followup::class);
             }
 
-//            if ($is_html_output) {
-//                $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
-//            }
-//            if (!$is_html_output) {
-//                $headers[] = _n('Client', 'Clients', 1, 'manageentities');
-//                $headers[] = __('Contract');
-////                $headers[] = '';
-////                $headers[] = '';
-//                $headers[] = _x('phone', 'Number');
-////                $headers[] = '';
-//                if ($config->fields['hourorday'] == Config::DAY) {
-//                    $headers[] = __('Contract present', 'manageentities');
-//                } else {
+            //            if ($is_html_output) {
+            //                $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
+            //            }
+            //            if (!$is_html_output) {
+            //                $headers[] = _n('Client', 'Clients', 1, 'manageentities');
+            //                $headers[] = __('Contract');
+            ////                $headers[] = '';
+            ////                $headers[] = '';
+            //                $headers[] = _x('phone', 'Number');
+            ////                $headers[] = '';
+            //                if ($config->fields['hourorday'] == Config::DAY) {
+            //                    $headers[] = __('Contract present', 'manageentities');
+            //                } else {
+            //                    $headers[] = '';
+            //                }
+            ////                $headers[] = '';
+            //                $headers[] = __('Date of signature', 'manageentities');
+            ////                $headers[] = '';
+            //                $headers[] = __('Date of renewal', 'manageentities');
+            //                if ($config->fields['hourorday'] == Config::HOUR) {
+            //                    $headers[] = __('Mode of management', 'manageentities');
+            //                    $headers[] = __('Type of service contract', 'manageentities');
+            //                }
+            //            } else {
+            //                $header_num = 1;
+            //                $html_output .= $output::showNewLine();
+            //                $html_output .= $output::showHeaderItem(_n('Client', 'Clients', 1, 'manageentities'), $header_num);
+            //                $html_output .= $output::showHeaderItem(__('Contract'), $header_num);
+            ////                $html_output .= $output::showHeaderItem("", $header_num);
+            ////                $html_output .= $output::showHeaderItem("", $header_num);
+            //                $html_output .= $output::showHeaderItem(_x('phone', 'Number'), $header_num);
+            ////                $html_output .= $output::showHeaderItem("", $header_num);
+            //                if ($config->fields['hourorday'] == Config::DAY) {
+            //                    $html_output .= $output::showHeaderItem(__('Contract present', 'manageentities'), $header_num);
+            //                } else {
+            //                    $html_output .= $output::showHeaderItem("", $header_num);
+            //                }
+            ////                $html_output .= $output::showHeaderItem("", $header_num);
+            //                $html_output .= $output::showHeaderItem(__('Date of signature', 'manageentities'), $header_num);
+            ////                $html_output .= $output::showHeaderItem("", $header_num);
+            //                $html_output .= $output::showHeaderItem(__('Date of renewal', 'manageentities'), $header_num);
+            //                if ($config->fields['hourorday'] == Config::HOUR) {
+            //                    $html_output .= $output::showHeaderItem(__('Mode of management', 'manageentities'), $header_num);
+            //                    $html_output .= $output::showHeaderItem(
+            //                        __('Type of service contract', 'manageentities'),
+            //                        $header_num
+            //                    );
+            //                }
+            //                $html_output .= $output::showEndLine();
+            //            }
+//            headers 1ere ligne
+            if (1 == 1) {
+                if ($is_html_output) {
+                    $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
+                    $html_output .= $output::showBeginHeader();
+                    $item_num = 0;
+                    $html_output .= $output::showNewLine();
+                }
+//                if ($output_type != Search::HTML_OUTPUT) {
+//                    if (Session::getCurrentInterface() == 'central') {
+//                        $headers[] = _n('Client', 'Clients', 1, 'manageentities');
+//                    }
+//
+//                    $headers[] = __('Contract');
+//                    $headers[] = '';
+//                    $headers[] = '';
+//                    $headers[] = _x('phone', 'Number');
 //                    $headers[] = '';
 //                }
-////                $headers[] = '';
-//                $headers[] = __('Date of signature', 'manageentities');
-////                $headers[] = '';
-//                $headers[] = __('Date of renewal', 'manageentities');
-//                if ($config->fields['hourorday'] == Config::HOUR) {
-//                    $headers[] = __('Mode of management', 'manageentities');
-//                    $headers[] = __('Type of service contract', 'manageentities');
+//
+//                if (Session::getCurrentInterface() == 'central') {
+//                    if ($output_type != Search::HTML_OUTPUT) {
+//                        if ($config->fields['hourorday'] == Config::DAY) {
+//                            $headers[] = __('Contract present', 'manageentities');
+//                        } else {
+//                            $headers[] = '';
+//                        }
+//                        $headers[] = '';
+//                        $headers[] = __('Date of signature', 'manageentities');
+//                        $headers[] = '';
+////                        $headers[] = __('Date of renewal', 'manageentities');
+////                        $headers[] = '';
+//                        if ($config->fields['hourorday'] == Config::HOUR) {
+////                            $headers[] = __('Mode of management', 'manageentities');
+////                            $headers[] = __('Type of service contract', 'manageentities');
+//
+//                        }
+//                    }
 //                }
-//            } else {
-//                $header_num = 1;
-//                $html_output .= $output::showNewLine();
-//                $html_output .= $output::showHeaderItem(_n('Client', 'Clients', 1, 'manageentities'), $header_num);
-//                $html_output .= $output::showHeaderItem(__('Contract'), $header_num);
-////                $html_output .= $output::showHeaderItem("", $header_num);
-////                $html_output .= $output::showHeaderItem("", $header_num);
-//                $html_output .= $output::showHeaderItem(_x('phone', 'Number'), $header_num);
-////                $html_output .= $output::showHeaderItem("", $header_num);
-//                if ($config->fields['hourorday'] == Config::DAY) {
-//                    $html_output .= $output::showHeaderItem(__('Contract present', 'manageentities'), $header_num);
-//                } else {
-//                    $html_output .= $output::showHeaderItem("", $header_num);
-//                }
-////                $html_output .= $output::showHeaderItem("", $header_num);
-//                $html_output .= $output::showHeaderItem(__('Date of signature', 'manageentities'), $header_num);
-////                $html_output .= $output::showHeaderItem("", $header_num);
-//                $html_output .= $output::showHeaderItem(__('Date of renewal', 'manageentities'), $header_num);
-//                if ($config->fields['hourorday'] == Config::HOUR) {
-//                    $html_output .= $output::showHeaderItem(__('Mode of management', 'manageentities'), $header_num);
-//                    $html_output .= $output::showHeaderItem(
-//                        __('Type of service contract', 'manageentities'),
-//                        $header_num
-//                    );
-//                }
-//                $html_output .= $output::showEndLine();
-//            }
-
-            if ($is_html_output) {
-                $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
-                $html_output .= $output::showBeginHeader();
-                $item_num = 0;
-                $html_output .= $output::showNewLine($output_type);
-                if ($output_type != Search::HTML_OUTPUT) {
-                    if (Session::getCurrentInterface() == 'central') {
-//                        $html_output .= $output::showHeaderItem(
-//                            _n('Client', 'Clients', 1, 'manageentities'),
-//                            $item_num
-//                        );
-                        $headers[] = _n('Client', 'Clients', 1, 'manageentities');
-                    }
-
-                    $headers[] = __('Contract');
-//                    $html_output .= $output::showHeaderItem(
-//                        __('Contract'),
-//                        $item_num,
-//                        "",
-//                        0,
-//                        "",
-//                        "colspan='" . $colspan_contract . "'"
-//                    );
-                    $headers[] = '';
-                    $headers[] = '';
-//                    $html_output .= $output::showHeaderItem('', $item_num);
-//                    $html_output .= $output::showHeaderItem('', $item_num);
-
-                    $headers[] = _x('phone', 'Number');
-//                    $html_output .= $output::showHeaderItem(
-//                        _x('phone', 'Number'),
-//                        $item_num,
-//                        "",
-//                        0,
-//                        "",
-//                        "colspan='" . $colspan . "'"
-//                    );
-                    $headers[] = '';
-//                    $html_output .= $output::showHeaderItem('', $item_num);
-                }
-
-                if (Session::getCurrentInterface() == 'central') {
-                    if ($output_type != Search::HTML_OUTPUT) {
-                        if ($config->fields['hourorday'] == Config::DAY) {
-                            $headers[] = __('Contract present', 'manageentities');
-//                            $html_output .= $output::showHeaderItem(
-//                                __('Contract present', 'manageentities'),
-//                                $item_num,
-//                                "",
-//                                0,
-//                                "",
-//                                "colspan='2'"
-//                            );
-                        } else {
-                            $headers[] = '';
-                        }
-                        $headers[] = '';
-                        $headers[] = __('Date of signature', 'manageentities');
-//                        $html_output .= $output::showHeaderItem(
-//
-//                            __('Date of signature', 'manageentities'),
-//                            $item_num,
-//                            "",
-//                            0,
-//                            "",
-//                            "colspan='2'"
-//                        );
-                        $headers[] = '';
-//                        $html_output .= $output::showHeaderItem('', $item_num);
-
-                        $headers[] = __('Date of renewal', 'manageentities');
-//                        $html_output .= $output::showHeaderItem(
-//
-//                            __('Date of renewal', 'manageentities'),
-//                            $item_num,
-//                            "",
-//                            0,
-//                            "",
-//                            "colspan='2'"
-//                        );
-                        $headers[] = '';
-//                        $html_output .= $output::showHeaderItem('', $item_num);
-                        if ($config->fields['hourorday'] == Config::HOUR) {
-                            $headers[] = __('Mode of management', 'manageentities');
-                            $headers[] = __('Type of service contract', 'manageentities');
-//                            $html_output .= $output::showHeaderItem(
-//
-//                                __('Mode of management', 'manageentities'),
-//                                $item_num
-//                            );
-//                            $html_output .= $output::showHeaderItem(
-//
-//                                __('Type of service contract', 'manageentities'),
-//                                $item_num
-//                            );
-                        }
-                    }
-                }
 
                 if ($is_html_output) {
                     $html_output .= $output::showEndLine();
+
+                    $html_output .= $output::showEndHeader();
                 }
-                $html_output .= $output::showEndHeader();
             }
             $i = 0;
             $total = $results['tot'];
-            unset ($results['tot']);
+            unset($results['tot']);
 
 
             foreach ($results as $v => $contract) {
@@ -951,6 +894,46 @@ class Followup extends CommonDBTM
                 $i++;
             }
 
+            // 2eme ligne header only for pdf
+            if (!$is_html_output) {
+                $headers[] = __('Period of contract', 'manageentities');
+                $headers[] = __('State of contract', 'manageentities');
+                $headers[] = __('Type of contract', 'manageentities');
+                if ($config->fields['hourorday'] == Config::HOUR) {
+                    $headers[] = __('End date');
+                    $headers[] = '';
+                } else {
+                    $headers[] = __('End date');
+
+                }
+                $headers[] = __('Initial credit', 'manageentities');
+                $headers[] = __('Total consummated', 'manageentities');
+                if (Session::getCurrentInterface() == 'helpdesk'
+                    && ($config->fields['hourorday'] == Config::HOUR
+                        && $list[$i]['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
+                    $headers[] = '';
+                    $headers[] = '';
+                } else {
+                    $headers[] = __('Total remaining', 'manageentities');
+                    if (Session::getCurrentInterface() == 'central') {
+                        $headers[] = __('Total exceeding', 'manageentities');
+                        if ($config->fields['useprice'] == Config::PRICE) {
+                            $headers[] = __('Last visit', 'manageentities');
+                            $headers[] = __('Guaranteed package', 'manageentities');
+                            $headers[] = __('Remaining total (amount)', 'manageentities');
+                        } else {
+                            $headers[] = __('Last visit', 'manageentities');
+                            $headers[] = '';
+                            $headers[] = '';
+                        }
+                    }
+                }
+                if ($config->fields['hourorday'] == Config::HOUR) {
+                    $headers[] = '';
+                    $headers[] = '';
+                }
+            }
+
             $entity_id = 0;
             $first = true;
 
@@ -972,19 +955,15 @@ class Followup extends CommonDBTM
                     }
 
                     // Display Entity
-                    if ($output_type == Search::HTML_OUTPUT
+                    if ($is_html_output
                         && Session::getCurrentInterface() == 'central') {
                         if ($entity_id != $list[$i]['entities_id']) {
                             $row_num++;
                             $item_num = 0;
                             if ($is_html_output) {
-                                $html_output .= $output::showNewLine($output_type);
+                                $html_output .= $output::showNewLine();
                             }
-                            if ($config->fields['hourorday'] == Config::HOUR) {
-                                $colspanContract = "colspan = '13'";
-                            } else {
-                                $colspanContract = "colspan = '12'";
-                            }
+                            $colspanContract = "colspan = '13'";
                             if (empty($list[$i]['contract_name'])) {
                                 $list[$i]['contract_name'] = $list[$i]['name'];
                             }
@@ -1007,216 +986,179 @@ class Followup extends CommonDBTM
                         }
                     }
 
-                    $row_num++;
-                    $item_num = 0;
-                    if ($is_html_output) {
-                        $html_output .= $output::showNewLine($output_type);
-                    }
-                    // Display Entity
-                    if (Session::getCurrentInterface() == 'central') {
-                        if ($entity_id != $list[$i]['entities_id']) {
-                            if ($output_type != Search::HTML_OUTPUT) {
-//                                $html_output .= $output::showItem( $list[$i]['entities_name'], $item_num, $row_num);
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['entities_name']];
-                            }
-                        } else {
-                            if ($output_type != Search::HTML_OUTPUT) {
-//                                $html_output .= $output::showItem( '', $item_num, $row_num);
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            }
+
+                    //1eme ligne header
+                    if (1 == 1 && $is_html_output) {
+                        $row_num++;
+                        $item_num = 0;
+                        if ($is_html_output) {
+                            $html_output .= $output::showNewLine();
                         }
-                        $entity_id = $list[$i]['entities_id'];
-                    }
-
-                    // Display Contract title
-                    if (empty($list[$i]['contract_name'])) {
-                        $list[$i]['contract_name'] = $list[$i]['name'];
-                    }
-                    if ($output_type != Search::HTML_OUTPUT) {
-                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_name']];
-                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-//                        $html_output .= $output::showItem( $list[$i]['contract_name'], $item_num, $row_num);
-//                        $html_output .= $output::showItem( '', $item_num, $row_num);
-//                        $html_output .= $output::showItem( '', $item_num, $row_num);
-                    } else {
-                        $colspanContractName = "colspan='4'";
-
-                        $html_output .= $output::showItem(
-                            '<b>' . __('Contract') . ' : </b>' . $list[$i]['contract_name'],
-                            $item_num,
-                            $row_num,
-                            $colspanContractName
-                        );
-                    }
-
-                    // Display contract Num
-                    if ($output_type != Search::HTML_OUTPUT) {
-//                        $html_output .= $output::showItem(
-//
-//                            $list[$i]['contract_num'],
-//                            $item_num,
-//                            $row_num,
-//                            "colspan='" . $colspan . "'"
-//                        );
-//                        $html_output .= $output::showItem( '', $item_num, $row_num);
-                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_num']];
-                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                    } else {
-                        $html_output .= $output::showItem(
-                            '<b>' . _x('phone', 'Number') . ' : </b>' . $list[$i]['contract_num'],
-                            $item_num,
-                            $row_num,
-                            "colspan='" . $colspan . "'"
-                        );
-                    }
-
-                    if (Session::getCurrentInterface() == 'central') {
-                        // Display contract added
-                        if ($output_type != Search::HTML_OUTPUT) {
-                            if ($config->fields['hourorday'] == Config::DAY) {
-//                                $html_output .= $output::showItem(
-//
-//                                    $list[$i]['contract_added'],
-//                                    $item_num,
-//                                    $row_num,
-//                                    "colspan='2'"
-//                                );
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_added']];
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                        // Display Entity
+                        if (Session::getCurrentInterface() == 'central') {
+                            if ($entity_id != $list[$i]['entities_id']) {
+                                if (!$is_html_output) {
+                                    //                                $html_output .= $output::showItem( $list[$i]['entities_name'], $item_num, $row_num);
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['entities_name']];
+                                }
                             } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                                if (!$is_html_output) {
+                                    //                                $html_output .= $output::showItem( '', $item_num, $row_num);
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                                }
                             }
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                            $entity_id = $list[$i]['entities_id'];
+                        }
+
+                        // Display Contract title
+                        if (empty($list[$i]['contract_name'])) {
+                            $list[$i]['contract_name'] = $list[$i]['name'];
+                        }
+                        if ($is_html_output) {
+                            $colspanContractName = "colspan='5'";
+
+                            $html_output .= $output::showItem(
+                                '<b>' . __('Contract') . ' : </b>' . $list[$i]['contract_name'],
+                                $item_num,
+                                $row_num,
+                                $colspanContractName
+                            );
                         } else {
-                            if ($config->fields['hourorday'] == Config::DAY) {
+                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_name']];
+                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                            //                        $html_output .= $output::showItem( $list[$i]['contract_name'], $item_num, $row_num);
+                            //                        $html_output .= $output::showItem( '', $item_num, $row_num);
+                            //                        $html_output .= $output::showItem( '', $item_num, $row_num);
+                        }
+
+                        // Display contract Num
+                        if ($is_html_output) {
+                            $html_output .= $output::showItem(
+                                '<b>' . _x('phone', 'Number') . ' : </b>' . $list[$i]['contract_num'],
+                                $item_num,
+                                $row_num,
+                                "colspan='" . $colspan . "'"
+                            );
+                        } else {
+                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_num']];
+                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                        }
+
+                        if (Session::getCurrentInterface() == 'central') {
+                            // Display contract added
+                            if ($is_html_output) {
+                                if ($config->fields['hourorday'] == Config::DAY) {
+                                    $html_output .= $output::showItem(
+                                        '<b>' . __(
+                                            'Contract present',
+                                            'manageentities'
+                                        ) . ' : </b>' . $list[$i]['contract_added'],
+                                        $item_num,
+                                        $row_num,
+                                        "colspan='2'"
+                                    );
+                                }
+                            } else {
+                                if ($config->fields['hourorday'] == Config::DAY) {
+                                    //                                $html_output .= $output::showItem(
+                                    //
+                                    //                                    $list[$i]['contract_added'],
+                                    //                                    $item_num,
+                                    //                                    $row_num,
+                                    //                                    "colspan='2'"
+                                    //                                );
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_added']];
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                                } else {
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                                }
+                            }
+                            // Display Signature
+                            if ($is_html_output) {
                                 $html_output .= $output::showItem(
                                     '<b>' . __(
-                                        'Contract present',
+                                        'Date of signature',
                                         'manageentities'
-                                    ) . ' : </b>' . $list[$i]['contract_added'],
+                                    ) . ' : </b>' . $list[$i]['date_signature'],
                                     $item_num,
                                     $row_num,
                                     "colspan='2'"
                                 );
-                            }
-                        }
-                        // Display Signature
-                        if ($output_type != Search::HTML_OUTPUT) {
-//                            $html_output .= $output::showItem(
-//
-//                                $list[$i]['date_signature'],
-//                                $item_num,
-//                                $row_num,
-//                                "colspan='2'"
-//                            );
-//                            $html_output .= $output::showItem( '', $item_num, $row_num);
-
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['date_signature']];
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        } else {
-                            $html_output .= $output::showItem(
-                                '<b>' . __(
-                                    'Date of signature',
-                                    'manageentities'
-                                ) . ' : </b>' . $list[$i]['date_signature'],
-                                $item_num,
-                                $row_num,
-                                "colspan='2'"
-                            );
-                        }
-                        // Display reconduction
-                        if ($output_type != Search::HTML_OUTPUT) {
-//                            $html_output .= $output::showItem(
-//
-//                                $list[$i]['date_renewal'],
-//                                $item_num,
-//                                $row_num,
-//                                "colspan='2'"
-//                            );
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['date_renewal']];
-//                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        } else {
-                            $html_output .= $output::showItem(
-                                '<b>' . __('Date of renewal', 'manageentities') . ' : </b>' . $list[$i]['date_renewal'],
-                                $item_num,
-                                $row_num,
-                                "colspan='2'"
-                            );
-                        }
-                        // Display contract Type and contract mode
-                        if ($config->fields['hourorday'] == Config::HOUR) {
-                            if ($output_type != Search::HTML_OUTPUT) {
-//                                $html_output .= $output::showItem( $list[$i]['management'], $item_num, $row_num);
-//                                $html_output .= $output::showItem(
-//                                    Contract::getContractType($list[$i]['contract_type']),
-//                                    $item_num,
-//                                    $row_num
-//                                );
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['management']];
-                                $current_row[$itemtype . '_' . (++$colnum)] = [
-                                    'displayname' => Contract::getContractType(
-                                        $list[$i]['contract_type']
-                                    )
-                                ];
                             } else {
+                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['date_signature']];
+                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                            }
+                            // Display reconduction
+                            if ($is_html_output) {
                                 $html_output .= $output::showItem(
                                     '<b>' . __(
-                                        'Mode of management',
+                                        'Date of renewal',
                                         'manageentities'
-                                    ) . ' : </b>' . $list[$i]['management'],
+                                    ) . ' : </b>' . $list[$i]['date_renewal'],
                                     $item_num,
-                                    $row_num
+                                    $row_num,
+                                    "colspan='2'"
                                 );
-                                $html_output .= $output::showItem(
-                                    '<b>' . __(
-                                        'Type of service contract',
-                                        'manageentities'
-                                    ) . ' : </b>' . Contract::getContractType(
-                                        $list[$i]['contract_type']
-                                    ),
-                                    $item_num,
-                                    $row_num
-                                );
+                            } else {
+                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['date_renewal']];
+                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                            }
+                            // Display contract Type and contract mode
+                            if ($config->fields['hourorday'] == Config::HOUR) {
+                                if ($is_html_output) {
+                                    $html_output .= $output::showItem(
+                                        '<b>' . __(
+                                            'Mode of management',
+                                            'manageentities'
+                                        ) . ' : </b>' . $list[$i]['management'],
+                                        $item_num,
+                                        $row_num
+                                    );
+                                    $html_output .= $output::showItem(
+                                        '<b>' . __(
+                                            'Type of service contract',
+                                            'manageentities'
+                                        ) . ' : </b>' . Contract::getContractType(
+                                            $list[$i]['contract_type']
+                                        ),
+                                        $item_num,
+                                        $row_num
+                                    );
+                                } else {
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['management']];
+                                    $current_row[$itemtype . '_' . (++$colnum)] = [
+                                        'displayname' => Contract::getContractType(
+                                            $list[$i]['contract_type']
+                                        ),
+                                    ];
+                                }
                             }
                         }
-                    }
-                    if ($is_html_output) {
-                        $html_output .= $output::showEndLine();
-                    }
-                    // Contract details headers
-                    $row_num++;
-                    $item_num = 0;
-                    if ($is_html_output) {
-                        $html_output .= $output::showNewLine($output_type);
-                    }
-                    if (Session::getCurrentInterface() == 'central' && $output_type != Search::HTML_OUTPUT) {
-//                        $html_output .= $output::showHeaderItem(
-//                            '',
-//                            $item_num,
-//                            '',
-//                            0,
-//                            '',
-//                            "style='" . Monthly::$style[1] . "'"
-//                        );
-                        $headers[] = '';
-                    }
-                    if ($is_html_output) {
-                        $html_output .= $output::showHeaderItem(
-                            __('Period of contract', 'manageentities'),
-                            $item_num,
-                            '',
-                            0,
-                            '',
-                            " $colspanNoprice style='" . Monthly::$style[1] . "'"
-                        );
-                    } else {
-                        $headers[] = __('Period of contract', 'manageentities');
+
+                        $rows[$row_num] = $current_row;
+                        if ($is_html_output) {
+                            $html_output .= $output::showEndLine();
+                        }
                     }
 
-                    if ($config->fields['hourorday'] == Config::HOUR)// Coslpan if type = Hourly
-                    {
+                    if (2 == 2) {
+                        // Contract details headers
+                        $row_num++;
+                        $item_num = 0;
+
+//                    2eme ligne header only html
                         if ($is_html_output) {
+                            $html_output .= $output::showNewLine();
+                            $html_output .= $output::showHeaderItem(
+                                __('Period of contract', 'manageentities'),
+                                $item_num,
+                                '',
+                                0,
+                                '',
+                                " $colspanNoprice style='" . Monthly::$style[1] . "'"
+                            );
                             $html_output .= $output::showHeaderItem(
                                 __('State of contract', 'manageentities'),
                                 $item_num,
@@ -1225,131 +1167,60 @@ class Followup extends CommonDBTM
                                 '',
                                 "colspan='2' style='" . Monthly::$style[1] . "'"
                             );
-                        } else {
-                            $headers[] = __('State of contract', 'manageentities');
-                        }
-                    } else {
-                        if ($is_html_output) {
+                            if ($config->fields['hourorday'] == Config::DAY) {
+                                $html_output .= $output::showHeaderItem(
+                                    __('Type of contract', 'manageentities'),
+                                    $item_num,
+                                    '',
+                                    0,
+                                    '',
+                                    "colspan='2' style='" . Monthly::$style[1] . "'"
+                                );
+                            }
+
+                            if ($config->fields['hourorday'] == Config::HOUR)// Coslpan if type = Hourly
+                            {
+                                $html_output .= $output::showHeaderItem(
+                                    __('End date'),
+                                    $item_num,
+                                    '',
+                                    0,
+                                    '',
+                                    "colspan='2'"
+                                );
+                            } else {
+                                $html_output .= $output::showHeaderItem(__('End date'), $item_num, '');
+                            }
                             $html_output .= $output::showHeaderItem(
-                                __('State of contract', 'manageentities'),
+                                __('Initial credit', 'manageentities'),
+                                $item_num,
+                                '',
+                                0,
+                                '',
+                                "$colspanNoprice style='" . Monthly::$style[1] . "'"
+                            );
+                            $html_output .= $output::showHeaderItem(
+                                __('Total consummated', 'manageentities'),
                                 $item_num,
                                 '',
                                 0,
                                 '',
                                 "style='" . Monthly::$style[1] . "'"
                             );
-                        } else {
-                            $headers[] = __('State of contract', 'manageentities');
-                        }
-                    }
-
-                    if ($config->fields['hourorday'] == Config::DAY) {
-                        if ($is_html_output) {
-                            $html_output .= $output::showHeaderItem(
-                                __('Type of contract', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "colspan='2' style='" . Monthly::$style[1] . "'"
-                            );
-                        } else {
-                            $headers[] = __('Type of contract', 'manageentities');
-                        }
-                    }
-
-                    if ($config->fields['hourorday'] == Config::HOUR)// Coslpan if type = Hourly
-                    {
-                        if ($is_html_output) {
-                            $html_output .= $output::showHeaderItem(
-                                __('End date'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "colspan='2'"
-                            );
-                        } else {
-                            $headers[] = __('End date');
-                        }
-                    } else {
-                        if ($is_html_output) {
-                            $html_output .= $output::showHeaderItem(__('End date'), $item_num, '');
-                        } else {
-                            $headers[] = __('End date');
-                        }
-                    }
-                    if ($is_html_output) {
-                        $html_output .= $output::showHeaderItem(
-                            __('Initial credit', 'manageentities'),
-                            $item_num,
-                            '',
-                            0,
-                            '',
-                            "$colspanNoprice style='" . Monthly::$style[1] . "'"
-                        );
-                    } else {
-                        $headers[] = __('Initial credit', 'manageentities');
-                    }
-                    if ($is_html_output) {
-                        $html_output .= $output::showHeaderItem(
-                            __('Total consummated', 'manageentities'),
-                            $item_num,
-                            '',
-                            0,
-                            '',
-                            "style='" . Monthly::$style[1] . "'"
-                        );
-                    } else {
-                        $headers[] = __('Total consummated', 'manageentities');
-                    }
-                    if (Session::getCurrentInterface() == 'helpdesk'
-                        && ($config->fields['hourorday'] == Config::HOUR
-                            && $list[$i]['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
-                        if ($is_html_output) {
-                            $html_output .= $output::showHeaderItem(
-                                '',
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                        } else {
-                            $headers[] = '';
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showHeaderItem(
-
-                                '',
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                        } else {
-                            $headers[] = '';
-                        }
-                    } else {
-                        if ($is_html_output) {
-                            $html_output .= $output::showHeaderItem(
-
-                                __('Total remaining', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                        } else {
-                            $headers[] = __('Total remaining', 'manageentities');
-                        }
-                        if (Session::getCurrentInterface() == 'central') {
-                            if ($is_html_output) {
+                            if (Session::getCurrentInterface() == 'helpdesk'
+                                && ($config->fields['hourorday'] == Config::HOUR
+                                    && $list[$i]['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
+                                $html_output .= $output::showHeaderItem(
+                                    '',
+                                    $item_num,
+                                    '',
+                                    0,
+                                    '',
+                                    "style='" . Monthly::$style[1] . "'"
+                                );
                                 $html_output .= $output::showHeaderItem(
 
-                                    __('Total exceeding', 'manageentities'),
+                                    '',
                                     $item_num,
                                     '',
                                     0,
@@ -1357,144 +1228,97 @@ class Followup extends CommonDBTM
                                     "style='" . Monthly::$style[1] . "'"
                                 );
                             } else {
-                                $headers[] = __('Total exceeding', 'manageentities');
+                                $html_output .= $output::showHeaderItem(
+
+                                    __('Total remaining', 'manageentities'),
+                                    $item_num,
+                                    '',
+                                    0,
+                                    '',
+                                    "style='" . Monthly::$style[1] . "'"
+                                );
+                                if (Session::getCurrentInterface() == 'central') {
+                                    $html_output .= $output::showHeaderItem(
+
+                                        __('Total exceeding', 'manageentities'),
+                                        $item_num,
+                                        '',
+                                        0,
+                                        '',
+                                        "style='" . Monthly::$style[1] . "'"
+                                    );
+                                    if ($config->fields['useprice'] == Config::PRICE) {
+                                        $html_output .= $output::showHeaderItem(
+
+                                            __('Last visit', 'manageentities'),
+                                            $item_num,
+                                            '',
+                                            0,
+                                            '',
+                                            "style='" . Monthly::$style[1] . "'"
+                                        );
+                                        $html_output .= $output::showHeaderItem(
+
+                                            __('Guaranteed package', 'manageentities'),
+                                            $item_num,
+                                            '',
+                                            0,
+                                            '',
+                                            "style='" . Monthly::$style[1] . "'"
+                                        );
+                                        $html_output .= $output::showHeaderItem(
+
+                                            __('Remaining total (amount)', 'manageentities'),
+                                            $item_num,
+                                            '',
+                                            0,
+                                            '',
+                                            "style='" . Monthly::$style[1] . "'"
+                                        );
+                                    } else {
+                                        $html_output .= $output::showHeaderItem(
+
+                                            __('Last visit', 'manageentities'),
+                                            $item_num,
+                                            '',
+                                            0,
+                                            '',
+                                            " colspan='2' style='" . Monthly::$style[1] . "'"
+                                        );
+                                    }
+                                }
                             }
-                            if ($config->fields['useprice'] == Config::PRICE) {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showHeaderItem(
+                            if ($is_html_output) {
+                                $html_output .= $output::showEndLine();
+                            }
+                        }
+                        // result 2eme ligne
+                        foreach ($list[$i]['days'] as $w => $day) {
+                            $row_num++;
+                            $item_num = 0;
+                            if ($is_html_output) {
+                                echo self::showNewLine(
+                                    false,
+                                    $day['contract_is_closed'],
+                                    $day['contractstates_color']
+                                );
+                            }
+//                            if (Session::getCurrentInterface() == 'central' && $output_type != Search::HTML_OUTPUT) {
+//                                //                            $html_output .= $output::showItem( '', $item_num, $row_num);
+//                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+//                            }
+                            if ($is_html_output) {
+                                $html_output .= $output::showItem(
 
-                                        __('Last visit', 'manageentities'),
-                                        $item_num,
-                                        '',
-                                        0,
-                                        '',
-                                        "style='" . Monthly::$style[1] . "'"
-                                    );
-                                } else {
-                                    $headers[] = __('Last visit', 'manageentities');
-                                }
-                                //                        if($config->fields['hourorday'] == Config::DAY) $html_output .= $output::showItem( __('Applied daily rate', 'manageentities'), $item_num, '', 0, '', "style='".Monthly::$style[1]."'");
-                                //                        else $html_output .= $output::showHeaderItem( __('Applied hourly rate', 'manageentities'), $item_num, '', 0, '', "style='".Monthly::$style[1]."'");
-                                if ($is_html_output) {
-                                    $html_output .= $output::showHeaderItem(
-
-                                        __('Guaranteed package', 'manageentities'),
-                                        $item_num,
-                                        '',
-                                        0,
-                                        '',
-                                        "style='" . Monthly::$style[1] . "'"
-                                    );
-                                } else {
-                                    $headers[] = __('Guaranteed package', 'manageentities');
-                                }
-                                if ($is_html_output) {
-                                    $html_output .= $output::showHeaderItem(
-
-                                        __('Remaining total (amount)', 'manageentities'),
-                                        $item_num,
-                                        '',
-                                        0,
-                                        '',
-                                        "style='" . Monthly::$style[1] . "'"
-                                    );
-                                } else {
-                                    $headers[] = __('Remaining total (amount)', 'manageentities');
-                                }
+                                    $day['contractday_name'],
+                                    $item_num,
+                                    $row_num,
+                                    " $colspanNoprice "
+                                );
                             } else {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showHeaderItem(
-
-                                        __('Last visit', 'manageentities'),
-                                        $item_num,
-                                        '',
-                                        0,
-                                        '',
-                                        " colspan='2' style='" . Monthly::$style[1] . "'"
-                                    );
-                                } else {
-                                    $headers[] = __('Last visit', 'manageentities');
-                                }
-                                if ($output_type != Search::HTML_OUTPUT) {
-                                    //                           $html_output .= $output::showHeaderItem( '', $item_num, '', 0, '', "style='".Monthly::$style[1]."'");
-//                                    $html_output .= $output::showHeaderItem(
-//
-//                                        '',
-//                                        $item_num,
-//                                        '',
-//                                        0,
-//                                        '',
-//                                        "style='" . Monthly::$style[1] . "'"
-//                                    );
-//                                    $html_output .= $output::showHeaderItem(
-//
-//                                        '',
-//                                        $item_num,
-//                                        '',
-//                                        0,
-//                                        '',
-//                                        "style='" . Monthly::$style[1] . "'"
-//                                    );
-                                    $headers[] = '';
-                                    $headers[] = '';
-                                }
+                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['contractday_name']];
                             }
-                        }
-                    }
-                    if ($config->fields['hourorday'] == Config::HOUR && $output_type != Search::HTML_OUTPUT) {
-//                        $html_output .= $output::showHeaderItem(
-//
-//                            '',
-//                            $item_num,
-//                            '',
-//                            0,
-//                            '',
-//                            "style='" . Monthly::$style[1] . "'"
-//                        );
-//                        $html_output .= $output::showHeaderItem(
-//
-//                            '',
-//                            $item_num,
-//                            '',
-//                            0,
-//                            '',
-//                            "style='" . Monthly::$style[1] . "'"
-//                        );
-                        $headers[] = '';
-                        $headers[] = '';
-                    }
-                    if ($is_html_output) {
-                        $html_output .= $output::showEndLine();
-                    }
 
-                    foreach ($list[$i]['days'] as $w => $day) {
-                        $row_num++;
-                        $item_num = 0;
-                        if ($is_html_output) {
-                            echo Followup::showNewLine(
-                                false,
-                                $day['contract_is_closed'],
-                                $day['contractstates_color']
-                            );
-                        }
-                        if (Session::getCurrentInterface() == 'central' && $output_type != Search::HTML_OUTPUT) {
-//                            $html_output .= $output::showItem( '', $item_num, $row_num);
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showItem(
-
-                                $day['contractday_name'],
-                                $item_num,
-                                $row_num,
-                                " $colspanNoprice "
-                            );
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['contractday_name']];
-                        }
-
-                        if ($config->fields['hourorday'] == Config::HOUR)// Coslpan if type = Hourly
-                        {
                             if ($is_html_output) {
                                 $html_output .= $output::showItem(
 
@@ -1506,94 +1330,64 @@ class Followup extends CommonDBTM
                             } else {
                                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['contractstates']];
                             }
-                        } else {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem($day['contractstates'], $item_num, $row_num, "");
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ""];
-                            }
-                        }
 
-                        if ($config->fields['hourorday'] == Config::DAY) {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(
-                                    Contract::getContractType($day['contract_type']),
-                                    $item_num,
-                                    $row_num,
-                                    "colspan='2' "
-                                );
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = [
-                                    'displayname' => Contract::getContractType(
-                                        $day['contract_type']
-                                    )
-                                ];
+                            if ($config->fields['hourorday'] == Config::DAY) {
+                                if ($is_html_output) {
+                                    $html_output .= $output::showItem(
+                                        Contract::getContractType($day['contract_type']),
+                                        $item_num,
+                                        $row_num,
+                                        "colspan='2' "
+                                    );
+                                } else {
+                                    $current_row[$itemtype . '_' . (++$colnum)] = [
+                                        'displayname' => Contract::getContractType(
+                                            $day['contract_type']
+                                        )
+                                    ];
+                                }
                             }
-                        }
 
-                        if ($config->fields['hourorday'] == Config::HOUR)// Coslpan if type = Hourly
-                        {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(
-                                    $day['end_date'],
-                                    $item_num,
-                                    $row_num,
-                                    "colspan='2' "
-                                );
+                            if ($config->fields['hourorday'] == Config::HOUR)// Coslpan if type = Hourly
+                            {
+                                if ($is_html_output) {
+                                    $html_output .= $output::showItem(
+                                        $day['end_date'],
+                                        $item_num,
+                                        $row_num,
+                                        "colspan='2' "
+                                    );
+                                } else {
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['end_date']];
+                                }
                             } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['end_date']];
+                                if ($is_html_output) {
+                                    $html_output .= $output::showItem($day['end_date'], $item_num, $row_num, "");
+                                } else {
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['end_date']];
+                                }
                             }
-                        } else {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem($day['end_date'], $item_num, $row_num, "");
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['end_date']];
-                            }
-                        }
 
-                        if ((Session::getCurrentInterface() == 'helpdesk' &&
-                                ($config->fields['hourorday'] == Config::DAY && $day['contract_type'] == Contract::CONTRACT_TYPE_FORFAIT)) ||
-                            ($config->fields['hourorday'] == Config::HOUR && $day['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(
-                                    \Dropdown::EMPTY_VALUE,
-                                    $item_num,
-                                    $row_num,
-                                    "$colspanNoprice "
-                                );
+                            if ((Session::getCurrentInterface() == 'helpdesk' &&
+                                    ($config->fields['hourorday'] == Config::DAY && $day['contract_type'] == Contract::CONTRACT_TYPE_FORFAIT)) ||
+                                ($config->fields['hourorday'] == Config::HOUR && $day['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
+                                if ($is_html_output) {
+                                    $html_output .= $output::showItem(
+                                        \Dropdown::EMPTY_VALUE,
+                                        $item_num,
+                                        $row_num,
+                                        "$colspanNoprice "
+                                    );
+                                } else {
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
+                                }
                             } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
-                            }
-                        } else {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(
-                                    Html::formatNumber($day['credit'], 0, 2),
-                                    $item_num,
-                                    $row_num,
-                                    "$colspanNoprice "
-                                );
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = [
-                                    'displayname' => Html::formatNumber(
-                                        $day['credit'],
-                                        0,
-                                        2
-                                    )
-                                ];
-                            }
-                        }
-
-                        if (Session::getCurrentInterface() == 'central' ||
-                            ($config->fields['hourorday'] == Config::DAY && $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
-                            if (Session::getCurrentInterface() == 'helpdesk' &&
-                                ($config->fields['hourorday'] == Config::HOUR && $day['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED
-                                    && $day['conso'] > $day['credit'])) {
                                 if ($is_html_output) {
                                     $html_output .= $output::showItem(
                                         Html::formatNumber($day['credit'], 0, 2),
                                         $item_num,
                                         $row_num,
-                                        ""
+                                        "$colspanNoprice "
                                     );
                                 } else {
                                     $current_row[$itemtype . '_' . (++$colnum)] = [
@@ -1604,58 +1398,46 @@ class Followup extends CommonDBTM
                                         )
                                     ];
                                 }
-                            } else {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        Html::formatNumber($day['conso'], 0, 2),
-                                        $item_num,
-                                        $row_num,
-                                        ""
-                                    );
+                            }
+
+                            if (Session::getCurrentInterface() == 'central' ||
+                                ($config->fields['hourorday'] == Config::DAY && $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                                if (Session::getCurrentInterface() == 'helpdesk' &&
+                                    ($config->fields['hourorday'] == Config::HOUR && $day['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED
+                                        && $day['conso'] > $day['credit'])) {
+                                    if ($is_html_output) {
+                                        $html_output .= $output::showItem(
+                                            Html::formatNumber($day['credit'], 0, 2),
+                                            $item_num,
+                                            $row_num,
+                                            ""
+                                        );
+                                    } else {
+                                        $current_row[$itemtype . '_' . (++$colnum)] = [
+                                            'displayname' => Html::formatNumber(
+                                                $day['credit'],
+                                                0,
+                                                2
+                                            )
+                                        ];
+                                    }
                                 } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                                        'displayname' => Html::formatNumber(
-                                            $day['conso'],
-                                            0,
-                                            2
-                                        )
-                                    ];
-                                }
-                            }
-                        } else {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(\Dropdown::EMPTY_VALUE, $item_num, $row_num, "");
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
-                            }
-                        }
-                        if (Session::getCurrentInterface() == 'helpdesk'
-                            && ($config->fields['hourorday'] == Config::HOUR && $list[$i]['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem('', $item_num, $row_num, "");
-                                $html_output .= $output::showItem('', $item_num, $row_num, "");
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ""];
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ""];
-                            }
-                        } else {
-                            if (Session::getCurrentInterface(
-                                ) == 'central' || $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT) {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        Html::formatNumber($day['reste'], 0, 2),
-                                        $item_num,
-                                        $row_num,
-                                        ""
-                                    );
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                                        'displayname' => Html::formatNumber(
-                                            $day['reste'],
-                                            0,
-                                            2
-                                        )
-                                    ];
+                                    if ($is_html_output) {
+                                        $html_output .= $output::showItem(
+                                            Html::formatNumber($day['conso'], 0, 2),
+                                            $item_num,
+                                            $row_num,
+                                            ""
+                                        );
+                                    } else {
+                                        $current_row[$itemtype . '_' . (++$colnum)] = [
+                                            'displayname' => Html::formatNumber(
+                                                $day['conso'],
+                                                0,
+                                                2
+                                            )
+                                        ];
+                                    }
                                 }
                             } else {
                                 if ($is_html_output) {
@@ -1664,622 +1446,718 @@ class Followup extends CommonDBTM
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
                                 }
                             }
+                            if (Session::getCurrentInterface() == 'helpdesk'
+                                && ($config->fields['hourorday'] == Config::HOUR && $list[$i]['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
+                                if ($is_html_output) {
+                                    $html_output .= $output::showItem('', $item_num, $row_num, "");
+                                    $html_output .= $output::showItem('', $item_num, $row_num, "");
+                                } else {
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ""];
+                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ""];
+                                }
+                            } else {
+                                if (Session::getCurrentInterface(
+                                    ) == 'central' || $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT) {
+                                    if ($is_html_output) {
+                                        $html_output .= $output::showItem(
+                                            Html::formatNumber($day['reste'], 0, 2),
+                                            $item_num,
+                                            $row_num,
+                                            ""
+                                        );
+                                    } else {
+                                        $current_row[$itemtype . '_' . (++$colnum)] = [
+                                            'displayname' => Html::formatNumber(
+                                                $day['reste'],
+                                                0,
+                                                2
+                                            )
+                                        ];
+                                    }
+                                } else {
+                                    if ($is_html_output) {
+                                        $html_output .= $output::showItem(
+                                            \Dropdown::EMPTY_VALUE,
+                                            $item_num,
+                                            $row_num,
+                                            ""
+                                        );
+                                    } else {
+                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
+                                    }
+                                }
+                                if (Session::getCurrentInterface() == 'central') {
+                                    if ($is_html_output) {
+                                        $html_output .= $output::showItem(
+                                            Html::formatNumber($day['depass'], 0, 2),
+                                            $item_num,
+                                            $row_num,
+                                            ""
+                                        );
+                                    } else {
+                                        $current_row[$itemtype . '_' . (++$colnum)] = [
+                                            'displayname' => Html::formatNumber(
+                                                $day['depass'],
+                                                0,
+                                                2
+                                            )
+                                        ];
+                                    }
+                                }
+                            }
                             if (Session::getCurrentInterface() == 'central') {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        Html::formatNumber($day['depass'], 0, 2),
-                                        $item_num,
-                                        $row_num,
-                                        ""
-                                    );
+                                if ($config->fields['useprice'] == Config::PRICE) {
+                                    if ($is_html_output) {
+                                        $html_output .= $output::showItem($day['last_visit'], $item_num, $row_num, "");
+                                        //                        $html_output .= $output::showItem( Html::formatNumber($day['price'], 0, 2), $item_num, $row_num, "");
+                                        $html_output .= $output::showItem($day['forfait'], $item_num, $row_num, "");
+                                        $html_output .= $output::showItem(
+                                            $day['reste_montant'],
+                                            $item_num,
+                                            $row_num,
+                                            ""
+                                        );
+                                    } else {
+                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
+                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['forfait']];
+                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['reste_montant']];
+                                    }
                                 } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                                        'displayname' => Html::formatNumber(
-                                            $day['depass'],
-                                            0,
-                                            2
-                                        )
-                                    ];
+                                    if ($is_html_output) {
+                                        $html_output .= $output::showItem(
+                                            $day['last_visit'],
+                                            $item_num,
+                                            $row_num,
+                                            "colspan='2' "
+                                        );
+                                    } else {
+                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
+                                    }
+                                    if ($output_type != Search::HTML_OUTPUT) {
+                                        //                           $html_output .= $output::showItem( '', $item_num, $row_num, "");
+                                        //                                    $html_output .= $output::showItem( '', $item_num, $row_num, "");
+                                        //                                    $html_output .= $output::showItem( '', $item_num, $row_num);
+                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                                    }
                                 }
-                            }
-                        }
-                        if (Session::getCurrentInterface() == 'central') {
-                            if ($config->fields['useprice'] == Config::PRICE) {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem($day['last_visit'], $item_num, $row_num, "");
-                                    //                        $html_output .= $output::showItem( Html::formatNumber($day['price'], 0, 2), $item_num, $row_num, "");
-                                    $html_output .= $output::showItem($day['forfait'], $item_num, $row_num, "");
-                                    $html_output .= $output::showItem($day['reste_montant'], $item_num, $row_num, "");
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['forfait']];
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['reste_montant']];
-                                }
-                            } else {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        $day['last_visit'],
-                                        $item_num,
-                                        $row_num,
-                                        "colspan='2' "
-                                    );
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
-                                }
-                                if ($output_type != Search::HTML_OUTPUT) {
-                                    //                           $html_output .= $output::showItem( '', $item_num, $row_num, "");
-//                                    $html_output .= $output::showItem( '', $item_num, $row_num, "");
-//                                    $html_output .= $output::showItem( '', $item_num, $row_num);
+                                if ($config->fields['hourorday'] == Config::HOUR
+                                    && $output_type != Search::HTML_OUTPUT) {
+                                    //                                $html_output .= $output::showItem( '', $item_num, $row_num);
+                                    //                                $html_output .= $output::showItem( '', $item_num, $row_num);
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                                 }
                             }
-                            if ($config->fields['hourorday'] == Config::HOUR
-                                && $output_type != Search::HTML_OUTPUT) {
-//                                $html_output .= $output::showItem( '', $item_num, $row_num);
-//                                $html_output .= $output::showItem( '', $item_num, $row_num);
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            }
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showEndLine();
-                        }
-                    }
-
-                    if (Session::getCurrentInterface() == 'central') {
-                        $row_num++;
-                        $item_num = 0;
-                        if ($is_html_output) {
-                            $html_output .= $output::showNewLine($output_type);
-                        }
-                        if ($output_type != Search::HTML_OUTPUT) {
-                            $headers[] = '';
-//                            $html_output .= $output::showHeaderItem(
-//
-//                                '',
-//                                $item_num,
-//                                '',
-//                                0,
-//                                '',
-//                                "style='" . Monthly::$style[1] . "'"
-//                            );
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showHeaderItem(
-
-                                '',
-                                $item_num,
-                                $row_num,
-                                0,
-                                '',
-                                " $colspanNoprice style='" . Monthly::$style[1] . "'"
-                            );
-
-                            $html_output .= $output::showHeaderItem(
-
-                                '',
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "colspan='2' style='" . Monthly::$style[1] . "'"
-                            );
-
-                            $html_output .= $output::showHeaderItem(
-
-                                __('Subtotal', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "colspan='2' style='" . Monthly::$style[1] . "'"
-                            );
-
-                            $html_output .= $output::showHeaderItem(
-
-                                Html::formatNumber($list[$i]['contract_tot']['contract_credit'], 0, 2),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "$colspanNoprice style='" . Monthly::$style[1] . "'"
-                            );
-                            $html_output .= $output::showHeaderItem(
-
-                                Html::formatNumber($list[$i]['contract_tot']['contract_conso'], 0, 2),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                            $html_output .= $output::showHeaderItem(
-
-                                Html::formatNumber($list[$i]['contract_tot']['contract_reste'], 0, 2),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                            $html_output .= $output::showHeaderItem(
-
-                                Html::formatNumber($list[$i]['contract_tot']['contract_depass'], 0, 2),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                        } else {
-                            $headers[] = '';
-                            $headers[] = '';
-                            $headers[] = __('Subtotal', 'manageentities');
-                            $headers[] = Html::formatNumber($list[$i]['contract_tot']['contract_credit'], 0, 2);
-                            $headers[] = Html::formatNumber($list[$i]['contract_tot']['contract_conso'], 0, 2);
-                            $headers[] = Html::formatNumber($list[$i]['contract_tot']['contract_reste'], 0, 2);
-                            $headers[] = Html::formatNumber($list[$i]['contract_tot']['contract_depass'], 0, 2);
-                        }
-                        if ($config->fields['useprice'] == Config::PRICE) {
-                            if ($is_html_output) {
-                                $html_output .= $output::showHeaderItem(
-
-                                    '',
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'"
-                                );
-
-                                $html_output .= $output::showHeaderItem(
-
-                                    Html::formatNumber($list[$i]['contract_tot']['contract_forfait'], 0, 2),
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'"
-                                );
-                                $html_output .= $output::showHeaderItem(
-
-                                    Html::formatNumber($list[$i]['contract_tot']['contract_reste_montant'], 0, 2),
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'"
-                                );
-                            } else {
-                                $headers[] = '';
-                                $headers[] = Html::formatNumber($list[$i]['contract_tot']['contract_forfait'], 0, 2);
-                                $headers[] = Html::formatNumber(
-                                    $list[$i]['contract_tot']['contract_reste_montant'],
-                                    0,
-                                    2
-                                );
-                            }
-                        } else {
-                            if ($is_html_output) {
-                                $html_output .= $output::showHeaderItem(
-
-                                    '',
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    " $colspanNoprice style='" . Monthly::$style[1] . "'"
-                                );
-                            } else {
-                                $headers[] = '';
-                            }
-                            if ($output_type != Search::HTML_OUTPUT) {
-//                                $html_output .= $output::showHeaderItem(
-//
-//                                    '',
-//                                    $item_num,
-//                                    '',
-//                                    0,
-//                                    '',
-//                                    "style='" . Monthly::$style[1] . "'"
-//                                );
-//                                $html_output .= $output::showHeaderItem(
-//                                    '',
-//                                    $item_num,
-//                                    '',
-//                                    0,
-//                                    '',
-//                                    "style='" . Monthly::$style[1] . "'"
-//                                );
-                                $headers[] = '';
-                                $headers[] = '';
-                            }
-                        }
-                        if ($config->fields['hourorday'] == Config::HOUR
-                            && $output_type != Search::HTML_OUTPUT) {
-//                            $html_output .= $output::showHeaderItem(
-//                                '',
-//                                $item_num,
-//                                '',
-//                                0,
-//                                '',
-//                                "style='" . Monthly::$style[1] . "'"
-//                            );
-//                            $html_output .= $output::showHeaderItem(
-//                                '',
-//                                $item_num,
-//                                '',
-//                                0,
-//                                '',
-//                                "style='" . Monthly::$style[1] . "'"
-//                            );
-                            $headers[] = '';
-                            $headers[] = '';
-                        }
-
-                        $rows[$row_num] = $current_row;
-                        if ($is_html_output) {
-                            $html_output .= $output::showEndLine();
-                        }
-                    }
-                }
-
-                if (count($total) > 0) {
-                    //line total
-                    if (Session::getCurrentInterface() == 'central') {
-                        if ($output_type == Search::HTML_OUTPUT) {
-                            $row_num++;
-                            $item_num = 0;
-
-                            if ($config->fields['hourorday'] == Config::HOUR) {
-                                $colspanTotal = "colspan = '14'";
-                            } else {
-                                $colspanTotal = "colspan = '13'";
-                            }
-                            if ($is_html_output) {
-                                $html_output .= $output::showNewLine($output_type);
-                            }
-                            $html_output .= $output::showItem(
-                                '',
-                                $item_num,
-                                $row_num,
-                                "$colspanTotal style='" . Monthly::$style[0] . "'"
-                            );
+                            $rows[$row_num] = $current_row;
                             if ($is_html_output) {
                                 $html_output .= $output::showEndLine();
                             }
                         }
-
-                        $row_num++;
-                        $item_num = 0;
-                        if ($is_html_output) {
-                            $html_output .= $output::showNewLine($output_type);
-                        }
-                        if ($output_type != Search::HTML_OUTPUT) {
-//                            $html_output .= $output::showHeaderItem(
-//
-//                                '',
-//                                $item_num,
-//                                '',
-//                                0,
-//                                '',
-//                                "style='" . Monthly::$style[1] . "'"
-//                            );
-                            $headers[] = '';
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showHeaderItem(
-
-                                '',
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                " $colspanNoprice style='" . Monthly::$style[1] . "'"
-                            );
-
-
-                            $html_output .= $output::showHeaderItem(
-
-                                '',
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "colspan ='2' style='" . Monthly::$style[1] . "'"
-                            );
-
-                            $html_output .= $output::showHeaderItem(
-
-                                '',
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "colspan ='2' style='" . Monthly::$style[1] . "'"
-                            );
-
-                            $html_output .= $output::showHeaderItem(
-
-                                __('Total initial credit', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "$colspanNoprice style='" . Monthly::$style[1] . "'"
-                            );
-                            $html_output .= $output::showHeaderItem(
-
-                                __('Total consummated', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                            $html_output .= $output::showHeaderItem(
-
-                                __('Total remaining', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                            $html_output .= $output::showHeaderItem(
-
-                                __('Total exceeding', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'"
-                            );
-                        } else {
-                            $headers[] = '';
-                            $headers[] = '';
-                            $headers[] = '';
-                            $headers[] = __('Total initial credit', 'manageentities');
-                            $headers[] = __('Total consummated', 'manageentities');
-                            $headers[] = __('Total remaining', 'manageentities');
-                            $headers[] = __('Total exceeding', 'manageentities');
-                        }
-
-                        if ($config->fields['useprice'] == Config::PRICE) {
-                            if ($is_html_output) {
-                                $html_output .= $output::showHeaderItem(
-
-                                    '',
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'"
-                                );
-                                $html_output .= $output::showHeaderItem(
-
-                                    __('Total Guaranteed package', 'manageentities'),
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'"
-                                );
-                                $html_output .= $output::showHeaderItem(
-
-                                    __('Remaining total (amount)', 'manageentities'),
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'"
-                                );
-                            } else {
-                                $headers[] = '';
-                                $headers[] = __('Total Guaranteed package', 'manageentities');
-                                $headers[] = __('Remaining total (amount)', 'manageentities');
-                            }
-                        } else {
-                            if ($is_html_output) {
-                                $html_output .= $output::showHeaderItem(
-
-                                    '',
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    " $colspanNoprice style='" . Monthly::$style[1] . "'"
-                                );
-                            } else {
-                                $headers[] = '';
-                            }
-                            if ($output_type != Search::HTML_OUTPUT) {
-//                                $html_output .= $output::showHeaderItem(
-//
-//                                    '',
-//                                    $item_num,
-//                                    '',
-//                                    0,
-//                                    '',
-//                                    "style='" . Monthly::$style[1] . "'"
-//                                );
-//                                $html_output .= $output::showHeaderItem(
-//
-//                                    '',
-//                                    $item_num,
-//                                    '',
-//                                    0,
-//                                    '',
-//                                    "style='" . Monthly::$style[1] . "'"
-//                                );
-                                $headers[] = '';
-                                $headers[] = '';
-                            }
-                        }
-                        if ($config->fields['hourorday'] == Config::HOUR && $output_type != Search::HTML_OUTPUT) {
-//                            $html_output .= $output::showHeaderItem(
-//
-//                                '',
-//                                $item_num,
-//                                '',
-//                                0,
-//                                '',
-//                                "style='" . Monthly::$style[1] . "'"
-//                            );
-//                            $html_output .= $output::showHeaderItem(
-//
-//                                '',
-//                                $item_num,
-//                                '',
-//                                0,
-//                                '',
-//                                "style='" . Monthly::$style[1] . "'"
-//                            );
-                            $headers[] = '';
-                            $headers[] = '';
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showEndLine();
-                        }
-
-                        $row_num++;
-                        $item_num = 0;
-                        if ($is_html_output) {
-                            $html_output .= $output::showNewLine($output_type);
-                        }
-                        if ($output_type != Search::HTML_OUTPUT) {
-//                            $html_output .= $output::showItem( '', $item_num, $row_num);
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showItem('', $item_num, $row_num, " $colspanNoprice ");
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-
-                        if ($is_html_output) {
-                            $html_output .= $output::showItem('', $item_num, $row_num, "colspan='2'");
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showItem('', $item_num, $row_num, "colspan='2' ");
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showItem(
-
-                                Html::formatNumber($total['tot_credit'], 0, 2),
-                                $item_num,
-                                $row_num,
-                                "$colspanNoprice "
-                            );
-                            $html_output .= $output::showItem(
-
-                                Html::formatNumber($total['tot_conso'], 0, 2),
-                                $item_num,
-                                $row_num,
-                                ""
-                            );
-                            $html_output .= $output::showItem(
-
-                                Html::formatNumber($total['tot_reste'], 0, 2),
-                                $item_num,
-                                $row_num,
-                                ""
-                            );
-                            $html_output .= $output::showItem(
-
-                                Html::formatNumber($total['tot_depass'], 0, 2),
-                                $item_num,
-                                $row_num,
-                                ""
-                            );
-
-                            $html_output .= $output::showItem('', $item_num, $row_num, " ");
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = [
-                                'displayname' => Html::formatNumber(
-                                    $total['tot_credit'],
-                                    0,
-                                    2
-                                )
-                            ];
-                            $current_row[$itemtype . '_' . (++$colnum)] = [
-                                'displayname' => Html::formatNumber(
-                                    $total['tot_conso'],
-                                    0,
-                                    2
-                                )
-                            ];
-                            $current_row[$itemtype . '_' . (++$colnum)] = [
-                                'displayname' => Html::formatNumber(
-                                    $total['tot_reste'],
-                                    0,
-                                    2
-                                )
-                            ];
-                            $current_row[$itemtype . '_' . (++$colnum)] = [
-                                'displayname' => Html::formatNumber(
-                                    $total['tot_depass'],
-                                    0,
-                                    2
-                                )
-                            ];
-                        }
-                        if ($config->fields['useprice'] == Config::PRICE) {
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(
-
-                                    Html::formatNumber($total['tot_forfait'], 0, 2),
-                                    $item_num,
-                                    $row_num,
-                                    ""
-                                );
-                                $html_output .= $output::showItem(
-
-                                    Html::formatNumber($total['tot_reste_montant'], 0, 2),
-                                    $item_num,
-                                    $row_num,
-                                    ""
-                                );
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = [
-                                    'displayname' => Html::formatNumber(
-                                        $total['tot_forfait'],
-                                        0,
-                                        2
-                                    )
-                                ];
-                                $current_row[$itemtype . '_' . (++$colnum)] = [
-                                    'displayname' => Html::formatNumber(
-                                        $total['tot_reste_montant'],
-                                        0,
-                                        2
-                                    )
-                                ];
-                            }
-                        } else {
-                            $html_output .= $output::showItem('', $item_num, $row_num, " $colspanNoprice ");
-                            if ($output_type != Search::HTML_OUTPUT) {
-//                                $html_output .= $output::showItem( '', $item_num, $row_num, "");
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            }
-                        }
-                        if ($config->fields['hourorday'] == Config::HOUR && $output_type != Search::HTML_OUTPUT) {
-//                            $html_output .= $output::showItem( '', $item_num, $row_num, "");
-//                            $html_output .= $output::showItem( '', $item_num, $row_num);
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-                        if ($is_html_output) {
-                            $html_output .= $output::showEndLine();
-                        }
                     }
+                    //             3eme ligne
+//                    if (3 == 3 && $is_html_output) {
+//                        if (Session::getCurrentInterface() == 'central') {
+//                            $row_num++;
+//                            $item_num = 0;
+//                            if ($is_html_output) {
+//                                $html_output .= $output::showNewLine();
+//                            }
+//                            if ($output_type != Search::HTML_OUTPUT) {
+//                                $headers[] = '';
+//                                //                            $html_output .= $output::showHeaderItem(
+//                                //
+//                                //                                '',
+//                                //                                $item_num,
+//                                //                                '',
+//                                //                                0,
+//                                //                                '',
+//                                //                                "style='" . Monthly::$style[1] . "'"
+//                                //                            );
+//                            }
+//                            if ($is_html_output) {
+//                                $html_output .= $output::showHeaderItem(
+//
+//                                    '',
+//                                    $item_num,
+//                                    $row_num,
+//                                    0,
+//                                    '',
+//                                    " $colspanNoprice style='" . Monthly::$style[1] . "'"
+//                                );
+//
+//                                $html_output .= $output::showHeaderItem(
+//
+//                                    '',
+//                                    $item_num,
+//                                    '',
+//                                    0,
+//                                    '',
+//                                    "colspan='3' style='" . Monthly::$style[1] . "'"
+//                                );
+//
+//                                $html_output .= $output::showHeaderItem(
+//
+//                                    __('Subtotal', 'manageentities'),
+//                                    $item_num,
+//                                    '',
+//                                    0,
+//                                    '',
+//                                    "colspan='2' style='" . Monthly::$style[1] . "'"
+//                                );
+//
+//                                $html_output .= $output::showHeaderItem(
+//
+//                                    Html::formatNumber(
+//                                        $list[$i]['contract_tot']['contract_credit'],
+//                                        0,
+//                                        2
+//                                    ),
+//                                    $item_num,
+//                                    '',
+//                                    0,
+//                                    '',
+//                                    "$colspanNoprice style='" . Monthly::$style[1] . "'"
+//                                );
+//                                $html_output .= $output::showHeaderItem(
+//
+//                                    Html::formatNumber(
+//                                        $list[$i]['contract_tot']['contract_conso'],
+//                                        0,
+//                                        2
+//                                    ),
+//                                    $item_num,
+//                                    '',
+//                                    0,
+//                                    '',
+//                                    "style='" . Monthly::$style[1] . "'"
+//                                );
+//                                $html_output .= $output::showHeaderItem(
+//
+//                                    Html::formatNumber(
+//                                        $list[$i]['contract_tot']['contract_reste'],
+//                                        0,
+//                                        2
+//                                    ),
+//                                    $item_num,
+//                                    '',
+//                                    0,
+//                                    '',
+//                                    "style='" . Monthly::$style[1] . "'"
+//                                );
+//                                $html_output .= $output::showHeaderItem(
+//
+//                                    Html::formatNumber(
+//                                        $list[$i]['contract_tot']['contract_depass'],
+//                                        0,
+//                                        2
+//                                    ),
+//                                    $item_num,
+//                                    '',
+//                                    0,
+//                                    '',
+//                                    "style='" . Monthly::$style[1] . "'"
+//                                );
+//                            } else {
+//                                $headers[] = '';
+//                                $headers[] = '';
+//                                $headers[] = __('Subtotal', 'manageentities');
+//                                $headers[] = Html::formatNumber(
+//                                    $list[$i]['contract_tot']['contract_credit'],
+//                                    0,
+//                                    2
+//                                );
+//                                $headers[] = Html::formatNumber(
+//                                    $list[$i]['contract_tot']['contract_conso'],
+//                                    0,
+//                                    2
+//                                );
+//                                $headers[] = Html::formatNumber(
+//                                    $list[$i]['contract_tot']['contract_reste'],
+//                                    0,
+//                                    2
+//                                );
+//                                $headers[] = Html::formatNumber(
+//                                    $list[$i]['contract_tot']['contract_depass'],
+//                                    0,
+//                                    2
+//                                );
+//                            }
+//                            if ($config->fields['useprice'] == Config::PRICE) {
+//                                if ($is_html_output) {
+//                                    $html_output .= $output::showHeaderItem(
+//
+//                                        '',
+//                                        $item_num,
+//                                        '',
+//                                        0,
+//                                        '',
+//                                        "style='" . Monthly::$style[1] . "'"
+//                                    );
+//
+//                                    $html_output .= $output::showHeaderItem(
+//
+//                                        Html::formatNumber(
+//                                            $list[$i]['contract_tot']['contract_forfait'],
+//                                            0,
+//                                            2
+//                                        ),
+//                                        $item_num,
+//                                        '',
+//                                        0,
+//                                        '',
+//                                        "style='" . Monthly::$style[1] . "'"
+//                                    );
+//                                    $html_output .= $output::showHeaderItem(
+//
+//                                        Html::formatNumber(
+//                                            $list[$i]['contract_tot']['contract_reste_montant'],
+//                                            0,
+//                                            2
+//                                        ),
+//                                        $item_num,
+//                                        '',
+//                                        0,
+//                                        '',
+//                                        "style='" . Monthly::$style[1] . "'"
+//                                    );
+//                                } else {
+//                                    $headers[] = '';
+//                                    $headers[] = Html::formatNumber(
+//                                        $list[$i]['contract_tot']['contract_forfait'],
+//                                        0,
+//                                        2
+//                                    );
+//                                    $headers[] = Html::formatNumber(
+//                                        $list[$i]['contract_tot']['contract_reste_montant'],
+//                                        0,
+//                                        2
+//                                    );
+//                                }
+//                            } else {
+//                                if ($is_html_output) {
+//                                    $html_output .= $output::showHeaderItem(
+//
+//                                        '',
+//                                        $item_num,
+//                                        '',
+//                                        0,
+//                                        '',
+//                                        " $colspanNoprice style='" . Monthly::$style[1] . "'"
+//                                    );
+//                                } else {
+//                                    $headers[] = '';
+//                                }
+//                                if ($output_type != Search::HTML_OUTPUT) {
+//                                    //                                $html_output .= $output::showHeaderItem(
+//                                    //
+//                                    //                                    '',
+//                                    //                                    $item_num,
+//                                    //                                    '',
+//                                    //                                    0,
+//                                    //                                    '',
+//                                    //                                    "style='" . Monthly::$style[1] . "'"
+//                                    //                                );
+//                                    //                                $html_output .= $output::showHeaderItem(
+//                                    //                                    '',
+//                                    //                                    $item_num,
+//                                    //                                    '',
+//                                    //                                    0,
+//                                    //                                    '',
+//                                    //                                    "style='" . Monthly::$style[1] . "'"
+//                                    //                                );
+//                                    $headers[] = '';
+//                                    $headers[] = '';
+//                                }
+//                            }
+//                            if ($config->fields['hourorday'] == Config::HOUR
+//                                && $output_type != Search::HTML_OUTPUT) {
+//                                //                            $html_output .= $output::showHeaderItem(
+//                                //                                '',
+//                                //                                $item_num,
+//                                //                                '',
+//                                //                                0,
+//                                //                                '',
+//                                //                                "style='" . Monthly::$style[1] . "'"
+//                                //                            );
+//                                //                            $html_output .= $output::showHeaderItem(
+//                                //                                '',
+//                                //                                $item_num,
+//                                //                                '',
+//                                //                                0,
+//                                //                                '',
+//                                //                                "style='" . Monthly::$style[1] . "'"
+//                                //                            );
+//                                $headers[] = '';
+//                                $headers[] = '';
+//                            }
+//
+//                            $rows[$row_num] = $current_row;
+//                            if ($is_html_output) {
+//                                $html_output .= $output::showEndLine();
+//                            }
+//                        }
+//                    }
                 }
-
+                // results 4eme ligne
+//                if (4 == 4 && count($total) > 0 && Session::getCurrentInterface() == 'central') {
+//                    //line total
+//                    if ($output_type == Search::HTML_OUTPUT) {
+//                        $row_num++;
+//                        $item_num = 0;
+//
+//                        $colspanTotal = "colspan = '14'";
+//                        if ($is_html_output) {
+//                            $html_output .= $output::showNewLine();
+//                        }
+//                        $html_output .= $output::showItem(
+//                            '',
+//                            $item_num,
+//                            $row_num,
+//                            "$colspanTotal style='" . Monthly::$style[0] . "'"
+//                        );
+//                        if ($is_html_output) {
+//                            $html_output .= $output::showEndLine();
+//                        }
+//                    }
+//
+//                    $row_num++;
+//                    $item_num = 0;
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showNewLine();
+//                    }
+//                    if ($output_type != Search::HTML_OUTPUT) {
+//                        //                            $html_output .= $output::showHeaderItem(
+//                        //
+//                        //                                '',
+//                        //                                $item_num,
+//                        //                                '',
+//                        //                                0,
+//                        //                                '',
+//                        //                                "style='" . Monthly::$style[1] . "'"
+//                        //                            );
+//                        $headers[] = '';
+//                    }
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showHeaderItem(
+//
+//                            '',
+//                            $item_num,
+//                            '',
+//                            0,
+//                            '',
+//                            " $colspanNoprice style='" . Monthly::$style[1] . "'"
+//                        );
+//
+//
+//                        $html_output .= $output::showHeaderItem(
+//
+//                            '',
+//                            $item_num,
+//                            '',
+//                            0,
+//                            '',
+//                            "colspan ='2' style='" . Monthly::$style[1] . "'"
+//                        );
+//
+//                        $html_output .= $output::showHeaderItem(
+//
+//                            '',
+//                            $item_num,
+//                            '',
+//                            0,
+//                            '',
+//                            "colspan ='3' style='" . Monthly::$style[1] . "'"
+//                        );
+//
+//                        $html_output .= $output::showHeaderItem(
+//
+//                            __('Total initial credit', 'manageentities'),
+//                            $item_num,
+//                            '',
+//                            0,
+//                            '',
+//                            "$colspanNoprice style='" . Monthly::$style[1] . "'"
+//                        );
+//                        $html_output .= $output::showHeaderItem(
+//
+//                            __('Total consummated', 'manageentities'),
+//                            $item_num,
+//                            '',
+//                            0,
+//                            '',
+//                            "style='" . Monthly::$style[1] . "'"
+//                        );
+//                        $html_output .= $output::showHeaderItem(
+//
+//                            __('Total remaining', 'manageentities'),
+//                            $item_num,
+//                            '',
+//                            0,
+//                            '',
+//                            "style='" . Monthly::$style[1] . "'"
+//                        );
+//                        $html_output .= $output::showHeaderItem(
+//
+//                            __('Total exceeding', 'manageentities'),
+//                            $item_num,
+//                            '',
+//                            0,
+//                            '',
+//                            "style='" . Monthly::$style[1] . "'"
+//                        );
+//                    } else {
+//                        $headers[] = '';
+//                        $headers[] = '';
+//                        $headers[] = '';
+//                        $headers[] = __('Total initial credit', 'manageentities');
+//                        $headers[] = __('Total consummated', 'manageentities');
+//                        $headers[] = __('Total remaining', 'manageentities');
+//                        $headers[] = __('Total exceeding', 'manageentities');
+//                    }
+//
+//                    if ($config->fields['useprice'] == Config::PRICE) {
+//                        if ($is_html_output) {
+//                            $html_output .= $output::showHeaderItem(
+//
+//                                '',
+//                                $item_num,
+//                                '',
+//                                0,
+//                                '',
+//                                "style='" . Monthly::$style[1] . "'"
+//                            );
+//                            $html_output .= $output::showHeaderItem(
+//
+//                                __('Total Guaranteed package', 'manageentities'),
+//                                $item_num,
+//                                '',
+//                                0,
+//                                '',
+//                                "style='" . Monthly::$style[1] . "'"
+//                            );
+//                            $html_output .= $output::showHeaderItem(
+//
+//                                __('Remaining total (amount)', 'manageentities'),
+//                                $item_num,
+//                                '',
+//                                0,
+//                                '',
+//                                "style='" . Monthly::$style[1] . "'"
+//                            );
+//                        } else {
+//                            $headers[] = '';
+//                            $headers[] = __('Total Guaranteed package', 'manageentities');
+//                            $headers[] = __('Remaining total (amount)', 'manageentities');
+//                        }
+//                    } else {
+//                        if ($is_html_output) {
+//                            $html_output .= $output::showHeaderItem(
+//
+//                                '',
+//                                $item_num,
+//                                '',
+//                                0,
+//                                '',
+//                                " $colspanNoprice style='" . Monthly::$style[1] . "'"
+//                            );
+//                        } else {
+//                            $headers[] = '';
+//                        }
+//                        if ($output_type != Search::HTML_OUTPUT) {
+//                            //                                $html_output .= $output::showHeaderItem(
+//                            //
+//                            //                                    '',
+//                            //                                    $item_num,
+//                            //                                    '',
+//                            //                                    0,
+//                            //                                    '',
+//                            //                                    "style='" . Monthly::$style[1] . "'"
+//                            //                                );
+//                            //                                $html_output .= $output::showHeaderItem(
+//                            //
+//                            //                                    '',
+//                            //                                    $item_num,
+//                            //                                    '',
+//                            //                                    0,
+//                            //                                    '',
+//                            //                                    "style='" . Monthly::$style[1] . "'"
+//                            //                                );
+//                            $headers[] = '';
+//                            $headers[] = '';
+//                        }
+//                    }
+//                    if ($config->fields['hourorday'] == Config::HOUR && $output_type != Search::HTML_OUTPUT) {
+//                        //                            $html_output .= $output::showHeaderItem(
+//                        //
+//                        //                                '',
+//                        //                                $item_num,
+//                        //                                '',
+//                        //                                0,
+//                        //                                '',
+//                        //                                "style='" . Monthly::$style[1] . "'"
+//                        //                            );
+//                        //                            $html_output .= $output::showHeaderItem(
+//                        //
+//                        //                                '',
+//                        //                                $item_num,
+//                        //                                '',
+//                        //                                0,
+//                        //                                '',
+//                        //                                "style='" . Monthly::$style[1] . "'"
+//                        //                            );
+//                        $headers[] = '';
+//                        $headers[] = '';
+//                    }
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showEndLine();
+//                    }
+//
+//                    $row_num++;
+//                    $item_num = 0;
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showNewLine();
+//                    }
+//                    if ($output_type != Search::HTML_OUTPUT) {
+//                        //                            $html_output .= $output::showItem( '', $item_num, $row_num);
+//                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+//                    }
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showItem(
+//                            '',
+//                            $item_num,
+//                            $row_num,
+//                            " $colspanNoprice "
+//                        );
+//                    } else {
+//                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+//                    }
+//
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showItem('', $item_num, $row_num, "colspan='2'");
+//                    } else {
+//                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+//                    }
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showItem('', $item_num, $row_num, "colspan='3' ");
+//                    } else {
+//                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+//                    }
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showItem(
+//
+//                            Html::formatNumber($total['tot_credit'], 0, 2),
+//                            $item_num,
+//                            $row_num,
+//                            "$colspanNoprice "
+//                        );
+//                        $html_output .= $output::showItem(
+//
+//                            Html::formatNumber($total['tot_conso'], 0, 2),
+//                            $item_num,
+//                            $row_num,
+//                            ""
+//                        );
+//                        $html_output .= $output::showItem(
+//
+//                            Html::formatNumber($total['tot_reste'], 0, 2),
+//                            $item_num,
+//                            $row_num,
+//                            ""
+//                        );
+//                        $html_output .= $output::showItem(
+//
+//                            Html::formatNumber($total['tot_depass'], 0, 2),
+//                            $item_num,
+//                            $row_num,
+//                            ""
+//                        );
+//
+//                        $html_output .= $output::showItem('', $item_num, $row_num, " ");
+//                    } else {
+//                        $current_row[$itemtype . '_' . (++$colnum)] = [
+//                            'displayname' => Html::formatNumber(
+//                                $total['tot_credit'],
+//                                0,
+//                                2
+//                            )
+//                        ];
+//                        $current_row[$itemtype . '_' . (++$colnum)] = [
+//                            'displayname' => Html::formatNumber(
+//                                $total['tot_conso'],
+//                                0,
+//                                2
+//                            )
+//                        ];
+//                        $current_row[$itemtype . '_' . (++$colnum)] = [
+//                            'displayname' => Html::formatNumber(
+//                                $total['tot_reste'],
+//                                0,
+//                                2
+//                            )
+//                        ];
+//                        $current_row[$itemtype . '_' . (++$colnum)] = [
+//                            'displayname' => Html::formatNumber(
+//                                $total['tot_depass'],
+//                                0,
+//                                2
+//                            )
+//                        ];
+//                    }
+//                    if ($config->fields['useprice'] == Config::PRICE) {
+//                        if ($is_html_output) {
+//                            $html_output .= $output::showItem(
+//
+//                                Html::formatNumber($total['tot_forfait'], 0, 2),
+//                                $item_num,
+//                                $row_num,
+//                                ""
+//                            );
+//                            $html_output .= $output::showItem(
+//
+//                                Html::formatNumber($total['tot_reste_montant'], 0, 2),
+//                                $item_num,
+//                                $row_num,
+//                                ""
+//                            );
+//                        } else {
+//                            $current_row[$itemtype . '_' . (++$colnum)] = [
+//                                'displayname' => Html::formatNumber(
+//                                    $total['tot_forfait'],
+//                                    0,
+//                                    2
+//                                )
+//                            ];
+//                            $current_row[$itemtype . '_' . (++$colnum)] = [
+//                                'displayname' => Html::formatNumber(
+//                                    $total['tot_reste_montant'],
+//                                    0,
+//                                    2
+//                                )
+//                            ];
+//                        }
+//                    } else {
+//                        $html_output .= $output::showItem(
+//                            '',
+//                            $item_num,
+//                            $row_num,
+//                            " $colspanNoprice "
+//                        );
+//                        if ($output_type != Search::HTML_OUTPUT) {
+//                            //                                $html_output .= $output::showItem( '', $item_num, $row_num, "");
+//                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+//                        }
+//                    }
+//                    if ($config->fields['hourorday'] == Config::HOUR && $output_type != Search::HTML_OUTPUT) {
+//                        //                            $html_output .= $output::showItem( '', $item_num, $row_num, "");
+//                        //                            $html_output .= $output::showItem( '', $item_num, $row_num);
+//                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+//                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+//                    }
+//                    if ($is_html_output) {
+//                        $html_output .= $output::showEndLine();
+//                    }
+//                }
 
                 if ($is_html_output) {
                     Html::closeForm();
@@ -2288,15 +2166,15 @@ class Followup extends CommonDBTM
                         $numrows
                     );
                 }
-//                if ($is_html_output) {
-//                    self::printPager(
-//                        $start,
-//                        $numrows,
-//                        $_SERVER['PHP_SELF'],
-//                        $parameters,
-//                        Monthly::class
-//                    );
-//                }
+                //                if ($is_html_output) {
+                //                    self::printPager(
+                //                        $start,
+                //                        $numrows,
+                //                        $_SERVER['PHP_SELF'],
+                //                        $parameters,
+                //                        Monthly::class
+                //                    );
+                //                }
 
                 if ($is_html_output) {
                     echo $html_output;
@@ -2385,7 +2263,7 @@ class Followup extends CommonDBTM
         return $out;
     }
 
-    static function showLegendary()
+    public static function showLegendary()
     {
         $contractstate = new ContractState();
         $contracts = $contractstate->find();
@@ -2405,7 +2283,7 @@ class Followup extends CommonDBTM
         echo "</div>";
     }
 
-    function showCriteriasForm($options = [])
+    public function showCriteriasForm($options = [])
     {
         global $DB;
         Entity::showManageentitiesHeader(__('General follow-up', 'manageentities'));
@@ -2455,55 +2333,62 @@ class Followup extends CommonDBTM
                 ) . "</td>";
             echo "<td class='left' colspan='$colspan'>";
 
-            if (isset($options['contract_states']) && $options['contract_states'] != '0') {
+            //            Toolbox::logInfo($options['contract_states']);
+            //            Toolbox::logInfo($states);
+
+            if (isset($options['contract_states'])
+                && is_array($options['contract_states'])
+                && count($options['contract_states']) > 0) {
                 \Dropdown::showFromArray("contract_states", $states, [
                     'multiple' => true,
                     'width' => 200,
-                    'values' => $options['contract_states']
+                    'values' => $options['contract_states'],
                 ]);
-            } elseif (isset($preferences['contract_states']) && $preferences['contract_states'] != null) {
+            } elseif (isset($preferences['contract_states'])
+                && $preferences['contract_states'] != null) {
                 $options['contract_states'] = json_decode($preferences['contract_states'], true);
                 \Dropdown::showFromArray("contract_states", $states, [
                     'multiple' => true,
                     'width' => 200,
-                    'values' => $options['contract_states']
+                    'values' => $options['contract_states'],
                 ]);
-            } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
+            } elseif (isset($config_states['contract_states'])
+                && $config_states['contract_states'] != null) {
                 $options['contract_states'] = json_decode($config_states['contract_states'], true);
                 \Dropdown::showFromArray("contract_states", $states, [
                     'multiple' => true,
                     'width' => 200,
-                    'values' => $options['contract_states']
+                    'values' => $options['contract_states'],
                 ]);
             } else {
                 \Dropdown::showFromArray("contract_states", $states, [
                     'multiple' => true,
                     'width' => 200,
-                    'value' => "contract_states"
+                    //                    'value' => ""
                 ]);
             }
             echo "</td></tr><tr class='tab_bg_1'>";
 
-            echo "<td class='left'>" . __('Begin date') . " " .
-                __('of period of contract', 'manageentities') . ", " . __('after') . "</td>";
+            echo "<td class='left'>" . __('Begin date') . " "
+                . __('of period of contract', 'manageentities') . ", " . __('after') . "</td>";
             echo "<td class='left'>";
             Html::showDateField("begin_date_after", ['value' => $options['begin_date_after']]);
             echo "</td>";
-            echo "<td class='left'>" . __('Begin date') . " " .
-                __('of period of contract', 'manageentities') . ", " . __('before') . "</td>";
+            echo "<td class='left'>" . __('Begin date') . " "
+                . __('of period of contract', 'manageentities') . ", " . __('before') . "</td>";
             echo "<td class='left'>";
             Html::showDateField("begin_date_before", ['value' => $options['begin_date_before']]);
             echo "</td>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td class='left'>" . __('End date') . " " .
-                __('of period of contract', 'manageentities') . ", " . __('after') . "</td>";
+            echo "<td class='left'>" . __('End date') . " "
+                . __('of period of contract', 'manageentities') . ", " . __('after') . "</td>";
             echo "<td class='left'>";
             Html::showDateField("end_date_after", ['value' => $options['end_date_after']]);
             echo "</td>";
-            echo "<td class='left'>" . __('End date') . " " .
-                __('of period of contract', 'manageentities') . ", " . __('before') . "</td>";
+            echo "<td class='left'>" . __('End date') . " "
+                . __('of period of contract', 'manageentities') . ", " . __('before') . "</td>";
             echo "<td class='left'>";
             Html::showDateField("end_date_before", ['value' => $options['end_date_before']]);
             echo "</td>";
@@ -2520,9 +2405,9 @@ class Followup extends CommonDBTM
                     'glpi_users' => [
                         'ON' => [
                             'glpi_plugin_manageentities_businesscontacts' => 'users_id',
-                            'glpi_users' => 'id'
-                        ]
-                    ]
+                            'glpi_users' => 'id',
+                        ],
+                    ],
                 ],
                 'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
             ]);
@@ -2535,46 +2420,49 @@ class Followup extends CommonDBTM
 
             echo "<tr class='tab_bg_1'>";
             echo "<td class='left'>";
-            echo __('Business', 'manageentities');
+            //            echo __('Business', 'manageentities');
             echo "</td>";
             echo "<td class='left'>";
 
-//            if ($options['business_id'] == 0) {
-//                $options['business_id'] = [];
-//            }
-//            if ($preferences['business_id'] == 0) {
-//                $preferences['business_id'] = [];
-//            }
-//            if ($config_states['business_id'] == 0) {
-//                $config_states['business_id'] = [];
-//            }
-//            if (isset($options['business_id']) && $options['business_id'] != '0') {
-//                Dropdown::showFromArray("business_id", $users, [
-//                    'multiple' => true,
-//                    'width' => 200,
-//                    'values' => $options['business_id']
-//                ]);
-//            } elseif (isset($preferences['business_id']) && $preferences['business_id'] != null) {
-//                $options['business_id'] = json_decode($preferences['business_id'], true);
-//                Dropdown::showFromArray("business_id", $users, [
-//                    'multiple' => true,
-//                    'width' => 200,
-//                    'values' => $options['business_id']
-//                ]);
-//            } elseif (isset($config_states['business_id']) && $config_states['business_id'] != null) {
-//                $options['business_id'] = json_decode($config_states['business_id'], true);
-//                Dropdown::showFromArray("business_id", $users, [
-//                    'multiple' => true,
-//                    'width' => 200,
-//                    'values' => $options['business_id']
-//                ]);
-//            } else {
-//                Dropdown::showFromArray("business_id", $users, [
-//                    'multiple' => true,
-//                    'width' => 200,
-//                    'value' => 'name'
-//                ]);
-//            }
+            //            if ($options['business_id'] == 0) {
+            //                $options['business_id'] = [];
+            //            }
+            //
+            //            if (isset($preferences['business_id']) && !is_array($preferences['business_id'])) {
+            //                $preferences['business_id'] = [];
+            //            }
+            //            if (isset($config_states['business_id']) && !is_array($config_states['business_id'])) {
+            //                $config_states['business_id'] = [];
+            //            }
+            //            if (isset($options['business_id'])
+            //                && is_array($options['business_id'])
+            //                && count($options['business_id']) > 0) {
+            //                Dropdown::showFromArray("business_id", $users, [
+            //                    'multiple' => true,
+            //                    'width' => 200,
+            //                    'values' => $options['business_id']
+            //                ]);
+            //            } elseif (isset($preferences['business_id']) && $preferences['business_id'] != null) {
+            //                $options['business_id'] = json_decode($preferences['business_id'], true);
+            //                Dropdown::showFromArray("business_id", $users, [
+            //                    'multiple' => true,
+            //                    'width' => 200,
+            //                    'values' => $options['business_id']
+            //                ]);
+            //            } elseif (isset($config_states['business_id']) && $config_states['business_id'] != null) {
+            //                $options['business_id'] = json_decode($config_states['business_id'], true);
+            //                Dropdown::showFromArray("business_id", $users, [
+            //                    'multiple' => true,
+            //                    'width' => 200,
+            //                    'values' => $options['business_id']
+            //                ]);
+            //            } else {
+            //                Dropdown::showFromArray("business_id", $users, [
+            //                    'multiple' => true,
+            //                    'width' => 200,
+            ////                    'value' => 'name'
+            //                ]);
+            //            }
 
             $plugin_company = new Company();
             $result = $plugin_company->find();
@@ -2589,24 +2477,27 @@ class Followup extends CommonDBTM
             echo "</td>";
             echo "<td class='left'>";
 
-            if (isset($options['company_id']) && $options['company_id'] != '0') {
+            if (isset($options['company_id'])
+                && is_array($options['company_id'])
+                && count($options['company_id']) > 0) {
                 \Dropdown::showFromArray("company_id", $company, [
                     'multiple' => true,
                     'width' => 200,
-                    'values' => $options['company_id']
+                    'values' => $options['company_id'],
                 ]);
-            } elseif (isset($preferences['companies_id']) && $preferences['companies_id'] != null) {
+            } elseif (isset($preferences['companies_id'])
+                && $preferences['companies_id'] != null) {
                 $options['company_id'] = json_decode($preferences['companies_id'], true);
                 \Dropdown::showFromArray("company_id", $company, [
                     'multiple' => true,
                     'width' => 200,
-                    'values' => $options['company_id']
+                    'values' => $options['company_id'],
                 ]);
             } else {
                 \Dropdown::showFromArray("company_id", $company, [
                     'multiple' => true,
                     'width' => 200,
-                    'value' => 'name'
+                    //                    'value' => 'name'
                 ]);
             }
             echo "</td></tr>";
@@ -2625,7 +2516,7 @@ class Followup extends CommonDBTM
         }
     }
 
-    static function printPager(
+    public static function printPager(
         $start,
         $numrows,
         $target,
@@ -2660,8 +2551,8 @@ class Followup extends CommonDBTM
 
         // Print it
 
-        echo "<form method='GET' action=\"" . $CFG_GLPI["root_doc"] .
-            "/front/report.dynamic.php\" target='_blank'>\n";
+        echo "<form method='GET' action=\"" . $CFG_GLPI["root_doc"]
+            . "/front/report.dynamic.php\" target='_blank'>\n";
 
         echo "<table class='tab_cadre_pager'>\n";
         echo "<tr>\n";
