@@ -220,7 +220,7 @@ class Entity extends CommonGLPI
                 case 10:
                     foreach ($entities as $entity_id) {
                         $entity->getFromDB($entity_id);
-                        Account_Item::showForItem($entity);
+                        Account_Item::showForAsset($entity);
                     }
                     break;
                 case 11:

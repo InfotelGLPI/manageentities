@@ -34,9 +34,9 @@ use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\Contract;
 
-define('GLPI_ROOT', '../../..');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
+Session::checkLoginUser();
 
 $entity = new \Entity();
 $ManagementitiesEntity = new Entity();

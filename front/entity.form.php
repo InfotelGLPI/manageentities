@@ -29,11 +29,14 @@
 
 use GlpiPlugin\Manageentities\EntityLogo;
 
+Session::checkLoginUser();
+
 $logo = new EntityLogo();
 
 global $CFG_GLPI;
 
 if (isset($_POST["add"])) {
+   $logo->check(-1, CREATE);
 
    if (isset($_POST["_filename"]) && count($_POST["_filename"]) > 0) {
       $logo->addLogo($_POST);

@@ -1813,15 +1813,15 @@ class CriDetail extends CommonDBTM
             return $interv;
         }
 
-        $who = $options['who'];
-        $who_group = $options['whogroup'];
+        $who = (int)$options['who'];
+        $who_group = (int)$options['whogroup'];
         $begin = $options['begin'];
         $end = $options['end'];
 
         $ASSIGN = "";
 
         if (count($_SESSION["glpigroups"])) {
-            $groups = implode("','", $_SESSION['glpigroups']);
+            $groups = implode("','", array_map('intval', $_SESSION['glpigroups']));
             $ASSIGN = "(`glpi_tickettasks`.`users_id_tech`
                            IN (SELECT DISTINCT `users_id`
                                FROM `glpi_groups_users`
@@ -1837,18 +1837,18 @@ class CriDetail extends CommonDBTM
                                WHERE `glpi_groups_users`.`groups_id` IN ('$groups')
                                      AND `glpi_groups`.`is_assign`))";
         } else { // Only personal ones
-            $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='" . $who . "'
-         OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $who . "'";
+            $ASSIGN = " `glpi_tickettasks`.`users_id_tech` =" . $who . "
+         OR `glpi_plugin_manageentities_critechnicians`.`users_id` =" . $who;
         }
 
         if ($who > 0) {
-            $ASSIGN = " `glpi_tickettasks`.`users_id_tech` ='" . $who . "'
-         OR `glpi_plugin_manageentities_critechnicians`.`users_id` ='" . $who . "'";
+            $ASSIGN = " `glpi_tickettasks`.`users_id_tech` =" . $who . "
+         OR `glpi_plugin_manageentities_critechnicians`.`users_id` =" . $who;
         }
         if ($who_group > 0) {
             $ASSIGN = " AND `users_id` IN (SELECT `users_id`
                                  FROM `glpi_groups_users`
-                                 WHERE `groups_id` = '$who_group')";
+                                 WHERE `groups_id` = " . $who_group . ")";
         }
 
 

@@ -61,10 +61,9 @@ function plugin_init_manageentities()
 {
     global $PLUGIN_HOOKS, $CFG_GLPI;
 
-    $PLUGIN_HOOKS['csrf_compliant']['manageentities'] = true;
-    $PLUGIN_HOOKS['change_profile']['manageentities'] = [Profile::class, 'initProfile'];
+    $PLUGIN_HOOKS[Hooks::CHANGE_PROFILE]['manageentities'] = [Profile::class, 'initProfile'];
 
-    $PLUGIN_HOOKS['pre_item_purge']['manageentities'] = [
+    $PLUGIN_HOOKS[Hooks::PRE_ITEM_PURGE]['manageentities'] = [
         'Entity' => 'plugin_pre_item_purge_manageentities',
         'Ticket' => 'plugin_pre_item_purge_manageentities',
         'Contract' => 'plugin_pre_item_purge_manageentities',
@@ -72,15 +71,15 @@ function plugin_init_manageentities()
         'TaskCategory' => 'plugin_pre_item_purge_manageentities'
     ];
 
-    $PLUGIN_HOOKS['pre_item_update']['manageentities'] = [
+    $PLUGIN_HOOKS[Hooks::PRE_ITEM_UPDATE]['manageentities'] = [
         'Document' => [
             Entity::class,
             'preUpdateDocument'
         ]
     ];
-    $PLUGIN_HOOKS['item_update']['manageentities'] = ['Document' => [Entity::class, 'UpdateDocument']];
+    $PLUGIN_HOOKS[Hooks::ITEM_UPDATE]['manageentities'] = ['Document' => [Entity::class, 'UpdateDocument']];
 
-    $PLUGIN_HOOKS['item_transfer']['manageentities'] = 'plugin_item_transfer_manageentities';
+    $PLUGIN_HOOKS[Hooks::ITEM_TRANSFER]['manageentities'] = 'plugin_item_transfer_manageentities';
 
     if (Session::getLoginUserID()) {
         Plugin::registerClass(Profile::class, ['addtabon' => 'Profile']);
@@ -102,7 +101,7 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS['servicecatalog']['manageentities'] = [Servicecatalog::class];
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
-            $PLUGIN_HOOKS['menu_toadd']['manageentities'] = [
+            $PLUGIN_HOOKS[Hooks::MENU_TOADD]['manageentities'] = [
                 'helpdesk' => [
                     GenerateCRI::class,
                     DirectHelpdesk::class,
@@ -111,12 +110,12 @@ function plugin_init_manageentities()
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
             && !Plugin::isPluginActive('servicecatalog')) {
-            $PLUGIN_HOOKS['helpdesk_menu_entry']['manageentities'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
-            $PLUGIN_HOOKS['helpdesk_menu_entry_icon']['manageentities'] = Entity::getIcon();
+            $PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY]['manageentities'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
+            $PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY_ICON]['manageentities'] = Entity::getIcon();
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
             Plugin::registerClass(Preference::class, ['addtabon' => 'Preference']); //See #413
-            $PLUGIN_HOOKS['menu_toadd']['manageentities']['management'] = Entity::class;
+            $PLUGIN_HOOKS[Hooks::MENU_TOADD]['manageentities']['management'] = Entity::class;
 
             // Reports
             $PLUGIN_HOOKS['reports']['manageentities'] = [
@@ -138,12 +137,12 @@ function plugin_init_manageentities()
         }
 
         if (Session::haveRight("plugin_manageentities", UPDATE)) {
-            $PLUGIN_HOOKS['config_page']['manageentities'] = 'front/config.form.php';
+            $PLUGIN_HOOKS[Hooks::CONFIG_PAGE]['manageentities'] = 'front/config.form.php';
         }
 
         $PLUGIN_HOOKS['mydashboard']['manageentities'] = [Dashboard::class];
 
-        $PLUGIN_HOOKS['post_item_form']['manageentities'] = [TicketTask::class, 'postForm'];
+        $PLUGIN_HOOKS[Hooks::POST_ITEM_FORM]['manageentities'] = [TicketTask::class, 'postForm'];
         // Add specific files to add to the header : javascript or css
         $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css", "style.css"];
 
@@ -172,7 +171,7 @@ function plugin_init_manageentities()
 //
 //         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/manageentities_load_scripts.js';
 //      }
-        $PLUGIN_HOOKS['post_init']['manageentities'] = 'plugin_manageentities_postinit';
+        $PLUGIN_HOOKS[Hooks::POST_INIT]['manageentities'] = 'plugin_manageentities_postinit';
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {

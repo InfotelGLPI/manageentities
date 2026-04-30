@@ -46,7 +46,14 @@ if (count($_SESSION["glpiactiveentities"]) > 1
    }
    if (Session::changeActiveEntities($_GET["active_entity"], $_POST["is_recursive"])) {
       if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-         Html::redirect(preg_replace("/entities_id.*/", "", $_SERVER['HTTP_REFERER']));
+         global $CFG_GLPI;
+         $referer = $_SERVER['HTTP_REFERER'] ?? '';
+         $cleaned = preg_replace("/entities_id.*/", "", $referer);
+         if (!empty($cleaned) && str_starts_with($cleaned, $CFG_GLPI['url_base'])) {
+             Html::redirect($cleaned);
+         } else {
+             Html::back();
+         }
       }
    }
 }

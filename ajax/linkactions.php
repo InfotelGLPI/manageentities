@@ -36,6 +36,9 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
+Session::checkLoginUser();
+Session::checkRight("plugin_manageentities", READ);
+
 if (isset($_POST["action"])) {
    switch ($_POST["action"]) {
       case 'title_show_hourorday' :

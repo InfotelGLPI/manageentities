@@ -58,6 +58,10 @@ class Report extends CommonDBTM
     {
         global $DB, $CFG_GLPI;
 
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date1) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date2)) {
+            return;
+        }
+
         $config = Config::getInstance();
 
         $resultat = [];
@@ -153,6 +157,11 @@ class Report extends CommonDBTM
     {
         global $DB, $CFG_GLPI;
 
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date1) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date2)) {
+            return;
+        }
+        $techs = array_map('intval', (array)$techs);
+
         $days = self::getDatesBetween2Dates($date1, $date2);
         $dbu = new DbUtils();
 
@@ -192,7 +201,7 @@ class Report extends CommonDBTM
                         . " WHERE (`glpi_tickettasks`.`begin` >= '" . $date_begin . "'
                   AND `glpi_tickettasks`.`end` <= '" . $date_end . "') "
                         . " AND `glpi_tickets`.`is_deleted` = 0"
-                        . " AND `glpi_tickettasks`.`users_id_tech` = $tech "
+                        . " AND `glpi_tickettasks`.`users_id_tech` = " . (int)$tech . " "
                         . " AND `glpi_tickettasks`.`actiontime` != 0";
                     $result = $DB->doQuery($query);
 

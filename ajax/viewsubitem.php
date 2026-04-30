@@ -28,6 +28,8 @@
  */
 
 use Glpi\Exception\Http\NotFoundHttpException;
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\CriPrice;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -39,6 +41,12 @@ if (!isset($_POST['type'])) {
 }
 if (!isset($_POST['parenttype'])) {
     throw new NotFoundHttpException();
+}
+
+$allowed_types = [CriPrice::class, ContractDay::class];
+if (!in_array($_POST['type'], $allowed_types, true) || !in_array($_POST['parenttype'], $allowed_types, true)) {
+    http_response_code(400);
+    return;
 }
 
 $dbu = new DbUtils();

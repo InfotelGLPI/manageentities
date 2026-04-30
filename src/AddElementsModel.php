@@ -1377,7 +1377,8 @@ class AddElementsModel extends CommonGLPIModel
             $order = "DESC";
         }
 
-        if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
+        $allowed_sort_columns = ['assocdate', 'name', 'headings', 'entity', 'filename', 'mime'];
+        if (isset($_POST["sort"]) && in_array($_POST["sort"], $allowed_sort_columns, true)) {
             $sort = "`" . $_POST["sort"] . "`";
         } else {
             $sort = "`assocdate`";

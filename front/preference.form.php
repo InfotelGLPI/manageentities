@@ -29,6 +29,8 @@
 
 use GlpiPlugin\Manageentities\Preference;
 
+Session::checkLoginUser();
+
 //Save user preferences
 if (isset ($_POST['update_user_preferences_manageentities'])) {
    $pref = new Preference();

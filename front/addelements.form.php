@@ -30,8 +30,6 @@
 use GlpiPlugin\Manageentities\AddElementsView;
 use GlpiPlugin\Manageentities\Entity;
 
-include('../../../inc/includes.php');
-
 if (Plugin::isPluginActive("manageentities")
     && Session::haveRight('plugin_manageentities', UPDATE)) {
 

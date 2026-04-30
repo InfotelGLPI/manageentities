@@ -44,8 +44,8 @@ if (isset($_POST["addcridetail"])) {
    if ($Cri->canCreate()) {
       $criDetail->add($_POST);
    }
-   if(strpos($_SERVER['HTTP_REFERER'],"generatecri.form.php") > 0){
-      Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR."/front/generatecri.form.php?download=1&tickets_id=".$_POST['tickets_id']);
+   if(strpos($_SERVER['HTTP_REFERER'] ?? '', "generatecri.form.php") > 0){
+      Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR."/front/generatecri.form.php?download=1&tickets_id=".(int)$_POST['tickets_id']);
    } else{
       Html::back();
    }

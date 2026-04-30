@@ -1,6 +1,9 @@
 {
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "config": {
+        "autoloader-suffix": "GlpiPluginManageentities"
+    },
     "require-dev": {
         "glpi-project/tools": "^0.4"
     },

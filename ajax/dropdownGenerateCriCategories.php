@@ -27,6 +27,8 @@
  --------------------------------------------------------------------------
  */
 
+Session::checkLoginUser();
+
 if (strpos($_SERVER['PHP_SELF'], "dropdownGenerateCriCategories.php")) {
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();

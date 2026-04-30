@@ -449,10 +449,11 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num)
                    //               $manageentitiesCritypes->getFromDBByCrit(["id = $table.plugin_manageentities_critypes_id
                    //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
 
+                    $entities_ids = array_map('intval', $_SESSION["glpiactiveentities"]);
                     $query = "SELECT *
                        FROM $table
                        WHERE  id = $table.plugin_manageentities_critypes_id
-                       AND entities_id IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')";
+                       AND entities_id IN (" . implode(",", $entities_ids) . ")";
 
                     $result = $DB->doQuery($query);
                     if ($DB->numrows($result)) {
@@ -792,5 +793,5 @@ function plugin_manageentities_redefine_menus($menu)
 function plugin_datainjection_populate_manageentities()
 {
     global $INJECTABLE_TYPES;
-    $INJECTABLE_TYPES[DirectHelpdeskInjection::class] = 'directhelpdesks';
+    $INJECTABLE_TYPES[DirectHelpdeskInjection::class] = 'manageentities';
 }
