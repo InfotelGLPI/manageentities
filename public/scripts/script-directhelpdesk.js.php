@@ -69,10 +69,14 @@ $(window).on("load", function() {
         }
     });
 
-    // Gérer toggle du menu
-    $('.reduce-menu').on('click', function() {
-        updateButtonState();
-    });
+    // Réagir au toggle effectif de la classe navbar-collapsed sur <body>
+    new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'class') {
+                updateButtonState();
+            }
+        });
+    }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 });
 
 <?php

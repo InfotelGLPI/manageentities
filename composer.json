@@ -5,9 +5,9 @@
         "autoloader-suffix": "GlpiPluginManageentities"
     },
     "require-dev": {
-        "glpi-project/tools": "^0.4"
+        "glpi-project/tools": "^0.8"
     },
     "require": {
-        "fpdf/fpdf": "^1.83.2"
+        "fpdf/fpdf": "^1.86"
     }
 }
