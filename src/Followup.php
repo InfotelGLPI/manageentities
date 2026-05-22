@@ -143,7 +143,7 @@ class Followup extends CommonDBTM
                 ],
             ],
             'WHERE' => [
-                'NOT' => ['glpi_entities.name' => 'NULL', 'glpi_entities.id' => 'NULL'],
+                'NOT' => ['glpi_entities.name' => null, 'glpi_entities.id' => null],
             ],
             'ORDERBY' => 'glpi_entities.name',
         ];
@@ -259,7 +259,7 @@ class Followup extends CommonDBTM
                         'ORDERBY' => ['glpi_plugin_manageentities_contractdays.end_date ASC'],
                     ];
 
-                    if ($config->fields['hourorday'] == Config::DAY) {// Hourly
+                    if ($config->fields['hourorday'] == Config::DAY) {// Daily
                         $criteriad['SELECT'] = array_merge(
                             $criteriad['SELECT'],
                             ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']
@@ -268,41 +268,57 @@ class Followup extends CommonDBTM
                     }
 
                     if (isset($options['contract_states'])
-                        && $options['contract_states'] != '0') {
+                        && is_array($options['contract_states'])
+                        && count($options['contract_states']) > 0) {
+                        // Explicit selection from the form (both interfaces)
                         $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => $options['contract_states']];
-                    } elseif (isset($preferences['contract_states']) && $preferences['contract_states'] != null) {
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
-                                    $preferences['contract_states'],
-                                    true
-                                ),
-                            ];
-                    } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                    } elseif (Session::getCurrentInterface() === 'helpdesk') {
+                        // Simplified interface: always restrict to config-defined states
+                        if (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
+                            $criteriad['WHERE'] = $criteriad['WHERE'] + [
                                 'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                     $config_states['contract_states'],
                                     true
                                 ),
                             ];
+                        }
+                    } else {
+                        // Central interface: apply user preferences if set, otherwise show all
+                        if (isset($preferences['contract_states']) && $preferences['contract_states'] != null) {
+                            $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
+                                    $preferences['contract_states'],
+                                    true
+                                ),
+                            ];
+                        }
                     }
 
                     if (isset($options['business_id'])
-                        && $options['business_id'] != '0') {
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_businesscontacts.users_id' => $options['contract_states']];
-                    } elseif (isset($preferences['business_id']) && $preferences['business_id'] != null) {
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_businesscontacts.users_id' => json_decode(
-                                    $preferences['contract_states'],
-                                    true
-                                ),
-                            ];
-                    } elseif (isset($config_states['business_id']) && $config_states['business_id'] != null) {
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_businesscontacts.users_id' => json_decode(
-                                    $config_states['contract_states'],
-                                    true
-                                ),
-                            ];
+                        && is_array($options['business_id'])
+                        && count($options['business_id']) > 0) {
+                        // Explicit selection from the form (both interfaces)
+                        $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_businesscontacts.users_id' => $options['business_id']];
+                    } elseif (Session::getCurrentInterface() === 'helpdesk') {
+                        // Simplified interface: always restrict to config-defined business contacts
+                        if (!empty($config_states['business_id'])) {
+                            $decoded_business_id = json_decode($config_states['business_id'], true);
+                            if (is_array($decoded_business_id) && count($decoded_business_id) > 0) {
+                                $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                    'glpi_plugin_manageentities_businesscontacts.users_id' => $decoded_business_id,
+                                ];
+                            }
+                        }
+                    } else {
+                        // Central interface: apply user preferences if set, otherwise show all
+                        if (!empty($preferences['business_id'])) {
+                            $decoded_business_id = json_decode($preferences['business_id'], true);
+                            if (is_array($decoded_business_id) && count($decoded_business_id) > 0) {
+                                $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                    'glpi_plugin_manageentities_businesscontacts.users_id' => $decoded_business_id,
+                                ];
+                            }
+                        }
                     }
                     $sons = [];
                     if (isset($options['company_id'])
@@ -388,7 +404,7 @@ class Followup extends CommonDBTM
 
                     $iteratord = $DB->request($criteriad);
 
-                    $nbContractDay = (count($iteratord) > 0 ? count($iteratord) > 0 : 0);
+                    $nbContractDay = count($iteratord);
                     if ($nbContractDay > 0) {
                         $nbContratByEntities++;
                         $contract_reste = 0;
@@ -524,10 +540,8 @@ class Followup extends CommonDBTM
                                 if (!empty($dataContractDay['end_date'])) {
                                     $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
                                             'date' => [
-                                                '>=',
-                                                new QueryExpression(
-                                                    "ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)"
-                                                ),
+                                                '<=',
+                                                $dataContractDay['end_date'],
                                             ],
                                         ];
                                 }
@@ -565,10 +579,8 @@ class Followup extends CommonDBTM
                                 if (!empty($dataContractDay['end_date'])) {
                                     $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
                                             'glpi_plugin_manageentities_cridetails.date' => [
-                                                '>=',
-                                                new QueryExpression(
-                                                    "ADDDATE('" . $dataContractDay['end_date'] . "' , INTERVAL 1 DAY)"
-                                                ),
+                                                '<=',
+                                                $dataContractDay['end_date'],
                                             ],
                                         ];
                                 }
@@ -581,6 +593,7 @@ class Followup extends CommonDBTM
                                 $date = Html::convDate($dataTicket['date']);
                             }
 
+                            $color = null;
                             $iterator_col = $DB->request([
                                 'SELECT' => [
                                     'color',
@@ -604,7 +617,9 @@ class Followup extends CommonDBTM
                                 'glpi_plugin_manageentities_contractstates',
                                 $dataContractDay['contractstates_id']
                             );
-                            $list[$num]['days'][$i]['contractstates_color'] = $color;
+                            if (isset($color)) {
+                                $list[$num]['days'][$i]['contractstates_color'] = $color;
+                            }
                             $list[$num]['days'][$i]['begin_date'] = Html::convDate($dataContractDay['begin_date']);
                             $list[$num]['days'][$i]['end_date'] = Html::convDate($dataContractDay['end_date']);
                             $list[$num]['days'][$i]['credit'] = $credit;
@@ -663,6 +678,7 @@ class Followup extends CommonDBTM
     public static function showFollowUp($values)
     {
         $results = self::queryFollowUp($_SESSION["glpiactive_entity"], $values);
+
         $list = [];
 
         $default_values["start"] = $start = 0;
@@ -1352,7 +1368,7 @@ class Followup extends CommonDBTM
                             {
                                 if ($is_html_output) {
                                     $html_output .= $output::showItem(
-                                        $day['end_date'],
+                                        $day['end_date'] ?? '',
                                         $item_num,
                                         $row_num,
                                         "colspan='2' "
@@ -1362,7 +1378,7 @@ class Followup extends CommonDBTM
                                 }
                             } else {
                                 if ($is_html_output) {
-                                    $html_output .= $output::showItem($day['end_date'], $item_num, $row_num, "");
+                                    $html_output .= $output::showItem($day['end_date'] ?? '', $item_num, $row_num, "");
                                 } else {
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['end_date']];
                                 }
@@ -1508,7 +1524,7 @@ class Followup extends CommonDBTM
                             if (Session::getCurrentInterface() == 'central') {
                                 if ($config->fields['useprice'] == Config::PRICE) {
                                     if ($is_html_output) {
-                                        $html_output .= $output::showItem($day['last_visit'], $item_num, $row_num, "");
+                                        $html_output .= $output::showItem($day['last_visit'] ?? '', $item_num, $row_num, "");
                                         //                        $html_output .= $output::showItem( Html::formatNumber($day['price'], 0, 2), $item_num, $row_num, "");
                                         $html_output .= $output::showItem($day['forfait'], $item_num, $row_num, "");
                                         $html_output .= $output::showItem(
@@ -2339,32 +2355,38 @@ class Followup extends CommonDBTM
             if (isset($options['contract_states'])
                 && is_array($options['contract_states'])
                 && count($options['contract_states']) > 0) {
+                // Explicit values from form POST
                 \Dropdown::showFromArray("contract_states", $states, [
                     'multiple' => true,
                     'width' => 200,
                     'values' => $options['contract_states'],
+                ]);
+            } elseif (isset($options['contract_states']) && $options['contract_states'] == 0) {
+                // User explicitly cleared the filter: show empty dropdown
+                \Dropdown::showFromArray("contract_states", $states, [
+                    'multiple' => true,
+                    'width' => 200,
                 ]);
             } elseif (isset($preferences['contract_states'])
                 && $preferences['contract_states'] != null) {
-                $options['contract_states'] = json_decode($preferences['contract_states'], true);
+                // Initial load: pre-populate from preferences
                 \Dropdown::showFromArray("contract_states", $states, [
                     'multiple' => true,
                     'width' => 200,
-                    'values' => $options['contract_states'],
+                    'values' => json_decode($preferences['contract_states'], true),
                 ]);
             } elseif (isset($config_states['contract_states'])
                 && $config_states['contract_states'] != null) {
-                $options['contract_states'] = json_decode($config_states['contract_states'], true);
+                // Initial load: pre-populate from config
                 \Dropdown::showFromArray("contract_states", $states, [
                     'multiple' => true,
                     'width' => 200,
-                    'values' => $options['contract_states'],
+                    'values' => json_decode($config_states['contract_states'], true),
                 ]);
             } else {
                 \Dropdown::showFromArray("contract_states", $states, [
                     'multiple' => true,
                     'width' => 200,
-                    //                    'value' => ""
                 ]);
             }
             echo "</td></tr><tr class='tab_bg_1'>";

@@ -134,9 +134,9 @@ if ($ManageentitiesEntity->canView()
                      "end_date"          => isset($_POST['end_date']) ? $_POST['end_date'] : $dateMonthend,
                      "end_date_after"    => isset($_POST['end_date_after']) ? $_POST['end_date_after'] : "",
                      "end_date_before"   => isset($_POST['end_date_before']) ? $_POST['end_date_before'] : "",
-                     "contract_states"   => isset($_POST['contract_states']) ? $_POST['contract_states'] : 0,
+                     "contract_states"   => isset($_POST['contract_states']) ? $_POST['contract_states'] : -1,
                      "entities_id"       => (isset($_POST['entities_id']) && (!empty($_POST['entities_id']))) ? $_POST['entities_id'] : -1,
-                     "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : 0,
+                     "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : -1,
                      "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
                      "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0];
 

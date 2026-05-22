@@ -153,37 +153,51 @@ class Monthly extends CommonDBTM
 //
 //        if ($nbTotEntity > 0) {
 //            foreach ($iterator as $dataEntity) {
-        $condition = " " . $dbu->getEntitiesRestrictRequest("", "glpi_entities");
+        $criteriaEntity = [
+            'SELECT' => [
+                'glpi_entities.id AS entities_id',
+                'glpi_entities.name AS entities_name',
+            ],
+            'DISTINCT' => true,
+            'FROM' => 'glpi_tickets',
+            'LEFT JOIN' => [
+                'glpi_entities' => [
+                    'ON' => [
+                        'glpi_tickets' => 'entities_id',
+                        'glpi_entities' => 'id',
+                    ],
+                ],
+                'glpi_tickettasks' => [
+                    'ON' => [
+                        'glpi_tickets' => 'id',
+                        'glpi_tickettasks' => 'tickets_id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                [
+                    'OR' => [
+                        ['glpi_tickettasks.begin' => null],
+                        ['glpi_tickettasks.begin' => [
+                            '<=',
+                            new QueryExpression("ADDDATE('" . $DB->escape($values['end_date']) . "', INTERVAL 1 DAY)"),
+                        ]],
+                    ],
+                ],
+                [
+                    'OR' => [
+                        ['glpi_tickettasks.end' => null],
+                        ['glpi_tickettasks.end' => ['>=', $values['begin_date']]],
+                    ],
+                ],
+            ],
+            'ORDERBY' => 'glpi_entities.name',
+        ];
+        $criteriaEntity['WHERE'] += getEntitiesRestrictCriteria('glpi_entities');
 
-        $queryEntity = "SELECT DISTINCT(`glpi_entities`.`id`) AS entities_id,
-                        `glpi_entities`.`name` AS entities_name
-                     FROM `glpi_tickets`
+        $iteratorEntity = $DB->request($criteriaEntity);
 
-                     LEFT JOIN `glpi_entities`
-                        ON (`glpi_entities`.`id`
-                           = `glpi_tickets`.`entities_id`)
-
-                     LEFT JOIN `glpi_tickettasks`
-                        ON (`glpi_tickets`.`id`
-                           = `glpi_tickettasks`.`tickets_id`)
-
-                     WHERE $condition
-
-                     AND (`glpi_tickettasks`.`begin` <= ADDDATE('" . $values['end_date'] . "', INTERVAL 1 DAY)
-                           OR `glpi_tickettasks`.`begin` IS NULL)
-
-                     AND (`glpi_tickettasks`.`end` >= '" . $values['begin_date'] . "'
-                           OR `glpi_tickettasks`.`end` IS NULL)
-
-                     ORDER BY `glpi_entities`.`name`,
-                              `glpi_tickettasks`.`end` ASC";
-
-        $resEntity   = $DB->doquery($queryEntity);
-        $nbTotEntity = ($resEntity ? $DB->numrows($resEntity) : 0);
-
-        //We get entities datas
-        if ($resEntity && $nbTotEntity > 0) {
-            while ($dataEntity = $DB->fetchArray($resEntity)) {
+        foreach ($iteratorEntity as $dataEntity) {
                 $tabResults[$dataEntity['entities_id']]['entities_name'] = $dataEntity['entities_name'];
                 $tabResults[$dataEntity['entities_id']]['entities_id'] = $dataEntity['entities_id'];
 
@@ -300,92 +314,108 @@ class Monthly extends CommonDBTM
 //                if ($nbContractDay > 0) {
 //                    foreach ($iteratord as $dataContractDay) {
 
-                if ($config->fields['hourorday'] == Config::HOUR) {// Hourly
-                    $configHourOrDay = "AND (`glpi_plugin_manageentities_contracts`.`contract_type`='" . Contract::CONTRACT_TYPE_NULL . "'
-                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='" . Contract::CONTRACT_TYPE_HOUR . "'
-                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='" . Contract::CONTRACT_TYPE_INTERVENTION . "'
-                             OR `glpi_plugin_manageentities_contracts`.`contract_type`='" . Contract::CONTRACT_TYPE_UNLIMITED . "')";
-                    // Daily
+                if ($config->fields['hourorday'] == Config::HOUR) {
+                    $types_contracts = [
+                        Contract::CONTRACT_TYPE_NULL,
+                        Contract::CONTRACT_TYPE_HOUR,
+                        Contract::CONTRACT_TYPE_INTERVENTION,
+                        Contract::CONTRACT_TYPE_UNLIMITED,
+                    ];
+                    $contract_type_field = 'glpi_plugin_manageentities_contracts.contract_type';
                 } else {
-                    $configHourOrDay = "AND (`glpi_plugin_manageentities_contractdays`.`contract_type`='" . Contract::CONTRACT_TYPE_NULL . "'
-                             OR `glpi_plugin_manageentities_contractdays`.`contract_type`='" . Contract::CONTRACT_TYPE_AT . "'
-                             OR `glpi_plugin_manageentities_contractdays`.`contract_type`='" . Contract::CONTRACT_TYPE_FORFAIT . "')";
-                }
-                $queryContractDay = "SELECT `glpi_plugin_manageentities_contractdays`.`name`       AS name_contractdays,
-                                        `glpi_plugin_manageentities_contractdays`.`id`         AS contractdays_id,
-                                        `glpi_plugin_manageentities_contractdays`.`report`     AS report,
-                                        `glpi_plugin_manageentities_contractdays`.`nbday`      AS nbday,
-                                        `glpi_plugin_manageentities_contractdays`.`begin_date` AS begin_date,
-                                        `glpi_plugin_manageentities_contractdays`.`end_date`   AS end_date,
-                                        `glpi_plugin_manageentities_contractdays`.`charged`    AS charged,
-                                        `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id` AS contractstates_id,
-                                        `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_critypes_id`,";
-
-                if ($config->fields['hourorday'] == Config::HOUR) {// Hourly
-                    $queryContractDay .= "`glpi_plugin_manageentities_contracts`.`contract_type` AS contract_type,";
-                } else {
-                    $queryContractDay .= "`glpi_plugin_manageentities_contractdays`.`contract_type` AS contract_type,";
+                    $types_contracts = [
+                        Contract::CONTRACT_TYPE_NULL,
+                        Contract::CONTRACT_TYPE_AT,
+                        Contract::CONTRACT_TYPE_FORFAIT,
+                    ];
+                    $contract_type_field = 'glpi_plugin_manageentities_contractdays.contract_type';
                 }
 
-                $queryContractDay .= "`glpi_contracts`.`name` AS name,
-                                        `glpi_contracts`.`num`  AS num,
-                                        `glpi_contracts`.`id`   AS contracts_id,
-                                        `glpi_contracts`.`entities_id` AS entities_id,
-                                        `glpi_plugin_manageentities_contractstates`.`is_closed` AS is_closed,
-                                        `glpi_plugin_manageentities_contractstates`.`color`
+                $criteriaContractDay = [
+                    'SELECT' => [
+                        'glpi_plugin_manageentities_contractdays.name AS name_contractdays',
+                        'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
+                        'glpi_plugin_manageentities_contractdays.report AS report',
+                        'glpi_plugin_manageentities_contractdays.nbday AS nbday',
+                        'glpi_plugin_manageentities_contractdays.begin_date AS begin_date',
+                        'glpi_plugin_manageentities_contractdays.end_date AS end_date',
+                        'glpi_plugin_manageentities_contractdays.charged AS charged',
+                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id AS contractstates_id',
+                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
+                        $contract_type_field . ' AS contract_type',
+                        'glpi_contracts.name AS name',
+                        'glpi_contracts.num AS num',
+                        'glpi_contracts.id AS contracts_id',
+                        'glpi_contracts.entities_id AS entities_id',
+                        'glpi_plugin_manageentities_contractstates.is_closed AS is_closed',
+                        'glpi_plugin_manageentities_contractstates.color',
+                    ],
+                    'FROM' => 'glpi_plugin_manageentities_contractdays',
+                    'LEFT JOIN' => [
+                        'glpi_contracts' => [
+                            'ON' => [
+                                'glpi_contracts' => 'id',
+                                'glpi_plugin_manageentities_contractdays' => 'contracts_id',
+                            ],
+                        ],
+                        'glpi_plugin_manageentities_contracts' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_contracts' => 'contracts_id',
+                                'glpi_contracts' => 'id',
+                            ],
+                        ],
+                        'glpi_plugin_manageentities_contractstates' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                                'glpi_plugin_manageentities_contractstates' => 'id',
+                            ],
+                        ],
+                        'glpi_plugin_manageentities_cridetails' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id',
+                                'glpi_plugin_manageentities_contractdays' => 'id',
+                            ],
+                        ],
+                        'glpi_tickets' => [
+                            'ON' => [
+                                'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+                                'glpi_tickets' => 'id',
+                            ],
+                        ],
+                        'glpi_tickettasks' => [
+                            'ON' => [
+                                'glpi_tickettasks' => 'tickets_id',
+                                'glpi_tickets' => 'id',
+                            ],
+                        ],
+                    ],
+                    'WHERE' => [
+                        'glpi_plugin_manageentities_contractdays.entities_id' => $dataEntity['entities_id'],
+                        'glpi_contracts.is_deleted' => 0,
+                        $contract_type_field => $types_contracts,
+                        [
+                            'OR' => [
+                                ['glpi_tickettasks.begin' => null],
+                                ['glpi_tickettasks.begin' => [
+                                    '<=',
+                                    new QueryExpression("ADDDATE('" . $DB->escape($values['end_date']) . "', INTERVAL 1 DAY)"),
+                                ]],
+                            ],
+                        ],
+                        [
+                            'OR' => [
+                                ['glpi_tickettasks.end' => null],
+                                ['glpi_tickettasks.end' => ['>=', $values['begin_date']]],
+                            ],
+                        ],
+                    ],
+                    'GROUPBY' => 'glpi_plugin_manageentities_contractdays.id',
+                    'ORDERBY' => ['glpi_contracts.name ASC', 'glpi_plugin_manageentities_contractdays.end_date ASC'],
+                ];
 
-                     FROM `glpi_plugin_manageentities_contractdays`
+                $iteratorContractDay = $DB->request($criteriaContractDay);
 
-                     LEFT JOIN `glpi_contracts`
-                        ON (`glpi_contracts`.`id`
-                        = `glpi_plugin_manageentities_contractdays`.`contracts_id`)
-
-                     LEFT JOIN `glpi_plugin_manageentities_contracts`
-                        ON (`glpi_contracts`.`id`
-                        = `glpi_plugin_manageentities_contracts`.`contracts_id`)
-
-                     LEFT JOIN `glpi_plugin_manageentities_contractstates`
-                        ON (`glpi_plugin_manageentities_contractstates`.`id`
-                        = `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`)
-
-                     LEFT JOIN `glpi_plugin_manageentities_cridetails`
-                        ON (`glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id` = `glpi_plugin_manageentities_contractdays`.`id`)
-
-                     LEFT JOIN `glpi_tickets`
-                        ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickets`.`id`)
-
-                     LEFT JOIN `glpi_tickettasks`
-                        ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)
-
-                     WHERE `glpi_plugin_manageentities_contractdays`.`entities_id`='" . $dataEntity['entities_id'] . "'
-
-                     AND `glpi_contracts`.`is_deleted` != 1
-
-                     AND (`glpi_tickettasks`.`begin` >= '" . $values['begin_date'] . " 00:00:00'
-                           OR `glpi_tickettasks`.`begin` IS NULL)
-
-                     AND (`glpi_tickettasks`.`end` <= '" . $values['end_date'] . " 23:59:59'
-                           OR `glpi_tickettasks`.`end` IS NULL)
-
-                     " . $configHourOrDay . "
-
-                     GROUP BY `glpi_plugin_manageentities_contractdays`.`id`
-
-                     ORDER BY `glpi_contracts`.`name`,
-                              `glpi_plugin_manageentities_contractdays`.`end_date` ASC";
-
-
-                //                                 AND (`glpi_plugin_manageentities_contractdays`.`begin_date` <= ADDDATE('".$values['end_date']."', INTERVAL 1 DAY)
-                //                           OR `glpi_plugin_manageentities_contractdays`.`begin_date` IS NULL)
-                //
-                //                     AND (`glpi_plugin_manageentities_contractdays`.`end_date` >= '".$values['begin_date']."'
-                //                           OR `glpi_plugin_manageentities_contractdays`.`end_date` IS NULL)
-                $resContractDay   = $DB->doquery($queryContractDay);
-                $nbTotContractDay = ($resContractDay ? $DB->numrows($resContractDay) : 0);
-
-                // We get contract days datas
-                if ($resContractDay && $nbTotContractDay > 0) {
-                    while ($dataContractDay = $DB->fetchAssoc($resContractDay)) {
+                foreach ($iteratorContractDay as $dataContractDay) {
                         $contract_credit = 0;
 
                         // We get all cri details
@@ -408,7 +438,7 @@ class Monthly extends CommonDBTM
 
                         $remaining = $lastMonthRemaining = $resultCriDetail_beforeMonth['resultOther']['reste'];
 
-                        if (sizeof($resultCriDetail['result']) > 0) {
+                        if (count($resultCriDetail['result']) > 0) {
                             // Credit
                             $credit = $dataContractDay['nbday'] + $dataContractDay['report'];
                             $contract_credit += $credit;
@@ -427,7 +457,7 @@ class Monthly extends CommonDBTM
                             // Contract day informations
                             $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['name_contract'] = $name_contract;
                             $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['name_contractdays'] = $dataContractDay["name_contractdays"];
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contracts_id'] = $dataContractDay["name_contractdays"];
+                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contracts_id'] = $dataContractDay["contracts_id"];
                             $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['is_closed'] = $dataContractDay["is_closed"];
                             $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['num'] = $dataContractDay["num"];
                             $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contract_type'] = Contract::getContractType(
@@ -435,12 +465,12 @@ class Monthly extends CommonDBTM
                             );
                             $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['credit'] = $credit;
 
+                            $contract_conso = 0;
                             foreach ($resultCriDetail['result'] as $cridetails_id => $dataCriDetail) {
                                 $taskCount++;
 
                                 // Conso per tech
                                 $conso_per_tech = [];
-                                $contract_conso = 0;
                                 foreach ($dataCriDetail['conso_per_tech'] as $tickets) {
                                     foreach ($tickets as $users_id => $time) {
                                         $remaining -= $time['conso'];
@@ -505,9 +535,7 @@ class Monthly extends CommonDBTM
                             $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contract_remaining'] = $lastMonthRemaining;
                             $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contractdays_state'] = $contractdays_state;
                         }
-                    }
                 }
-            }
         }
 
         // Total of all

@@ -192,7 +192,7 @@ class Config extends CommonDBTM
         echo "<td>";
         if ($this->fields["business_id"] == null) {
             \Dropdown::showFromArray(
-                "business_id",
+                    "business_id",
                 $users,
                 ['multiple' => true, 'width' => 200, 'value' => $this->fields["business_id"]]
             );
