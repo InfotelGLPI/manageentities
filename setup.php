@@ -146,12 +146,19 @@ function plugin_init_manageentities()
         // Add specific files to add to the header : javascript or css
         $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css", "style.css"];
 
+        // echarts must be in the page <head> — it cannot be loaded via AJAX tab responses
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'lib/echarts/echarts.js';
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'lib/echarts/theme/azul.js';
+
         if (isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'] = [
-                'scripts/scripts-manageentities.js',
-                'scripts/jquery.form.js'
-            ];
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'] = array_merge(
+                $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'] ?? [],
+                [
+                    'scripts/scripts-manageentities.js',
+                    'scripts/jquery.form.js',
+                ]
+            );
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js.php';
             }

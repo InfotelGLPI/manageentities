@@ -559,7 +559,7 @@ class CriDetail extends CommonDBTM
 
                 echo "</table>";
             } else {
-                echo "<div class='center alert alert-important alert-info d-flex'>";
+                echo "<div class='center alert alert-info d-flex'>";
                 echo __('No results found');
                 echo "</div>";
                 if ($entity == -1) {

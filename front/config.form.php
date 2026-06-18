@@ -51,14 +51,14 @@ if (Plugin::isPluginActive("manageentities")) {
 
    } else {
       Html::header(__('Setup'), '', "config", "plugin");
-      echo "<div class='alert alert-important alert-warning d-flex'>";
+      echo "<div class='alert alert-warning d-flex'>";
       echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
       Html::footer();
    }
 
 } else {
    Html::header(__('Setup'), '', "config", "plugin");
-   echo "<div class='alert alert-important alert-warning d-flex'>";
+   echo "<div class='alert alert-warning d-flex'>";
    echo "<b>" . __('Please activate the plugin', 'manageentities') . "</b></div>";
    Html::footer();
 }

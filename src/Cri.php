@@ -355,7 +355,7 @@ class Cri extends CommonDBTM
                 echo "</tr>";
             }
         } else {
-            echo "<div class='alert alert-important alert-warning d-flex' >";
+            echo "<div class='alert alert-warning d-flex' >";
             echo __("Impossible generation, you didn't create a scheduled task", 'manageentities');
             echo "</div>";
         }

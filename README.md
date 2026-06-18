@@ -1,31 +1,37 @@
-# manageentities
-Plugin manageentities pour GLPI
+## Manageentities plugin for GLPI
 
-Ce plugin est sur Transifex - Aidez-nous à le traduire :
-https://www.transifex.com/infotelGLPI/GLPI_manageentities/
+[![License](https://img.shields.io/badge/License-GNU%20v2-blue.svg?style=flat-square)](https://github.com/InfotelGLPI/manageentities/blob/master/LICENSE)
+[![Web](https://img.shields.io/badge/Web-Infotel-blue.svg?style=flat-square)](https://blogglpi.infotel.com)
+[![Translate](https://img.shields.io/badge/Translate-Transifex-cyan)](https://explore.transifex.com/infotelGLPI/GLPI_manageentities/)
 
-This plugin is on Transifex - Help us to translate :
-https://www.transifex.com/infotelGLPI/GLPI_manageentities/
+---
 
+### English
 
-Ce plugin vous permet de gérer vos entités. Lier des documents, contacts, contrats. De plus vous pouvez créer des rapports d'interventions, et faire le suivi contrat de vos entités.
-* Pour une entité donnée, vous définissez
+This plugin provides a client entity management portal for GLPI.
 
-> * les contacts associés (ainsi que le responsable),
-> * les contrats associés ( ainsi que celui utilisé par défaut),
-> * le tarif journalier pour un type d'intervention donné,
-> * les documents associés.
-> * Puis dans le détail du contrat, vous définissez le solde initial (nombre de jours x un type d'intervention donné)
-> * Une fois ceci fait, vous pourrez créer des rapports d'intervention et ainsi avoir le décompte du contrat utilisé.
-> * Possibilité de lancement du plugin au démarrage de GLPI
+* For each entity, associate **contacts** (including the manager), **business contacts**, **contracts**, and **documents**.
+* Define service **contract periods** with an initial balance (days or hours) and authorized technicians.
+* Create **intervention reports (CRI)** linked to tickets and export them as **PDF**, automatically decrementing the contract balance.
+* Monitor entity activity through **general follow-up**, **monthly follow-up**, and **GANTT** views.
+* Record **non-billed interventions** (direct helpdesk) and later link them to tickets.
+* Generate **management reports**: technician movement, occupation rate, intervention summary.
+* The plugin can be configured to open automatically when GLPI loads.
 
-This plugin allows you to manage entities. Link with documents, contacts, contracts. You can also create intervention reports and do contract management of your entities. 
-* For a given entity, you define :
+**[Full English documentation →](docs/en/index.md)**
 
-> * Associated contacts (and the manager),
-> * contracts involved (and those used by default),
-> * the daily rate for a given type of intervention
-> * Associated documents.
-> * Then in the details of the contract, you set the initial balance (number of days x the type of intervention).
-> * Once done, you can create reports of intervention and thus have the breakdown of contract used.
-> * The plugin can be launched when GLPI loading
+---
+
+### Français
+
+Ce plugin fournit un portail de gestion des entités clientes dans GLPI.
+
+* Pour chaque entité, associez des **contacts** (dont le responsable), des **contacts business**, des **contrats** et des **documents**.
+* Définissez des **périodes de contrat** avec un solde initial (jours ou heures) et les techniciens autorisés.
+* Créez des **rapports d'intervention (CRI)** liés aux tickets et exportez-les en **PDF**, avec décompte automatique du solde contractuel.
+* Suivez l'activité de l'entité via les vues **suivi général**, **suivi mensuel** et **GANTT**.
+* Enregistrez des **interventions non facturées** (direct helpdesk) et rattachez-les ultérieurement à des tickets.
+* Générez des **rapports de gestion** : déplacements de techniciens, taux d'occupation, synthèse des interventions.
+* Le plugin peut être configuré pour s'ouvrir automatiquement au démarrage de GLPI.
+
+**[Documentation complète en français →](docs/fr/index.md)**
