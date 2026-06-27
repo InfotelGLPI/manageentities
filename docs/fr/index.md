@@ -1,6 +1,6 @@
 # Documentation — Plugin Manageentities pour GLPI
 
-**Licence :** GNU GPL v2+  
+**Licence :** GNU GPL v3+  
 **Auteur :** Infotel (Xavier CAILLAUD)  
 **Dépôt :** https://github.com/InfotelGLPI/manageentities
 
