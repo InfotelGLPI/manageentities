@@ -122,7 +122,7 @@ class BusinessContact extends CommonDBTM
                         'deletebusiness',
                         _x('button', 'Delete permanently'),
                         ['id' => $ID],
-                        'ti ti-circle-x'
+                        'ti-circle-x'
                     );
                     echo "</td>";
                 }

@@ -282,11 +282,18 @@ class Followup extends CommonDBTM
                             ];
                         }
                     } else {
-                        // Central interface: apply user preferences if set, otherwise show all
+                        // Central interface: user preferences first, then config default, otherwise show all
                         if (isset($preferences['contract_states']) && $preferences['contract_states'] != null) {
                             $criteriad['WHERE'] = $criteriad['WHERE'] + [
                                 'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                     $preferences['contract_states'],
+                                    true
+                                ),
+                            ];
+                        } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
+                            $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
+                                    $config_states['contract_states'],
                                     true
                                 ),
                             ];
