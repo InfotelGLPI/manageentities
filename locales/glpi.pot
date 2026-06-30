@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-27 09:21+0000\n"
+"POT-Creation-Date: 2026-06-30 07:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -857,7 +857,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:771
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:796
 msgid "Manage your contracts"
 msgstr ""
 
@@ -1337,6 +1337,7 @@ msgstr ""
 
 #: src/ContractDay.php:437 src/ContractDay.php:612 src/Followup.php:932
 #: src/Followup.php:1248 src/Dashboard.php:167 src/Dashboard.php:439
+#: hook.php:724
 msgid "Total remaining"
 msgstr ""
 
