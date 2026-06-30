@@ -712,6 +712,31 @@ function plugin_manageentities_getAddSearchOptions($itemtype)
     return $sopt;
 }
 
+function plugin_manageentities_getAddSearchOptionsNew($itemtype)
+{
+    $options = [];
+
+    if ($itemtype === 'Contract' && Session::haveRight('plugin_manageentities', READ)) {
+        $options[] = [
+            'id'             => '4460',
+            'table'          => 'glpi_plugin_manageentities_contracts',
+            'field'          => 'contracts_id',
+            'name'           => __('Total remaining', 'manageentities'),
+            'datatype'       => 'specific',
+            'remaining_days' => true,
+            'nosort'         => true,
+            'nosearch'       => true,
+            'massiveaction'  => false,
+            'joinparams'     => [
+                'jointype'  => 'child',
+                'linkfield' => 'contracts_id',
+            ],
+        ];
+    }
+
+    return $options;
+}
+
 function plugin_manageentities_postinit()
 {
     global $PLUGIN_HOOKS;

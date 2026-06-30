@@ -746,6 +746,76 @@ class Contract extends CommonDBTM
     }
 
     /**
+     * Sum of remaining days across all open contract periods for a given contract.
+     *
+     * @param int $contracts_id  GLPI contract ID
+     *
+     * @return float
+     */
+    public static function getTotalRemainingDays(int $contracts_id): float
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => [
+                'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
+                'glpi_plugin_manageentities_contractdays.nbday',
+                'glpi_plugin_manageentities_contractdays.report',
+                'glpi_plugin_manageentities_contractdays.contracts_id',
+                'glpi_plugin_manageentities_contractdays.entities_id',
+                'glpi_plugin_manageentities_contractdays.contract_type',
+            ],
+            'FROM' => 'glpi_plugin_manageentities_contractdays',
+            'LEFT JOIN' => [
+                'glpi_plugin_manageentities_contractstates' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                        'glpi_plugin_manageentities_contractstates' => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                'glpi_plugin_manageentities_contractdays.contracts_id' => $contracts_id,
+                'glpi_plugin_manageentities_contractstates.is_closed' => 0,
+            ],
+        ]);
+
+        $total = 0.0;
+        foreach ($iterator as $row) {
+            $result = CriDetail::getCriDetailData($row);
+            $total += $result['resultOther']['reste'];
+        }
+
+        return $total;
+    }
+
+    /**
+     * @param string $field
+     * @param array|mixed $values
+     * @param array $options
+     */
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        if (
+            $field === 'contracts_id'
+            && isset($options['searchopt']['remaining_days'])
+            && $options['searchopt']['remaining_days']
+        ) {
+            $contracts_id = (int)($values['contracts_id'] ?? $values['name'] ?? 0);
+            if ($contracts_id <= 0) {
+                return '';
+            }
+            return Html::formatNumber(self::getTotalRemainingDays($contracts_id), false);
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    /**
      * Display contents at the begining of item forms.
      *
      * @param array $params Array with "item" and "options" keys
