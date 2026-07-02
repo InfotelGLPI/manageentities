@@ -129,7 +129,8 @@ function plugin_manageentities_install()
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.0.1.sql");
     }
 
-    if (!$DB->tableExists("glpi_plugin_manageentities_interventionskateholders")) {
+    if (!$DB->tableExists("glpi_plugin_manageentities_interventionskateholders")
+    && !$DB->tableExists("glpi_plugin_manageentities_interventionstakeholders")) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.0.2.sql");
     }
 
