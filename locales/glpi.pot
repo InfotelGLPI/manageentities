@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 13:33+0000\n"
+"POT-Creation-Date: 2026-07-02 16:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,7 +52,7 @@ msgid "Accounts"
 msgstr ""
 
 #: templates/interventionstakeholder_form.html.twig:62
-#: templates/cridetail_for_ticket.html.twig:143
+#: templates/cridetail_for_ticket.html.twig:198
 #: templates/contract_detail_form.html.twig:128
 msgid "Add"
 msgstr ""
@@ -317,6 +317,7 @@ msgstr ""
 msgid "Associated ticket"
 msgstr ""
 
+#: templates/cridetail_for_ticket.html.twig:112
 #: templates/contractday_form.html.twig:64
 msgid "Begin date"
 msgstr ""
@@ -373,7 +374,7 @@ msgid_plural "Comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/cridetail_for_ticket.html.twig:88
+#: templates/cridetail_for_ticket.html.twig:100
 #: templates/contractday_form.html.twig:111
 msgid "Comments"
 msgstr ""
@@ -493,7 +494,7 @@ msgstr ""
 msgid "Contract successfully updated"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:56
+#: templates/cridetail_for_ticket.html.twig:68
 msgid "Contract type"
 msgstr ""
 
@@ -593,7 +594,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:150
+#: templates/cridetail_for_ticket.html.twig:205
 #: templates/contract_detail_form.html.twig:135
 msgid "Delete permanently"
 msgstr ""
@@ -644,7 +645,8 @@ msgstr ""
 msgid "Duration of moving"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:73
+#: templates/cridetail_for_ticket.html.twig:85
+#: templates/cridetail_for_ticket.html.twig:127
 #: templates/contractday_form.html.twig:69
 msgid "End date"
 msgstr ""
@@ -674,6 +676,7 @@ msgstr ""
 
 #: templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
+#: templates/cridetail_for_ticket.html.twig:56
 msgid "Entity"
 msgid_plural "Entities"
 msgstr[0] ""
@@ -866,7 +869,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/GenerateCRI.php:1293 src/CriDetail.php:312 src/CriDetail.php:570
-#: src/CriDetail.php:1675
+#: src/CriDetail.php:1685
 msgid "Intervention with contract"
 msgstr ""
 
@@ -982,12 +985,12 @@ msgctxt "button"
 msgid "Next >"
 msgstr ""
 
-#: src/GenerateCRI.php:1324 src/CriDetail.php:1713
+#: src/GenerateCRI.php:1324 src/CriDetail.php:1723
 msgid "No active contracts"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:104
-#: templates/cridetail_for_ticket.html.twig:192
+#: templates/cridetail_for_ticket.html.twig:159
+#: templates/cridetail_for_ticket.html.twig:286
 msgid "No days remaining on this contract period"
 msgstr ""
 
@@ -1080,6 +1083,10 @@ msgstr ""
 msgid "Page"
 msgstr ""
 
+#: templates/cridetail_for_ticket.html.twig:143
+msgid "Period comment"
+msgstr ""
+
 #: src/AddElementsView.php:2229
 msgid "Period name"
 msgstr ""
@@ -1092,8 +1099,8 @@ msgid_plural "Periods of contract"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/GenerateCRI.php:1360 src/CriDetail.php:700 src/CriDetail.php:1748
-#: src/CriDetail.php:1785 templates/contractday_list.html.twig:33
+#: src/GenerateCRI.php:1360 src/CriDetail.php:700 src/CriDetail.php:1758
+#: src/CriDetail.php:1795 templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr ""
 
@@ -1113,8 +1120,8 @@ msgstr ""
 msgid "Please add this intervention before adding another."
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:116
-#: templates/cridetail_for_ticket.html.twig:199
+#: templates/cridetail_for_ticket.html.twig:171
+#: templates/cridetail_for_ticket.html.twig:293
 msgid "Please anticipate the end of the service period if necessary"
 msgstr ""
 
@@ -1215,12 +1222,12 @@ msgstr ""
 msgid "Reinitialize forms"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:106
-#: templates/cridetail_for_ticket.html.twig:113
-#: templates/cridetail_for_ticket.html.twig:123
-#: templates/cridetail_for_ticket.html.twig:193
-#: templates/cridetail_for_ticket.html.twig:198
-#: templates/cridetail_for_ticket.html.twig:204
+#: templates/cridetail_for_ticket.html.twig:161
+#: templates/cridetail_for_ticket.html.twig:168
+#: templates/cridetail_for_ticket.html.twig:178
+#: templates/cridetail_for_ticket.html.twig:287
+#: templates/cridetail_for_ticket.html.twig:292
+#: templates/cridetail_for_ticket.html.twig:298
 msgid "Remaining days"
 msgstr ""
 
@@ -1406,7 +1413,7 @@ msgstr ""
 msgid "Ticket informations"
 msgstr ""
 
-#: src/CriDetail.php:1354 src/CriDetail.php:1819
+#: src/CriDetail.php:1354 src/CriDetail.php:1829
 msgid "Ticket not validated"
 msgstr ""
 
@@ -1497,11 +1504,11 @@ msgstr ""
 msgid "Type of service contract"
 msgstr ""
 
-#: src/CriDetail.php:1363 src/CriDetail.php:1826
+#: src/CriDetail.php:1363 src/CriDetail.php:1836
 msgid "Type of service contract missing"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:147
+#: templates/cridetail_for_ticket.html.twig:202
 #: templates/contract_detail_form.html.twig:132
 msgid "Update"
 msgstr ""
