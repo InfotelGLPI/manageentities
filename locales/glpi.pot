@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 13:02+0000\n"
+"POT-Creation-Date: 2026-07-02 13:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: templates/interventionskateholder_form.html.twig:62
+#: templates/interventionstakeholder_form.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:143
 #: templates/contract_detail_form.html.twig:128
 msgid "Add"
@@ -114,7 +114,7 @@ msgstr ""
 msgid "Add only the intervention"
 msgstr ""
 
-#: templates/interventionskateholder_form.html.twig:33
+#: templates/interventionstakeholder_form.html.twig:33
 msgid "Add stakeholders"
 msgstr ""
 
@@ -128,13 +128,12 @@ msgid_plural "Add these prices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/InterventionSkateholder.php:218
-#: templates/interventionskateholder_form.html.twig:49
-#: templates/interventionskateholder_list.html.twig:41
+#: templates/interventionstakeholder_form.html.twig:49
+#: templates/interventionstakeholder_list.html.twig:41
 msgid "Affected to"
 msgstr ""
 
-#: ajax/interventionskateholderactions.php:89
+#: ajax/interventionstakeholderactions.php:87
 msgid "All fields are not correctly filled."
 msgstr ""
 
@@ -271,12 +270,12 @@ msgstr ""
 msgid "An error happend while uploading the document."
 msgstr ""
 
-#: ajax/interventionskateholderactions.php:111
+#: ajax/interventionstakeholderactions.php:109
 msgid "An error happened while deleting the data."
 msgstr ""
 
-#: ajax/interventionskateholderactions.php:68
-#: ajax/interventionskateholderactions.php:85
+#: ajax/interventionstakeholderactions.php:67
+#: ajax/interventionstakeholderactions.php:83
 msgid "An error happened while saving the data."
 msgstr ""
 
@@ -516,12 +515,12 @@ msgid "Crossed time (itinerary including)"
 msgstr ""
 
 #: src/Monthly.php:715 src/Monthly.php:753
-msgid "Current skateholder"
+msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/interventionskateholder_list.html.twig:32
+#: templates/interventionstakeholder_list.html.twig:32
 msgid "Current stakeholders"
 msgstr ""
 
@@ -593,7 +592,7 @@ msgstr ""
 msgid "Default time PM"
 msgstr ""
 
-#: src/InterventionSkateholder.php:234 src/InterventionSkateholder.php:302
+#: src/InterventionStakeholder.php:205 src/InterventionStakeholder.php:268
 msgid "Delete"
 msgstr ""
 
@@ -798,11 +797,11 @@ msgstr ""
 msgid "In progress"
 msgstr ""
 
-#: ajax/interventionskateholderactions.php:77
+#: ajax/interventionstakeholderactions.php:76
 msgid "Informations successfully added."
 msgstr ""
 
-#: ajax/interventionskateholderactions.php:103
+#: ajax/interventionstakeholderactions.php:101
 msgid "Informations successfully deleted."
 msgstr ""
 
@@ -862,7 +861,7 @@ msgstr[1] ""
 
 #: src/Cri.php:203 src/CriPrice.php:355 src/AddElementsView.php:2730
 #: src/CriDetail.php:309 src/CriDetail.php:567 src/CriDetail.php:682
-#: src/CriDetail.php:1401 src/CriType.php:48 hook.php:670
+#: src/CriDetail.php:1401 src/CriType.php:48 hook.php:675
 #: templates/criprice_form.html.twig:42
 msgid "Intervention type"
 msgid_plural "Intervention types"
@@ -922,7 +921,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:802
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:807
 msgid "Manage your contracts"
 msgstr ""
 
@@ -1019,8 +1018,8 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
-#: src/InterventionSkateholder.php:176
-#: templates/interventionskateholder_list.html.twig:59
+#: src/InterventionStakeholder.php:170
+#: templates/interventionstakeholder_list.html.twig:59
 msgid "No stakeholders have been affected yet."
 msgstr ""
 
@@ -1305,7 +1304,7 @@ msgstr ""
 msgid "Society name"
 msgstr ""
 
-#: ajax/interventionskateholderactions.php:59
+#: ajax/interventionstakeholderactions.php:59
 msgid "Stakeholder successfully updated."
 msgstr ""
 
@@ -1315,7 +1314,7 @@ msgstr ""
 
 #: src/ContractDay.php:150 src/ContractDay.php:517 src/AddElementsView.php:2301
 #: src/ContractState.php:48 src/Followup.php:922 src/Followup.php:1185
-#: src/Followup.php:2351 hook.php:671 templates/contractday_form.html.twig:101
+#: src/Followup.php:2351 hook.php:676 templates/contractday_form.html.twig:101
 msgid "State of contract"
 msgid_plural "States of contracts"
 msgstr[0] ""
@@ -1402,7 +1401,7 @@ msgstr ""
 msgid "This action is irreversible, Continue ?"
 msgstr ""
 
-#: src/InterventionSkateholder.php:242 src/InterventionSkateholder.php:304
+#: src/InterventionStakeholder.php:209 src/InterventionStakeholder.php:270
 msgid "This action is irreversible. Continue ?"
 msgstr ""
 
@@ -1467,7 +1466,7 @@ msgid "Total production"
 msgstr ""
 
 #: src/ContractDay.php:523 src/Followup.php:939 src/Followup.php:1255
-#: src/Dashboard.php:167 src/Dashboard.php:439 hook.php:730
+#: src/Dashboard.php:167 src/Dashboard.php:439 hook.php:735
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr ""
@@ -1577,12 +1576,12 @@ msgstr ""
 msgid "Used by default"
 msgstr ""
 
-#: templates/interventionskateholder_form.html.twig:41
-#: templates/interventionskateholder_list.html.twig:40
+#: templates/interventionstakeholder_form.html.twig:41
+#: templates/interventionstakeholder_list.html.twig:40
 msgid "User"
 msgstr ""
 
-#: src/InterventionSkateholder.php:53
+#: src/InterventionStakeholder.php:53
 msgid "User affected"
 msgid_plural "Users affected"
 msgstr[0] ""
