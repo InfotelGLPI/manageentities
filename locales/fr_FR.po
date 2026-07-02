@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 10:12+0000\n"
+"POT-Creation-Date: 2026-07-02 10:48+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -35,6 +35,10 @@ msgstr "(en jours)"
 msgid "(in hours)"
 msgstr "(en heures)"
 
+#: src/Contract.php:177
+msgid "+ 12 months"
+msgstr "+ 12 mois"
+
 #: front/directhelpdesk.php:70
 msgid "2 hours minimum"
 msgstr "2 heures minimum"
@@ -54,6 +58,10 @@ msgstr "Comptes"
 #: templates/cridetail_for_ticket.html.twig:133
 msgid "Add"
 msgstr "Ajouter"
+
+#: src/Contract.php:178
+msgid "Add 12 months to the initial contract period"
+msgstr "Ajoutez 12 mois à la période contractuelle initiale"
 
 #: src/Company.php:83
 msgid "Add a company"
@@ -193,7 +201,7 @@ msgstr "Tous les éléments précedent vont être mis à jour, continuer ?"
 msgid "All reports"
 msgstr "Liste complète"
 
-#: src/Config.php:306 templates/config_options_form.html.twig:70
+#: src/Config.php:325 templates/config_options_form.html.twig:70
 msgid "Allow periods on the same interval of dates"
 msgstr "Autoriser les interventions sur un même intervalle de date"
 
@@ -283,7 +291,7 @@ msgstr "Une erreur est survenue lors de la suppressions des données"
 msgid "An error happened while saving the data."
 msgstr "Une erreur est survenue lors de la sauvegarde des données."
 
-#: src/Contract.php:588 src/Contract.php:617
+#: src/Contract.php:660 src/Contract.php:689
 msgid "Annual"
 msgstr "Annuel"
 
@@ -303,7 +311,7 @@ msgstr "Tarif appliqué"
 msgid "Associate to a contract"
 msgstr "Associer à un contrat"
 
-#: src/Contract.php:315 src/Contract.php:449
+#: src/Contract.php:387 src/Contract.php:521
 msgid "Associated assistance contracts"
 msgstr "Contrats d'assistance associés"
 
@@ -322,7 +330,7 @@ msgstr "Rapports d'intervention associés"
 msgid "Associated ticket"
 msgstr "Ticket associé"
 
-#: src/Contract.php:641 src/Contract.php:678
+#: src/Contract.php:713 src/Contract.php:750
 msgid "By intervention"
 msgstr "A l'intervention"
 
@@ -330,7 +338,7 @@ msgstr "A l'intervention"
 msgid "CRI generation"
 msgstr "Génération du CRI"
 
-#: src/Config.php:396
+#: src/Config.php:415
 msgid "CRI generation form"
 msgstr "Formulaire de génération de CRI"
 
@@ -353,6 +361,14 @@ msgid_plural "Clients management"
 msgstr[0] "Gestion des clients"
 msgstr[1] "Gestion des clients"
 msgstr[2] "Gestion des clients"
+
+#: templates/config_options_form.html.twig:131
+msgid "Closed GLPI contract state"
+msgstr "État du contrat GLPI fermé"
+
+#: templates/config_options_form.html.twig:143
+msgid "Closed contract period state"
+msgstr "État de la période contractuelle fermée"
 
 #: src/ContractState.php:76 src/ContractState.php:106
 msgid "Color"
@@ -381,11 +397,11 @@ msgstr[0] "Société"
 msgstr[1] "Sociétés"
 msgstr[2] "Sociétés"
 
-#: src/Config.php:260 templates/config_options_form.html.twig:43
+#: src/Config.php:279 templates/config_options_form.html.twig:43
 msgid "Configuration daily or hourly"
 msgstr "Configuration journalière ou horaire"
 
-#: src/Config.php:313 templates/config_options_form.html.twig:79
+#: src/Config.php:332 templates/config_options_form.html.twig:79
 msgid "Configuring the client side view"
 msgstr "Configuration de la vue coté client"
 
@@ -418,6 +434,10 @@ msgstr ""
 msgid "Contract and intervention successfully added"
 msgstr "Contrat et prestation ont bien été ajoutés."
 
+#: templates/config_options_form.html.twig:119
+msgid "Contract closure"
+msgstr "Clôture des contrats"
+
 #: src/Contract.php:149 src/Contract.php:151
 msgid "Contract detail"
 msgstr "Détail du contrat"
@@ -426,7 +446,7 @@ msgstr "Détail du contrat"
 msgid "Contract informations not updated in base"
 msgstr "Informations sur le contrat non sauvegardées en base de données"
 
-#: src/Contract.php:227 src/AddElementsView.php:1882
+#: src/Contract.php:299 src/AddElementsView.php:1882
 msgid "Contract is imported in GLPI"
 msgstr "Le contrat est importé dans GLPI"
 
@@ -549,21 +569,21 @@ msgstr "Date"
 msgid "Date of"
 msgstr "Date de"
 
-#: src/Contract.php:212 src/Gantt.php:352 src/AddElementsView.php:1850
+#: src/Contract.php:284 src/Gantt.php:352 src/AddElementsView.php:1850
 #: src/Followup.php:1119
 msgid "Date of renewal"
 msgstr "Date de reconduction"
 
-#: src/Contract.php:208 src/Entity.php:589 src/Gantt.php:348
+#: src/Contract.php:280 src/Entity.php:589 src/Gantt.php:348
 #: src/AddElementsView.php:1839 src/Followup.php:1104
 msgid "Date of signature"
 msgstr "Date de signature"
 
-#: src/Config.php:369 templates/config_options_form.html.twig:97
+#: src/Config.php:388 templates/config_options_form.html.twig:97
 msgid "Default Business list for general monitoring"
 msgstr "Liste par défaut des commerciaux pour le suivi général"
 
-#: src/Config.php:417 templates/config_cri_form.html.twig:43
+#: src/Config.php:436 templates/config_cri_form.html.twig:43
 msgid "Default duration"
 msgstr "Durée par défaut"
 
@@ -575,11 +595,11 @@ msgstr "Liste par défaut des commerciaux pour le suivi général"
 msgid "Default list of companies for the general monitoring"
 msgstr "Liste par défaut des sociétés pour le suivi général"
 
-#: src/Config.php:428 templates/config_cri_form.html.twig:52
+#: src/Config.php:447 templates/config_cri_form.html.twig:52
 msgid "Default time AM"
 msgstr "Heure par défaut (Matin)"
 
-#: src/Config.php:440 templates/config_cri_form.html.twig:61
+#: src/Config.php:459 templates/config_cri_form.html.twig:61
 msgid "Default time PM"
 msgstr "Heure par défaut (Après midi)"
 
@@ -610,15 +630,15 @@ msgstr "Détail des travaux réalisés"
 msgid "Detail of work done"
 msgstr "Détail des travaux réalisés"
 
-#: src/Config.php:452 templates/config_cri_form.html.twig:70
+#: src/Config.php:471 templates/config_cri_form.html.twig:70
 msgid "Disable creation date in header of PDF"
 msgstr "Désactiver la date de création dans l'entête des PDF"
 
-#: src/Config.php:406 templates/config_cri_form.html.twig:25
+#: src/Config.php:425 templates/config_cri_form.html.twig:25
 msgid "Display PDF"
 msgstr "Afficher le PDF"
 
-#: src/Config.php:389 templates/config_options_form.html.twig:106
+#: src/Config.php:408 templates/config_options_form.html.twig:106
 msgid "Display comments from the company in the CRI"
 msgstr "Afficher les commentaires de la société dans le CRI"
 
@@ -634,7 +654,7 @@ msgstr "Le document a bien été ajouté"
 msgid "Duration"
 msgstr "Durée"
 
-#: src/Contract.php:273 src/AddElementsView.php:1936
+#: src/Contract.php:345 src/AddElementsView.php:1936
 msgid "Duration of moving"
 msgstr "Durée du trajet"
 
@@ -642,7 +662,7 @@ msgstr "Durée du trajet"
 msgid "End date"
 msgstr "Date de fin"
 
-#: src/ContractDay.php:816
+#: src/ContractDay.php:871
 msgid "End date cannot be less than begin date"
 msgstr "La date de début ne peut pas être inférieure à la date de fin"
 
@@ -661,7 +681,7 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/cridetail.form.php:47 front/cridetail.form.php:50
 #: front/cridetail.form.php:52 src/Profile.php:54 src/Profile.php:123
 #: src/GenerateCRI.php:1240 src/Monthly.php:1091 src/Preference.php:111
-#: src/TaskCategory.php:68 src/Followup.php:2187 setup.php:198
+#: src/TaskCategory.php:68 src/Followup.php:2187 setup.php:201
 msgid "Entities portal"
 msgstr "Portail Clients"
 
@@ -725,6 +745,15 @@ msgstr "du"
 msgid "GANTT"
 msgstr "GANTT"
 
+#: templates/config_options_form.html.twig:136
+msgid ""
+"GLPI state (visible on contracts) that triggers period closure and is "
+"applied to the contract when all periods are closed."
+msgstr ""
+"Statut GLPI (visible sur les contrats) qui déclenche la clôture de la "
+"période et est appliqué au contrat lorsque toutes les périodes sont "
+"clôturées."
+
 #: src/Entity.php:93 src/Followup.php:53 src/Followup.php:2187
 #: src/Followup.php:2311
 msgid "General follow-up"
@@ -763,7 +792,7 @@ msgstr "Assistance sur contrat"
 msgid "Hour of"
 msgstr "Heure de"
 
-#: src/Contract.php:640 src/Contract.php:676 src/Config.php:497
+#: src/Contract.php:712 src/Contract.php:748 src/Config.php:516
 msgid "Hourly"
 msgstr "Horaire"
 
@@ -799,7 +828,7 @@ msgstr "Les informations ont bien été supprimées"
 msgid "Initial credit"
 msgstr "Crédit initial"
 
-#: src/Contract.php:705
+#: src/Contract.php:777
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] "Intervention"
@@ -822,8 +851,8 @@ msgstr "Intervention des prestations"
 msgid "Intervention periods of contract"
 msgstr "Interventions de la prestation du contrat"
 
-#: src/Profile.php:128 src/Config.php:504 src/Cri.php:56 src/CriDetail.php:432
-#: setup.php:122
+#: src/Profile.php:128 src/Config.php:523 src/Cri.php:56 src/CriDetail.php:432
+#: setup.php:125
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] "Rapport d'intervention"
@@ -851,7 +880,7 @@ msgstr[2] "Tâches d'interventions"
 
 #: src/Cri.php:203 src/CriPrice.php:395 src/AddElementsView.php:2730
 #: src/CriDetail.php:309 src/CriDetail.php:570 src/CriDetail.php:680
-#: src/CriDetail.php:1399 src/CriType.php:48 hook.php:665
+#: src/CriDetail.php:1399 src/CriType.php:48 hook.php:670
 msgid "Intervention type"
 msgid_plural "Intervention types"
 msgstr[0] "Type d'intervention"
@@ -893,7 +922,7 @@ msgstr "Lancer le plugin Portail entités au démarrage de GLPI"
 msgid "Linked interventions"
 msgstr "Interventions liées"
 
-#: src/Config.php:326 templates/config_options_form.html.twig:88
+#: src/Config.php:345 templates/config_options_form.html.twig:88
 msgid "List of default statuses for general monitoring"
 msgstr "Liste par défaut des statuts pour le suivi général"
 
@@ -911,7 +940,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:797
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:802
 msgid "Manage your contracts"
 msgstr "Gérer vos contrats"
 
@@ -922,7 +951,7 @@ msgstr[0] "Gestion des catégories de tâches"
 msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
-#: src/Contract.php:218 src/Contract.php:356 src/Monthly.php:701
+#: src/Contract.php:290 src/Contract.php:428 src/Monthly.php:701
 #: src/Monthly.php:733 src/AddElementsView.php:1864 src/Followup.php:1135
 msgid "Mode of management"
 msgstr "Mode de gestion"
@@ -932,7 +961,7 @@ msgstr "Mode de gestion"
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
 
-#: src/Contract.php:254 src/AddElementsView.php:1913
+#: src/Contract.php:326 src/AddElementsView.php:1913
 msgid "Movement management"
 msgstr "Gestion des déplacements"
 
@@ -1038,7 +1067,7 @@ msgstr "Nombres de déplacements"
 msgid "Object of intervention"
 msgstr "Objet de l'intervention"
 
-#: src/Config.php:298 templates/config_options_form.html.twig:61
+#: src/Config.php:317 templates/config_options_form.html.twig:61
 msgid "Only public task are visible on intervention report"
 msgstr "Seules les tâches publiques sont visibles sur le CRI"
 
@@ -1053,7 +1082,7 @@ msgstr ""
 msgid "Opened contract prestations without remaining days"
 msgstr "Prestations de contrat en cours sans jours restants"
 
-#: src/Config.php:80 src/Config.php:240
+#: src/Config.php:80 src/Config.php:259
 msgid "Options"
 msgstr "Options"
 
@@ -1061,7 +1090,7 @@ msgstr "Options"
 msgid "Out of contract"
 msgstr "Hors contrat"
 
-#: src/Contract.php:648 src/Contract.php:684
+#: src/Contract.php:720 src/Contract.php:756
 msgid "Package"
 msgstr "Forfait"
 
@@ -1073,7 +1102,7 @@ msgstr "Page"
 msgid "Period name"
 msgstr "Nom de la prestation"
 
-#: src/Entity.php:127 src/Config.php:505 src/ContractDay.php:60
+#: src/Entity.php:127 src/Config.php:524 src/ContractDay.php:60
 #: src/ContractDay.php:62 src/Followup.php:921 src/Followup.php:1177
 msgid "Period of contract"
 msgid_plural "Periods of contract"
@@ -1120,7 +1149,7 @@ msgstr "Merci de renseigner la date de début de la prestation du contrat."
 msgid "Please fill the contract period end date."
 msgstr "Merci de renseigner la date de fin de la prestation du contrat."
 
-#: src/Contract.php:566
+#: src/Contract.php:638
 msgid ""
 "Please note that there are no more contracts with days available for this "
 "customer."
@@ -1180,11 +1209,11 @@ msgstr "Tarif mis à jour avec succès"
 msgid "Production"
 msgstr "Production"
 
-#: src/Contract.php:587 src/Contract.php:615
+#: src/Contract.php:659 src/Contract.php:687
 msgid "Quarterly"
 msgstr "Trimestriel"
 
-#: src/Contract.php:244 src/AddElementsView.php:1903
+#: src/Contract.php:316 src/AddElementsView.php:1903
 msgid "Refacturable costs"
 msgstr "Frais refacturables"
 
@@ -1219,11 +1248,11 @@ msgstr "Restant au"
 msgid "Remaining total (amount)"
 msgstr "Total restant (montant)"
 
-#: src/Report.php:228 setup.php:125
+#: src/Report.php:228 setup.php:128
 msgid "Report concerning the occupation of the technicians"
 msgstr "Rapport concernant les déplacements des techniciens"
 
-#: src/Report.php:116 setup.php:123
+#: src/Report.php:116 setup.php:126
 msgid "Report on the movement of technicians"
 msgstr "Rapport concernant l'occupation des techniciens"
 
@@ -1238,17 +1267,17 @@ msgstr[0] "Gestion des droits"
 msgstr[1] "Gestion des droits"
 msgstr[2] "Gestion des droits"
 
-#: src/Config.php:247 templates/config_options_form.html.twig:25
+#: src/Config.php:266 templates/config_options_form.html.twig:25
 msgid "Rubric by default for reports"
 msgstr "Rubrique par défaut pour les rapports"
 
 #: templates/config_cri_form.html.twig:87
-#: templates/config_options_form.html.twig:118
+#: templates/config_options_form.html.twig:158
 msgctxt "button"
 msgid "Save"
 msgstr "Sauver"
 
-#: src/Config.php:242 templates/config_options_form.html.twig:16
+#: src/Config.php:261 templates/config_options_form.html.twig:16
 msgid "Save reports in glpi"
 msgstr "Sauvegarder les rapports dans glpi"
 
@@ -1272,7 +1301,7 @@ msgstr "Sélectionner un prix existant"
 msgid "Setup for Generate Intervention report"
 msgstr "Configuration pour \"Générer le rapport d'intervention\""
 
-#: src/Contract.php:239 src/AddElementsView.php:1893
+#: src/Contract.php:311 src/AddElementsView.php:1893
 msgid "Show on GANTT"
 msgstr "Voir sur le GANTT"
 
@@ -1284,9 +1313,15 @@ msgstr "Nom de la société"
 msgid "Stakeholder successfully updated."
 msgstr "L'intervenant a bien été ajouté."
 
+#: templates/config_options_form.html.twig:148
+msgid "State applied to contract periods when the GLPI contract is closed."
+msgstr ""
+"Statuts appliqué aux périodes contractuelles lorsque le contrat GLPI est "
+"clôturé"
+
 #: src/ContractDay.php:149 src/ContractDay.php:397 src/ContractDay.php:604
 #: src/AddElementsView.php:2301 src/ContractState.php:48 src/Followup.php:922
-#: src/Followup.php:1185 src/Followup.php:2351 hook.php:666
+#: src/Followup.php:1185 src/Followup.php:2351 hook.php:671
 msgid "State of contract"
 msgid_plural "States of contracts"
 msgstr[0] "Statut du contrat"
@@ -1297,7 +1332,7 @@ msgstr[2] "Statuts du contrat"
 msgid "State of intervention"
 msgstr "Etat de l'intervention"
 
-#: src/Config.php:411 templates/config_cri_form.html.twig:34
+#: src/Config.php:430 templates/config_cri_form.html.twig:34
 msgid "State of ticket created"
 msgstr "État du ticket créé"
 
@@ -1325,7 +1360,7 @@ msgstr "La catégorie de tâche doit être définie"
 msgid "Team"
 msgstr "Equipe"
 
-#: src/Contract.php:647 src/Contract.php:682
+#: src/Contract.php:719 src/Contract.php:754
 msgid "Technical Assistance"
 msgstr "Assistance Technique"
 
@@ -1350,7 +1385,7 @@ msgstr "Intervenants"
 msgid "Thanks to select a intervention type"
 msgstr "Merci de sélectionner un type d'intervention"
 
-#: src/ContractDay.php:860
+#: src/ContractDay.php:915
 #, php-format
 msgid "The contract period %s already exists"
 msgstr "La prestation du contrat %s existe déja"
@@ -1441,7 +1476,7 @@ msgstr "Total consommation mensuelle"
 
 #: src/ContractDay.php:437 src/ContractDay.php:612 src/Followup.php:939
 #: src/Followup.php:1255 src/Dashboard.php:167 src/Dashboard.php:439
-#: hook.php:725
+#: hook.php:730
 msgid "Total remaining"
 msgstr "Total restant"
 
@@ -1470,8 +1505,8 @@ msgstr "Type de contrat"
 msgid "Type of management"
 msgstr "Type de gestion"
 
-#: src/Contract.php:221 src/Contract.php:357 src/Contract.php:360
-#: src/ContractDay.php:167 src/ContractDay.php:349 src/ContractDay.php:894
+#: src/Contract.php:293 src/Contract.php:429 src/Contract.php:432
+#: src/ContractDay.php:167 src/ContractDay.php:349 src/ContractDay.php:949
 #: src/AddElementsView.php:1871 src/AddElementsView.php:2210
 #: src/Followup.php:1143
 msgid "Type of service contract"
@@ -1537,7 +1572,7 @@ msgstr[2] "Mettre à jour ces tarifs"
 msgid "Urgent intervention"
 msgstr "Intervention urgente"
 
-#: src/Config.php:399 templates/config_cri_form.html.twig:16
+#: src/Config.php:418 templates/config_cri_form.html.twig:16
 msgid "Use Non-accomplished tasks informations"
 msgstr "Utiliser les informations sur les tâches non accomplies"
 
@@ -1545,11 +1580,11 @@ msgstr "Utiliser les informations sur les tâches non accomplies"
 msgid "Use for calculation of intervention report"
 msgstr "Utiliser pour le calcul des CRI"
 
-#: src/Config.php:255 templates/config_options_form.html.twig:34
+#: src/Config.php:274 templates/config_options_form.html.twig:34
 msgid "Use of price"
 msgstr "Utilisation de la tarification"
 
-#: src/Contract.php:362
+#: src/Contract.php:434
 msgid "Used by default"
 msgstr "Utilisé par défaut"
 
@@ -1576,13 +1611,25 @@ msgstr ""
 "Attention : il y a des interventions qui dépendent d'une prestation ayant "
 "une date antérieure"
 
-#: src/Config.php:460 templates/config_cri_form.html.twig:79
+#: src/Config.php:479 templates/config_cri_form.html.twig:79
 msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
 msgstr ""
 "Attention : le changement de la configuration journalière ou horaire impacte"
 " les types de contrat."
+
+#: templates/config_options_form.html.twig:125
+msgid ""
+"When a GLPI contract reaches the configured GLPI state, all its periods are "
+"automatically set to the configured period state. Conversely, when all "
+"periods of a contract reach the period state, the GLPI contract is "
+"automatically set to the configured GLPI state."
+msgstr ""
+"Lorsqu'un contrat GLPI passe au statut GLPI configuré, toutes ses périodes "
+"sont automatiquement mises à jour selon cet état. Inversement, lorsque "
+"toutes les périodes d'un contrat atteignent ce statut clos de période, le "
+"contrat GLPI est automatiquement mis à jour selon le statut GLPI configuré."
 
 #: src/CriDetail.php:1557
 msgid "With contrat"
