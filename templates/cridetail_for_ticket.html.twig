@@ -176,7 +176,7 @@
             var remaining = parseFloat(data.remaining);
 
             if (remaining <= 0) {
-                alert.className = 'alert alert-warning d-flex align-items-center gap-2 mb-0';
+                alert.className = 'alert alert-danger d-flex align-items-center gap-2 mb-0';
                 alert.innerHTML =
                     '<i class="ti ti-alert-triangle fs-4"></i>' +
                     '<div><strong>{{ __('No days remaining on this contract period', 'manageentities')|e('js') }}</strong>' +
