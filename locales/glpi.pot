@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-30 07:07+0000\n"
+"POT-Creation-Date: 2026-06-30 11:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -316,7 +316,7 @@ msgid "CRI generation form"
 msgstr ""
 
 #: src/GenerateCRI.php:269 src/Monthly.php:697 src/Monthly.php:728
-#: src/Followup.php:987 src/Dashboard.php:231 src/Dashboard.php:295
+#: src/Followup.php:994 src/Dashboard.php:231 src/Dashboard.php:295
 #: src/Dashboard.php:347
 msgid "Client"
 msgid_plural "Clients"
@@ -347,7 +347,7 @@ msgid_plural "Comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Company.php:54 src/Config.php:316 src/Followup.php:2497
+#: src/Company.php:54 src/Config.php:316 src/Followup.php:2504
 msgid "Company"
 msgid_plural "Companies"
 msgstr[0] ""
@@ -433,7 +433,7 @@ msgstr ""
 msgid "Contract number"
 msgstr ""
 
-#: src/Gantt.php:344 src/Followup.php:1069
+#: src/Gantt.php:344 src/Followup.php:1076
 msgid "Contract present"
 msgstr ""
 
@@ -514,12 +514,12 @@ msgid "Date of"
 msgstr ""
 
 #: src/Contract.php:212 src/Gantt.php:352 src/AddElementsView.php:1850
-#: src/Followup.php:1112
+#: src/Followup.php:1119
 msgid "Date of renewal"
 msgstr ""
 
 #: src/Contract.php:208 src/Entity.php:589 src/Gantt.php:348
-#: src/AddElementsView.php:1839 src/Followup.php:1097
+#: src/AddElementsView.php:1839 src/Followup.php:1104
 msgid "Date of signature"
 msgstr ""
 
@@ -616,7 +616,7 @@ msgstr ""
 #: front/cridetail.form.php:47 front/cridetail.form.php:50
 #: front/cridetail.form.php:52 src/Profile.php:54 src/Profile.php:123
 #: src/GenerateCRI.php:1240 src/Monthly.php:1091 src/Preference.php:111
-#: src/TaskCategory.php:68 src/Followup.php:2180 setup.php:195
+#: src/TaskCategory.php:68 src/Followup.php:2187 setup.php:195
 msgid "Entities portal"
 msgstr ""
 
@@ -679,8 +679,8 @@ msgstr ""
 msgid "GANTT"
 msgstr ""
 
-#: src/Entity.php:93 src/Followup.php:53 src/Followup.php:2180
-#: src/Followup.php:2304
+#: src/Entity.php:93 src/Followup.php:53 src/Followup.php:2187
+#: src/Followup.php:2311
 msgid "General follow-up"
 msgstr ""
 
@@ -701,7 +701,7 @@ msgstr ""
 msgid "Generation of the intervention report"
 msgstr ""
 
-#: src/ContractDay.php:459 src/Followup.php:937 src/Followup.php:1277
+#: src/ContractDay.php:459 src/Followup.php:944 src/Followup.php:1284
 msgid "Guaranteed package"
 msgstr ""
 
@@ -745,7 +745,7 @@ msgstr ""
 
 #: src/Monthly.php:705 src/Monthly.php:737 src/Gantt.php:411
 #: src/ContractDay.php:120 src/ContractDay.php:386 src/ContractDay.php:602
-#: src/AddElementsView.php:2281 src/Followup.php:924 src/Followup.php:1210
+#: src/AddElementsView.php:2281 src/Followup.php:931 src/Followup.php:1217
 msgid "Initial credit"
 msgstr ""
 
@@ -826,8 +826,8 @@ msgstr ""
 msgid "Is default"
 msgstr ""
 
-#: src/Followup.php:936 src/Followup.php:940 src/Followup.php:1268
-#: src/Followup.php:1296
+#: src/Followup.php:943 src/Followup.php:947 src/Followup.php:1275
+#: src/Followup.php:1303
 msgid "Last visit"
 msgstr ""
 
@@ -868,7 +868,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/Contract.php:218 src/Contract.php:356 src/Monthly.php:701
-#: src/Monthly.php:733 src/AddElementsView.php:1864 src/Followup.php:1128
+#: src/Monthly.php:733 src/AddElementsView.php:1864 src/Followup.php:1135
 msgid "Mode of management"
 msgstr ""
 
@@ -1001,7 +1001,7 @@ msgid "Period name"
 msgstr ""
 
 #: src/Entity.php:127 src/Config.php:353 src/ContractDay.php:60
-#: src/ContractDay.php:62 src/Followup.php:914 src/Followup.php:1170
+#: src/ContractDay.php:62 src/Followup.php:921 src/Followup.php:1177
 msgid "Period of contract"
 msgid_plural "Periods of contract"
 msgstr[0] ""
@@ -1129,7 +1129,7 @@ msgstr ""
 msgid "Remaining on "
 msgstr ""
 
-#: src/ContractDay.php:476 src/Followup.php:938 src/Followup.php:1286
+#: src/ContractDay.php:476 src/Followup.php:945 src/Followup.php:1293
 msgid "Remaining total (amount)"
 msgstr ""
 
@@ -1188,8 +1188,8 @@ msgid "Stakeholder successfully updated."
 msgstr ""
 
 #: src/ContractDay.php:149 src/ContractDay.php:397 src/ContractDay.php:604
-#: src/AddElementsView.php:2301 src/ContractState.php:48 src/Followup.php:915
-#: src/Followup.php:1178 src/Followup.php:2344 hook.php:665
+#: src/AddElementsView.php:2301 src/ContractState.php:48 src/Followup.php:922
+#: src/Followup.php:1185 src/Followup.php:2351 hook.php:665
 msgid "State of contract"
 msgid_plural "States of contracts"
 msgstr[0] ""
@@ -1318,12 +1318,12 @@ msgid "Total (in hours)"
 msgstr ""
 
 #: src/Gantt.php:412 src/ContractDay.php:420 src/ContractDay.php:609
-#: src/Followup.php:925 src/Followup.php:1218
+#: src/Followup.php:932 src/Followup.php:1225
 msgid "Total consummated"
 msgstr ""
 
 #: src/Monthly.php:722 src/Monthly.php:763 src/ContractDay.php:445
-#: src/ContractDay.php:613 src/Followup.php:934 src/Followup.php:1258
+#: src/ContractDay.php:613 src/Followup.php:941 src/Followup.php:1265
 msgid "Total exceeding"
 msgstr ""
 
@@ -1335,8 +1335,8 @@ msgstr ""
 msgid "Total production"
 msgstr ""
 
-#: src/ContractDay.php:437 src/ContractDay.php:612 src/Followup.php:932
-#: src/Followup.php:1248 src/Dashboard.php:167 src/Dashboard.php:439
+#: src/ContractDay.php:437 src/ContractDay.php:612 src/Followup.php:939
+#: src/Followup.php:1255 src/Dashboard.php:167 src/Dashboard.php:439
 #: hook.php:724
 msgid "Total remaining"
 msgstr ""
@@ -1358,7 +1358,7 @@ msgid "Travel (in days)"
 msgstr ""
 
 #: src/Monthly.php:703 src/Monthly.php:735 src/ContractDay.php:596
-#: src/Followup.php:916 src/Followup.php:1187
+#: src/Followup.php:923 src/Followup.php:1194
 msgid "Type of contract"
 msgstr ""
 
@@ -1369,7 +1369,7 @@ msgstr ""
 #: src/Contract.php:221 src/Contract.php:357 src/Contract.php:360
 #: src/ContractDay.php:167 src/ContractDay.php:349 src/ContractDay.php:894
 #: src/AddElementsView.php:1871 src/AddElementsView.php:2210
-#: src/Followup.php:1136
+#: src/Followup.php:1143
 msgid "Type of service contract"
 msgstr ""
 
@@ -1488,8 +1488,8 @@ msgstr ""
 msgid "in"
 msgstr ""
 
-#: src/Followup.php:2394 src/Followup.php:2399 src/Followup.php:2407
-#: src/Followup.php:2412
+#: src/Followup.php:2401 src/Followup.php:2406 src/Followup.php:2414
+#: src/Followup.php:2419
 msgid "of period of contract"
 msgstr ""
 
