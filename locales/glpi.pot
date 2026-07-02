@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 10:48+0000\n"
+"POT-Creation-Date: 2026-07-02 10:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -281,7 +281,7 @@ msgstr ""
 msgid "An error happened while saving the data."
 msgstr ""
 
-#: src/Contract.php:660 src/Contract.php:689
+#: src/Contract.php:678 src/Contract.php:707
 msgid "Annual"
 msgstr ""
 
@@ -301,7 +301,7 @@ msgstr ""
 msgid "Associate to a contract"
 msgstr ""
 
-#: src/Contract.php:387 src/Contract.php:521
+#: src/Contract.php:405 src/Contract.php:539
 msgid "Associated assistance contracts"
 msgstr ""
 
@@ -319,7 +319,7 @@ msgstr ""
 msgid "Associated ticket"
 msgstr ""
 
-#: src/Contract.php:713 src/Contract.php:750
+#: src/Contract.php:731 src/Contract.php:768
 msgid "By intervention"
 msgstr ""
 
@@ -430,7 +430,7 @@ msgstr ""
 msgid "Contract informations not updated in base"
 msgstr ""
 
-#: src/Contract.php:299 src/AddElementsView.php:1882
+#: src/Contract.php:317 src/AddElementsView.php:1882
 msgid "Contract is imported in GLPI"
 msgstr ""
 
@@ -550,12 +550,12 @@ msgstr ""
 msgid "Date of"
 msgstr ""
 
-#: src/Contract.php:284 src/Gantt.php:352 src/AddElementsView.php:1850
+#: src/Contract.php:302 src/Gantt.php:352 src/AddElementsView.php:1850
 #: src/Followup.php:1119
 msgid "Date of renewal"
 msgstr ""
 
-#: src/Contract.php:280 src/Entity.php:589 src/Gantt.php:348
+#: src/Contract.php:298 src/Entity.php:589 src/Gantt.php:348
 #: src/AddElementsView.php:1839 src/Followup.php:1104
 msgid "Date of signature"
 msgstr ""
@@ -634,7 +634,7 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: src/Contract.php:345 src/AddElementsView.php:1936
+#: src/Contract.php:363 src/AddElementsView.php:1936
 msgid "Duration of moving"
 msgstr ""
 
@@ -642,7 +642,7 @@ msgstr ""
 msgid "End date"
 msgstr ""
 
-#: src/ContractDay.php:871
+#: src/ContractDay.php:870
 msgid "End date cannot be less than begin date"
 msgstr ""
 
@@ -752,10 +752,6 @@ msgstr ""
 msgid "Generation of the intervention report"
 msgstr ""
 
-#: templates/config_options_form.html.twig:11
-msgid "Global options"
-msgstr ""
-
 #: src/ContractDay.php:459 src/Followup.php:944 src/Followup.php:1284
 msgid "Guaranteed package"
 msgstr ""
@@ -768,7 +764,7 @@ msgstr ""
 msgid "Hour of"
 msgstr ""
 
-#: src/Contract.php:712 src/Contract.php:748 src/Config.php:516
+#: src/Contract.php:730 src/Contract.php:766 src/Config.php:516
 msgid "Hourly"
 msgstr ""
 
@@ -804,7 +800,7 @@ msgstr ""
 msgid "Initial credit"
 msgstr ""
 
-#: src/Contract.php:777
+#: src/Contract.php:795
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
@@ -922,7 +918,7 @@ msgid_plural "Management of task categories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:290 src/Contract.php:428 src/Monthly.php:701
+#: src/Contract.php:308 src/Contract.php:446 src/Monthly.php:701
 #: src/Monthly.php:733 src/AddElementsView.php:1864 src/Followup.php:1135
 msgid "Mode of management"
 msgstr ""
@@ -932,7 +928,7 @@ msgstr ""
 msgid "Monthly follow-up"
 msgstr ""
 
-#: src/Contract.php:326 src/AddElementsView.php:1913
+#: src/Contract.php:344 src/AddElementsView.php:1913
 msgid "Movement management"
 msgstr ""
 
@@ -1048,7 +1044,7 @@ msgstr ""
 msgid "Opened contract prestations without remaining days"
 msgstr ""
 
-#: src/Config.php:80 src/Config.php:259
+#: src/Config.php:259
 msgid "Options"
 msgstr ""
 
@@ -1056,7 +1052,7 @@ msgstr ""
 msgid "Out of contract"
 msgstr ""
 
-#: src/Contract.php:720 src/Contract.php:756
+#: src/Contract.php:738 src/Contract.php:774
 msgid "Package"
 msgstr ""
 
@@ -1112,7 +1108,7 @@ msgstr ""
 msgid "Please fill the contract period end date."
 msgstr ""
 
-#: src/Contract.php:638
+#: src/Contract.php:656
 msgid ""
 "Please note that there are no more contracts with days available for this "
 "customer."
@@ -1169,11 +1165,11 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
-#: src/Contract.php:659 src/Contract.php:687
+#: src/Contract.php:677 src/Contract.php:705
 msgid "Quarterly"
 msgstr ""
 
-#: src/Contract.php:316 src/AddElementsView.php:1903
+#: src/Contract.php:334 src/AddElementsView.php:1903
 msgid "Refacturable costs"
 msgstr ""
 
@@ -1256,11 +1252,15 @@ msgstr ""
 msgid "Select an existing price"
 msgstr ""
 
+#: templates/config_options_form.html.twig:11
+msgid "Setup"
+msgstr ""
+
 #: templates/config_cri_form.html.twig:11
 msgid "Setup for Generate Intervention report"
 msgstr ""
 
-#: src/Contract.php:311 src/AddElementsView.php:1893
+#: src/Contract.php:329 src/AddElementsView.php:1893
 msgid "Show on GANTT"
 msgstr ""
 
@@ -1316,7 +1316,7 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
-#: src/Contract.php:719 src/Contract.php:754
+#: src/Contract.php:737 src/Contract.php:772
 msgid "Technical Assistance"
 msgstr ""
 
@@ -1340,7 +1340,7 @@ msgstr ""
 msgid "Thanks to select a intervention type"
 msgstr ""
 
-#: src/ContractDay.php:915
+#: src/ContractDay.php:914
 #, php-format
 msgid "The contract period %s already exists"
 msgstr ""
@@ -1459,8 +1459,8 @@ msgstr ""
 msgid "Type of management"
 msgstr ""
 
-#: src/Contract.php:293 src/Contract.php:429 src/Contract.php:432
-#: src/ContractDay.php:167 src/ContractDay.php:349 src/ContractDay.php:949
+#: src/Contract.php:311 src/Contract.php:447 src/Contract.php:450
+#: src/ContractDay.php:167 src/ContractDay.php:349 src/ContractDay.php:948
 #: src/AddElementsView.php:1871 src/AddElementsView.php:2210
 #: src/Followup.php:1143
 msgid "Type of service contract"
@@ -1537,7 +1537,7 @@ msgstr ""
 msgid "Use of price"
 msgstr ""
 
-#: src/Contract.php:434
+#: src/Contract.php:452
 msgid "Used by default"
 msgstr ""
 
