@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 13:13+0000\n"
+"POT-Creation-Date: 2026-07-02 13:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -515,14 +515,11 @@ msgid "Crossed time (itinerary including)"
 msgstr ""
 
 #: src/Monthly.php:715 src/Monthly.php:753
+#: templates/interventionstakeholder_list.html.twig:32
 msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
 msgstr[0] ""
 msgstr[1] ""
-
-#: templates/interventionstakeholder_list.html.twig:32
-msgid "Current stakeholders"
-msgstr ""
 
 #: src/CriPDF.php:908
 msgid "Customer Visa"
