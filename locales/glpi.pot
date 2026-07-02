@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 10:12+0000\n"
+"POT-Creation-Date: 2026-07-02 10:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -187,7 +187,7 @@ msgstr ""
 msgid "All reports"
 msgstr ""
 
-#: src/Config.php:306 templates/config_options_form.html.twig:70
+#: src/Config.php:314 templates/config_options_form.html.twig:70
 msgid "Allow periods on the same interval of dates"
 msgstr ""
 
@@ -319,7 +319,7 @@ msgstr ""
 msgid "CRI generation"
 msgstr ""
 
-#: src/Config.php:396
+#: src/Config.php:404
 msgid "CRI generation form"
 msgstr ""
 
@@ -340,6 +340,10 @@ msgid "Client management"
 msgid_plural "Clients management"
 msgstr[0] ""
 msgstr[1] ""
+
+#: templates/config_options_form.html.twig:115
+msgid "Closed contract period state"
+msgstr ""
 
 #: src/ContractState.php:76 src/ContractState.php:106
 msgid "Color"
@@ -366,11 +370,11 @@ msgid_plural "Companies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Config.php:260 templates/config_options_form.html.twig:43
+#: src/Config.php:268 templates/config_options_form.html.twig:43
 msgid "Configuration daily or hourly"
 msgstr ""
 
-#: src/Config.php:313 templates/config_options_form.html.twig:79
+#: src/Config.php:321 templates/config_options_form.html.twig:79
 msgid "Configuring the client side view"
 msgstr ""
 
@@ -540,11 +544,11 @@ msgstr ""
 msgid "Date of signature"
 msgstr ""
 
-#: src/Config.php:369 templates/config_options_form.html.twig:97
+#: src/Config.php:377 templates/config_options_form.html.twig:97
 msgid "Default Business list for general monitoring"
 msgstr ""
 
-#: src/Config.php:417 templates/config_cri_form.html.twig:43
+#: src/Config.php:425 templates/config_cri_form.html.twig:43
 msgid "Default duration"
 msgstr ""
 
@@ -556,11 +560,11 @@ msgstr ""
 msgid "Default list of companies for the general monitoring"
 msgstr ""
 
-#: src/Config.php:428 templates/config_cri_form.html.twig:52
+#: src/Config.php:436 templates/config_cri_form.html.twig:52
 msgid "Default time AM"
 msgstr ""
 
-#: src/Config.php:440 templates/config_cri_form.html.twig:61
+#: src/Config.php:448 templates/config_cri_form.html.twig:61
 msgid "Default time PM"
 msgstr ""
 
@@ -590,15 +594,15 @@ msgstr ""
 msgid "Detail of work done"
 msgstr ""
 
-#: src/Config.php:452 templates/config_cri_form.html.twig:70
+#: src/Config.php:460 templates/config_cri_form.html.twig:70
 msgid "Disable creation date in header of PDF"
 msgstr ""
 
-#: src/Config.php:406 templates/config_cri_form.html.twig:25
+#: src/Config.php:414 templates/config_cri_form.html.twig:25
 msgid "Display PDF"
 msgstr ""
 
-#: src/Config.php:389 templates/config_options_form.html.twig:106
+#: src/Config.php:397 templates/config_options_form.html.twig:106
 msgid "Display comments from the company in the CRI"
 msgstr ""
 
@@ -622,7 +626,7 @@ msgstr ""
 msgid "End date"
 msgstr ""
 
-#: src/ContractDay.php:816
+#: src/ContractDay.php:870
 msgid "End date cannot be less than begin date"
 msgstr ""
 
@@ -641,7 +645,7 @@ msgstr ""
 #: front/cridetail.form.php:47 front/cridetail.form.php:50
 #: front/cridetail.form.php:52 src/Profile.php:54 src/Profile.php:123
 #: src/GenerateCRI.php:1240 src/Monthly.php:1091 src/Preference.php:111
-#: src/TaskCategory.php:68 src/Followup.php:2187 setup.php:198
+#: src/TaskCategory.php:68 src/Followup.php:2187 setup.php:201
 msgid "Entities portal"
 msgstr ""
 
@@ -742,7 +746,7 @@ msgstr ""
 msgid "Hour of"
 msgstr ""
 
-#: src/Contract.php:640 src/Contract.php:676 src/Config.php:497
+#: src/Contract.php:640 src/Contract.php:676 src/Config.php:505
 msgid "Hourly"
 msgstr ""
 
@@ -800,8 +804,8 @@ msgstr ""
 msgid "Intervention periods of contract"
 msgstr ""
 
-#: src/Profile.php:128 src/Config.php:504 src/Cri.php:56 src/CriDetail.php:432
-#: setup.php:122
+#: src/Profile.php:128 src/Config.php:512 src/Cri.php:56 src/CriDetail.php:432
+#: setup.php:125
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] ""
@@ -827,7 +831,7 @@ msgstr[1] ""
 
 #: src/Cri.php:203 src/CriPrice.php:395 src/AddElementsView.php:2730
 #: src/CriDetail.php:309 src/CriDetail.php:570 src/CriDetail.php:680
-#: src/CriDetail.php:1399 src/CriType.php:48 hook.php:665
+#: src/CriDetail.php:1399 src/CriType.php:48 hook.php:670
 msgid "Intervention type"
 msgid_plural "Intervention types"
 msgstr[0] ""
@@ -868,7 +872,7 @@ msgstr ""
 msgid "Linked interventions"
 msgstr ""
 
-#: src/Config.php:326 templates/config_options_form.html.twig:88
+#: src/Config.php:334 templates/config_options_form.html.twig:88
 msgid "List of default statuses for general monitoring"
 msgstr ""
 
@@ -886,7 +890,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:797
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:802
 msgid "Manage your contracts"
 msgstr ""
 
@@ -1009,7 +1013,7 @@ msgstr ""
 msgid "Object of intervention"
 msgstr ""
 
-#: src/Config.php:298 templates/config_options_form.html.twig:61
+#: src/Config.php:306 templates/config_options_form.html.twig:61
 msgid "Only public task are visible on intervention report"
 msgstr ""
 
@@ -1022,7 +1026,7 @@ msgstr ""
 msgid "Opened contract prestations without remaining days"
 msgstr ""
 
-#: src/Config.php:80 src/Config.php:240
+#: src/Config.php:80 src/Config.php:248
 msgid "Options"
 msgstr ""
 
@@ -1042,7 +1046,7 @@ msgstr ""
 msgid "Period name"
 msgstr ""
 
-#: src/Entity.php:127 src/Config.php:505 src/ContractDay.php:60
+#: src/Entity.php:127 src/Config.php:513 src/ContractDay.php:60
 #: src/ContractDay.php:62 src/Followup.php:921 src/Followup.php:1177
 msgid "Period of contract"
 msgid_plural "Periods of contract"
@@ -1182,11 +1186,11 @@ msgstr ""
 msgid "Remaining total (amount)"
 msgstr ""
 
-#: src/Report.php:228 setup.php:125
+#: src/Report.php:228 setup.php:128
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: src/Report.php:116 setup.php:123
+#: src/Report.php:116 setup.php:126
 msgid "Report on the movement of technicians"
 msgstr ""
 
@@ -1200,17 +1204,17 @@ msgid_plural "Rights management"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Config.php:247 templates/config_options_form.html.twig:25
+#: src/Config.php:255 templates/config_options_form.html.twig:25
 msgid "Rubric by default for reports"
 msgstr ""
 
 #: templates/config_cri_form.html.twig:87
-#: templates/config_options_form.html.twig:118
+#: templates/config_options_form.html.twig:130
 msgctxt "button"
 msgid "Save"
 msgstr ""
 
-#: src/Config.php:242 templates/config_options_form.html.twig:16
+#: src/Config.php:250 templates/config_options_form.html.twig:16
 msgid "Save reports in glpi"
 msgstr ""
 
@@ -1246,9 +1250,15 @@ msgstr ""
 msgid "Stakeholder successfully updated."
 msgstr ""
 
+#: templates/config_options_form.html.twig:120
+msgid ""
+"State applied to contract periods when closing a GLPI contract, and applied "
+"to the GLPI contract when all its periods reach this state."
+msgstr ""
+
 #: src/ContractDay.php:149 src/ContractDay.php:397 src/ContractDay.php:604
 #: src/AddElementsView.php:2301 src/ContractState.php:48 src/Followup.php:922
-#: src/Followup.php:1185 src/Followup.php:2351 hook.php:666
+#: src/Followup.php:1185 src/Followup.php:2351 hook.php:671
 msgid "State of contract"
 msgid_plural "States of contracts"
 msgstr[0] ""
@@ -1258,7 +1268,7 @@ msgstr[1] ""
 msgid "State of intervention"
 msgstr ""
 
-#: src/Config.php:411 templates/config_cri_form.html.twig:34
+#: src/Config.php:419 templates/config_cri_form.html.twig:34
 msgid "State of ticket created"
 msgstr ""
 
@@ -1310,7 +1320,7 @@ msgstr ""
 msgid "Thanks to select a intervention type"
 msgstr ""
 
-#: src/ContractDay.php:860
+#: src/ContractDay.php:914
 #, php-format
 msgid "The contract period %s already exists"
 msgstr ""
@@ -1400,7 +1410,7 @@ msgstr ""
 
 #: src/ContractDay.php:437 src/ContractDay.php:612 src/Followup.php:939
 #: src/Followup.php:1255 src/Dashboard.php:167 src/Dashboard.php:439
-#: hook.php:725
+#: hook.php:730
 msgid "Total remaining"
 msgstr ""
 
@@ -1430,7 +1440,7 @@ msgid "Type of management"
 msgstr ""
 
 #: src/Contract.php:221 src/Contract.php:357 src/Contract.php:360
-#: src/ContractDay.php:167 src/ContractDay.php:349 src/ContractDay.php:894
+#: src/ContractDay.php:167 src/ContractDay.php:349 src/ContractDay.php:948
 #: src/AddElementsView.php:1871 src/AddElementsView.php:2210
 #: src/Followup.php:1143
 msgid "Type of service contract"
@@ -1495,7 +1505,7 @@ msgstr[1] ""
 msgid "Urgent intervention"
 msgstr ""
 
-#: src/Config.php:399 templates/config_cri_form.html.twig:16
+#: src/Config.php:407 templates/config_cri_form.html.twig:16
 msgid "Use Non-accomplished tasks informations"
 msgstr ""
 
@@ -1503,7 +1513,7 @@ msgstr ""
 msgid "Use for calculation of intervention report"
 msgstr ""
 
-#: src/Config.php:255 templates/config_options_form.html.twig:34
+#: src/Config.php:263 templates/config_options_form.html.twig:34
 msgid "Use of price"
 msgstr ""
 
@@ -1529,7 +1539,7 @@ msgid ""
 "prestation with a earlier end date"
 msgstr ""
 
-#: src/Config.php:460 templates/config_cri_form.html.twig:79
+#: src/Config.php:468 templates/config_cri_form.html.twig:79
 msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
