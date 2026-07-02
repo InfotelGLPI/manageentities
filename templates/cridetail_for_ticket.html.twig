@@ -1,0 +1,267 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+{% set form_id = 'cridetail_form' ~ rand %}
+
+{% if can_edit %}
+<form method="post" name="{{ form_id }}" id="{{ form_id }}"
+      action="{{ form_url }}"
+      data-submit-once>
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="tickets_id"  value="{{ tickets_id }}">
+    <input type="hidden" name="entities_id" value="{{ entities_id }}">
+    <input type="hidden" name="date"        value="{{ ticket_date }}">
+    {% if not is_new %}
+        <input type="hidden" name="id" value="{{ cridetail_id }}">
+    {% endif %}
+{% endif %}
+
+<div class="card w-100">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-file-invoice me-2"></i>
+            {{ __('Associate to a contract', 'manageentities') }}
+        </h3>
+    </div>
+
+    <div class="card-body">
+
+        {# Row 1 — with/without contract #}
+        <div class="row mb-3 align-items-center">
+            <label class="col-sm-3 col-form-label fw-bold">
+                {{ __('Contract type', 'manageentities') }}
+            </label>
+            <div class="col-sm-9 d-flex align-items-center gap-2">
+                {{ contract_type_dropdown|raw }}
+                <span id="contract_status_badge"></span>
+            </div>
+        </div>
+
+        {# Row 2 — contract + period selectors #}
+        <div id="contract">
+            {{ contract_link_dropdown|raw }}
+        </div>
+
+        {# Row contract end date #}
+        <div id="contract_end_date_block" class="row mt-2 align-items-center"
+             {% if not contract_end_date %}style="display:none"{% endif %}>
+            <label class="col-sm-3 col-form-label fw-bold text-muted">
+                <i class="ti ti-calendar-event me-1"></i>{{ __('End date') }}
+            </label>
+            <div class="col-sm-9">
+                <span id="contract_end_date_text" class="form-control-plaintext">
+                    {% if contract_end_date %}
+                        {{ contract_end_date|date('d/m/Y') }}
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        {# Row contract comment #}
+        <div id="contract_comment_block" class="row mt-2 align-items-start"
+             {% if not contract_comment %}style="display:none"{% endif %}>
+            <label class="col-sm-3 col-form-label fw-bold text-muted">
+                <i class="ti ti-notes me-1"></i>{{ __('Comments') }}
+            </label>
+            <div class="col-sm-9">
+                <div id="contract_comment_text" class="form-control-plaintext text-muted fst-italic"
+                     style="white-space: pre-wrap;">{{ contract_comment }}</div>
+            </div>
+        </div>
+
+        {# Row 3 — remaining days status card #}
+        <div id="remaining_days_block" class="mt-3"
+             {% if contractdays_id_selected <= 0 %}style="display:none"{% endif %}>
+
+            {% if remaining_days is not null and remaining_days <= 0 %}
+            <div id="remaining_days_alert" class="alert alert-danger d-flex align-items-center gap-2 mb-0" role="alert">
+                <i class="ti ti-alert-triangle fs-4"></i>
+                <div>
+                    <strong>{{ __('No days remaining on this contract period', 'manageentities') }}</strong>
+                    <br>
+                    <span class="text-muted">{{ __('Remaining days', 'manageentities') }}: <strong>0</strong></span>
+                </div>
+            </div>
+            {% else %}
+            <div id="remaining_days_alert" class="alert alert-info d-flex align-items-center gap-2 mb-0" role="alert">
+                <i class="ti ti-calendar-stats fs-4"></i>
+                <div>
+                    <span>{{ __('Remaining days', 'manageentities') }}:</span>
+                    <strong id="remaining_days_value">
+                        {% if remaining_days is not null %}
+                            {{ remaining_days|number_format(2) }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>{# .card-body #}
+
+    {% if can_edit %}
+    <div class="card-footer d-flex gap-2 justify-content-end">
+        {% if is_new %}
+            <button type="submit" name="addcridetail" class="btn btn-primary">
+                <i class="ti ti-plus me-1"></i>{{ __('Add') }}
+            </button>
+        {% else %}
+            <button type="submit" name="updatecridetail" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>{{ __('Update') }}
+            </button>
+            <button type="submit" name="delcridetail" class="btn btn-danger">
+                <i class="ti ti-trash me-1"></i>{{ __('Delete permanently') }}
+            </button>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>{# .card #}
+
+{% if can_edit %}
+</form>
+{% endif %}
+
+{{ change_contract_script|raw }}
+
+<script>
+(function () {
+    var ajaxUrl = {{ ajax_url|json_encode|raw }};
+
+    function updateRemainingDays(contractdays_id) {
+        var block = document.getElementById('remaining_days_block');
+        var alert = document.getElementById('remaining_days_alert');
+        var valueEl = document.getElementById('remaining_days_value');
+
+        if (!contractdays_id || contractdays_id == 0) {
+            block.style.display = 'none';
+            return;
+        }
+
+        $.post(ajaxUrl, { contractdays_id: contractdays_id }, function (data) {
+            block.style.display = '';
+
+            if (data.remaining === null) {
+                block.style.display = 'none';
+                return;
+            }
+
+            var remaining = parseFloat(data.remaining);
+
+            if (remaining <= 0) {
+                alert.className = 'alert alert-warning d-flex align-items-center gap-2 mb-0';
+                alert.innerHTML =
+                    '<i class="ti ti-alert-triangle fs-4"></i>' +
+                    '<div><strong>{{ __('No days remaining on this contract period', 'manageentities')|e('js') }}</strong>' +
+                    '<br><span class="text-muted">{{ __('Remaining days', 'manageentities')|e('js') }}: <strong>0</strong></span></div>';
+            } else {
+                alert.className = 'alert alert-info d-flex align-items-center gap-2 mb-0';
+                alert.innerHTML =
+                    '<i class="ti ti-calendar-stats fs-4"></i>' +
+                    '<div><span>{{ __('Remaining days', 'manageentities')|e('js') }}:</span> ' +
+                    '<strong>' + remaining.toFixed(2) + '</strong></div>';
+            }
+        }, 'json');
+    }
+
+    // Manual change on the period dropdown
+    $(document).on('change', '[name="plugin_manageentities_contractdays_id"]', function () {
+        updateRemainingDays($(this).val());
+    });
+
+    function updateContractStatus(container) {
+        const badge = document.getElementById('contract_status_badge');
+        const commentBlock = document.getElementById('contract_comment_block');
+        const commentText  = document.getElementById('contract_comment_text');
+
+        if (badge) {
+            const statusEl = container.querySelector('.me-contract-status-data');
+            const label = statusEl ? statusEl.textContent.trim() : '';
+            badge.innerHTML = label
+                ? '<span class="badge bg-outline-success fs-6"><i class="ti ti-circle-check me-1"></i>' + label + '</span>'
+                : '';
+        }
+
+        if (commentBlock && commentText) {
+            const commentEl = container.querySelector('.me-contract-comment-data');
+            const comment = commentEl ? commentEl.textContent.trim() : '';
+            if (comment) {
+                commentText.textContent = comment;
+                commentBlock.style.display = '';
+            } else {
+                commentText.textContent = '';
+                commentBlock.style.display = 'none';
+            }
+        }
+
+        const endDateBlock = document.getElementById('contract_end_date_block');
+        const endDateText  = document.getElementById('contract_end_date_text');
+        if (endDateBlock && endDateText) {
+            const endDateEl = container.querySelector('.me-contract-end-date-data');
+            const rawDate = endDateEl ? endDateEl.textContent.trim() : '';
+            if (rawDate) {
+                // rawDate is YYYY-MM-DD, reformat to DD/MM/YYYY
+                const parts = rawDate.split('-');
+                endDateText.textContent = parts.length === 3
+                    ? parts[2] + '/' + parts[1] + '/' + parts[0]
+                    : rawDate;
+                endDateBlock.style.display = '';
+            } else {
+                endDateText.textContent = '';
+                endDateBlock.style.display = 'none';
+            }
+        }
+    }
+
+    // When the contract dropdown changes, Ajax rebuilds #show_contractdays.
+    // The new <select> is injected silently, so we watch the container with
+    // a MutationObserver and read the preselected value once the DOM settles.
+    var container = document.getElementById('show_contractdays');
+    if (container) {
+        var observer = new MutationObserver(function () {
+            var sel = container.querySelector('select[name="plugin_manageentities_contractdays_id"]');
+            if (sel) {
+                updateRemainingDays(sel.value);
+            }
+            updateContractStatus(container);
+        });
+        observer.observe(container, { childList: true, subtree: true });
+    }
+
+    // Initial load
+    var contractContainer = document.getElementById('show_contractdays');
+    if (contractContainer) {
+        updateContractStatus(contractContainer);
+    }
+    {% if contractdays_id_selected > 0 %}
+    updateRemainingDays({{ contractdays_id_selected }});
+    {% endif %}
+})();
+</script>

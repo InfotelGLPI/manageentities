@@ -34,6 +34,7 @@ use CommonDBTM;
 use CommonGLPI;
 use DbUtils;
 use Document;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Html;
 use Planning;
@@ -559,8 +560,8 @@ class CriDetail extends CommonDBTM
 
                 echo "</table>";
             } else {
-                echo "<div class='center alert alert-info d-flex'>";
-                echo __('No results found');
+                echo "<br><div class='center alert alert-info d-flex'>";
+                echo __('No reports found');
                 echo "</div>";
                 if ($entity == -1) {
                     self::addReports($item);
@@ -1519,70 +1520,74 @@ class CriDetail extends CommonDBTM
         $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
         $cridetail = reset($cridetails);
 
-        if ($canEdit) {
-            echo "<form method='post' name='cridetail_form$rand' id='cridetail_form$rand'
-               action='" . Toolbox::getItemTypeFormURL(Cri::class) . "'>";
-        }
-
-        echo "<div align='spaced'><table class='tab_cadre_fixe center'>";
-        echo "<tr><th colspan='2'>" . __('Associate to a contract', 'manageentities') . "</th></tr>";
-        echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";
-        echo "<div class='center' style='margin:0 auto; display:table'>";
+        // Capture the withcontract dropdown HTML
+        ob_start();
         $rand = \Dropdown::showFromArray(
             'withcontract',
             [0 => __('Out of contract', 'manageentities'), 1 => __('With contrat', 'manageentities')],
             ['value' => ($cridetail) ? $cridetail['withcontract'] : 1, 'on_change' => 'changecontract();']
         );
-        echo "</div>";
-        echo "</td>";
-        echo "</tr>";
-        echo Html::scriptBlock(
-            "
-         function changecontract(){
-            if($('#dropdown_withcontract$rand').val() != 0){
-               $('#contract').show();
-            } else {
-               $('#contract').hide();
-            }
-         }
-         changecontract();
-      "
-        );
+        $contract_type_dropdown = ob_get_clean();
 
-        echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";
-        echo "<div id='contract' class='center' style='margin:0 auto; display:table'>";
-        $contractSelected = self::showContractLinkDropdown($cridetail, $ticket->fields['entities_id']);
-        echo "</div>";
-        echo "</td>";
-        echo "</tr>";
+        // Capture the contract link dropdown HTML + retrieve the preselected contractday
+        ob_start();
+        $contract_link_info = self::showContractLinkDropdown($cridetail, $ticket->fields['entities_id']);
+        $contract_link_dropdown = ob_get_clean();
 
-        echo "<tr class='tab_bg_1'>";
-        echo Html::hidden('tickets_id', ['value' => $ticket->fields['id']]);
-        echo Html::hidden('entities_id', ['value' => $ticket->fields['entities_id']]);
-        echo Html::hidden('date', ['value' => $ticket->fields['date']]);
-
-        if ($canEdit) {
-            if (empty($cridetail)) {
-                echo "<td class='center' colspan='2'>";
-                echo Html::submit(_sx('button', 'Add'), ['name' => 'addcridetail', 'class' => 'btn btn-primary']);
-                echo "</td>";
-            } else {
-                echo "<td class='center' colspan='2'>";
-                echo Html::hidden('id', ['value' => $cridetail['id']]);
-                echo Html::submit(_sx('button', 'Update'), ['name' => 'updatecridetail', 'class' => 'btn btn-primary']);
-                echo "&nbsp;";
-                echo Html::submit(
-                    _sx('button', 'Delete permanently'),
-                    ['name' => 'delcridetail', 'class' => 'btn btn-primary']
-                );
-                echo "</td>";
+        // Compute remaining days from the preselected contract period
+        $remaining_days = null;
+        $contractdays_id_selected = $contract_link_info['contractdaySelected'] ?? 0;
+        if ($contractdays_id_selected > 0) {
+            $contractDay = new ContractDay();
+            if ($contractDay->getFromDB($contractdays_id_selected)) {
+                $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
+                $result_cri = self::getCriDetailData($contractDay->fields);
+                $remaining_days = $result_cri['resultOther']['reste'];
             }
         }
-        echo "</tr>";
-        echo "</table></div>";
-        if ($canEdit) {
-            Html::closeForm();
+
+        // Fetch comment and end date of the preselected contract
+        $contract_comment  = '';
+        $contract_end_date = '';
+        $contract_selected_id = $contract_link_info['contractSelected'] ?? 0;
+        if ($contract_selected_id > 0) {
+            $contract_obj = new \Contract();
+            if ($contract_obj->getFromDB($contract_selected_id)) {
+                $contract_comment  = $contract_obj->fields['comment'] ?? '';
+                $contract_end_date = $contract_obj->fields['end_date'] ?? '';
+            }
         }
+
+        // Build the JS block to show/hide the contract section
+        $change_contract_script = Html::scriptBlock("
+            function changecontract(){
+                if($('#dropdown_withcontract{$rand}').val() != 0){
+                    $('#contract').show();
+                } else {
+                    $('#contract').hide();
+                }
+            }
+            changecontract();
+        ");
+
+        TemplateRenderer::getInstance()->display('@manageentities/cridetail_for_ticket.html.twig', [
+            'rand'                      => $rand,
+            'can_edit'                  => $canEdit,
+            'form_url'                  => Toolbox::getItemTypeFormURL(Cri::class),
+            'tickets_id'                => $ticket->fields['id'],
+            'entities_id'               => $ticket->fields['entities_id'],
+            'ticket_date'               => $ticket->fields['date'],
+            'is_new'                    => empty($cridetail),
+            'cridetail_id'              => $cridetail['id'] ?? 0,
+            'remaining_days'            => $remaining_days,
+            'contractdays_id_selected'  => $contractdays_id_selected,
+            'ajax_url'                  => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/getRemainingDays.php',
+            'contract_comment'          => $contract_comment,
+            'contract_end_date'         => $contract_end_date,
+            'contract_type_dropdown'    => $contract_type_dropdown,
+            'contract_link_dropdown'    => $contract_link_dropdown,
+            'change_contract_script'    => $change_contract_script,
+        ]);
     }
 
     public static function showContractLinkDropdown($cridetail, $entities_id, $type = 'ticket')

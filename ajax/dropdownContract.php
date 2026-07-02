@@ -68,9 +68,16 @@ if (isset($_POST["contracts_id"])) {
       }
    }
    if (isset($contract->fields['states_id']) && $contract->fields['states_id'] > 0) {
-      echo __('Status') . " : " . Dropdown::getDropdownName("glpi_states", $contract->fields['states_id']);
-      echo "<br><br>";
+      echo "<span class='me-contract-status-data' style='display:none'>"
+         . htmlspecialchars(Dropdown::getDropdownName("glpi_states", $contract->fields['states_id']), ENT_QUOTES)
+         . "</span>";
    }
+   echo "<span class='me-contract-comment-data' style='display:none'>"
+      . htmlspecialchars($contract->fields['comment'] ?? '', ENT_QUOTES)
+      . "</span>";
+   echo "<span class='me-contract-end-date-data' style='display:none'>"
+      . htmlspecialchars($contract->fields['end_date'] ?? '', ENT_QUOTES)
+      . "</span>";
 
    $restrict = ['entities_id'  => $contract->fields['entities_id'],
                 'contracts_id' => $_POST["contracts_id"],

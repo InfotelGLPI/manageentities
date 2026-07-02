@@ -45,6 +45,7 @@ use GlpiPlugin\Manageentities\Monthly;
 use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\TaskCategory;
+use GlpiPlugin\Manageentities\TicketTask;
 use function Safe\mkdir;
 
 function plugin_manageentities_install()
@@ -813,6 +814,19 @@ function plugin_manageentities_redefine_menus($menu)
     $menu['manageentities']['content']["manageentities_reports"] = $infos;
 
     return $menu;
+}
+
+function plugin_manageentities_pre_item_form($params)
+{
+    $item = $params['item'];
+    switch ($item->getType()) {
+        case 'Contract':
+            Contract::preItemForm($params);
+            break;
+        case 'TicketTask':
+            TicketTask::preItemForm($params);
+            break;
+    }
 }
 
 function plugin_datainjection_populate_manageentities()

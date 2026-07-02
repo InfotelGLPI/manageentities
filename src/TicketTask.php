@@ -30,7 +30,9 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
+use DbUtils;
 use Html;
+use Session;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
@@ -42,6 +44,78 @@ class TicketTask extends CommonDBTM
     var $dohistory = false;
 
     static $rightname = "plugin_manageentities";
+
+    public static function preItemForm(array $params): void
+    {
+        $item = $params['item'];
+        if ($item->getType() !== 'TicketTask') {
+            return;
+        }
+
+        $tickets_id = $item->fields['tickets_id'] ?? 0;
+        if (!$tickets_id) {
+            return;
+        }
+
+        if (!self::hasNoRemainingDays($tickets_id)) {
+            return;
+        }
+
+        echo '<div class="alert alert-danger d-flex align-items-center gap-2 mb-3" role="alert">';
+        echo '<i class="ti ti-ban fs-4"></i>';
+        echo '<div>';
+        echo '<strong>' . __('Task addition blocked', 'manageentities') . '</strong>';
+        echo '<br>';
+        echo __('No days remaining on this contract period. Task addition is blocked.', 'manageentities');
+        echo '</div>';
+        echo '</div>';
+    }
+
+    private static function hasNoRemainingDays(int $tickets_id): bool
+    {
+        $dbu = new DbUtils();
+        $cridetails = $dbu->getAllDataFromTable(
+            'glpi_plugin_manageentities_cridetails',
+            [
+                'tickets_id' => $tickets_id,
+                ['NOT' => ['plugin_manageentities_contractdays_id' => 0]],
+            ]
+        );
+        $cridetail = reset($cridetails);
+
+        if (empty($cridetail)) {
+            return false;
+        }
+
+        $contractDay = new ContractDay();
+        if (!$contractDay->getFromDB($cridetail['plugin_manageentities_contractdays_id'])) {
+            return false;
+        }
+
+        $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
+        $result = CriDetail::getCriDetailData($contractDay->fields);
+
+        return $result['resultOther']['reste'] <= 0;
+    }
+
+    public static function preItemAdd(\TicketTask $item): void
+    {
+        $tickets_id = $item->input['tickets_id'] ?? 0;
+        if (!$tickets_id) {
+            return;
+        }
+
+        if (!self::hasNoRemainingDays($tickets_id)) {
+            return;
+        }
+
+        Session::addMessageAfterRedirect(
+            __('No days remaining on this contract period. Task addition is blocked.', 'manageentities'),
+            false,
+            ERROR
+        );
+        $item->input = [];
+    }
 
     static public function postForm($params)
     {

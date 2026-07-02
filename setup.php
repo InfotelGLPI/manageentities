@@ -142,6 +142,9 @@ function plugin_init_manageentities()
 
         $PLUGIN_HOOKS['mydashboard']['manageentities'] = [Dashboard::class];
 
+        $PLUGIN_HOOKS[Hooks::PRE_ITEM_ADD]['manageentities'] = [
+            'TicketTask' => [TicketTask::class, 'preItemAdd'],
+        ];
         $PLUGIN_HOOKS[Hooks::POST_ITEM_FORM]['manageentities'] = [TicketTask::class, 'postForm'];
         // Add specific files to add to the header : javascript or css
         $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css", "style.css"];
@@ -182,7 +185,7 @@ function plugin_init_manageentities()
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-            $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities'] = [Contract::class, 'preItemForm'];
+            $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities'] = 'plugin_manageentities_pre_item_form';
             $PLUGIN_HOOKS[Hooks::PRE_ITEM_LIST]['manageentities'] = [Contract::class, 'preItemForm'];
         }
     }
