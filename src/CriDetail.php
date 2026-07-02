@@ -561,7 +561,7 @@ class CriDetail extends CommonDBTM
                 echo "</table>";
             } else {
                 echo "<br><div class='center alert alert-info d-flex'>";
-                echo __('No reports found');
+                echo __('No reports found', 'manageentities');
                 echo "</div>";
                 if ($entity == -1) {
                     self::addReports($item);
