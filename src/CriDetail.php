@@ -1892,7 +1892,7 @@ class CriDetail extends CommonDBTM
                        `glpi_tickettasks`.`id`,
                        `glpi_tickettasks`.`actiontime`,
                        `glpi_tickettasks`.`content`,
-                       `glpi_tickets`.`name`,
+                       `glpi_tickets`.`name` AS ticket_name,
                        `glpi_entities`.`name` AS entities_name,
                        `glpi_tickets`.`id`AS tickets_id "
             . " FROM `glpi_plugin_manageentities_cridetails` "
@@ -1943,11 +1943,12 @@ class CriDetail extends CommonDBTM
                     $interv[$key]["end"] = $data["end"];
                 }
                 $interv[$key]["name"] = Html::resume_text(
-                    $data["name"],
+                    $data["ticket_name"],
                     $CFG_GLPI["cut"]
                 ); // name is re-encoded on JS side
-                $interv[$key]["content"] = RichText::getSafeHtml(
-                    Html::resume_text($data["content"], $CFG_GLPI["cut"])
+                $interv[$key]["content"] = Html::resume_text(
+                    RichText::getTextFromHtml($data["content"], false, true),
+                    $CFG_GLPI["cut"]
                 );
                 $interv[$key]["actiontime"] = $data["actiontime"];
                 $interv[$key]["url"] = $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id="
@@ -1999,7 +2000,7 @@ class CriDetail extends CommonDBTM
                 ) . "<br>";
             }
 
-            $html .= "<div class='event-description'>" . $val["content"] . "</div>";
+            $html .= "<div class='event-description'>" . htmlspecialchars($val["content"]) . "</div>";
         } else {
             if ($val["entities_name"]) {
                 $html .= "<strong>" . __('Entity') . "</strong> : " . $val['entities_name'] . "<br>";

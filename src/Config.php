@@ -206,6 +206,13 @@ class Config extends CommonDBTM
         ]);
         $business_html = ob_get_clean();
 
+        ob_start();
+        \Dropdown::show(ContractState::class, [
+            'name'  => 'closed_contractstate_id',
+            'value' => $this->fields['closed_contractstate_id'] ?? 0,
+        ]);
+        $closed_contractstate_html = ob_get_clean();
+
         ob_start(); \Dropdown::showYesNo('backup', $this->fields['backup']); $backup_html = ob_get_clean();
         ob_start(); \Dropdown::showYesNo('useprice', $this->fields['useprice']); $useprice_html = ob_get_clean();
         ob_start(); \Dropdown::showYesNo('use_publictask', $this->fields['use_publictask']); $use_publictask_html = ob_get_clean();
@@ -225,7 +232,8 @@ class Config extends CommonDBTM
                 'useprice_html'             => $useprice_html,
                 'use_publictask_html'       => $use_publictask_html,
                 'allow_same_periods_html'   => $allow_same_periods_html,
-                'comment_html'              => $comment_html,
+                'comment_html'                  => $comment_html,
+                'closed_contractstate_html'     => $closed_contractstate_html,
             ]
         );
     }

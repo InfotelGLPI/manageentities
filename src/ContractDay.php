@@ -760,6 +760,60 @@ class ContractDay extends CommonDBTM
     }
 
 
+    public function post_updateItem($history = true)
+    {
+        // When a period's state changes, check if all periods of the parent GLPI contract are now closed.
+        // If so, set the plugin contract end_date to today so GLPI treats it as expired.
+        if (!isset($this->input['plugin_manageentities_contractstates_id'])) {
+            return;
+        }
+
+        $config = Config::getInstance();
+        $closed_state_id = (int)($config->fields['closed_contractstate_id'] ?? 0);
+        if ($closed_state_id === 0) {
+            return;
+        }
+
+        $contracts_id = (int)$this->fields['contracts_id'];
+        if ($contracts_id === 0) {
+            return;
+        }
+
+        // Count periods that are NOT in a closed state
+        global $DB;
+        $iterator = $DB->request([
+            'SELECT' => ['COUNT' => 'glpi_plugin_manageentities_contractdays.id AS cnt'],
+            'FROM'   => 'glpi_plugin_manageentities_contractdays',
+            'LEFT JOIN' => [
+                'glpi_plugin_manageentities_contractstates' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                        'glpi_plugin_manageentities_contractstates' => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                'glpi_plugin_manageentities_contractdays.contracts_id' => $contracts_id,
+                'glpi_plugin_manageentities_contractstates.is_closed'  => 0,
+            ],
+        ]);
+
+        $row = $iterator->current();
+        if ($row && (int)$row['cnt'] === 0) {
+            // All periods are closed — set GLPI contract end_date to today if not already past
+            $glpi_contract = new \Contract();
+            if ($glpi_contract->getFromDB($contracts_id)) {
+                $today = date('Y-m-d');
+                if (empty($glpi_contract->fields['end_date']) || $glpi_contract->fields['end_date'] > $today) {
+                    $glpi_contract->update([
+                        'id'       => $contracts_id,
+                        'end_date' => $today,
+                    ]);
+                }
+            }
+        }
+    }
+
     public function prepareInputForUpdate($input)
     {
         (isset($input['charged']) && $input['charged'] == true) ? $input['charged'] = 1 : $input['charged'] = 0;

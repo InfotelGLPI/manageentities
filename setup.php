@@ -77,7 +77,10 @@ function plugin_init_manageentities()
             'preUpdateDocument'
         ]
     ];
-    $PLUGIN_HOOKS[Hooks::ITEM_UPDATE]['manageentities'] = ['Document' => [Entity::class, 'UpdateDocument']];
+    $PLUGIN_HOOKS[Hooks::ITEM_UPDATE]['manageentities'] = [
+        'Document' => [Entity::class, 'UpdateDocument'],
+        'Contract' => 'plugin_manageentities_contract_item_update',
+    ];
 
     $PLUGIN_HOOKS[Hooks::ITEM_TRANSFER]['manageentities'] = 'plugin_item_transfer_manageentities';
 

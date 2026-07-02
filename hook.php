@@ -56,7 +56,7 @@ function plugin_manageentities_install()
     $update    = false;
     $update190 = false;
     if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
-        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty-4.0.4.sql");
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty.sql");
 
 
         $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
@@ -325,6 +325,11 @@ function plugin_manageentities_install()
     }
 
     $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.1.4.sql");
+
+    //version 4.1.9
+    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "closed_contractstate_id")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.1.9.sql");
+    }
 
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
     if (!is_dir($rep_files_manageentities)) {
@@ -833,4 +838,61 @@ function plugin_datainjection_populate_manageentities()
 {
     global $INJECTABLE_TYPES;
     $INJECTABLE_TYPES[DirectHelpdeskInjection::class] = 'manageentities';
+}
+
+/**
+ * Hook ITEM_UPDATE on GLPI Contract.
+ * When the contract's end_date is set to today or in the past, close all associated
+ * contract periods (ContractDay) by setting them to the configured closed state.
+ */
+function plugin_manageentities_contract_item_update(\Contract $item): void
+{
+    global $DB;
+
+    // Only act when end_date was explicitly changed in this update
+    if (!isset($item->input['end_date'])) {
+        return;
+    }
+
+    $config = Config::getInstance();
+    $closed_state_id = (int)($config->fields['closed_contractstate_id'] ?? 0);
+    if ($closed_state_id === 0) {
+        return;
+    }
+
+    $end_date = $item->input['end_date'];
+    $today    = date('Y-m-d');
+
+    // Only trigger when end_date <= today (contract is now expired/closed)
+    if (empty($end_date) || $end_date > $today) {
+        return;
+    }
+
+    $contracts_id = (int)$item->fields['id'];
+
+    // Find all periods not yet in a closed state
+    $iterator = $DB->request([
+        'SELECT' => ['glpi_plugin_manageentities_contractdays.id'],
+        'FROM'   => 'glpi_plugin_manageentities_contractdays',
+        'LEFT JOIN' => [
+            'glpi_plugin_manageentities_contractstates' => [
+                'ON' => [
+                    'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                    'glpi_plugin_manageentities_contractstates' => 'id',
+                ],
+            ],
+        ],
+        'WHERE' => [
+            'glpi_plugin_manageentities_contractdays.contracts_id' => $contracts_id,
+            'glpi_plugin_manageentities_contractstates.is_closed'  => 0,
+        ],
+    ]);
+
+    $contractDay = new ContractDay();
+    foreach ($iterator as $row) {
+        $contractDay->update([
+            'id'                                       => $row['id'],
+            'plugin_manageentities_contractstates_id'  => $closed_state_id,
+        ]);
+    }
 }
