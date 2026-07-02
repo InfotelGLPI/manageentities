@@ -1,0 +1,80 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-users me-2"></i>
+            {{ __('Current stakeholders', 'manageentities') }}
+            <span class="badge bg-outline-secondary ms-1">{{ entries|length }}</span>
+        </h3>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover table-sm card-table" id="list_skateholders{{ id_to_use }}">
+            <thead>
+                <tr>
+                    <th>{{ __('User') }}</th>
+                    <th>{{ __('Affected to', 'manageentities') }}</th>
+                    {% if can_create %}<th></th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% if entries|length > 0 %}
+                    {% for entry in entries %}
+                    <tr id="{{ entry.row_id }}">
+                        <td>{{ entry.user|raw }}</td>
+                        <td>{{ entry.nb_days|raw }}</td>
+                        {% if can_create %}
+                        <td class="text-end">{{ entry.actions|raw }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr id="empty_skateholders{{ id_to_use }}">
+                        <td colspan="{{ can_create ? 3 : 2 }}" class="text-muted p-3">
+                            {{ __('No stakeholders have been affected yet.', 'manageentities') }}
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% for js in delete_js %}
+<script type="text/javascript">
+function {{ js.fn }}() {
+    $('#{{ js.idDivAjax }}').load('{{ js.url }}', {
+        action:          'delete_user_datas',
+        id_div_ajax:     '{{ js.idDivAjax }}',
+        id_dp_nbdays:    '{{ js.id_dp_nbdays }}',
+        contractdays_id: '{{ js.contractdays_id }}',
+        skateholder_id:  '{{ js.skateholder_id }}'
+    });
+}
+</script>
+{% endfor %}

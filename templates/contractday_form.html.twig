@@ -1,0 +1,136 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set bg = "" %}
+<div class="asset {{ bg }}">
+    {% include("components/form/header.html.twig") %}
+
+    <input type="hidden" name="contracts_id" value="{{ contract_id }}">
+    <input type="hidden" name="contract_id"  value="{{ contract_id }}">
+    <input type="hidden" name="entities_id"  value="{{ entities_id }}">
+
+    <div class="card-body d-flex flex-wrap gap-3 pt-0">
+        <div class="col-12">
+            <div class="row flex-row">
+
+                {# Contract link (read-only) #}
+                {% set contract_link_html %}
+                    <a href="{{ contract_link }}">{{ contract_name }}</a>
+                {% endset %}
+                {{ fields.field('contracts_id', contract_link_html, __('Contract'), {
+                    'full_width': true,
+                    'readonly': true
+                }) }}
+
+                {# Period name #}
+                {{ fields.textField('name', name, __('Period of contract', 'manageentities'), {
+                    'full_width': true
+                }) }}
+
+                {# Contract type (day mode only) #}
+                {% if is_day %}
+                {{ fields.field('contract_type', contract_type_html, __('Type of service contract', 'manageentities'), {
+                    'full_width': false
+                }) }}
+                {% endif %}
+
+                {# Begin date #}
+                {{ fields.field('begin_date', begin_date_html, __('Begin date'), {
+                    'full_width': false
+                }) }}
+
+                {# End date #}
+                {{ fields.field('end_date', end_date_html, __('End date'), {
+                    'full_width': false
+                }) }}
+
+                {# Report (postponement) — credit mode only #}
+                {% if show_credit %}
+                {% set report_html %}
+                    <div class="input-group">
+                        <input type="text" name="report" class="form-control" value="{{ report }}">
+                        <span class="input-group-text">{{ unit }}</span>
+                    </div>
+                {% endset %}
+                {{ fields.field('report', report_html, __('Postponement', 'manageentities'), {
+                    'full_width': false
+                }) }}
+                {% endif %}
+
+                {# Initial credit — credit mode only #}
+                {% if show_credit %}
+                {% set nbday_html %}
+                    <div class="input-group">
+                        <input type="text" name="nbday" class="form-control" value="{{ nbday }}">
+                        <span class="input-group-text">{{ unit }}</span>
+                    </div>
+                {% endset %}
+                {{ fields.field('nbday', nbday_html, __('Initial credit', 'manageentities'), {
+                    'full_width': false
+                }) }}
+                {% endif %}
+
+                {# State #}
+                {{ fields.field('plugin_manageentities_contractstates_id', contractstate_html,
+                    __('State of contract', 'manageentities'), {
+                    'full_width': false
+                }) }}
+
+                {# Already charged #}
+                {{ fields.checkboxField('charged', charged, __('Already charged', 'manageentities'), {
+                    'full_width': false
+                }) }}
+
+                {# Comment #}
+                {{ fields.textareaField('comment', comment, __('Comments'), {
+                    'full_width': true,
+                    'rows': 4
+                }) }}
+
+                {# Consumption summary section #}
+                {{ fields.largeTitle(__('Consumption summary', 'manageentities'), 'ti ti-chart-bar') }}
+
+                {{ fields.readOnlyField('conso', conso ~ ' ' ~ conso_unit, __('Total consummated', 'manageentities')) }}
+
+                {% if show_credit %}
+                {{ fields.readOnlyField('reste', reste ~ ' ' ~ unit, __('Total remaining', 'manageentities')) }}
+                {{ fields.readOnlyField('depass', depass ~ ' ' ~ unit, __('Total exceeding', 'manageentities')) }}
+                {% endif %}
+
+                {% if use_price %}
+                {{ fields.readOnlyField('forfait', forfait, __('Guaranteed package', 'manageentities')) }}
+                {{ fields.readOnlyField('reste_montant', reste_montant, __('Remaining total (amount)', 'manageentities')) }}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    {% include("components/form/buttons.html.twig") %}
+</div>

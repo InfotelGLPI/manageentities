@@ -33,6 +33,7 @@ use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\Config;
 use Html;
 use Session;
@@ -146,97 +147,61 @@ class CriPrice extends CommonDBTM
      * */
     function showForm($ID, $options = [])
     {
-        global $CFG_GLPI;
-
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-            // Create item
             $options['plugin_manageentities_contractdays_id'] = $options['parent']->getField('id');
             $this->check(-1, UPDATE, $options);
         }
 
-        $config = Config::getInstance();
+        $config   = Config::getInstance();
+        $is_day   = ($config->fields['hourorday'] == Config::DAY);
 
-        $data = $this->getItems($options['parent']->getField('id'));
+        $existing      = $this->getItems($options['parent']->getField('id'));
+        $used_critypes = array_column($existing, 'plugin_manageentities_critypes_id');
 
-        $used_critypes = [];
-        if (!empty($data)) {
-            foreach ($data as $field) {
-                $used_critypes[] = $field['plugin_manageentities_critypes_id'];
-            }
-        }
+        $this->initForm($ID, $options);
 
-        $this->showFormHeader($options);
-        echo "<tr class='tab_bg_1'>";
-        // Cri Type
-        echo "<td>";
-        echo CriType::getTypeName() . '&nbsp;';
-        echo "</td>";
-        echo "<td>";
-        $rand = \Dropdown::show(CriType::class, [
-            'name' => 'plugin_manageentities_critypes_id',
-            'value' => $this->fields['plugin_manageentities_critypes_id'],
-            'entity' => $options['parent']->getField('entities_id'),
-            'used' => $used_critypes,
+        // Capture CriType dropdown
+        ob_start();
+        $rand_critype = \Dropdown::show(CriType::class, [
+            'name'      => 'plugin_manageentities_critypes_id',
+            'value'     => $this->fields['plugin_manageentities_critypes_id'],
+            'entity'    => $options['parent']->getField('entities_id'),
+            'used'      => $used_critypes,
             'on_change' => 'manageentities_loadSelectPrice();'
         ]);
-        echo "<script type='text/javascript'>";
-        echo "function manageentities_loadSelectPrice(){";
-        Ajax::updateItemJsCode(
-            'manageentities_loadPrice',
-            PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/criprice.php",
-            [
-                'action' => 'loadPrice',
-                'critypes_id' => '__VALUE__',
-                'entities_id' => $options['parent']->getField('entities_id')
-            ],
-            'dropdown_plugin_manageentities_critypes_id' . $rand
-        );
-        echo "}";
-        echo "</script>";
-        echo "</td>";
+        $critype_html = ob_get_clean();
 
-        // Price
-        echo "<td>";
-        // Display for hourly or daily price title
-        if ($config->fields['hourorday'] == Config::DAY) {
-            echo __('Daily rate', 'manageentities');
-        } elseif ($config->fields['hourorday'] == Config::HOUR) {
-            echo __('Hourly rate', 'manageentities');
-        }
-        echo "</td>";
-        echo "<td>";
-        echo Html::input('price', ['value' => Html::formatNumber($this->fields["price"]), 'size' => 5]);
-        echo "</td>";
-        echo "</tr>";
-        echo "<tr class='tab_bg_1'>";
+        // Capture is_default dropdown — default to Yes for new items
+        ob_start();
+        \Dropdown::showYesNo('is_default', $ID <= 0 ? 1 : $this->fields['is_default']);
+        $is_default_html = ob_get_clean();
 
-        // Is default
-        echo "<td>";
-        echo __('Is default', 'manageentities') . '&nbsp;';
-        echo "</td>";
-        echo "<td>";
-        \Dropdown::showYesNo('is_default', $this->fields['is_default']);
-        echo Html::hidden('plugin_manageentities_contractdays_id', ['value' => $options['parent']->getField('id')]);
-        echo Html::hidden('entities_id', ['value' => $options['parent']->getField('entities_id')]);
-        echo "</td>";
-
-        // Select an existing criprice
-        echo "<td>";
-        echo __('Select an existing price', 'manageentities') . '&nbsp;';
-        echo "</td>";
-        echo "<td>";
-        echo "<div id='manageentities_loadPrice'>";
+        // Capture existing price dropdown
+        ob_start();
         $this->showSelectPriceDropdown(
             $this->fields['plugin_manageentities_critypes_id'],
             $options['parent']->getField('entities_id')
         );
-        echo "</div>";
-        echo "</td>";
-        echo "</tr>";
+        $select_price_html = ob_get_clean();
 
-        $this->showFormButtons($options);
+        $ajax_url = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/criprice.php";
+
+        TemplateRenderer::getInstance()->display('@manageentities/criprice_form.html.twig', [
+            'item'               => $this,
+            'params'             => $options,
+            'is_day'             => $is_day,
+            'critype_html'       => $critype_html,
+            'rand_critype'       => $rand_critype,
+            'is_default_html'    => $is_default_html,
+            'select_price_html'  => $select_price_html,
+            'price'              => Html::formatNumber($this->fields['price']),
+            'ajax_url'           => $ajax_url,
+            'entities_id'        => $options['parent']->getField('entities_id'),
+            'contractdays_id'    => $options['parent']->getField('id'),
+            'price_label'        => $is_day ? __('Daily rate', 'manageentities') : __('Hourly rate', 'manageentities'),
+        ]);
 
         return true;
     }
@@ -326,12 +291,13 @@ class CriPrice extends CommonDBTM
         }
 
         $canedit = $item->can($item->fields['id'], UPDATE);
+        $rand    = mt_rand();
+        $data    = $this->getItems($item->getField('id'));
 
-        $rand = mt_rand();
-
-        $data = $this->getItems($item->getField('id'));
-
+        // Capture add button (inline AJAX edition)
+        $add_button_html = '';
         if ($canedit) {
+            ob_start();
             echo "<div id='viewcriprice" . $item->fields['id'] . "_$rand'></div>\n";
             self::getJSEdition(
                 "viewcriprice" . $item->fields['id'] . "_$rand",
@@ -341,108 +307,111 @@ class CriPrice extends CommonDBTM
                 ContractDay::class,
                 $item->fields['id']
             );
-            echo "<div class='center firstbloc'>" .
-                "<a class='submit btn btn-primary' href='javascript:viewAddCriprice" . $item->fields['id'] . "_$rand();'>";
-            echo __('Add a new price', 'manageentities') . "</a></div>\n";
+            echo "<a class='btn btn-primary' href='javascript:viewAddCriprice" . $item->fields['id'] . "_$rand();'>";
+            echo __('Add a new price', 'manageentities') . "</a>\n";
+            $add_button_html = ob_get_clean();
         }
 
-        if (!empty($data)) {
-            $this->listItems($item->fields['id'], $data, $canedit, $rand);
-        }
+        $this->listItems($item->fields['id'], $data, $canedit, $rand, $add_button_html);
     }
 
 
     /**
-     * List items for contract days
-     *
-     * @param type $ID
-     * @param type $data
-     * @param type $canedit
-     * @param type $rand
-     *
-     * @global type $CFG_GLPI
-     *
+     * List items for contract days (Twig datatable)
      */
-    public function listItems($ID, $data, $canedit, $rand)
+    public function listItems($ID, $data, $canedit, $rand, $add_button_html = '')
     {
-        global $CFG_GLPI;
+        $config      = Config::getInstance();
+        $is_day      = ($config->fields['hourorday'] == Config::DAY);
+        $multi_entity = Session::isMultiEntitiesMode();
 
-        $config = Config::getInstance();
+        // Massive actions capture
+        $massive_form_open    = '';
+        $massive_actions_top  = '';
+        $massive_actions_bottom = '';
+        $massive_form_close   = '';
 
-        echo "<div class='left'>";
         if ($canedit) {
+            ob_start();
             Html::openMassiveActionsForm('masscriprice' . $rand);
-            $massiveactionparams = [
-                'item' => __CLASS__,
-                'container' =>
-                    'masscriprice'  . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
+            $massive_form_open = ob_get_clean();
+
+            ob_start();
+            Html::showMassiveActions(['item' => __CLASS__, 'container' => 'masscriprice' . $rand]);
+            $massive_actions_top = ob_get_clean();
+
+            ob_start();
+            Html::showMassiveActions(['item' => __CLASS__, 'container' => 'masscriprice' . $rand, 'ontop' => false]);
+            $massive_actions_bottom = ob_get_clean();
+
+            $massive_form_close = '</form>';
         }
 
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_1'>";
-        echo "<th width='10'>";
-        if ($canedit) {
-            echo Html::getCheckAllAsCheckbox('masscriprice'  . $rand);
+        // Build columns
+        $columns = ['_checkbox' => ''];
+        if ($multi_entity) {
+            $columns['entities_name'] = __('Entity');
         }
-        echo "</th>";
-        if (Session::isMultiEntitiesMode()) {
-            echo "<th>" . __('Entity') . "</th>";
-        }
+        $columns['critypes_name'] = __('Intervention type', 'manageentities');
+        $columns['price']         = $is_day ? __('Daily rate', 'manageentities') : __('Hourly rate', 'manageentities');
+        $columns['is_default']    = __('Is default', 'manageentities');
 
-        //Intervention type only for daily
-        echo "<th>" . __('Intervention type', 'manageentities') . "</th>";
+        $formatters = [
+            '_checkbox' => 'raw_html',
+            'price'     => 'raw_html',
+            'is_default' => 'raw_html',
+        ];
 
-        // Display for hourly or daily price title
-        if ($config->fields['hourorday'] == Config::DAY) {
-            echo "<th>" . __('Daily rate', 'manageentities') . "</th>";
-        } elseif ($config->fields['hourorday'] == Config::HOUR) {
-            echo "<th>" . __('Hourly rate', 'manageentities') . "</th>";
-        }
-        echo "<th>" . __('Is default', 'manageentities') . "</th>";
-        echo "</tr>";
-
+        // Build entries
+        $entries = [];
         foreach ($data as $field) {
-            $onclick = ($canedit ? "style='cursor:pointer' onClick=\"viewEditCriprice" . $field['plugin_manageentities_contractdays_id'] . "_" .
-                $field['id'] . "_$rand();\"" : '');
-
-            echo "<tr class='tab_bg_2'>";
-            echo "<td width='10'>";
+            $checkbox_html = '';
             if ($canedit) {
+                ob_start();
                 Html::showMassiveActionCheckBox(__CLASS__, $field['id']);
                 self::getJSEdition(
                     "viewcriprice" . $ID . "_$rand",
-                    "viewEditCriprice" . $field['plugin_manageentities_contractdays_id'] . "_" . $field["id"] . "_$rand",
+                    "viewEditCriprice" . $field['plugin_manageentities_contractdays_id'] . "_" . $field['id'] . "_$rand",
                     $this->getType(),
-                    $field["id"],
+                    $field['id'],
                     ContractDay::class,
-                    $field["plugin_manageentities_contractdays_id"]
+                    $field['plugin_manageentities_contractdays_id']
                 );
-            }
-            echo "</td>";
-            if (Session::isMultiEntitiesMode()) {
-                echo "<td $onclick>" . \Dropdown::getDropdownName("glpi_entities", $field['entities_id']) . "</td>";
+                $checkbox_html = ob_get_clean();
             }
 
-            //Intervention type only for daily
-            echo "<td $onclick>" . $field["critypes_name"] . "</td>";
-            echo "<td $onclick>" . Html::formatNumber($field["price"], false) . "</td>";
-            echo "<td $onclick>" . \Dropdown::getYesNo($field["is_default"]) . "</td>";
-
-            echo "</tr>";
-        }
-        echo "</table>";
-        if ($canedit) {
-            $massiveactionparams = [
-                'item' => __CLASS__,
-                'ontop' => false,
-                'container' => 'mass' . __CLASS__ . $rand
+            $row = [
+                '_checkbox'    => $checkbox_html,
+                'critypes_name' => $field['critypes_name'],
+                'price'        => Html::formatNumber($field['price'], false),
+                'is_default'   => \Dropdown::getYesNo($field['is_default']),
+                'row_class'    => $canedit ? 'cursor-pointer' : '',
             ];
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
+
+            if ($canedit) {
+                $row['row_onclick'] = "viewEditCriprice" . $field['plugin_manageentities_contractdays_id']
+                    . "_" . $field['id'] . "_$rand();";
+            }
+
+            if ($multi_entity) {
+                $row['entities_name'] = \Dropdown::getDropdownName('glpi_entities', $field['entities_id']);
+            }
+
+            $entries[] = $row;
         }
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('@manageentities/criprice_list.html.twig', [
+            'rand'                  => $rand,
+            'can_edit'              => $canedit,
+            'entries'               => $entries,
+            'columns'               => $columns,
+            'formatters'            => $formatters,
+            'massive_form_open'     => $massive_form_open,
+            'massive_actions_top'   => $massive_actions_top,
+            'massive_actions_bottom' => $massive_actions_bottom,
+            'massive_form_close'    => $massive_form_close,
+            'add_button_html'       => $add_button_html,
+        ]);
     }
 
     /**

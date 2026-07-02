@@ -1,0 +1,82 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<div class="card mt-3" id="global_form_content{{ id_to_use }}"
+    {% if nb_days <= 0 %}style="display:none"{% endif %}>
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-user-plus me-2"></i>
+            {{ __('Add stakeholders', 'manageentities') }}
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3 align-items-end">
+
+            <div class="col-sm-5">
+                <label class="form-label fw-bold">
+                    {{ __('User') }}
+                    <span class="text-danger">*</span>
+                </label>
+                {{ user_dropdown_html|raw }}
+            </div>
+
+            <div class="col-sm-4">
+                <label class="form-label fw-bold">
+                    {{ __('Affected to', 'manageentities') }}
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex align-items-center gap-2">
+                    {{ nbdays_dropdown_html|raw }}
+                    <span class="text-muted">{{ unit }}</span>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <input type="hidden" id="id_user" name="id_user" value="{{ id_user_field }}">
+                <button type="button" class="btn btn-primary w-100"
+                    onclick="{{ add_fn }}();">
+                    <i class="ti ti-plus me-1"></i>{{ __('Add') }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <div id="{{ id_div_ajax }}" class="card-footer text-center"></div>
+</div>
+
+<script type="text/javascript">
+function {{ add_fn }}() {
+    $('#{{ id_div_ajax }}').load('{{ ajax_url }}', {
+        {% for key, val in list_ids %}
+        {{ val[1] }}: $('#{{ key }}').val(),
+        {% endfor %}
+        {% for key, val in params %}
+        {{ key }}: '{{ val }}',
+        {% endfor %}
+    });
+}
+</script>

@@ -106,14 +106,24 @@
                     <span class="text-muted">{{ __('Remaining days', 'manageentities') }}: <strong>0</strong></span>
                 </div>
             </div>
+            {% elseif remaining_days is not null and remaining_days == 1 %}
+            <div id="remaining_days_alert" class="alert alert-warning d-flex align-items-center gap-2 mb-0" role="alert">
+                <i class="ti ti-alert-circle fs-4"></i>
+                <div>
+                    <span>{{ __('Remaining days', 'manageentities') }}:</span>
+                    <strong id="remaining_days_value">1</strong>
+                    <br>
+                    <span class="text-muted fst-italic">{{ __('Please anticipate the end of the service period if necessary', 'manageentities') }}</span>
+                </div>
+            </div>
             {% else %}
-            <div id="remaining_days_alert" class="alert alert-info d-flex align-items-center gap-2 mb-0" role="alert">
+            <div id="remaining_days_alert" class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
                 <i class="ti ti-calendar-stats fs-4"></i>
                 <div>
                     <span>{{ __('Remaining days', 'manageentities') }}:</span>
                     <strong id="remaining_days_value">
                         {% if remaining_days is not null %}
-                            {{ remaining_days|number_format(2) }}
+                            {{ remaining_days|number_format(0) }}
                         {% else %}
                             —
                         {% endif %}
@@ -181,12 +191,18 @@
                     '<i class="ti ti-alert-triangle fs-4"></i>' +
                     '<div><strong>{{ __('No days remaining on this contract period', 'manageentities')|e('js') }}</strong>' +
                     '<br><span class="text-muted">{{ __('Remaining days', 'manageentities')|e('js') }}: <strong>0</strong></span></div>';
+            } else if (remaining === 1) {
+                alert.className = 'alert alert-warning d-flex align-items-center gap-2 mb-0';
+                alert.innerHTML =
+                    '<i class="ti ti-alert-circle fs-4"></i>' +
+                    '<div><span>{{ __('Remaining days', 'manageentities')|e('js') }}:</span> <strong id="remaining_days_value">1</strong>' +
+                    '<br><span class="text-muted fst-italic">{{ __('Please anticipate the end of the service period if necessary', 'manageentities')|e('js') }}</span></div>';
             } else {
-                alert.className = 'alert alert-info d-flex align-items-center gap-2 mb-0';
+                alert.className = 'alert alert-success d-flex align-items-center gap-2 mb-0';
                 alert.innerHTML =
                     '<i class="ti ti-calendar-stats fs-4"></i>' +
                     '<div><span>{{ __('Remaining days', 'manageentities')|e('js') }}:</span> ' +
-                    '<strong>' + remaining.toFixed(2) + '</strong></div>';
+                    '<strong>' + remaining.toFixed(0) + '</strong></div>';
             }
         }, 'json');
     }
@@ -196,17 +212,26 @@
         updateRemainingDays($(this).val());
     });
 
+    var closedGlpiStateId = {{ closed_glpi_state_id|default(0) }};
+
     function updateContractStatus(container) {
         const badge = document.getElementById('contract_status_badge');
         const commentBlock = document.getElementById('contract_comment_block');
         const commentText  = document.getElementById('contract_comment_text');
 
         if (badge) {
-            const statusEl = container.querySelector('.me-contract-status-data');
-            const label = statusEl ? statusEl.textContent.trim() : '';
-            badge.innerHTML = label
-                ? '<span class="badge bg-outline-success fs-6"><i class="ti ti-circle-check me-1"></i>' + label + '</span>'
-                : '';
+            const statusEl  = container.querySelector('.me-contract-status-data');
+            const statesIdEl = container.querySelector('.me-contract-states-id-data');
+            const label     = statusEl ? statusEl.textContent.trim() : '';
+            const statesId  = statesIdEl ? parseInt(statesIdEl.textContent.trim(), 10) : 0;
+
+            if (!label) {
+                badge.innerHTML = '';
+            } else if (closedGlpiStateId > 0 && statesId === closedGlpiStateId) {
+                badge.innerHTML = '<span class="badge bg-danger-lt fs-6"><i class="ti ti-circle-x me-1"></i>' + label + '</span>';
+            } else {
+                badge.innerHTML = '<span class="badge bg-outline-success fs-6"><i class="ti ti-circle-check me-1"></i>' + label + '</span>';
+            }
         }
 
         if (commentBlock && commentText) {

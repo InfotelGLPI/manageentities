@@ -475,7 +475,7 @@ class CriDetail extends CommonDBTM
                action='" . Toolbox::getItemTypeFormURL(Cri::class) . "' style='display:inline'>";
             echo Html::submit(
                 _sx('button', 'Delete permanently'),
-                ['name' => 'purgedoc', 'class' => 'btn btn-primary']
+                ['name' => 'purgedoc', 'class' => 'btn btn-danger']
             );
             echo Html::hidden('documents_id', ['value' => $cridetail['documents_id']]);
             Html::closeForm();
@@ -554,82 +554,84 @@ class CriDetail extends CommonDBTM
 
             $iterator = $DB->request($criteria);
 
-            if (count($iterator) > 0) {
-                echo "<table class='tab_cadre_fixe'>";
-                echo "<tr class='tab_bg_1'><th colspan='8'>" . __('Associated intervention reports', 'manageentities');
+            $use_price = ($config->fields['useprice'] == Config::PRICE);
+            $can_read_doc = Session::haveRight("document", READ);
 
-                if (Session::haveRight("document", READ)) {
-                    echo " <a href='" . $CFG_GLPI["root_doc"] . "/front/document.php?contains%5B0%5D=cri&amp;field%5B0%5D=1&amp;sort=19&amp;deleted=0&amp;start=0'>";
-                    echo __('All reports', 'manageentities') . "</a>";
-                }
-                echo "</th></tr>";
-                echo "<tr class='tab_bg_1'>";
-                echo "<th>" . __('Date') . "</th>";
-                echo "<th>" . __('Technicians', 'manageentities') . "</th>";
-                if ($config->fields['useprice'] == Config::PRICE) {
-                    echo "<th>" . __('Intervention type', 'manageentities') . "</th>";
-                }
-                echo "<th>" . __('Crossed time (itinerary including)', 'manageentities') . "</th>";
-                echo "<th>" . __('Intervention with contract', 'manageentities') . "</th>";
-                echo "<th>" . __('Contract number', 'manageentities') . "</th>";
-                echo "<th>" . __('Name') . "</th>";
-                echo "<th width='100px'>" . __('File') . "</th>";
-                echo "</tr>";
+            $entries    = [];
+            $columns    = [];
+            $formatters = [];
 
-                foreach ($iterator as $data) {
-                    echo "<tr class='tab_bg_1" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
-                    echo "<td class='center'>" . Html::convdate($data["date"]) . "</td>";
-                    echo "<td class='center'>" . $data["technicians"] . "</td>";
-                    if ($config->fields['useprice'] == Config::PRICE) {
-                        echo "<td class='center'>" . \Dropdown::getDropdownName(
-                            "glpi_plugin_manageentities_critypes",
-                            $data['plugin_manageentities_critypes_id']
-                        ) . "</td>";
-                    }
-                    echo "<td class='center'>" . Html::formatNumber($data["realtime"], 0, 2) . "</td>";
-                    echo "<td class='center'>" . \Dropdown::getYesNo($data["withcontract"]) . "</td>";
-                    $num_contract = "";
-                    if ($data["withcontract"]) {
-                        $contract = new \Contract();
-                        $contract->getFromDB($data["contracts_id"]);
-                        $num_contract = $contract->fields["num"];
-                    }
-                    echo "<td class='center'>" . $num_contract . "</td>";
-                    echo "<td class='center'>";
-                    if (Session::haveRight("document", READ)) {
-                        echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.form.php?id=" . $data["id"] . "'>";
-                    }
-                    echo "<b>" . $data["name"];
-                    if ($_SESSION["glpiis_ids_visible"]) {
-                        echo " (" . $data["id"] . ")";
-                    }
-                    echo "</b>";
-                    if (Session::haveRight("document", READ)) {
-                        echo "</a>";
-                    }
-                    echo "</td>";
-                    $doc = new Document();
-                    $doc->getFromDB($data["id"]);
-                    echo "<td class='center' width='100px'>" . $doc->getDownloadLink() . "</td>";
-                    echo "</tr>";
-                }
-                if ($entity == -1) {
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<td class='center' colspan='8'>";
-                    self::addReports($item);
-                    echo "</td>";
-                    echo "</tr>";
-                }
-
-                echo "</table>";
-            } else {
-                echo "<br><div class='center alert alert-info d-flex'>";
-                echo __('No reports found', 'manageentities');
-                echo "</div>";
-                if ($entity == -1) {
-                    self::addReports($item);
-                }
+            $columns['date']         = __('Date');
+            $columns['technicians']  = __('Technicians', 'manageentities');
+            if ($use_price) {
+                $columns['critype'] = __('Intervention type', 'manageentities');
             }
+            $columns['realtime']     = __('Crossed time (itinerary including)', 'manageentities');
+            $columns['withcontract'] = __('Intervention with contract', 'manageentities');
+            $columns['contract_num'] = __('Contract number', 'manageentities');
+            $columns['name']         = __('Name');
+            $columns['file']         = __('File');
+            $formatters['name'] = 'raw_html';
+            $formatters['file'] = 'raw_html';
+
+            foreach ($iterator as $data) {
+                $name_html = $can_read_doc
+                    ? "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.form.php?id=" . (int)$data["id"] . "'>"
+                      . "<strong>" . htmlspecialchars($data["name"], ENT_QUOTES)
+                      . ($_SESSION["glpiis_ids_visible"] ? " (" . (int)$data["id"] . ")" : "")
+                      . "</strong></a>"
+                    : "<strong>" . htmlspecialchars($data["name"], ENT_QUOTES) . "</strong>";
+
+                $doc = new Document();
+                $doc->getFromDB($data["id"]);
+
+                $num_contract = '';
+                if ($data["withcontract"]) {
+                    $contract_obj = new \Contract();
+                    $contract_obj->getFromDB($data["contracts_id"]);
+                    $num_contract = htmlspecialchars($contract_obj->fields["num"] ?? '', ENT_QUOTES);
+                }
+
+                $entry = [
+                    'date'         => Html::convdate($data["date"]),
+                    'technicians'  => htmlspecialchars($data["technicians"] ?? '', ENT_QUOTES),
+                    'realtime'     => Html::formatNumber($data["realtime"], 0, 2),
+                    'withcontract' => \Dropdown::getYesNo($data["withcontract"]),
+                    'contract_num' => $num_contract,
+                    'name'         => $name_html,
+                    'file'         => $doc->getDownloadLink(),
+                ];
+                if ($use_price) {
+                    $entry['critype'] = \Dropdown::getDropdownName(
+                        "glpi_plugin_manageentities_critypes",
+                        $data['plugin_manageentities_critypes_id']
+                    );
+                }
+                $entries[] = $entry;
+            }
+
+            ob_start();
+            if ($entity == -1) {
+                self::addReports($item);
+            }
+            $add_reports_html = ob_get_clean();
+
+            $all_reports_url = $can_read_doc
+                ? $CFG_GLPI["root_doc"] . "/front/document.php?" . http_build_query([
+                    'criteria' => [
+                        ['field' => 1, 'searchtype' => 'contains', 'value' => 'cri'],
+                    ],
+                    'start' => 0,
+                ])
+                : '';
+
+            TemplateRenderer::getInstance()->display('@manageentities/cri_reports.html.twig', [
+                'entries'          => $entries,
+                'columns'          => $columns,
+                'formatters'       => $formatters,
+                'all_reports_url'  => $all_reports_url,
+                'add_reports_html' => $add_reports_html,
+            ]);
         }
     }
 
@@ -1576,17 +1578,23 @@ class CriDetail extends CommonDBTM
             }
         }
 
-        // Fetch comment and end date of the preselected contract
+        // Fetch comment, end date and states_id of the preselected contract
         $contract_comment  = '';
         $contract_end_date = '';
+        $contract_states_id = 0;
         $contract_selected_id = $contract_link_info['contractSelected'] ?? 0;
         if ($contract_selected_id > 0) {
             $contract_obj = new \Contract();
             if ($contract_obj->getFromDB($contract_selected_id)) {
                 $contract_comment  = $contract_obj->fields['comment'] ?? '';
                 $contract_end_date = $contract_obj->fields['end_date'] ?? '';
+                $contract_states_id = (int)($contract_obj->fields['states_id'] ?? 0);
             }
         }
+
+        // Closed GLPI state configured in plugin settings
+        $me_config = Config::getInstance();
+        $closed_glpi_state_id = (int)($me_config->fields['closed_glpi_state_id'] ?? 0);
 
         // Build the JS block to show/hide the contract section
         $change_contract_script = Html::scriptBlock("
@@ -1614,6 +1622,8 @@ class CriDetail extends CommonDBTM
             'ajax_url'                  => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/getRemainingDays.php',
             'contract_comment'          => $contract_comment,
             'contract_end_date'         => $contract_end_date,
+            'contract_states_id'        => $contract_states_id,
+            'closed_glpi_state_id'      => $closed_glpi_state_id,
             'contract_type_dropdown'    => $contract_type_dropdown,
             'contract_link_dropdown'    => $contract_link_dropdown,
             'change_contract_script'    => $change_contract_script,

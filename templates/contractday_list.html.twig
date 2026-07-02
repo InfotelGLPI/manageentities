@@ -1,0 +1,76 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<div class="card mt-3">
+
+    <div class="card-header">
+    <h3 class="card-title">
+        <i class="ti ti-calendar-stats me-2"></i>
+        {{ __('Periods of contract', 'manageentities') }}
+        <span class="badge bg-outline-secondary ms-1">{{ entries|length }}</span>
+    </h3>
+    </div>
+    {{ massive_form_open|raw }}
+
+    {% if can_edit and massive_actions_top %}
+    <div class="card-body border-bottom py-2">
+        {{ massive_actions_top|raw }}
+    </div>
+    {% endif %}
+
+    <div class="card-body p-0">
+        {% if entries|length > 0 %}
+        {{ include('components/datatable.html.twig', {
+            'datatable_id': 'contractday_list_' ~ rand,
+            'nosort': true,
+            'nofilter': true,
+            'columns': columns,
+            'formatters': formatters,
+            'entries': entries,
+            'total_number': entries|length,
+            'filtered_number': entries|length,
+            'table_class_style': 'table-hover table-sm'
+        }) }}
+        {% else %}
+        <div class="p-3 text-muted">{{ __('No period found', 'manageentities') }}</div>
+        {% endif %}
+    </div>
+
+    {% if can_edit and massive_actions_bottom %}
+    <div class="card-body border-top py-2">
+        {{ massive_actions_bottom|raw }}
+    </div>
+    {% endif %}
+
+    {{ massive_form_close|raw }}
+
+    {% if add_button_html %}
+    <div class="card-footer">
+        {{ add_button_html|raw }}
+    </div>
+    {% endif %}
+</div>

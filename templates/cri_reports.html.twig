@@ -1,0 +1,78 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<div class="card mt-3">
+
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-file-report me-2"></i>
+            {{ __('Associated intervention reports', 'manageentities') }}
+        </h3>
+        {% if entries|length > 0 %}
+            <span class="badge bg-outline-secondary ms-1">{{ entries|length }}</span>
+        {% endif %}
+        {% if all_reports_url %}
+            <a href="{{ all_reports_url }}" class="ms-auto btn btn-sm btn-outline-secondary">
+                <i class="ti ti-list me-1"></i>{{ __('All reports', 'manageentities') }}
+            </a>
+        {% endif %}
+    </div>
+
+    {% if entries|length > 0 %}
+    <div class="card-body p-0">
+        {{ include('components/datatable.html.twig', {
+            'datatable_id': 'cri_reports_table',
+            'nosort': true,
+            'nofilter': true,
+            'columns': columns,
+            'formatters': formatters,
+            'entries': entries,
+            'total_number': entries|length,
+            'filtered_number': entries|length,
+            'table_class_style': 'table-hover table-sm'
+        }) }}
+    </div>
+    {% if add_reports_html %}
+    <div class="card-footer">
+        {{ add_reports_html|raw }}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="card-body">
+        <div class="alert alert-info d-flex align-items-center gap-2 mb-0">
+            <i class="ti ti-info-circle"></i>
+            {{ __('No reports found', 'manageentities') }}
+        </div>
+        {% if add_reports_html %}
+        <div class="mt-2">
+            {{ add_reports_html|raw }}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>

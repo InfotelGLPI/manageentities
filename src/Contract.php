@@ -34,6 +34,7 @@ use DbUtils;
 use Html;
 use Session;
 use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\Entity;
 
 if (!defined('GLPI_ROOT')) {
@@ -60,7 +61,7 @@ class Contract extends CommonDBTM
 
     static function getTypeName($nb = 1)
     {
-        return __('Type of management', 'manageentities');
+        return __('Management type', 'manageentities');
     }
 
     static function getIcon()
@@ -269,132 +270,79 @@ class Contract extends CommonDBTM
 
     static function showForContract(\Contract $contract)
     {
-        $rand = mt_rand();
+        $rand    = mt_rand();
         $canView = $contract->can($contract->fields['id'], READ);
         $canEdit = $contract->can($contract->fields['id'], UPDATE);
-        $config = Config::getInstance();
+        $config  = Config::getInstance();
 
         if (!$canView) {
             return false;
         }
 
         $restrict = [
-            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'],
-            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id']
+            "`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contract->fields['entities_id'],
+            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'],
         ];
-        $dbu = new DbUtils();
+        $dbu            = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
-        $pluginContract = reset($pluginContracts);
+        $pluginContract  = reset($pluginContracts) ?: [];
 
-        if ($canEdit) {
-            echo "<form method='post' name='contract_form$rand' id='contract_form$rand'
-               action='" . \Toolbox::getItemTypeFormURL(Contract::class) . "'>";
+        $is_hour_mode  = ($config->fields['hourorday'] == Config::HOUR);
+        $is_day_price  = ($config->fields['hourorday'] == Config::DAY && $config->fields['useprice'] == Config::PRICE);
+
+        ob_start();
+        Html::showDateField("date_signature", ['value' => $pluginContract['date_signature'] ?? null]);
+        $date_signature_html = ob_get_clean();
+
+        ob_start();
+        Html::showDateField("date_renewal", ['value' => $pluginContract['date_renewal'] ?? null]);
+        $date_renewal_html = ob_get_clean();
+
+        $management_html  = '';
+        $contract_type_html = '';
+        if ($is_hour_mode) {
+            ob_start();
+            Contract::dropdownContractManagement("management", $pluginContract['management'] ?? 0);
+            $management_html = ob_get_clean();
+
+            ob_start();
+            Contract::dropdownContractType("contract_type", $pluginContract['contract_type'] ?? 0);
+            $contract_type_html = ob_get_clean();
         }
 
-        echo "<div align='spaced'><table class='tab_cadre_fixe center'>";
+        ob_start();
+        $mov_rand = \Dropdown::showYesNo("moving_management", $pluginContract['moving_management'] ?? 0, -1, ['on_change' => 'changemovement();']);
+        $moving_management_html = ob_get_clean();
 
-        echo "<tr><th colspan='4'>" . Contract::getTypeName(0) . "</th></tr>";
+        ob_start();
+        \Dropdown::showTimeStamp('duration_moving', ['value' => $pluginContract['duration_moving'] ?? null, 'addfirstminutes' => true]);
+        $duration_moving_html = ob_get_clean();
 
-        echo "<tr class='tab_bg_1'><td>" . __('Date of signature', 'manageentities') . "</td>";
-        echo "<td>";
-        $sign = (isset($pluginContract['date_signature']) ? $pluginContract['date_signature'] : null);
-        Html::showDateField("date_signature", ['value' => $sign]);
-        echo "</td><td>" . __('Date of renewal', 'manageentities') . "</td><td>";
-        $ren = (isset($pluginContract['date_renewal']) ? $pluginContract['date_renewal'] : null);
-        Html::showDateField("date_renewal", ['value' => $ren]);
-        echo "</td></tr>";
+        ob_start();
+        \Dropdown::showYesNo("show_on_global_gantt", $pluginContract['show_on_global_gantt'] ?? 0);
+        $gantt_html = ob_get_clean();
 
-        if ($config->fields['hourorday'] == Config::HOUR) {
-            echo "<tr class='tab_bg_1'><td>" . __('Mode of management', 'manageentities') . "</td>";
-            echo "<td>";
-            Contract::dropdownContractManagement("management", $pluginContract['management']);
-            echo "</td><td>" . __('Type of service contract', 'manageentities') . "</td><td>";
-            Contract::dropdownContractType("contract_type", $pluginContract['contract_type']);
-            echo "</td></tr>";
-        }
-
-        if ($config->fields['hourorday'] == Config::DAY && $config->fields['useprice'] == Config::PRICE) {
-            echo "<tr class='tab_bg_1'><td>" . __('Contract is imported in GLPI', 'manageentities') . "</td>";
-            echo "<td>";
-            $sel_contract = "";
-            if (isset($pluginContract['contract_added']) && $pluginContract['contract_added'] == "1") {
-                $sel_contract = "checked";
-            }
-            echo "<input type='checkbox' name='contract_added' $sel_contract>";
-            echo "</td><td colspan='2'></td>";
-            echo "</td></tr>";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Show on GANTT', 'manageentities') . "</td>";
-        echo "<td>";
-        $gantt = (isset($pluginContract['show_on_global_gantt']) ? $pluginContract['show_on_global_gantt'] : 0);
-        \Dropdown::showYesNo("show_on_global_gantt", $gantt);
-        echo "</td>";
-        echo "<td>" . __('Refacturable costs', 'manageentities') . "</td>";
-        echo "<td>";
-        $sel = "";
-        if (isset($pluginContract['refacturable_costs']) && $pluginContract['refacturable_costs'] == "1") {
-            $sel = "checked";
-        }
-        echo "<input type='checkbox' name='refacturable_costs' $sel>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Movement management', 'manageentities') . "</td>";
-        echo "<td>";
-        $mov = (isset($pluginContract['moving_management']) ? $pluginContract['moving_management'] : 0);
-        $rand = \Dropdown::showYesNo("moving_management", $mov, -1, ['on_change' => 'changemovement();']);
-        echo Html::scriptBlock(
-            "
-         function changemovement(){
-            if($('#dropdown_moving_management$rand').val() != 0){
-               $('#movementlabel').show();
-               $('#movement').show();
-            } else {
-               $('#movementlabel').hide();
-               $('#movement').hide();
-            }
-         }
-         changemovement();
-      "
-        );
-        echo "</td>";
-        echo "<td><div id='movementlabel'>" . __('Duration of moving', 'manageentities') . "</div></td>";
-
-        echo "<td><div id='movement'>";
-        $duration = (isset($pluginContract['duration_moving']) ? $pluginContract['duration_moving'] : null);
-        \Dropdown::showTimeStamp('duration_moving', [
-            'value' => $duration,
-            'addfirstminutes' => true
+        TemplateRenderer::getInstance()->display('@manageentities/contract_detail_form.html.twig', [
+            'rand'                  => $rand,
+            'can_edit'              => $canEdit,
+            'form_url'              => \Toolbox::getItemTypeFormURL(Contract::class),
+            'contracts_id'          => $contract->fields['id'],
+            'entities_id'           => $contract->fields['entities_id'],
+            'plugin_contract_id'    => $pluginContract['id'] ?? 0,
+            'is_new'                => empty($pluginContract),
+            'is_hour_mode'          => $is_hour_mode,
+            'is_day_price'          => $is_day_price,
+            'date_signature_html'   => $date_signature_html,
+            'date_renewal_html'     => $date_renewal_html,
+            'management_html'       => $management_html,
+            'contract_type_html'    => $contract_type_html,
+            'contract_added'        => (int)($pluginContract['contract_added'] ?? 0),
+            'refacturable_costs'    => (int)($pluginContract['refacturable_costs'] ?? 0),
+            'gantt_html'            => $gantt_html,
+            'moving_management_html'=> $moving_management_html,
+            'mov_rand'              => $mov_rand,
+            'duration_moving_html'  => $duration_moving_html,
         ]);
-        echo "</div></td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo Html::hidden('contracts_id', ['value' => $contract->fields['id']]);
-        echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id']]);
-
-        if ($canEdit) {
-            if (empty($pluginContract)) {
-                echo "<td class='center' colspan='4'>";
-                echo Html::submit(_sx('button', 'Add'), ['name' => 'addcontract', 'class' => 'btn btn-primary']);
-            } else {
-                echo Html::hidden('id', ['value' => $pluginContract['id']]);
-                echo "<td class='center' colspan='2'>";
-                echo Html::submit(_sx('button', 'Update'), ['name' => 'updatecontract', 'class' => 'btn btn-primary']);
-                echo "</td><td class='center' colspan='2'>";
-                echo Html::submit(
-                    _sx('button', 'Delete permanently'),
-                    ['name' => 'delcontract', 'class' => 'btn btn-primary']
-                );
-            }
-            echo "</td>";
-        }
-        echo "</tr>";
-        echo "</table></div>";
-        if ($canEdit) {
-            Html::closeForm();
-        }
     }
 
 

@@ -71,6 +71,9 @@ if (isset($_POST["contracts_id"])) {
       echo "<span class='me-contract-status-data' style='display:none'>"
          . htmlspecialchars(Dropdown::getDropdownName("glpi_states", $contract->fields['states_id']), ENT_QUOTES)
          . "</span>";
+      echo "<span class='me-contract-states-id-data' style='display:none'>"
+         . (int)$contract->fields['states_id']
+         . "</span>";
    }
    echo "<span class='me-contract-comment-data' style='display:none'>"
       . htmlspecialchars($contract->fields['comment'] ?? '', ENT_QUOTES)

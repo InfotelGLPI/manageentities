@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Session;
 use Toolbox;
@@ -280,15 +281,14 @@ class ContractDay extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        //validation des droits
         if (!$this->canView()) {
             return false;
         }
 
-        $config = Config::getInstance();
-        $conso = 0;
+        $config      = Config::getInstance();
+        $conso       = 0;
         $contract_id = 0;
-        $contract = new \Contract();
+        $contract    = new \Contract();
 
         if (isset($options['contract_id'])) {
             $contract_id = $options['contract_id'];
@@ -299,17 +299,14 @@ class ContractDay extends CommonDBTM
             $contract_id = $this->fields["contracts_id"];
             $contract->getFromDB($contract_id);
         } else {
-            // Create item
             $input = ['contract_id' => $contract_id];
             $this->check(-1, UPDATE, $input);
             $contract->getFromDB($contract_id);
             $options['entities_id'] = $contract->fields['entities_id'];
         }
 
-        // Set session saved if exists
         $this->setSessionValues();
 
-        //init values
         if (empty($this->fields['nbday'])) {
             $this->fields['nbday'] = 0;
         }
@@ -317,7 +314,6 @@ class ContractDay extends CommonDBTM
             $this->fields['report'] = 0;
         }
 
-        // Fix to get contract navigate list when comming from followup or monthly
         if (isset($options['showFromPlugin']) && $options['showFromPlugin']) {
             $_SERVER['REQUEST_URI'] = $CFG_GLPI["root_doc"] . "/front/contract.form.php?id=" . $contract_id;
             Session::initNavigateListItems(ContractDay::class, $contract->getName());
@@ -325,176 +321,84 @@ class ContractDay extends CommonDBTM
         }
 
         $restrict = [
-            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contract->fields['entities_id'],
+            "`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contract->fields['entities_id'],
             "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contract->fields['id'],
         ];
-        $dbu = new DbUtils();
+        $dbu             = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
-        $pluginContract = reset($pluginContracts);
-        $contract_type = isset($pluginContract['contract_type']) ?? 0;
-        $unit = Contract::getUnitContractType($config, $contract_type);
+        $pluginContract  = reset($pluginContracts) ?: [];
+        $contract_type   = $pluginContract['contract_type'] ?? 0;
+        $unit            = Contract::getUnitContractType($config, $contract_type);
 
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
+        $is_day      = ($config->fields['hourorday'] == Config::DAY);
+        $is_hour     = ($config->fields['hourorday'] == Config::HOUR);
+        $unlimited   = ($contract_type == Contract::CONTRACT_TYPE_UNLIMITED);
+        $show_credit = $is_day || ($is_hour && !$unlimited);
+        $use_price   = ($config->fields['useprice'] == Config::PRICE);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Contract') . "</td>";
-        $link = Toolbox::getItemTypeFormURL('Contract');
-        $contract_name = "<a href='" . $link . "?id=" . $contract->fields['id'] . "'>"
-            . $contract->fields['name'] . "</a>";
-        echo "<td>" . $contract_name . "</td>";
+        $contract_link = Toolbox::getItemTypeFormURL('Contract') . '?id=' . (int)$contract->fields['id'];
 
-        if ($config->fields['hourorday'] == Config::DAY) {
-            echo "<td>" . __(
-                'Type of service contract',
-                'manageentities'
-            ) . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
-            Contract::dropdownContractType("contract_type", $this->fields['contract_type']);
-        } else {
-            echo "</td><td colspan='2'></td>";
+        ob_start();
+        if ($is_day) {
+            Contract::dropdownContractType("contract_type", $this->fields['contract_type'] ?? 0);
         }
+        $contract_type_html = ob_get_clean();
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . ContractDay::getTypeName(1) . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
-        echo "</td>";
-
-        if (($config->fields['hourorday'] == Config::DAY)
-            || ($config->fields['hourorday'] == Config::HOUR
-                && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-            echo "<td>" . __('Postponement', 'manageentities') . "</td>";
-            echo "<td><input type='text' name='report' value='"
-                . Html::formatNumber($this->fields["report"]) . "'size='5'>";
-            echo "&nbsp;" . $unit;
-            echo "</td>";
-        } else {
-            echo "<td></td><td></td>";
-        }
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Begin date') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
-        echo "<td>";
+        ob_start();
         Html::showDateField("begin_date", ['value' => $this->fields["begin_date"]]);
-        echo "</td>";
-        echo "<td>" . __('End date') . "</td><td>";
-        Html::showDateField("end_date", ['value' => $this->fields["end_date"]]);
-        echo "</td></tr>";
+        $begin_date_html = ob_get_clean();
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Initial credit', 'manageentities') . "</td>";
-        if (($config->fields['hourorday'] == Config::DAY)
-            || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-            echo "<td><input type='text' name='nbday' value='"
-                . Html::formatNumber($this->fields["nbday"]) . "'size='5'>";
-        } else {
-            echo "<td>";
-        }
-        echo "&nbsp;" . $unit;
-        echo "</td>";
-        echo "<td>" . __(
-            'State of contract',
-            'manageentities'
-        ) . "<span style='color:red;'>&nbsp;*&nbsp;</span></td><td>";
+        ob_start();
+        Html::showDateField("end_date", ['value' => $this->fields["end_date"]]);
+        $end_date_html = ob_get_clean();
+
+        ob_start();
         \Dropdown::show(ContractState::class, [
-            'value' => $this->fields['plugin_manageentities_contractstates_id'],
+            'value'  => $this->fields['plugin_manageentities_contractstates_id'],
             'entity' => $this->fields["entities_id"],
         ]);
-        echo "</td></tr>";
+        $contractstate_html = ob_get_clean();
 
-        echo Html::hidden('contracts_id', ['value' => $contract_id]);
-        echo Html::hidden('contract_id', ['value' => $contract_id]);
-        echo Html::hidden('entities_id', ['value' => $contract->fields['entities_id']]);
-
-        // We get all cri detail data
         $this->fields['contractdays_id'] = $this->fields['id'];
         $resultCriDetail = CriDetail::getCriDetailData($this->fields);
-
         foreach ($resultCriDetail['result'] as $dataCriDetail) {
-            //Conso
             $conso += $dataCriDetail['conso'];
         }
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Total consummated', 'manageentities') . "</td>";
-        echo "<td>";
-        echo Html::formatNumber($conso);
-        if (($config->fields['hourorday'] == Config::DAY)
-            || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-            echo "&nbsp;" . $unit;
-        } else {
-            echo "&nbsp;" . Contract::getUnitContractType(
-                $config,
-                Contract::CONTRACT_TYPE_HOUR
-            );
-        }
-        echo "</td>";
+        $conso_unit = $show_credit ? $unit : Contract::getUnitContractType($config, Contract::CONTRACT_TYPE_HOUR);
 
-        if (($config->fields['hourorday'] == Config::DAY)
-            || ($config->fields['hourorday'] == Config::HOUR
-                && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-            echo "<td>" . __('Total remaining', 'manageentities') . "</td>";
-            echo "<td>";
-            echo Html::formatNumber($resultCriDetail['resultOther']['reste']);
-            echo "&nbsp;" . $unit;
-            echo "</td>";
-            echo "</tr>";
+        $this->initForm($ID, $options);
 
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Total exceeding', 'manageentities') . "</td>";
-            echo "<td>";
-            echo Html::formatNumber($resultCriDetail['resultOther']['depass']);
-            echo "&nbsp;" . $unit;
-            echo "</td>";
-        }
+        $canedit = $this->can($ID > 0 ? $ID : -1, UPDATE);
 
-        if ($config->fields['useprice'] == Config::PRICE) {
-            //         echo "<td>".__('Intervention type by default', 'manageentities')."</td>";
-            //         echo "<td>";
-            //         \Dropdown::show(CriType::class, ['value' => $this->fields['plugin_manageentities_critypes_id'],
-            //             'entity' => $this->fields["entities_id"]]);
-            //         echo "</td>";
-
-            echo "<td>" . __('Guaranteed package', 'manageentities') . "</td>";
-            echo "<td>";
-            echo Html::formatNumber($resultCriDetail['resultOther']['forfait']);
-            echo "</td>";
-        }
-
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Already charged', 'manageentities') . "</td>";
-        echo "<td>";
-
-        $this->fields['charged'] == 1 ? $isCharged = "checked='checked'" : $isCharged = '';
-        echo "<input type='checkbox' name='charged' id='charged' " . $isCharged . " />";
-
-        echo "</td>";
-        if ($config->fields['useprice'] == Config::PRICE) {
-            echo "<td>" . __('Remaining total (amount)', 'manageentities') . "</td>";
-            echo "<td>";
-            echo Html::formatNumber($resultCriDetail['resultOther']['reste_montant']);
-            echo "</td>";
-        }
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Comments') . " ";
-        echo "</td><td>";
-        Html::textarea([
-            'name' => 'comment',
-            'value' => $this->fields["comment"],
-            'cols' => 40,
-            'rows' => 5,
-            'enable_richtext' => false,
+        TemplateRenderer::getInstance()->display('@manageentities/contractday_form.html.twig', [
+            'item'                 => $this,
+            'params'               => $options,
+            'canedit'              => $canedit,
+            'contract_id'          => $contract_id,
+            'contract_link'        => $contract_link,
+            'contract_name'        => $contract->fields['name'],
+            'entities_id'          => $contract->fields['entities_id'],
+            'name'                 => $this->fields['name'] ?? '',
+            'comment'              => $this->fields['comment'] ?? '',
+            'charged'              => (int)($this->fields['charged'] ?? 0),
+            'nbday'                => Html::formatNumber($this->fields['nbday']),
+            'report'               => Html::formatNumber($this->fields['report']),
+            'is_day'               => $is_day,
+            'show_credit'          => $show_credit,
+            'use_price'            => $use_price,
+            'unit'                 => $unit,
+            'contract_type_html'   => $contract_type_html,
+            'begin_date_html'      => $begin_date_html,
+            'end_date_html'        => $end_date_html,
+            'contractstate_html'   => $contractstate_html,
+            'conso'                => Html::formatNumber($conso),
+            'conso_unit'           => $conso_unit,
+            'reste'                => Html::formatNumber($resultCriDetail['resultOther']['reste']),
+            'depass'               => Html::formatNumber($resultCriDetail['resultOther']['depass']),
+            'forfait'              => Html::formatNumber($resultCriDetail['resultOther']['forfait']),
+            'reste_montant'        => Html::formatNumber($resultCriDetail['resultOther']['reste_montant']),
         ]);
-        echo "</td><td></td><td></td></tr>";
-        echo "</tr>";
-
-
-        $this->showFormButtons($options);
 
         return true;
     }
@@ -542,166 +446,172 @@ class ContractDay extends CommonDBTM
 
     public static function showForContract(\Contract $contract)
     {
-        $rand = mt_rand();
-        $canView = $contract->can($contract->fields['id'], READ);
-        $canEdit = $contract->can($contract->fields['id'], UPDATE);
+        $rand      = mt_rand();
+        $canView   = $contract->can($contract->fields['id'], READ);
+        $canEdit   = $contract->can($contract->fields['id'], UPDATE);
         $canCreate = $contract->can($contract->fields['id'], CREATE);
-        $config = Config::getInstance();
+        $config    = Config::getInstance();
 
         if (!$canView) {
             return false;
         }
 
-        if ($canCreate) {
-            self::addNewContractDay($contract, ['title' => __('Add a contract day', 'manageentities')]);
+        $add_button_html = '';
+        if ($canCreate && Session::haveRight('plugin_manageentities', UPDATE)) {
+            $add_rand         = mt_rand();
+            $add_action_url   = Toolbox::getItemTypeFormURL(ContractDay::class) . '?contract_id=' . (int)$contract->fields['id'];
+            $add_button_html  = "<form method='post' name='contractDays_form{$add_rand}' id='contractDays_form{$add_rand}' action='" . htmlspecialchars($add_action_url, ENT_QUOTES) . "'>";
+            $add_button_html .= Html::hidden('_glpi_csrf_token', ['value' => \Session::getNewCSRFToken()]);
+            $add_button_html .= Html::hidden('contract_id', ['value' => $contract->fields['id']]);
+            $add_button_html .= Html::hidden('id', ['value' => '']);
+            $add_button_html .= "<button type='submit' name='addperiod' class='btn btn-primary'><i class='ti ti-plus me-1'></i>" . _sx('button', 'Add') . "</button>";
+            $add_button_html .= "</form>";
         }
 
         $restrict = [
-            "`entities_id`" => $contract->fields['entities_id'],
+            "`entities_id`"  => $contract->fields['entities_id'],
             "`contracts_id`" => $contract->fields['id'],
-            'ORDER' => '`date_signature` ASC',
+            'ORDER'          => '`date_signature` ASC',
         ];
-
         $restrict_days = [
-            "`entities_id`" => $contract->fields['entities_id'],
+            "`entities_id`"  => $contract->fields['entities_id'],
             "`contracts_id`" => $contract->fields['id'],
-            'ORDER' => '`begin_date` ASC, `name`',
+            'ORDER'          => '`begin_date` ASC, `name`',
         ];
 
-        $dbu = new DbUtils();
+        $dbu             = new DbUtils();
         $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
-        $pluginContract = reset($pluginContracts);
+        $pluginContract  = reset($pluginContracts) ?: [];
 
         $pluginContractDays = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contractdays", $restrict_days);
-        if (count($pluginContractDays)) {
-            echo "<div class='left'>";
-            if ($canEdit) {
-                Html::openMassiveActionsForm('masscontractday'  . $rand);
-                $massiveactionparams = ['item' => __CLASS__, 'container' => 'masscontractday' . $rand];
-                Html::showMassiveActions($massiveactionparams);
-            }
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr>";
-            echo "<th colspan='12'>" . ContractDay::getTypeName(1) . "</th>";
-            echo "</tr>";
 
-            echo "<tr>";
-            echo "<th width='10'>";
-            if ($canEdit) {
-                echo Html::getCheckAllAsCheckbox('masscontractday'  . $rand);
-            }
-            echo "</th>";
-            echo "<th>" . ContractDay::getTypeName(1) . "</th>";
-            if ($config->fields['hourorday'] == Config::DAY) {
-                echo "<th>" . __('Type of contract', 'manageentities') . "</th>";
-            }
-            echo "<th>" . __('Begin date') . "</th>";
-            echo "<th>" . __('End date') . "</th>";
-            if (($config->fields['hourorday'] == Config::DAY)
-                || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-                echo "<th>" . __('Initial credit', 'manageentities') . "</th>";
-            }
-            echo "<th>" . __('State of contract', 'manageentities') . "</th>";
-            if (($config->fields['hourorday'] == Config::DAY)
-                || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-                echo "<th>" . __('Postponement', 'manageentities') . "</th>";
-            }
-            echo "<th>" . __('Total consummated', 'manageentities') . "</th>";
-            if (($config->fields['hourorday'] == Config::DAY)
-                || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-                echo "<th>" . __('Total remaining', 'manageentities') . "</th>";
-                echo "<th>" . __('Total exceeding', 'manageentities') . "</th>";
-            }
-            echo "<th>" . CriPrice::getTypeName() . "</th>";
-            echo "</tr>";
+        if (!count($pluginContractDays)) {
+            return;
+        }
 
-            Session::initNavigateListItems(ContractDay::class, $contract->getName());
+        $is_day    = ($config->fields['hourorday'] == Config::DAY);
+        $is_hour   = ($config->fields['hourorday'] == Config::HOUR);
+        $unlimited = ($pluginContract['contract_type'] ?? 0) == Contract::CONTRACT_TYPE_UNLIMITED;
+        $show_credit = $is_day || ($is_hour && !$unlimited);
 
-            foreach ($pluginContractDays as $pluginContractDay) {
-                $contractday = new ContractDay();
-                $contractday->getFromDB($pluginContractDay["id"]);
+        Session::initNavigateListItems(ContractDay::class, $contract->getName());
 
-                Session::addToNavigateListItems(ContractDay::class, $pluginContractDay["id"]);
+        $entries    = [];
+        $columns    = [];
+        $formatters = [];
 
-                echo "<tr class='tab_bg_1'>";
-                echo "<td width='10'>";
-                if ($canEdit) {
-                    Html::showMassiveActionCheckBox(__CLASS__, $pluginContractDay['id']);
-                }
-                echo "</td>";
-                // Name
-                echo "<td>" . $contractday->getLink() . "</td>";
-                //type of contract
-                if ($config->fields['hourorday'] == Config::DAY) {
-                    echo "<td>" . Contract::getContractType(
-                        $contractday->fields['contract_type']
-                    ) . "</td>";
-                }
-                // Begin
-                echo "<td>" . Html::convDate($pluginContractDay['begin_date']) . "</td>";
-                // End
-                echo "<td>" . Html::convDate($pluginContractDay['end_date']) . "</td>";
-                // Nb day
-                echo "<td>";
-                if (($config->fields['hourorday'] == Config::DAY)
-                    || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-                    echo Html::formatNumber($pluginContractDay['nbday']);
-                    echo "</td><td>";
-                }
-                // State
-                echo \Dropdown::getDropdownName(
+        if ($canEdit) {
+            $columns['_checkbox']    = '';
+            $formatters['_checkbox'] = 'raw_html';
+        }
+        $columns['name']    = ContractDay::getTypeName(1);
+        $formatters['name'] = 'raw_html';
+        if ($is_day) {
+            $columns['contract_type'] = __('Type of contract', 'manageentities');
+        }
+        $columns['begin_date'] = __('Begin date');
+        $columns['end_date']   = __('End date');
+        if ($show_credit) {
+            $columns['nbday'] = __('Initial credit', 'manageentities');
+        }
+        $columns['state'] = __('State of contract', 'manageentities');
+        if ($show_credit) {
+            $columns['report'] = __('Postponement', 'manageentities');
+        }
+        $columns['conso'] = __('Total consummated', 'manageentities');
+        if ($show_credit) {
+            $columns['reste']  = __('Total remaining', 'manageentities');
+            $columns['depass'] = __('Total exceeding', 'manageentities');
+        }
+        $columns['price'] = CriPrice::getTypeName();
+
+        foreach ($pluginContractDays as $pluginContractDay) {
+            $contractDay = new ContractDay();
+            $contractDay->getFromDB($pluginContractDay['id']);
+            $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
+
+            Session::addToNavigateListItems(ContractDay::class, $pluginContractDay['id']);
+
+            $resultCriDetail = CriDetail::getCriDetailData($contractDay->fields);
+            $conso = 0;
+            foreach ($resultCriDetail['result'] as $dataCriDetail) {
+                $conso += $dataCriDetail['conso'];
+            }
+
+            $criprice = new CriPrice();
+            $price_val = '';
+            if ($criprice->getFromDBByCrit([
+                'plugin_manageentities_contractdays_id' => $contractDay->fields['id'],
+                'is_default' => 1,
+            ])) {
+                $price_val = Html::formatNumber($criprice->fields["price"], false);
+            }
+
+            $entry = [
+                'name'       => $contractDay->getLink(),
+                'begin_date' => Html::convDate($pluginContractDay['begin_date']),
+                'end_date'   => Html::convDate($pluginContractDay['end_date']),
+                'state'      => \Dropdown::getDropdownName(
                     'glpi_plugin_manageentities_contractstates',
                     $pluginContractDay['plugin_manageentities_contractstates_id']
-                );
-                // Report
-                if (($config->fields['hourorday'] == Config::DAY)
-                    || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-                    echo "</td><td class='center'>";
-                    echo Html::formatNumber($pluginContractDay['report']);
-                }
-                echo "</td>";
-                //Conso
-                echo "<td>";
-                $contractDay = new ContractDay();
-                $contractDay->getFromDB($pluginContractDay['id']);
-                $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
-                $resultCriDetail = CriDetail::getCriDetailData($contractDay->fields);
-                $conso = 0;
-                foreach ($resultCriDetail['result'] as $dataCriDetail) {
-                    $conso += $dataCriDetail['conso'];
-                }
-                echo Html::formatNumber($conso);
-                // Depass
-                if (($config->fields['hourorday'] == Config::DAY)
-                    || ($config->fields['hourorday'] == Config::HOUR && $pluginContract['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED)) {
-                    echo "</td><td class='center'>";
-                    echo Html::formatNumber($resultCriDetail['resultOther']['reste']);
-                    echo "</td><td class='center'>";
-                    echo Html::formatNumber($resultCriDetail['resultOther']['depass']);
-                }
-                echo "</td>";
-                $criprice = new CriPrice();
-                echo "</td><td class='center'>";
-
-                if ($criprice->getFromDBByCrit([
-                    'plugin_manageentities_contractdays_id' => $contractDay->fields['id'],
-                    'is_default' => 1,
-                ])) {
-                    echo Html::formatNumber($criprice->fields["price"], false);
-                }
-                echo "</td>";
-                echo "</tr>";
+                ),
+                'conso'      => Html::formatNumber($conso),
+                'price'      => $price_val,
+            ];
+            if ($is_day) {
+                $entry['contract_type'] = Contract::getContractType($contractDay->fields['contract_type']);
             }
-            echo "</table>";
-
+            if ($show_credit) {
+                $entry['nbday']  = Html::formatNumber($pluginContractDay['nbday']);
+                $entry['report'] = Html::formatNumber($pluginContractDay['report']);
+                $entry['reste']  = Html::formatNumber($resultCriDetail['resultOther']['reste']);
+                $entry['depass'] = Html::formatNumber($resultCriDetail['resultOther']['depass']);
+            }
             if ($canEdit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
+                ob_start();
+                Html::showMassiveActionCheckBox(ContractDay::class, $pluginContractDay['id']);
+                $entry['_checkbox'] = ob_get_clean();
             }
 
-            echo "</div>";
+            $entries[] = $entry;
         }
+
+        $massive_form_open   = '';
+        $massive_actions_top = '';
+        $massive_actions_bottom = '';
+        $massive_form_close  = '';
+
+        if ($canEdit) {
+            $massiveactionparams = ['item' => ContractDay::class, 'container' => 'masscontractday' . $rand];
+
+            ob_start();
+            Html::openMassiveActionsForm('masscontractday' . $rand);
+            $massive_form_open = ob_get_clean();
+
+            ob_start();
+            Html::showMassiveActions($massiveactionparams);
+            $massive_actions_top = ob_get_clean();
+
+            ob_start();
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            $massive_actions_bottom = ob_get_clean();
+
+            $massive_form_close = '</form>';
+        }
+
+        TemplateRenderer::getInstance()->display('@manageentities/contractday_list.html.twig', [
+            'entries'               => $entries,
+            'columns'               => $columns,
+            'formatters'            => $formatters,
+            'rand'                  => $rand,
+            'can_edit'              => $canEdit,
+            'massive_form_open'     => $massive_form_open,
+            'massive_actions_top'   => $massive_actions_top,
+            'massive_actions_bottom'=> $massive_actions_bottom,
+            'massive_form_close'    => $massive_form_close,
+            'add_button_html'       => $add_button_html,
+        ]);
     }
 
     public static function queryOldContractDaywithInterventions($date)

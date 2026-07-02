@@ -1,0 +1,144 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+{% set form_id = 'contract_form' ~ rand %}
+
+{% if can_edit %}
+<form method="post" name="{{ form_id }}" id="{{ form_id }}" action="{{ form_url }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="contracts_id" value="{{ contracts_id }}">
+    <input type="hidden" name="entities_id"  value="{{ entities_id }}">
+    {% if not is_new %}
+        <input type="hidden" name="id" value="{{ plugin_contract_id }}">
+    {% endif %}
+{% endif %}
+
+<div class="card mt-3">
+    <div class="card-header d-flex align-items-center gap-2">
+        <h3 class="card-title">
+            <i class="ti ti-file-invoice me-2"></i>
+            {{ __('Management type', 'manageentities') }}
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+
+            {# Date de signature / Date de renouvellement #}
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Date of signature', 'manageentities') }}</label>
+                {{ date_signature_html|raw }}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Date of renewal', 'manageentities') }}</label>
+                {{ date_renewal_html|raw }}
+            </div>
+
+            {% if is_hour_mode %}
+            {# Mode de gestion / Type de contrat (mode heure) #}
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Mode of management', 'manageentities') }}</label>
+                {{ management_html|raw }}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Type of service contract', 'manageentities') }}</label>
+                {{ contract_type_html|raw }}
+            </div>
+            {% endif %}
+
+            {% if is_day_price %}
+            {# Contrat importé dans GLPI (mode jour + prix) #}
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Contract is imported in GLPI', 'manageentities') }}</label>
+                <div>
+                    <input type="checkbox" name="contract_added" class="form-check-input"
+                        {% if contract_added %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="col-sm-6"></div>
+            {% endif %}
+
+            {# Afficher sur GANTT / Coûts refacturables #}
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Show on GANTT', 'manageentities') }}</label>
+                {{ gantt_html|raw }}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Refacturable costs', 'manageentities') }}</label>
+                <div>
+                    <input type="checkbox" name="refacturable_costs" class="form-check-input"
+                        {% if refacturable_costs %}checked{% endif %}>
+                </div>
+            </div>
+
+            {# Gestion des déplacements #}
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
+                {{ moving_management_html|raw }}
+                <script>
+                function changemovement() {
+                    if ($('#dropdown_moving_management{{ mov_rand }}').val() != 0) {
+                        $('#movementlabel').show();
+                        $('#movement').show();
+                    } else {
+                        $('#movementlabel').hide();
+                        $('#movement').hide();
+                    }
+                }
+                changemovement();
+                </script>
+            </div>
+            <div class="col-sm-6">
+                <label id="movementlabel" class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
+                <div id="movement">
+                    {{ duration_moving_html|raw }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% if can_edit %}
+    <div class="card-footer d-flex gap-2 justify-content-end">
+        {% if is_new %}
+            <button type="submit" name="addcontract" class="btn btn-primary">
+                <i class="ti ti-plus me-1"></i>{{ __('Add') }}
+            </button>
+        {% else %}
+            <button type="submit" name="updatecontract" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>{{ __('Update') }}
+            </button>
+            <button type="submit" name="delcontract" class="btn btn-danger">
+                <i class="ti ti-trash me-1"></i>{{ __('Delete permanently') }}
+            </button>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% if can_edit %}
+</form>
+{% endif %}

@@ -32,9 +32,11 @@ namespace GlpiPlugin\Manageentities;
 use CommonDBTM;
 use CommonGLPI;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\Config;
 use Html;
 use Session;
+use Toolbox;
 use User;
 
 if (!defined('GLPI_ROOT')) {
@@ -262,140 +264,73 @@ class InterventionSkateholder extends CommonDBTM
 
     private function listSkateholders($item, $options = [])
     {
-        global $CFG_GLPI;
-        $ID = $item->fields['id'];
-
-        if ($item->getType() == InterventionSkateholder::getType()) {
-            $idToUse = $item->fields['plugin_manageentities_contractdays_id'];
-            $idDivAjax = "divAjaxDisplay" . $item->fields['plugin_manageentities_contractdays_id'];
-        } else {
-            $idToUse = $item->fields['id'];
-            $idDivAjax = "divAjaxDisplay" . $item->fields['id'];
+        if ($item->fields['id'] <= 0) {
+            return;
         }
 
-        $contractday = new ContractDay();
+        $idToUse   = ($item->getType() == InterventionSkateholder::getType())
+            ? $item->fields['plugin_manageentities_contractdays_id']
+            : $item->fields['id'];
+        $idDivAjax = "divAjaxDisplay" . $idToUse;
 
-        if ($ID > 0) {
-            $contractday->getFromDB($ID);
-        } else {
-            // Create iteml
-            $canedit = $contractday->can($item->fields['id'], UPDATE);
-            $contractday->getEmpty();
-            $this->getEmpty();
-            $this->fields["plugin_manageentities_contractdays_id"] = $item->fields['id'];
-        }
+        $condition       = ['plugin_manageentities_contractdays_id' => $item->fields['id']];
+        $dbu             = new DbUtils();
+        $listSkateholders = $dbu->getAllDataFromTable($this->getTable(), $condition);
+        $can_create      = $this->canCreate();
+        $ajax_url        = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
 
+        $entries    = [];
+        $delete_js  = [];
 
-        if ($item->fields['id'] > 0) {
-            $condition = ["`plugin_manageentities_contractdays_id`" => $item->fields['id']];
-            $dbu = new DbUtils();
-            $listSkateholders = $dbu->getAllDataFromTable($this->getTable(), $condition);
-            echo "<div class='center first-bloc'>";
-            echo "<table class='tab_cadre_fixe' id='list_skateholders" . $idToUse . "'>";
-            //         echo "<input type='hidden' name='skateholder_id' id='skateholder_id' value='-1' />";
-
-            echo "<tr class='tab_bg_1'>";
-
-            if (sizeof($listSkateholders) > 1) {
-                if ($this->canCreate()) {
-                    echo "<th colspan='5'>" . _n(
-                            'Current stakeholder',
-                            'Current stakeholders',
-                            2,
-                            'manageentities'
-                        ) . "</th>";
-                } else {
-                    echo "<th colspan='4'>" . _n(
-                            'Current stakeholder',
-                            'Current stakeholders',
-                            2,
-                            'manageentities'
-                        ) . "</th>";
-                }
-            } else {
-                if ($this->canCreate()) {
-                    echo "<th colspan='5'>" . _n(
-                            'Current stakeholder',
-                            'Current stakeholders',
-                            1,
-                            'manageentities'
-                        ) . "</th>";
-                } else {
-                    echo "<th colspan='4'>" . _n(
-                            'Current stakeholder',
-                            'Current stakeholders',
-                            1,
-                            'manageentities'
-                        ) . "</th>";
-                }
+        foreach ($listSkateholders as $skateholder) {
+            $user = new User();
+            $user->getFromDB($skateholder['users_id']);
+            if (!isset($user->fields['id'])) {
+                continue;
             }
-            echo "</tr>";
+            $user_link = "<a href='" . $user->getLinkURL() . "' target='_blank'>"
+                . $dbu->formatUserName(
+                    $user->fields['id'],
+                    $user->fields['name'],
+                    $user->fields['realname'],
+                    $user->fields['firstname']
+                ) . "</a>";
 
-            if (sizeof($listSkateholders) > 0) {
-                foreach ($listSkateholders as $skateholder) {
-                    $user = new User();
+            $delete_btn = '';
+            if ($can_create) {
+                $fn = "deleteSkateholder" . $idToUse . $skateholder['id'];
+                $delete_btn = "<i title=\"" . __('Delete', 'manageentities')
+                    . "\" class=\"ti ti-trash pointer\" id='delete_" . $user->fields['id'] . "'"
+                    . " onclick=\"if(confirm('" . __('This action is irreversible. Continue ?', 'manageentities')
+                    . "')){" . $fn . "();}\"></i>";
 
-                    $user->getFromDB($skateholder['users_id']);
-                    if (isset($user->fields['id'])) {
-                        $link = $user->getLinkURL();
-                        echo "<tr class='tab_bg_1' id='row_" . $skateholder['id'] . "'>";
-                        echo "<td>" . __("User") . "</td>";
-                        echo "<td>";
-                        echo "<a href='" . $link . "' target='_blank'>" . $dbu->formatUserName(
-                                $user->fields['id'],
-                                $user->fields['name'],
-                                $user->fields['realname'],
-                                $user->fields['firstname']
-                            ) . "</a>";
-                        echo "</td>";
-
-                        echo "<td>" . __("Affected to", "manageentities") . "</td>";
-                        echo "<td id='td_user_id" . $skateholder['id'] . "'>";
-                        echo $skateholder['number_affected_days'] . "&nbsp;" . _n("Day", "Days", 2);
-                        echo "</td>";
-
-                        if ($this->canCreate()) {
-                            echo "<td>";
-                            echo "<span class='pointer'>";
-                            echo "<i title=\"" . __(
-                                    "Delete",
-                                    "manageentities"
-                                ) . "\" class=\"ti ti-trash\" id='delete_" . $user->fields['id'] . "'
-                     onclick=\"javascript:if (confirm('" . __(
-                                    "This action is irreversible. Continue ?",
-                                    'manageentities'
-                                ) . "')){deleteSkateholder" . $idToUse . $skateholder['id'] . "();}\"></i>";
-                            echo "&nbsp;</span>";
-                            echo "</td>";
-                        }
-                        echo "</tr>";
-
-
-                        $params['action'] = "delete_user_datas";
-                        $params['id_div_ajax'] = $idDivAjax;
-                        $params['id_dp_nbdays'] = "nb_days" . $skateholder['plugin_manageentities_contractdays_id'];
-                        $params['contractdays_id'] = $item->fields['id'];
-                        $params['skateholder_id'] = $skateholder['id'];
-                        $url = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
-
-                        $this->showJSfunction(
-                            "deleteSkateholder" . $idToUse . $skateholder['id'],
-                            $idDivAjax,
-                            $url,
-                            [],
-                            $params
-                        );
-                    }
-                }
-            } else {
-                echo "<tr class='tab_bg_1' id='empty_skateholders" . $idToUse . "'><td>" . __(
-                        "No skateholders have been affected yet.",
-                        "manageentities"
-                    ) . "</td></tr>";
+                $delete_js[] = [
+                    'fn'             => $fn,
+                    'idDivAjax'      => $idDivAjax,
+                    'url'            => $ajax_url,
+                    'skateholder_id' => $skateholder['id'],
+                    'contractdays_id' => $item->fields['id'],
+                    'id_dp_nbdays'   => "nb_days" . $skateholder['plugin_manageentities_contractdays_id'],
+                ];
             }
-            echo "</table>";
-            echo "</div>";
+
+            $entries[] = [
+                'row_id'    => 'row_' . $skateholder['id'],
+                'user'      => $user_link,
+                'nb_days'   => "<span id='td_user_id" . $skateholder['id'] . "'>"
+                    . $skateholder['number_affected_days'] . '&nbsp;' . _n('Day', 'Days', 2)
+                    . "</span>",
+                'actions'   => $delete_btn,
+            ];
         }
+
+        TemplateRenderer::getInstance()->display('@manageentities/interventionskateholder_list.html.twig', [
+            'id_to_use'   => $idToUse,
+            'can_create'  => $can_create,
+            'entries'     => $entries,
+            'delete_js'   => $delete_js,
+            'ajax_url'    => $ajax_url,
+        ]);
     }
 
 
@@ -426,103 +361,75 @@ class InterventionSkateholder extends CommonDBTM
      */
     public function showForm($item = [], $options = [])
     {
-        global $CFG_GLPI;
-
-        echo Html::css(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/jquery-ui/jquery-ui.min.css");
-        echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/jquery-ui/jquery-ui.min.js");
-
-        if ($item->getType() == InterventionSkateholder::getType()) {
-            $idToUse = $item->fields['plugin_manageentities_contractdays_id'];
-            $idDivAjax = "tabskateholderajax" . $item->fields['plugin_manageentities_contractdays_id'];
-        } else {
-            $idToUse = $item->fields['id'];
-            $idDivAjax = "tabskateholderajax" . $item->fields['id'];
-        }
+        $idToUse = ($item->getType() == InterventionSkateholder::getType())
+            ? $item->fields['plugin_manageentities_contractdays_id']
+            : $item->fields['id'];
+        $idDivAjax = "tabskateholderajax" . $idToUse;
 
         if (!isset($options['display_list']) || $options['display_list'] != "false") {
             $this->listSkateholders($item);
         }
 
-        if ($this->canCreate()) {
-            $rand = 0;
-            if (isset($options['rand'])) {
-                $rand = $options['rand'];
-            }
+        echo "<div id='divAjaxDisplay" . $idToUse . "'></div>";
 
-            $ID = $item->fields['id'];
-            $contractday = new ContractDay();
-            $nbDays = $this->getNbAvailiableDay($item->fields['id']);
-            $url = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
-            $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDays;
-
-            if ($ID > 0) {
-                $contractday->getFromDB($ID);
-            } else {
-                // Create item
-                $contractday->getEmpty();
-                $this->getEmpty();
-                $this->fields["plugin_manageentities_contractdays_id"] = $item->fields['id'];
-            }
-
-            echo "<div class='center first-bloc' " . (($nbDays > 0) ? "" : "style='display:none") . " id='global_form_content" . $idToUse . "'>";
-            echo "<table class='tab_cadre_fixe' id='tbl_add_skateholder" . $idToUse . "'>";
-            echo Html::hidden('action', ['id' => 'action', 'value' => 'add_user_datas']);
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='6'>" . __('Add skateholders', 'manageentities') . "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            // User
-            echo "<td>" . __('User') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
-            echo "<td>";
-            $idUser = User::dropdown([
-                'name' => 'users_id_tech' . $idToUse,
-                'right' => 'interface'
-            ]);
-            echo "</td>";
-            // Nb days
-            echo "<td>" . __('Affected to', 'manageentities') . "<span style='color:red;'>&nbsp;*&nbsp;</span></td>";
-            echo "<td id='nb_days_container'>";
-            \Dropdown::showNumber("nb_days", [
-                "width" => 100,
-                "min" => 0,
-                "max" => $nbDays,
-                "step" => "0.5",
-                "rand" => $rand
-            ]);
-            $config = Config::getInstance();
-            if ($config->fields['hourorday'] == Config::DAY) {
-                echo "&nbsp;" . _n("Day", "Days", 2);
-            } else {
-                echo "&nbsp;" . _n("Hour", "Hours", 2);
-            }
-            echo "</td>";
-
-            echo "<td>";
-            $value = "dropdown_users_id_tech" . $idUser;
-            echo Html::hidden('id_user', ['id' => 'id_user', 'value' => $value]);
-            echo "<input type='button' class='submit btn btn-primary' name='add_skateholder' id='add_skateholder'
-         value='" . _sx("button", "Add") . "' onclick='addSkateholder" . $idToUse . "();' />";
-            echo "</td>";
-            echo "</tr>";
-            echo "</table>";
-            echo "<div id='" . $idDivAjax . "' style='text-align:center;'></div>";
-            echo "</div>";
-
-            $listIds = [
-                "dropdown_nb_days" . $idToUse => ["dropdown", "nb_days"],
-                "dropdown_users_id_tech" . $idToUse . $idUser => ["dropdown", "users_id_tech"],
-            ];
-
-            $params = [
-                'action' => "add_user_datas",
-                'id_dp_nbdays' => "dropdown_nb_days" . $idToUse,
-                'id_div_ajax' => $idDivAjax,
-                "contractdays_id" => $item->fields['id']
-            ];
-
-            $this->showJSfunction("addSkateholder" . $idToUse, $idDivAjax, $url, $listIds, $params);
+        if (!$this->canCreate()) {
+            return;
         }
+
+        $rand    = $options['rand'] ?? 0;
+        $ID      = $item->fields['id'];
+        $nbDays  = $this->getNbAvailiableDay($item->fields['id']);
+        $url     = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionskateholderactions.php";
+        $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDays;
+
+        $config  = Config::getInstance();
+        $is_day  = ($config->fields['hourorday'] == Config::DAY);
+        $unit    = $is_day ? _n('Day', 'Days', 2) : _n('Hour', 'Hours', 2);
+
+        // Capture user dropdown
+        ob_start();
+        $idUser = User::dropdown([
+            'name'  => 'users_id_tech' . $idToUse,
+            'right' => 'interface',
+        ]);
+        $user_dropdown_html = ob_get_clean();
+
+        // Capture nb_days dropdown
+        ob_start();
+        \Dropdown::showNumber('nb_days', [
+            'width' => 100,
+            'min'   => 0,
+            'max'   => $nbDays,
+            'step'  => '0.5',
+            'rand'  => $rand,
+        ]);
+        $nbdays_dropdown_html = ob_get_clean();
+
+        $add_fn    = "addSkateholder" . $idToUse;
+        $list_ids  = [
+            "dropdown_nb_days" . $idToUse                      => ['dropdown', 'nb_days'],
+            "dropdown_users_id_tech" . $idToUse . $idUser      => ['dropdown', 'users_id_tech'],
+        ];
+        $params    = [
+            'action'       => 'add_user_datas',
+            'id_dp_nbdays' => "dropdown_nb_days" . $idToUse,
+            'id_div_ajax'  => $idDivAjax,
+            'contractdays_id' => $item->fields['id'],
+        ];
+
+        TemplateRenderer::getInstance()->display('@manageentities/interventionskateholder_form.html.twig', [
+            'id_to_use'            => $idToUse,
+            'id_div_ajax'          => $idDivAjax,
+            'nb_days'              => $nbDays,
+            'unit'                 => $unit,
+            'user_dropdown_html'   => $user_dropdown_html,
+            'nbdays_dropdown_html' => $nbdays_dropdown_html,
+            'id_user_field'        => "dropdown_users_id_tech" . $idUser,
+            'add_fn'               => $add_fn,
+            'ajax_url'             => $url,
+            'list_ids'             => $list_ids,
+            'params'               => $params,
+        ]);
     }
 
     public static function jsGetElementbyID($id)
