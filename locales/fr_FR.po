@@ -1118,7 +1118,7 @@ msgstr "Page"
 
 #: templates/cridetail_for_ticket.html.twig:143
 msgid "Period comment"
-msgstr "Commentaire de la prestation"
+msgstr "Commentaires de la prestation"
 
 #: src/AddElementsView.php:2229
 msgid "Period name"
