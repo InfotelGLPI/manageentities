@@ -719,6 +719,18 @@ function plugin_manageentities_getAddSearchOptions($itemtype)
             $sopt[4455]['joinparams']    = ['beforejoin'
                                          => ['table'      => 'glpi_plugin_manageentities_cridetails',
                                              'joinparams' => ['jointype' => 'child']]];
+
+            $sopt[4456]['table']         = 'glpi_plugin_manageentities_contractdays';
+            $sopt[4456]['field']         = 'name';
+            $sopt[4456]['linkfield']     = 'plugin_manageentities_contractdays_id';
+            $sopt[4456]['name']          = __('Periods of contract', 'manageentities');
+            $sopt[4456]['datatype']      = 'itemlink';
+            $sopt[4456]['itemlink_type'] = 'GlpiPlugin\\Manageentities\\ContractDay';
+            $sopt[4456]['forcegroupby']  = true;
+            $sopt[4456]['massiveaction'] = false;
+            $sopt[4456]['joinparams']    = ['beforejoin'
+                                         => ['table'      => 'glpi_plugin_manageentities_cridetails',
+                                             'joinparams' => ['jointype' => 'child']]];
         }
     }
     return $sopt;
