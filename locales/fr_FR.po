@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 13:13+0000\n"
+"POT-Creation-Date: 2026-07-02 13:20+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -531,15 +531,12 @@ msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
 #: src/Monthly.php:715 src/Monthly.php:753
+#: templates/interventionstakeholder_list.html.twig:32
 msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
 msgstr[0] "Intervenant actuel"
 msgstr[1] "Intervenants actuels"
 msgstr[2] "Intervenants actuels"
-
-#: templates/interventionstakeholder_list.html.twig:32
-msgid "Current stakeholders"
-msgstr "Intervenants affectés"
 
 #: src/CriPDF.php:908
 msgid "Customer Visa"
