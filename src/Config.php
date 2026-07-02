@@ -31,7 +31,10 @@ namespace GlpiPlugin\Manageentities;
 
 use Ajax;
 use CommonDBTM;
+use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
+use Session;
 use Ticket;
 use Toolbox;
 
@@ -49,6 +52,183 @@ class Config extends CommonDBTM
     public const PRICE = 1;
     public const REPORT_INTERVENTION = 0;
     public const PERIOD_INTERVENTION = 1;
+
+    static function getTypeName($nb = 0)
+    {
+        return __('Setup');
+    }
+
+    public static function getIcon()
+    {
+        return "ti ti-settings";
+    }
+
+    static function canView(): bool
+    {
+        return Session::haveRight('plugin_manageentities', READ);
+    }
+
+    static function canCreate(): bool
+    {
+        return Session::haveRight('plugin_manageentities', UPDATE);
+    }
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        if (!$withtemplate && $item->getType() === __CLASS__) {
+            return [
+                1 => self::createTabEntry(__('Options', 'manageentities')),
+            ];
+        }
+        return '';
+    }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if ($item->getType() === __CLASS__ && $tabnum === 1) {
+            $item->showOptionsForm();
+        }
+        return true;
+    }
+
+    public function defineTabs($options = [])
+    {
+        $ong = [];
+        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(CriDetail::class, $ong, $options);
+        $this->addStandardTab(Company::class, $ong, $options);
+        return $ong;
+    }
+
+    public function showForm($id, $options = [])
+    {
+        $this->getFromDB(1);
+        $this->showOptionsForm();
+        return true;
+    }
+
+    public function showOptionsForm()
+    {
+        global $DB;
+
+        $this->getFromDB(1);
+
+        $contractstate  = new ContractState();
+        $contractstates = $contractstate->find();
+        $states = [];
+        foreach ($contractstates as $key => $val) {
+            $states[$key] = $val['name'];
+        }
+        $decoded = json_decode($this->fields['contract_states'] ?? '', true);
+        $states_selected = is_array($decoded) ? $decoded : [];
+
+        $iterator = $DB->request([
+            'SELECT' => [
+                'glpi_plugin_manageentities_businesscontacts.id as users_id',
+                'glpi_users.id',
+                'glpi_users.realname',
+                'glpi_users.firstname',
+            ],
+            'FROM'      => 'glpi_plugin_manageentities_businesscontacts',
+            'LEFT JOIN' => [
+                'glpi_users' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_businesscontacts' => 'users_id',
+                        'glpi_users'                                  => 'id',
+                    ],
+                ],
+            ],
+            'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
+        ]);
+        $users = [];
+        foreach ($iterator as $data) {
+            $users[$data['id']] = $data['realname'] . ' ' . $data['firstname'];
+        }
+        $decoded = json_decode($this->fields['business_id'] ?? '', true);
+        $business_selected = is_array($decoded) ? $decoded : [];
+
+        ob_start();
+        $rand_hourorday = \Dropdown::showFromArray(
+            'hourorday',
+            self::getConfigType(),
+            ['value' => $this->fields['hourorday'], 'display' => true]
+        );
+        Ajax::updateItem(
+            'title_show_hourorday',
+            PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
+            ['hourorday' => $this->fields['hourorday'], 'action' => 'title_show_hourorday'],
+            "dropdown_hourorday$rand_hourorday"
+        );
+        Ajax::updateItem(
+            'value_show_hourorday',
+            PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
+            ['hourorday' => $this->fields['hourorday'], 'action' => 'value_show_hourorday'],
+            "dropdown_hourorday$rand_hourorday"
+        );
+        Ajax::updateItemOnSelectEvent(
+            "dropdown_hourorday$rand_hourorday",
+            'title_show_hourorday',
+            PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
+            ['hourorday' => '__VALUE__', 'action' => 'title_show_hourorday']
+        );
+        Ajax::updateItemOnSelectEvent(
+            "dropdown_hourorday$rand_hourorday",
+            'value_show_hourorday',
+            PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
+            ['hourorday' => '__VALUE__', 'action' => 'value_show_hourorday']
+        );
+        $hourorday_html = ob_get_clean();
+
+        ob_start();
+        \Dropdown::show('DocumentCategory', [
+            'name'  => 'documentcategories_id',
+            'value' => $this->fields['documentcategories_id'],
+        ]);
+        $documentcategory_html = ob_get_clean();
+
+        ob_start();
+        self::dropdownConfigChoiceIntervention('choice_intervention', $this->fields['choice_intervention']);
+        $choice_intervention_html = ob_get_clean();
+
+        ob_start();
+        \Dropdown::showFromArray('contract_states', $states, [
+            'multiple' => true,
+            'width'    => 200,
+            'values'   => $states_selected,
+        ]);
+        $contract_states_html = ob_get_clean();
+
+        ob_start();
+        \Dropdown::showFromArray('business_id', $users, [
+            'multiple' => true,
+            'width'    => 200,
+            'values'   => $business_selected,
+        ]);
+        $business_html = ob_get_clean();
+
+        ob_start(); \Dropdown::showYesNo('backup', $this->fields['backup']); $backup_html = ob_get_clean();
+        ob_start(); \Dropdown::showYesNo('useprice', $this->fields['useprice']); $useprice_html = ob_get_clean();
+        ob_start(); \Dropdown::showYesNo('use_publictask', $this->fields['use_publictask']); $use_publictask_html = ob_get_clean();
+        ob_start(); \Dropdown::showYesNo('allow_same_periods', $this->fields['allow_same_periods']); $allow_same_periods_html = ob_get_clean();
+        ob_start(); \Dropdown::showYesNo('comment', $this->fields['comment']); $comment_html = ob_get_clean();
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/config_options_form.html.twig',
+            [
+                'form_url'                  => Toolbox::getItemTypeFormURL(Config::class),
+                'hourorday_html'            => $hourorday_html,
+                'documentcategory_html'     => $documentcategory_html,
+                'choice_intervention_html'  => $choice_intervention_html,
+                'contract_states_html'      => $contract_states_html,
+                'business_html'             => $business_html,
+                'backup_html'               => $backup_html,
+                'useprice_html'             => $useprice_html,
+                'use_publictask_html'       => $use_publictask_html,
+                'allow_same_periods_html'   => $allow_same_periods_html,
+                'comment_html'              => $comment_html,
+            ]
+        );
+    }
 
     public function showConfigForm()
     {
@@ -301,34 +481,6 @@ class Config extends CommonDBTM
             $input['business_id'] = 'NULL';
         }
         return $input;
-    }
-
-    public function showFormCompany()
-    {
-        //add a company
-        Company::addNewCompany(['title' => __('Add a company', 'manageentities')]);
-        Html::closeForm();
-
-        $plugin_company = new Company();
-        $result = $plugin_company->find();
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-        echo "<tr><th colspan='2'>" . _n('Company', 'Companies', 2, 'manageentities') . "</th></tr>";
-
-        foreach ($result as $data) {
-            echo "<tr>";
-            echo "<td>";
-            $link_period = Toolbox::getItemTypeFormURL(Company::class);
-            echo "<a class='ganttWhite' href='" . $link_period . "?id=" . $data["id"] . "'>";
-            $plugin_company->getFromDB($data["id"]);
-            echo $plugin_company->getNameID() . "</a>";
-            echo "</td>";
-            echo "</tr>";
-        }
-        echo "<tr>";
-        echo "</tr>";
-        echo "</table>";
-        echo "</div>";
     }
 
     public function isCommentCri()

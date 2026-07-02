@@ -1,0 +1,35 @@
+{#
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ --------------------------------------------------------------------------
+ #}
+
+{{ add_company_html|raw }}
+
+<div class="card mb-3">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-building"></i>
+        <strong>{{ _n('Company', 'Companies', 2, 'manageentities') }}</strong>
+    </div>
+    <div class="card-body p-0">
+        {% if companies|length > 0 %}
+            {{ include('components/datatable.html.twig', {
+                'entries': companies|map(c => {
+                    'name': '<a href="' ~ c.url ~ '">' ~ c.name ~ '</a>',
+                }),
+                'columns': {
+                    'name': _n('Company', 'Companies', 1, 'manageentities'),
+                },
+                'formatters':    {'name': 'raw_html'},
+                'total_number':  companies|length,
+                'nosort':        true,
+                'nofilter':      true,
+            }) }}
+        {% else %}
+            <div class="alert alert-info m-3">
+                <i class="ti ti-info-circle me-2"></i>
+                {{ __('No results found') }}
+            </div>
+        {% endif %}
+    </div>
+</div>

@@ -30,9 +30,11 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
+use CommonGLPI;
 use DbUtils;
 use Document;
 use Document_Item;
+use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\Config;
 use Html;
 use Session;
@@ -52,6 +54,54 @@ class Company extends CommonDBTM
     static function getTypeName($nb = 0)
     {
         return _n('Company', 'Companies', $nb, 'manageentities');
+    }
+
+    public static function getIcon()
+    {
+        return "ti ti-building";
+    }
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        if (!$withtemplate && $item->getType() === Config::class) {
+            return self::createTabEntry(self::getTypeName(2), 0, $item->getType(), self::getIcon());
+        }
+        return '';
+    }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if ($item->getType() === Config::class) {
+            self::showList();
+        }
+        return true;
+    }
+
+    public static function showList(): void
+    {
+        ob_start();
+        self::addNewCompany(['title' => __('Add a company', 'manageentities')]);
+        Html::closeForm();
+        $add_company_html = ob_get_clean();
+
+        $plugin_company = new self();
+        $result = $plugin_company->find();
+        $companies = [];
+        $link_period = Toolbox::getItemTypeFormURL(self::class);
+        foreach ($result as $data) {
+            $plugin_company->getFromDB($data['id']);
+            $companies[] = [
+                'name' => '<a href="' . $link_period . '?id=' . $data['id'] . '">' . $plugin_company->getNameID() . '</a>',
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/company_list.html.twig',
+            [
+                'add_company_html' => $add_company_html,
+                'companies'        => $companies,
+            ]
+        );
     }
 
     function rawSearchOptions()
@@ -140,7 +190,7 @@ class Company extends CommonDBTM
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Logo (format JPG or JPEG)', 'manageentities') . "</td>";
-        if ($this->fields["logo_id"] != 0) {
+        if ($this->fields["logo_id"] != 0 && !empty($this->fields["logo_id"])) {
             echo "<td>";
             echo "<div  id='picture'>";
             echo "<img height='50px' alt=\"" . __s(

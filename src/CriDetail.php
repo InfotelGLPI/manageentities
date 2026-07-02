@@ -67,6 +67,8 @@ class CriDetail extends CommonDBTM
             return self::createTabEntry(Cri::getTypeName(1));
         } elseif ($item->getType() == ContractDay::class) {
             return self::createTabEntry(__('Linked interventions', 'manageentities'), self::countForContract($item));
+        } elseif ($item->getType() == Config::class) {
+            return self::createTabEntry(__('CRI generation', 'manageentities'), 0, $item->getType(), self::getIcon());
         }
         return '';
     }
@@ -89,8 +91,69 @@ class CriDetail extends CommonDBTM
             self::showReports($item, $item->getField('id'));
         } elseif ($item->getType() == ContractDay::class) {
             echo self::showForContractDay($item);
+        } elseif ($item->getType() == Config::class) {
+            self::showCriForm($item);
         }
         return true;
+    }
+
+    public static function showCriForm(Config $config): void
+    {
+        $status = Ticket::getAllStatusArray();
+
+        ob_start();
+        \Dropdown::showFromArray('ticket_state', $status, ['value' => $config->fields['ticket_state']]);
+        $ticket_state_html = ob_get_clean();
+
+        ob_start();
+        $rand_duration = \Dropdown::showTimeStamp('default_duration', [
+            'value'      => $config->fields['default_duration'],
+            'min'        => 0,
+            'max'        => 50 * HOUR_TIMESTAMP,
+            'emptylabel' => __('Specify an end date'),
+        ]);
+        echo "<br><div id='date_end$rand_duration'></div>";
+        $default_duration_html = ob_get_clean();
+
+        ob_start();
+        $rand_am = \Dropdown::showTimeStamp('default_time_am', [
+            'value'      => $config->fields['default_time_am'],
+            'min'        => 0,
+            'emptylabel' => '0h',
+            'max'        => 23.5 * HOUR_TIMESTAMP,
+            'step'       => MINUTE_TIMESTAMP * 30,
+        ]);
+        echo "<br><div id='date_end$rand_am'></div>";
+        $default_time_am_html = ob_get_clean();
+
+        ob_start();
+        $rand_pm = \Dropdown::showTimeStamp('default_time_pm', [
+            'value'      => $config->fields['default_time_pm'],
+            'min'        => 0,
+            'emptylabel' => '0h',
+            'max'        => 23.5 * HOUR_TIMESTAMP,
+            'step'       => MINUTE_TIMESTAMP * 30,
+        ]);
+        echo "<br><div id='date_end$rand_pm'></div>";
+        $default_time_pm_html = ob_get_clean();
+
+        ob_start(); \Dropdown::showYesNo('non_accomplished_tasks', $config->fields['non_accomplished_tasks']); $non_accomplished_tasks_html = ob_get_clean();
+        ob_start(); \Dropdown::showYesNo('get_pdf_cri', $config->fields['get_pdf_cri']); $get_pdf_cri_html = ob_get_clean();
+        ob_start(); \Dropdown::showYesNo('disable_date_header', $config->fields['disable_date_header']); $disable_date_header_html = ob_get_clean();
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/config_cri_form.html.twig',
+            [
+                'form_url'                    => Toolbox::getItemTypeFormURL(Config::class),
+                'ticket_state_html'           => $ticket_state_html,
+                'default_duration_html'       => $default_duration_html,
+                'default_time_am_html'        => $default_time_am_html,
+                'default_time_pm_html'        => $default_time_pm_html,
+                'non_accomplished_tasks_html' => $non_accomplished_tasks_html,
+                'get_pdf_cri_html'            => $get_pdf_cri_html,
+                'disable_date_header_html'    => $disable_date_header_html,
+            ]
+        );
     }
 
     public function prepareInputForUpdate($input)

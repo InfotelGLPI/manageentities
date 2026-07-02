@@ -31,34 +31,28 @@ use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Entity;
 
 if (Plugin::isPluginActive("manageentities")) {
-   if (Session::haveRight("plugin_manageentities", UPDATE)) {
-      $config = new Config();
+    if (Session::haveRight("plugin_manageentities", UPDATE)) {
+        $config = new Config();
 
-      if (isset($_POST["update_config"])) {
-         Session::checkRight("config", UPDATE);
-         $config->update($_POST);
-         Html::back();
-
-      } else {
-         Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
-         $config->GetFromDB(1);
-         $config->showConfigForm();
-         //$config->showDetails();
-         $config->showFormCompany();
-
-         Html::footer();
-      }
-
-   } else {
-      Html::header(__('Setup'), '', "config", "plugin");
-      echo "<div class='alert alert-warning d-flex'>";
-      echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
-      Html::footer();
-   }
-
+        if (isset($_POST["update_config"])) {
+            Session::checkRight("config", UPDATE);
+            $config->update($_POST);
+            Html::back();
+        } else {
+            Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
+            $config->getFromDB(1);
+            $config->display(['id' => 1]);
+            Html::footer();
+        }
+    } else {
+        Html::header(__('Setup'), '', "config", "plugin");
+        echo "<div class='alert alert-warning d-flex'>";
+        echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
+        Html::footer();
+    }
 } else {
-   Html::header(__('Setup'), '', "config", "plugin");
-   echo "<div class='alert alert-warning d-flex'>";
-   echo "<b>" . __('Please activate the plugin', 'manageentities') . "</b></div>";
-   Html::footer();
+    Html::header(__('Setup'), '', "config", "plugin");
+    echo "<div class='alert alert-warning d-flex'>";
+    echo "<b>" . __('Please activate the plugin', 'manageentities') . "</b></div>";
+    Html::footer();
 }

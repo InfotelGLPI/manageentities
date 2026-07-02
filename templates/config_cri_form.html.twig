@@ -1,0 +1,91 @@
+{#
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ --------------------------------------------------------------------------
+ #}
+
+<form name="form" method="post" action="{{ form_url }}">
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-file-report"></i>
+            <strong>{{ __('Setup for Generate Intervention report', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Use Non-accomplished tasks informations', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ non_accomplished_tasks_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Display PDF', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ get_pdf_cri_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('State of ticket created', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ ticket_state_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default duration', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ default_duration_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default time AM', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ default_time_am_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default time PM', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ default_time_pm_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Disable creation date in header of PDF', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ disable_date_header_html|raw }}
+                </div>
+            </div>
+
+            <div class="alert alert-warning">
+                <i class="ti ti-alert-triangle me-2"></i>
+                {{ __('Warning: changing the configuration daily or hourly impacts the types of contract', 'manageentities') }}
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <input type="hidden" name="id" value="1">
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" name="update_config" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>
+                {{ _x('button', 'Save') }}
+            </button>
+        </div>
+    </div>
+</form>

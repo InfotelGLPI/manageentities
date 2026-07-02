@@ -1,0 +1,122 @@
+{#
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ --------------------------------------------------------------------------
+ #}
+
+<form name="form" method="post" action="{{ form_url }}">
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-adjustments"></i>
+            <strong>{{ __('Global options', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Save reports in glpi', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ backup_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Rubric by default for reports', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ documentcategory_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Use of price', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ useprice_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Configuration daily or hourly', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ hourorday_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-sm-4 col-form-label">
+                    <span id="title_show_hourorday"></span>
+                </div>
+                <div class="col-sm-8">
+                    <span id="value_show_hourorday"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Only public task are visible on intervention report', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ use_publictask_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Allow periods on the same interval of dates', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ allow_same_periods_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Configuring the client side view', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ choice_intervention_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('List of default statuses for general monitoring', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ contract_states_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default Business list for general monitoring', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ business_html|raw }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Display comments from the company in the CRI', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ comment_html|raw }}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <input type="hidden" name="id" value="1">
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" name="update_config" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>
+                {{ _x('button', 'Save') }}
+            </button>
+        </div>
+    </div>
+</form>
