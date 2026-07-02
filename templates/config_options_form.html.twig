@@ -110,6 +110,34 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-lock"></i>
+            <strong>{{ __('Contract closure', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info d-flex gap-2 mb-3" role="alert">
+                <i class="ti ti-info-circle flex-shrink-0 mt-1"></i>
+                <div>
+                    {{ __('When a GLPI contract reaches the configured GLPI state, all its periods are automatically set to the configured period state. Conversely, when all periods of a contract reach the period state, the GLPI contract is automatically set to the configured GLPI state.', 'manageentities') }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Closed GLPI contract state', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ closed_glpi_state_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('GLPI state (visible on contracts) that triggers period closure and is applied to the contract when all periods are closed.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
+
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">
                     {{ __('Closed contract period state', 'manageentities') }}
@@ -117,7 +145,7 @@
                 <div class="col-sm-8">
                     {{ closed_contractstate_html|raw }}
                     <div class="form-text text-muted">
-                        {{ __('State applied to contract periods when closing a GLPI contract, and applied to the GLPI contract when all its periods reach this state.', 'manageentities') }}
+                        {{ __('State applied to contract periods when the GLPI contract is closed.', 'manageentities') }}
                     </div>
                 </div>
             </div>

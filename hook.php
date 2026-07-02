@@ -834,6 +834,19 @@ function plugin_manageentities_pre_item_form($params)
     }
 }
 
+function plugin_manageentities_post_item_form($params)
+{
+    $item = $params['item'];
+    switch ($item->getType()) {
+        case 'TicketTask':
+            TicketTask::postForm($params);
+            break;
+        case 'Contract':
+            Contract::postItemForm($params);
+            break;
+    }
+}
+
 function plugin_datainjection_populate_manageentities()
 {
     global $INJECTABLE_TYPES;
@@ -842,29 +855,28 @@ function plugin_datainjection_populate_manageentities()
 
 /**
  * Hook ITEM_UPDATE on GLPI Contract.
- * When the contract's end_date is set to today or in the past, close all associated
- * contract periods (ContractDay) by setting them to the configured closed state.
+ * When the contract's GLPI state matches the configured closed state,
+ * all associated contract periods are set to the configured closed period state.
  */
 function plugin_manageentities_contract_item_update(\Contract $item): void
 {
     global $DB;
 
-    // Only act when end_date was explicitly changed in this update
-    if (!isset($item->input['end_date'])) {
+    // Only act when states_id was explicitly changed in this update
+    if (!isset($item->input['states_id'])) {
         return;
     }
 
     $config = Config::getInstance();
-    $closed_state_id = (int)($config->fields['closed_contractstate_id'] ?? 0);
-    if ($closed_state_id === 0) {
+    $closed_glpi_state_id  = (int)($config->fields['closed_glpi_state_id'] ?? 0);
+    $closed_contractstate_id = (int)($config->fields['closed_contractstate_id'] ?? 0);
+
+    if ($closed_glpi_state_id === 0 || $closed_contractstate_id === 0) {
         return;
     }
 
-    $end_date = $item->input['end_date'];
-    $today    = date('Y-m-d');
-
-    // Only trigger when end_date <= today (contract is now expired/closed)
-    if (empty($end_date) || $end_date > $today) {
+    // Only trigger when the new state matches the configured closed state
+    if ((int)$item->input['states_id'] !== $closed_glpi_state_id) {
         return;
     }
 
@@ -891,8 +903,8 @@ function plugin_manageentities_contract_item_update(\Contract $item): void
     $contractDay = new ContractDay();
     foreach ($iterator as $row) {
         $contractDay->update([
-            'id'                                       => $row['id'],
-            'plugin_manageentities_contractstates_id'  => $closed_state_id,
+            'id'                                      => $row['id'],
+            'plugin_manageentities_contractstates_id' => $closed_contractstate_id,
         ]);
     }
 }

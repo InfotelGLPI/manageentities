@@ -763,14 +763,16 @@ class ContractDay extends CommonDBTM
     public function post_updateItem($history = true)
     {
         // When a period's state changes, check if all periods of the parent GLPI contract are now closed.
-        // If so, set the plugin contract end_date to today so GLPI treats it as expired.
+        // If so, set the GLPI contract state to the configured closed GLPI state.
         if (!isset($this->input['plugin_manageentities_contractstates_id'])) {
             return;
         }
 
         $config = Config::getInstance();
-        $closed_state_id = (int)($config->fields['closed_contractstate_id'] ?? 0);
-        if ($closed_state_id === 0) {
+        $closed_glpi_state_id    = (int)($config->fields['closed_glpi_state_id'] ?? 0);
+        $closed_contractstate_id = (int)($config->fields['closed_contractstate_id'] ?? 0);
+
+        if ($closed_glpi_state_id === 0 || $closed_contractstate_id === 0) {
             return;
         }
 
@@ -800,15 +802,14 @@ class ContractDay extends CommonDBTM
 
         $row = $iterator->current();
         if ($row && (int)$row['cnt'] === 0) {
-            // All periods are closed — set GLPI contract end_date to today if not already past
+            // All periods are closed — set the GLPI contract to the configured closed state
             $glpi_contract = new \Contract();
-            if ($glpi_contract->getFromDB($contracts_id)) {
-                $today = date('Y-m-d');
-                if (empty($glpi_contract->fields['end_date']) || $glpi_contract->fields['end_date'] > $today) {
-                    $glpi_contract->update([
-                        'id'       => $contracts_id,
-                        'end_date' => $today,
-                    ]);
+            if ($glpi_contract->getFromDB($contracts_id)
+                && (int)$glpi_contract->fields['states_id'] !== $closed_glpi_state_id) {
+                $glpi_contract->update([
+                    'id'        => $contracts_id,
+                    'states_id' => $closed_glpi_state_id,
+                ]);
                 }
             }
         }

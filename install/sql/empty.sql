@@ -76,7 +76,8 @@ CREATE TABLE `glpi_plugin_manageentities_configs` (
    `default_time_am` varchar(255) default NULL,
    `default_time_pm` varchar(255) default NULL,
    `disable_date_header` tinyint NOT NULL default '0',
-   `closed_contractstate_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractstates (id) — state applied when closing a contract period or GLPI contract',
+   `closed_contractstate_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractstates (id) — state applied to contract periods when closing',
+   `closed_glpi_state_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_states (id) — GLPI contract state that triggers period closure and is set when all periods are closed',
    PRIMARY KEY  (`id`),
    KEY `documentcategories_id` (`documentcategories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

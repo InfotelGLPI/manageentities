@@ -213,6 +213,16 @@ class Config extends CommonDBTM
         ]);
         $closed_contractstate_html = ob_get_clean();
 
+        $glpi_contract = new \Contract();
+        $visibility_criteria = $glpi_contract->getStateVisibilityCriteria();
+        ob_start();
+        \Dropdown::show('State', [
+            'name'      => 'closed_glpi_state_id',
+            'value'     => $this->fields['closed_glpi_state_id'] ?? 0,
+            'condition' => $visibility_criteria,
+        ]);
+        $closed_glpi_state_html = ob_get_clean();
+
         ob_start(); \Dropdown::showYesNo('backup', $this->fields['backup']); $backup_html = ob_get_clean();
         ob_start(); \Dropdown::showYesNo('useprice', $this->fields['useprice']); $useprice_html = ob_get_clean();
         ob_start(); \Dropdown::showYesNo('use_publictask', $this->fields['use_publictask']); $use_publictask_html = ob_get_clean();
@@ -234,6 +244,7 @@ class Config extends CommonDBTM
                 'allow_same_periods_html'   => $allow_same_periods_html,
                 'comment_html'                  => $comment_html,
                 'closed_contractstate_html'     => $closed_contractstate_html,
+                'closed_glpi_state_html'        => $closed_glpi_state_html,
             ]
         );
     }

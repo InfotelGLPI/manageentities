@@ -153,6 +153,78 @@ class Contract extends CommonDBTM
         return '';
     }
 
+    public static function postItemForm(array $params): void
+    {
+        $item = $params['item'] ?? null;
+        if (!($item instanceof \Contract) || empty($item->fields['id'])) {
+            return;
+        }
+
+        $dbu = new DbUtils();
+        $count = $dbu->countElementsInTable(
+            'glpi_plugin_manageentities_contractdays',
+            ['contracts_id' => $item->fields['id']]
+        );
+        if ($count === 0) {
+            return;
+        }
+
+        $can_edit = $item->can($item->fields['id'], UPDATE);
+        if (!$can_edit) {
+            return;
+        }
+
+        $label = htmlspecialchars(__('+ 12 months', 'manageentities'));
+        $title = htmlspecialchars(__('Add 12 months to the initial contract period', 'manageentities'));
+
+        echo \Html::scriptBlock("
+(function () {
+    // GLPI uses Select2 for showNumber dropdowns — wait for it to be initialized
+    function attachBtn() {
+        var sel = document.querySelector('select[name=\"duration\"]');
+        if (!sel) return;
+
+        // Find the Select2 container wrapping this select
+        var container = sel.closest('.select2-container') || sel.parentNode;
+        // Look for the Select2 rendered span (sibling of the hidden select)
+        var s2 = sel.parentNode.querySelector('.select2-container');
+
+        var btn = document.createElement('button');
+        btn.type      = 'button';
+        btn.className = 'btn btn-sm btn-outline-secondary ms-2';
+        btn.title     = " . json_encode($title) . ";
+        btn.innerHTML = '<i class=\"ti ti-calendar-plus me-1\"></i>' + " . json_encode($label) . ";
+        btn.addEventListener('click', function () {
+            var current = parseInt(sel.value, 10);
+            if (isNaN(current) || current <= 0) current = 0;
+            var target = current + 12;
+            if (target > 120) target = 120;
+            // Select2 API — triggers the AJAX search for the new value label
+            if (window.jQuery && jQuery(sel).data('select2')) {
+                jQuery(sel).val(target).trigger('change');
+            } else {
+                // Fallback: set value directly on the native select
+                sel.value = target;
+                sel.dispatchEvent(new Event('change', {bubbles: true}));
+            }
+        });
+
+        // Insert after the Select2 wrapper if found, otherwise after the select itself
+        var anchor = s2 || sel;
+        anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    }
+
+    // Wait for Select2 to finish rendering (it runs after DOMContentLoaded)
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attachBtn);
+    } else {
+        // Slight delay to let Select2 initialize on already-loaded pages
+        setTimeout(attachBtn, 100);
+    }
+})();
+        ");
+    }
+
     static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (get_class($item) == 'Contract') {
