@@ -1,0 +1,39 @@
+{#
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ * https://github.com/InfotelGLPI/manageentities
+ --------------------------------------------------------------------------
+ #}
+
+<div class="card mb-3">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-report-analytics"></i>
+        <strong>{{ __('Intervention periods of contract', 'manageentities') }}</strong>
+    </div>
+
+    <div class="card-body p-0">
+        {{ include('components/datatable.html.twig', {
+            'entries':       entries,
+            'columns':       columns,
+            'formatters':    formatters,
+            'total_number':  entries|length,
+            'nosort':        true,
+            'nofilter':      true,
+        }) }}
+    </div>
+
+    {% if use_price %}
+        <div class="card-footer d-flex gap-4 justify-content-end fw-bold">
+            <span>
+                {{ __('Total yearly consumption', 'manageentities') }} :
+                {{ tot_amount }}
+            </span>
+            {% if default_criprice > 0 %}
+                <span>
+                    {{ __('Estimated number of remaining days', 'manageentities') }} :
+                    {{ nb_theoretical_days }}
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

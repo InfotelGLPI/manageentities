@@ -1308,150 +1308,117 @@ class CriDetail extends CommonDBTM
     {
         global $PDF;
 
-        $colspan = 8;
         $config = Config::getInstance();
         $PDF = new CriPDF('P', 'mm', 'A4');
 
         $manageentities_contract = new Contract();
         $manageentities_contract->getFromDBByCrit(['contracts_id' => $contractDay->fields['contracts_id']]);
-        // We get all cri detail data
+
         $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
         $resultCriDetail = self::getCriDetailData($contractDay->fields);
 
-        if ($config->fields['useprice'] == Config::PRICE) {
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+        $use_price         = ($config->fields['useprice'] == Config::PRICE);
+        $hour_or_day       = ($config->fields['hourorday'] == Config::DAY) ? 'day' : 'hour';
+        $show_crossed_time = isset($manageentities_contract->fields['contract_type'])
+            && $manageentities_contract->fields['contract_type'] != Contract::CONTRACT_TYPE_INTERVENTION;
 
-            if (sizeof($resultCriDetail['result']) > 0) {
-                echo "<tr>";
-                echo "<tr><th colspan='" . $colspan . "'>" . __(
-                    'Intervention periods of contract',
-                    'manageentities'
-                ) . "</th></tr>";
-                echo "<tr>";
-                echo "<th>" . __('Date') . "</th>";
-                echo "<th>" . __('Object of intervention', 'manageentities') . "</th>";
-                echo "<th>" . __('Intervention type', 'manageentities') . "</th>";
-                echo "<th>" . __('File') . "</th>";
-                if ($config->fields['hourorday'] == Config::DAY
-                    || (isset($manageentities_contract->fields['contract_type'])
-                        && $manageentities_contract->fields['contract_type'] != Contract::CONTRACT_TYPE_INTERVENTION)) {
-                    echo "<th>" . __('Crossed time (itinerary including)', 'manageentities') . "</th>";
-                    echo "<th>" . __('Technicians', 'manageentities') . "</th>";
-                    if ($config->fields['hourorday'] == Config::DAY) {
-                        echo "<th>" . __('Applied daily rate', 'manageentities') . "</th>";
-                    } else {
-                        echo "<th>" . __('Applied hourly rate', 'manageentities') . "</th>";
-                    }
-                } else {
-                    echo "<th>" . _x('Quantity', 'Number') . " " . __(
-                        'of this intervention',
-                        'manageentities'
-                    ) . "</th>";
-                    echo "<th>" . __('Technicians', 'manageentities') . "</th>";
-                    echo "<th>" . __('Applied rate', 'manageentities') . "</th>";
-                }
-                echo "<th>" . __('To compute', 'manageentities') . "</th>";
-                echo "</tr>";
+        if ($use_price) {
+            $conso_label = ($hour_or_day === 'day' || $show_crossed_time)
+                ? __('Crossed time (itinerary including)', 'manageentities')
+                : _x('Quantity', 'Number') . ' ' . __('of this intervention', 'manageentities');
+            $rate_label = ($hour_or_day === 'day')
+                ? __('Applied daily rate', 'manageentities')
+                : ($show_crossed_time ? __('Applied hourly rate', 'manageentities') : __('Applied rate', 'manageentities'));
 
-                foreach ($resultCriDetail['result'] as $dataCriDetail) {
-                    echo "<tr class='tab_bg_1" . ($dataCriDetail["is_deleted"] == '1' ? "_2" : "") . "'>";
-                    echo "<td>" . Html::convdate($dataCriDetail['tickets_date']) . "</td>";
-
-                    $ticket = new Ticket();
-                    $ticket->getFromDB($dataCriDetail["tickets_id"]);
-                    echo "<td>" . $ticket->getLink();
-                    echo "</td>";
-                    // If a cri as been generated we get its data
-                    if ($dataCriDetail["documents_id"] != 0) {
-                        echo "<td>" . $dataCriDetail['plugin_manageentities_critypes_name'] . "</td>";
-                        $doc = new Document();
-                        $doc->getFromDB($dataCriDetail["documents_id"]);
-                        echo "<td class='center'  width='100px'>" . $doc->getDownloadLink() . "</td>";
-                        echo "<td>" . Html::formatNumber($dataCriDetail['conso'], false) . "</td>";
-                        echo "<td>" . $dataCriDetail['tech'] . "</td>";
-                        // Else no cri generated
-                    } else {
-                        echo "<td>" . \Dropdown::getDropdownName(
-                            'glpi_plugin_manageentities_critypes',
-                            $dataCriDetail['plugin_manageentities_critypes_id']
-                        ) . "</td>";
-                        echo "<td class='center'  width='100px'></td>";
-                        echo "<td>" . Html::formatNumber($dataCriDetail['conso'], false) . "</td>";
-                        echo "<td>" . $dataCriDetail['tech'] . "</td>";
-                    }
-
-                    if ($dataCriDetail['pricecri']) {
-                        echo "<td>";
-                        echo Html::formatNumber($dataCriDetail['pricecri'], false);
-                        echo "</td>";
-                        echo "<td>" . Html::formatNumber(
-                            $dataCriDetail['pricecri'] * $dataCriDetail['conso'],
-                            false
-                        ) . "</td>";
-                    } else {
-                        echo "<td colspan='2'>";
-                        echo "</td>";
-                    }
-                    echo "</tr>";
-                }
-
-                echo "<tr class='tab_bg_2'>";
-                echo "<td colspan='" . ($colspan - 1) . "' class='right'><b>" . __(
-                    'Total yearly consumption',
-                    'manageentities'
-                ) . " : </b></td>";
-                echo "<td><b>" . Html::formatNumber($resultCriDetail['resultOther']['tot_amount'], false) . "</b></td>";
-                $nbtheoricaldays = 0;
-                if ($resultCriDetail['resultOther']['default_criprice'] > 0) {
-                    $nbtheoricaldays = $resultCriDetail['resultOther']['reste_montant'] / $resultCriDetail['resultOther']['default_criprice'];
-                }
-                echo "<tr class='tab_bg_2'>";
-                echo "<td colspan='" . ($colspan - 1) . "' align='right'><b>" . __(
-                    'Estimated number of remaining days',
-                    'manageentities'
-                ) . " : </b></td>";
-                echo "<td><b>" . Html::formatNumber($nbtheoricaldays, false) . "</b></td>";
-                echo "</tr>";
-            } else {
-                echo "<tr class='tab_bg_2 center'><td>";
-                echo __('No interventions in the dates of the period', 'manageentities');
-                echo "</td></tr>";
-            }
-            echo "</table>";
-            echo "</div>";
-        } else { // NO USE PRICE
-            $colspan = $colspan - 1;
-
-            if (sizeof($resultCriDetail['result']) != 0) {
-                echo "<div class='center'>";
-                echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-                echo "<tr>";
-                echo "<th colspan='4'>" . __('Intervention periods of contract', 'manageentities') . "</th></tr>";
-                echo "<tr>";
-                echo "<th>" . __('Date') . "</th>";
-                echo "<th>" . __('Object of intervention', 'manageentities') . "</th>";
-                echo "<th>" . __('Technicians', 'manageentities') . "</th>";
-                echo "<th>" . __('Consumption', 'manageentities') . "</th>";
-                echo "</tr>";
-
-                foreach ($resultCriDetail['result'] as $dataCriDetail) {
-                    echo "<tr class='tab_bg_1" . ($dataCriDetail["is_deleted"] == '1' ? "_2" : "") . "'>";
-                    echo "<td class='center'>" . Html::convdate($dataCriDetail["tickets_date"]) . "</td>";
-                    echo "<td class='center'>" . $dataCriDetail['tickets_name'] . "</td>";
-                    echo "<td class='center'>" . $dataCriDetail['tech'] . "</td>";
-                    echo "<td class='center'>" . $dataCriDetail['conso'] . "</td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr class='tab_bg_2 center'><td>";
-                echo __('No interventions in the dates of the period', 'manageentities');
-                echo "</td></tr>";
-            }
-
-            echo "</table>";
-            echo "</div>";
+            $columns = [
+                'date'   => __('Date'),
+                'object' => __('Object of intervention', 'manageentities'),
+                'type'   => __('Intervention type', 'manageentities'),
+                'file'   => __('File'),
+                'conso'  => $conso_label,
+                'tech'   => __('Technicians', 'manageentities'),
+                'rate'   => $rate_label,
+                'amount' => __('To compute', 'manageentities'),
+            ];
+            $formatters = ['object' => 'raw_html', 'file' => 'raw_html', 'tech' => 'raw_html'];
+        } else {
+            $columns = [
+                'date'   => __('Date'),
+                'object' => __('Object of intervention', 'manageentities'),
+                'tech'   => __('Technicians', 'manageentities'),
+                'conso'  => __('Consumption', 'manageentities'),
+            ];
+            $formatters = ['tech' => 'raw_html'];
         }
+
+        $entries = [];
+        foreach ($resultCriDetail['result'] as $dataCriDetail) {
+            $ticket = new Ticket();
+            $ticket->getFromDB($dataCriDetail['tickets_id']);
+
+            $doc_link      = '';
+            $critypes_name = $dataCriDetail['plugin_manageentities_critypes_name'];
+            if ($dataCriDetail['documents_id'] != 0) {
+                $doc = new Document();
+                $doc->getFromDB($dataCriDetail['documents_id']);
+                $doc_link = $doc->getDownloadLink();
+            } else {
+                $critypes_name = \Dropdown::getDropdownName(
+                    'glpi_plugin_manageentities_critypes',
+                    $dataCriDetail['plugin_manageentities_critypes_id']
+                );
+            }
+
+            $conso_fmt    = Html::formatNumber($dataCriDetail['conso'], false);
+            $pricecri_fmt = $dataCriDetail['pricecri'] ? Html::formatNumber($dataCriDetail['pricecri'], false) : '';
+            $amount_fmt   = $dataCriDetail['pricecri']
+                ? Html::formatNumber($dataCriDetail['pricecri'] * $dataCriDetail['conso'], false)
+                : '';
+            $row_class = $dataCriDetail['is_deleted'] == '1' ? 'table-secondary text-muted' : '';
+
+            if ($use_price) {
+                $entries[] = [
+                    'date'      => Html::convdate($dataCriDetail['tickets_date']),
+                    'object'    => $ticket->getLink(),
+                    'type'      => $critypes_name,
+                    'file'      => $doc_link,
+                    'conso'     => $conso_fmt,
+                    'tech'      => $dataCriDetail['tech'],
+                    'rate'      => $pricecri_fmt,
+                    'amount'    => $amount_fmt,
+                    'row_class' => $row_class,
+                ];
+            } else {
+                $entries[] = [
+                    'date'      => Html::convdate($dataCriDetail['tickets_date']),
+                    'object'    => $dataCriDetail['tickets_name'],
+                    'tech'      => $dataCriDetail['tech'],
+                    'conso'     => $conso_fmt,
+                    'row_class' => $row_class,
+                ];
+            }
+        }
+
+        $nb_theoretical_days = 0;
+        if ($resultCriDetail['resultOther']['default_criprice'] > 0) {
+            $nb_theoretical_days = Html::formatNumber(
+                $resultCriDetail['resultOther']['reste_montant'] / $resultCriDetail['resultOther']['default_criprice'],
+                false
+            );
+        }
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/cridetail_for_contractday.html.twig',
+            [
+                'entries'             => $entries,
+                'columns'             => $columns,
+                'formatters'          => $formatters,
+                'use_price'           => $use_price,
+                'tot_amount'          => Html::formatNumber($resultCriDetail['resultOther']['tot_amount'], false),
+                'nb_theoretical_days' => $nb_theoretical_days,
+                'default_criprice'    => $resultCriDetail['resultOther']['default_criprice'],
+            ]
+        );
     }
 
     /**
