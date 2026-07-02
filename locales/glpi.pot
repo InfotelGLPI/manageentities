@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 16:37+0000\n"
+"POT-Creation-Date: 2026-07-02 17:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,6 +71,10 @@ msgstr ""
 
 #: src/CriPrice.php:311 src/AddElementsView.php:2592
 msgid "Add a new price"
+msgstr ""
+
+#: src/ContractDay.php:469
+msgid "Add a service period"
 msgstr ""
 
 #: src/Cri.php:190
@@ -651,7 +655,7 @@ msgstr ""
 msgid "End date"
 msgstr ""
 
-#: src/ContractDay.php:780
+#: src/ContractDay.php:798
 msgid "End date cannot be less than begin date"
 msgstr ""
 
@@ -806,7 +810,7 @@ msgid "Informations successfully deleted."
 msgstr ""
 
 #: src/Monthly.php:705 src/Monthly.php:737 src/Gantt.php:411
-#: src/ContractDay.php:121 src/ContractDay.php:515 src/AddElementsView.php:2281
+#: src/ContractDay.php:121 src/ContractDay.php:533 src/AddElementsView.php:2281
 #: src/Followup.php:931 src/Followup.php:1217
 #: templates/contractday_form.html.twig:94
 msgid "Initial credit"
@@ -921,7 +925,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:808
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:820
 msgid "Manage your contracts"
 msgstr ""
 
@@ -1018,6 +1022,10 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
+#: src/ContractDay.php:481
+msgid "No service period defined yet."
+msgstr ""
+
 #: src/InterventionStakeholder.php:170
 #: templates/interventionstakeholder_list.html.twig:59
 msgid "No stakeholders have been affected yet."
@@ -1100,7 +1108,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/GenerateCRI.php:1360 src/CriDetail.php:700 src/CriDetail.php:1758
-#: src/CriDetail.php:1795 templates/contractday_list.html.twig:33
+#: src/CriDetail.php:1795 hook.php:726 templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr ""
 
@@ -1164,7 +1172,7 @@ msgstr ""
 msgid "Portal"
 msgstr ""
 
-#: src/ContractDay.php:134 src/ContractDay.php:519 src/AddElementsView.php:2239
+#: src/ContractDay.php:134 src/ContractDay.php:537 src/AddElementsView.php:2239
 #: templates/contractday_form.html.twig:81
 msgid "Postponement"
 msgstr ""
@@ -1292,6 +1300,10 @@ msgstr ""
 msgid "Select an existing price"
 msgstr ""
 
+#: src/ContractDay.php:480
+msgid "Service periods"
+msgstr ""
+
 #: templates/config_options_form.html.twig:11
 msgid "Setup"
 msgstr ""
@@ -1316,7 +1328,7 @@ msgstr ""
 msgid "State applied to contract periods when the GLPI contract is closed."
 msgstr ""
 
-#: src/ContractDay.php:150 src/ContractDay.php:517 src/AddElementsView.php:2301
+#: src/ContractDay.php:150 src/ContractDay.php:535 src/AddElementsView.php:2301
 #: src/ContractState.php:48 src/Followup.php:922 src/Followup.php:1185
 #: src/Followup.php:2351 hook.php:677 templates/contractday_form.html.twig:101
 msgid "State of contract"
@@ -1380,7 +1392,7 @@ msgstr ""
 msgid "Thanks to select a intervention type"
 msgstr ""
 
-#: src/ContractDay.php:824
+#: src/ContractDay.php:842
 #, php-format
 msgid "The contract period %s already exists"
 msgstr ""
@@ -1450,12 +1462,12 @@ msgstr ""
 msgid "Total (in hours)"
 msgstr ""
 
-#: src/Gantt.php:412 src/ContractDay.php:521 src/Followup.php:932
+#: src/Gantt.php:412 src/ContractDay.php:539 src/Followup.php:932
 #: src/Followup.php:1225 templates/contractday_form.html.twig:119
 msgid "Total consummated"
 msgstr ""
 
-#: src/Monthly.php:722 src/Monthly.php:763 src/ContractDay.php:524
+#: src/Monthly.php:722 src/Monthly.php:763 src/ContractDay.php:542
 #: src/Followup.php:941 src/Followup.php:1265
 #: templates/contractday_form.html.twig:123
 msgid "Total exceeding"
@@ -1469,8 +1481,8 @@ msgstr ""
 msgid "Total production"
 msgstr ""
 
-#: src/ContractDay.php:523 src/Followup.php:939 src/Followup.php:1255
-#: src/Dashboard.php:167 src/Dashboard.php:439 hook.php:736
+#: src/ContractDay.php:541 src/Followup.php:939 src/Followup.php:1255
+#: src/Dashboard.php:167 src/Dashboard.php:439 hook.php:748
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr ""
@@ -1491,13 +1503,13 @@ msgstr ""
 msgid "Travel (in days)"
 msgstr ""
 
-#: src/Monthly.php:703 src/Monthly.php:735 src/ContractDay.php:510
+#: src/Monthly.php:703 src/Monthly.php:735 src/ContractDay.php:528
 #: src/Followup.php:923 src/Followup.php:1194
 msgid "Type of contract"
 msgstr ""
 
 #: src/Contract.php:395 src/Contract.php:398 src/ContractDay.php:168
-#: src/ContractDay.php:858 src/AddElementsView.php:1871
+#: src/ContractDay.php:876 src/AddElementsView.php:1871
 #: src/AddElementsView.php:2210 src/Followup.php:1143
 #: templates/contract_detail_form.html.twig:67
 #: templates/contractday_form.html.twig:58
