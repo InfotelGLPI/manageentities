@@ -51,4 +51,9 @@ $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
 $result = CriDetail::getCriDetailData($contractDay->fields);
 $remaining = $result['resultOther']['reste'];
 
-echo json_encode(['remaining' => $remaining]);
+echo json_encode([
+    'remaining'  => $remaining,
+    'begin_date' => $contractDay->fields['begin_date'] ?? '',
+    'end_date'   => $contractDay->fields['end_date']   ?? '',
+    'comment'    => $contractDay->fields['comment']    ?? '',
+]);

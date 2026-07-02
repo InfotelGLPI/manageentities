@@ -1566,12 +1566,18 @@ class CriDetail extends CommonDBTM
         $contract_link_info = self::showContractLinkDropdown($cridetail, $ticket->fields['entities_id']);
         $contract_link_dropdown = ob_get_clean();
 
-        // Compute remaining days from the preselected contract period
+        // Compute remaining days and load ContractDay fields from the preselected period
         $remaining_days = null;
+        $contractday_begin_date = '';
+        $contractday_end_date   = '';
+        $contractday_comment    = '';
         $contractdays_id_selected = $contract_link_info['contractdaySelected'] ?? 0;
         if ($contractdays_id_selected > 0) {
             $contractDay = new ContractDay();
             if ($contractDay->getFromDB($contractdays_id_selected)) {
+                $contractday_begin_date = $contractDay->fields['begin_date'] ?? '';
+                $contractday_end_date   = $contractDay->fields['end_date']   ?? '';
+                $contractday_comment    = $contractDay->fields['comment']    ?? '';
                 $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
                 $result_cri = self::getCriDetailData($contractDay->fields);
                 $remaining_days = $result_cri['resultOther']['reste'];
@@ -1614,6 +1620,7 @@ class CriDetail extends CommonDBTM
             'form_url'                  => Toolbox::getItemTypeFormURL(Cri::class),
             'tickets_id'                => $ticket->fields['id'],
             'entities_id'               => $ticket->fields['entities_id'],
+            'entity_name'               => \Dropdown::getDropdownName('glpi_entities', $ticket->fields['entities_id']),
             'ticket_date'               => $ticket->fields['date'],
             'is_new'                    => empty($cridetail),
             'cridetail_id'              => $cridetail['id'] ?? 0,
@@ -1624,6 +1631,9 @@ class CriDetail extends CommonDBTM
             'contract_end_date'         => $contract_end_date,
             'contract_states_id'        => $contract_states_id,
             'closed_glpi_state_id'      => $closed_glpi_state_id,
+            'contractday_begin_date'    => $contractday_begin_date,
+            'contractday_end_date'      => $contractday_end_date,
+            'contractday_comment'       => $contractday_comment,
             'contract_type_dropdown'    => $contract_type_dropdown,
             'contract_link_dropdown'    => $contract_link_dropdown,
             'change_contract_script'    => $change_contract_script,

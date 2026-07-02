@@ -50,6 +50,18 @@
 
     <div class="card-body">
 
+        {# Row 0 — entity #}
+        <div class="row mb-3 align-items-center">
+            <label class="col-sm-3 col-form-label fw-bold">
+                {{ __('Entity') }}
+            </label>
+            <div class="col-sm-9">
+                <span class="form-control-plaintext">
+                    <i class="ti ti-building me-1 text-muted"></i>{{ entity_name }}
+                </span>
+            </div>
+        </div>
+
         {# Row 1 — with/without contract #}
         <div class="row mb-3 align-items-center">
             <label class="col-sm-3 col-form-label fw-bold">
@@ -93,6 +105,49 @@
             </div>
         </div>
 
+        {# Row contractday begin date #}
+        <div id="contractday_begin_date_block" class="row mt-2 align-items-center"
+             {% if not contractday_begin_date %}style="display:none"{% endif %}>
+            <label class="col-sm-3 col-form-label fw-bold text-muted">
+                <i class="ti ti-calendar-plus me-1"></i>{{ __('Begin date') }}
+            </label>
+            <div class="col-sm-9">
+                <span id="contractday_begin_date_text" class="form-control-plaintext">
+                    {% if contractday_begin_date %}
+                        {{ contractday_begin_date|date('d/m/Y') }}
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        {# Row contractday end date #}
+        <div id="contractday_end_date_block" class="row mt-2 align-items-center"
+             {% if not contractday_end_date %}style="display:none"{% endif %}>
+            <label class="col-sm-3 col-form-label fw-bold text-muted">
+                <i class="ti ti-calendar-minus me-1"></i>{{ __('End date') }}
+            </label>
+            <div class="col-sm-9">
+                <span id="contractday_end_date_text" class="form-control-plaintext
+                    {%- if contractday_end_date and contractday_end_date < 'now'|date('Y-m-d') %} text-danger fw-bold{% endif %}">
+                    {% if contractday_end_date %}
+                        {{ contractday_end_date|date('d/m/Y') }}
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        {# Row contractday comment #}
+        <div id="contractday_comment_block" class="row mt-2 align-items-start"
+             {% if not contractday_comment %}style="display:none"{% endif %}>
+            <label class="col-sm-3 col-form-label fw-bold text-muted">
+                <i class="ti ti-message me-1"></i>{{ __('Period comment', 'manageentities') }}
+            </label>
+            <div class="col-sm-9">
+                <div id="contractday_comment_text" class="form-control-plaintext text-muted fst-italic"
+                     style="white-space: pre-wrap;">{{ contractday_comment }}</div>
+            </div>
+        </div>
+
         {# Row 3 — remaining days status card #}
         <div id="remaining_days_block" class="mt-3"
              {% if contractdays_id_selected <= 0 %}style="display:none"{% endif %}>
@@ -123,7 +178,7 @@
                     <span>{{ __('Remaining days', 'manageentities') }}:</span>
                     <strong id="remaining_days_value">
                         {% if remaining_days is not null %}
-                            {{ remaining_days|number_format(0) }}
+                            {{ remaining_days|number_format(1) }}
                         {% else %}
                             —
                         {% endif %}
@@ -165,6 +220,42 @@
 (function () {
     var ajaxUrl = {{ ajax_url|json_encode|raw }};
 
+    function formatDateDMY(raw) {
+        if (!raw) return '';
+        var parts = raw.split('-');
+        return parts.length === 3 ? parts[2] + '/' + parts[1] + '/' + parts[0] : raw;
+    }
+
+    function updateContractdayFields(data) {
+        var beginBlock = document.getElementById('contractday_begin_date_block');
+        var beginText  = document.getElementById('contractday_begin_date_text');
+        var endBlock   = document.getElementById('contractday_end_date_block');
+        var endText    = document.getElementById('contractday_end_date_text');
+        var commBlock  = document.getElementById('contractday_comment_block');
+        var commText   = document.getElementById('contractday_comment_text');
+
+        if (beginBlock && beginText) {
+            var bd = formatDateDMY(data.begin_date || '');
+            beginText.textContent = bd;
+            beginBlock.style.display = bd ? '' : 'none';
+        }
+        if (endBlock && endText) {
+            var rawEnd = data.end_date || '';
+            var ed = formatDateDMY(rawEnd);
+            endText.textContent = ed;
+            endBlock.style.display = ed ? '' : 'none';
+            var today = new Date(); today.setHours(0,0,0,0);
+            var isPast = rawEnd && (new Date(rawEnd) < today);
+            endText.classList.toggle('text-danger', isPast);
+            endText.classList.toggle('fw-bold', isPast);
+        }
+        if (commBlock && commText) {
+            var cm = data.comment || '';
+            commText.textContent = cm;
+            commBlock.style.display = cm ? '' : 'none';
+        }
+    }
+
     function updateRemainingDays(contractdays_id) {
         var block = document.getElementById('remaining_days_block');
         var alert = document.getElementById('remaining_days_alert');
@@ -172,10 +263,13 @@
 
         if (!contractdays_id || contractdays_id == 0) {
             block.style.display = 'none';
+            updateContractdayFields({ begin_date: '', end_date: '', comment: '' });
             return;
         }
 
         $.post(ajaxUrl, { contractdays_id: contractdays_id }, function (data) {
+            updateContractdayFields(data);
+
             block.style.display = '';
 
             if (data.remaining === null) {
@@ -191,18 +285,18 @@
                     '<i class="ti ti-alert-triangle fs-4"></i>' +
                     '<div><strong>{{ __('No days remaining on this contract period', 'manageentities')|e('js') }}</strong>' +
                     '<br><span class="text-muted">{{ __('Remaining days', 'manageentities')|e('js') }}: <strong>0</strong></span></div>';
-            } else if (remaining === 1) {
+            } else if (remaining <= 1) {
                 alert.className = 'alert alert-warning d-flex align-items-center gap-2 mb-0';
                 alert.innerHTML =
                     '<i class="ti ti-alert-circle fs-4"></i>' +
-                    '<div><span>{{ __('Remaining days', 'manageentities')|e('js') }}:</span> <strong id="remaining_days_value">1</strong>' +
+                    '<div><span>{{ __('Remaining days', 'manageentities')|e('js') }}:</span> <strong id="remaining_days_value">' + remaining.toFixed(1) + '</strong>' +
                     '<br><span class="text-muted fst-italic">{{ __('Please anticipate the end of the service period if necessary', 'manageentities')|e('js') }}</span></div>';
             } else {
                 alert.className = 'alert alert-success d-flex align-items-center gap-2 mb-0';
                 alert.innerHTML =
                     '<i class="ti ti-calendar-stats fs-4"></i>' +
                     '<div><span>{{ __('Remaining days', 'manageentities')|e('js') }}:</span> ' +
-                    '<strong>' + remaining.toFixed(0) + '</strong></div>';
+                    '<strong>' + remaining.toFixed(1) + '</strong></div>';
             }
         }, 'json');
     }
