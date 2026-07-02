@@ -231,7 +231,7 @@ class ContractDay extends CommonDBTM
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(CriDetail::class, $ong, $options);
         $this->addStandardTab(CriPrice::class, $ong, $options);
-        $this->addStandardTab(InterventionSkateholder::class, $ong, $options);
+        $this->addStandardTab(InterventionStakeholder::class, $ong, $options);
         $this->addStandardTab('Document', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 

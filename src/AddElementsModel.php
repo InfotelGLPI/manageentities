@@ -1057,8 +1057,8 @@ class AddElementsModel extends CommonGLPIModel
 
                 if ((isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true")
                     || (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true")) {
-                                        $interventionSkateholder = new InterventionSkateholder();
-                                        $interventionSkateholder->displayTabContentForItem($intervention);
+                                        $interventionStakeholder = new InterventionStakeholder();
+                    $interventionStakeholder->displayTabContentForItem($intervention);
                     return [
                         "result" => Status::UPDATED,
                         "message" => $this->getMessage(ElementType::INTERVENTION, Status::UPDATED),
@@ -1109,8 +1109,8 @@ class AddElementsModel extends CommonGLPIModel
                 if (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true") {
                     if ((isset($datas[Status::UPDATED]) && $datas[Status::UPDATED] == "true")
                         || (isset($datas[Status::ADDED]) && $datas[Status::ADDED] == "true")) {
-                                                $interventionSkateholder = new InterventionSkateholder();
-                                                $interventionSkateholder->displayTabContentForItem($intervention);
+                        $interventionStakeholder = new InterventionStakeholder();
+                        $interventionStakeholder->displayTabContentForItem($intervention);
                         return [
                             "result" => Status::ADDED,
                             "message" => $this->getMessage(ElementType::INTERVENTION, Status::ADDED),

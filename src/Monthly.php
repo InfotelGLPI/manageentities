@@ -712,7 +712,7 @@ class Monthly extends CommonDBTM
                 }
             }
             $headers[] = __('Production', 'manageentities');
-            $headers[] = _n('Current skateholder', 'Current stakeholders', 2, 'manageentities');
+            $headers[] = _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities');
             if ($config->fields['useprice'] == Config::PRICE) {
                 $headers[] = __('Total production', 'manageentities');
             }
@@ -750,7 +750,7 @@ class Monthly extends CommonDBTM
 
             $html_output .= $output::showHeaderItem(__('Production', 'manageentities'), $header_num);
             $html_output .= $output::showHeaderItem(
-                _n('Current skateholder', 'Current stakeholders', 2, 'manageentities'),
+                _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities'),
                 $header_num
             );
 

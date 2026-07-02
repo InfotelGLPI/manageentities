@@ -133,6 +133,11 @@ function plugin_manageentities_install()
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.0.2.sql");
     }
 
+    if ($DB->tableExists("glpi_plugin_manageentities_interventionskateholders")
+        && !$DB->tableExists("glpi_plugin_manageentities_interventionstakeholders")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/rename_skateholder_table.sql");
+    }
+
     if (!$DB->fieldExists("glpi_plugin_manageentities_criprices", "plugin_manageentities_contractdays_id")) {
         include(PLUGIN_MANAGEENTITIES_DIR . "/install/update_202_203.php");
         update202to203();
@@ -370,7 +375,7 @@ function plugin_manageentities_uninstall()
               "glpi_plugin_manageentities_businesscontacts",
               "glpi_plugin_manageentities_companies",
               "glpi_plugin_manageentities_entitylogos",
-              "glpi_plugin_manageentities_interventionskateholders",
+              "glpi_plugin_manageentities_interventionstakeholders",
        "glpi_plugin_manageentities_directhelpdesks",
        "glpi_plugin_manageentities_directhelpdesks_tickets"];
 

@@ -28,12 +28,12 @@
  */
 
 use GlpiPlugin\Manageentities\ContractDay;
-use GlpiPlugin\Manageentities\InterventionSkateholder;
+use GlpiPlugin\Manageentities\InterventionStakeholder;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
-$interventionStakeholder = new InterventionSkateholder();
+$interventionStakeholder = new InterventionStakeholder();
 
 if (isset($_POST['action']) && $_POST['action'] != "") {
    switch ($_POST['action']) {
@@ -57,10 +57,9 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                   $_SESSION['glpi_plugin_manageentities_nbdays'] += $nbDaysAfter;
 
                   $interventionStakeholder->showMessage(__("Stakeholder successfully updated.", "manageentities"), INFO);
-                  $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
+                  $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
 
                   if ($nbDaysAfter <= 0) {
-                     // supprimer la ligne d'ajout
                      $interventionStakeholder->hideAddForm($_POST['contractdays_id']);
                   }
 
@@ -75,10 +74,9 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
 
                if ($interventionStakeholder->add($interventionStakeholder->fields)) {
                   $interventionStakeholder->showMessage(__("Informations successfully added.", "manageentities"), INFO);
-                  $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
+                  $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
                   $nbDaysAfter = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                   if ($nbDaysAfter == 0) {
-                     // Supprimer la ligne d'ajout
                      $interventionStakeholder->hideAddForm($_POST['contractdays_id']);
                   }
                } else {
@@ -91,9 +89,9 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
          break;
 
       case "delete_user_datas":
-         if (isset($_POST['skateholder_id']) && $_POST['skateholder_id'] > 0) {
-            $interventionStakeholder = new InterventionSkateholder();
-            $interventionStakeholder->getFromDB($_POST['skateholder_id']);
+         if (isset($_POST['stakeholder_id']) && $_POST['stakeholder_id'] > 0) {
+            $interventionStakeholder = new InterventionStakeholder();
+            $interventionStakeholder->getFromDB($_POST['stakeholder_id']);
             $intervention = new ContractDay();
             $intervention->getFromDB($_POST['contractdays_id']);
 
@@ -101,7 +99,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                $nbDaysAfter                                   = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDaysAfter;
                $interventionStakeholder->showMessage(__("Informations successfully deleted.", "manageentities"), INFO);
-               $interventionStakeholder->reinitListSkateholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays'], true);
+               $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays'], true);
 
                if ($nbDaysAfter > 0) {
                   $interventionStakeholder->showAddForm($_POST['contractdays_id']);
@@ -117,5 +115,3 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
          break;
    }
 }
-
-

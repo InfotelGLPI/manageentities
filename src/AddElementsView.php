@@ -2498,9 +2498,9 @@ class AddElementsView extends CommonGLPIView
 
         echo "<div id='" . $idDivStakeHoldersAjax . "' style='text-align:center;'>";
 
-        $interventionSkateholder = new InterventionSkateholder();
+        $interventionStakeholder = new InterventionStakeholder();
         if (isset($currentContractday->fields['id']) && $currentContractday->fields['id'] > 0) {
-            $interventionSkateholder->displayTabContentForItem($currentContractday);
+            $interventionStakeholder->displayTabContentForItem($currentContractday);
         }
         echo "</div>";
 

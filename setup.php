@@ -40,7 +40,7 @@ use GlpiPlugin\Manageentities\Dashboard;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\GenerateCRI;
-use GlpiPlugin\Manageentities\InterventionSkateholder;
+use GlpiPlugin\Manageentities\InterventionStakeholder;
 use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\Entity;
@@ -95,7 +95,7 @@ function plugin_init_manageentities()
 
         Plugin::registerClass(TaskCategory::class, ['addtabon' => 'TaskCategory']);
         Plugin::registerClass(
-            InterventionSkateholder::class,
+            InterventionStakeholder::class,
             ['addtabon' => ContractDay::class]
         );
         Plugin::registerClass(CriPrice::class, ['addtabon' =>  ContractDay::class]);
