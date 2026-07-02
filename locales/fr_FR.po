@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 08:43+0000\n"
+"POT-Creation-Date: 2026-07-02 09:14+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -287,15 +287,15 @@ msgstr "Une erreur est survenue lors de la sauvegarde des données."
 msgid "Annual"
 msgstr "Annuel"
 
-#: src/CriDetail.php:622 src/CriDetail.php:1342
+#: src/CriDetail.php:622 src/CriDetail.php:1330
 msgid "Applied daily rate"
 msgstr "Tarif Journalier appliqué"
 
-#: src/CriDetail.php:624 src/CriDetail.php:1344
+#: src/CriDetail.php:624 src/CriDetail.php:1331
 msgid "Applied hourly rate"
 msgstr "Tarif Horaire appliqué"
 
-#: src/CriDetail.php:1352
+#: src/CriDetail.php:1331
 msgid "Applied rate"
 msgstr "Tarif appliqué"
 
@@ -384,7 +384,7 @@ msgstr "Configuration journalière ou horaire"
 msgid "Configuring the client side view"
 msgstr "Configuration de la vue coté client"
 
-#: src/CriDetail.php:1435
+#: src/CriDetail.php:1349
 msgid "Consumption"
 msgstr "Consommation"
 
@@ -490,7 +490,7 @@ msgid "Crossed time"
 msgstr "Temps passé"
 
 #: src/CriPDF.php:534 src/CriDetail.php:248 src/CriDetail.php:509
-#: src/CriDetail.php:619 src/CriDetail.php:1339
+#: src/CriDetail.php:619 src/CriDetail.php:1327
 msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
@@ -704,7 +704,7 @@ msgstr "L'entité a bien été mise à jour."
 msgid "Entity, intervention and contract successfully added"
 msgstr "Entité, prestation et contrat et contact ont bien été ajoutés."
 
-#: src/CriDetail.php:1411
+#: templates/cridetail_for_contractday.html.twig:33
 msgid "Estimated number of remaining days"
 msgstr "Estimation Nombre de jours restant"
 
@@ -809,7 +809,7 @@ msgstr "Informations sur la prestation non sauvegardées en base de données"
 msgid "Intervention of contract"
 msgstr "Intervention des prestations"
 
-#: src/CriDetail.php:1328 src/CriDetail.php:1430
+#: templates/cridetail_for_contractday.html.twig:11
 msgid "Intervention periods of contract"
 msgstr "Interventions de la prestation du contrat"
 
@@ -842,7 +842,7 @@ msgstr[2] "Tâches d'interventions"
 
 #: src/Cri.php:203 src/CriPrice.php:395 src/AddElementsView.php:2730
 #: src/CriDetail.php:246 src/CriDetail.php:507 src/CriDetail.php:617
-#: src/CriDetail.php:1334 src/CriType.php:48 hook.php:665
+#: src/CriDetail.php:1336 src/CriType.php:48 hook.php:665
 msgid "Intervention type"
 msgid_plural "Intervention types"
 msgstr[0] "Type d'intervention"
@@ -850,7 +850,7 @@ msgstr[1] "Types d'intervention"
 msgstr[2] "Types d'intervention"
 
 #: src/GenerateCRI.php:1293 src/CriDetail.php:249 src/CriDetail.php:510
-#: src/CriDetail.php:1635
+#: src/CriDetail.php:1602
 msgid "Intervention with contract"
 msgstr "Intervention sous contrat"
 
@@ -962,7 +962,7 @@ msgctxt "button"
 msgid "Next >"
 msgstr "Suivant >"
 
-#: src/GenerateCRI.php:1324 src/CriDetail.php:1673
+#: src/GenerateCRI.php:1324 src/CriDetail.php:1640
 msgid "No active contracts"
 msgstr "Aucun contrats en cours"
 
@@ -976,10 +976,6 @@ msgid "No days remaining on this contract period. Task addition is blocked."
 msgstr ""
 "Il ne reste plus de jours sur cette période contractuelle. L'ajout de tâches"
 " est bloqué."
-
-#: src/CriDetail.php:1418 src/CriDetail.php:1448
-msgid "No interventions in the dates of the period"
-msgstr "Aucunes interventions dans les dates de la prestation"
 
 #: front/entity.form.php:44
 msgid "No picture uploaded"
@@ -1025,7 +1021,7 @@ msgstr "Nombre d'heures par jour"
 msgid "Number of moving"
 msgstr "Nombres de déplacements"
 
-#: src/CriDetail.php:616 src/CriDetail.php:1333 src/CriDetail.php:1433
+#: src/CriDetail.php:616 src/CriDetail.php:1335 src/CriDetail.php:1347
 msgid "Object of intervention"
 msgstr "Objet de l'intervention"
 
@@ -1048,7 +1044,7 @@ msgstr "Prestations de contrat en cours sans jours restants"
 msgid "Options"
 msgstr "Options"
 
-#: src/CriPDF.php:515 src/Cri.php:117 src/CriDetail.php:1527
+#: src/CriPDF.php:515 src/Cri.php:117 src/CriDetail.php:1494
 msgid "Out of contract"
 msgstr "Hors contrat"
 
@@ -1072,8 +1068,8 @@ msgstr[0] "Prestation du contrat"
 msgstr[1] "Prestations de contrat"
 msgstr[2] "Prestations de contrat"
 
-#: src/GenerateCRI.php:1360 src/CriDetail.php:635 src/CriDetail.php:1708
-#: src/CriDetail.php:1745
+#: src/GenerateCRI.php:1360 src/CriDetail.php:635 src/CriDetail.php:1675
+#: src/CriDetail.php:1712
 msgid "Periods of contract"
 msgstr "Prestations du contrat"
 
@@ -1322,8 +1318,8 @@ msgid "Technician as assigned"
 msgstr "Technicien assigné"
 
 #: src/Report.php:233 src/Cri.php:134 src/CriDetail.php:244
-#: src/CriDetail.php:505 src/CriDetail.php:620 src/CriDetail.php:1340
-#: src/CriDetail.php:1351 src/CriDetail.php:1434
+#: src/CriDetail.php:505 src/CriDetail.php:620 src/CriDetail.php:1339
+#: src/CriDetail.php:1348
 msgid "Technicians"
 msgstr "Intervenants"
 
@@ -1365,7 +1361,7 @@ msgstr "Cette action est irréversible, Continuer ?"
 msgid "Ticket informations"
 msgstr "Informations du ticket"
 
-#: src/CriDetail.php:1289 src/CriDetail.php:1779
+#: src/CriDetail.php:1289 src/CriDetail.php:1746
 msgid "Ticket not validated"
 msgstr "Ticket non validé"
 
@@ -1385,7 +1381,7 @@ msgstr "Titre"
 msgid "To"
 msgstr "au"
 
-#: src/CriDetail.php:626 src/CriDetail.php:1354
+#: src/CriDetail.php:626 src/CriDetail.php:1341
 msgid "To compute"
 msgstr "Décompte"
 
@@ -1430,7 +1426,7 @@ msgstr "Total restant"
 msgid "Total time of the tasks of a category"
 msgstr "Total temps des tâches d'une catégorie"
 
-#: src/CriDetail.php:1401
+#: templates/cridetail_for_contractday.html.twig:28
 msgid "Total yearly consumption"
 msgstr "Total consommation annuelle"
 
@@ -1458,7 +1454,7 @@ msgstr "Type de gestion"
 msgid "Type of service contract"
 msgstr "Type de contrat de service"
 
-#: src/CriDetail.php:1298 src/CriDetail.php:1786
+#: src/CriDetail.php:1298 src/CriDetail.php:1753
 msgid "Type of service contract missing"
 msgstr "Type de contrat de service manquant"
 
@@ -1565,7 +1561,7 @@ msgstr ""
 "Attention : le changement de la configuration journalière ou horaire impacte"
 " les types de contrat."
 
-#: src/CriDetail.php:1527
+#: src/CriDetail.php:1494
 msgid "With contrat"
 msgstr "Avec contrat"
 
@@ -1590,7 +1586,7 @@ msgstr "à"
 msgid "of period of contract"
 msgstr "de la prestation de contrat"
 
-#: src/CriPDF.php:223 src/CriPDF.php:573 src/CriDetail.php:1348
+#: src/CriPDF.php:223 src/CriPDF.php:573 src/CriDetail.php:1328
 msgid "of this intervention"
 msgstr "d'intervention"
 
