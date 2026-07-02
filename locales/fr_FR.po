@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 08:31+0000\n"
+"POT-Creation-Date: 2026-07-02 08:43+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -984,6 +984,10 @@ msgstr "Aucunes interventions dans les dates de la prestation"
 #: front/entity.form.php:44
 msgid "No picture uploaded"
 msgstr "Pas d'image téléchargée"
+
+#: src/CriDetail.php:564
+msgid "No reports found"
+msgstr "Pas de rapports d'interventions trouvés"
 
 #: src/InterventionSkateholder.php:392
 msgid "No skateholders have been affected yet."
