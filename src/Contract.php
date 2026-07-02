@@ -174,51 +174,69 @@ class Contract extends CommonDBTM
             return;
         }
 
-        $label = htmlspecialchars(__('+ 12 months', 'manageentities'));
-        $title = htmlspecialchars(__('Add 12 months to the initial contract period', 'manageentities'));
+        $label = __('+ 12 months', 'manageentities');
+        $title = __('Add 12 months to the initial contract period', 'manageentities');
 
         echo \Html::scriptBlock("
 (function () {
-    // GLPI uses Select2 for showNumber dropdowns — wait for it to be initialized
     function attachBtn() {
         var sel = document.querySelector('select[name=\"duration\"]');
-        if (!sel) return;
-
-        // Find the Select2 container wrapping this select
-        var container = sel.closest('.select2-container') || sel.parentNode;
-        // Look for the Select2 rendered span (sibling of the hidden select)
-        var s2 = sel.parentNode.querySelector('.select2-container');
+        if (!sel || document.getElementById('manageentities-add-12months')) return;
 
         var btn = document.createElement('button');
         btn.type      = 'button';
+        btn.id        = 'manageentities-add-12months';
         btn.className = 'btn btn-sm btn-outline-secondary ms-2';
         btn.title     = " . json_encode($title) . ";
         btn.innerHTML = '<i class=\"ti ti-calendar-plus me-1\"></i>' + " . json_encode($label) . ";
+
         btn.addEventListener('click', function () {
             var current = parseInt(sel.value, 10);
-            if (isNaN(current) || current <= 0) current = 0;
+            if (isNaN(current) || current < 1) current = 0;
             var target = current + 12;
             if (target > 120) target = 120;
-            // Select2 API — triggers the AJAX search for the new value label
+
             if (window.jQuery && jQuery(sel).data('select2')) {
-                jQuery(sel).val(target).trigger('change');
+                // Select2 AJAX dropdown: the option list is not pre-loaded in the DOM.
+                // Setting .val(target) without a matching <option> element empties the
+                // selection. We must create the Option ourselves, which requires the
+                // translated label. Fetch it from the same AJAX endpoint Select2 uses.
+                var fieldId = sel.id;
+                var cfg = window.select2_configs && window.select2_configs[fieldId];
+                if (cfg && cfg.url) {
+                    var postData = jQuery.extend({}, cfg.params, {
+                        searchText: String(target),
+                        page: 1,
+                        page_limit: 200
+                    });
+                    jQuery.post(cfg.url, postData, function (data) {
+                        var results = (data && data.results) ? data.results : [];
+                        var found = null;
+                        for (var i = 0; i < results.length; i++) {
+                            if (parseInt(results[i].id, 10) === target) {
+                                found = results[i];
+                                break;
+                            }
+                        }
+                        var labelText = found ? found.text : String(target);
+                        var newOpt = new Option(labelText, target, true, true);
+                        jQuery(sel).empty().append(newOpt).trigger('change');
+                    }, 'json');
+                }
             } else {
-                // Fallback: set value directly on the native select
                 sel.value = target;
                 sel.dispatchEvent(new Event('change', {bubbles: true}));
             }
         });
 
-        // Insert after the Select2 wrapper if found, otherwise after the select itself
+        var s2 = sel.parentNode.querySelector('.select2-container');
         var anchor = s2 || sel;
         anchor.parentNode.insertBefore(btn, anchor.nextSibling);
     }
 
-    // Wait for Select2 to finish rendering (it runs after DOMContentLoaded)
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', attachBtn);
     } else {
-        // Slight delay to let Select2 initialize on already-loaded pages
         setTimeout(attachBtn, 100);
     }
 })();

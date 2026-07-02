@@ -810,7 +810,6 @@ class ContractDay extends CommonDBTM
                     'id'        => $contracts_id,
                     'states_id' => $closed_glpi_state_id,
                 ]);
-                }
             }
         }
     }

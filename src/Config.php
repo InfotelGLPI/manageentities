@@ -77,7 +77,7 @@ class Config extends CommonDBTM
     {
         if (!$withtemplate && $item->getType() === __CLASS__) {
             return [
-                1 => self::createTabEntry(__('Options', 'manageentities')),
+                1 => self::createTabEntry(self::getTypeName(1)),
             ];
         }
         return '';
