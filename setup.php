@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.0');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.1');
 
 global $CFG_GLPI;
 
@@ -59,7 +59,7 @@ include_once PLUGIN_MANAGEENTITIES_DIR . "/vendor/autoload.php";
 // Init the hooks of the plugins -Needed
 function plugin_init_manageentities()
 {
-    global $PLUGIN_HOOKS, $CFG_GLPI;
+    global $PLUGIN_HOOKS;
 
     $PLUGIN_HOOKS[Hooks::CHANGE_PROFILE]['manageentities'] = [Profile::class, 'initProfile'];
 
