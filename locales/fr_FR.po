@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 13:02+0000\n"
+"POT-Creation-Date: 2026-07-02 13:13+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -55,7 +55,7 @@ msgstr "Informations sur les tâches accomplies"
 msgid "Accounts"
 msgstr "Comptes"
 
-#: templates/interventionskateholder_form.html.twig:62
+#: templates/interventionstakeholder_form.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:143
 #: templates/contract_detail_form.html.twig:128
 msgid "Add"
@@ -118,7 +118,7 @@ msgstr "Ajouter cette entité"
 msgid "Add only the intervention"
 msgstr "Ajouter cette prestation"
 
-#: templates/interventionskateholder_form.html.twig:33
+#: templates/interventionstakeholder_form.html.twig:33
 msgid "Add stakeholders"
 msgstr "Ajout d'intervenants"
 
@@ -133,13 +133,12 @@ msgstr[0] "Ajouter ce tarif"
 msgstr[1] "Ajouter ces tarifs"
 msgstr[2] "Ajouter ces tarifs"
 
-#: src/InterventionSkateholder.php:218
-#: templates/interventionskateholder_form.html.twig:49
-#: templates/interventionskateholder_list.html.twig:41
+#: templates/interventionstakeholder_form.html.twig:49
+#: templates/interventionstakeholder_list.html.twig:41
 msgid "Affected to"
 msgstr "Affecté à"
 
-#: ajax/interventionskateholderactions.php:89
+#: ajax/interventionstakeholderactions.php:87
 msgid "All fields are not correctly filled."
 msgstr "Tous les champs ne sont pas correctement remplis."
 
@@ -281,12 +280,12 @@ msgstr "Une erreur est survenue lors de la mise à jour du tarif"
 msgid "An error happend while uploading the document."
 msgstr "Une erreur est survenue lors de l'envoi du document."
 
-#: ajax/interventionskateholderactions.php:111
+#: ajax/interventionstakeholderactions.php:109
 msgid "An error happened while deleting the data."
 msgstr "Une erreur est survenue lors de la suppressions des données"
 
-#: ajax/interventionskateholderactions.php:68
-#: ajax/interventionskateholderactions.php:85
+#: ajax/interventionstakeholderactions.php:67
+#: ajax/interventionstakeholderactions.php:83
 msgid "An error happened while saving the data."
 msgstr "Une erreur est survenue lors de la sauvegarde des données."
 
@@ -532,13 +531,13 @@ msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
 #: src/Monthly.php:715 src/Monthly.php:753
-msgid "Current skateholder"
+msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
 msgstr[0] "Intervenant actuel"
 msgstr[1] "Intervenants actuels"
 msgstr[2] "Intervenants actuels"
 
-#: templates/interventionskateholder_list.html.twig:32
+#: templates/interventionstakeholder_list.html.twig:32
 msgid "Current stakeholders"
 msgstr "Intervenants affectés"
 
@@ -611,7 +610,7 @@ msgstr "Heure par défaut (Matin)"
 msgid "Default time PM"
 msgstr "Heure par défaut (Après midi)"
 
-#: src/InterventionSkateholder.php:234 src/InterventionSkateholder.php:302
+#: src/InterventionStakeholder.php:205 src/InterventionStakeholder.php:268
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -821,11 +820,11 @@ msgstr "Génération impossible, aucune tâche planifiée créée"
 msgid "In progress"
 msgstr "En cours"
 
-#: ajax/interventionskateholderactions.php:77
+#: ajax/interventionstakeholderactions.php:76
 msgid "Informations successfully added."
 msgstr "Les informations ont bien été ajoutées."
 
-#: ajax/interventionskateholderactions.php:103
+#: ajax/interventionstakeholderactions.php:101
 msgid "Informations successfully deleted."
 msgstr "Les informations ont bien été supprimées"
 
@@ -888,7 +887,7 @@ msgstr[2] "Tâches d'interventions"
 
 #: src/Cri.php:203 src/CriPrice.php:355 src/AddElementsView.php:2730
 #: src/CriDetail.php:309 src/CriDetail.php:567 src/CriDetail.php:682
-#: src/CriDetail.php:1401 src/CriType.php:48 hook.php:670
+#: src/CriDetail.php:1401 src/CriType.php:48 hook.php:675
 #: templates/criprice_form.html.twig:42
 msgid "Intervention type"
 msgid_plural "Intervention types"
@@ -949,7 +948,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:802
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:807
 msgid "Manage your contracts"
 msgstr "Gérer vos contrats"
 
@@ -1049,8 +1048,8 @@ msgstr "Pas de rapports d'interventions trouvés"
 msgid "No results found"
 msgstr "Pas de résultat trouvé"
 
-#: src/InterventionSkateholder.php:176
-#: templates/interventionskateholder_list.html.twig:59
+#: src/InterventionStakeholder.php:170
+#: templates/interventionstakeholder_list.html.twig:59
 msgid "No stakeholders have been affected yet."
 msgstr "Aucun intervenant n'a encore été ajouté."
 
@@ -1345,7 +1344,7 @@ msgstr "Voir sur le GANTT"
 msgid "Society name"
 msgstr "Nom de la société"
 
-#: ajax/interventionskateholderactions.php:59
+#: ajax/interventionstakeholderactions.php:59
 msgid "Stakeholder successfully updated."
 msgstr "L'intervenant a bien été ajouté."
 
@@ -1357,7 +1356,7 @@ msgstr ""
 
 #: src/ContractDay.php:150 src/ContractDay.php:517
 #: src/AddElementsView.php:2301 src/ContractState.php:48 src/Followup.php:922
-#: src/Followup.php:1185 src/Followup.php:2351 hook.php:671
+#: src/Followup.php:1185 src/Followup.php:2351 hook.php:676
 #: templates/contractday_form.html.twig:101
 msgid "State of contract"
 msgid_plural "States of contracts"
@@ -1448,7 +1447,7 @@ msgstr "L'entité précedement créé va être ajoutée, continuer ?"
 msgid "This action is irreversible, Continue ?"
 msgstr "Cette action est irréversible, Continuer ?"
 
-#: src/InterventionSkateholder.php:242 src/InterventionSkateholder.php:304
+#: src/InterventionStakeholder.php:209 src/InterventionStakeholder.php:270
 msgid "This action is irreversible. Continue ?"
 msgstr "Cette action est irréversible, Continuer ?"
 
@@ -1513,7 +1512,7 @@ msgid "Total production"
 msgstr "Total consommation mensuelle"
 
 #: src/ContractDay.php:523 src/Followup.php:939 src/Followup.php:1255
-#: src/Dashboard.php:167 src/Dashboard.php:439 hook.php:730
+#: src/Dashboard.php:167 src/Dashboard.php:439 hook.php:735
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr "Total restant"
@@ -1624,12 +1623,12 @@ msgstr "Utilisation de la tarification"
 msgid "Used by default"
 msgstr "Utilisé par défaut"
 
-#: templates/interventionskateholder_form.html.twig:41
-#: templates/interventionskateholder_list.html.twig:40
+#: templates/interventionstakeholder_form.html.twig:41
+#: templates/interventionstakeholder_list.html.twig:40
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/InterventionSkateholder.php:53
+#: src/InterventionStakeholder.php:53
 msgid "User affected"
 msgid_plural "Users affected"
 msgstr[0] "Utilisateur affecté"
