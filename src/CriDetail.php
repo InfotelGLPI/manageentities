@@ -188,6 +188,54 @@ class CriDetail extends CommonDBTM
         return $input;
     }
 
+    public function post_addItem()
+    {
+        $tickets_id   = (int)($this->input['tickets_id']   ?? $this->fields['tickets_id']   ?? 0);
+        $contracts_id = (int)($this->input['contracts_id'] ?? $this->fields['contracts_id'] ?? 0);
+
+        $this->linkContractToTicket($tickets_id, $contracts_id);
+        Contract::updateRemainingDays($contracts_id);
+    }
+
+    public function post_updateItem($history = true)
+    {
+        $tickets_id   = (int)($this->fields['tickets_id']   ?? 0);
+        $contracts_id = (int)($this->fields['contracts_id'] ?? 0);
+
+        $this->linkContractToTicket($tickets_id, $contracts_id);
+        Contract::updateRemainingDays($contracts_id);
+    }
+
+    public function post_deleteItem()
+    {
+        Contract::updateRemainingDays((int)($this->fields['contracts_id'] ?? 0));
+    }
+
+    private function linkContractToTicket(int $tickets_id, int $contracts_id): void
+    {
+        global $DB;
+
+        if ($tickets_id <= 0 || $contracts_id <= 0) {
+            return;
+        }
+
+        $exists = $DB->request([
+            'COUNT'  => 'id',
+            'FROM'   => 'glpi_tickets_contracts',
+            'WHERE'  => [
+                'tickets_id'   => $tickets_id,
+                'contracts_id' => $contracts_id,
+            ],
+        ])->current()['id'] ?? 0;
+
+        if (!$exists) {
+            $DB->insert('glpi_tickets_contracts', [
+                'tickets_id'   => $tickets_id,
+                'contracts_id' => $contracts_id,
+            ]);
+        }
+    }
+
     public function pre_deleteItem()
     {
         //si un document lié ne pas permettre le delete via le form self::showForTicket($item);

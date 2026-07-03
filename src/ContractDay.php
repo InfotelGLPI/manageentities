@@ -688,8 +688,20 @@ class ContractDay extends CommonDBTM
     }
 
 
+    public function post_addItem()
+    {
+        Contract::updateRemainingDays((int)($this->input['contracts_id'] ?? $this->fields['contracts_id'] ?? 0));
+    }
+
+    public function post_deleteItem()
+    {
+        Contract::updateRemainingDays((int)($this->fields['contracts_id'] ?? 0));
+    }
+
     public function post_updateItem($history = true)
     {
+        Contract::updateRemainingDays((int)($this->fields['contracts_id'] ?? 0));
+
         // When a period's state changes, check if all periods of the parent GLPI contract are now closed.
         // If so, set the GLPI contract state to the configured closed GLPI state.
         if (!isset($this->input['plugin_manageentities_contractstates_id'])) {

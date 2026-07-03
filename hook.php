@@ -42,10 +42,11 @@ use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
 use GlpiPlugin\Manageentities\Gantt;
 use GlpiPlugin\Manageentities\Monthly;
-use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\Preference;
+use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\TaskCategory;
 use GlpiPlugin\Manageentities\TicketTask;
+
 use function Safe\mkdir;
 
 function plugin_manageentities_install()
@@ -149,25 +150,24 @@ function plugin_manageentities_install()
         update210to211();
     }
 
-   //version 2.1.3
+    //version 2.1.3
     if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "comment")) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.1.3.sql");
     }
 
-   //version 2.1.4
+    //version 2.1.4
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "moving_management")) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.1.4.sql");
     }
 
-
     if ($update) {
         $index = [
-         'FK_contracts'   => ['glpi_plugin_manageentities_contracts'],
-         'FK_contracts_2' => ['glpi_plugin_manageentities_contracts'],
-         'FK_entities'    => ['glpi_plugin_manageentities_contracts', 'glpi_plugin_manageentities_contacts'],
-         'FK_entity'      => ['glpi_plugin_manageentities_contracts', 'glpi_plugin_manageentities_contacts'],
-         'FK_contacts'    => ['glpi_plugin_manageentities_contacts'],
-         'FK_contacts_2'  => ['glpi_plugin_manageentities_contacts']];
+            'FK_contracts'   => ['glpi_plugin_manageentities_contracts'],
+            'FK_contracts_2' => ['glpi_plugin_manageentities_contracts'],
+            'FK_entities'    => ['glpi_plugin_manageentities_contracts', 'glpi_plugin_manageentities_contacts'],
+            'FK_entity'      => ['glpi_plugin_manageentities_contracts', 'glpi_plugin_manageentities_contacts'],
+            'FK_contacts'    => ['glpi_plugin_manageentities_contacts'],
+            'FK_contacts_2'  => ['glpi_plugin_manageentities_contacts']];
 
 
         foreach ($index as $oldname => $newnames) {
@@ -208,8 +208,8 @@ function plugin_manageentities_install()
               FROM `glpi_documents`
               LEFT JOIN `glpi_plugin_manageentities_cridetails`
                   ON (`glpi_documents`.`id` = `glpi_plugin_manageentities_cridetails`.`documents_id`)
-              WHERE `glpi_documents`.`documentcategories_id` = '" .
-                  $config->fields["documentcategories_id"] . "' ";
+              WHERE `glpi_documents`.`documentcategories_id` = '"
+                  . $config->fields["documentcategories_id"] . "' ";
 
             $result = $DB->doQuery($query);
             $number = $DB->numrows($result);
@@ -218,7 +218,7 @@ function plugin_manageentities_install()
                 while ($data = $DB->fetchArray($result)) {
                     if ($data['cri_tickets_id'] == '0') {
                         $criDetail->update(['id'         => $data['cri_id'],
-                                      'tickets_id' => $data['doc_tickets_id']]);
+                            'tickets_id' => $data['doc_tickets_id']]);
                     }
                 }
             }
@@ -230,7 +230,7 @@ function plugin_manageentities_install()
         update211to212();
     }
 
-   //version 2.1.5
+    //version 2.1.5
     if (!$DB->fieldExists("glpi_plugin_manageentities_contractdays", "contract_type")) {
         include(PLUGIN_MANAGEENTITIES_DIR . "/install/update_214_215.php");
         update214to215();
@@ -257,14 +257,14 @@ function plugin_manageentities_install()
     $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.1.3.sql");
 
     //DisplayPreferences Migration
-    $classes = ['PluginManageentitiesContractday' => Contractday::class,
+    $classes = ['PluginManageentitiesContractday' => ContractDay::class,
         'PluginManageentitiesCriType' => CriType::class,
-        'PluginManageentitiesDirecthelpdesk' => Directhelpdesk::class];
+        'PluginManageentitiesDirecthelpdesk' => DirectHelpdesk::class];
 
     foreach ($classes as $old => $new) {
         $displayusers = $DB->request([
             'SELECT' => [
-                'users_id'
+                'users_id',
             ],
             'DISTINCT' => true,
             'FROM' => 'glpi_displaypreferences',
@@ -278,13 +278,13 @@ function plugin_manageentities_install()
                 $iterator = $DB->request([
                     'SELECT' => [
                         'num',
-                        'id'
+                        'id',
                     ],
                     'FROM' => 'glpi_displaypreferences',
                     'WHERE' => [
                         'itemtype' => $old,
                         'users_id' => $displayuser['users_id'],
-                        'interface' => 'central'
+                        'interface' => 'central',
                     ],
                 ]);
 
@@ -292,14 +292,14 @@ function plugin_manageentities_install()
                     foreach ($iterator as $data) {
                         $iterator2 = $DB->request([
                             'SELECT' => [
-                                'id'
+                                'id',
                             ],
                             'FROM' => 'glpi_displaypreferences',
                             'WHERE' => [
                                 'itemtype' => $new,
                                 'users_id' => $displayuser['users_id'],
                                 'num' => $data['num'],
-                                'interface' => 'central'
+                                'interface' => 'central',
                             ],
                         ]);
                         if (count($iterator2) > 0) {
@@ -337,6 +337,16 @@ function plugin_manageentities_install()
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.1.9.sql");
     }
 
+    //version 4.2.2
+    if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
+        include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
+        addRemainingDaysColumn();
+    }
+
+    if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "active_editor_suscription")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-add-subscription-fields.sql");
+    }
+
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
     if (!is_dir($rep_files_manageentities)) {
         mkdir($rep_files_manageentities);
@@ -363,39 +373,39 @@ function plugin_manageentities_uninstall()
     global $DB;
 
     $tables = ["glpi_plugin_manageentities_contracts",
-              "glpi_plugin_manageentities_contacts",
-              "glpi_plugin_manageentities_preferences",
-              "glpi_plugin_manageentities_configs",
-              "glpi_plugin_manageentities_critypes",
-              "glpi_plugin_manageentities_criprices",
-              "glpi_plugin_manageentities_contractdays",
-              "glpi_plugin_manageentities_critechnicians",
-              "glpi_plugin_manageentities_cridetails",
-              "glpi_plugin_manageentities_contractstates",
-              "glpi_plugin_manageentities_taskcategories",
-              "glpi_plugin_manageentities_businesscontacts",
-              "glpi_plugin_manageentities_companies",
-              "glpi_plugin_manageentities_entitylogos",
-              "glpi_plugin_manageentities_interventionstakeholders",
-       "glpi_plugin_manageentities_directhelpdesks",
-       "glpi_plugin_manageentities_directhelpdesks_tickets"];
+        "glpi_plugin_manageentities_contacts",
+        "glpi_plugin_manageentities_preferences",
+        "glpi_plugin_manageentities_configs",
+        "glpi_plugin_manageentities_critypes",
+        "glpi_plugin_manageentities_criprices",
+        "glpi_plugin_manageentities_contractdays",
+        "glpi_plugin_manageentities_critechnicians",
+        "glpi_plugin_manageentities_cridetails",
+        "glpi_plugin_manageentities_contractstates",
+        "glpi_plugin_manageentities_taskcategories",
+        "glpi_plugin_manageentities_businesscontacts",
+        "glpi_plugin_manageentities_companies",
+        "glpi_plugin_manageentities_entitylogos",
+        "glpi_plugin_manageentities_interventionstakeholders",
+        "glpi_plugin_manageentities_directhelpdesks",
+        "glpi_plugin_manageentities_directhelpdesks_tickets"];
 
     foreach ($tables as $table) {
         $DB->doQuery("DROP TABLE IF EXISTS `$table`;");
     }
 
-   //old versions
+    //old versions
     $tables = ["glpi_plugin_manageentity_contracts",
-              "glpi_plugin_manageentity_documents",
-              "glpi_plugin_manageentity_contacts",
-              "glpi_plugin_manageentity_profiles",
-              "glpi_plugin_manageentity_preference",
-              "glpi_plugin_manageentity_config",
-              "glpi_dropdown_plugin_manageentity_critype",
-              "glpi_plugin_manageentity_criprice",
-              "glpi_plugin_manageentity_dayforcontract",
-              "glpi_plugin_manageentity_critechnicians",
-              "glpi_plugin_manageentity_cridetails"];
+        "glpi_plugin_manageentity_documents",
+        "glpi_plugin_manageentity_contacts",
+        "glpi_plugin_manageentity_profiles",
+        "glpi_plugin_manageentity_preference",
+        "glpi_plugin_manageentity_config",
+        "glpi_dropdown_plugin_manageentity_critype",
+        "glpi_plugin_manageentity_criprice",
+        "glpi_plugin_manageentity_dayforcontract",
+        "glpi_plugin_manageentity_critechnicians",
+        "glpi_plugin_manageentity_cridetails"];
 
     foreach ($tables as $table) {
         $DB->doQuery("DROP TABLE IF EXISTS `$table`;");
@@ -422,7 +432,7 @@ function plugin_manageentities_addLeftJoin($type, $ref_table, $new_table, $linkf
                         $ref_table  => 'id',
                         $new_table  => 'plugin_manageentities_critypes_id', [
                             'AND' => [
-                                $new_table.'.entities_id' => $_SESSION["glpiactiveentities"],
+                                $new_table . '.entities_id' => $_SESSION["glpiactiveentities"],
                             ],
                         ],
                     ],
@@ -441,7 +451,7 @@ function plugin_manageentities_forceGroupBy($type)
     switch ($type) {
         case CriType::class:
             return true;
-         break;
+            break;
     }
     return false;
 }
@@ -457,9 +467,9 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num)
         case CriType::class:
             switch ($table . '.' . $field) {
                 case "glpi_plugin_manageentities_criprices.price":
-                   //               $manageentitiesCritypes = new CriType();
-                   //               $manageentitiesCritypes->getFromDBByCrit(["id = $table.plugin_manageentities_critypes_id
-                   //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
+                    //               $manageentitiesCritypes = new CriType();
+                    //               $manageentitiesCritypes->getFromDBByCrit(["id = $table.plugin_manageentities_critypes_id
+                    //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
 
                     $entities_ids = array_map('intval', $_SESSION["glpiactiveentities"]);
                     $query = "SELECT *
@@ -481,7 +491,7 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num)
                     }
 
                     return $out;
-                break;
+                    break;
             }
             break;
     }
@@ -554,8 +564,8 @@ function plugin_item_transfer_manageentities($parm)
                 foreach ($allPluginContracts as $onePluginContract) {
                     $old_entity = $onePluginContract['entities_id'];
                     $pluginContract->update(['id'           => $onePluginContract['id'],
-                                        'contracts_id' => $contract->fields['id'],
-                                        'entities_id'  => $contract->fields['entities_id']]);
+                        'contracts_id' => $contract->fields['id'],
+                        'entities_id'  => $contract->fields['entities_id']]);
                 }
             }
 
@@ -566,27 +576,27 @@ function plugin_item_transfer_manageentities($parm)
                 foreach ($allPluginContractDays as $onePluginContractDays) {
                     $criPrice  = new CriPrice();
                     $cond      = ["`glpi_plugin_manageentities_criprices`.`entities_id`"                       => $old_entity,
-                             "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`" =>
-                                $onePluginContractDays['plugin_manageentities_critypes_id']];
+                        "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`"
+                           => $onePluginContractDays['plugin_manageentities_critypes_id']];
                     $allPrices = $dbu->getAllDataFromTable('glpi_plugin_manageentities_criprices', $cond);
                     if (!empty($allPrices)) {
                         foreach ($allPrices as $onePrice) {
-                          //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
-    //                     $newPrice = $criPrice->getFromDBbyType($onePluginContractDays['plugin_manageentities_critypes_id'],
-    //                                                            $contract->fields['entities_id']);
+                            //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
+                            //                     $newPrice = $criPrice->getFromDBbyType($onePluginContractDays['plugin_manageentities_critypes_id'],
+                            //                                                            $contract->fields['entities_id']);
 
                             $newPrice = $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id' => $onePluginContractDays['plugin_manageentities_critypes_id'],
-                            'entities_id' => $contract->fields["entities_id"]]);
+                                'entities_id' => $contract->fields["entities_id"]]);
                             if (!$newPrice) {
-                                    $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
-                                        'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
-                                        'price'                             => $onePrice['price']]);
+                                $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
+                                    'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
+                                    'price'                             => $onePrice['price']]);
                             }
                         }
                     }
                     $contractDay->update(['id'           => $onePluginContractDays['id'],
-                                     'contracts_id' => $contract->fields['id'],
-                                     'entities_id'  => $contract->fields['entities_id']]);
+                        'contracts_id' => $contract->fields['id'],
+                        'entities_id'  => $contract->fields['entities_id']]);
                 }
             }
 
@@ -597,20 +607,20 @@ function plugin_item_transfer_manageentities($parm)
                 foreach ($allPluginCriDetails as $onePluginCriDetail) {
                     $criPrice  = new CriPrice();
                     $cond      = ["`glpi_plugin_manageentities_criprices`.`entities_id`"                       => $old_entity,
-                             "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`" =>
-                                $onePluginCriDetail['plugin_manageentities_critypes_id']];
+                        "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`"
+                           => $onePluginCriDetail['plugin_manageentities_critypes_id']];
                     $allPrices = $dbu->getAllDataFromTable('glpi_plugin_manageentities_criprices', $cond);
                     if (!empty($allPrices)) {
                         foreach ($allPrices as $onePrice) {
                             //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
-       //                     $newPrice = $criPrice->getFromDBbyType($onePluginCriDetail['plugin_manageentities_critypes_id'],
-       //                                                            $contract->fields['entities_id']);
+                            //                     $newPrice = $criPrice->getFromDBbyType($onePluginCriDetail['plugin_manageentities_critypes_id'],
+                            //                                                            $contract->fields['entities_id']);
                             $newPrice = $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id' => $onePluginCriDetail['plugin_manageentities_critypes_id'],
-                            'entities_id' => $contract->fields["entities_id"]]);
+                                'entities_id' => $contract->fields["entities_id"]]);
                             if (!$newPrice) {
                                 $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
-                                       'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
-                                       'price'                             => $onePrice['price']]);
+                                    'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
+                                    'price'                             => $onePrice['price']]);
                             }
                         }
                     }
@@ -618,16 +628,16 @@ function plugin_item_transfer_manageentities($parm)
                     $document = new Document();
                     $document->getFromDB($onePluginCriDetail['documents_id']);
                     $document->update(['id'          => $onePluginCriDetail['documents_id'],
-                                  'entities_id' => $contract->fields['entities_id']]);
+                        'entities_id' => $contract->fields['entities_id']]);
 
                     $ticket = new Ticket();
                     $ticket->getFromDB($onePluginCriDetail['tickets_id']);
                     $ticket->update(['id'          => $onePluginCriDetail['tickets_id'],
-                                'entities_id' => $contract->fields['entities_id']]);
+                        'entities_id' => $contract->fields['entities_id']]);
 
                     $criDetail->update(['id'           => $onePluginCriDetail['id'],
-                                   'contracts_id' => $contract->fields['id'],
-                                   'entities_id'  => $contract->fields['entities_id']]);
+                        'contracts_id' => $contract->fields['id'],
+                        'entities_id'  => $contract->fields['entities_id']]);
                 }
             }
             break;
@@ -640,29 +650,29 @@ function plugin_manageentities_getDatabaseRelations()
 
     if (Plugin::isPluginActive("manageentities")) {
         return [
-//          "glpi_plugin_manageentities_critypes"       => ["glpi_plugin_manageentities_criprices"    => "plugin_manageentities_critypes_id",
-//                                                              "glpi_plugin_manageentities_cridetails"   => "plugin_manageentities_critypes_id",
-//                                                              "glpi_plugin_manageentities_contractdays" => "plugin_manageentities_critypes_id"],
-              "glpi_contracts"                            => ["glpi_plugin_manageentities_contracts"    => "contracts_id",
-                                                              "glpi_plugin_manageentities_contractdays" => "contracts_id",
-                                                              "glpi_plugin_manageentities_cridetails"   => "contracts_id"],
-              "glpi_contacts"                             => ["glpi_plugin_manageentities_contacts" => "contacts_id"],
-              "glpi_users"                                => ["glpi_plugin_manageentities_preferences"    => "users_id",
-                                                              "glpi_plugin_manageentities_critechnicians" => "users_id"],
-              "glpi_documents"                            => ["glpi_plugin_manageentities_cridetails" => "documents_id",
-                                                              //"glpi_plugin_manageentities_companies"  => "logo_id"
-                                                              ],
-              "glpi_documentcategories"                   => ["glpi_plugin_manageentities_configs" => "documentcategories_id"],
-              "glpi_tickets"                              => ["glpi_plugin_manageentities_critechnicians" => "tickets_id",
-                                                              "glpi_plugin_manageentities_cridetails"     => "tickets_id"],
-              "glpi_entities"                             => ["glpi_plugin_manageentities_contracts"    => "entities_id",
-                                                              "glpi_plugin_manageentities_contacts"     => "entities_id",
-                                                              "glpi_plugin_manageentities_criprices"    => "entities_id",
-                                                              "glpi_plugin_manageentities_contractdays" => "entities_id",
-                                                              "glpi_plugin_manageentities_cridetails"   => "entities_id",
-                                                              "glpi_plugin_manageentities_entitylogos"  => "entities_id"],
-//              "glpi_plugin_manageentities_contractstates" => ["glpi_plugin_manageentities_contractdays" => "plugin_manageentities_contractstates_id"],
-              "glpi_taskcategories"                       => ["glpi_plugin_manageentities_taskcategories" => "taskcategories_id"]];
+            //          "glpi_plugin_manageentities_critypes"       => ["glpi_plugin_manageentities_criprices"    => "plugin_manageentities_critypes_id",
+            //                                                              "glpi_plugin_manageentities_cridetails"   => "plugin_manageentities_critypes_id",
+            //                                                              "glpi_plugin_manageentities_contractdays" => "plugin_manageentities_critypes_id"],
+            "glpi_contracts"                            => ["glpi_plugin_manageentities_contracts"    => "contracts_id",
+                "glpi_plugin_manageentities_contractdays" => "contracts_id",
+                "glpi_plugin_manageentities_cridetails"   => "contracts_id"],
+            "glpi_contacts"                             => ["glpi_plugin_manageentities_contacts" => "contacts_id"],
+            "glpi_users"                                => ["glpi_plugin_manageentities_preferences"    => "users_id",
+                "glpi_plugin_manageentities_critechnicians" => "users_id"],
+            "glpi_documents"                            => ["glpi_plugin_manageentities_cridetails" => "documents_id",
+                //"glpi_plugin_manageentities_companies"  => "logo_id"
+            ],
+            "glpi_documentcategories"                   => ["glpi_plugin_manageentities_configs" => "documentcategories_id"],
+            "glpi_tickets"                              => ["glpi_plugin_manageentities_critechnicians" => "tickets_id",
+                "glpi_plugin_manageentities_cridetails"     => "tickets_id"],
+            "glpi_entities"                             => ["glpi_plugin_manageentities_contracts"    => "entities_id",
+                "glpi_plugin_manageentities_contacts"     => "entities_id",
+                "glpi_plugin_manageentities_criprices"    => "entities_id",
+                "glpi_plugin_manageentities_contractdays" => "entities_id",
+                "glpi_plugin_manageentities_cridetails"   => "entities_id",
+                "glpi_plugin_manageentities_entitylogos"  => "entities_id"],
+            //              "glpi_plugin_manageentities_contractstates" => ["glpi_plugin_manageentities_contractdays" => "plugin_manageentities_contractstates_id"],
+            "glpi_taskcategories"                       => ["glpi_plugin_manageentities_taskcategories" => "taskcategories_id"]];
     } else {
         return [];
     }
@@ -674,7 +684,7 @@ function plugin_manageentities_getDropdown()
 
     if (Plugin::isPluginActive("manageentities")) {
         return [CriType::class       => __('Intervention type', 'manageentities'),
-              ContractState::class => __('State of contract', 'manageentities')];
+            ContractState::class => __('State of contract', 'manageentities')];
     } else {
         return [];
     }
@@ -696,7 +706,7 @@ function plugin_manageentities_dynamicReport($parm)
         return true;
     }
 
-   // Return false if no specific display is done, then use standard display
+    // Return false if no specific display is done, then use standard display
     return false;
 }
 
@@ -717,8 +727,8 @@ function plugin_manageentities_getAddSearchOptions($itemtype)
             $sopt[4455]['forcegroupby']  = true;
             $sopt[4455]['massiveaction'] = false;
             $sopt[4455]['joinparams']    = ['beforejoin'
-                                         => ['table'      => 'glpi_plugin_manageentities_cridetails',
-                                             'joinparams' => ['jointype' => 'child']]];
+                                       => ['table'      => 'glpi_plugin_manageentities_cridetails',
+                                           'joinparams' => ['jointype' => 'child']]];
 
             $sopt[4456]['table']         = 'glpi_plugin_manageentities_contractdays';
             $sopt[4456]['field']         = 'name';
@@ -744,12 +754,11 @@ function plugin_manageentities_getAddSearchOptionsNew($itemtype)
         $options[] = [
             'id'             => '4460',
             'table'          => 'glpi_plugin_manageentities_contracts',
-            'field'          => 'contracts_id',
+            'field'          => 'remaining_days',
             'name'           => __('Total remaining', 'manageentities'),
-            'datatype'       => 'specific',
-            'remaining_days' => true,
-            'nosort'         => true,
-            'nosearch'       => true,
+            'datatype'       => 'decimal',
+            'nosort'         => false,
+            'nosearch'       => false,
             'massiveaction'  => false,
             'joinparams'     => [
                 'jointype'  => 'child',
@@ -813,9 +822,9 @@ function plugin_manageentities_redefine_menus($menu)
     }
 
     $menu["manageentities"] = [
-                       "title" => Entity::getTypeName(),
-                       "icon" => Entity::getIcon(),
-                    ];
+        "title" => Entity::getTypeName(),
+        "icon" => Entity::getIcon(),
+    ];
     $infos['page'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
     $infos['title'] = __('Manage your contracts', 'manageentities');
     $infos['icon'] = Entity::getIcon();
@@ -876,6 +885,23 @@ function plugin_datainjection_populate_manageentities()
  * When the contract's GLPI state matches the configured closed state,
  * all associated contract periods are set to the configured closed period state.
  */
+function plugin_manageentities_MassiveActions(string $itemtype): array
+{
+    if ($itemtype !== 'Contract') {
+        return [];
+    }
+
+    if (!Contract::canCreate()) {
+        return [];
+    }
+
+    $sep = \MassiveAction::CLASS_ACTION_SEPARATOR;
+    return [
+        Contract::class . $sep . 'update_subscription_fields'
+            => "<i class='ti ti-edit'></i>" . __s('Update subscription fields', 'manageentities'),
+    ];
+}
+
 function plugin_manageentities_contract_item_update(\Contract $item): void
 {
     global $DB;
@@ -886,19 +912,19 @@ function plugin_manageentities_contract_item_update(\Contract $item): void
     }
 
     $config = Config::getInstance();
-    $closed_glpi_state_id  = (int)($config->fields['closed_glpi_state_id'] ?? 0);
-    $closed_contractstate_id = (int)($config->fields['closed_contractstate_id'] ?? 0);
+    $closed_glpi_state_id  = (int) ($config->fields['closed_glpi_state_id'] ?? 0);
+    $closed_contractstate_id = (int) ($config->fields['closed_contractstate_id'] ?? 0);
 
     if ($closed_glpi_state_id === 0 || $closed_contractstate_id === 0) {
         return;
     }
 
     // Only trigger when the new state matches the configured closed state
-    if ((int)$item->input['states_id'] !== $closed_glpi_state_id) {
+    if ((int) $item->input['states_id'] !== $closed_glpi_state_id) {
         return;
     }
 
-    $contracts_id = (int)$item->fields['id'];
+    $contracts_id = (int) $item->fields['id'];
 
     // Find all periods not yet in a closed state
     $iterator = $DB->request([

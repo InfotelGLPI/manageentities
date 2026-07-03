@@ -48,74 +48,96 @@
         <div class="row g-3">
 
             {# Date de signature / Date de renouvellement #}
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Date of signature', 'manageentities') }}</label>
                 {{ date_signature_html|raw }}
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Date of renewal', 'manageentities') }}</label>
                 {{ date_renewal_html|raw }}
             </div>
 
             {% if is_hour_mode %}
             {# Mode de gestion / Type de contrat (mode heure) #}
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Mode of management', 'manageentities') }}</label>
                 {{ management_html|raw }}
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Type of service contract', 'manageentities') }}</label>
                 {{ contract_type_html|raw }}
             </div>
-            {% endif %}
-
-            {% if is_day_price %}
-            {# Contrat importé dans GLPI (mode jour + prix) #}
-            <div class="col-sm-6">
-                <label class="col-form-label fw-bold">{{ __('Contract is imported in GLPI', 'manageentities') }}</label>
-                <div>
-                    <input type="checkbox" name="contract_added" class="form-check-input"
-                        {% if contract_added %}checked{% endif %}>
-                </div>
-            </div>
+            {% else %}
             <div class="col-sm-6"></div>
             {% endif %}
 
-            {# Afficher sur GANTT / Coûts refacturables #}
-            <div class="col-sm-6">
+            {# Switches ligne 1 : GANTT / Coûts refacturables / Contrat importé GLPI / Souscription active #}
+
+            {% if is_day_price %}
+                <div class="col-sm-3">
+                    <label class="col-form-label fw-bold">{{ __('Contract is imported in GLPI', 'manageentities') }}</label>
+                    <div class="form-check form-switch mt-2">
+                        <input type="checkbox" name="contract_added" class="form-check-input"
+                               {% if contract_added %}checked{% endif %}>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Show on GANTT', 'manageentities') }}</label>
-                {{ gantt_html|raw }}
-            </div>
-            <div class="col-sm-6">
-                <label class="col-form-label fw-bold">{{ __('Refacturable costs', 'manageentities') }}</label>
-                <div>
-                    <input type="checkbox" name="refacturable_costs" class="form-check-input"
-                        {% if refacturable_costs %}checked{% endif %}>
+                <div class="form-check form-switch mt-2">
+                    <input type="checkbox" name="show_on_global_gantt" class="form-check-input"
+                        {% if show_on_global_gantt %}checked{% endif %}>
                 </div>
             </div>
 
-            {# Gestion des déplacements #}
-            <div class="col-sm-6">
-                <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
-                {{ moving_management_html|raw }}
-                <script>
-                function changemovement() {
-                    if ($('#dropdown_moving_management{{ mov_rand }}').val() != 0) {
-                        $('#movementlabel').show();
-                        $('#movement').show();
-                    } else {
-                        $('#movementlabel').hide();
-                        $('#movement').hide();
-                    }
-                }
-                changemovement();
-                </script>
-            </div>
-            <div class="col-sm-6">
-                <label id="movementlabel" class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
-                <div id="movement">
-                    {{ duration_moving_html|raw }}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Refacturable costs', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="checkbox" name="refacturable_costs" class="form-check-input"
+                           {% if refacturable_costs %}checked{% endif %}>
                 </div>
+            </div>
+            <div class="col-sm-3"></div>
+
+            {# Switches ligne 2 : Souscription / Cloud / Internet / Déplacements #}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Active editor subscription', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="checkbox" name="active_editor_suscription" class="form-check-input"
+                        {% if active_editor_suscription %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Cloud client', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="checkbox" name="cloud_client" class="form-check-input"
+                        {% if cloud_client %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Internet publication', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="checkbox" name="internet_publication" class="form-check-input"
+                        {% if internet_publication %}checked{% endif %}>
+                </div>
+            </div>
+
+            <div class="col-sm-3"></div>
+
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="checkbox" name="moving_management" id="moving_management_{{ rand }}" class="form-check-input"
+                        {% if moving_management %}checked{% endif %}
+                        onchange="document.getElementById('movement_block_{{ rand }}').style.display = this.checked ? '' : 'none'">
+                </div>
+            </div>
+
+            {# Durée des déplacements (conditionnelle) #}
+            <div class="col-sm-3" id="movement_block_{{ rand }}"{% if not moving_management %} style="display:none"{% endif %}>
+                <label class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
+                {{ duration_moving_html|raw }}
             </div>
 
         </div>

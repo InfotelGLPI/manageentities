@@ -30,12 +30,13 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
-use DbUtils;
-use Html;
-use Session;
 use CommonGLPI;
+use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\Entity;
+use Html;
+use MassiveAction;
+use Session;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
@@ -105,6 +106,11 @@ class Contract extends CommonDBTM
             $input['refacturable_costs'] = 0;
         }
 
+        foreach (['active_editor_suscription', 'cloud_client', 'internet_publication',
+                  'show_on_global_gantt', 'moving_management'] as $field) {
+            $input[$field] = (isset($input[$field]) && ($input[$field] === "on" || $input[$field])) ? 1 : 0;
+        }
+
         return $input;
     }
 
@@ -133,6 +139,12 @@ class Contract extends CommonDBTM
         } else {
             $input['refacturable_costs'] = 0;
         }
+
+        foreach (['active_editor_suscription', 'cloud_client', 'internet_publication',
+                  'show_on_global_gantt', 'moving_management'] as $field) {
+            $input[$field] = (isset($input[$field]) && ($input[$field] === "on" || $input[$field])) ? 1 : 0;
+        }
+
         return $input;
     }
 
@@ -311,37 +323,31 @@ class Contract extends CommonDBTM
         }
 
         ob_start();
-        $mov_rand = \Dropdown::showYesNo("moving_management", $pluginContract['moving_management'] ?? 0, -1, ['on_change' => 'changemovement();']);
-        $moving_management_html = ob_get_clean();
-
-        ob_start();
         \Dropdown::showTimeStamp('duration_moving', ['value' => $pluginContract['duration_moving'] ?? null, 'addfirstminutes' => true]);
         $duration_moving_html = ob_get_clean();
 
-        ob_start();
-        \Dropdown::showYesNo("show_on_global_gantt", $pluginContract['show_on_global_gantt'] ?? 0);
-        $gantt_html = ob_get_clean();
-
         TemplateRenderer::getInstance()->display('@manageentities/contract_detail_form.html.twig', [
-            'rand'                  => $rand,
-            'can_edit'              => $canEdit,
-            'form_url'              => \Toolbox::getItemTypeFormURL(Contract::class),
-            'contracts_id'          => $contract->fields['id'],
-            'entities_id'           => $contract->fields['entities_id'],
-            'plugin_contract_id'    => $pluginContract['id'] ?? 0,
-            'is_new'                => empty($pluginContract),
-            'is_hour_mode'          => $is_hour_mode,
-            'is_day_price'          => $is_day_price,
-            'date_signature_html'   => $date_signature_html,
-            'date_renewal_html'     => $date_renewal_html,
-            'management_html'       => $management_html,
-            'contract_type_html'    => $contract_type_html,
-            'contract_added'        => (int)($pluginContract['contract_added'] ?? 0),
-            'refacturable_costs'    => (int)($pluginContract['refacturable_costs'] ?? 0),
-            'gantt_html'            => $gantt_html,
-            'moving_management_html'=> $moving_management_html,
-            'mov_rand'              => $mov_rand,
-            'duration_moving_html'  => $duration_moving_html,
+            'rand'                       => $rand,
+            'can_edit'                   => $canEdit,
+            'form_url'                   => \Toolbox::getItemTypeFormURL(Contract::class),
+            'contracts_id'               => $contract->fields['id'],
+            'entities_id'                => $contract->fields['entities_id'],
+            'plugin_contract_id'         => $pluginContract['id'] ?? 0,
+            'is_new'                     => empty($pluginContract),
+            'is_hour_mode'               => $is_hour_mode,
+            'is_day_price'               => $is_day_price,
+            'date_signature_html'        => $date_signature_html,
+            'date_renewal_html'          => $date_renewal_html,
+            'management_html'            => $management_html,
+            'contract_type_html'         => $contract_type_html,
+            'contract_added'             => (int)($pluginContract['contract_added'] ?? 0),
+            'refacturable_costs'         => (int)($pluginContract['refacturable_costs'] ?? 0),
+            'show_on_global_gantt'       => (int)($pluginContract['show_on_global_gantt'] ?? 0),
+            'moving_management'          => (int)($pluginContract['moving_management'] ?? 0),
+            'duration_moving_html'       => $duration_moving_html,
+            'active_editor_suscription'  => (int)($pluginContract['active_editor_suscription'] ?? 0),
+            'cloud_client'               => (int)($pluginContract['cloud_client'] ?? 0),
+            'internet_publication'       => (int)($pluginContract['internet_publication'] ?? 0),
         ]);
     }
 
@@ -784,6 +790,27 @@ class Contract extends CommonDBTM
     }
 
     /**
+     * Recompute and persist remaining_days in glpi_plugin_manageentities_contracts.
+     * Called after any CriDetail add/update that could change consumption.
+     */
+    public static function updateRemainingDays(int $contracts_id): void
+    {
+        global $DB;
+
+        if ($contracts_id <= 0) {
+            return;
+        }
+
+        $remaining = self::getTotalRemainingDays($contracts_id);
+
+        $DB->update(
+            'glpi_plugin_manageentities_contracts',
+            ['remaining_days' => $remaining],
+            ['contracts_id'   => $contracts_id]
+        );
+    }
+
+    /**
      * Sum of remaining days across all open contract periods for a given contract.
      *
      * @param int $contracts_id  GLPI contract ID
@@ -903,5 +930,103 @@ class Contract extends CommonDBTM
 
 
         echo $out;
+    }
+
+    public function getSpecificMassiveActions($checkitem = null)
+    {
+        $actions = [];
+
+        if (self::canCreate()) {
+            $sep = MassiveAction::CLASS_ACTION_SEPARATOR;
+            $actions[self::class . $sep . 'update_subscription_fields']
+                = "<i class='ti ti-edit'></i>" . __s('Update management fields', 'manageentities');
+        }
+
+        return $actions + parent::getSpecificMassiveActions($checkitem);
+    }
+
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        if ($ma->getAction() === 'update_subscription_fields') {
+            $fields = [
+                'active_editor_suscription' => __('Active editor subscription', 'manageentities'),
+                'cloud_client'              => __('Cloud client', 'manageentities'),
+                'internet_publication'      => __('Internet publication', 'manageentities'),
+                'show_on_global_gantt'      => __('Show on GANTT', 'manageentities'),
+                'moving_management'         => __('Movement management', 'manageentities'),
+                'refacturable_costs'        => __('Refacturable costs', 'manageentities'),
+            ];
+
+            echo "<div class='d-flex flex-wrap gap-4 my-2'>";
+            foreach ($fields as $name => $label) {
+                echo "<div class='form-check form-switch'>";
+                echo "<input type='hidden' name='{$name}' value='0'>";
+                echo "<input type='checkbox' class='form-check-input' name='{$name}' value='1' id='ma_{$name}'>";
+                echo "<label class='form-check-label' for='ma_{$name}'>" . htmlspecialchars($label) . "</label>";
+                echo "</div>";
+            }
+            echo "</div>";
+            echo Html::submit(__('Update'), ['name' => 'massiveaction', 'class' => 'btn btn-primary mt-2']);
+            return true;
+        }
+
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+        global $DB;
+
+        if ($ma->getAction() === 'update_subscription_fields') {
+            $input = $ma->getInput();
+
+            $allowed = [
+                'active_editor_suscription',
+                'cloud_client',
+                'internet_publication',
+                'show_on_global_gantt',
+                'moving_management',
+                'refacturable_costs',
+            ];
+
+            $update = [];
+            foreach ($allowed as $field) {
+                if (array_key_exists($field, $input)) {
+                    $update[$field] = (int)(bool)$input[$field];
+                }
+            }
+
+            if (empty($update)) {
+                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                return;
+            }
+
+            foreach ($ids as $id) {
+                // $id is a core glpi_contracts.id; find the plugin row by contracts_id
+                $row = $DB->request([
+                    'SELECT' => 'id',
+                    'FROM'   => self::getTable(),
+                    'WHERE'  => ['contracts_id' => $id],
+                ])->current();
+
+                if (!$row) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                    continue;
+                }
+
+                $plugin_contract = new self();
+                if ($plugin_contract->update(['id' => $row['id']] + $update)) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                } else {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                }
+            }
+            return;
+        }
+
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 }
