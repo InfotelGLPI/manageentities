@@ -1193,8 +1193,8 @@ msgstr "Préremplir depuis un modèle de contrat"
 msgid ""
 "Pre-selected document category when attaching a document in the wizard."
 msgstr ""
-"Catégorie de document présélectionnée lors de l'ajout d'un document dans "
-"l'assistant."
+"Catégorie de document présélectionnée lors de l'ajout d'un document dans le "
+"wizard."
 
 #: templates/config_options_form.html.twig:162
 msgid ""
