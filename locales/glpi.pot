@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-04 19:09+0000\n"
+"POT-Creation-Date: 2026-07-04 19:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
@@ -35,7 +35,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:1592
+#: src/WizardController.php:1597
 msgid "-- Select a template --"
 msgstr ""
 
@@ -322,7 +322,7 @@ msgid_plural "Contacts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1401
+#: src/WizardController.php:1406
 msgid "Contacts"
 msgstr ""
 
@@ -330,7 +330,7 @@ msgstr ""
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 
-#: src/WizardController.php:1402 templates/contractday_form.html.twig:46
+#: src/WizardController.php:1407 templates/contractday_form.html.twig:46
 #: templates/wizard/step3_contract.html.twig:36
 #: templates/wizard/step5_intervention_block.html.twig:76
 msgid "Contract"
@@ -413,7 +413,7 @@ msgstr ""
 
 #: src/Monthly.php:709 src/Monthly.php:745 src/CriPrice.php:59
 #: src/CriPrice.php:96 src/CriPrice.php:203 src/CriPrice.php:356
-#: src/CriType.php:93 src/WizardController.php:1264
+#: src/CriType.php:93 src/WizardController.php:1269
 #: templates/wizard/step5_criprices_section.html.twig:10
 msgid "Daily rate"
 msgstr ""
@@ -500,13 +500,17 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:110
+#: templates/wizard/layout.html.twig:111
 msgid "Delete and reinitialize"
 msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:205
 #: templates/contract_detail_form.html.twig:157
 msgid "Delete permanently"
+msgstr ""
+
+#: templates/wizard/layout.html.twig:109
+msgid "Deleting…"
 msgstr ""
 
 #: src/GenerateCRI.php:752
@@ -582,7 +586,7 @@ msgstr ""
 msgid "Entities portal"
 msgstr ""
 
-#: src/WizardController.php:1400 templates/directhelpdesk_form.html.twig:58
+#: src/WizardController.php:1405 templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
 #: templates/wizard/step2_contact_block.html.twig:89
@@ -617,7 +621,7 @@ msgstr ""
 msgid "Error creating management type"
 msgstr ""
 
-#: src/WizardController.php:1128
+#: src/WizardController.php:1133
 msgid "Error saving price"
 msgstr ""
 
@@ -868,7 +872,7 @@ msgid_plural "Management of task categories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:65 src/WizardController.php:1403
+#: src/Contract.php:65 src/WizardController.php:1408
 #: templates/contract_detail_form.html.twig:44
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
@@ -1013,7 +1017,7 @@ msgstr ""
 msgid "Object of intervention"
 msgstr ""
 
-#: src/WizardController.php:1122
+#: src/WizardController.php:1127
 msgid "Only one rate is allowed per service period"
 msgstr ""
 
@@ -1060,7 +1064,7 @@ msgstr ""
 #: src/Entity.php:127 src/Config.php:556 src/ContractDay.php:61
 #: src/ContractDay.php:63 src/ContractDay.php:480 src/Followup.php:921
 #: src/Followup.php:1177 src/WizardController.php:806
-#: src/WizardController.php:1256 src/WizardController.php:1404
+#: src/WizardController.php:1261 src/WizardController.php:1409
 #: templates/contractday_form.html.twig:52
 #: templates/wizard/step5_interventions.html.twig:35
 #: templates/wizard/step5_intervention_block.html.twig:13
@@ -1190,6 +1194,10 @@ msgstr ""
 #: templates/wizard/step5_criprice_block.html.twig:42
 #: templates/wizard/step5_criprices_section.html.twig:38
 msgid "Price"
+msgstr ""
+
+#: src/WizardController.php:1104
+msgid "Price must be greater than 0"
 msgstr ""
 
 #: src/Monthly.php:714 src/Monthly.php:751
@@ -1604,7 +1612,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: src/WizardController.php:827 src/WizardController.php:1280
+#: src/WizardController.php:827 src/WizardController.php:1285
 #: src/InterventionStakeholder.php:53
 #: templates/wizard/step5_stakeholders_section.html.twig:11
 msgid "User affected"
