@@ -1207,13 +1207,13 @@ msgstr ""
 msgid "Pre-selected rate type when adding a daily/hourly rate in the wizard."
 msgstr ""
 "Type de tarif présélectionné lors de l'ajout d'un tarif journalier/horaire "
-"dans l'assistant."
+"dans le wizard."
 
 #: templates/config_options_form.html.twig:150
 msgid "Pre-selected state when creating a service period in the wizard."
 msgstr ""
-"Statut présélectionné lors de la création d'une période de service dans "
-"l'assistant."
+"Statut présélectionné lors de la création d'une période de service dans le "
+"wizard."
 
 #: src/GenerateCRI.php:480
 msgid "Predefined task informations"
