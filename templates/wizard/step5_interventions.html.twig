@@ -1,0 +1,67 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+{#
+ Step 5 — Interventions (1 or more)
+ Variables: interventions, rand, wizard_url, step, is_day
+ #}
+
+<div class="card">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-calendar-event me-1"></i>
+        <h3 class="card-title mb-0">{{ _n('Period of contract', 'Periods of contract', 2, 'manageentities') }}</h3>
+    </div>
+    <div class="card-body">
+        <div id="step5-errors" class="alert alert-danger d-none"></div>
+
+        <div id="interventions-container">
+            {% for idx, intervention in interventions %}
+                {% include '@manageentities/wizard/step5_intervention_block.html.twig' with intervention|merge({
+                    'idx': idx,
+                    'rand': rand,
+                    'wizard_url': wizard_url,
+                    'is_day': is_day,
+                }) %}
+            {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-outline-secondary mt-2"
+            onclick="addInterventionBlock('{{ wizard_url }}')">
+            <i class="ti ti-plus me-1"></i>{{ __('Add a service period', 'manageentities') }}
+        </button>
+    </div>
+    <div class="card-footer d-flex gap-2 justify-content-between">
+        <button type="button" class="btn btn-outline-secondary"
+            onclick="wizardBack({{ step }}, '{{ wizard_url }}')">
+            <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
+        </button>
+        <button type="button" class="btn btn-success" id="btn-save-finish"
+            data-label="{{ __('Save and finish', 'manageentities') }}"
+            onclick="wizardLoadFinishSummary('{{ wizard_url }}')">
+            <i class="ti ti-check me-1"></i>{{ __('Save and finish', 'manageentities') }}
+        </button>
+    </div>
+</div>

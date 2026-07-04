@@ -1,0 +1,119 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+
+{% set plugin_webdir = config('root_doc') ~ '/marketplace/manageentities' %}
+
+<div id="wizard-addelements">
+
+    {# Progress bar #}
+    <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
+        {% for n, label in steps %}
+            <span class="badge fs-6 px-3 py-2
+                {% if n < step %}bg-outline-success{% elseif n == step %}bg-outline-primary{% else %}bg-outline-secondary{% endif %}">
+                {{ n }}. {{ label }}
+            </span>
+            {% if n < steps|length %}
+                <i class="ti ti-chevron-right text-muted"></i>
+            {% endif %}
+        {% endfor %}
+        <div class="ms-auto">
+            <button type="button" class="btn btn-outline-danger btn-sm"
+                    data-bs-toggle="modal" data-bs-target="#wizard-reset-modal"
+                    onclick="wizardLoadResetSummary('{{ wizard_url }}')">
+                <i class="ti ti-refresh me-1"></i>{{ __('Reinitialize') }}
+            </button>
+        </div>
+    </div>
+
+    {# Step content #}
+    <div id="wizard-step-content">
+        {% include step_template with step_vars %}
+    </div>
+
+</div>
+
+{# Finish confirmation modal #}
+<div class="modal fade" id="wizard-finish-modal" tabindex="-1" aria-labelledby="wizard-finish-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="wizard-finish-modal-label">
+                    <i class="ti ti-check me-2 text-success"></i>{{ __('Summary of created items', 'manageentities') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">{{ __('The following items will be saved. Please review before confirming.', 'manageentities') }}</p>
+                <div id="wizard-finish-summary">
+                    <div class="text-center py-3"><div class="spinner-border spinner-border-sm"></div></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ __('Cancel') }}
+                </button>
+                <button type="button" class="btn btn-success" id="wizard-finish-confirm-btn"
+                        onclick="wizardConfirmFinish(WIZARD_URL)">
+                    <i class="ti ti-check me-1"></i>{{ __('Confirm and finish', 'manageentities') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Reset confirmation modal #}
+<div class="modal fade" id="wizard-reset-modal" tabindex="-1" aria-labelledby="wizard-reset-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="wizard-reset-modal-label">
+                    <i class="ti ti-alert-triangle me-2 text-danger"></i>{{ __('Reinitialize wizard', 'manageentities') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">{{ __('The following items created during this wizard will be permanently deleted:', 'manageentities') }}</p>
+                <div id="wizard-reset-summary">
+                    <div class="text-center py-3"><div class="spinner-border spinner-border-sm"></div></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ __('Cancel') }}
+                </button>
+                <button type="button" class="btn btn-danger" id="wizard-reset-confirm-btn"
+                        onclick="wizardConfirmReset('{{ wizard_url }}')">
+                    <i class="ti ti-trash me-1"></i>{{ __('Delete and reinitialize', 'manageentities') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var WIZARD_URL = {{ wizard_url|json_encode|raw }};
+</script>

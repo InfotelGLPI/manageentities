@@ -1,0 +1,122 @@
+name: PHPUnit
+
+on: [push, pull_request]
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    name: "Unit tests / PHP ${{ matrix.php-version }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["8.3", "8.4"]
+
+    steps:
+      - name: Checkout GLPI
+        uses: actions/checkout@v4
+        with:
+          repository: glpi-project/glpi
+          ref: 11.0/bugfixes
+          path: glpi
+
+      - name: Checkout plugin
+        uses: actions/checkout@v4
+        with:
+          path: glpi/plugins/manageentities
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ matrix.php-version }}"
+
+      - name: Composer install (GLPI)
+        run: composer install --no-interaction
+        working-directory: glpi
+
+      - name: Run unit tests
+        run: php vendor/bin/phpunit --configuration plugins/manageentities/phpunit.xml --testsuite Unit
+        working-directory: glpi
+
+  integration-tests:
+    name: "Integration tests / PHP ${{ matrix.php-version }} + ${{ matrix.db-image }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: "8.3"
+            db-image: "mysql:8.0"
+          - php-version: "8.3"
+            db-image: "mariadb:10.11"
+
+    services:
+      db:
+        image: "${{ matrix.db-image }}"
+        env:
+          MYSQL_DATABASE: glpi_test
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout GLPI
+        uses: actions/checkout@v4
+        with:
+          repository: glpi-project/glpi
+          ref: 11.0/bugfixes
+          path: glpi
+
+      - name: Checkout plugin
+        uses: actions/checkout@v4
+        with:
+          path: glpi/plugins/manageentities
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: mysqli, pdo_mysql
+
+      - name: Composer install (GLPI)
+        run: composer install --no-interaction
+        working-directory: glpi
+
+      - name: Build assets
+        run: npm install && npm run-script build
+        working-directory: glpi
+
+      - name: Compile locales
+        run: php bin/console locales:compile
+        working-directory: glpi
+
+      - name: Install GLPI database
+        run: >-
+          php bin/console database:install
+          --db-name=glpi_test
+          --db-host=127.0.0.1
+          --db-user=root
+          --no-interaction
+          --env=testing
+        working-directory: glpi
+
+      - name: Install plugin
+        run: |
+          php bin/console glpi:plugin:install --username=glpi manageentities
+          php bin/console glpi:plugin:activate manageentities
+        working-directory: glpi
+
+      - name: Run integration tests
+        run: >-
+          php vendor/bin/phpunit
+          --configuration plugins/manageentities/phpunit.integration.xml
+          --testsuite Integration
+        working-directory: glpi

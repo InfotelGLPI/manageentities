@@ -1,0 +1,113 @@
+{#
+ One intervention (ContractDay) block.
+ Variables: idx, rand, fields, contractstate_html, contract_type_html, entities_html,
+            contracts_html, contractday_id, is_day, contract_begin_date, contract_end_date,
+            criprices_section, stakeholders_section, wizard_url
+ #}
+
+<div class="card mb-3 intervention-block" data-idx="{{ idx }}" data-id="{{ contractday_id }}"
+     id="intervention-block-{{ idx }}">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-calendar me-1"></i>
+        <h5 class="card-title mb-0">
+            {{ _n('Period of contract', 'Periods of contract', 1, 'manageentities') }} #{{ idx }}
+            {% if contractday_id %}
+                <span class="badge bg-outline-success ms-2"><i class="ti ti-check"></i></span>
+            {% else %}
+                <span class="badge bg-outline-warning text-dark ms-2" id="unsaved-badge-{{ idx }}">
+                    {{ __('Not saved', 'manageentities') }}
+                </span>
+            {% endif %}
+        </h5>
+        {% if idx > 1 %}
+        <button type="button" class="btn btn-sm btn-outline-danger ms-auto"
+            onclick="removeInterventionBlock({{ idx }})">
+            <i class="ti ti-trash"></i>
+        </button>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Name') }} <span class="text-danger">*</span></label>
+                <input type="text" name="interventions[{{ idx }}][name]" class="form-control" required
+                    value="{{ fields.name ?? '' }}">
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Begin date') }} <span class="text-danger">*</span></label>
+                <input type="date" name="interventions[{{ idx }}][begin_date]" class="form-control"
+                    value="{{ fields.begin_date ?? contract_begin_date ?? '' }}">
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('End date') }}</label>
+                <input type="date" name="interventions[{{ idx }}][end_date]" class="form-control"
+                    value="{{ fields.end_date ?? contract_end_date ?? '' }}">
+            </div>
+
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Initial credit', 'manageentities') }}</label>
+                <input type="number" step="0.5" name="interventions[{{ idx }}][nbday]" class="form-control"
+                    value="{{ fields.nbday ?? '' }}">
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Postponement', 'manageentities') }}</label>
+                <input type="number" step="0.5" name="interventions[{{ idx }}][report]" class="form-control"
+                    value="{{ fields.report ?? '' }}">
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Status') }} <span class="text-danger">*</span></label>
+                {{ contractstate_html|raw }}
+            </div>
+            {% if is_day %}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Intervention type', 'manageentities') }} <span class="text-danger">*</span></label>
+                {{ contract_type_html|raw }}
+            </div>
+            {% else %}
+            <div class="col-sm-3"></div>
+            {% endif %}
+
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Entity') }}</label>
+                {{ entities_html|raw }}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Contract') }}</label>
+                {{ contracts_html|raw }}
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="interventions[{{ idx }}][charged]" value="0">
+                    <input type="checkbox" class="form-check-input"
+                        name="interventions[{{ idx }}][charged]" value="1"
+                        {% if fields.charged ?? false %}checked{% endif %}>
+                    <label class="form-check-label">{{ __('Already charged', 'manageentities') }}</label>
+                </div>
+            </div>
+
+            {# Per-block save button #}
+            <div class="col-sm-6 d-flex align-items-end justify-content-end">
+                <div id="intervention-errors-{{ idx }}" class="text-danger small me-2"></div>
+                <button type="button" class="btn btn-outline-primary"
+                    id="save-intervention-btn-{{ idx }}"
+                    onclick="wizardSaveIntervention({{ idx }}, '{{ wizard_url }}')">
+                    <i class="ti ti-device-floppy me-1"></i>{{ __('Save this period', 'manageentities') }}
+                </button>
+            </div>
+
+        </div>
+
+        {# Rates + Stakeholders — visible once the intervention has been saved #}
+        <div id="intervention-sections-{{ idx }}">
+            {% if criprices_section %}
+                <hr class="my-3">
+                {{ criprices_section|raw }}
+                <hr class="my-3">
+                {{ stakeholders_section|raw }}
+            {% endif %}
+        </div>
+
+    </div>
+</div>

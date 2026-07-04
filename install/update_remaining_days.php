@@ -27,16 +27,31 @@
  --------------------------------------------------------------------------
  */
 
-use GlpiPlugin\Manageentities\AddElementsModel;
+use GlpiPlugin\Manageentities\Contract;
 
-Html::header_nocache();
-Session::checkLoginUser();
+/**
+ * Add remaining_days column and backfill existing contracts.
+ */
+function addRemainingDaysColumn(): void
+{
+    global $DB;
 
-$pModel = AddElementsModel::getInstance();
+    $migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+    $migration->addField(
+        'glpi_plugin_manageentities_contracts',
+        'remaining_days',
+        'decimal',
+        ['value' => '0.00']
+    );
+    $migration->executeMigration();
 
-switch ($_POST ['action']) {
-   case Action::REINIT_FORMS:
-      $pModel->destroy();
-      Html::back();
-      break;
+    // Backfill: recompute remaining days for every existing contract row
+    $iterator = $DB->request([
+        'SELECT' => ['contracts_id'],
+        'FROM'   => 'glpi_plugin_manageentities_contracts',
+    ]);
+
+    foreach ($iterator as $row) {
+        Contract::updateRemainingDays((int)$row['contracts_id']);
+    }
 }

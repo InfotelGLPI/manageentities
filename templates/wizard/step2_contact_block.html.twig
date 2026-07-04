@@ -1,0 +1,112 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+
+{#
+ One contact block — included N times in step2_contacts and injected dynamically.
+ Variables: idx, rand, fields (existing contact or {}), usertitles_html, contacttype_html, entities_html
+ #}
+
+<div class="card mb-3 contact-block" data-idx="{{ idx }}">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-user me-1"></i>
+        <h5 class="card-title mb-0">{{ _n('Contact', 'Contacts', 1) }} #{{ idx }}</h5>
+        {% if idx > 1 %}
+        <button type="button" class="btn btn-sm btn-outline-danger ms-auto"
+            onclick="removeContactBlock({{ idx }})">
+            <i class="ti ti-trash"></i>
+        </button>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Last name') }} <span class="text-danger">*</span></label>
+                <input type="text" name="contacts[{{ idx }}][name]" class="form-control" required
+                    value="{{ fields.name ?? '' }}">
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('First name') }} <span class="text-danger">*</span></label>
+                <input type="text" name="contacts[{{ idx }}][firstname]" class="form-control" required
+                    value="{{ fields.firstname ?? '' }}">
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Title') }}</label>
+                {{ usertitles_html|raw }}
+            </div>
+
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Phone') }}</label>
+                <input type="text" name="contacts[{{ idx }}][phone]" class="form-control"
+                    value="{{ fields.phone ?? '' }}">
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Phone 2') }}</label>
+                <input type="text" name="contacts[{{ idx }}][phone2]" class="form-control"
+                    value="{{ fields.phone2 ?? '' }}">
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Mobile') }}</label>
+                <input type="text" name="contacts[{{ idx }}][mobile]" class="form-control"
+                    value="{{ fields.mobile ?? '' }}">
+            </div>
+
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Email') }}</label>
+                <input type="email" name="contacts[{{ idx }}][email]" class="form-control"
+                    value="{{ fields.email ?? '' }}">
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Type') }}</label>
+                {{ contacttype_html|raw }}
+            </div>
+
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Entity') }}</label>
+                {{ entities_html|raw }}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">{{ __('Comments') }}</label>
+                <textarea name="contacts[{{ idx }}][comment]" class="form-control" rows="2">{{ fields.comment ?? '' }}</textarea>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="contacts[{{ idx }}][is_manager]" value="0">
+                    <input type="checkbox" class="form-check-input" name="contacts[{{ idx }}][is_manager]" value="1"
+                        id="is_manager_{{ idx }}_{{ rand }}"
+                        {% if fields.is_manager ?? false %}checked{% endif %}>
+                    <label class="form-check-label" for="is_manager_{{ idx }}_{{ rand }}">
+                        {{ __('Manager (main contact)', 'manageentities') }}
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="contacts[{{ idx }}][is_recursive]" value="0">
+
+        </div>
+    </div>
+</div>

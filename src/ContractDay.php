@@ -477,7 +477,7 @@ class ContractDay extends CommonDBTM
                 . "<div class='card-body d-flex align-items-center gap-3'>"
                 . "<i class='ti ti-calendar-plus fs-2 text-muted'></i>"
                 . "<div>"
-                . "<div class='fw-bold'>" . __('Service periods', 'manageentities') . "</div>"
+                . "<div class='fw-bold'>" . _n('Period of contract', 'Periods of contract', 2, 'manageentities') . "</div>"
                 . "<div class='text-muted'>" . __('No service period defined yet.', 'manageentities') . "</div>"
                 . "</div>"
                 . "<div class='ms-auto'>{$add_button_html}</div>"

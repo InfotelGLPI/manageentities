@@ -1,0 +1,62 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+{#
+ Step 2 — Contacts (0 or more)
+ Variables: contacts (array of contact block vars), rand, wizard_url, step, max_step
+ #}
+
+<div class="card">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-users me-1"></i>
+        <h3 class="card-title mb-0">{{ _n('Contact', 'Contacts', 2) }}</h3>
+        <span class="badge bg-outline-secondary ms-2">{{ __('Optional', 'manageentities') }}</span>
+    </div>
+    <div class="card-body">
+        <div id="step2-errors" class="alert alert-danger d-none"></div>
+
+        <div id="contacts-container">
+            {% for idx, contact in contacts %}
+                {% include '@manageentities/wizard/step2_contact_block.html.twig' with contact %}
+            {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-outline-secondary mt-2"
+            onclick="addContactBlock('{{ wizard_url }}')">
+            <i class="ti ti-plus me-1"></i>{{ __('Add a contact', 'manageentities') }}
+        </button>
+    </div>
+    <div class="card-footer d-flex gap-2 justify-content-between">
+        <button type="button" class="btn btn-outline-secondary"
+            onclick="wizardBack({{ step }}, '{{ wizard_url }}')">
+            <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
+        </button>
+        <button type="button" class="btn btn-primary"
+            onclick="wizardSaveStep(2, '{{ wizard_url }}')">
+            <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
+        </button>
+    </div>
+</div>

@@ -27,100 +27,75 @@
  --------------------------------------------------------------------------
  */
 
-use GlpiPlugin\Manageentities\AddElementsModel;
-use GlpiPlugin\Manageentities\AddElementsView;
+use GlpiPlugin\Manageentities\WizardController;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkCentralAccess();
 
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-$val = "";
+global $DB;
 
-$val         .= "<tr class='tab_bg_1' id='tr_add_contract' style='display:table-row; '>";
-$val         .= "<td>";
-$val         .= __("Add a document");
-$val         .= "</td>";
-$val         .= "<td colspan='5'>";
-$root_manage = PLUGIN_MANAGEENTITIES_WEBDIR;
-$val         .= "<a onclick=\"showFormAddPDFContract('$root_manage', '" . __("Add a document", "manageentities")
-                . "','" . _sx('button', 'Add') . "','" . _sx('button', 'Cancel') . "');\" class='pointer'>";
-$val         .= "<i class=\"ti ti-square-plus\" style=\"font-size:2em;\"></i></a>";
-$val         .= "</td>";
-$val         .= "</tr>";
-$ele         = new AddElementsView();
-$val         .= $ele->showListPDFcontract(false);
+$session      = WizardController::getSession();
+$contracts_id = (int)($session['contracts_id'] ?? 0);
+$root_manage  = PLUGIN_MANAGEENTITIES_WEBDIR;
 
-$pModel     = AddElementsModel::getInstance();
-$srcImg     = "";
-$alertTitle = "";
+$val  = "<tr class='tab_bg_1' id='tr_add_contract' style='display:table-row;'>";
+$val .= "<td>" . __("Add a document") . "</td>";
+$val .= "<td colspan='5'>";
+$val .= "<a onclick=\"showFormAddPDFContract('{$root_manage}', '"
+    . __("Add a document", "manageentities") . "','"
+    . _sx('button', 'Add') . "','"
+    . _sx('button', 'Cancel') . "');\" class='pointer'>";
+$val .= "<i class=\"ti ti-square-plus\" style=\"font-size:2em;\"></i></a>";
+$val .= "</td></tr>";
 
-while (!isset($_SESSION["manageentities"]["add_doc_status"]["result"])) {
+if ($contracts_id > 0) {
+    $docs = $DB->request([
+        'SELECT'    => [
+            'doc.id',
+            'doc.name',
+            'doc.filename',
+            'doc.mime',
+            'doc.date_creation',
+            'dc.name AS category',
+        ],
+        'FROM'      => 'glpi_documents AS doc',
+        'LEFT JOIN' => [
+            'glpi_documents_items AS di' => [
+                'ON' => [
+                    'di' => 'documents_id',
+                    'doc' => 'id',
+                ],
+            ],
+            'glpi_documentcategories AS dc' => [
+                'ON' => [
+                    'dc' => 'id',
+                    'doc' => 'documentcategories_id',
+                ],
+            ],
+        ],
+        'WHERE'     => [
+            'di.itemtype' => \Contract::class,
+            'di.items_id' => $contracts_id,
+            'doc.is_deleted' => 0,
+        ],
+        'ORDER'     => 'doc.date_creation DESC',
+    ]);
 
+    foreach ($docs as $row) {
+        $doc_url = \Document::getFormURLWithID($row['id']);
+        $val .= "<tr class='tab_bg_1'>";
+        $val .= "<td><a href='{$doc_url}'>" . htmlspecialchars($row['name']) . "</a></td>";
+        $val .= "<td>" . htmlspecialchars($row['filename']) . "</td>";
+        $val .= "<td>" . htmlspecialchars($row['category'] ?? '') . "</td>";
+        $val .= "<td>" . Html::convDate($row['date_creation']) . "</td>";
+        $val .= "<td></td><td></td>";
+        $val .= "</tr>";
+    }
 }
-$infos = $_SESSION["manageentities"]["add_doc_status"];
-unset($_SESSION["manageentities"]["add_doc_status"]);
-$message = $infos["message"];
-if ($infos["result"] == Status::ADDED) {
-   $messageType = Messages::MESSAGE_INFO;
-} else {
-   $messageType = Messages::MESSAGE_ERROR;
-}
-switch ($messageType) {
-   case Messages::MESSAGE_ERROR:
-      $srcImg     = "ti ti-alert-triangle";
-      $color      = "orange";
-      $alertTitle = $pModel->getMessage("message_error");
-      break;
-   case Messages::MESSAGE_INFO:
-   default:
-      $srcImg     = "ti ti-info-circle";
-      $color      = "forestgreen";
-      $alertTitle = $pModel->getMessage("message_info");
-      break;
-}
-//$this->showHeaderJS();
 
-//$val.= " if ($('#alert-message').val()){
-//               $('#alert-message').val('');
-//            }";
-//$val .= Html::scriptBlock(" if ($('#alert-message').val()){
-//               $('#alert-message').val('');
-//            }");
-////$this->closeFormJS();
-
-//$val.= "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>" . $message . "</div>";
-
-//$this->showHeaderJS();
-$val .= Html::scriptBlock("
-$( \"body\" ).append(\"<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'> $message </div>\");
-var mTitle =  \"<i class='" . $srcImg . "' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . " \";
-$( '#alert-message' ).dialog({
-        autoOpen: false,
-        height: " . 150 . ",
-        width: " . 300 . ",
-        modal: true,
-        open: function (){
-         $(this)
-            .parent()
-            .children('.ui-dialog-titlebar')
-            .html(mTitle);
-      },
-        buttons: {
-         'ok': function() {
-            $( this ).dialog( 'close' );
-         }
-      },
-      beforeClose: function(event) {
-            $('#alert-message').remove();
-            return false;
-      }
-    });
-    $('#alert-message').dialog('open');");
-
-
-//$this->closeFormJS();
 echo $val;

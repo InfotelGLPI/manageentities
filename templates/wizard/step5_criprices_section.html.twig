@@ -1,0 +1,51 @@
+{#
+ CriPrices section — rendered server-side and injected via AJAX after saving an intervention.
+ Variables: contractday_id, rand, is_day, criprices, wizard_url, critype_html
+ #}
+
+<div class="wizard-criprices-section mt-3" id="criprices-section-{{ contractday_id }}">
+    <div class="d-flex align-items-center gap-2 mb-2">
+        <h4 class="mb-0">
+            <i class="ti ti-coin me-1"></i>
+            {{ is_day ? __('Daily rate', 'manageentities') : __('Hourly rate', 'manageentities') }}
+            <span class="text-danger">*</span>
+        </h4>
+    </div>
+
+    <div id="criprices-list-{{ contractday_id }}">
+        {% for cp in criprices %}
+        <div class="d-flex align-items-center gap-2 mb-2 criprice-row" data-id="{{ cp.id }}">
+            <span class="badge bg-outline-secondary">{{ cp.critypes_name ?? cp.plugin_manageentities_critypes_id }}</span>
+            <strong>{{ cp.price|number_format(2) }}</strong>
+            {% if cp.is_default %}<span class="badge bg-outline-primary">{{ __('Default') }}</span>{% endif %}
+            <button type="button" class="btn btn-sm btn-outline-danger"
+                onclick="deleteCriPrice({{ cp.id }}, this, '{{ wizard_url }}')">
+                <i class="ti ti-trash"></i>
+            </button>
+        </div>
+        {% else %}
+        <p class="text-muted small mb-2" id="no-criprices-{{ contractday_id }}">{{ __('No rate defined yet', 'manageentities') }}</p>
+        {% endfor %}
+    </div>
+
+    {# Inline add form — hidden when a rate already exists (no d-flex: Bootstrap !important overrides display:none) #}
+    <div class="align-items-center gap-2 mt-2 flex-wrap" id="criprices-form-{{ contractday_id }}"
+        style="{{ has_rate ? 'display:none' : 'display:flex' }}">
+        <div style="min-width:200px">{{ critype_html|raw }}</div>
+        <input type="number" step="0.01" min="0"
+            id="new_price_{{ contractday_id }}"
+            class="form-control" style="width:130px"
+            placeholder="{{ __('Price') }}">
+        <div class="form-check form-switch mb-0 ms-1">
+            <input type="checkbox" class="form-check-input"
+                id="new_is_default_{{ contractday_id }}" value="1" checked>
+            <label class="form-check-label" for="new_is_default_{{ contractday_id }}">
+                {{ __('Default') }}
+            </label>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary"
+            onclick="wizardAddCriPrice({{ contractday_id }}, {{ rand }}, '{{ wizard_url }}')">
+            <i class="ti ti-plus me-1"></i>{{ __('Add rate', 'manageentities') }}
+        </button>
+    </div>
+</div>

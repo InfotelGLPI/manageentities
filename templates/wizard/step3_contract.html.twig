@@ -1,0 +1,126 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+{#
+ Step 3 — Contract GLPI + PDF upload
+ Variables: contract_fields, contracttype_html, state_html, alert_html, duration_html,
+            doccat_html, entities_html, template_dropdown_html, rand, rand_tpl, wizard_url, step
+ #}
+
+<div class="card">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-file-invoice me-1"></i>
+        <h3 class="card-title mb-0">{{ __('Contract') }}</h3>
+    </div>
+    <div class="card-body">
+        <div id="step3-errors" class="alert alert-danger d-none"></div>
+
+        {# Pre-fill from an existing contract #}
+        <div class="row g-3 mb-4 pb-3 border-bottom">
+            <div class="col-sm-8">
+                <label class="col-form-label fw-bold">
+                    <i class="ti ti-template me-1"></i>{{ __('Pre-fill from a contract template', 'manageentities') }}
+                    <small class="text-muted fw-normal ms-1">{{ __('Optional') }}</small>
+                </label>
+                {{ template_dropdown_html|raw }}
+            </div>
+            <div class="col-sm-4 d-flex align-items-end">
+                <button type="button" class="btn btn-outline-secondary w-100"
+                    onclick="wizardLoadContractTemplate({{ rand_tpl }}, '{{ wizard_url }}')">
+                    <i class="ti ti-download me-1"></i>{{ __('Load', 'manageentities') }}
+                </button>
+            </div>
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Name') }} <span class="text-danger">*</span></label>
+                <input type="text" name="name" class="form-control" required
+                    value="{{ contract_fields.name ?? '' }}">
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Contract number', 'manageentities') }} <span class="text-danger">*</span></label>
+                <input type="text" name="num" class="form-control" required
+                    value="{{ contract_fields.num ?? '' }}">
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Start date') }} <span class="text-danger">*</span></label>
+                <input type="date" name="begin_date" class="form-control" required
+                    value="{{ contract_fields.begin_date ?? '' }}">
+            </div>
+
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Duration') }} <span class="text-danger">*</span></label>
+                {{ duration_html|raw }}
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Contract type') }} <span class="text-danger">*</span></label>
+                {{ contracttype_html|raw }}
+            </div>
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Status') }} <span class="text-danger">*</span></label>
+                {{ state_html|raw }}
+            </div>
+
+            <div class="col-sm-4">
+                <label class="col-form-label fw-bold">{{ __('Entity') }}</label>
+                {{ entities_html|raw }}
+            </div>
+
+            <div class="col-sm-12">
+                <label class="col-form-label fw-bold">{{ __('Comments') }}</label>
+                <textarea name="comment" class="form-control" rows="2">{{ contract_fields.comment ?? '' }}</textarea>
+            </div>
+
+        </div>
+
+        {# Documents section #}
+        <hr class="my-3">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <h5 class="mb-0">
+                <i class="ti ti-paperclip me-1"></i>{{ __('Attach documents', 'manageentities') }}
+                <small class="text-muted fw-normal ms-1">{{ __('Optional') }}</small>
+            </h5>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-auto"
+                    onclick="addDocumentBlock('{{ wizard_url }}')">
+                <i class="ti ti-plus me-1"></i>{{ __('Add a document', 'manageentities') }}
+            </button>
+        </div>
+        <div id="documents-container">{{ existing_docs_html|raw }}</div>
+
+    </div>
+    <div class="card-footer d-flex gap-2 justify-content-between">
+        <button type="button" class="btn btn-outline-secondary"
+            onclick="wizardBack({{ step }}, '{{ wizard_url }}')">
+            <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
+        </button>
+        <button type="button" class="btn btn-primary"
+            onclick="wizardSaveStep(3, '{{ wizard_url }}')">
+            <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
+        </button>
+    </div>
+</div>

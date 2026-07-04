@@ -27,20 +27,20 @@
  --------------------------------------------------------------------------
  */
 
-use GlpiPlugin\Manageentities\Entity;
-use GlpiPlugin\Manageentities\WizardController;
+// Bootstrap GLPI's test environment (DB connection, session, etc.)
+require_once dirname(__DIR__, 3) . '/tests/bootstrap.php';
 
-if (Plugin::isPluginActive("manageentities")
-    && Session::haveRight('plugin_manageentities', UPDATE)) {
+// Register manageentities classes into the already-loaded Composer autoloader
+$loader = require dirname(__DIR__, 3) . '/vendor/autoload.php';
+$loader->addPsr4('GlpiPlugin\\Manageentities\\', dirname(__DIR__) . '/src/');
+$loader->addPsr4('GlpiPlugin\\Manageentities\\Tests\\', dirname(__DIR__) . '/tests/');
 
-    Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
-    WizardController::renderStep();
-    Html::footer();
-
-} else {
-
-    Html::header(__('Setup'), '', "config", "plugin");
-    echo "<div class='alert alert-warning d-flex'>";
-    echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
-    Html::footer();
+// Install plugin tables in the test DB if they do not yet exist
+if (!defined('PLUGIN_MANAGEENTITIES_VERSION')) {
+    require_once dirname(__DIR__) . '/setup.php';
+}
+global $DB;
+if (!$DB->tableExists('glpi_plugin_manageentities_contracts')) {
+    require_once dirname(__DIR__) . '/hook.php';
+    plugin_manageentities_install();
 }

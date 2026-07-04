@@ -1,0 +1,156 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+{#
+ Step 4 — Management type (plugin contract)
+ Variables: contracts_id, entities_id, plugin_contract_id, is_hour_mode, is_day_price,
+            management_html, contract_type_html, duration_moving_html,
+            show_on_global_gantt, refacturable_costs, contract_added,
+            active_editor_suscription, cloud_client, internet_publication, moving_management,
+            rand, wizard_url, step
+ #}
+
+<div class="card">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-settings me-1"></i>
+        <h3 class="card-title mb-0">{{ __('Management type', 'manageentities') }}</h3>
+    </div>
+    <div class="card-body">
+        <div id="step4-errors" class="alert alert-danger d-none"></div>
+
+        <input type="hidden" name="contracts_id" value="{{ contracts_id }}">
+        <input type="hidden" name="entities_id"  value="{{ entities_id }}">
+
+        <div class="row g-3">
+
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Date of signature', 'manageentities') }}</label>
+                <input type="date" name="date_signature" class="form-control" value="{{ date_signature ?? '' }}">
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Date of renewal', 'manageentities') }}</label>
+                <input type="date" name="date_renewal" class="form-control">
+            </div>
+
+            {% if is_hour_mode %}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Mode of management', 'manageentities') }}</label>
+                {{ management_html|raw }}
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Type of service contract', 'manageentities') }}</label>
+                {{ contract_type_html|raw }}
+            </div>
+            {% else %}
+            <div class="col-sm-6"></div>
+            {% endif %}
+
+            {# Switches row 1 #}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Show on GANTT', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="show_on_global_gantt" value="0">
+                    <input type="checkbox" class="form-check-input" name="show_on_global_gantt" value="1"
+                        {% if show_on_global_gantt %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Refacturable costs', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="refacturable_costs" value="0">
+                    <input type="checkbox" class="form-check-input" name="refacturable_costs" value="1"
+                        {% if refacturable_costs %}checked{% endif %}>
+                </div>
+            </div>
+            {% if is_day_price %}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Contract is imported in GLPI', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="contract_added" value="0">
+                    <input type="checkbox" class="form-check-input" name="contract_added" value="1"
+                        {% if contract_added %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+            {% else %}
+            <div class="col-sm-6"></div>
+            {% endif %}
+
+            {# Switches row 2 #}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Active editor subscription', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="active_editor_suscription" value="0">
+                    <input type="checkbox" class="form-check-input" name="active_editor_suscription" value="1"
+                        {% if active_editor_suscription %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Cloud client', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="cloud_client" value="0">
+                    <input type="checkbox" class="form-check-input" name="cloud_client" value="1"
+                        {% if cloud_client %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Internet publication', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="internet_publication" value="0">
+                    <input type="checkbox" class="form-check-input" name="internet_publication" value="1"
+                        {% if internet_publication %}checked{% endif %}>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="moving_management" value="0">
+                    <input type="checkbox" class="form-check-input" name="moving_management" value="1"
+                        id="moving_management_{{ rand }}"
+                        {% if moving_management %}checked{% endif %}
+                        onchange="document.getElementById('movement_block_{{ rand }}').style.display = this.checked ? '' : 'none'">
+                </div>
+            </div>
+
+            {# Duration of moving (conditional) #}
+            <div class="col-sm-3" id="movement_block_{{ rand }}"{% if not moving_management %} style="display:none"{% endif %}>
+                <label class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
+                {{ duration_moving_html|raw }}
+            </div>
+
+        </div>
+    </div>
+    <div class="card-footer d-flex gap-2 justify-content-between">
+        <button type="button" class="btn btn-outline-secondary"
+            onclick="wizardBack({{ step }}, '{{ wizard_url }}')">
+            <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
+        </button>
+        <button type="button" class="btn btn-primary"
+            onclick="wizardSaveStep(4, '{{ wizard_url }}')">
+            <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
+        </button>
+    </div>
+</div>

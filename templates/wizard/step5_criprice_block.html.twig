@@ -1,0 +1,60 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+{#
+ One CriPrice block — injected dynamically.
+ Variables: rand, contractday_id, criprice_id, critype_html, price, is_default
+ #}
+
+<div class="d-flex align-items-center gap-2 mb-2 criprice-block" data-id="{{ criprice_id }}">
+    <input type="hidden" name="plugin_manageentities_contractdays_id" value="{{ contractday_id }}">
+    <input type="hidden" name="criprice_id" value="{{ criprice_id }}">
+
+    <div style="min-width:200px">
+        {{ critype_html|raw }}
+    </div>
+    <div>
+        <input type="number" step="0.01" name="price" class="form-control"
+            style="width:120px" value="{{ price ?? '' }}"
+            placeholder="{{ __('Price') }}">
+    </div>
+    <div class="form-check form-switch">
+        <input type="hidden" name="is_default" value="0">
+        <input type="checkbox" class="form-check-input" name="is_default" value="1"
+            {% if is_default ?? false %}checked{% endif %}>
+        <label class="form-check-label">{{ __('Default') }}</label>
+    </div>
+    <button type="button" class="btn btn-sm btn-primary"
+        onclick="saveCriPrice(this, '{{ wizard_url }}')">
+        <i class="ti ti-device-floppy"></i>
+    </button>
+    {% if criprice_id %}
+    <button type="button" class="btn btn-sm btn-outline-danger"
+        onclick="deleteCriPrice({{ criprice_id }}, this, '{{ wizard_url }}')">
+        <i class="ti ti-trash"></i>
+    </button>
+    {% endif %}
+</div>
