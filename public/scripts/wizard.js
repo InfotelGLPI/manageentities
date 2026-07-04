@@ -143,14 +143,20 @@ function handleStepResponse(step, res, url) {
         showStepErrors(step, res.errors || res.message || 'Error');
         return;
     }
-    // Navigate to next step (server already updated session)
-    var nextStep = step < 5 ? step + 1 : step;
+    // Server may skip steps (e.g. existing_entity mode jumps step 1 → step 3)
+    var nextStep = (res.step && res.step > step) ? res.step : (step < 5 ? step + 1 : step);
     reloadStep(nextStep, url);
 }
 
 function wizardBack(step, url) {
     if (step <= 1) return;
     reloadStep(step - 1, url);
+}
+
+function wizardChooseMode(mode, url) {
+    wizardFetch(url, { action: 'choose_mode', wizard_mode: mode })
+        .then(function (r) { return r.json(); })
+        .then(function (res) { if (res.success) reloadStep(1, url); });
 }
 
 function wizardReset(url) {
@@ -386,7 +392,7 @@ function wizardAddCriPrice(contractdayId, rand, url) {
                 row.dataset.id = res.criprice_id;
                 row.innerHTML = '<span class="badge bg-outline-secondary">' + (critypeEl.options[critypeEl.selectedIndex] ? critypeEl.options[critypeEl.selectedIndex].text : '') + '</span>'
                     + '<strong>' + parseFloat(priceEl.value).toFixed(2) + '</strong>'
-                    + (defEl && defEl.checked ? '<span class="badge bg-outline-primary">Default</span>' : '')
+                    + (defEl && defEl.checked ? '<span class="badge bg-outline-primary">' + (defEl.dataset.labelDefault || 'Default') + '</span>' : '')
                     + '<button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCriPrice(' + res.criprice_id + ', this, \'' + url + '\')">'
                     + '<i class="ti ti-trash"></i></button>';
                 listEl.appendChild(row);

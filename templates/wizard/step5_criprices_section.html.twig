@@ -38,7 +38,8 @@
             placeholder="{{ __('Price', 'manageentities') }}">
         <div class="form-check form-switch mb-0 ms-1">
             <input type="checkbox" class="form-check-input"
-                id="new_is_default_{{ contractday_id }}" value="1" checked>
+                id="new_is_default_{{ contractday_id }}" value="1" checked
+                data-label-default="{{ __('Default', 'manageentities') }}">
             <label class="form-check-label" for="new_is_default_{{ contractday_id }}">
                 {{ __('Default', 'manageentities') }}
             </label>

@@ -77,6 +77,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                     {{ __('Cancel') }}
                 </button>
                 <button type="button" class="btn btn-success" id="wizard-finish-confirm-btn"
+                        data-redirect-url="{{ redirect_url }}"
                         onclick="wizardConfirmFinish(WIZARD_URL)">
                     <i class="ti ti-check me-1"></i>{{ __('Confirm and finish', 'manageentities') }}
                 </button>

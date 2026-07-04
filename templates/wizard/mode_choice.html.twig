@@ -1,0 +1,73 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+{#
+ Wizard mode choice — displayed before any step when no mode is selected.
+ Variables: wizard_url
+ #}
+
+<div id="wizard-addelements">
+    <div class="text-center mb-4">
+        <h2>{{ __('Entities portal', 'manageentities') }}</h2>
+        <p class="text-muted">{{ __('What would you like to do?', 'manageentities') }}</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+        <div class="col-sm-5">
+            <div class="card h-100 border-2 cursor-pointer" style="cursor:pointer"
+                 onclick="wizardChooseMode('new_entity', WIZARD_URL)">
+                <div class="card-body text-center py-5">
+                    <i class="ti ti-building-plus text-primary" style="font-size:3rem"></i>
+                    <h4 class="mt-3">{{ __('New client', 'manageentities') }}</h4>
+                    <p class="text-muted">{{ __('Create a new entity, contacts, contract and service periods.', 'manageentities') }}</p>
+                    <button type="button" class="btn btn-primary mt-2">
+                        <i class="ti ti-arrow-right me-1"></i>{{ __('Start', 'manageentities') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-5">
+            <div class="card h-100 border-2" style="cursor:pointer"
+                 onclick="wizardChooseMode('existing_entity', WIZARD_URL)">
+                <div class="card-body text-center py-5">
+                    <i class="ti ti-file-plus text-success" style="font-size:3rem"></i>
+                    <h4 class="mt-3">{{ __('New contract', 'manageentities') }}</h4>
+                    <p class="text-muted">{{ __('Add a new contract and service periods to an existing client.', 'manageentities') }}</p>
+                    <button type="button" class="btn btn-success mt-2">
+                        <i class="ti ti-arrow-right me-1"></i>{{ __('Start', 'manageentities') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    var WIZARD_URL = {{ wizard_url|json_encode|raw }};
+</script>

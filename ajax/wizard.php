@@ -105,6 +105,10 @@ switch ($action) {
         WizardController::deleteStakeholder();
         break;
 
+    case 'choose_mode':
+        WizardController::chooseMode();
+        break;
+
     case 'get_reset_summary':
         WizardController::getResetSummary();
         break;

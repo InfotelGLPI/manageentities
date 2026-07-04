@@ -64,6 +64,7 @@ class WizardController
     public static function buildDefaultSession(): array
     {
         return [
+            'wizard_mode'        => '',  // '' = choice not made | 'new_entity' | 'existing_entity'
             'step'               => 1,
             'entities_id'        => 0,
             'contracts_id'       => 0,
@@ -79,6 +80,8 @@ class WizardController
         if (!isset($_SESSION[self::SESSION_KEY]) || !is_array($_SESSION[self::SESSION_KEY])) {
             $_SESSION[self::SESSION_KEY] = self::buildDefaultSession();
         }
+        // Merge defaults so keys added after a session was created are always present
+        $_SESSION[self::SESSION_KEY] = array_merge(self::buildDefaultSession(), $_SESSION[self::SESSION_KEY]);
         return $_SESSION[self::SESSION_KEY];
     }
 
@@ -156,14 +159,73 @@ class WizardController
     }
 
     // -------------------------------------------------------------------------
+    // Mode choice (landing page before step 1)
+    // -------------------------------------------------------------------------
+
+    public static function renderModeChoice(): void
+    {
+        $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php';
+        TemplateRenderer::getInstance()->display('@manageentities/wizard/mode_choice.html.twig', [
+            'wizard_url' => $wizard_url,
+        ]);
+    }
+
+    public static function chooseMode(): void
+    {
+        header('Content-Type: application/json');
+        echo json_encode(self::chooseModeAndReturn($_POST));
+        exit;
+    }
+
+    public static function chooseModeAndReturn(array $input = []): array
+    {
+        if (empty($input)) {
+            $input = $_POST;
+        }
+        $mode = $input['wizard_mode'] ?? '';
+        if (!in_array($mode, ['new_entity', 'existing_entity'], true)) {
+            return ['success' => false, 'message' => __('Invalid wizard mode', 'manageentities')];
+        }
+        $session = self::getSession();
+        $session['wizard_mode'] = $mode;
+        self::saveSession($session);
+        return ['success' => true];
+    }
+
+    // -------------------------------------------------------------------------
     // Step 1 — Entity
     // -------------------------------------------------------------------------
 
     public static function saveEntity(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::saveEntityAndReturn($_POST));
+        $session = self::getSession();
+        if ($session['wizard_mode'] === 'existing_entity') {
+            echo json_encode(self::saveSelectEntityAndReturn($_POST));
+        } else {
+            echo json_encode(self::saveEntityAndReturn($_POST));
+        }
         exit;
+    }
+
+    public static function saveSelectEntityAndReturn(array $input = []): array
+    {
+        if (empty($input)) {
+            $input = $_POST;
+        }
+        $entities_id = (int)($input['entities_id'] ?? 0);
+        if ($entities_id <= 0) {
+            return ['success' => false, 'errors' => ['entities_id' => __('Please select an entity', 'manageentities')]];
+        }
+        $entity = new \Entity();
+        if (!$entity->getFromDB($entities_id)) {
+            return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
+        }
+        $session = self::getSession();
+        $session['entities_id'] = $entities_id;
+        $session['step']        = max($session['step'], 3); // skip contacts step
+        self::saveSession($session);
+        return ['success' => true, 'entities_id' => $entities_id, 'step' => $session['step']];
     }
 
     public static function saveEntityAndReturn(array $input = []): array
@@ -1193,9 +1255,9 @@ class WizardController
         $session = self::getSession();
         $items   = [];
 
-        // Entity
+        // Entity — only show when we created it (not in existing_entity mode)
         $entities_id = (int)($session['entities_id'] ?? 0);
-        if ($entities_id > 0) {
+        if ($entities_id > 0 && ($session['wizard_mode'] ?? '') !== 'existing_entity') {
             $e = new \Entity();
             if ($e->getFromDB($entities_id)) {
                 $items[] = [
@@ -1366,9 +1428,9 @@ class WizardController
             $c->delete(['id' => $contact_id], true);
         }
 
-        // Entity (last)
+        // Entity — only delete if we created it (not in existing_entity mode)
         $entities_id = (int)($session['entities_id'] ?? 0);
-        if ($entities_id > 0) {
+        if ($entities_id > 0 && ($session['wizard_mode'] ?? '') !== 'existing_entity') {
             $e = new \Entity();
             $e->delete(['id' => $entities_id], true);
         }
@@ -1390,10 +1452,22 @@ class WizardController
 
     public static function renderStep(): void
     {
+        // Fresh arrival (no ?step= in URL) always resets the session and shows the mode choice
+        if (!isset($_GET['step'])) {
+            unset($_SESSION[self::SESSION_KEY]);
+        }
+
         $session = self::getSession();
-        $step    = (int)($_GET['step'] ?? $session['step']);
+
+        // Show mode choice page when no mode selected yet
+        if ($session['wizard_mode'] === '') {
+            self::renderModeChoice();
+            return;
+        }
+
+        $step = (int)($_GET['step'] ?? $session['step']);
         // clamp 1-5
-        $step    = max(1, min(5, $step));
+        $step = max(1, min(5, $step));
 
         $config  = Config::getInstance();
         $is_day  = ($config->fields['hourorday'] == Config::DAY);
@@ -1401,15 +1475,24 @@ class WizardController
 
         $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php';
 
-        $steps = [
-            1 => __('Entity', 'manageentities'),
-            2 => __('Contacts', 'manageentities'),
-            3 => __('Contract', 'manageentities'),
-            4 => __('Management type', 'manageentities'),
-            5 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
-        ];
+        if ($session['wizard_mode'] === 'existing_entity') {
+            $steps = [
+                1 => __('Entity', 'manageentities'),
+                3 => __('Contract', 'manageentities'),
+                4 => __('Management type', 'manageentities'),
+                5 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
+            ];
+        } else {
+            $steps = [
+                1 => __('Entity', 'manageentities'),
+                2 => __('Contacts', 'manageentities'),
+                3 => __('Contract', 'manageentities'),
+                4 => __('Management type', 'manageentities'),
+                5 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
+            ];
+        }
 
-        $step_template = '@manageentities/wizard/step' . $step . '_' . self::stepSlug($step) . '.html.twig';
+        $step_template = '@manageentities/wizard/step' . $step . '_' . self::stepSlug($step, $session['wizard_mode']) . '.html.twig';
         $rand          = mt_rand();
 
         $vars = [
@@ -1418,6 +1501,7 @@ class WizardController
             'steps'       => $steps,
             'session'     => $session,
             'wizard_url'  => $wizard_url,
+            'wizard_mode' => $session['wizard_mode'],
             'rand'        => $rand,
             'is_day'      => $is_day,
             'is_hour'     => $is_hour,
@@ -1428,11 +1512,15 @@ class WizardController
         TemplateRenderer::getInstance()->display('@manageentities/wizard/layout.html.twig', array_merge($vars, [
             'step_template' => $step_template,
             'step_vars'     => $vars,
+            'redirect_url'  => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
         ]));
     }
 
-    private static function stepSlug(int $step): string
+    private static function stepSlug(int $step, string $wizard_mode = ''): string
     {
+        if ($step === 1 && $wizard_mode === 'existing_entity') {
+            return 'select_entity';
+        }
         return match ($step) {
             1 => 'entity',
             2 => 'contacts',
@@ -1461,6 +1549,12 @@ class WizardController
 
     private static function buildEntityVars(array $session, int $rand): array
     {
+        if ($session['wizard_mode'] === 'existing_entity') {
+            return [
+                'entity_select_html' => self::buildEntityHtml('entities_id', $session['entities_id'], $rand),
+            ];
+        }
+
         $entity = new \Entity();
         if ($session['entities_id'] > 0) {
             $entity->getFromDB($session['entities_id']);

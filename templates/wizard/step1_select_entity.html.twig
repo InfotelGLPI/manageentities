@@ -1,0 +1,53 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+{#
+ Step 1 (existing_entity mode) — Select an existing entity
+ Variables: entity_select_html, rand, wizard_url
+ #}
+
+<div class="card">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-building-search me-1"></i>
+        <h3 class="card-title mb-0">{{ __('Select an existing entity', 'manageentities') }}</h3>
+    </div>
+    <div class="card-body">
+        <div id="step1-errors" class="alert alert-danger d-none"></div>
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold">
+                    {{ __('Entity') }} <span class="text-danger">*</span>
+                </label>
+                {{ entity_select_html|raw }}
+            </div>
+        </div>
+    </div>
+    <div class="card-footer d-flex gap-2 justify-content-end">
+        <button type="button" class="btn btn-primary" onclick="wizardSaveStep(1, '{{ wizard_url }}')">
+            <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
+        </button>
+    </div>
+</div>
