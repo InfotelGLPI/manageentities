@@ -15,7 +15,7 @@
         <span class="ms-auto text-muted small" id="remaining-label-{{ contractday_id }}">
             {{ __('Remaining', 'manageentities') }} :
             <strong id="remaining-days-{{ contractday_id }}">{{ remaining_days|number_format(2) }}</strong>
-            / {{ credit|number_format(2) }} {{ __('days', 'managentities') }}
+            / {{ credit|number_format(2) }} {{ __('days', 'manageentities') }}
         </span>
         {% endif %}
     </div>
@@ -24,7 +24,7 @@
         {% for sh in stakeholders %}
         <div class="d-flex align-items-center gap-2 mb-1 stakeholder-row" data-id="{{ sh.id }}">
             <span class="badge bg-outline-secondary">{{ sh.user_name }}</span>
-            <span class="text-muted small">{{ sh.number_affected_days|number_format(2) }} {{ _n('day', 'days', sh.number_affected_days, 'managentities') }}</span>
+            <span class="text-muted small">{{ sh.number_affected_days|number_format(2) }} {{ _n('day', 'days', sh.number_affected_days, 'manageentities') }}</span>
             <button type="button" class="btn btn-sm btn-outline-danger"
                 onclick="wizardDeleteStakeholder({{ sh.id }}, this, '{{ wizard_url }}')">
                 <i class="ti ti-trash"></i>
@@ -40,7 +40,7 @@
         <input type="number" step="0.5" min="0" max="{{ remaining_days }}"
             id="new_nb_days_{{ contractday_id }}"
             class="form-control" style="width:110px"
-            placeholder="{{ __('Days', 'managentities') }}">
+            placeholder="{{ __('Days', 'manageentities') }}">
         <button type="button" class="btn btn-sm btn-outline-secondary"
             onclick="wizardAddStakeholder({{ contractday_id }}, {{ rand }}, '{{ wizard_url }}')">
             <i class="ti ti-plus me-1"></i>{{ __('Add user', 'manageentities') }}
