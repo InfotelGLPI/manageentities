@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-04 19:09+0000\n"
+"POT-Creation-Date: 2026-07-04 19:22+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -39,7 +39,7 @@ msgstr "(en heures)"
 msgid "+ 12 months"
 msgstr "+ 12 mois"
 
-#: src/WizardController.php:1592
+#: src/WizardController.php:1597
 msgid "-- Select a template --"
 msgstr "-- Sélectionner un gabarit --"
 
@@ -335,7 +335,7 @@ msgstr[0] "Contact"
 msgstr[1] "Contacts"
 msgstr[2] "Contacts"
 
-#: src/WizardController.php:1401
+#: src/WizardController.php:1406
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -344,7 +344,7 @@ msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 "Le contenu, la date de fin et de début sont obligatoires pour une tâche!"
 
-#: src/WizardController.php:1402 templates/contractday_form.html.twig:46
+#: src/WizardController.php:1407 templates/contractday_form.html.twig:46
 #: templates/wizard/step3_contract.html.twig:36
 #: templates/wizard/step5_intervention_block.html.twig:76
 msgid "Contract"
@@ -428,7 +428,7 @@ msgstr "Cachet client"
 
 #: src/Monthly.php:709 src/Monthly.php:745 src/CriPrice.php:59
 #: src/CriPrice.php:96 src/CriPrice.php:203 src/CriPrice.php:356
-#: src/CriType.php:93 src/WizardController.php:1264
+#: src/CriType.php:93 src/WizardController.php:1269
 #: templates/wizard/step5_criprices_section.html.twig:10
 msgid "Daily rate"
 msgstr "Tarif journalier"
@@ -515,7 +515,7 @@ msgstr "Heure par défaut (Après midi)"
 msgid "Delete"
 msgstr "Supprimer"
 
-#: templates/wizard/layout.html.twig:110
+#: templates/wizard/layout.html.twig:111
 msgid "Delete and reinitialize"
 msgstr "Supprimer et réinitialiser"
 
@@ -523,6 +523,10 @@ msgstr "Supprimer et réinitialiser"
 #: templates/contract_detail_form.html.twig:157
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
+
+#: templates/wizard/layout.html.twig:109
+msgid "Deleting…"
+msgstr "Suppression..."
 
 #: src/GenerateCRI.php:752
 msgid "Description"
@@ -597,7 +601,7 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 msgid "Entities portal"
 msgstr "Portail Clients"
 
-#: src/WizardController.php:1400 templates/directhelpdesk_form.html.twig:58
+#: src/WizardController.php:1405 templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
 #: templates/wizard/step2_contact_block.html.twig:89
@@ -633,7 +637,7 @@ msgstr "Erreur à la création de la prestation"
 msgid "Error creating management type"
 msgstr "Erreur à la création du type de gestion"
 
-#: src/WizardController.php:1128
+#: src/WizardController.php:1133
 msgid "Error saving price"
 msgstr "Erreur de sauvegarde du prix"
 
@@ -892,7 +896,7 @@ msgstr[0] "Gestion des catégories de tâches"
 msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
-#: src/Contract.php:65 src/WizardController.php:1403
+#: src/Contract.php:65 src/WizardController.php:1408
 #: templates/contract_detail_form.html.twig:44
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
@@ -1040,7 +1044,7 @@ msgstr "Nombres de déplacements"
 msgid "Object of intervention"
 msgstr "Objet de l'intervention"
 
-#: src/WizardController.php:1122
+#: src/WizardController.php:1127
 msgid "Only one rate is allowed per service period"
 msgstr "Seulement un seul tarif est autorisé par prestation"
 
@@ -1089,7 +1093,7 @@ msgstr "Commentaires de la prestation"
 #: src/Entity.php:127 src/Config.php:556 src/ContractDay.php:61
 #: src/ContractDay.php:63 src/ContractDay.php:480 src/Followup.php:921
 #: src/Followup.php:1177 src/WizardController.php:806
-#: src/WizardController.php:1256 src/WizardController.php:1404
+#: src/WizardController.php:1261 src/WizardController.php:1409
 #: templates/contractday_form.html.twig:52
 #: templates/wizard/step5_interventions.html.twig:35
 #: templates/wizard/step5_intervention_block.html.twig:13
@@ -1235,6 +1239,10 @@ msgstr "Précédent"
 #: templates/wizard/step5_criprices_section.html.twig:38
 msgid "Price"
 msgstr "Prix"
+
+#: src/WizardController.php:1104
+msgid "Price must be greater than 0"
+msgstr "Le prix doit être supérieur à 0"
 
 #: src/Monthly.php:714 src/Monthly.php:751
 msgid "Production"
@@ -1657,7 +1665,7 @@ msgstr "Utilisé par défaut"
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/WizardController.php:827 src/WizardController.php:1280
+#: src/WizardController.php:827 src/WizardController.php:1285
 #: src/InterventionStakeholder.php:53
 #: templates/wizard/step5_stakeholders_section.html.twig:11
 msgid "User affected"
