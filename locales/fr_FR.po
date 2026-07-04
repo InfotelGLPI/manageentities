@@ -200,7 +200,7 @@ msgstr "Au moins une prestation avec un tarif est requis"
 
 #: templates/wizard/step3_contract.html.twig:105
 msgid "Attach documents"
-msgstr "Attacher des docuements"
+msgstr "Attacher des documents"
 
 #: templates/cridetail_for_ticket.html.twig:112
 #: templates/contractday_form.html.twig:64
