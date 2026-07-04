@@ -50,7 +50,7 @@ use GlpiPlugin\Manageentities\TicketTask;
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
     define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
-    $root = $CFG_GLPI['root_doc'] . '/plugins/manageentities';
+    $root = $CFG_GLPI['root_doc'] . Plugin::getPhpDir('manageentities', false);
     define("PLUGIN_MANAGEENTITIES_WEBDIR", $root);
 }
 
@@ -163,6 +163,7 @@ function plugin_init_manageentities()
                 [
                     'scripts/scripts-manageentities.js',
                     'scripts/jquery.form.js',
+                    'scripts/wizard.js',
                 ]
             );
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
@@ -184,6 +185,7 @@ function plugin_init_manageentities()
 //
 //         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/manageentities_load_scripts.js';
 //      }
+        $PLUGIN_HOOKS[Hooks::USE_MASSIVE_ACTION]['manageentities'] = true;
         $PLUGIN_HOOKS[Hooks::POST_INIT]['manageentities'] = 'plugin_manageentities_postinit';
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
             && isset($_SESSION['glpiactiveprofile']['interface'])

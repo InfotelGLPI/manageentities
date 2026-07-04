@@ -458,7 +458,12 @@ class WizardController
         $rand = mt_rand();
         $idx  = (int)($_POST['idx'] ?? 1);
 
-        $doccat_html = self::buildDocumentCategorySelect("documents[{$idx}][documentcategories_id]", $rand);
+        $cfg = Config::getInstance();
+        $doccat_html = self::buildDocumentCategorySelect(
+            "documents[{$idx}][documentcategories_id]",
+            $rand,
+            (int)($cfg->fields['wizard_documentcategories_id'] ?? 0)
+        );
 
         TemplateRenderer::getInstance()->display('@manageentities/wizard/step3_document_block.html.twig', [
             'idx'        => $idx,
@@ -1047,15 +1052,20 @@ class WizardController
         $is_day  = ($config->fields['hourorday'] == Config::DAY);
 
         $contractDates = self::getContractDates($session['contracts_id']);
+        $cfg = Config::getInstance();
         TemplateRenderer::getInstance()->display('@manageentities/wizard/step5_intervention_block.html.twig', [
             'idx'                  => $idx,
             'rand'                 => $rand,
             'is_day'               => $is_day,
             'contract_begin_date'  => $contractDates['begin_date'],
             'contract_end_date'    => $contractDates['end_date'],
-            'contractstate_html'   => self::buildContractStateHtml("interventions[{$idx}][plugin_manageentities_contractstates_id]", $rand),
+            'contractstate_html'   => self::buildContractStateHtml(
+                "interventions[{$idx}][plugin_manageentities_contractstates_id]",
+                $rand,
+                (int)($cfg->fields['wizard_contractstate_id'] ?? 0)
+            ),
             'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", 0, $rand)
+                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int)($cfg->fields['wizard_contract_type'] ?? 0), $rand)
             ) : '',
             'entities_html'        => self::buildEntityHtml("interventions[{$idx}][entities_id]", $session['entities_id'], $rand),
             'contracts_html'       => self::buildContractListHtml("interventions[{$idx}][contracts_id]", $session['contracts_id'], $session['entities_id'], $rand),
@@ -1292,6 +1302,9 @@ class WizardController
     {
         $session = self::getSession();
 
+        // Clear session immediately so it is always reset, even if deletions fail
+        unset($_SESSION[self::SESSION_KEY]);
+
         // Delete in child-first order to respect FK constraints
 
         foreach (($session['contractdays'] ?? []) as $cd_id) {
@@ -1354,8 +1367,6 @@ class WizardController
             $e = new \Entity();
             $e->delete(['id' => $entities_id], true);
         }
-
-        unset($_SESSION[self::SESSION_KEY]);
 
         return ['success' => true];
     }
@@ -1689,13 +1700,18 @@ class WizardController
     private static function buildEmptyInterventionVars(int $idx, int $rand, array $session, bool $is_day): array
     {
         $contractDates = self::getContractDates($session['contracts_id']);
+        $cfg = Config::getInstance();
         return [
             'fields'               => [],
             'contract_begin_date'  => $contractDates['begin_date'],
             'contract_end_date'    => $contractDates['end_date'],
-            'contractstate_html'   => self::buildContractStateHtml("interventions[{$idx}][plugin_manageentities_contractstates_id]", $rand),
+            'contractstate_html'   => self::buildContractStateHtml(
+                "interventions[{$idx}][plugin_manageentities_contractstates_id]",
+                $rand,
+                (int)($cfg->fields['wizard_contractstate_id'] ?? 0)
+            ),
             'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", 0, $rand)
+                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int)($cfg->fields['wizard_contract_type'] ?? 0), $rand)
             ) : '',
             'entities_html'        => self::buildEntityHtml("interventions[{$idx}][entities_id]", $session['entities_id'], $rand),
             'contracts_html'       => self::buildContractListHtml("interventions[{$idx}][contracts_id]", $session['contracts_id'], $session['entities_id'], $rand),
@@ -1812,6 +1828,7 @@ class WizardController
                 fn() => Dropdown::show(CriType::class, [
                     'name'    => 'new_critype_' . $contractday_id,
                     'rand'    => $rand,
+                    'value'   => (int)(Config::getInstance()->fields['wizard_critype_id'] ?? 0),
                     'display' => false,
                 ])
             ),

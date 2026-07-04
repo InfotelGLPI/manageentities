@@ -229,22 +229,54 @@ class Config extends CommonDBTM
         ob_start(); \Dropdown::showYesNo('allow_same_periods', $this->fields['allow_same_periods']); $allow_same_periods_html = ob_get_clean();
         ob_start(); \Dropdown::showYesNo('comment', $this->fields['comment']); $comment_html = ob_get_clean();
 
+        ob_start();
+        \Dropdown::show(ContractState::class, [
+            'name'  => 'wizard_contractstate_id',
+            'value' => $this->fields['wizard_contractstate_id'] ?? 0,
+        ]);
+        $wizard_contractstate_html = ob_get_clean();
+
+        ob_start();
+        \Dropdown::show(CriType::class, [
+            'name'  => 'wizard_contract_type',
+            'value' => $this->fields['wizard_contract_type'] ?? 0,
+        ]);
+        $wizard_contract_type_html = ob_get_clean();
+
+        ob_start();
+        \Dropdown::show(CriType::class, [
+            'name'  => 'wizard_critype_id',
+            'value' => $this->fields['wizard_critype_id'] ?? 0,
+        ]);
+        $wizard_critype_html = ob_get_clean();
+
+        ob_start();
+        \Dropdown::show('DocumentCategory', [
+            'name'  => 'wizard_documentcategories_id',
+            'value' => $this->fields['wizard_documentcategories_id'] ?? 0,
+        ]);
+        $wizard_documentcategory_html = ob_get_clean();
+
         TemplateRenderer::getInstance()->display(
             '@manageentities/config_options_form.html.twig',
             [
-                'form_url'                  => Toolbox::getItemTypeFormURL(Config::class),
-                'hourorday_html'            => $hourorday_html,
-                'documentcategory_html'     => $documentcategory_html,
-                'choice_intervention_html'  => $choice_intervention_html,
-                'contract_states_html'      => $contract_states_html,
-                'business_html'             => $business_html,
-                'backup_html'               => $backup_html,
-                'useprice_html'             => $useprice_html,
-                'use_publictask_html'       => $use_publictask_html,
-                'allow_same_periods_html'   => $allow_same_periods_html,
+                'form_url'                      => Toolbox::getItemTypeFormURL(Config::class),
+                'hourorday_html'                => $hourorday_html,
+                'documentcategory_html'         => $documentcategory_html,
+                'choice_intervention_html'      => $choice_intervention_html,
+                'contract_states_html'          => $contract_states_html,
+                'business_html'                 => $business_html,
+                'backup_html'                   => $backup_html,
+                'useprice_html'                 => $useprice_html,
+                'use_publictask_html'           => $use_publictask_html,
+                'allow_same_periods_html'       => $allow_same_periods_html,
                 'comment_html'                  => $comment_html,
                 'closed_contractstate_html'     => $closed_contractstate_html,
                 'closed_glpi_state_html'        => $closed_glpi_state_html,
+                'wizard_contractstate_html'     => $wizard_contractstate_html,
+                'wizard_contract_type_html'     => $wizard_contract_type_html,
+                'wizard_critype_html'           => $wizard_critype_html,
+                'wizard_documentcategory_html'  => $wizard_documentcategory_html,
             ]
         );
     }

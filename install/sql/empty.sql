@@ -82,6 +82,10 @@ CREATE TABLE `glpi_plugin_manageentities_configs` (
    `disable_date_header` tinyint NOT NULL default '0',
    `closed_contractstate_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractstates (id) — state applied to contract periods when closing',
    `closed_glpi_state_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_states (id) — GLPI contract state that triggers period closure and is set when all periods are closed',
+   `wizard_contractstate_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractstates (id) — default intervention state in wizard',
+   `wizard_contract_type` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_critypes (id) — default intervention type in wizard',
+   `wizard_critype_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_critypes (id) — default CriType for rate in wizard',
+   `wizard_documentcategories_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id) — default document category in wizard',
    PRIMARY KEY  (`id`),
    KEY `documentcategories_id` (`documentcategories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

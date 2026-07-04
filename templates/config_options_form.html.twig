@@ -136,6 +136,62 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
 
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-wand"></i>
+            <strong>{{ __('Wizard defaults', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default intervention state', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ wizard_contractstate_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('Pre-selected state when creating a service period in the wizard.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default intervention type', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ wizard_contract_type_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('Pre-selected intervention type when creating a service period in the wizard.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default rate type', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ wizard_critype_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('Pre-selected rate type when adding a daily/hourly rate in the wizard.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default document category', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ wizard_documentcategory_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('Pre-selected document category when attaching a document in the wizard.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
             <i class="ti ti-lock"></i>
             <strong>{{ __('Contract closure', 'manageentities') }}</strong>
         </div>

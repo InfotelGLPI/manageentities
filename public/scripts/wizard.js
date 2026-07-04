@@ -226,12 +226,22 @@ function wizardConfirmFinish(url) {
         confirmBtn.disabled = true;
         confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>';
     }
-    // Session already saved by save_interventions above — just redirect
-    if (redirectUrl) {
-        window.location.href = redirectUrl;
-    } else {
-        reloadStep(1, url);
-    }
+    // Clear wizard session server-side before redirecting
+    wizardFetch(url, { action: 'reset' })
+        .then(function () {
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else {
+                reloadStep(1, url);
+            }
+        })
+        .catch(function () {
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else {
+                reloadStep(1, url);
+            }
+        });
 }
 
 function wizardLoadResetSummary(url) {

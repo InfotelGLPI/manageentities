@@ -338,14 +338,16 @@ function plugin_manageentities_install()
     }
 
     //version 4.2.2
+    if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "wizard_contractstate_id")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.2.2.sql");
+    }
+
+
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
         include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
         addRemainingDaysColumn();
     }
 
-    if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "active_editor_suscription")) {
-        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-add-subscription-fields.sql");
-    }
 
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
     if (!is_dir($rep_files_manageentities)) {
