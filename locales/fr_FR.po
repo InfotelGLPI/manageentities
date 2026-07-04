@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-04 19:29+0000\n"
+"POT-Creation-Date: 2026-07-04 20:07+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -39,7 +39,7 @@ msgstr "(en heures)"
 msgid "+ 12 months"
 msgstr "+ 12 mois"
 
-#: src/WizardController.php:1597
+#: src/WizardController.php:1691
 msgid "-- Select a template --"
 msgstr "-- Sélectionner un gabarit --"
 
@@ -87,6 +87,11 @@ msgstr "Ajouter un contrat"
 msgid "Add a document"
 msgstr "Ajouter un document"
 
+#: templates/wizard/mode_choice.html.twig:60
+msgid "Add a new contract and service periods to an existing client."
+msgstr ""
+"Ajouter un nouveau contrat et de nouvelles prestations à un client existant."
+
 #: src/CriPrice.php:311
 msgid "Add a new price"
 msgstr "Ajouter un nouveau tarif"
@@ -103,7 +108,7 @@ msgstr "Ajouter un intervenant"
 msgid "Add an unbilled intervention"
 msgstr "Ajouter une intervention non facturée"
 
-#: templates/wizard/step5_criprices_section.html.twig:48
+#: templates/wizard/step5_criprices_section.html.twig:49
 msgid "Add rate"
 msgstr "Ajouter un tarif"
 
@@ -194,7 +199,7 @@ msgstr "Rapports d'intervention associés"
 msgid "Associated ticket"
 msgstr "Ticket associé"
 
-#: src/WizardController.php:719 src/WizardController.php:724
+#: src/WizardController.php:781 src/WizardController.php:786
 msgid "At least one service period with a rate is required"
 msgstr "Au moins une prestation avec un tarif est requis"
 
@@ -208,7 +213,7 @@ msgstr "Attacher des documents"
 msgid "Begin date"
 msgstr "Date de début"
 
-#: src/WizardController.php:146
+#: src/WizardController.php:149
 msgid "Begin date is required"
 msgstr "La date de début est obligatoire"
 
@@ -224,11 +229,11 @@ msgstr "Génération du CRI"
 msgid "CRI generation form"
 msgstr "Formulaire de génération de CRI"
 
-#: templates/wizard/layout.html.twig:77 templates/wizard/layout.html.twig:106
+#: templates/wizard/layout.html.twig:77 templates/wizard/layout.html.twig:107
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/WizardController.php:953
+#: src/WizardController.php:1015
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -315,7 +320,7 @@ msgstr "Configuration journalière ou horaire"
 msgid "Configuring the client side view"
 msgstr "Configuration de la vue coté client"
 
-#: templates/wizard/layout.html.twig:81
+#: templates/wizard/layout.html.twig:82
 msgid "Confirm and finish"
 msgstr "Confirmer et terminer"
 
@@ -335,7 +340,7 @@ msgstr[0] "Contact"
 msgstr[1] "Contacts"
 msgstr[2] "Contacts"
 
-#: src/WizardController.php:1406
+#: src/WizardController.php:1488
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -344,7 +349,8 @@ msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 "Le contenu, la date de fin et de début sont obligatoires pour une tâche!"
 
-#: src/WizardController.php:1407 templates/contractday_form.html.twig:46
+#: src/WizardController.php:1481 src/WizardController.php:1489
+#: templates/contractday_form.html.twig:46
 #: templates/wizard/step3_contract.html.twig:36
 #: templates/wizard/step5_intervention_block.html.twig:76
 msgid "Contract"
@@ -368,7 +374,7 @@ msgstr "Le contrat est importé dans GLPI"
 msgid "Contract number"
 msgstr "N° du contrat"
 
-#: src/WizardController.php:122
+#: src/WizardController.php:125
 msgid "Contract number is required"
 msgstr "Le numéro du contrat est obligatoire"
 
@@ -381,13 +387,17 @@ msgstr "Contrat présent"
 msgid "Contract type"
 msgstr "Type de contrat"
 
-#: src/WizardController.php:131
+#: src/WizardController.php:134
 msgid "Contract type is required"
 msgstr "Le type de contrat est obligatorie"
 
 #: templates/wizard/step1_entity.html.twig:94
 msgid "Country"
 msgstr "Etat"
+
+#: templates/wizard/mode_choice.html.twig:46
+msgid "Create a new entity, contacts, contract and service periods."
+msgstr "Créer un nouveau client, des contacts, un contrat et des prestations."
 
 #: src/CriPDF.php:268 src/CriPDF.php:285
 msgid "Created by"
@@ -428,7 +438,7 @@ msgstr "Cachet client"
 
 #: src/Monthly.php:709 src/Monthly.php:745 src/CriPrice.php:59
 #: src/CriPrice.php:96 src/CriPrice.php:203 src/CriPrice.php:356
-#: src/CriType.php:93 src/WizardController.php:1269
+#: src/CriType.php:93 src/WizardController.php:1331
 #: templates/wizard/step5_criprices_section.html.twig:10
 msgid "Daily rate"
 msgstr "Tarif journalier"
@@ -467,7 +477,8 @@ msgstr "Jours"
 
 #: templates/wizard/step5_criprice_block.html.twig:48
 #: templates/wizard/step5_criprices_section.html.twig:20
-#: templates/wizard/step5_criprices_section.html.twig:43
+#: templates/wizard/step5_criprices_section.html.twig:42
+#: templates/wizard/step5_criprices_section.html.twig:44
 msgid "Default"
 msgstr "Par défaut"
 
@@ -515,7 +526,7 @@ msgstr "Heure par défaut (Après midi)"
 msgid "Delete"
 msgstr "Supprimer"
 
-#: templates/wizard/layout.html.twig:111
+#: templates/wizard/layout.html.twig:112
 msgid "Delete and reinitialize"
 msgstr "Supprimer et réinitialiser"
 
@@ -524,7 +535,7 @@ msgstr "Supprimer et réinitialiser"
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
-#: templates/wizard/layout.html.twig:109
+#: templates/wizard/layout.html.twig:110
 msgid "Deleting…"
 msgstr "Suppression..."
 
@@ -557,7 +568,7 @@ msgstr "Afficher les commentaires de la société dans le CRI"
 msgid "Duration"
 msgstr "Durée"
 
-#: src/WizardController.php:128
+#: src/WizardController.php:131
 msgid "Duration is required"
 msgstr "La durée est obligatoire"
 
@@ -598,13 +609,16 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/cridetail.form.php:52 src/Profile.php:54 src/Profile.php:123
 #: src/GenerateCRI.php:1240 src/Monthly.php:1091 src/Preference.php:111
 #: src/TaskCategory.php:68 src/Followup.php:2187 setup.php:203
+#: templates/wizard/mode_choice.html.twig:34
 msgid "Entities portal"
 msgstr "Portail Clients"
 
-#: src/WizardController.php:1405 templates/directhelpdesk_form.html.twig:58
+#: src/WizardController.php:1480 src/WizardController.php:1487
+#: templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
 #: templates/wizard/step2_contact_block.html.twig:89
+#: templates/wizard/step1_select_entity.html.twig:42
 #: templates/wizard/step3_contract.html.twig:90
 #: templates/wizard/step5_intervention_block.html.twig:72
 msgid "Entity"
@@ -613,43 +627,47 @@ msgstr[0] "Entité"
 msgstr[1] "Entités"
 msgstr[2] "Entités"
 
-#: src/WizardController.php:964
+#: src/WizardController.php:222
+msgid "Entity not found"
+msgstr "Entité non trouvée"
+
+#: src/WizardController.php:1026
 msgid "Error adding stakeholder"
 msgstr "Erreur à l'ajout d'intervenants"
 
-#: src/WizardController.php:283
+#: src/WizardController.php:345
 msgid "Error creating contact"
 msgstr "Erreur à l'ajout du contact"
 
-#: src/WizardController.php:445
+#: src/WizardController.php:507
 msgid "Error creating contract"
 msgstr "Erreur à l'ajout du contrat"
 
-#: src/WizardController.php:208
+#: src/WizardController.php:270
 msgid "Error creating entity"
 msgstr "Erreur à la création de l'entité"
 
-#: src/WizardController.php:707 src/WizardController.php:878
+#: src/WizardController.php:769 src/WizardController.php:940
 msgid "Error creating intervention"
 msgstr "Erreur à la création de la prestation"
 
-#: src/WizardController.php:636
+#: src/WizardController.php:698
 msgid "Error creating management type"
 msgstr "Erreur à la création du type de gestion"
 
-#: src/WizardController.php:1133
+#: src/WizardController.php:1195
 msgid "Error saving price"
 msgstr "Erreur de sauvegarde du prix"
 
-#: src/WizardController.php:439
+#: src/WizardController.php:501
 msgid "Error updating contract"
 msgstr "Erreur à la mise à jour du contrat"
 
-#: src/WizardController.php:202
+#: src/WizardController.php:264
 msgid "Error updating entity"
 msgstr "Erreur à la mise à jour de l'entité"
 
-#: src/WizardController.php:630
+#: src/WizardController.php:692
 msgid "Error updating management type"
 msgstr "Erreur à la mise à jour du type de gestion"
 
@@ -669,7 +687,7 @@ msgstr "Fax"
 msgid "First name"
 msgstr "Prénom"
 
-#: src/WizardController.php:110
+#: src/WizardController.php:113
 msgid "First name is required"
 msgstr "Le prénom est obligatoire"
 
@@ -778,7 +796,7 @@ msgstr[2] "Interventions"
 msgid "Intervention date"
 msgstr "Date d'intervention"
 
-#: src/WizardController.php:1099
+#: src/WizardController.php:1161
 msgid "Intervention not saved yet"
 msgstr "La prestation n'est pas encore sauvée"
 
@@ -816,7 +834,7 @@ msgstr[0] "Type d'intervention"
 msgstr[1] "Types d'intervention"
 msgstr[2] "Types d'intervention"
 
-#: src/WizardController.php:153
+#: src/WizardController.php:156
 msgid "Intervention type is required"
 msgstr "Le type d'intervention est obligatoire"
 
@@ -833,6 +851,10 @@ msgstr "Rapports d'interventions"
 msgid "Interventions with old contract"
 msgstr "Interventions sur des contrats terminés"
 
+#: src/WizardController.php:187
+msgid "Invalid wizard mode"
+msgstr "Mode wizard invalide"
+
 #: src/DirectHelpdesk.php:670 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr "Est facturée"
@@ -846,7 +868,7 @@ msgstr "Utilisé par défaut"
 msgid "Last name"
 msgstr "Nom"
 
-#: src/WizardController.php:107
+#: src/WizardController.php:110
 msgid "Last name is required"
 msgstr "Le nom est obligatoire"
 
@@ -896,8 +918,8 @@ msgstr[0] "Gestion des catégories de tâches"
 msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
-#: src/Contract.php:65 src/WizardController.php:1408
-#: templates/contract_detail_form.html.twig:44
+#: src/Contract.php:65 src/WizardController.php:1482
+#: src/WizardController.php:1490 templates/contract_detail_form.html.twig:44
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
 msgstr "Type de gestion"
@@ -906,7 +928,7 @@ msgstr "Type de gestion"
 msgid "Manager (main contact)"
 msgstr "Responsable (contact principal)"
 
-#: src/WizardController.php:923
+#: src/WizardController.php:985
 msgid "Missing required fields"
 msgstr "Des champs obligatoires sont manquants"
 
@@ -936,10 +958,18 @@ msgstr "Gestion des déplacements"
 msgid "Name"
 msgstr "Nom"
 
-#: src/WizardController.php:98 src/WizardController.php:119
-#: src/WizardController.php:143
+#: src/WizardController.php:101 src/WizardController.php:122
+#: src/WizardController.php:146
 msgid "Name is required"
 msgstr "Le nom est requis"
+
+#: templates/wizard/mode_choice.html.twig:45
+msgid "New client"
+msgstr "Nouveau client"
+
+#: templates/wizard/mode_choice.html.twig:59
+msgid "New contract"
+msgstr "Nouveau contrat"
 
 #: templates/wizard/step1_entity.html.twig:35
 msgid "New entity"
@@ -952,6 +982,7 @@ msgstr "Nouvelle prestation"
 #: templates/wizard/step2_contacts.html.twig:59
 #: templates/wizard/step1_entity.html.twig:108
 #: templates/wizard/step4_management.html.twig:153
+#: templates/wizard/step1_select_entity.html.twig:50
 #: templates/wizard/step3_contract.html.twig:123
 msgid "Next"
 msgstr "Suivant"
@@ -1028,7 +1059,7 @@ msgstr "Non sauvé"
 msgid "Nothing to display"
 msgstr "Rien à afficher"
 
-#: src/WizardController.php:927
+#: src/WizardController.php:989
 msgid "Number of days must be greater than 0"
 msgstr "Le nombre de jours doit être supérieur à 0"
 
@@ -1044,7 +1075,7 @@ msgstr "Nombres de déplacements"
 msgid "Object of intervention"
 msgstr "Objet de l'intervention"
 
-#: src/WizardController.php:1127
+#: src/WizardController.php:1189
 msgid "Only one rate is allowed per service period"
 msgstr "Seulement un seul tarif est autorisé par prestation"
 
@@ -1092,9 +1123,9 @@ msgstr "Commentaires de la prestation"
 
 #: src/Entity.php:127 src/Config.php:556 src/ContractDay.php:61
 #: src/ContractDay.php:63 src/ContractDay.php:480 src/Followup.php:921
-#: src/Followup.php:1177 src/WizardController.php:806
-#: src/WizardController.php:1261 src/WizardController.php:1409
-#: templates/contractday_form.html.twig:52
+#: src/Followup.php:1177 src/WizardController.php:868
+#: src/WizardController.php:1323 src/WizardController.php:1483
+#: src/WizardController.php:1491 templates/contractday_form.html.twig:52
 #: templates/wizard/step5_interventions.html.twig:35
 #: templates/wizard/step5_intervention_block.html.twig:13
 msgid "Period of contract"
@@ -1103,7 +1134,7 @@ msgstr[0] "Prestation du contrat"
 msgstr[1] "Prestations de contrat"
 msgstr[2] "Prestations de contrat"
 
-#: src/WizardController.php:733
+#: src/WizardController.php:795
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
@@ -1165,6 +1196,10 @@ msgstr ""
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 "Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
+
+#: src/WizardController.php:218
+msgid "Please select an entity"
+msgstr "Veuillez sélectionner une entité"
 
 #: src/Gantt.php:224
 msgid "Please wait"
@@ -1240,7 +1275,7 @@ msgstr "Précédent"
 msgid "Price"
 msgstr "Prix"
 
-#: src/WizardController.php:1104
+#: src/WizardController.php:1166
 msgid "Price must be greater than 0"
 msgstr "Le prix doit être supérieur à 0"
 
@@ -1273,7 +1308,7 @@ msgstr "Regénérer le rapport d'intervention"
 msgid "Reinitialize"
 msgstr "Réinitialiser"
 
-#: templates/wizard/layout.html.twig:94
+#: templates/wizard/layout.html.twig:95
 msgid "Reinitialize wizard"
 msgstr "Réinitialisation du wizard"
 
@@ -1341,7 +1376,7 @@ msgstr "Sauver et terminer"
 msgid "Save reports in glpi"
 msgstr "Sauvegarder les rapports dans glpi"
 
-#: src/WizardController.php:499 src/WizardController.php:604
+#: src/WizardController.php:561 src/WizardController.php:666
 msgid "Save the contract first"
 msgstr "Sauver en premier le contrat"
 
@@ -1360,6 +1395,10 @@ msgstr "Intervention planifiée"
 #: src/DirectHelpdesk_Ticket.php:143
 msgid "Select"
 msgstr "Sélection"
+
+#: templates/wizard/step1_select_entity.html.twig:35
+msgid "Select an existing entity"
+msgstr "Sélectionner une entité existante"
 
 #: templates/criprice_form.html.twig:59
 msgid "Select an existing price"
@@ -1386,11 +1425,16 @@ msgstr "Nom de la société"
 msgid "Stakeholder successfully updated."
 msgstr "L'intervenant a bien été ajouté."
 
+#: templates/wizard/mode_choice.html.twig:48
+#: templates/wizard/mode_choice.html.twig:62
+msgid "Start"
+msgstr "Commencer"
+
 #: templates/wizard/step3_contract.html.twig:71
 msgid "Start date"
 msgstr "Date de début"
 
-#: src/WizardController.php:125
+#: src/WizardController.php:128
 msgid "Start date is required"
 msgstr "La date de début est obligatoire"
 
@@ -1404,7 +1448,7 @@ msgstr ""
 "Statuts appliqué aux périodes contractuelles lorsque le contrat GLPI est "
 "clôturé"
 
-#: src/WizardController.php:149
+#: src/WizardController.php:152
 msgid "State is required"
 msgstr "L'état est obligatoire"
 
@@ -1430,7 +1474,7 @@ msgstr "État du ticket créé"
 msgid "Status"
 msgstr "Statut"
 
-#: src/WizardController.php:134
+#: src/WizardController.php:137
 msgid "Status is required"
 msgstr "Le statut est obligatoire"
 
@@ -1492,7 +1536,7 @@ msgstr "Merci de sélectionner un type d'intervention"
 msgid "The contract period %s already exists"
 msgstr "La prestation du contrat %s existe déja"
 
-#: templates/wizard/layout.html.twig:99
+#: templates/wizard/layout.html.twig:100
 msgid ""
 "The following items created during this wizard will be permanently deleted:"
 msgstr ""
@@ -1665,7 +1709,7 @@ msgstr "Utilisé par défaut"
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/WizardController.php:827 src/WizardController.php:1285
+#: src/WizardController.php:889 src/WizardController.php:1347
 #: src/InterventionStakeholder.php:53
 #: templates/wizard/step5_stakeholders_section.html.twig:11
 msgid "User affected"
@@ -1674,7 +1718,7 @@ msgstr[0] "Utilisateur affecté"
 msgstr[1] "Utilisateurs affectés"
 msgstr[2] "Utilisateurs affectés"
 
-#: src/WizardController.php:946
+#: src/WizardController.php:1008
 msgid "User already added"
 msgstr "Intervenant déjà ajouté"
 
@@ -1705,6 +1749,10 @@ msgstr ""
 #: templates/wizard/step1_entity.html.twig:68
 msgid "Website"
 msgstr "Site web"
+
+#: templates/wizard/mode_choice.html.twig:35
+msgid "What would you like to do?"
+msgstr "Que souhaitez-vous faire ?"
 
 #: templates/config_options_form.html.twig:202
 msgid ""
