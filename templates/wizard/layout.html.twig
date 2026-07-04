@@ -106,6 +106,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                     {{ __('Cancel') }}
                 </button>
                 <button type="button" class="btn btn-danger" id="wizard-reset-confirm-btn"
+                        data-label-deleting="{{ __('Deleting…', 'manageentities') }}"
                         onclick="wizardConfirmReset('{{ wizard_url }}')">
                     <i class="ti ti-trash me-1"></i>{{ __('Delete and reinitialize', 'manageentities') }}
                 </button>

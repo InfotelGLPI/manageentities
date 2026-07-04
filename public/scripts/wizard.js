@@ -278,7 +278,7 @@ function wizardLoadResetSummary(url) {
 
 function wizardConfirmReset(url) {
     var btn = document.getElementById('wizard-reset-confirm-btn');
-    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Deleting…'; }
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>' + (btn.dataset.labelDeleting || 'Deleting…'); }
     wizardFetch(url, { action: 'reset_and_delete' })
         .then(function (r) { return r.json(); })
         .then(function () { reloadStep(1, url); })
@@ -362,6 +362,9 @@ function wizardAddCriPrice(contractdayId, rand, url) {
     var defEl     = document.getElementById('new_is_default_' + contractdayId);
 
     if (!critypeEl || !priceEl) return;
+    var priceVal = parseFloat(priceEl.value);
+    if (!priceVal || priceVal <= 0) { priceEl.focus(); priceEl.classList.add('is-invalid'); return; }
+    priceEl.classList.remove('is-invalid');
 
     wizardFetch(url, {
         action:                                 'save_criprice',

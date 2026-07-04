@@ -17,7 +17,7 @@
         <div class="d-flex align-items-center gap-2 mb-2 criprice-row" data-id="{{ cp.id }}">
             <span class="badge bg-outline-secondary">{{ cp.critypes_name ?? cp.plugin_manageentities_critypes_id }}</span>
             <strong>{{ cp.price|number_format(2) }}</strong>
-            {% if cp.is_default %}<span class="badge bg-outline-primary">{{ __('Default') }}</span>{% endif %}
+            {% if cp.is_default %}<span class="badge bg-outline-primary">{{ __('Default', 'managentities') }}</span>{% endif %}
             <button type="button" class="btn btn-sm btn-outline-danger"
                 onclick="deleteCriPrice({{ cp.id }}, this, '{{ wizard_url }}')">
                 <i class="ti ti-trash"></i>

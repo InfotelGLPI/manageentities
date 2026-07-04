@@ -1099,6 +1099,11 @@ class WizardController
             return ['success' => false, 'message' => __('Intervention not saved yet', 'manageentities')];
         }
 
+        $price = (float)($input['price'] ?? 0);
+        if ($price <= 0) {
+            return ['success' => false, 'message' => __('Price must be greater than 0', 'manageentities')];
+        }
+
         $contractDay = new ContractDay();
         $contractDay->getFromDB($contractday_id);
 
@@ -1107,7 +1112,7 @@ class WizardController
             'plugin_manageentities_contractdays_id' => $contractday_id,
             'entities_id'                           => $contractDay->fields['entities_id'],
             'plugin_manageentities_critypes_id'     => (int)($input['plugin_manageentities_critypes_id'] ?? 0),
-            'price'                                 => (float)($input['price'] ?? 0),
+            'price'                                 => $price,
             'is_default'                            => (int)(bool)($input['is_default'] ?? 0),
         ];
 
@@ -1651,10 +1656,11 @@ class WizardController
             'duration_moving_html' => $duration_moving_html,
             'is_hour_mode'         => $is_hour,
             'is_day_price'         => $is_day,
-            'show_on_global_gantt'     => (bool)($fields['show_on_global_gantt'] ?? true),
+            // Default to checked for new records; use stored value when editing
+            'show_on_global_gantt'     => $session['plugin_contract_id'] > 0 ? (bool)$fields['show_on_global_gantt'] : true,
             'refacturable_costs'       => (bool)($fields['refacturable_costs'] ?? false),
             'contract_added'           => (bool)($fields['contract_added'] ?? false),
-            'active_editor_suscription'=> (bool)($fields['active_editor_suscription'] ?? true),
+            'active_editor_suscription'=> $session['plugin_contract_id'] > 0 ? (bool)$fields['active_editor_suscription'] : true,
             'cloud_client'             => (bool)($fields['cloud_client'] ?? false),
             'internet_publication'     => (bool)($fields['internet_publication'] ?? false),
             'moving_management'        => (bool)($fields['moving_management'] ?? false),
