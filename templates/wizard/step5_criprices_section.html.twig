@@ -35,12 +35,12 @@
         <input type="number" step="0.01" min="0"
             id="new_price_{{ contractday_id }}"
             class="form-control" style="width:130px"
-            placeholder="{{ __('Price') }}">
+            placeholder="{{ __('Price', 'managentities') }}">
         <div class="form-check form-switch mb-0 ms-1">
             <input type="checkbox" class="form-check-input"
                 id="new_is_default_{{ contractday_id }}" value="1" checked>
             <label class="form-check-label" for="new_is_default_{{ contractday_id }}">
-                {{ __('Default') }}
+                {{ __('Default', 'managentities') }}
             </label>
         </div>
         <button type="button" class="btn btn-sm btn-outline-primary"
