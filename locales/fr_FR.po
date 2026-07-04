@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-04 12:10+0000\n"
+"POT-Creation-Date: 2026-07-04 19:09+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -1267,7 +1267,7 @@ msgstr "Réinitialiser"
 
 #: templates/wizard/layout.html.twig:94
 msgid "Reinitialize wizard"
-msgstr "Wizard de réinitialisation"
+msgstr "réinitialisation du wizard"
 
 #: templates/wizard/step5_stakeholders_section.html.twig:16
 msgid "Remaining"
