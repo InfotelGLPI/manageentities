@@ -56,6 +56,32 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
 
 </div>
 
+{# Entity already exists modal #}
+<div class="modal fade" id="wizard-entity-exists-modal" tabindex="-1" aria-labelledby="wizard-entity-exists-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="wizard-entity-exists-label">
+                    <i class="ti ti-alert-triangle me-2 text-warning"></i>{{ __('Entity already exists', 'manageentities') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="wizard-entity-exists-msg" class="mb-0"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ __('Cancel') }}
+                </button>
+                <button type="button" class="btn btn-primary" id="wizard-entity-exists-confirm-btn"
+                        data-label-confirm="{{ __('Use this entity', 'manageentities') }}">
+                    <i class="ti ti-arrow-right me-1"></i>{{ __('Use this entity', 'manageentities') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {# Finish confirmation modal #}
 <div class="modal fade" id="wizard-finish-modal" tabindex="-1" aria-labelledby="wizard-finish-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -120,5 +146,6 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
     var WIZARD_URL = {{ wizard_url|json_encode|raw }};
     var WIZARD_I18N = {
         nothingToDisplay: {{ __('Nothing to display.', 'manageentities')|json_encode|raw }},
+        entityExistsMsg:  {{ __('The entity "%s" already exists. Do you want to use it to create a new contract?', 'manageentities')|json_encode|raw }},
     };
 </script>

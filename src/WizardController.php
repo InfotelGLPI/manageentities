@@ -246,6 +246,17 @@ class WizardController
             }
             $entities_id = $session['entities_id'];
         } else {
+            // Check for an existing entity with the same name at the same level before attempting add
+            $existing = $entity->find(['name' => $data['name'], 'entities_id' => $data['entities_id']], [], 1);
+            if (!empty($existing)) {
+                $existing_entity = reset($existing);
+                return [
+                    'success'       => false,
+                    'entity_exists' => true,
+                    'entities_id'   => (int)$existing_entity['id'],
+                    'entity_name'   => $existing_entity['name'],
+                ];
+            }
             $entities_id = $entity->add($data);
             if (!$entities_id) {
                 return ['success' => false, 'message' => __('Error creating entity', 'manageentities')];
@@ -740,7 +751,10 @@ class WizardController
                 'comment'                                => $iInput['comment'] ?? '',
             ];
 
-            $data['contract_type'] = (int)($iInput['contract_type'] ?? 0);
+            $contractType = (int)($iInput['contract_type'] ?? 0);
+            if ($contractType > 0) {
+                $data['contract_type'] = $contractType;
+            }
 
             $existing_id = (int)($session['contractdays'][$idx] ?? 0);
             if ($existing_id > 0) {
@@ -926,7 +940,10 @@ class WizardController
             'charged'                                 => (int)(bool)($iInput['charged'] ?? 0),
             'comment'                                 => $iInput['comment'] ?? '',
         ];
-        $data['contract_type'] = (int)($iInput['contract_type'] ?? 0);
+        $contractType = (int)($iInput['contract_type'] ?? 0);
+        if ($contractType > 0) {
+            $data['contract_type'] = $contractType;
+        }
 
         $existing_id = (int)($session['contractdays'][$idx] ?? 0);
         if ($existing_id > 0) {

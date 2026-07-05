@@ -151,12 +151,47 @@ function wizardSaveStep(step, url) {
 
 function handleStepResponse(step, res, url) {
     if (!res.success) {
+        if (res.entity_exists && step === 1) {
+            wizardPromptUseExistingEntity(res.entities_id, res.entity_name, url);
+            return;
+        }
         showStepErrors(step, res.errors || res.message || 'Error');
         return;
     }
     // Server may skip steps (e.g. existing_entity mode jumps step 1 → step 3)
     var nextStep = (res.step && res.step > step) ? res.step : (step < 5 ? step + 1 : step);
     reloadStep(nextStep, url);
+}
+
+function wizardPromptUseExistingEntity(entitiesId, entityName, url) {
+    var modal = document.getElementById('wizard-entity-exists-modal');
+    var msgEl = document.getElementById('wizard-entity-exists-msg');
+    var btn   = document.getElementById('wizard-entity-exists-confirm-btn');
+    if (!modal || !msgEl || !btn) return;
+
+    msgEl.textContent = WIZARD_I18N.entityExistsMsg.replace('%s', entityName);
+
+    var newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.addEventListener('click', function () {
+        bootstrap.Modal.getInstance(modal).hide();
+        wizardFetch(url, { action: 'choose_mode', wizard_mode: 'existing_entity' })
+            .then(function (r) { return r.json(); })
+            .then(function () {
+                return wizardFetch(url, { action: 'save_entity', entities_id: entitiesId });
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res.success) {
+                    reloadStep(res.step || 3, url);
+                } else {
+                    showStepErrors(1, res.errors || res.message || 'Error');
+                }
+            })
+            .catch(function () { showStepErrors(1, 'Network error'); });
+    });
+
+    new bootstrap.Modal(modal).show();
 }
 
 function wizardBack(step, url) {
