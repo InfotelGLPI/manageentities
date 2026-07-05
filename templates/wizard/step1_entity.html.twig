@@ -41,7 +41,16 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Name') }} <span class="text-danger">*</span></label>
                 <input type="text" name="name" class="form-control" required
+                    autocomplete="off"
+                    {% if name_suggestions is not empty %}list="entity-name-suggestions"{% endif %}
                     value="{{ entity_fields.name ?? '' }}">
+                {% if name_suggestions is not empty %}
+                    <datalist id="entity-name-suggestions">
+                        {% for suggestion in name_suggestions %}
+                            <option value="{{ suggestion }}">
+                        {% endfor %}
+                    </datalist>
+                {% endif %}
             </div>
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Parent entity', 'manageentities') }}</label>

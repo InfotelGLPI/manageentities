@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use Contact as GlpiContact;
 use ContactType;
 use ContractType as GlpiContractType;
+use DbUtils;
 use Document;
 use DocumentCategory;
 use Dropdown;
@@ -1591,10 +1592,16 @@ class WizardController
             ? (int)($entity->fields['entities_id'] ?? 0)
             : $forced_entities_id;
 
+        // Build name suggestions for the datalist (filter by forced parent when configured)
+        $criteria = $forced_entities_id > 0 ? ['entities_id' => $forced_entities_id] : [];
+        $rows = $entity->find($criteria, ['name ASC'], 500);
+        $name_suggestions = array_column($rows, 'name');
+
         return [
-            'entity_fields'      => $entity->fields,
-            'entities_html'      => self::buildEntityHtml('entities_id', $parent_entities_id, $rand),
+            'entity_fields'        => $entity->fields,
+            'entities_html'        => self::buildEntityHtml('entities_id', $parent_entities_id, $rand),
             'parent_entity_locked' => $forced_entities_id > 0,
+            'name_suggestions'     => $name_suggestions,
         ];
     }
 
@@ -1719,12 +1726,24 @@ class WizardController
 
         $rand_tpl = mt_rand();
         ob_start();
+        $template_condition = ['is_template' => 1];
+        $config_forced_entity = (int)(Config::getInstance()->fields['wizard_default_entities_id'] ?? 0);
+        if ($config_forced_entity > 0) {
+            // Restrict to templates visible from the configured parent entity
+            // (the entity itself + all its ancestors, where templates are typically defined)
+            $dbu = new DbUtils();
+            $visible_entities = array_merge(
+                [$config_forced_entity],
+                array_keys($dbu->getAncestorsOf('glpi_entities', $config_forced_entity))
+            );
+            $template_condition['glpi_contracts.entities_id'] = $visible_entities;
+        }
         Dropdown::show(\Contract::class, [
             'name'       => '_contract_template_id',
             'rand'       => $rand_tpl,
             'value'      => 0,
             'emptylabel' => __('-- Select a template --', 'manageentities'),
-            'condition'  => ['is_template' => 1],
+            'condition'  => $template_condition,
             'displaywith'=> ['template_name'],
         ]);
         $template_dropdown_html = ob_get_clean();
