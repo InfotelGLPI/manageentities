@@ -481,13 +481,13 @@ class WizardController
             'use_saturday'       => (int)(bool)($input['use_saturday'] ?? 0),
             'use_sunday'         => (int)(bool)($input['use_sunday'] ?? 0),
             'states_id'          => (int)($input['states_id'] ?? 0),
-            'week_begin_hour'    => !empty($input['week_begin_hour'])     ? $input['week_begin_hour']     : 'NULL',
-            'week_end_hour'      => !empty($input['week_end_hour'])       ? $input['week_end_hour']       : 'NULL',
-            'saturday_begin_hour'=> !empty($input['saturday_begin_hour']) ? $input['saturday_begin_hour'] : 'NULL',
-            'saturday_end_hour'  => !empty($input['saturday_end_hour'])   ? $input['saturday_end_hour']   : 'NULL',
-            'sunday_begin_hour'  => !empty($input['sunday_begin_hour'])   ? $input['sunday_begin_hour']   : 'NULL',
-            'sunday_end_hour'    => !empty($input['sunday_end_hour'])     ? $input['sunday_end_hour']     : 'NULL',
         ];
+
+        foreach (['week_begin_hour', 'week_end_hour', 'saturday_begin_hour', 'saturday_end_hour', 'sunday_begin_hour', 'sunday_end_hour'] as $hourField) {
+            if (!empty($input[$hourField])) {
+                $data[$hourField] = $input[$hourField];
+            }
+        }
 
         $existing_id = $session['contracts_id'];
         if ($existing_id > 0) {
