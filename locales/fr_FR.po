@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-05 08:24+0000\n"
+"POT-Creation-Date: 2026-07-05 08:30+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -199,7 +199,7 @@ msgstr "Rapports d'intervention associés"
 msgid "Associated ticket"
 msgstr "Ticket associé"
 
-#: src/WizardController.php:791 src/WizardController.php:796
+#: src/WizardController.php:806
 msgid "At least one service period with a rate is required"
 msgstr "Au moins une prestation avec un tarif est requis"
 
@@ -213,7 +213,7 @@ msgstr "Attacher des documents"
 msgid "Begin date"
 msgstr "Date de début"
 
-#: src/WizardController.php:149
+#: src/WizardController.php:134
 msgid "Begin date is required"
 msgstr "La date de début est obligatoire"
 
@@ -374,10 +374,6 @@ msgstr "Le contrat est importé dans GLPI"
 msgid "Contract number"
 msgstr "N° du contrat"
 
-#: src/WizardController.php:125
-msgid "Contract number is required"
-msgstr "Le numéro du contrat est obligatoire"
-
 #: src/Gantt.php:344 src/Followup.php:1076
 msgid "Contract present"
 msgstr "Contrat présent"
@@ -386,10 +382,6 @@ msgstr "Contrat présent"
 #: templates/wizard/step3_contract.html.twig:81
 msgid "Contract type"
 msgstr "Type de contrat"
-
-#: src/WizardController.php:134
-msgid "Contract type is required"
-msgstr "Le type de contrat est obligatorie"
 
 #: templates/wizard/step1_entity.html.twig:94
 msgid "Country"
@@ -572,10 +564,6 @@ msgstr "Afficher les commentaires de la société dans le CRI"
 msgid "Duration"
 msgstr "Durée"
 
-#: src/WizardController.php:131
-msgid "Duration is required"
-msgstr "La durée est obligatoire"
-
 #: templates/contract_detail_form.html.twig:139
 #: templates/wizard/step4_management.html.twig:140
 msgid "Duration of moving"
@@ -631,7 +619,7 @@ msgstr[0] "Entité"
 msgstr[1] "Entités"
 msgstr[2] "Entités"
 
-#: src/WizardController.php:227
+#: src/WizardController.php:212
 msgid "Entity not found"
 msgstr "Entité non trouvée"
 
@@ -639,23 +627,23 @@ msgstr "Entité non trouvée"
 msgid "Error adding stakeholder"
 msgstr "Erreur à l'ajout d'intervenants"
 
-#: src/WizardController.php:350
+#: src/WizardController.php:335
 msgid "Error creating contact"
 msgstr "Erreur à l'ajout du contact"
 
-#: src/WizardController.php:517
+#: src/WizardController.php:502
 msgid "Error creating contract"
 msgstr "Erreur à l'ajout du contrat"
 
-#: src/WizardController.php:275
+#: src/WizardController.php:260
 msgid "Error creating entity"
 msgstr "Erreur à la création de l'entité"
 
-#: src/WizardController.php:779 src/WizardController.php:955
+#: src/WizardController.php:764 src/WizardController.php:955
 msgid "Error creating intervention"
 msgstr "Erreur à la création de la prestation"
 
-#: src/WizardController.php:708
+#: src/WizardController.php:693
 msgid "Error creating management type"
 msgstr "Erreur à la création du type de gestion"
 
@@ -663,15 +651,15 @@ msgstr "Erreur à la création du type de gestion"
 msgid "Error saving price"
 msgstr "Erreur de sauvegarde du prix"
 
-#: src/WizardController.php:511
+#: src/WizardController.php:496
 msgid "Error updating contract"
 msgstr "Erreur à la mise à jour du contrat"
 
-#: src/WizardController.php:269
+#: src/WizardController.php:254
 msgid "Error updating entity"
 msgstr "Erreur à la mise à jour de l'entité"
 
-#: src/WizardController.php:702
+#: src/WizardController.php:687
 msgid "Error updating management type"
 msgstr "Erreur à la mise à jour du type de gestion"
 
@@ -838,7 +826,7 @@ msgstr[0] "Type d'intervention"
 msgstr[1] "Types d'intervention"
 msgstr[2] "Types d'intervention"
 
-#: src/WizardController.php:161
+#: src/WizardController.php:146
 msgid "Intervention type is required"
 msgstr "Le type d'intervention est obligatoire"
 
@@ -855,7 +843,7 @@ msgstr "Rapports d'interventions"
 msgid "Interventions with old contract"
 msgstr "Interventions sur des contrats terminés"
 
-#: src/WizardController.php:192
+#: src/WizardController.php:177
 msgid "Invalid wizard mode"
 msgstr "Mode wizard invalide"
 
@@ -963,7 +951,7 @@ msgid "Name"
 msgstr "Nom"
 
 #: src/WizardController.php:101 src/WizardController.php:122
-#: src/WizardController.php:146
+#: src/WizardController.php:131
 msgid "Name is required"
 msgstr "Le nom est requis"
 
@@ -1138,7 +1126,7 @@ msgstr[0] "Prestation du contrat"
 msgstr[1] "Prestations de contrat"
 msgstr[2] "Prestations de contrat"
 
-#: src/WizardController.php:805
+#: src/WizardController.php:815
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
@@ -1201,7 +1189,7 @@ msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 "Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
 
-#: src/WizardController.php:223
+#: src/WizardController.php:208
 msgid "Please select an entity"
 msgstr "Veuillez sélectionner une entité"
 
@@ -1386,7 +1374,7 @@ msgstr "Sauver et terminer"
 msgid "Save reports in glpi"
 msgstr "Sauvegarder les rapports dans glpi"
 
-#: src/WizardController.php:571 src/WizardController.php:676
+#: src/WizardController.php:556 src/WizardController.php:661
 msgid "Save the contract first"
 msgstr "Sauver en premier le contrat"
 
@@ -1444,10 +1432,6 @@ msgstr "Commencer"
 msgid "Start date"
 msgstr "Date de début"
 
-#: src/WizardController.php:128
-msgid "Start date is required"
-msgstr "La date de début est obligatoire"
-
 #: templates/wizard/step1_entity.html.twig:89
 msgid "State"
 msgstr "Etat"
@@ -1458,7 +1442,7 @@ msgstr ""
 "Statut appliqué aux périodes contractuelles lorsque le contrat GLPI est "
 "clôturé"
 
-#: src/WizardController.php:152
+#: src/WizardController.php:137
 msgid "State is required"
 msgstr "L'état est obligatoire"
 
@@ -1483,10 +1467,6 @@ msgstr "État du ticket créé"
 #: templates/wizard/step5_intervention_block.html.twig:59
 msgid "Status"
 msgstr "Statut"
-
-#: src/WizardController.php:137
-msgid "Status is required"
-msgstr "Le statut est obligatoire"
 
 #: src/Preference.php:160
 msgid "Status list contract for the general monitoring"
