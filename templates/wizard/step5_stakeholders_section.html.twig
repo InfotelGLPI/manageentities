@@ -1,10 +1,10 @@
 {#
  Stakeholders section — rendered server-side and injected via AJAX after saving an intervention.
- Variables: contractday_id, rand, stakeholders (with user_name), wizard_url, user_html,
+ Variables: intervention_idx, rand, stakeholders (with user_name), wizard_url, user_html,
             credit, remaining_days
  #}
 
-<div class="wizard-stakeholders-section mt-3" id="stakeholders-section-{{ contractday_id }}">
+<div class="wizard-stakeholders-section mt-3" id="stakeholders-section-{{ intervention_idx }}">
     <div class="d-flex align-items-center gap-2 mb-2">
         <h4 class="mb-0">
             <i class="ti ti-users me-1"></i>
@@ -12,15 +12,15 @@
             <small class="text-muted fw-normal ms-1">{{ __('Optional') }}</small>
         </h4>
         {% if credit > 0 %}
-        <span class="ms-auto text-muted small" id="remaining-label-{{ contractday_id }}">
+        <span class="ms-auto text-muted small" id="remaining-label-{{ intervention_idx }}">
             {{ __('Remaining', 'manageentities') }} :
-            <strong id="remaining-days-{{ contractday_id }}">{{ remaining_days|number_format(2) }}</strong>
+            <strong id="remaining-days-{{ intervention_idx }}">{{ remaining_days|number_format(2) }}</strong>
             / {{ credit|number_format(2) }} {{ __('days', 'manageentities') }}
         </span>
         {% endif %}
     </div>
 
-    <div id="stakeholders-list-{{ contractday_id }}">
+    <div id="stakeholders-list-{{ intervention_idx }}">
         {% for sh in stakeholders %}
         <div class="d-flex align-items-center gap-2 mb-1 stakeholder-row" data-id="{{ sh.id }}">
             <span class="badge bg-outline-secondary">{{ sh.user_name }}</span>
@@ -34,15 +34,15 @@
     </div>
 
     {# Inline add form — hidden when no days remain (no d-flex: Bootstrap !important would override display:none) #}
-    <div class="align-items-center gap-2 mt-2 flex-wrap" id="stakeholders-form-{{ contractday_id }}"
+    <div class="align-items-center gap-2 mt-2 flex-wrap" id="stakeholders-form-{{ intervention_idx }}"
         style="{{ credit > 0 and remaining_days is not null and remaining_days <= 0 ? 'display:none' : 'display:flex' }}">
         <div style="min-width:220px">{{ user_html|raw }}</div>
         <input type="number" step="0.5" min="0" max="{{ remaining_days }}"
-            id="new_nb_days_{{ contractday_id }}"
+            id="new_nb_days_{{ intervention_idx }}"
             class="form-control" style="width:110px"
             placeholder="{{ __('Days', 'manageentities') }}">
         <button type="button" class="btn btn-sm btn-outline-secondary"
-            onclick="wizardAddStakeholder({{ contractday_id }}, {{ rand }}, '{{ wizard_url }}')">
+            onclick="wizardAddStakeholder({{ intervention_idx }}, {{ rand }}, '{{ wizard_url }}')">
             <i class="ti ti-plus me-1"></i>{{ __('Add user', 'manageentities') }}
         </button>
     </div>

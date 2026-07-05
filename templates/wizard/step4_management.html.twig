@@ -47,8 +47,8 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
         <div class="row g-3">
 
             <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Date of signature', 'manageentities') }}</label>
-                <input type="date" name="date_signature" class="form-control" value="{{ date_signature ?? '' }}">
+                <label class="col-form-label fw-bold">{{ __('Date of signature', 'manageentities') }} <span class="text-danger">*</span></label>
+                <input type="date" name="date_signature" class="form-control" required value="{{ date_signature ?? '' }}">
             </div>
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Date of renewal', 'manageentities') }}</label>

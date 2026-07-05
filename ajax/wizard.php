@@ -77,6 +77,10 @@ switch ($action) {
         WizardController::finishWizard();
         break;
 
+    case 'commit_wizard':
+        WizardController::commitWizard();
+        break;
+
     case 'add_intervention_block':
         WizardController::renderInterventionBlock();
         break;

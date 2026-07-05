@@ -1,9 +1,9 @@
 {#
  CriPrices section — rendered server-side and injected via AJAX after saving an intervention.
- Variables: contractday_id, rand, is_day, criprices, wizard_url, critype_html
+ Variables: intervention_idx, rand, is_day, criprices, wizard_url, critype_html
  #}
 
-<div class="wizard-criprices-section mt-3" id="criprices-section-{{ contractday_id }}">
+<div class="wizard-criprices-section mt-3" id="criprices-section-{{ intervention_idx }}">
     <div class="d-flex align-items-center gap-2 mb-2">
         <h4 class="mb-0">
             <i class="ti ti-coin me-1"></i>
@@ -12,7 +12,7 @@
         </h4>
     </div>
 
-    <div id="criprices-list-{{ contractday_id }}">
+    <div id="criprices-list-{{ intervention_idx }}">
         {% for cp in criprices %}
         <div class="d-flex align-items-center gap-2 mb-2 criprice-row" data-id="{{ cp.id }}">
             <span class="badge bg-outline-secondary">{{ cp.critypes_name ?? cp.plugin_manageentities_critypes_id }}</span>
@@ -24,28 +24,28 @@
             </button>
         </div>
         {% else %}
-        <p class="text-muted small mb-2" id="no-criprices-{{ contractday_id }}">{{ __('No rate defined yet', 'manageentities') }}</p>
+        <p class="text-muted small mb-2" id="no-criprices-{{ intervention_idx }}">{{ __('No rate defined yet', 'manageentities') }}</p>
         {% endfor %}
     </div>
 
     {# Inline add form — hidden when a rate already exists (no d-flex: Bootstrap !important overrides display:none) #}
-    <div class="align-items-center gap-2 mt-2 flex-wrap" id="criprices-form-{{ contractday_id }}"
+    <div class="align-items-center gap-2 mt-2 flex-wrap" id="criprices-form-{{ intervention_idx }}"
         style="{{ has_rate ? 'display:none' : 'display:flex' }}">
         <div style="min-width:200px">{{ critype_html|raw }}</div>
         <input type="number" step="0.01" min="0"
-            id="new_price_{{ contractday_id }}"
+            id="new_price_{{ intervention_idx }}"
             class="form-control" style="width:130px"
             placeholder="{{ __('Price', 'manageentities') }}">
         <div class="form-check form-switch mb-0 ms-1">
             <input type="checkbox" class="form-check-input"
-                id="new_is_default_{{ contractday_id }}" value="1" checked
+                id="new_is_default_{{ intervention_idx }}" value="1" checked
                 data-label-default="{{ __('Default', 'manageentities') }}">
-            <label class="form-check-label" for="new_is_default_{{ contractday_id }}">
+            <label class="form-check-label" for="new_is_default_{{ intervention_idx }}">
                 {{ __('Default', 'manageentities') }}
             </label>
         </div>
         <button type="button" class="btn btn-sm btn-outline-primary"
-            onclick="wizardAddCriPrice({{ contractday_id }}, {{ rand }}, '{{ wizard_url }}')">
+            onclick="wizardAddCriPrice({{ intervention_idx }}, {{ rand }}, '{{ wizard_url }}')">
             <i class="ti ti-plus me-1"></i>{{ __('Add rate', 'manageentities') }}
         </button>
     </div>

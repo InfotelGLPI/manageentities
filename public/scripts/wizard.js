@@ -235,7 +235,6 @@ function wizardLoadFinishSummary(url) {
             var summaryEl = document.getElementById('wizard-finish-summary');
             var confirmBtn = document.getElementById('wizard-finish-confirm-btn');
             if (confirmBtn) {
-                confirmBtn.dataset.redirectUrl = res.redirect_url || '';
                 confirmBtn.disabled = false;
             }
             var items = res.summary || [];
@@ -273,14 +272,23 @@ function wizardLoadFinishSummary(url) {
 
 function wizardConfirmFinish(url) {
     var confirmBtn = document.getElementById('wizard-finish-confirm-btn');
-    var redirectUrl = confirmBtn ? confirmBtn.dataset.redirectUrl : '';
     if (confirmBtn) {
         confirmBtn.disabled = true;
         confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>';
     }
-    // Clear wizard session server-side before redirecting
-    wizardFetch(url, { action: 'reset' })
-        .then(function () {
+    // Commit: write everything to DB then redirect
+    wizardFetch(url, { action: 'commit_wizard' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+            if (!res.success) {
+                if (confirmBtn) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = '<i class="ti ti-check me-1"></i>' + (confirmBtn.dataset.label || 'Confirm');
+                }
+                showStepErrors(5, res.errors || res.message || 'Error');
+                return;
+            }
+            var redirectUrl = res.redirect_url || '';
             if (redirectUrl) {
                 window.location.href = redirectUrl;
             } else {
@@ -288,11 +296,11 @@ function wizardConfirmFinish(url) {
             }
         })
         .catch(function () {
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            } else {
-                reloadStep(1, url);
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="ti ti-check me-1"></i>' + (confirmBtn.dataset.label || 'Confirm');
             }
+            showStepErrors(5, 'Network error');
         });
 }
 
@@ -305,22 +313,23 @@ function wizardLoadResetSummary(url) {
         .then(function (r) { return r.json(); })
         .then(function (res) {
             if (!summaryEl) return;
-            if (!res.success || !res.items || res.items.length === 0) {
-                summaryEl.innerHTML = '<p class="text-muted fst-italic">'
-                    + (res.items && res.items.length === 0
-                        ? 'Nothing has been created yet.'
-                        : 'Unable to load summary.')
-                    + '</p>';
+            if (!res.success) {
+                summaryEl.innerHTML = '<p class="text-muted fst-italic">Unable to load summary.</p>';
                 return;
             }
-            var html = '<ul class="list-group list-group-flush">';
-            res.items.forEach(function (item) {
-                html += '<li class="list-group-item d-flex align-items-center gap-2 px-0 py-1">'
-                    + '<span class="badge bg-outline-secondary" style="min-width:120px">' + _escHtml(item.type) + '</span>'
-                    + '<span>' + _escHtml(item.label) + '</span>'
-                    + '</li>';
-            });
-            html += '</ul>';
+            var html;
+            if (!res.items || res.items.length === 0) {
+                html = '<p class="text-muted fst-italic">No unsaved data in the current session.</p>';
+            } else {
+                html = '<ul class="list-group list-group-flush">';
+                res.items.forEach(function (item) {
+                    html += '<li class="list-group-item d-flex align-items-center gap-2 px-0 py-1">'
+                        + '<span class="badge bg-outline-secondary" style="min-width:120px">' + _escHtml(item.type) + '</span>'
+                        + '<span>' + _escHtml(item.label) + '</span>'
+                        + '</li>';
+                });
+                html += '</ul>';
+            }
             summaryEl.innerHTML = html;
         })
         .catch(function () {
@@ -384,8 +393,8 @@ function wizardSaveIntervention(idx, url) {
                 if (errEl) errEl.textContent = msgs;
                 return;
             }
-            // Update data-id on block
-            block.dataset.id = res.contractday_id;
+            // Update data-id on block (intervention_idx is the virtual key, no real DB id yet)
+            block.dataset.id = res.intervention_idx;
 
             // Replace unsaved badge with saved badge
             var badge = block.querySelector('#unsaved-badge-' + idx);
@@ -409,10 +418,10 @@ function wizardSaveIntervention(idx, url) {
 // CriPrice inline add
 // -------------------------------------------------------------------------
 
-function wizardAddCriPrice(contractdayId, rand, url) {
-    var critypeEl = document.getElementById('dropdown_new_critype_' + contractdayId + rand);
-    var priceEl   = document.getElementById('new_price_' + contractdayId);
-    var defEl     = document.getElementById('new_is_default_' + contractdayId);
+function wizardAddCriPrice(interventionIdx, rand, url) {
+    var critypeEl = document.getElementById('dropdown_new_critype_' + interventionIdx + rand);
+    var priceEl   = document.getElementById('new_price_' + interventionIdx);
+    var defEl     = document.getElementById('new_is_default_' + interventionIdx);
 
     if (!critypeEl || !priceEl) return;
     var priceVal = parseFloat(priceEl.value);
@@ -420,19 +429,19 @@ function wizardAddCriPrice(contractdayId, rand, url) {
     priceEl.classList.remove('is-invalid');
 
     wizardFetch(url, {
-        action:                                 'save_criprice',
-        plugin_manageentities_contractdays_id:  contractdayId,
-        plugin_manageentities_critypes_id:      critypeEl.value,
-        price:                                  priceEl.value,
-        is_default:                             defEl && defEl.checked ? '1' : '0',
-        criprice_id:                            '0',
+        action:           'save_criprice',
+        intervention_idx: interventionIdx,
+        plugin_manageentities_critypes_id: critypeEl.value,
+        price:            priceEl.value,
+        is_default:       defEl && defEl.checked ? '1' : '0',
+        criprice_id:      '0',
     })
         .then(function (r) { return r.json(); })
         .then(function (res) {
             if (!res.success) { alert(res.message || 'Error'); return; }
-            var listEl = document.getElementById('criprices-list-' + contractdayId);
+            var listEl = document.getElementById('criprices-list-' + interventionIdx);
             if (listEl) {
-                var noEl = document.getElementById('no-criprices-' + contractdayId);
+                var noEl = document.getElementById('no-criprices-' + interventionIdx);
                 if (noEl) noEl.remove();
                 var row = document.createElement('div');
                 row.className = 'd-flex align-items-center gap-2 mb-2 criprice-row';
@@ -440,13 +449,13 @@ function wizardAddCriPrice(contractdayId, rand, url) {
                 row.innerHTML = '<span class="badge bg-outline-secondary">' + (critypeEl.options[critypeEl.selectedIndex] ? critypeEl.options[critypeEl.selectedIndex].text : '') + '</span>'
                     + '<strong>' + parseFloat(priceEl.value).toFixed(2) + '</strong>'
                     + (defEl && defEl.checked ? '<span class="badge bg-outline-primary">' + (defEl.dataset.labelDefault || 'Default') + '</span>' : '')
-                    + '<button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCriPrice(' + res.criprice_id + ', this, \'' + url + '\')">'
+                    + '<button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCriPrice(\'' + res.criprice_id + '\', this, \'' + url + '\')">'
                     + '<i class="ti ti-trash"></i></button>';
                 listEl.appendChild(row);
                 priceEl.value = '';
                 if (defEl) defEl.checked = false;
                 // Hide the add form — only one rate allowed per intervention
-                var formEl = document.getElementById('criprices-form-' + contractdayId);
+                var formEl = document.getElementById('criprices-form-' + interventionIdx);
                 if (formEl) _toggleFlexForm(formEl, false);
             }
         });
@@ -468,24 +477,24 @@ function _toggleFlexForm(el, show) {
     }
 }
 
-function _updateRemainingDays(contractdayId, remaining, credit) {
+function _updateRemainingDays(interventionIdx, remaining, credit) {
     var hasLimit = credit !== undefined && credit !== null && parseFloat(credit) > 0;
-    var labelEl = document.getElementById('remaining-days-' + contractdayId);
+    var labelEl = document.getElementById('remaining-days-' + interventionIdx);
     if (labelEl && hasLimit && remaining !== null) {
         labelEl.textContent = parseFloat(remaining).toFixed(2);
     }
-    var daysEl = document.getElementById('new_nb_days_' + contractdayId);
+    var daysEl = document.getElementById('new_nb_days_' + interventionIdx);
     if (daysEl && hasLimit && remaining !== null) daysEl.max = remaining;
     // Use visibility class — Bootstrap d-flex uses !important which overrides inline style
     if (hasLimit && remaining !== null) {
-        var formEl = document.getElementById('stakeholders-form-' + contractdayId);
+        var formEl = document.getElementById('stakeholders-form-' + interventionIdx);
         if (formEl) _toggleFlexForm(formEl, parseFloat(remaining) > 0);
     }
 }
 
-function wizardAddStakeholder(contractdayId, rand, url) {
-    var userEl  = document.getElementById('dropdown_new_user_' + contractdayId + rand);
-    var daysEl  = document.getElementById('new_nb_days_' + contractdayId);
+function wizardAddStakeholder(interventionIdx, rand, url) {
+    var userEl  = document.getElementById('dropdown_new_user_' + interventionIdx + rand);
+    var daysEl  = document.getElementById('new_nb_days_' + interventionIdx);
 
     if (!userEl || !userEl.value) return;
     var nbDays = daysEl ? parseFloat(daysEl.value) : 0;
@@ -493,7 +502,7 @@ function wizardAddStakeholder(contractdayId, rand, url) {
 
     wizardFetch(url, {
         action:               'add_stakeholder',
-        contractday_id:       contractdayId,
+        intervention_idx:     interventionIdx,
         users_id:             userEl.value,
         number_affected_days: nbDays,
     })
@@ -502,37 +511,37 @@ function wizardAddStakeholder(contractdayId, rand, url) {
             if (!res.success) {
                 alert(res.message || 'Error');
                 if (res.remaining_days !== undefined) {
-                    _updateRemainingDays(contractdayId, res.remaining_days, res.credit);
+                    _updateRemainingDays(interventionIdx, res.remaining_days, res.credit);
                 }
                 return;
             }
-            var listEl = document.getElementById('stakeholders-list-' + contractdayId);
+            var listEl = document.getElementById('stakeholders-list-' + interventionIdx);
             if (listEl) {
                 var row = document.createElement('div');
                 row.className = 'd-flex align-items-center gap-2 mb-1 stakeholder-row';
                 row.dataset.id = res.stakeholder_id;
                 row.innerHTML = '<span class="badge bg-outline-secondary">' + res.user_name + '</span>'
                     + '<span class="text-muted small">' + parseFloat(res.number_affected_days).toFixed(2) + ' day(s)</span>'
-                    + '<button type="button" class="btn btn-sm btn-outline-danger" onclick="wizardDeleteStakeholder(' + res.stakeholder_id + ', this, \'' + url + '\')">'
+                    + '<button type="button" class="btn btn-sm btn-outline-danger" onclick="wizardDeleteStakeholder(\'' + res.stakeholder_id + '\', this, \'' + url + '\')">'
                     + '<i class="ti ti-trash"></i></button>';
                 listEl.appendChild(row);
                 if (daysEl) daysEl.value = '';
             }
-            _updateRemainingDays(contractdayId, res.remaining_days, res.credit);
+            _updateRemainingDays(interventionIdx, res.remaining_days, res.credit);
         });
 }
 
 function wizardDeleteStakeholder(id, btn, url) {
     var row = btn.closest('.stakeholder-row');
     var section = btn.closest('.wizard-stakeholders-section');
-    var contractdayId = section ? section.id.replace('stakeholders-section-', '') : null;
+    var interventionIdx = section ? section.id.replace('stakeholders-section-', '') : null;
 
     wizardFetch(url, { action: 'delete_stakeholder', stakeholder_id: id })
         .then(function (r) { return r.json(); })
         .then(function (res) {
             if (res.success) {
                 if (row) row.remove();
-                if (contractdayId) _updateRemainingDays(contractdayId, res.remaining_days, res.credit);
+                if (interventionIdx) _updateRemainingDays(interventionIdx, res.remaining_days, res.credit);
             }
         });
 }
@@ -642,8 +651,9 @@ function removeInterventionBlock(idx) {
 // CriPrice
 // -------------------------------------------------------------------------
 
-function addCriPriceBlock(contractdayId, interventionIdx, url) {
-    wizardFetch(url, { action: 'add_criprice_block', contractday_id: contractdayId })
+function addCriPriceBlock(interventionIdx, url) {
+    // Legacy — CriPrices are now added inline via wizardAddCriPrice(); this function is unused.
+    wizardFetch(url, { action: 'add_criprice_block', intervention_idx: interventionIdx })
         .then(function (r) { return r.text(); })
         .then(function (html) {
             var container = document.getElementById('criprices-container-' + interventionIdx);
@@ -692,12 +702,12 @@ function deleteCriPrice(id, btn, url) {
                 var block = btn.closest('.criprice-block, .criprice-row');
                 if (block) block.remove();
                 // Show/hide add form based on remaining rates
-                if (res.contractday_id) {
-                    var formEl = document.getElementById('criprices-form-' + res.contractday_id);
+                if (res.intervention_idx !== undefined) {
+                    var formEl = document.getElementById('criprices-form-' + res.intervention_idx);
                     if (formEl) {
                         _toggleFlexForm(formEl, !res.has_rate);
                         if (!res.has_rate) {
-                            var defEl = document.getElementById('new_is_default_' + res.contractday_id);
+                            var defEl = document.getElementById('new_is_default_' + res.intervention_idx);
                             if (defEl) defEl.checked = true;
                         }
                     }

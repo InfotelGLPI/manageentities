@@ -1,17 +1,17 @@
 {#
  One intervention (ContractDay) block.
  Variables: idx, rand, fields, contractstate_html, contract_type_html, entities_html,
-            contracts_html, contractday_id, is_day, contract_begin_date, contract_end_date,
+            contracts_html, intervention_idx, is_day, contract_begin_date, contract_end_date,
             criprices_section, stakeholders_section, wizard_url
  #}
 
-<div class="card mb-3 intervention-block" data-idx="{{ idx }}" data-id="{{ contractday_id }}"
+<div class="card mb-3 intervention-block" data-idx="{{ idx }}" data-id="{{ intervention_idx }}"
      id="intervention-block-{{ idx }}">
     <div class="card-header d-flex align-items-center gap-2">
         <i class="ti ti-calendar me-1"></i>
         <h5 class="card-title mb-0">
             {{ _n('Period of contract', 'Periods of contract', 1, 'manageentities') }} #{{ idx }}
-            {% if contractday_id %}
+            {% if criprices_section %}
                 <span class="badge bg-outline-success ms-2"><i class="ti ti-check"></i></span>
             {% else %}
                 <span class="badge bg-outline-warning text-dark ms-2" id="unsaved-badge-{{ idx }}">
@@ -40,14 +40,14 @@
                     value="{{ fields.begin_date ?? contract_begin_date ?? '' }}">
             </div>
             <div class="col-sm-4">
-                <label class="col-form-label fw-bold">{{ __('End date') }}</label>
-                <input type="date" name="interventions[{{ idx }}][end_date]" class="form-control"
+                <label class="col-form-label fw-bold">{{ __('End date') }} <span class="text-danger">*</span></label>
+                <input type="date" name="interventions[{{ idx }}][end_date]" class="form-control" required
                     value="{{ fields.end_date ?? contract_end_date ?? '' }}">
             </div>
 
             <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Initial credit', 'manageentities') }}</label>
-                <input type="number" step="0.5" name="interventions[{{ idx }}][nbday]" class="form-control"
+                <label class="col-form-label fw-bold">{{ __('Initial credit', 'manageentities') }} <span class="text-danger">*</span></label>
+                <input type="number" step="0.5" min="0" name="interventions[{{ idx }}][nbday]" class="form-control" required
                     value="{{ fields.nbday ?? '' }}">
             </div>
             <div class="col-sm-3">
