@@ -524,7 +524,7 @@ msgstr "Heure par défaut - Matin"
 
 #: src/Config.php:497 templates/config_cri_form.html.twig:82
 msgid "Default time PM"
-msgstr "Heure par défaut (Après midi)"
+msgstr "Heure par défaut - Après midi"
 
 #: src/InterventionStakeholder.php:205 src/InterventionStakeholder.php:268
 msgid "Delete"
