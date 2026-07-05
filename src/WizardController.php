@@ -481,12 +481,12 @@ class WizardController
             'use_saturday'       => (int)(bool)($input['use_saturday'] ?? 0),
             'use_sunday'         => (int)(bool)($input['use_sunday'] ?? 0),
             'states_id'          => (int)($input['states_id'] ?? 0),
-            'week_begin_hour'    => $input['week_begin_hour'] ?? '',
-            'week_end_hour'      => $input['week_end_hour'] ?? '',
-            'saturday_begin_hour'=> $input['saturday_begin_hour'] ?? '',
-            'saturday_end_hour'  => $input['saturday_end_hour'] ?? '',
-            'sunday_begin_hour'  => $input['sunday_begin_hour'] ?? '',
-            'sunday_end_hour'    => $input['sunday_end_hour'] ?? '',
+            'week_begin_hour'    => !empty($input['week_begin_hour'])     ? $input['week_begin_hour']     : 'NULL',
+            'week_end_hour'      => !empty($input['week_end_hour'])       ? $input['week_end_hour']       : 'NULL',
+            'saturday_begin_hour'=> !empty($input['saturday_begin_hour']) ? $input['saturday_begin_hour'] : 'NULL',
+            'saturday_end_hour'  => !empty($input['saturday_end_hour'])   ? $input['saturday_end_hour']   : 'NULL',
+            'sunday_begin_hour'  => !empty($input['sunday_begin_hour'])   ? $input['sunday_begin_hour']   : 'NULL',
+            'sunday_end_hour'    => !empty($input['sunday_end_hour'])     ? $input['sunday_end_hour']     : 'NULL',
         ];
 
         $existing_id = $session['contracts_id'];
@@ -749,9 +749,7 @@ class WizardController
                 'comment'                                => $iInput['comment'] ?? '',
             ];
 
-            if (!empty($iInput['contract_type'])) {
-                $data['plugin_manageentities_critypes_id'] = (int)$iInput['contract_type'];
-            }
+            $data['contract_type'] = (int)($iInput['contract_type'] ?? 0);
 
             $existing_id = (int)($session['contractdays'][$idx] ?? 0);
             if ($existing_id > 0) {
@@ -937,9 +935,7 @@ class WizardController
             'charged'                                 => (int)(bool)($iInput['charged'] ?? 0),
             'comment'                                 => $iInput['comment'] ?? '',
         ];
-        if (!empty($iInput['contract_type'])) {
-            $data['plugin_manageentities_critypes_id'] = (int)$iInput['contract_type'];
-        }
+        $data['contract_type'] = (int)($iInput['contract_type'] ?? 0);
 
         $existing_id = (int)($session['contractdays'][$idx] ?? 0);
         if ($existing_id > 0) {
@@ -1796,7 +1792,7 @@ class WizardController
                         $cd->fields['plugin_manageentities_contractstates_id'] ?? 0
                     ),
                     'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                        fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", $cd->fields['plugin_manageentities_critypes_id'] ?? 0, $rand)
+                        fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", $cd->fields['contract_type'] ?? 0, $rand)
                     ) : '',
                     'entities_html'        => self::buildEntityHtml("interventions[{$idx}][entities_id]", $cd->fields['entities_id'] ?? 0, $rand),
                     'contracts_html'       => self::buildContractListHtml("interventions[{$idx}][contracts_id]", $cd->fields['contracts_id'] ?? 0, $cd->fields['entities_id'] ?? 0, $rand),
