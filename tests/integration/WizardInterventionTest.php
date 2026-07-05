@@ -265,7 +265,7 @@ class WizardInterventionTest extends DbTestCase
 
     public function testCommitCreatesInterventionAndCripriceInDb(): void
     {
-        $this->login();
+        $this->login('glpi');
         $uid = $this->getUniqueString();
 
         WizardController::saveEntityAndReturn(['name' => "E-{$uid}", 'entities_id' => 0]);

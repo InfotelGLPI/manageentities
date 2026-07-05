@@ -48,7 +48,7 @@ class WizardFullFlowTest extends DbTestCase
 
     public function testCompleteWizardFlow(): void
     {
-        $this->login();
+        $this->login('glpi');
         $uid = $this->getUniqueString();
 
         // Step 1 — Entity (stored in session only)

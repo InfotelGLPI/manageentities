@@ -66,17 +66,15 @@ class WizardDocumentTest extends DbTestCase
         copy($tmp, $destPath);
         unlink($tmp);
 
-        $doc      = new Document();
-        $docInput = [
+        $doc    = new Document();
+        $doc_id = (int)$doc->add([
             'documentcategories_id' => 0,
             'entities_id'           => 0,
             'is_recursive'          => 0,
             '_no_message'           => true,
             'upload_file'           => $destName,
             'name'                  => $destName,
-        ];
-        $doc->check(-1, CREATE, $docInput);
-        $doc_id = (int)$doc->add($docInput);
+        ]);
         $this->assertGreaterThan(0, $doc_id, 'Document::add() should succeed');
 
         $session = WizardController::getSession();
@@ -148,7 +146,7 @@ class WizardDocumentTest extends DbTestCase
 
     public function testDocumentsLinkedToContractAfterCommit(): void
     {
-        $this->login();
+        $this->login('glpi');
         $uid = $this->getUniqueString();
 
         WizardController::saveEntityAndReturn(['name' => "DocEnt-{$uid}", 'entities_id' => 0]);

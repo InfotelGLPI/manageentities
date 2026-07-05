@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use CommonGLPI;
 use Document;
 use Document_Item;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use GlpiPlugin\Accounts\Account;
 use GlpiPlugin\Accounts\Account_Item;
@@ -277,171 +278,94 @@ class Entity extends CommonGLPI
 
     function showDescription($entities)
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
-        $Contact = new Contact();
-        $BusinessContact = new BusinessContact();
-        $entity = new \Entity();
+        $contact         = new Contact();
+        $businessContact = new BusinessContact();
+        $entityObj       = new \Entity();
+        $can_edit        = (Session::getCurrentInterface() !== 'helpdesk');
+        $is_single       = (count($entities) === 1);
+        $interface       = Session::getCurrentInterface();
 
+        $entity_form_url   = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.form.php';
+        $entity_action_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php';
+
+        // Build one entry per entity for the left column
+        $entities_data = [];
         foreach ($entities as $instID) {
-            $entity->getFromDB($instID);
+            $entityObj->getFromDB($instID);
+            $f = $entityObj->fields;
 
-            //      self::showManageentitiesHeader(__('Data administrative', 'manageentities'));
-
-            echo "<div class='center'>";
-            echo "<table width='100%'>";
-            echo "<tr><td width='55%' style='vertical-align: top;' >";
-
-            echo "<form method='post' action='entity.form.php'>";
-
-            echo "<table class='tab_cadre_me center'>";
-
-            echo "<tr>";
-            echo "<th colspan='4'>";
-            echo "<h3><div class='alert alert-secondary' role='alert'>";
-            echo __('Data administrative', 'manageentities');
-            echo "</div></h3>";
-            echo "</th>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>";
-            echo __('Logo');
-            echo "</th>";
-            echo "<td>";
-
-            $entitylogo = new EntityLogo();
-            $logos = $entitylogo->find(["entities_id" => $entity->fields["id"]]);
-
-            foreach ($logos as $logo) {
-                echo "<img height='50px' alt=\"" . __s(
-                    'Picture'
-                ) . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $logo["logos_id"] . "'>";
-            }
-            echo "</td>";
-
-
-            if (Session::getCurrentInterface() != 'helpdesk') {
-                echo "<td style='padding-top:16px;'>";
-                echo __('Logo (format JPG or JPEG)', 'manageentities');
-                echo Html::file();
-
-                echo "</td><td class='left'>";
-                echo "(" . Document::getMaxUploadSize() . ")&nbsp;";
-                echo "<br>";
-                echo Html::hidden('entities_id', ['value' => $entity->fields["id"]]);
-                echo Html::submit(
-                    _sx('button', 'Update logo', 'manageentities'),
-                    ['name' => 'add', 'class' => 'btn btn-primary']
-                );
-                echo "</td>";
-            } else {
-                echo "<th>";
-                echo "</th>";
-                echo "<td>";
-                echo "</td>";
+            $logos = [];
+            foreach ((new EntityLogo())->find(['entities_id' => $f['id']]) as $logo) {
+                $logos[] = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $logo['logos_id'];
             }
 
-            echo "</tr>";
-            echo "<tr>";
-            echo "<th>" . __('Name') . " </th>";
-            echo "<td>";
-            if ($_SESSION["glpiactive_entity"] != 0) {
-                echo $entity->fields["name"];
-            } else {
-                echo __('Root entity');
+            $file_input_html = '';
+            if ($can_edit) {
+                ob_start();
+                Html::file();
+                $file_input_html = ob_get_clean();
             }
-            if ($_SESSION["glpiactive_entity"] != 0) {
-                echo " (" . $entity->fields["completename"] . ")";
-            }
-            echo "</td>";
-            if (isset($entity->fields["comment"])) {
-                echo "<th >";
-                echo __('Comments') . "</th>";
-                echo "<td class='top center'>" . nl2br($entity->fields["comment"]);
-                echo "</td>";
-            } else {
-                echo "<td colspan='2'>&nbsp;</td>";
-            }
-            echo "</tr>";
 
-            echo "<tr><th>" . __('Phone') . " </th>";
-            echo "<td>";
-            if (isset($entity->fields["phonenumber"])) {
-                echo $entity->fields["phonenumber"];
-            }
-            echo "</td>";
-            echo "<th>" . __('Fax') . " </th><td>";
-            if (isset($entity->fields["fax"])) {
-                echo $entity->fields["fax"];
-            }
-            echo "</td></tr>";
-
-            echo "<tr><th>" . __('Website') . " </th>";
-            echo "<td>";
-            if (isset($entity->fields["website"])) {
-                echo $entity->fields["website"];
-            }
-            echo "</td>";
-
-            echo "<th>" . __('Email address') . " </th><td>";
-            if (isset($entity->fields["email"])) {
-                echo $entity->fields["email"];
-            }
-            echo "</td></tr>";
-
-            echo "<tr><th rowspan='4'>" . __('Address') . " </th>";
-            echo "<td class='left' rowspan='4'>";
-            if (isset($entity->fields["address"])) {
-                echo nl2br($entity->fields["address"]);
-            }
-            echo "<th>" . __('Postal code') . "</th>";
-            echo "<td>";
-            if (isset($entity->fields["postcode"])) {
-                echo $entity->fields["postcode"];
-            }
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>" . __('City') . " </th><td>";
-            if (isset($entity->fields["town"])) {
-                echo $entity->fields["town"];
-            }
-            echo "</td></tr>";
-
-            echo "<tr>";
-            echo "<th>" . _x('location', 'State') . " </th><td>";
-            if (isset($entity->fields["state"])) {
-                echo $entity->fields["state"];
-            }
-            echo "</td></tr>";
-
-            echo "<tr>";
-            echo "<th>" . __('Country') . " </th><td>";
-            if (isset($entity->fields["country"])) {
-                echo $entity->fields["country"];
-            }
-            echo "</td></tr>";
-            if (Session::getCurrentInterface() != 'helpdesk') {
-                echo "<tr class='tab_bg_1'>";
-                echo "<td class='center' colspan='4'>";
-                echo Html::hidden('entities_id', ['value' => $entity->fields["id"]]);
-                echo Html::submit(
-                    _sx('button', 'Update administrative data', 'manageentities'),
-                    ['name' => 'update', 'class' => 'btn btn-primary']
-                );
-                echo "</td></tr>";
-            }
-            echo "</table>";
-            Html::closeForm();
+            $entities_data[] = [
+                'entity_id'           => $f['id'],
+                'entity_name'         => $f['name'],
+                'entity_completename' => $f['completename'],
+                'entity_comment'      => $f['comment'] ?? '',
+                'entity_phonenumber'  => $f['phonenumber'] ?? '',
+                'entity_fax'          => $f['fax'] ?? '',
+                'entity_website'      => $f['website'] ?? '',
+                'entity_email'        => $f['email'] ?? '',
+                'entity_address'      => $f['address'] ?? '',
+                'entity_postcode'     => $f['postcode'] ?? '',
+                'entity_town'         => $f['town'] ?? '',
+                'entity_state'        => $f['state'] ?? '',
+                'entity_country'      => $f['country'] ?? '',
+                'is_root_entity'      => ($instID == 0),
+                'logos'               => $logos,
+                'file_input_html'     => $file_input_html,
+                'max_upload'          => Document::getMaxUploadSize(),
+            ];
         }
-        echo "</td>";
-        echo "<td width='45%' valign='top'>";
-        $Contact->showContacts($entities);
-        //      echo "</td><td width='40%' valign='top'>";
-        $BusinessContact->showBusiness($entities);
-        echo "</td></tr></table></div>";
+
+        // Contacts and business are fetched once for ALL entities (like the original)
+        $contacts_data = $contact->buildContactsForTemplate($entities, $CFG_GLPI['root_doc']);
+        $business_data = $businessContact->buildBusinessForTemplate($entities, $CFG_GLPI['root_doc']);
+
+        $contact_dropdown_html = '';
+        $user_dropdown_html    = '';
+        if ($can_edit && $is_single) {
+            ob_start();
+            \Dropdown::show('Contact', ['name' => 'contacts_id']);
+            $contact_dropdown_html = ob_get_clean();
+
+            ob_start();
+            \User::dropdown(['right' => 'interface']);
+            $user_dropdown_html = ob_get_clean();
+        }
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/entity/description.html.twig',
+            [
+                'entities_data'        => $entities_data,
+                'can_edit'             => $can_edit,
+                'is_single'            => $is_single,
+                'interface'            => $interface,
+                'entity_form_url'      => $entity_form_url,
+                'entity_action_url'    => $entity_action_url,
+                'contact_form_url'     => $CFG_GLPI['root_doc'] . '/front/contact.form.php',
+                'user_form_url'        => $CFG_GLPI['root_doc'] . '/front/user.form.php',
+                'contacts'             => $contacts_data,
+                'business'             => $business_data,
+                'can_edit_contacts'    => $contact->canCreate(),
+                'can_edit_business'    => $businessContact->canCreate(),
+                'contact_dropdown_html'=> $contact_dropdown_html,
+                'user_dropdown_html'   => $user_dropdown_html,
+                // For the add-contact/business form, use the first (or only) entity id
+                'entity_id'            => $entities[array_key_first($entities)] ?? 0,
+            ]
+        );
     }
 
 

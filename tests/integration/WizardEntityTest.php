@@ -147,7 +147,7 @@ class WizardEntityTest extends DbTestCase
 
     public function testCommitCreatesEntityInDb(): void
     {
-        $this->login();
+        $this->login('glpi');
         $uid = $this->getUniqueString();
 
         $r1 = WizardController::saveEntityAndReturn([

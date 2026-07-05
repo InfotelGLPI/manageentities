@@ -133,7 +133,7 @@ class WizardContractTest extends DbTestCase
 
     public function testCommitCreatesContractAndPluginContractInDb(): void
     {
-        $this->login();
+        $this->login('glpi');
         $uid = $this->getUniqueString();
 
         WizardController::saveEntityAndReturn(['name' => "Ent-{$uid}", 'entities_id' => 0]);

@@ -30,6 +30,7 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Session;
 
@@ -81,137 +82,80 @@ class Contact extends CommonDBTM
      *
      * @global type $DB
      */
-    function showContacts($instID)
+    function buildContactsForTemplate(array $instID, string $root_doc): array
     {
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => [
+            'SELECT'   => [
                 'glpi_contacts.*',
                 $this->getTable() . '.contacts_id',
                 $this->getTable() . '.is_default',
             ],
-            'FROM' => $this->getTable(),
+            'FROM'     => $this->getTable(),
             'LEFT JOIN' => [
                 'glpi_contacts' => [
                     'ON' => [
                         $this->getTable() => 'contacts_id',
-                        'glpi_contacts' => 'id'
-                    ]
-                ]
+                        'glpi_contacts'   => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => [
-                'glpi_contacts.is_deleted' => 0,
-                $this->getTable() . '.entities_id' => $instID
+            'WHERE'   => [
+                'glpi_contacts.is_deleted'          => 0,
+                $this->getTable() . '.entities_id'  => $instID,
             ],
             'ORDERBY' => ['glpi_contacts.name'],
         ]);
 
-        if (count($iterator) > 0) {
-            echo "<form method='post' action=\"./entity.php\">";
-            echo "<div class='center'><table class='tab_cadre_me center'>";
-            echo "<tr><th colspan='6'>";
-            echo "<h3><div class='alert alert-secondary' role='alert'>";
-            echo _n('Associated contact', 'Associated contacts', 2);
-            echo "</div></h3>";
-            echo "</th></tr>";
-            echo "<tr><th>" . __('Name') . "</th>";
-            echo "<th>" . __('Phone') . "</th>";
-            echo "<th>" . __('Mobile phone') . "</th>";
-            echo "<th>" . __('Email address') . "</th>";
-            echo "<th>" . __('Type') . "</th>";
-            if ($this->canCreate() && sizeof($instID) == 1) {
-                echo "<th>&nbsp;</th>";
-            }
-            echo "</tr>";
-
-            foreach ($iterator as $data) {
-                $ID = $data["contacts_id"];
-                echo "<tr class='tab_bg_1'>";
-                echo "<td class='left'><a href='" . $CFG_GLPI["root_doc"] . "/front/contact.form.php?id=" . $data["id"] . "'>" . $data["name"] . " " . $data["firstname"] . "</a></td>";
-                echo "<td class='center'>" . $data["phone"] . "</td>";
-                echo "<td class='center'>" . $data["mobile"] . "</td>";
-                echo "<td class='center'><a href='mailto:" . $data["email"] . "'>" . $data["email"] . "</a></td>";
-                echo "<td class='center'>" . \Dropdown::getDropdownName(
-                        "glpi_contacttypes",
-                        $data["contacttypes_id"]
-                    ) . "<br>";
-                if (sizeof($instID) == 1
-                    && Session::getCurrentInterface() != 'helpdesk') {
-                    if ($data["is_default"]) {
-                        echo __('Manager');
-                    } else {
-                        Html::showSimpleForm(
-                            PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
-                            'contactbydefault',
-                            __('Manager'),
-                            ['contacts_id' => $ID, 'entities_id' => $_SESSION["glpiactive_entity"]]
-                        );
-                    }
-                } else {
-                    if ($data["is_default"]) {
-                        echo __('Manager');
-                    }
-                }
-                echo "</td>";
-
-                if ($this->canCreate() && sizeof($instID) == 1) {
-                    echo "<td class='center' class='tab_bg_2'>";
-                    Html::showSimpleForm(
-                        PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
-                        'deletecontacts',
-                        _x('button', 'Delete permanently'),
-                        ['id' => $ID],
-                        'ti-circle-x'
-                    );
-                    echo "</td>";
-                }
-                echo "</tr>";
-            }
-
-            if ($this->canCreate() && sizeof($instID) == 1) {
-                echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
-                echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
-                $rand = \Dropdown::show('Contact', ['name' => "contacts_id"]);
-                echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'>";
-                echo "<i title=\"" . _sx(
-                        'button',
-                        'Add'
-                    ) . "\" class=\"ti ti-square-plus\" style='cursor:pointer; margin-left:2px;'></i>";
-                echo "</a>";
-                echo "</td><td class='center'>";
-                echo Html::submit(_sx('button', 'Add'), ['name' => 'addcontacts', 'class' => 'btn btn-primary']);
-                echo "</td>";
-                echo "</tr>";
-            }
-            echo "</table></div>";
-            Html::closeForm();
-        } else {
-            if ($this->canCreate() && sizeof($instID) == 1) {
-                echo "<form method='post' action=\"./entity.php\">";
-                echo "<div class='center'><table class='tab_cadre_me center'>";
-                echo "<tr><th colspan='6'>";
-                echo "<h3><div class='alert alert-secondary' role='alert'>";
-                echo _n('Associated contact', 'Associated contacts', 2);
-                echo "</div></h3>";
-                echo "</th></tr>";
-
-                echo "<tr><td class='tab_bg_2 center'>";
-                echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
-                \Dropdown::show('Contact', ['name' => "contacts_id"]);
-                echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/contact.form.php' target='_blank'>";
-                echo "<i title=\"" . _sx(
-                        'button',
-                        'Add'
-                    ) . "\" class=\"ti ti-square-plus\" style='cursor:pointer; margin-left:2px;'></i>";
-                echo "</a>";
-                echo "</td><td class='center tab_bg_2'>";
-                echo Html::submit(_sx('button', 'Add'), ['name' => 'addcontacts', 'class' => 'btn btn-primary']);
-                echo "</td></tr>";
-
-                echo "</table></div>";
-                Html::closeForm();
-            }
+        $contacts = [];
+        foreach ($iterator as $data) {
+            $contacts[] = [
+                'link_id'      => $data['contacts_id'],
+                'url'          => $root_doc . '/front/contact.form.php?id=' . $data['id'],
+                'name'         => htmlspecialchars($data['name']),
+                'firstname'    => htmlspecialchars($data['firstname']),
+                'phone'        => $data['phone'] ?? '',
+                'mobile'       => $data['mobile'] ?? '',
+                'email'        => $data['email'] ?? '',
+                'contact_type' => \Dropdown::getDropdownName('glpi_contacttypes', $data['contacttypes_id']),
+                'is_default'   => (bool)$data['is_default'],
+            ];
         }
+        return $contacts;
+    }
+
+    function showContacts($instID)
+    {
+        global $CFG_GLPI;
+
+        $can_edit  = $this->canCreate();
+        $is_single = count($instID) === 1;
+        $interface = Session::getCurrentInterface();
+
+        $entity_action_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php';
+
+        $contacts = $this->buildContactsForTemplate($instID, $CFG_GLPI['root_doc']);
+
+        $contact_dropdown_html = '';
+        if ($can_edit && $is_single) {
+            ob_start();
+            \Dropdown::show('Contact', ['name' => 'contacts_id']);
+            $contact_dropdown_html = ob_get_clean();
+        }
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/entity/contacts_card.html.twig',
+            [
+                'entity_id'            => $_SESSION['glpiactive_entity'],
+                'entity_action_url'    => $entity_action_url,
+                'contact_form_url'     => $CFG_GLPI['root_doc'] . '/front/contact.form.php',
+                'contacts'             => $contacts,
+                'can_edit_contacts'    => $can_edit,
+                'is_single'            => $is_single,
+                'interface'            => $interface,
+                'contact_dropdown_html'=> $contact_dropdown_html,
+            ]
+        );
     }
 }

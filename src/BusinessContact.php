@@ -30,7 +30,7 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
-use Html;
+use Glpi\Application\View\TemplateRenderer;
 use Session;
 use User;
 
@@ -53,125 +53,83 @@ class BusinessContact extends CommonDBTM
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    function showBusiness($instID)
+    function buildBusinessForTemplate(array $instID, string $root_doc): array
     {
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => [
+            'SELECT'   => [
                 $this->getTable() . '.id as users_id',
-                $this->getTable() . '.is_default',
                 'glpi_users.*',
                 'glpi_useremails.email',
             ],
-            'FROM' => $this->getTable(),
+            'FROM'     => $this->getTable(),
             'LEFT JOIN' => [
                 'glpi_users' => [
                     'ON' => [
                         $this->getTable() => 'users_id',
-                        'glpi_users' => 'id'
-                    ]
+                        'glpi_users'      => 'id',
+                    ],
                 ],
                 'glpi_useremails' => [
                     'ON' => [
                         'glpi_useremails' => 'users_id',
-                        'glpi_users' => 'id'
-                    ]
-                ]
+                        'glpi_users'      => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => [
-                $this->getTable() . '.entities_id' => $instID
+            'WHERE'   => [
+                $this->getTable() . '.entities_id' => $instID,
             ],
             'GROUPBY' => $this->getTable() . '.users_id',
             'ORDERBY' => 'glpi_users.name',
         ]);
 
-        echo "<br>";
-        if (count($iterator) > 0) {
-            echo "<form method='post' action=\"./entity.php\">";
-            echo "<div class='center'><table class='tab_cadre_me center'>";
-            echo "<tr><th colspan='6'>";
-            echo "<h3><div class='alert alert-secondary' role='alert'>";
-            echo _n('Associated commercial', 'Associated business', 2, 'manageentities');
-            echo "</div></h3>";
-            echo "</th></tr>";
-
-            echo "<tr><th>" . __('Name') . "</th>";
-            echo "<th>" . __('Phone') . "</th>";
-            echo "<th>" . __('Phone') . " 2</th>";
-            echo "<th>" . __('Mobile phone') . "</th>";
-            echo "<th>" . __('Email address') . "</th>";
-            if ($this->canCreate() && sizeof($instID) == 1) {
-                echo "<th>&nbsp;</th>";
-            }
-            echo "</tr>";
-
-            foreach ($iterator as $data) {
-                $ID = $data["users_id"];
-                echo "<tr class='tab_bg_1'>";
-                echo "<td class='left'><a href='" . $CFG_GLPI["root_doc"] . "/front/user.form.php?id=" . $data["id"] . "'>" . $data["realname"] . " " . $data["firstname"] . "</a></td>";
-                echo "<td class='center'>" . $data["phone"] . "</td>";
-                echo "<td class='center'>" . $data["phone2"] . "</td>";
-                echo "<td class='center'>" . $data["mobile"] . "</td>";
-                echo "<td class='center'><a href='mailto:" . $data["email"] . "'>" . $data["email"] . "</a></td>";
-
-                if ($this->canCreate() && sizeof($instID) == 1) {
-                    echo "<td class='center' class='tab_bg_2'>";
-                    Html::showSimpleForm(
-                        PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
-                        'deletebusiness',
-                        _x('button', 'Delete permanently'),
-                        ['id' => $ID],
-                        'ti-circle-x'
-                    );
-                    echo "</td>";
-                }
-                echo "</tr>";
-            }
-
-            if ($this->canCreate() && sizeof($instID) == 1) {
-                echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
-                echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
-                $rand = User::dropdown(['right' => 'interface']);
-                echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'>";
-                echo "<i title=\"" . _sx(
-                        'button',
-                        'Add'
-                    ) . "\" class=\"ti ti-square-plus\" style='cursor:pointer; margin-left:2px;'></i>";
-                echo "</a>";
-                echo "</td><td class='center'>";
-                echo Html::submit(_x('button', 'Add'), ['name' => 'addbusiness', 'class' => 'btn btn-primary']);
-                echo "</td>";
-                echo "</tr>";
-            }
-            echo "</table></div>";
-            Html::closeForm();
-        } else {
-            if ($this->canCreate() && sizeof($instID) == 1) {
-                echo "<form method='post' action=\"./entity.php\">";
-                echo "<div class='center'><table class='tab_cadre_me center'>";
-                echo "<tr><th colspan='2'>";
-                echo "<h3><div class='alert alert-secondary' role='alert'>";
-                echo _n('Associated commercial', 'Associated business', 2, 'manageentities');
-                echo "</div></h3>";
-                echo "</th></tr>";
-
-                echo "<tr><td class='tab_bg_2 center'>";
-                echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
-                $rand = User::dropdown(['right' => 'interface']);
-                echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/user.form.php' target='_blank'>";
-                echo "<i title=\"" . _sx(
-                        'button',
-                        'Add'
-                    ) . "\" class=\"ti ti-square-plus\" style='cursor:pointer; margin-left:2px;'></i>";
-                echo "</a>";
-                echo "</td><td class='center tab_bg_2'>";
-                echo Html::submit(_x('button', 'Add'), ['name' => 'addbusiness', 'class' => 'btn btn-primary']);
-                echo "</td></tr>";
-
-                echo "</table></div>";
-                Html::closeForm();
-            }
+        $business = [];
+        foreach ($iterator as $data) {
+            $business[] = [
+                'link_id'   => $data['users_id'],
+                'url'       => $root_doc . '/front/user.form.php?id=' . $data['id'],
+                'realname'  => htmlspecialchars($data['realname'] ?? ''),
+                'firstname' => htmlspecialchars($data['firstname'] ?? ''),
+                'phone'     => $data['phone'] ?? '',
+                'phone2'    => $data['phone2'] ?? '',
+                'mobile'    => $data['mobile'] ?? '',
+                'email'     => $data['email'] ?? '',
+            ];
         }
+        return $business;
+    }
+
+    function showBusiness($instID)
+    {
+        global $CFG_GLPI;
+
+        $can_edit  = $this->canCreate();
+        $is_single = count($instID) === 1;
+
+        $entity_action_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php';
+
+        $business = $this->buildBusinessForTemplate($instID, $CFG_GLPI['root_doc']);
+
+        $user_dropdown_html = '';
+        if ($can_edit && $is_single) {
+            ob_start();
+            User::dropdown(['right' => 'interface']);
+            $user_dropdown_html = ob_get_clean();
+        }
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/entity/business_card.html.twig',
+            [
+                'entity_id'          => $_SESSION['glpiactive_entity'],
+                'entity_action_url'  => $entity_action_url,
+                'user_form_url'      => $CFG_GLPI['root_doc'] . '/front/user.form.php',
+                'business'           => $business,
+                'can_edit_business'  => $can_edit,
+                'is_single'          => $is_single,
+                'user_dropdown_html' => $user_dropdown_html,
+            ]
+        );
     }
 }

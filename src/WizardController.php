@@ -128,21 +128,6 @@ class WizardController
         if (empty(trim($input['name'] ?? ''))) {
             $errors['name'] = __('Name is required', 'manageentities');
         }
-        if (empty(trim($input['num'] ?? ''))) {
-            $errors['num'] = __('Contract number is required', 'manageentities');
-        }
-        if (empty($input['begin_date'] ?? '')) {
-            $errors['begin_date'] = __('Start date is required', 'manageentities');
-        }
-        if ((int)($input['duration'] ?? 0) <= 0) {
-            $errors['duration'] = __('Duration is required', 'manageentities');
-        }
-        if ((int)($input['contracttypes_id'] ?? 0) <= 0) {
-            $errors['contracttypes_id'] = __('Contract type is required', 'manageentities');
-        }
-        if ((int)($input['states_id'] ?? 0) <= 0) {
-            $errors['states_id'] = __('Status is required', 'manageentities');
-        }
         return ['valid' => empty($errors), 'errors' => $errors];
     }
 
