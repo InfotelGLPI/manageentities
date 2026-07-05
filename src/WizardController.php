@@ -780,10 +780,7 @@ class WizardController
 
     private static function buildEntityRedirectUrl(int $entities_id): string
     {
-        if ($entities_id <= 0) {
-            return '';
-        }
-        return \Toolbox::getItemTypeFormURL('Entity') . '?id=' . $entities_id;
+        return PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php';
     }
 
     // -------------------------------------------------------------------------
@@ -1527,7 +1524,7 @@ class WizardController
         TemplateRenderer::getInstance()->display('@manageentities/wizard/layout.html.twig', array_merge($vars, [
             'step_template' => $step_template,
             'step_vars'     => $vars,
-            'redirect_url'  => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
+            'redirect_url'  => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php',
         ]));
     }
 

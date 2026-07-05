@@ -118,4 +118,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
 
 <script>
     var WIZARD_URL = {{ wizard_url|json_encode|raw }};
+    var WIZARD_I18N = {
+        nothingToDisplay: {{ __('Nothing to display.', 'manageentities')|json_encode|raw }},
+    };
 </script>

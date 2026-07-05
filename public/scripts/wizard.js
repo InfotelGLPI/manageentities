@@ -1,4 +1,4 @@
-/* global WIZARD_URL, getAjaxCsrfToken */
+/* global WIZARD_URL, WIZARD_I18N, getAjaxCsrfToken */
 /* eslint-disable no-unused-vars */
 
 /**
@@ -8,6 +8,17 @@
 // -------------------------------------------------------------------------
 // Helpers
 // -------------------------------------------------------------------------
+
+function _execScripts(container) {
+    container.querySelectorAll('script').forEach(function (oldScript) {
+        var newScript = document.createElement('script');
+        Array.from(oldScript.attributes).forEach(function (attr) {
+            newScript.setAttribute(attr.name, attr.value);
+        });
+        newScript.textContent = oldScript.textContent;
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+}
 
 function wizardFetch(url, body) {
     var headers = {
@@ -195,7 +206,7 @@ function wizardLoadFinishSummary(url) {
             var items = res.summary || [];
             if (summaryEl) {
                 if (items.length === 0) {
-                    summaryEl.innerHTML = '<p class="text-muted fst-italic">Nothing to display.</p>';
+                    summaryEl.innerHTML = '<p class="text-muted fst-italic">' + _escHtml(WIZARD_I18N.nothingToDisplay) + '</p>';
                 } else {
                     var html = '<ul class="list-group list-group-flush">';
                     items.forEach(function (item) {
@@ -351,6 +362,7 @@ function wizardSaveIntervention(idx, url) {
             var sectionsEl = document.getElementById('intervention-sections-' + idx);
             if (sectionsEl) {
                 sectionsEl.innerHTML = '<hr class="my-3">' + res.criprices_html + '<hr class="my-3">' + res.stakeholders_html;
+                _execScripts(sectionsEl);
             }
         })
         .catch(function () {
@@ -523,7 +535,10 @@ function addDocumentBlock(url) {
     wizardFetch(url, { action: 'add_document_block', idx: _documentIdx })
         .then(function (r) { return r.text(); })
         .then(function (html) {
-            document.getElementById('documents-container').insertAdjacentHTML('beforeend', html);
+            var c = document.getElementById('documents-container');
+            if (!c) return;
+            c.insertAdjacentHTML('beforeend', html);
+            _execScripts(c.lastElementChild);
         });
 }
 
@@ -548,7 +563,10 @@ function addContactBlock(url) {
     wizardFetch(url, { action: 'add_contact_block', idx: _contactIdx })
         .then(function (r) { return r.text(); })
         .then(function (html) {
-            document.getElementById('contacts-container').insertAdjacentHTML('beforeend', html);
+            var c = document.getElementById('contacts-container');
+            if (!c) return;
+            c.insertAdjacentHTML('beforeend', html);
+            _execScripts(c.lastElementChild);
         });
 }
 
@@ -573,7 +591,10 @@ function addInterventionBlock(url) {
     wizardFetch(url, { action: 'add_intervention_block', idx: _interventionIdx })
         .then(function (r) { return r.text(); })
         .then(function (html) {
-            document.getElementById('interventions-container').insertAdjacentHTML('beforeend', html);
+            var c = document.getElementById('interventions-container');
+            if (!c) return;
+            c.insertAdjacentHTML('beforeend', html);
+            _execScripts(c.lastElementChild);
         });
 }
 
@@ -591,7 +612,9 @@ function addCriPriceBlock(contractdayId, interventionIdx, url) {
         .then(function (r) { return r.text(); })
         .then(function (html) {
             var container = document.getElementById('criprices-container-' + interventionIdx);
-            if (container) container.insertAdjacentHTML('beforeend', html);
+            if (!container) return;
+            container.insertAdjacentHTML('beforeend', html);
+            _execScripts(container.lastElementChild);
         });
 }
 
