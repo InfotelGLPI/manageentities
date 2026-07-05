@@ -14,6 +14,10 @@ ALTER TABLE `glpi_plugin_manageentities_configs`
     ADD `wizard_documentcategories_id` int unsigned NOT NULL DEFAULT '0'
         COMMENT 'RELATION to glpi_documentcategories (id) — default document category in wizard';
 
+ALTER TABLE `glpi_plugin_manageentities_configs`
+    ADD `wizard_contacttypes_id` int unsigned NOT NULL DEFAULT '0'
+        COMMENT 'RELATION to glpi_contacttypes (id) — default contact type in wizard';
+
 ALTER TABLE `glpi_plugin_manageentities_contracts`
     ADD `active_editor_suscription` tinyint NOT NULL DEFAULT '0',
     ADD `cloud_client`              tinyint NOT NULL DEFAULT '0',

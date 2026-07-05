@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use Ajax;
 use CommonDBTM;
 use CommonGLPI;
+use ContactType;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Session;
@@ -254,6 +255,13 @@ class Config extends CommonDBTM
         ]);
         $wizard_documentcategory_html = ob_get_clean();
 
+        ob_start();
+        ContactType::dropdown([
+            'name'  => 'wizard_contacttypes_id',
+            'value' => $this->fields['wizard_contacttypes_id'] ?? 0,
+        ]);
+        $wizard_contacttype_html = ob_get_clean();
+
         TemplateRenderer::getInstance()->display(
             '@manageentities/config_options_form.html.twig',
             [
@@ -274,6 +282,7 @@ class Config extends CommonDBTM
                 'wizard_contract_type_html'     => $wizard_contract_type_html,
                 'wizard_critype_html'           => $wizard_critype_html,
                 'wizard_documentcategory_html'  => $wizard_documentcategory_html,
+                'wizard_contacttype_html'       => $wizard_contacttype_html,
             ]
         );
     }

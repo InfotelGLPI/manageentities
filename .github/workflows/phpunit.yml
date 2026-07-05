@@ -32,9 +32,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "${{ matrix.php-version }}"
+          extensions: mbstring, openssl
+          coverage: none
 
       - name: Composer install (GLPI)
-        run: composer install --no-interaction
+        run: composer install --no-interaction --prefer-dist --no-progress
         working-directory: glpi
 
       - name: Run unit tests
@@ -57,15 +59,16 @@ jobs:
       db:
         image: "${{ matrix.db-image }}"
         env:
-          MYSQL_DATABASE: glpi_test
+          MYSQL_ROOT_PASSWORD: ""
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_DATABASE: glpi_test
         ports:
           - "3306:3306"
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping -uroot"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=10
 
     steps:
       - name: Checkout GLPI
@@ -84,41 +87,44 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "${{ matrix.php-version }}"
-          extensions: mysqli, pdo_mysql
+          extensions: mbstring, openssl, mysqli, pdo_mysql
+          coverage: none
 
       - name: Composer install (GLPI)
-        run: composer install --no-interaction
+        run: composer install --no-interaction --prefer-dist --no-progress
         working-directory: glpi
 
       - name: Build assets
-        run: npm install && npm run-script build
+        run: |
+          npm install --no-save
+          npm run-script build
         working-directory: glpi
 
-      - name: Install gettext
-        run: sudo apt-get install -y gettext
-
       - name: Compile locales
-        run: php bin/console locales:compile
+        run: |
+          sudo apt-get install -y gettext
+          php bin/console tools:locales:compile --allow-superuser
         working-directory: glpi
 
       - name: Install GLPI database
-        run: >-
+        run: >
           php bin/console database:install
-          --db-name=glpi_test
-          --db-host=127.0.0.1
-          --db-user=root
-          --no-interaction
+          --no-interaction --force
           --env=testing
+          --db-host=127.0.0.1
+          --db-name=glpi_test
+          --db-user=root
+          --db-password=""
         working-directory: glpi
 
       - name: Install plugin
         run: |
-          php bin/console glpi:plugin:install --username=glpi manageentities
-          php bin/console glpi:plugin:activate manageentities
+          php bin/console glpi:plugin:install  --no-interaction --env=testing manageentities
+          php bin/console glpi:plugin:activate --no-interaction --env=testing manageentities
         working-directory: glpi
 
       - name: Run integration tests
-        run: >-
+        run: >
           php vendor/bin/phpunit
           --configuration plugins/manageentities/phpunit.integration.xml
           --testsuite Integration

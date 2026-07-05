@@ -398,6 +398,11 @@ class WizardController
     {
         $idx  = (int)($_POST['idx'] ?? 1);
         $rand = mt_rand();
+        $default_contacttype = 0;
+        try {
+            $default_contacttype = (int)(Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
+        } catch (\Throwable $e) {
+        }
         TemplateRenderer::getInstance()->display('@manageentities/wizard/step2_contact_block.html.twig', [
             'idx'              => $idx,
             'rand'             => $rand,
@@ -405,7 +410,7 @@ class WizardController
                 fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'display' => false])
             ),
             'contacttype_html' => self::buildDropdownHtml(
-                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'display' => false])
+                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false])
             ),
             'entities_html'    => self::buildEntityHtml("contacts[{$idx}][entities_id]", 0, $rand),
             'show_entity_dropdown' => true,
@@ -1617,13 +1622,18 @@ class WizardController
 
     private static function buildEmptyContactVars(int $idx, int $rand, int $entities_id): array
     {
+        $default_contacttype = 0;
+        try {
+            $default_contacttype = (int)(Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
+        } catch (\Throwable $e) {
+        }
         return [
             'fields'           => [],
             'usertitles_html'  => self::buildDropdownHtml(
                 fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'display' => false])
             ),
             'contacttype_html' => self::buildDropdownHtml(
-                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'display' => false])
+                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false])
             ),
             'entities_html'    => self::buildEntityHtml("contacts[{$idx}][entities_id]", $entities_id, $rand),
         ];

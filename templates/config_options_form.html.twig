@@ -142,7 +142,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
         <div class="card-body">
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">
-                    {{ __('Default intervention state', 'manageentities') }}
+                    {{ __('Default con state', 'manageentities') }}
                 </label>
                 <div class="col-sm-8">
                     {{ wizard_contractstate_html|raw }}
@@ -184,6 +184,18 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                     {{ wizard_documentcategory_html|raw }}
                     <div class="form-text text-muted">
                         {{ __('Pre-selected document category when attaching a document in the wizard.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default contact type', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ wizard_contacttype_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('Pre-selected contact type when adding a contact in the wizard.', 'manageentities') }}
                     </div>
                 </div>
             </div>
