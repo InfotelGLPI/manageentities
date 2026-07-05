@@ -53,21 +53,21 @@ class WizardControllerTest extends TestCase
     public function testBuildDefaultSessionHasEmptyContacts(): void
     {
         $session = WizardController::buildDefaultSession();
-        $this->assertIsArray($session['contacts']);
-        $this->assertEmpty($session['contacts']);
+        $this->assertIsArray($session['contacts_data']);
+        $this->assertEmpty($session['contacts_data']);
     }
 
     public function testBuildDefaultSessionHasEmptyContractdays(): void
     {
         $session = WizardController::buildDefaultSession();
-        $this->assertIsArray($session['contractdays']);
-        $this->assertEmpty($session['contractdays']);
+        $this->assertIsArray($session['interventions_data']);
+        $this->assertEmpty($session['interventions_data']);
     }
 
     public function testBuildDefaultSessionHasRequiredKeys(): void
     {
         $session = WizardController::buildDefaultSession();
-        foreach (['step', 'entities_id', 'contracts_id', 'plugin_contract_id', 'contacts', 'contractdays', 'documents_ids'] as $key) {
+        foreach (['step', 'entities_id', 'entity_data', 'contacts_data', 'contract_data', 'management_data', 'interventions_data', 'documents_ids'] as $key) {
             $this->assertArrayHasKey($key, $session, "Missing key: {$key}");
         }
     }
@@ -161,6 +161,8 @@ class WizardControllerTest extends TestCase
         $result = WizardController::validateInterventionInput([
             'name'                                    => 'Period Q1',
             'begin_date'                              => '2026-01-01',
+            'end_date'                                => '2026-12-31',
+            'nbday'                                   => 10,
             'plugin_manageentities_contractstates_id' => 1,
         ]);
         $this->assertTrue($result['valid']);
