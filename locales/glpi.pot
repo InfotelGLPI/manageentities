@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-05 07:51+0000\n"
+"POT-Creation-Date: 2026-07-05 08:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:1701
+#: src/WizardController.php:1711
 msgid "-- Select a template --"
 msgstr ""
 
@@ -135,7 +135,7 @@ msgstr ""
 msgid "All reports"
 msgstr ""
 
-#: src/Config.php:354 templates/config_options_form.html.twig:91
+#: src/Config.php:363 templates/config_options_form.html.twig:91
 msgid "Allow periods on the same interval of dates"
 msgstr ""
 
@@ -192,7 +192,7 @@ msgstr ""
 msgid "Associated ticket"
 msgstr ""
 
-#: src/WizardController.php:786 src/WizardController.php:791
+#: src/WizardController.php:791 src/WizardController.php:796
 msgid "At least one service period with a rate is required"
 msgstr ""
 
@@ -218,7 +218,7 @@ msgstr ""
 msgid "CRI generation"
 msgstr ""
 
-#: src/Config.php:444
+#: src/Config.php:453
 msgid "CRI generation form"
 msgstr ""
 
@@ -226,7 +226,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/WizardController.php:1025
+#: src/WizardController.php:1030
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -257,11 +257,11 @@ msgid_plural "Clients management"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/config_options_form.html.twig:208
+#: templates/config_options_form.html.twig:220
 msgid "Closed GLPI contract state"
 msgstr ""
 
-#: templates/config_options_form.html.twig:220
+#: templates/config_options_form.html.twig:232
 msgid "Closed contract period state"
 msgstr ""
 
@@ -299,11 +299,11 @@ msgid_plural "Companies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Config.php:308 templates/config_options_form.html.twig:64
+#: src/Config.php:317 templates/config_options_form.html.twig:64
 msgid "Configuration daily or hourly"
 msgstr ""
 
-#: src/Config.php:361 templates/config_options_form.html.twig:100
+#: src/Config.php:370 templates/config_options_form.html.twig:100
 msgid "Configuring the client side view"
 msgstr ""
 
@@ -326,7 +326,7 @@ msgid_plural "Contacts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1498
+#: src/WizardController.php:1503
 msgid "Contacts"
 msgstr ""
 
@@ -334,14 +334,14 @@ msgstr ""
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 
-#: src/WizardController.php:1491 src/WizardController.php:1499
+#: src/WizardController.php:1496 src/WizardController.php:1504
 #: templates/contractday_form.html.twig:46
 #: templates/wizard/step3_contract.html.twig:36
 #: templates/wizard/step5_intervention_block.html.twig:76
 msgid "Contract"
 msgstr ""
 
-#: templates/config_options_form.html.twig:196
+#: templates/config_options_form.html.twig:208
 msgid "Contract closure"
 msgstr ""
 
@@ -422,7 +422,7 @@ msgstr ""
 
 #: src/Monthly.php:709 src/Monthly.php:745 src/CriPrice.php:59
 #: src/CriPrice.php:96 src/CriPrice.php:203 src/CriPrice.php:356
-#: src/CriType.php:93 src/WizardController.php:1341
+#: src/CriType.php:93 src/WizardController.php:1346
 #: templates/wizard/step5_criprices_section.html.twig:10
 msgid "Daily rate"
 msgstr ""
@@ -466,20 +466,24 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
-#: src/Config.php:417 templates/config_options_form.html.twig:118
+#: src/Config.php:426 templates/config_options_form.html.twig:118
 msgid "Default Business list for general monitoring"
+msgstr ""
+
+#: templates/config_options_form.html.twig:145
+msgid "Default con state"
+msgstr ""
+
+#: templates/config_options_form.html.twig:193
+msgid "Default contact type"
 msgstr ""
 
 #: templates/config_options_form.html.twig:181
 msgid "Default document category"
 msgstr ""
 
-#: src/Config.php:465 templates/config_cri_form.html.twig:64
+#: src/Config.php:474 templates/config_cri_form.html.twig:64
 msgid "Default duration"
-msgstr ""
-
-#: templates/config_options_form.html.twig:145
-msgid "Default intervention state"
 msgstr ""
 
 #: templates/config_options_form.html.twig:169
@@ -498,11 +502,11 @@ msgstr ""
 msgid "Default service contract type"
 msgstr ""
 
-#: src/Config.php:476 templates/config_cri_form.html.twig:73
+#: src/Config.php:485 templates/config_cri_form.html.twig:73
 msgid "Default time AM"
 msgstr ""
 
-#: src/Config.php:488 templates/config_cri_form.html.twig:82
+#: src/Config.php:497 templates/config_cri_form.html.twig:82
 msgid "Default time PM"
 msgstr ""
 
@@ -535,15 +539,15 @@ msgstr ""
 msgid "Detail of work done"
 msgstr ""
 
-#: src/Config.php:500 templates/config_cri_form.html.twig:91
+#: src/Config.php:509 templates/config_cri_form.html.twig:91
 msgid "Disable creation date in header of PDF"
 msgstr ""
 
-#: src/Config.php:454 templates/config_cri_form.html.twig:46
+#: src/Config.php:463 templates/config_cri_form.html.twig:46
 msgid "Display PDF"
 msgstr ""
 
-#: src/Config.php:437 templates/config_options_form.html.twig:127
+#: src/Config.php:446 templates/config_options_form.html.twig:127
 msgid "Display comments from the company in the CRI"
 msgstr ""
 
@@ -597,7 +601,7 @@ msgstr ""
 msgid "Entities portal"
 msgstr ""
 
-#: src/WizardController.php:1490 src/WizardController.php:1497
+#: src/WizardController.php:1495 src/WizardController.php:1502
 #: templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
@@ -614,7 +618,7 @@ msgstr[1] ""
 msgid "Entity not found"
 msgstr ""
 
-#: src/WizardController.php:1036
+#: src/WizardController.php:1041
 msgid "Error adding stakeholder"
 msgstr ""
 
@@ -622,7 +626,7 @@ msgstr ""
 msgid "Error creating contact"
 msgstr ""
 
-#: src/WizardController.php:512
+#: src/WizardController.php:517
 msgid "Error creating contract"
 msgstr ""
 
@@ -630,19 +634,19 @@ msgstr ""
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:774 src/WizardController.php:950
+#: src/WizardController.php:779 src/WizardController.php:955
 msgid "Error creating intervention"
 msgstr ""
 
-#: src/WizardController.php:703
+#: src/WizardController.php:708
 msgid "Error creating management type"
 msgstr ""
 
-#: src/WizardController.php:1205
+#: src/WizardController.php:1210
 msgid "Error saving price"
 msgstr ""
 
-#: src/WizardController.php:506
+#: src/WizardController.php:511
 msgid "Error updating contract"
 msgstr ""
 
@@ -650,7 +654,7 @@ msgstr ""
 msgid "Error updating entity"
 msgstr ""
 
-#: src/WizardController.php:697
+#: src/WizardController.php:702
 msgid "Error updating management type"
 msgstr ""
 
@@ -682,7 +686,7 @@ msgstr ""
 msgid "GANTT"
 msgstr ""
 
-#: templates/config_options_form.html.twig:213
+#: templates/config_options_form.html.twig:225
 msgid ""
 "GLPI state (visible on contracts) that triggers period closure and is "
 "applied to the contract when all periods are closed."
@@ -723,7 +727,7 @@ msgstr ""
 msgid "Hour of"
 msgstr ""
 
-#: src/Contract.php:684 src/Contract.php:720 src/Config.php:545
+#: src/Contract.php:684 src/Contract.php:720 src/Config.php:554
 msgid "Hourly"
 msgstr ""
 
@@ -775,7 +779,7 @@ msgstr[1] ""
 msgid "Intervention date"
 msgstr ""
 
-#: src/WizardController.php:1171
+#: src/WizardController.php:1176
 msgid "Intervention not saved yet"
 msgstr ""
 
@@ -787,7 +791,7 @@ msgstr ""
 msgid "Intervention periods of contract"
 msgstr ""
 
-#: src/Profile.php:128 src/Config.php:552 src/Cri.php:56 src/CriDetail.php:480
+#: src/Profile.php:128 src/Config.php:561 src/Cri.php:56 src/CriDetail.php:480
 #: setup.php:125
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -861,7 +865,7 @@ msgstr ""
 msgid "Linked interventions"
 msgstr ""
 
-#: src/Config.php:374 templates/config_options_form.html.twig:109
+#: src/Config.php:383 templates/config_options_form.html.twig:109
 msgid "List of default statuses for general monitoring"
 msgstr ""
 
@@ -893,8 +897,8 @@ msgid_plural "Management of task categories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:65 src/WizardController.php:1492
-#: src/WizardController.php:1500 templates/contract_detail_form.html.twig:44
+#: src/Contract.php:65 src/WizardController.php:1497
+#: src/WizardController.php:1505 templates/contract_detail_form.html.twig:44
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
 msgstr ""
@@ -903,7 +907,7 @@ msgstr ""
 msgid "Manager (main contact)"
 msgstr ""
 
-#: src/WizardController.php:995
+#: src/WizardController.php:1000
 msgid "Missing required fields"
 msgstr ""
 
@@ -1031,7 +1035,7 @@ msgstr ""
 msgid "Nothing to display"
 msgstr ""
 
-#: src/WizardController.php:999
+#: src/WizardController.php:1004
 msgid "Number of days must be greater than 0"
 msgstr ""
 
@@ -1047,11 +1051,11 @@ msgstr ""
 msgid "Object of intervention"
 msgstr ""
 
-#: src/WizardController.php:1199
+#: src/WizardController.php:1204
 msgid "Only one rate is allowed per service period"
 msgstr ""
 
-#: src/Config.php:346 templates/config_options_form.html.twig:82
+#: src/Config.php:355 templates/config_options_form.html.twig:82
 msgid "Only public task are visible on intervention report"
 msgstr ""
 
@@ -1071,7 +1075,7 @@ msgstr ""
 msgid "Optional"
 msgstr ""
 
-#: src/Config.php:288
+#: src/Config.php:297
 msgid "Options"
 msgstr ""
 
@@ -1091,11 +1095,11 @@ msgstr ""
 msgid "Period comment"
 msgstr ""
 
-#: src/Entity.php:127 src/Config.php:553 src/ContractDay.php:61
+#: src/Entity.php:127 src/Config.php:562 src/ContractDay.php:61
 #: src/ContractDay.php:63 src/ContractDay.php:480 src/Followup.php:921
-#: src/Followup.php:1177 src/WizardController.php:878
-#: src/WizardController.php:1333 src/WizardController.php:1493
-#: src/WizardController.php:1501 templates/contractday_form.html.twig:52
+#: src/Followup.php:1177 src/WizardController.php:883
+#: src/WizardController.php:1338 src/WizardController.php:1498
+#: src/WizardController.php:1506 templates/contractday_form.html.twig:52
 #: templates/wizard/step5_interventions.html.twig:35
 #: templates/wizard/step5_intervention_block.html.twig:13
 msgid "Period of contract"
@@ -1103,7 +1107,7 @@ msgid_plural "Periods of contract"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:800
+#: src/WizardController.php:805
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
@@ -1192,6 +1196,10 @@ msgstr ""
 msgid "Pre-fill from a contract template"
 msgstr ""
 
+#: templates/config_options_form.html.twig:198
+msgid "Pre-selected contact type when adding a contact in the wizard."
+msgstr ""
+
 #: templates/config_options_form.html.twig:186
 msgid "Pre-selected document category when attaching a document in the wizard."
 msgstr ""
@@ -1232,7 +1240,7 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: src/WizardController.php:1176
+#: src/WizardController.php:1181
 msgid "Price must be greater than 0"
 msgstr ""
 
@@ -1313,12 +1321,12 @@ msgid_plural "Rights management"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Config.php:295 templates/config_options_form.html.twig:46
+#: src/Config.php:304 templates/config_options_form.html.twig:46
 msgid "Rubric by default for reports"
 msgstr ""
 
 #: templates/config_cri_form.html.twig:108
-#: templates/config_options_form.html.twig:235
+#: templates/config_options_form.html.twig:247
 msgctxt "button"
 msgid "Save"
 msgstr ""
@@ -1328,11 +1336,11 @@ msgstr ""
 msgid "Save and finish"
 msgstr ""
 
-#: src/Config.php:290 templates/config_options_form.html.twig:37
+#: src/Config.php:299 templates/config_options_form.html.twig:37
 msgid "Save reports in glpi"
 msgstr ""
 
-#: src/WizardController.php:566 src/WizardController.php:671
+#: src/WizardController.php:571 src/WizardController.php:676
 msgid "Save the contract first"
 msgstr ""
 
@@ -1398,7 +1406,7 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: templates/config_options_form.html.twig:225
+#: templates/config_options_form.html.twig:237
 msgid "State applied to contract periods when the GLPI contract is closed."
 msgstr ""
 
@@ -1418,7 +1426,7 @@ msgstr[1] ""
 msgid "State of intervention"
 msgstr ""
 
-#: src/Config.php:459 templates/config_cri_form.html.twig:55
+#: src/Config.php:468 templates/config_cri_form.html.twig:55
 msgid "State of ticket created"
 msgstr ""
 
@@ -1636,7 +1644,7 @@ msgstr ""
 msgid "Urgent intervention"
 msgstr ""
 
-#: src/Config.php:447 templates/config_cri_form.html.twig:37
+#: src/Config.php:456 templates/config_cri_form.html.twig:37
 msgid "Use Non-accomplished tasks informations"
 msgstr ""
 
@@ -1644,7 +1652,7 @@ msgstr ""
 msgid "Use for calculation of intervention report"
 msgstr ""
 
-#: src/Config.php:303 templates/config_options_form.html.twig:55
+#: src/Config.php:312 templates/config_options_form.html.twig:55
 msgid "Use of price"
 msgstr ""
 
@@ -1657,7 +1665,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: src/WizardController.php:899 src/WizardController.php:1357
+#: src/WizardController.php:904 src/WizardController.php:1362
 #: src/InterventionStakeholder.php:53
 #: templates/wizard/step5_stakeholders_section.html.twig:11
 msgid "User affected"
@@ -1665,7 +1673,7 @@ msgid_plural "Users affected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1018
+#: src/WizardController.php:1023
 msgid "User already added"
 msgstr ""
 
@@ -1681,7 +1689,7 @@ msgid ""
 "prestation with a earlier end date"
 msgstr ""
 
-#: src/Config.php:508 templates/config_cri_form.html.twig:100
+#: src/Config.php:517 templates/config_cri_form.html.twig:100
 msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
@@ -1695,7 +1703,7 @@ msgstr ""
 msgid "What would you like to do?"
 msgstr ""
 
-#: templates/config_options_form.html.twig:202
+#: templates/config_options_form.html.twig:214
 msgid ""
 "When a GLPI contract reaches the configured GLPI state, all its periods are "
 "automatically set to the configured period state. Conversely, when all "
@@ -1729,12 +1737,12 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:868
+#: src/WizardController.php:873
 #: templates/wizard/step5_stakeholders_section.html.twig:18
 msgid "days"
 msgstr ""
 
-#: src/WizardController.php:867
+#: src/WizardController.php:872
 msgid "hours"
 msgstr ""
 
