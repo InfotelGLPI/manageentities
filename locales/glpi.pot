@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-05 08:13+0000\n"
+"POT-Creation-Date: 2026-07-05 08:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -470,10 +470,6 @@ msgstr ""
 msgid "Default Business list for general monitoring"
 msgstr ""
 
-#: templates/config_options_form.html.twig:145
-msgid "Default con state"
-msgstr ""
-
 #: templates/config_options_form.html.twig:193
 msgid "Default contact type"
 msgstr ""
@@ -500,6 +496,10 @@ msgstr ""
 
 #: templates/config_options_form.html.twig:157
 msgid "Default service contract type"
+msgstr ""
+
+#: templates/config_options_form.html.twig:145
+msgid "Default service period state"
 msgstr ""
 
 #: src/Config.php:485 templates/config_cri_form.html.twig:73
