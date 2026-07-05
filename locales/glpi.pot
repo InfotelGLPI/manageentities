@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-05 08:24+0000\n"
+"POT-Creation-Date: 2026-07-05 08:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -192,7 +192,7 @@ msgstr ""
 msgid "Associated ticket"
 msgstr ""
 
-#: src/WizardController.php:791 src/WizardController.php:796
+#: src/WizardController.php:806
 msgid "At least one service period with a rate is required"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgstr ""
 msgid "Begin date"
 msgstr ""
 
-#: src/WizardController.php:149
+#: src/WizardController.php:134
 msgid "Begin date is required"
 msgstr ""
 
@@ -359,10 +359,6 @@ msgstr ""
 msgid "Contract number"
 msgstr ""
 
-#: src/WizardController.php:125
-msgid "Contract number is required"
-msgstr ""
-
 #: src/Gantt.php:344 src/Followup.php:1076
 msgid "Contract present"
 msgstr ""
@@ -370,10 +366,6 @@ msgstr ""
 #: templates/cridetail_for_ticket.html.twig:68
 #: templates/wizard/step3_contract.html.twig:81
 msgid "Contract type"
-msgstr ""
-
-#: src/WizardController.php:134
-msgid "Contract type is required"
 msgstr ""
 
 #: templates/wizard/step1_entity.html.twig:94
@@ -556,10 +548,6 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: src/WizardController.php:131
-msgid "Duration is required"
-msgstr ""
-
 #: templates/contract_detail_form.html.twig:139
 #: templates/wizard/step4_management.html.twig:140
 msgid "Duration of moving"
@@ -614,7 +602,7 @@ msgid_plural "Entities"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:227
+#: src/WizardController.php:212
 msgid "Entity not found"
 msgstr ""
 
@@ -622,23 +610,23 @@ msgstr ""
 msgid "Error adding stakeholder"
 msgstr ""
 
-#: src/WizardController.php:350
+#: src/WizardController.php:335
 msgid "Error creating contact"
 msgstr ""
 
-#: src/WizardController.php:517
+#: src/WizardController.php:502
 msgid "Error creating contract"
 msgstr ""
 
-#: src/WizardController.php:275
+#: src/WizardController.php:260
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:779 src/WizardController.php:955
+#: src/WizardController.php:764 src/WizardController.php:955
 msgid "Error creating intervention"
 msgstr ""
 
-#: src/WizardController.php:708
+#: src/WizardController.php:693
 msgid "Error creating management type"
 msgstr ""
 
@@ -646,15 +634,15 @@ msgstr ""
 msgid "Error saving price"
 msgstr ""
 
-#: src/WizardController.php:511
+#: src/WizardController.php:496
 msgid "Error updating contract"
 msgstr ""
 
-#: src/WizardController.php:269
+#: src/WizardController.php:254
 msgid "Error updating entity"
 msgstr ""
 
-#: src/WizardController.php:702
+#: src/WizardController.php:687
 msgid "Error updating management type"
 msgstr ""
 
@@ -814,7 +802,7 @@ msgid_plural "Intervention types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:161
+#: src/WizardController.php:146
 msgid "Intervention type is required"
 msgstr ""
 
@@ -831,7 +819,7 @@ msgstr ""
 msgid "Interventions with old contract"
 msgstr ""
 
-#: src/WizardController.php:192
+#: src/WizardController.php:177
 msgid "Invalid wizard mode"
 msgstr ""
 
@@ -938,7 +926,7 @@ msgid "Name"
 msgstr ""
 
 #: src/WizardController.php:101 src/WizardController.php:122
-#: src/WizardController.php:146
+#: src/WizardController.php:131
 msgid "Name is required"
 msgstr ""
 
@@ -1107,7 +1095,7 @@ msgid_plural "Periods of contract"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:805
+#: src/WizardController.php:815
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
@@ -1165,7 +1153,7 @@ msgstr ""
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 
-#: src/WizardController.php:223
+#: src/WizardController.php:208
 msgid "Please select an entity"
 msgstr ""
 
@@ -1340,7 +1328,7 @@ msgstr ""
 msgid "Save reports in glpi"
 msgstr ""
 
-#: src/WizardController.php:571 src/WizardController.php:676
+#: src/WizardController.php:556 src/WizardController.php:661
 msgid "Save the contract first"
 msgstr ""
 
@@ -1398,10 +1386,6 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-#: src/WizardController.php:128
-msgid "Start date is required"
-msgstr ""
-
 #: templates/wizard/step1_entity.html.twig:89
 msgid "State"
 msgstr ""
@@ -1410,7 +1394,7 @@ msgstr ""
 msgid "State applied to contract periods when the GLPI contract is closed."
 msgstr ""
 
-#: src/WizardController.php:152
+#: src/WizardController.php:137
 msgid "State is required"
 msgstr ""
 
@@ -1433,10 +1417,6 @@ msgstr ""
 #: templates/wizard/step3_contract.html.twig:85
 #: templates/wizard/step5_intervention_block.html.twig:59
 msgid "Status"
-msgstr ""
-
-#: src/WizardController.php:137
-msgid "Status is required"
 msgstr ""
 
 #: src/Preference.php:160
