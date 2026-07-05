@@ -224,9 +224,15 @@ class WizardController
 
         $entity = new \Entity();
 
+        // If a default parent entity is configured and the user did not pick one, enforce it
+        $config = Config::getInstance();
+        $forced_entities_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        $submitted_entities_id = (int)($input['entities_id'] ?? 0);
+        $resolved_entities_id = ($submitted_entities_id > 0) ? $submitted_entities_id : $forced_entities_id;
+
         $data = [
             'name'         => trim($input['name']),
-            'entities_id'  => (int)($input['entities_id'] ?? 0),
+            'entities_id'  => $resolved_entities_id,
             'comment'      => $input['comment'] ?? '',
             'phonenumber'  => $input['phonenumber'] ?? '',
             'fax'          => $input['fax'] ?? '',
@@ -1571,6 +1577,9 @@ class WizardController
             ];
         }
 
+        $config = Config::getInstance();
+        $forced_entities_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+
         $entity = new \Entity();
         if ($session['entities_id'] > 0) {
             $entity->getFromDB($session['entities_id']);
@@ -1578,9 +1587,14 @@ class WizardController
             $entity->getEmpty();
         }
 
+        $parent_entities_id = ($session['entities_id'] > 0)
+            ? (int)($entity->fields['entities_id'] ?? 0)
+            : $forced_entities_id;
+
         return [
-            'entity_fields'  => $entity->fields,
-            'entities_html'  => self::buildEntityHtml('entities_id', (int)($entity->fields['entities_id'] ?? 0), $rand),
+            'entity_fields'      => $entity->fields,
+            'entities_html'      => self::buildEntityHtml('entities_id', $parent_entities_id, $rand),
+            'parent_entity_locked' => $forced_entities_id > 0,
         ];
     }
 

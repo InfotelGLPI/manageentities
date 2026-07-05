@@ -262,6 +262,14 @@ class Config extends CommonDBTM
         ]);
         $wizard_contacttype_html = ob_get_clean();
 
+        $wizard_default_entities_id = (int)($this->fields['wizard_default_entities_id'] ?? 0);
+        ob_start();
+        \Dropdown::show(\Entity::class, [
+            'name'  => 'wizard_default_entities_id',
+            'value' => $wizard_default_entities_id,
+        ]);
+        $wizard_default_entity_html = ob_get_clean();
+
         TemplateRenderer::getInstance()->display(
             '@manageentities/config_options_form.html.twig',
             [
@@ -283,6 +291,7 @@ class Config extends CommonDBTM
                 'wizard_critype_html'           => $wizard_critype_html,
                 'wizard_documentcategory_html'  => $wizard_documentcategory_html,
                 'wizard_contacttype_html'       => $wizard_contacttype_html,
+                'wizard_default_entity_html'    => $wizard_default_entity_html,
             ]
         );
     }

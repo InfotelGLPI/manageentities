@@ -44,8 +44,17 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                     value="{{ entity_fields.name ?? '' }}">
             </div>
             <div class="col-sm-6">
-                <label class="col-form-label fw-bold">{{ __('Child entities') }}</label>
-                {{ entities_html|raw }}
+                <label class="col-form-label fw-bold">{{ __('Parent entity', 'manageentities') }}</label>
+                {% if parent_entity_locked %}
+                    <div class="d-flex align-items-center gap-2">
+                        {{ entities_html|raw }}
+                        <span class="badge bg-outline-secondary" title="{{ __('Set in configuration', 'manageentities') }}">
+                            <i class="ti ti-lock"></i>
+                        </span>
+                    </div>
+                {% else %}
+                    {{ entities_html|raw }}
+                {% endif %}
             </div>
 
             <div class="col-sm-6">

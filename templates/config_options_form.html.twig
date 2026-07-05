@@ -199,6 +199,18 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>
             </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Default parent entity', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ wizard_default_entity_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('When set, this entity is pre-selected and locked as the parent entity in wizard step 1.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
