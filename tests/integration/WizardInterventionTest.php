@@ -30,14 +30,10 @@
 namespace GlpiPlugin\Manageentities\Tests\Integration;
 
 use Glpi\Tests\DbTestCase;
-use GlpiPlugin\Manageentities\ContractDay;
-use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\WizardController;
 
 class WizardInterventionTest extends DbTestCase
 {
-    private int $entities_id = 0;
-    private int $contracts_id = 0;
     private int $contractstate_id = 0;
 
     public function setUp(): void
@@ -52,21 +48,20 @@ class WizardInterventionTest extends DbTestCase
         parent::tearDown();
     }
 
-    private function setupEntityAndContract(): void
+    /** Populate entity + contract data in session (no DB writes). */
+    private function setupSessionData(): void
     {
-        $er = WizardController::saveEntityAndReturn([
+        WizardController::saveEntityAndReturn([
             'name'        => 'Ent-' . $this->getUniqueString(),
             'entities_id' => 0,
         ]);
-        $this->entities_id = $er['entities_id'];
 
-        $cr = WizardController::saveContractAndReturn([
-            'name'        => 'CTR-' . $this->getUniqueString(),
-            'entities_id' => $this->entities_id,
+        WizardController::saveContractAndReturn([
+            'name'       => 'CTR-' . $this->getUniqueString(),
+            'begin_date' => '2026-01-01',
+            'duration'   => 12,
         ]);
-        $this->contracts_id = $cr['contracts_id'];
 
-        // Create a contract state to use
         $state = new \GlpiPlugin\Manageentities\ContractState();
         $this->contractstate_id = $state->add([
             'name'        => 'Active-' . $this->getUniqueString(),
@@ -74,41 +69,36 @@ class WizardInterventionTest extends DbTestCase
         ]);
     }
 
-    public function testSaveInterventionCreatesContractDay(): void
+    public function testSaveInterventionStoresInSession(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
+        $this->setupSessionData();
 
         $result = WizardController::saveInterventionsAndReturn([
             'interventions' => [
                 1 => [
                     'name'                                    => 'Period Q1',
-                    'entities_id'                             => $this->entities_id,
-                    'contracts_id'                            => $this->contracts_id,
                     'begin_date'                              => '2026-01-01',
                     'end_date'                                => '2026-03-31',
                     'nbday'                                   => 10,
-                    'report'                                  => 0,
-                    'charged'                                 => 0,
                     'plugin_manageentities_contractstates_id' => $this->contractstate_id,
                 ],
             ],
         ]);
 
         $this->assertTrue($result['success'], json_encode($result));
-        $this->assertArrayHasKey(1, $result['contractdays']);
-        $this->assertGreaterThan(0, $result['contractdays'][1]);
 
-        $this->assertEquals(
-            1,
-            countElementsInTable('glpi_plugin_manageentities_contractdays', ['id' => $result['contractdays'][1]])
-        );
+        $session = WizardController::getSession();
+        $this->assertArrayHasKey(1, $session['interventions_data']);
+        $this->assertSame('Period Q1', $session['interventions_data'][1]['fields']['name']);
+        // Nothing written to DB yet
+        $this->assertEquals(0, countElementsInTable('glpi_plugin_manageentities_contractdays', ['name' => 'Period Q1']));
     }
 
     public function testSaveInterventionRejectsMissingName(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
+        $this->setupSessionData();
 
         $result = WizardController::saveInterventionsAndReturn([
             'interventions' => [
@@ -120,187 +110,123 @@ class WizardInterventionTest extends DbTestCase
             ],
         ]);
 
-        // Empty name is skipped (not an error for the whole save)
-        // The result should succeed but with no contractdays saved
+        // Empty name is skipped — result succeeds but no intervention stored for that idx
         $this->assertTrue($result['success']);
-        $this->assertEmpty($result['contractdays']);
+        $session = WizardController::getSession();
+        $this->assertArrayNotHasKey(1, $session['interventions_data']);
     }
 
-    public function testSaveInterventionUpdatesSessionContractdays(): void
+    public function testSaveCriPriceStoresInSession(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
+        $this->setupSessionData();
 
         WizardController::saveInterventionsAndReturn([
             'interventions' => [
                 1 => [
                     'name'                                    => 'Period ' . $this->getUniqueString(),
-                    'entities_id'                             => $this->entities_id,
-                    'contracts_id'                            => $this->contracts_id,
                     'begin_date'                              => '2026-01-01',
+                    'end_date'                                => '2026-12-31',
+                    'nbday'                                   => 10,
                     'plugin_manageentities_contractstates_id' => $this->contractstate_id,
                 ],
             ],
         ]);
-
-        $session = WizardController::getSession();
-        $this->assertNotEmpty($session['contractdays']);
-    }
-
-    public function testSaveCriPriceCreatesRow(): void
-    {
-        $this->login();
-        $this->setupEntityAndContract();
-
-        $ir = WizardController::saveInterventionsAndReturn([
-            'interventions' => [
-                1 => [
-                    'name'                                    => 'Period ' . $this->getUniqueString(),
-                    'entities_id'                             => $this->entities_id,
-                    'contracts_id'                            => $this->contracts_id,
-                    'begin_date'                              => '2026-01-01',
-                    'plugin_manageentities_contractstates_id' => $this->contractstate_id,
-                ],
-            ],
-        ]);
-        $contractday_id = $ir['contractdays'][1];
 
         $critype = new \GlpiPlugin\Manageentities\CriType();
         $critype_id = $critype->add(['name' => 'Type-' . $this->getUniqueString(), 'entities_id' => 0]);
 
         $pr = WizardController::saveCriPriceAndReturn([
-            'plugin_manageentities_contractdays_id' => $contractday_id,
-            'plugin_manageentities_critypes_id'     => $critype_id,
-            'price'                                 => 750.00,
-            'is_default'                            => 1,
+            'intervention_idx'                  => 1,
+            'plugin_manageentities_critypes_id' => $critype_id,
+            'price'                             => 750.00,
+            'is_default'                        => 1,
         ]);
 
         $this->assertTrue($pr['success'], json_encode($pr));
-        $this->assertGreaterThan(0, $pr['criprice_id']);
-        $this->assertEquals(
-            1,
-            countElementsInTable('glpi_plugin_manageentities_criprices', ['id' => $pr['criprice_id']])
-        );
+        $this->assertNotEmpty($pr['criprice_id']);
+
+        $session = WizardController::getSession();
+        $criprices = $session['interventions_data'][1]['criprices'];
+        $this->assertCount(1, $criprices);
+        $this->assertSame(750.00, reset($criprices)['price']);
+
+        // Nothing written to DB yet
+        $this->assertEquals(0, countElementsInTable('glpi_plugin_manageentities_criprices'));
     }
 
-    public function testOnlyOneCriPriceAllowedPerContractDay(): void
+    public function testOnlyOneCriPriceAllowedPerIntervention(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
+        $this->setupSessionData();
 
-        $ir = WizardController::saveInterventionsAndReturn([
+        WizardController::saveInterventionsAndReturn([
             'interventions' => [
                 1 => [
                     'name'                                    => 'Period ' . $this->getUniqueString(),
-                    'entities_id'                             => $this->entities_id,
-                    'contracts_id'                            => $this->contracts_id,
                     'begin_date'                              => '2026-01-01',
+                    'end_date'                                => '2026-12-31',
+                    'nbday'                                   => 10,
                     'plugin_manageentities_contractstates_id' => $this->contractstate_id,
                 ],
             ],
         ]);
-        $contractday_id = $ir['contractdays'][1];
 
         $critype = new \GlpiPlugin\Manageentities\CriType();
         $critype_id = $critype->add(['name' => 'Type-' . $this->getUniqueString(), 'entities_id' => 0]);
 
         $pr1 = WizardController::saveCriPriceAndReturn([
-            'plugin_manageentities_contractdays_id' => $contractday_id,
-            'plugin_manageentities_critypes_id'     => $critype_id,
-            'price'                                 => 500.00,
-            'is_default'                            => 1,
+            'intervention_idx'                  => 1,
+            'plugin_manageentities_critypes_id' => $critype_id,
+            'price'                             => 500.00,
+            'is_default'                        => 1,
         ]);
         $this->assertTrue($pr1['success']);
 
-        // Second rate on same contractday must be refused
         $pr2 = WizardController::saveCriPriceAndReturn([
-            'plugin_manageentities_contractdays_id' => $contractday_id,
-            'plugin_manageentities_critypes_id'     => $critype_id,
-            'price'                                 => 600.00,
-            'is_default'                            => 0,
+            'intervention_idx'                  => 1,
+            'plugin_manageentities_critypes_id' => $critype_id,
+            'price'                             => 600.00,
+            'is_default'                        => 0,
         ]);
         $this->assertFalse($pr2['success'], 'Second rate should be rejected');
-        $this->assertEquals(
-            1,
-            countElementsInTable('glpi_plugin_manageentities_criprices', ['plugin_manageentities_contractdays_id' => $contractday_id])
-        );
-    }
 
-    public function testSaveInterventionRequiresAtLeastOneRateToFinish(): void
-    {
-        $this->login();
-        $this->setupEntityAndContract();
-
-        // Save an intervention without any rate then try to finalise (save_interventions)
-        $ir = WizardController::saveInterventionsAndReturn([
-            'interventions' => [
-                1 => [
-                    'name'                                    => 'Period ' . $this->getUniqueString(),
-                    'entities_id'                             => $this->entities_id,
-                    'contracts_id'                            => $this->contracts_id,
-                    'begin_date'                              => '2026-01-01',
-                    'plugin_manageentities_contractstates_id' => $this->contractstate_id,
-                ],
-            ],
-        ]);
-        // saveInterventionsAndReturn only fails at the final validation step (step 5 Next)
-        // which checks that every contractday has at least one CriPrice.
-        // The result here succeeds (saves the day) but a separate call to the finish
-        // action would fail — we simulate that by checking the session has contractdays
-        // but no criprices exist for it.
-        $this->assertTrue($ir['success']);
-        $contractday_id = $ir['contractdays'][1];
-        $this->assertEquals(
-            0,
-            countElementsInTable('glpi_plugin_manageentities_criprices', ['plugin_manageentities_contractdays_id' => $contractday_id])
-        );
+        $session = WizardController::getSession();
+        $this->assertCount(1, $session['interventions_data'][1]['criprices']);
     }
 
     public function testStakeholderCannotExceedCreditDays(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
+        $this->setupSessionData();
 
-        $ir = WizardController::saveInterventionsAndReturn([
+        WizardController::saveInterventionsAndReturn([
             'interventions' => [
                 1 => [
                     'name'                                    => 'Period ' . $this->getUniqueString(),
-                    'entities_id'                             => $this->entities_id,
-                    'contracts_id'                            => $this->contracts_id,
                     'begin_date'                              => '2026-01-01',
+                    'end_date'                                => '2026-12-31',
                     'nbday'                                   => 5,
                     'plugin_manageentities_contractstates_id' => $this->contractstate_id,
                 ],
             ],
         ]);
-        $contractday_id = $ir['contractdays'][1];
 
-        // Create a GLPI user
         $user = new \User();
-        $user_id = $user->add([
-            'name'      => 'stakeholder-' . $this->getUniqueString(),
-            'password'  => 'testpass',
-            'password2' => 'testpass',
-        ]);
+        $user_id = $user->add(['name' => 'sh-' . $this->getUniqueString(), 'password' => 'tp', 'password2' => 'tp']);
 
-        // Assign exactly the full credit — must succeed
         $r1 = WizardController::addStakeholderAndReturn([
-            'contractday_id'       => $contractday_id,
+            'intervention_idx'     => 1,
             'users_id'             => $user_id,
             'number_affected_days' => 5,
         ]);
         $this->assertTrue($r1['success'], json_encode($r1));
         $this->assertEquals(0.0, (float)$r1['remaining_days']);
 
-        // Assign 1 more day — must fail (0 remaining)
         $user2 = new \User();
-        $user2_id = $user2->add([
-            'name'      => 'stakeholder2-' . $this->getUniqueString(),
-            'password'  => 'testpass',
-            'password2' => 'testpass',
-        ]);
+        $user2_id = $user2->add(['name' => 'sh2-' . $this->getUniqueString(), 'password' => 'tp', 'password2' => 'tp']);
         $r2 = WizardController::addStakeholderAndReturn([
-            'contractday_id'       => $contractday_id,
+            'intervention_idx'     => 1,
             'users_id'             => $user2_id,
             'number_affected_days' => 1,
         ]);
@@ -311,32 +237,25 @@ class WizardInterventionTest extends DbTestCase
     public function testStakeholderAllowedWhenNbdayIsZero(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
+        $this->setupSessionData();
 
-        // nbday = 0 means no limit
-        $ir = WizardController::saveInterventionsAndReturn([
+        WizardController::saveInterventionsAndReturn([
             'interventions' => [
                 1 => [
                     'name'                                    => 'Period ' . $this->getUniqueString(),
-                    'entities_id'                             => $this->entities_id,
-                    'contracts_id'                            => $this->contracts_id,
                     'begin_date'                              => '2026-01-01',
+                    'end_date'                                => '2026-12-31',
                     'nbday'                                   => 0,
                     'plugin_manageentities_contractstates_id' => $this->contractstate_id,
                 ],
             ],
         ]);
-        $contractday_id = $ir['contractdays'][1];
 
         $user = new \User();
-        $user_id = $user->add([
-            'name'      => 'sh-nolimit-' . $this->getUniqueString(),
-            'password'  => 'testpass',
-            'password2' => 'testpass',
-        ]);
+        $user_id = $user->add(['name' => 'sh-nolimit-' . $this->getUniqueString(), 'password' => 'tp', 'password2' => 'tp']);
 
         $r = WizardController::addStakeholderAndReturn([
-            'contractday_id'       => $contractday_id,
+            'intervention_idx'     => 1,
             'users_id'             => $user_id,
             'number_affected_days' => 99,
         ]);
@@ -344,47 +263,51 @@ class WizardInterventionTest extends DbTestCase
         $this->assertNull($r['remaining_days'], 'remaining_days should be null when no limit');
     }
 
-    public function testCriPriceRowEnrichedWithCriTypeName(): void
+    public function testCommitCreatesInterventionAndCripriceInDb(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
+        $uid = $this->getUniqueString();
 
-        $ir = WizardController::saveInterventionsAndReturn([
+        WizardController::saveEntityAndReturn(['name' => "E-{$uid}", 'entities_id' => 0]);
+        WizardController::saveContactsAndReturn(['contacts' => []]);
+        WizardController::saveContractAndReturn(['name' => "C-{$uid}", 'begin_date' => '2026-01-01', 'duration' => 12]);
+        WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-01-01']);
+
+        $state = new \GlpiPlugin\Manageentities\ContractState();
+        $state_id = $state->add(['name' => "St-{$uid}", 'entities_id' => 0]);
+
+        WizardController::saveInterventionsAndReturn([
             'interventions' => [
                 1 => [
-                    'name'                                    => 'Period ' . $this->getUniqueString(),
-                    'entities_id'                             => $this->entities_id,
-                    'contracts_id'                            => $this->contracts_id,
+                    'name'                                    => "Period-{$uid}",
                     'begin_date'                              => '2026-01-01',
-                    'plugin_manageentities_contractstates_id' => $this->contractstate_id,
+                    'end_date'                                => '2026-03-31',
+                    'nbday'                                   => 10,
+                    'plugin_manageentities_contractstates_id' => $state_id,
                 ],
             ],
         ]);
-        $contractday_id = $ir['contractdays'][1];
 
         $critype = new \GlpiPlugin\Manageentities\CriType();
-        $critype_id = $critype->add(['name' => 'TypeABC-' . $this->getUniqueString(), 'entities_id' => 0]);
+        $critype_id = $critype->add(['name' => "CT-{$uid}", 'entities_id' => 0]);
 
         WizardController::saveCriPriceAndReturn([
-            'plugin_manageentities_contractdays_id' => $contractday_id,
-            'plugin_manageentities_critypes_id'     => $critype_id,
-            'price'                                 => 800.00,
-            'is_default'                            => 1,
+            'intervention_idx'                  => 1,
+            'plugin_manageentities_critypes_id' => $critype_id,
+            'price'                             => 750.00,
+            'is_default'                        => 1,
         ]);
 
-        // Reload via buildCriPricesSectionHtml indirectly: check that the rows have critypes_name
-        $criPrice = new \GlpiPlugin\Manageentities\CriPrice();
-        $rows = $criPrice->find(['plugin_manageentities_contractdays_id' => $contractday_id]);
+        $rc = WizardController::commitWizardAndReturn();
+        $this->assertTrue($rc['success'], json_encode($rc));
 
-        // Simulate what getCriPricesForContractDay does
-        foreach ($rows as &$row) {
-            $ct = new \GlpiPlugin\Manageentities\CriType();
-            if ($ct->getFromDB((int)($row['plugin_manageentities_critypes_id'] ?? 0))) {
-                $row['critypes_name'] = $ct->fields['completename'] ?? $ct->fields['name'] ?? '';
-            }
-        }
-        $row = reset($rows);
-        $this->assertArrayHasKey('critypes_name', $row);
-        $this->assertNotEmpty($row['critypes_name'], 'critypes_name should not be empty');
+        $this->assertEquals(1, countElementsInTable('glpi_plugin_manageentities_contractdays', ['name' => "Period-{$uid}"]));
+        $row = (new \GlpiPlugin\Manageentities\ContractDay())->find(['name' => "Period-{$uid}"]);
+        $contractday_id = (int)array_key_first($row);
+        $this->assertGreaterThan(0, $contractday_id);
+        $this->assertEquals(
+            1,
+            countElementsInTable('glpi_plugin_manageentities_criprices', ['plugin_manageentities_contractdays_id' => $contractday_id])
+        );
     }
 }

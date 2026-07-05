@@ -46,7 +46,7 @@ class WizardEntityTest extends DbTestCase
         parent::tearDown();
     }
 
-    public function testSaveEntityCreatesGlpiEntity(): void
+    public function testSaveEntityStoresDataInSession(): void
     {
         $this->login();
 
@@ -56,25 +56,27 @@ class WizardEntityTest extends DbTestCase
         ]);
 
         $this->assertTrue($result['success'], 'Expected success=true but got: ' . ($result['message'] ?? ''));
-        $this->assertGreaterThan(0, $result['entities_id']);
-        $this->assertEquals(
-            1,
-            countElementsInTable('glpi_entities', ['id' => $result['entities_id']]),
-            'Entity row not found in DB'
-        );
+
+        $session = WizardController::getSession();
+        $this->assertSame('Test Entity WizardEntityTest', $session['entity_data']['name']);
+        // No DB write yet
+        $existing = countElementsInTable('glpi_entities', ['name' => 'Test Entity WizardEntityTest']);
+        $this->assertEquals(0, $existing, 'Entity must not be in DB before commit');
     }
 
-    public function testSaveEntityUpdatesSessionEntitiesId(): void
+    public function testSaveEntityDoesNotWriteToDb(): void
     {
         $this->login();
 
-        WizardController::saveEntityAndReturn([
+        $result = WizardController::saveEntityAndReturn([
             'name'        => 'Session Entity Test',
             'entities_id' => 0,
         ]);
 
+        $this->assertTrue($result['success']);
+        // entities_id stays 0 in session — nothing created in DB yet
         $session = WizardController::getSession();
-        $this->assertGreaterThan(0, $session['entities_id']);
+        $this->assertSame(0, $session['entities_id']);
     }
 
     public function testSaveEntityAdvancesStepTo2(): void
@@ -104,27 +106,23 @@ class WizardEntityTest extends DbTestCase
         $this->assertArrayHasKey('name', $result['errors']);
     }
 
-    public function testSaveEntityUpdatesExistingEntity(): void
+    public function testSaveEntityOverwritesPreviousSessionData(): void
     {
         $this->login();
 
-        $r1 = WizardController::saveEntityAndReturn([
+        WizardController::saveEntityAndReturn([
             'name'        => 'Original Name',
             'entities_id' => 0,
         ]);
-        $this->assertTrue($r1['success']);
 
-        // Second call updates (session has entities_id now)
         $r2 = WizardController::saveEntityAndReturn([
             'name'        => 'Updated Name',
             'entities_id' => 0,
         ]);
         $this->assertTrue($r2['success']);
-        $this->assertSame($r1['entities_id'], $r2['entities_id'], 'Should update the same entity');
 
-        $entity = new \Entity();
-        $entity->getFromDB($r1['entities_id']);
-        $this->assertSame('Updated Name', $entity->fields['name']);
+        $session = WizardController::getSession();
+        $this->assertSame('Updated Name', $session['entity_data']['name']);
     }
 
     public function testSaveEntityStoresOptionalFields(): void
@@ -140,10 +138,69 @@ class WizardEntityTest extends DbTestCase
         ]);
 
         $this->assertTrue($result['success']);
-        $entity = new \Entity();
-        $entity->getFromDB($result['entities_id']);
-        $this->assertSame('0123456789', $entity->fields['phonenumber']);
-        $this->assertSame('test@example.com', $entity->fields['email']);
-        $this->assertSame('Paris', $entity->fields['town']);
+
+        $session = WizardController::getSession();
+        $this->assertSame('0123456789', $session['entity_data']['phonenumber']);
+        $this->assertSame('test@example.com', $session['entity_data']['email']);
+        $this->assertSame('Paris', $session['entity_data']['town']);
+    }
+
+    public function testCommitCreatesEntityInDb(): void
+    {
+        $this->login();
+        $uid = $this->getUniqueString();
+
+        $r1 = WizardController::saveEntityAndReturn([
+            'name'        => "CommitEnt-{$uid}",
+            'entities_id' => 0,
+        ]);
+        $this->assertTrue($r1['success']);
+
+        $r2 = WizardController::saveContactsAndReturn(['contacts' => []]);
+        $this->assertTrue($r2['success']);
+
+        $r3 = WizardController::saveContractAndReturn([
+            'name'       => "CTR-{$uid}",
+            'begin_date' => '2026-01-01',
+            'duration'   => 12,
+        ]);
+        $this->assertTrue($r3['success']);
+
+        $r4 = WizardController::saveManagementTypeAndReturn([
+            'date_signature' => '2026-01-01',
+        ]);
+        $this->assertTrue($r4['success']);
+
+        $state = new \GlpiPlugin\Manageentities\ContractState();
+        $state_id = $state->add(['name' => "St-{$uid}", 'entities_id' => 0]);
+
+        $r5 = WizardController::saveInterventionsAndReturn([
+            'interventions' => [
+                0 => [
+                    'name'                                    => "Period-{$uid}",
+                    'begin_date'                              => '2026-01-01',
+                    'end_date'                                => '2026-12-31',
+                    'nbday'                                   => 10,
+                    'plugin_manageentities_contractstates_id' => $state_id,
+                ],
+            ],
+        ]);
+        $this->assertTrue($r5['success']);
+
+        $critype = new \GlpiPlugin\Manageentities\CriType();
+        $critype_id = $critype->add(['name' => "CT-{$uid}", 'entities_id' => 0]);
+
+        $rcp = WizardController::saveCriPriceAndReturn([
+            'intervention_idx'                  => 0,
+            'plugin_manageentities_critypes_id' => $critype_id,
+            'price'                             => 500.00,
+            'is_default'                        => 1,
+        ]);
+        $this->assertTrue($rcp['success']);
+
+        $rc = WizardController::commitWizardAndReturn();
+        $this->assertTrue($rc['success'], json_encode($rc));
+
+        $this->assertEquals(1, countElementsInTable('glpi_entities', ['name' => "CommitEnt-{$uid}"]));
     }
 }

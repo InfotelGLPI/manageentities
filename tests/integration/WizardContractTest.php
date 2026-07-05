@@ -46,31 +46,30 @@ class WizardContractTest extends DbTestCase
         parent::tearDown();
     }
 
-    private function createEntity(): int
+    /** Populate entity and contract data in session (no DB writes). */
+    private function prepareEntityAndContractInSession(): void
     {
-        $r = WizardController::saveEntityAndReturn([
+        WizardController::saveEntityAndReturn([
             'name'        => 'Entity for Contract ' . $this->getUniqueString(),
             'entities_id' => 0,
         ]);
-        return $r['entities_id'];
     }
 
-    public function testSaveContractCreatesGlpiContract(): void
+    public function testSaveContractStoresDataInSession(): void
     {
         $this->login();
-        $entities_id = $this->createEntity();
+        $this->prepareEntityAndContractInSession();
 
         $result = WizardController::saveContractAndReturn([
-            'name'        => 'CTR-TEST-' . $this->getUniqueString(),
-            'entities_id' => $entities_id,
+            'name' => 'CTR-TEST-' . $this->getUniqueString(),
         ]);
 
         $this->assertTrue($result['success'], $result['message'] ?? '');
-        $this->assertGreaterThan(0, $result['contracts_id']);
-        $this->assertEquals(
-            1,
-            countElementsInTable('glpi_contracts', ['id' => $result['contracts_id']])
-        );
+
+        $session = WizardController::getSession();
+        $this->assertNotEmpty($session['contract_data']['name']);
+        // No DB write yet
+        $this->assertEquals(0, countElementsInTable('glpi_contracts', ['name' => $session['contract_data']['name']]));
     }
 
     public function testSaveContractRejectsEmptyName(): void
@@ -78,8 +77,7 @@ class WizardContractTest extends DbTestCase
         $this->login();
 
         $result = WizardController::saveContractAndReturn([
-            'name'        => '',
-            'entities_id' => 0,
+            'name' => '',
         ]);
 
         $this->assertFalse($result['success']);
@@ -89,86 +87,92 @@ class WizardContractTest extends DbTestCase
     public function testSaveContractAdvancesStepTo4(): void
     {
         $this->login();
-        $this->createEntity();
+        $this->prepareEntityAndContractInSession();
 
         WizardController::saveContractAndReturn([
-            'name'        => 'CTR-' . $this->getUniqueString(),
-            'entities_id' => WizardController::getSession()['entities_id'],
+            'name' => 'CTR-' . $this->getUniqueString(),
         ]);
 
         $session = WizardController::getSession();
         $this->assertGreaterThanOrEqual(4, $session['step']);
     }
 
-    public function testSaveManagementTypeCreatesPluginRow(): void
+    public function testSaveManagementTypeStoresDataInSession(): void
     {
         $this->login();
-        $entities_id = $this->createEntity();
+        $this->prepareEntityAndContractInSession();
 
-        $cr = WizardController::saveContractAndReturn([
-            'name'        => 'CTR-' . $this->getUniqueString(),
-            'entities_id' => $entities_id,
-        ]);
-        $this->assertTrue($cr['success']);
+        WizardController::saveContractAndReturn(['name' => 'CTR-' . $this->getUniqueString()]);
 
         $mr = WizardController::saveManagementTypeAndReturn([
-            'contracts_id' => $cr['contracts_id'],
-            'entities_id'  => $entities_id,
+            'date_signature'       => '2026-01-01',
+            'show_on_global_gantt' => 1,
+            'cloud_client'         => 1,
+            'internet_publication' => 0,
         ]);
 
         $this->assertTrue($mr['success'], $mr['message'] ?? '');
-        $this->assertGreaterThan(0, $mr['plugin_contract_id']);
-        $this->assertEquals(
-            1,
-            countElementsInTable(
-                'glpi_plugin_manageentities_contracts',
-                ['id' => $mr['plugin_contract_id']]
-            )
-        );
+
+        $session = WizardController::getSession();
+        $this->assertNotEmpty($session['management_data']);
+        $this->assertSame(1, $session['management_data']['show_on_global_gantt']);
+        $this->assertSame(1, $session['management_data']['cloud_client']);
+        $this->assertSame(0, $session['management_data']['internet_publication']);
     }
 
-    public function testSaveManagementTypeFailsWithoutContracts_id(): void
+    public function testSaveManagementTypeFailsWithoutDateSignature(): void
     {
         $this->login();
 
-        // Fresh session — no contract saved yet
         $result = WizardController::saveManagementTypeAndReturn([
-            'contracts_id' => 0,
-            'entities_id'  => 0,
+            'date_signature' => '',
         ]);
 
         $this->assertFalse($result['success']);
     }
 
-    public function testSaveManagementTypePersistsBooleanFields(): void
+    public function testCommitCreatesContractAndPluginContractInDb(): void
     {
         $this->login();
-        $entities_id = $this->createEntity();
+        $uid = $this->getUniqueString();
 
-        $cr = WizardController::saveContractAndReturn([
-            'name'        => 'CTR-' . $this->getUniqueString(),
-            'entities_id' => $entities_id,
+        WizardController::saveEntityAndReturn(['name' => "Ent-{$uid}", 'entities_id' => 0]);
+        WizardController::saveContactsAndReturn(['contacts' => []]);
+        WizardController::saveContractAndReturn(['name' => "CTR-{$uid}", 'begin_date' => '2026-01-01', 'duration' => 12]);
+        WizardController::saveManagementTypeAndReturn([
+            'date_signature'       => '2026-01-01',
+            'show_on_global_gantt' => 1,
         ]);
 
-        $mr = WizardController::saveManagementTypeAndReturn([
-            'contracts_id'             => $cr['contracts_id'],
-            'entities_id'              => $entities_id,
-            'show_on_global_gantt'     => 1,
-            'cloud_client'             => 1,
-            'internet_publication'     => 0,
+        $state = new \GlpiPlugin\Manageentities\ContractState();
+        $state_id = $state->add(['name' => "St-{$uid}", 'entities_id' => 0]);
+
+        WizardController::saveInterventionsAndReturn([
+            'interventions' => [
+                0 => [
+                    'name'                                    => "P-{$uid}",
+                    'begin_date'                              => '2026-01-01',
+                    'end_date'                                => '2026-12-31',
+                    'nbday'                                   => 5,
+                    'plugin_manageentities_contractstates_id' => $state_id,
+                ],
+            ],
         ]);
 
-        $this->assertTrue($mr['success']);
+        $critype = new \GlpiPlugin\Manageentities\CriType();
+        $critype_id = $critype->add(['name' => "CT-{$uid}", 'entities_id' => 0]);
 
-        global $DB;
-        $row = $DB->request([
-            'SELECT' => ['show_on_global_gantt', 'cloud_client', 'internet_publication'],
-            'FROM'   => 'glpi_plugin_manageentities_contracts',
-            'WHERE'  => ['id' => $mr['plugin_contract_id']],
-        ])->current();
+        WizardController::saveCriPriceAndReturn([
+            'intervention_idx'                  => 0,
+            'plugin_manageentities_critypes_id' => $critype_id,
+            'price'                             => 500.00,
+            'is_default'                        => 1,
+        ]);
 
-        $this->assertSame(1, (int)$row['show_on_global_gantt']);
-        $this->assertSame(1, (int)$row['cloud_client']);
-        $this->assertSame(0, (int)$row['internet_publication']);
+        $rc = WizardController::commitWizardAndReturn();
+        $this->assertTrue($rc['success'], json_encode($rc));
+
+        $this->assertEquals(1, countElementsInTable('glpi_contracts', ['name' => "CTR-{$uid}"]));
+        $this->assertEquals(1, countElementsInTable('glpi_entities', ['name' => "Ent-{$uid}"]));
     }
 }

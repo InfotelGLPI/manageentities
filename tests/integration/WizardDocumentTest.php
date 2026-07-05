@@ -35,8 +35,6 @@ use GlpiPlugin\Manageentities\WizardController;
 
 class WizardDocumentTest extends DbTestCase
 {
-    private int $contracts_id = 0;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -49,26 +47,43 @@ class WizardDocumentTest extends DbTestCase
         parent::tearDown();
     }
 
-    private function setupEntityAndContract(): void
-    {
-        $er = WizardController::saveEntityAndReturn([
-            'name'        => 'Ent-' . $this->getUniqueString(),
-            'entities_id' => 0,
-        ]);
-        $cr = WizardController::saveContractAndReturn([
-            'name'        => 'CTR-' . $this->getUniqueString(),
-            'entities_id' => $er['entities_id'],
-            'begin_date'  => '2026-01-01',
-            'duration'    => 12,
-        ]);
-        $this->contracts_id = $cr['contracts_id'];
-    }
-
     private function makeUploadedFile(string $content = 'test content'): string
     {
         $tmp = tempnam(sys_get_temp_dir(), 'wiz_test_');
         file_put_contents($tmp, $content);
         return $tmp;
+    }
+
+    /**
+     * Create a Document row in DB and add its ID to the wizard session,
+     * mirroring what uploadDocuments() does.
+     */
+    private function uploadDocumentToSession(string $content = 'pdf content'): int
+    {
+        $tmp      = $this->makeUploadedFile($content);
+        $destName = 'test_wizard_' . $this->getUniqueString() . '.pdf';
+        $destPath = GLPI_UPLOAD_DIR . '/' . $destName;
+        copy($tmp, $destPath);
+        unlink($tmp);
+
+        $doc      = new Document();
+        $docInput = [
+            'documentcategories_id' => 0,
+            'entities_id'           => 0,
+            'is_recursive'          => 0,
+            '_no_message'           => true,
+            'upload_file'           => $destName,
+            'name'                  => $destName,
+        ];
+        $doc->check(-1, CREATE, $docInput);
+        $doc_id = (int)$doc->add($docInput);
+        $this->assertGreaterThan(0, $doc_id, 'Document::add() should succeed');
+
+        $session = WizardController::getSession();
+        $session['documents_ids'][] = $doc_id;
+        $_SESSION['manageentities_wizard'] = $session;
+
+        return $doc_id;
     }
 
     public function testDocumentsIdsInitialisedEmpty(): void
@@ -81,141 +96,100 @@ class WizardDocumentTest extends DbTestCase
     public function testUploadDocumentTracksIdInSession(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
 
-        $tmp      = $this->makeUploadedFile('pdf content');
-        $destName = 'test_wizard_' . $this->getUniqueString() . '.pdf';
-
-        // Simulate what uploadDocuments() does: copy to GLPI_UPLOAD_DIR then add Document
-        $destPath = GLPI_UPLOAD_DIR . '/' . $destName;
-        copy($tmp, $destPath);
-        unlink($tmp);
-
-        $glpiContract = new \Contract();
-        $glpiContract->getFromDB($this->contracts_id);
-        $entities_id = (int)$glpiContract->fields['entities_id'];
-
-        $doc      = new Document();
-        $docInput = [
-            'documentcategories_id' => 0,
-            'entities_id'           => $entities_id,
-            'is_recursive'          => 0,
-            'itemtype'              => \Contract::class,
-            'items_id'              => $this->contracts_id,
-            '_no_message'           => true,
-            'upload_file'           => $destName,
-            'name'                  => $destName,
-        ];
-        $doc->check(-1, CREATE, $docInput);
-        $doc_id = $doc->add($docInput);
-        $this->assertGreaterThan(0, $doc_id, 'Document::add() should succeed');
-
-        // Manually track in session (mirrors what uploadDocuments() does)
-        $session = WizardController::getSession();
-        $session['documents_ids'][] = (int)$doc_id;
-        $_SESSION['manageentities_wizard'] = $session;
+        $doc_id = $this->uploadDocumentToSession();
 
         $updated = WizardController::getSession();
-        $this->assertContains((int)$doc_id, $updated['documents_ids']);
+        $this->assertContains($doc_id, $updated['documents_ids']);
     }
 
     public function testDeleteDocumentRemovesFromSessionAndDb(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
 
-        $tmp      = $this->makeUploadedFile('to delete');
-        $destName = 'test_del_' . $this->getUniqueString() . '.pdf';
-        $destPath = GLPI_UPLOAD_DIR . '/' . $destName;
-        copy($tmp, $destPath);
-        unlink($tmp);
+        $doc_id = $this->uploadDocumentToSession('to delete');
 
-        $glpiContract = new \Contract();
-        $glpiContract->getFromDB($this->contracts_id);
-
-        $doc      = new Document();
-        $docInput = [
-            'documentcategories_id' => 0,
-            'entities_id'           => (int)$glpiContract->fields['entities_id'],
-            'is_recursive'          => 0,
-            'itemtype'              => \Contract::class,
-            'items_id'              => $this->contracts_id,
-            '_no_message'           => true,
-            'upload_file'           => $destName,
-            'name'                  => $destName,
-        ];
-        $doc->check(-1, CREATE, $docInput);
-        $doc_id = (int)$doc->add($docInput);
-        $this->assertGreaterThan(0, $doc_id);
-
-        // Put it in session
-        $session = WizardController::getSession();
-        $session['documents_ids'] = [$doc_id];
-        $_SESSION['manageentities_wizard'] = $session;
-
-        // Call deleteDocument via POST simulation
-        $_POST['document_id'] = $doc_id;
+        // Delete from DB
         $d = new Document();
         $ok = $d->delete(['id' => $doc_id], true);
         $this->assertTrue((bool)$ok);
 
         // Update session as deleteDocument() would
+        $session = WizardController::getSession();
         $session['documents_ids'] = array_values(array_filter(
             $session['documents_ids'],
             fn($id) => (int)$id !== $doc_id
         ));
         $_SESSION['manageentities_wizard'] = $session;
-        unset($_POST['document_id']);
 
         $updated = WizardController::getSession();
         $this->assertNotContains($doc_id, $updated['documents_ids']);
         $this->assertEquals(0, countElementsInTable('glpi_documents', ['id' => $doc_id]));
     }
 
-    public function testResetSummaryIncludesDocumentNames(): void
+    public function testResetSummaryIncludesDocumentCount(): void
     {
         $this->login();
-        $this->setupEntityAndContract();
 
-        $tmp      = $this->makeUploadedFile('summary test');
-        $destName = 'test_sum_' . $this->getUniqueString() . '.pdf';
-        $destPath = GLPI_UPLOAD_DIR . '/' . $destName;
-        copy($tmp, $destPath);
-        unlink($tmp);
-
-        $glpiContract = new \Contract();
-        $glpiContract->getFromDB($this->contracts_id);
-
-        $doc      = new Document();
-        $docInput = [
-            'documentcategories_id' => 0,
-            'entities_id'           => (int)$glpiContract->fields['entities_id'],
-            'is_recursive'          => 0,
-            'itemtype'              => \Contract::class,
-            'items_id'              => $this->contracts_id,
-            '_no_message'           => true,
-            'upload_file'           => $destName,
-            'name'                  => $destName,
-        ];
-        $doc->check(-1, CREATE, $docInput);
-        $doc_id = (int)$doc->add($docInput);
-
-        $session = WizardController::getSession();
-        $session['documents_ids'] = [$doc_id];
-        $_SESSION['manageentities_wizard'] = $session;
+        $this->uploadDocumentToSession('summary test');
 
         $summary = WizardController::getResetSummaryAndReturn();
         $this->assertTrue($summary['success']);
 
-        $types = array_column($summary['items'], 'type');
         $found = false;
         foreach ($summary['items'] as $item) {
             if (str_contains(strtolower($item['type']), 'document')) {
                 $found = true;
-                $this->assertStringContainsString($destName, $item['label']);
                 break;
             }
         }
         $this->assertTrue($found, 'Document should appear in reset summary');
+    }
+
+    public function testDocumentsLinkedToContractAfterCommit(): void
+    {
+        $this->login();
+        $uid = $this->getUniqueString();
+
+        WizardController::saveEntityAndReturn(['name' => "DocEnt-{$uid}", 'entities_id' => 0]);
+        WizardController::saveContactsAndReturn(['contacts' => []]);
+        WizardController::saveContractAndReturn(['name' => "DocCTR-{$uid}", 'begin_date' => '2026-01-01', 'duration' => 12]);
+        WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-01-01']);
+
+        $state = new \GlpiPlugin\Manageentities\ContractState();
+        $state_id = $state->add(['name' => "St-{$uid}", 'entities_id' => 0]);
+
+        WizardController::saveInterventionsAndReturn([
+            'interventions' => [
+                0 => [
+                    'name'                                    => "P-{$uid}",
+                    'begin_date'                              => '2026-01-01',
+                    'end_date'                                => '2026-12-31',
+                    'nbday'                                   => 5,
+                    'plugin_manageentities_contractstates_id' => $state_id,
+                ],
+            ],
+        ]);
+
+        $critype = new \GlpiPlugin\Manageentities\CriType();
+        $critype_id = $critype->add(['name' => "CT-{$uid}", 'entities_id' => 0]);
+
+        WizardController::saveCriPriceAndReturn([
+            'intervention_idx'                  => 0,
+            'plugin_manageentities_critypes_id' => $critype_id,
+            'price'                             => 500.00,
+            'is_default'                        => 1,
+        ]);
+
+        $doc_id = $this->uploadDocumentToSession('commit doc test');
+
+        $rc = WizardController::commitWizardAndReturn();
+        $this->assertTrue($rc['success'], json_encode($rc));
+
+        // After commit the document must be linked to the contract
+        $doc = new Document();
+        $doc->getFromDB($doc_id);
+        $this->assertSame(\Contract::class, $doc->fields['itemtype']);
+        $this->assertGreaterThan(0, (int)$doc->fields['items_id']);
     }
 }

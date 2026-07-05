@@ -51,38 +51,33 @@ class WizardFullFlowTest extends DbTestCase
         $this->login();
         $uid = $this->getUniqueString();
 
-        // Step 1 — Entity
+        // Step 1 — Entity (stored in session only)
         $r1 = WizardController::saveEntityAndReturn([
             'name'        => "Entity-{$uid}",
             'entities_id' => 0,
             'email'       => "entity-{$uid}@example.com",
         ]);
         $this->assertTrue($r1['success'], 'Step 1 failed: ' . json_encode($r1));
-        $entities_id = $r1['entities_id'];
 
-        // Step 2 — Contacts (skip: optional)
+        // Step 2 — Contacts (optional, skip)
         $r2 = WizardController::saveContactsAndReturn(['contacts' => []]);
         $this->assertTrue($r2['success'], 'Step 2 failed: ' . json_encode($r2));
 
-        // Step 3 — Contract
+        // Step 3 — Contract (stored in session only)
         $r3 = WizardController::saveContractAndReturn([
-            'name'        => "CTR-{$uid}",
-            'entities_id' => $entities_id,
-            'begin_date'  => '2026-01-01',
-            'duration'    => 12,
+            'name'       => "CTR-{$uid}",
+            'begin_date' => '2026-01-01',
+            'duration'   => 12,
         ]);
         $this->assertTrue($r3['success'], 'Step 3 failed: ' . json_encode($r3));
-        $contracts_id = $r3['contracts_id'];
 
-        // Step 4 — Management type
+        // Step 4 — Management type (stored in session only)
         $r4 = WizardController::saveManagementTypeAndReturn([
-            'contracts_id'         => $contracts_id,
-            'entities_id'          => $entities_id,
+            'date_signature'       => '2026-01-01',
             'show_on_global_gantt' => 1,
             'cloud_client'         => 0,
         ]);
         $this->assertTrue($r4['success'], 'Step 4 failed: ' . json_encode($r4));
-        $plugin_contract_id = $r4['plugin_contract_id'];
 
         // Create a contract state for step 5
         $state = new \GlpiPlugin\Manageentities\ContractState();
@@ -92,56 +87,78 @@ class WizardFullFlowTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $state_id);
 
-        // Step 5 — Intervention
+        // Step 5 — Intervention (stored in session only)
         $r5 = WizardController::saveInterventionsAndReturn([
             'interventions' => [
                 1 => [
                     'name'                                    => "Period Q1-{$uid}",
-                    'entities_id'                             => $entities_id,
-                    'contracts_id'                            => $contracts_id,
                     'begin_date'                              => '2026-01-01',
                     'end_date'                                => '2026-03-31',
                     'nbday'                                   => 10,
-                    'report'                                  => 0,
-                    'charged'                                 => 0,
                     'plugin_manageentities_contractstates_id' => $state_id,
                 ],
             ],
         ]);
         $this->assertTrue($r5['success'], 'Step 5 failed: ' . json_encode($r5));
-        $this->assertCount(1, $r5['contractdays']);
+
+        // Verify session holds all data — nothing in DB yet
+        $session = WizardController::getSession();
+        $this->assertSame("Entity-{$uid}", $session['entity_data']['name']);
+        $this->assertSame("CTR-{$uid}", $session['contract_data']['name']);
+        $this->assertNotEmpty($session['management_data']);
+        $this->assertArrayHasKey(1, $session['interventions_data']);
+        $this->assertEquals(0, countElementsInTable('glpi_entities', ['name' => "Entity-{$uid}"]));
+        $this->assertEquals(0, countElementsInTable('glpi_contracts', ['name' => "CTR-{$uid}"]));
+
+        // Add a CriPrice to satisfy the "at least one rate" requirement
+        $critype = new \GlpiPlugin\Manageentities\CriType();
+        $critype_id = $critype->add(['name' => "CT-{$uid}", 'entities_id' => 0]);
+
+        $rcp = WizardController::saveCriPriceAndReturn([
+            'intervention_idx'                  => 1,
+            'plugin_manageentities_critypes_id' => $critype_id,
+            'price'                             => 500.00,
+            'is_default'                        => 1,
+        ]);
+        $this->assertTrue($rcp['success'], json_encode($rcp));
+
+        // Commit — writes everything to DB
+        $rc = WizardController::commitWizardAndReturn();
+        $this->assertTrue($rc['success'], 'Commit failed: ' . json_encode($rc));
+        $this->assertArrayHasKey('redirect_url', $rc);
 
         // Verify all rows exist in DB
-        $this->assertEquals(1, countElementsInTable('glpi_entities', ['id' => $entities_id]));
-        $this->assertEquals(1, countElementsInTable('glpi_contracts', ['id' => $contracts_id]));
-        $this->assertEquals(1, countElementsInTable('glpi_plugin_manageentities_contracts', ['id' => $plugin_contract_id]));
-        $contractday_id = reset($r5['contractdays']);
-        $this->assertEquals(1, countElementsInTable('glpi_plugin_manageentities_contractdays', ['id' => $contractday_id]));
+        $this->assertEquals(1, countElementsInTable('glpi_entities', ['name' => "Entity-{$uid}"]));
+        $this->assertEquals(1, countElementsInTable('glpi_contracts', ['name' => "CTR-{$uid}"]));
+        $this->assertEquals(1, countElementsInTable('glpi_plugin_manageentities_contractdays', ['name' => "Period Q1-{$uid}"]));
 
-        // Session should reflect all IDs
-        $session = WizardController::getSession();
-        $this->assertSame($entities_id, $session['entities_id']);
-        $this->assertSame($contracts_id, $session['contracts_id']);
-        $this->assertSame($plugin_contract_id, $session['plugin_contract_id']);
-        $this->assertContains($contractday_id, $session['contractdays']);
+        // Session should be cleared after commit
+        $sessionAfter = WizardController::getSession();
+        $this->assertEmpty($sessionAfter['entity_data']);
+        $this->assertEmpty($sessionAfter['contract_data']);
+        $this->assertSame(1, $sessionAfter['step']);
     }
 
-    public function testResetClearsSessionAndStartsOver(): void
+    public function testResetClearsSessionWithoutTouchingDb(): void
     {
         $this->login();
+        $uid = $this->getUniqueString();
 
         WizardController::saveEntityAndReturn([
-            'name'        => 'Entity to Reset',
+            'name'        => "Entity-Reset-{$uid}",
             'entities_id' => 0,
         ]);
 
         $sessionBefore = WizardController::getSession();
-        $this->assertGreaterThan(0, $sessionBefore['entities_id']);
+        $this->assertSame("Entity-Reset-{$uid}", $sessionBefore['entity_data']['name']);
+
+        // Nothing was written to DB
+        $this->assertEquals(0, countElementsInTable('glpi_entities', ['name' => "Entity-Reset-{$uid}"]));
 
         unset($_SESSION['manageentities_wizard']);
 
         $sessionAfter = WizardController::getSession();
-        $this->assertSame(0, $sessionAfter['entities_id']);
+        $this->assertEmpty($sessionAfter['entity_data']);
         $this->assertSame(1, $sessionAfter['step']);
     }
 
@@ -153,47 +170,29 @@ class WizardFullFlowTest extends DbTestCase
         $this->assertEmpty($session['documents_ids']);
     }
 
-    public function testResetAndDeleteRemovesEntityAndContract(): void
+    /**
+     * resetAndDelete() only deletes uploaded documents (orphan files).
+     * There is nothing else to delete — no DB rows exist before commit.
+     */
+    public function testResetAndDeleteOnlyClearsSessionWhenNoDocuments(): void
     {
         $this->login();
         $uid = $this->getUniqueString();
 
-        $r1 = WizardController::saveEntityAndReturn([
-            'name'        => "ResetEnt-{$uid}",
-            'entities_id' => 0,
-        ]);
-        $entities_id = $r1['entities_id'];
+        WizardController::saveEntityAndReturn(['name' => "ResetEnt-{$uid}", 'entities_id' => 0]);
+        WizardController::saveContractAndReturn(['name' => "ResetCTR-{$uid}"]);
+        WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-01-01']);
 
-        $r3 = WizardController::saveContractAndReturn([
-            'name'        => "ResetCTR-{$uid}",
-            'entities_id' => $entities_id,
-            'begin_date'  => '2026-01-01',
-            'duration'    => 12,
-        ]);
-        $contracts_id = $r3['contracts_id'];
-
-        $r4 = WizardController::saveManagementTypeAndReturn([
-            'contracts_id' => $contracts_id,
-            'entities_id'  => $entities_id,
-        ]);
-        $plugin_contract_id = $r4['plugin_contract_id'];
-
-        // Verify objects exist before reset
-        $this->assertEquals(1, countElementsInTable('glpi_entities', ['id' => $entities_id]));
-        $this->assertEquals(1, countElementsInTable('glpi_contracts', ['id' => $contracts_id]));
-        $this->assertEquals(1, countElementsInTable('glpi_plugin_manageentities_contracts', ['id' => $plugin_contract_id]));
+        // Nothing is in DB (session-only)
+        $this->assertEquals(0, countElementsInTable('glpi_entities', ['name' => "ResetEnt-{$uid}"]));
+        $this->assertEquals(0, countElementsInTable('glpi_contracts', ['name' => "ResetCTR-{$uid}"]));
 
         $result = WizardController::resetAndDeleteAndReturn();
         $this->assertTrue($result['success']);
 
-        // Verify objects are deleted
-        $this->assertEquals(0, countElementsInTable('glpi_entities', ['id' => $entities_id]));
-        $this->assertEquals(0, countElementsInTable('glpi_contracts', ['id' => $contracts_id]));
-        $this->assertEquals(0, countElementsInTable('glpi_plugin_manageentities_contracts', ['id' => $plugin_contract_id]));
-
         // Session cleared
         $sessionAfter = WizardController::getSession();
-        $this->assertSame(0, $sessionAfter['entities_id']);
+        $this->assertEmpty($sessionAfter['entity_data']);
         $this->assertSame(1, $sessionAfter['step']);
     }
 }
