@@ -520,7 +520,7 @@ msgstr "Statut de prestation par défaut"
 
 #: src/Config.php:485 templates/config_cri_form.html.twig:73
 msgid "Default time AM"
-msgstr "Heure par défaut (Matin)"
+msgstr "Heure par défaut - Matin"
 
 #: src/Config.php:497 templates/config_cri_form.html.twig:82
 msgid "Default time PM"
