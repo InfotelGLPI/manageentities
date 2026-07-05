@@ -117,6 +117,10 @@ jobs:
           --db-password=""
         working-directory: glpi
 
+      - name: Composer install (plugin)
+        run: composer install --no-interaction --prefer-dist --no-progress --no-dev
+        working-directory: glpi/plugins/manageentities
+
       - name: Install plugin
         run: |
           php bin/console glpi:plugin:install  --no-interaction --env=testing manageentities
