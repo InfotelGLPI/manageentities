@@ -80,7 +80,7 @@ msgstr "Ajouter une société"
 
 #: templates/wizard/step2_contacts.html.twig:49
 msgid "Add a contact"
-msgstr "Ajouter un contrat"
+msgstr "Ajouter un contact"
 
 #: ajax/updateDocumentList.php:50
 #: templates/wizard/step3_contract.html.twig:110
