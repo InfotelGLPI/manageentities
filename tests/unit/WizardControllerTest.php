@@ -117,7 +117,7 @@ class WizardControllerTest extends TestCase
 
     public function testValidateContactInputAcceptsValidLastName(): void
     {
-        $result = WizardController::validateContactInput(['name' => 'Dupont']);
+        $result = WizardController::validateContactInput(['name' => 'Dupont', 'firstname' => 'Jean']);
         $this->assertTrue($result['valid']);
     }
 
@@ -134,7 +134,14 @@ class WizardControllerTest extends TestCase
 
     public function testValidateContractInputAcceptsValidName(): void
     {
-        $result = WizardController::validateContractInput(['name' => 'CTR-2026']);
+        $result = WizardController::validateContractInput([
+            'name'              => 'CTR-2026',
+            'num'               => 'N-001',
+            'begin_date'        => '2026-01-01',
+            'duration'          => 12,
+            'contracttypes_id'  => 1,
+            'states_id'         => 1,
+        ]);
         $this->assertTrue($result['valid']);
     }
 

@@ -151,8 +151,13 @@ class WizardController
         if (empty($input['plugin_manageentities_contractstates_id'] ?? 0)) {
             $errors['plugin_manageentities_contractstates_id'] = __('State is required', 'manageentities');
         }
-        $config = Config::getInstance();
-        if ($config->fields['hourorday'] == Config::DAY && empty((int)($input['contract_type'] ?? 0))) {
+        try {
+            $config = Config::getInstance();
+            $hourorday = $config->fields['hourorday'] ?? null;
+        } catch (\Throwable $e) {
+            $hourorday = null;
+        }
+        if ($hourorday == Config::DAY && empty((int)($input['contract_type'] ?? 0))) {
             $errors['contract_type'] = __('Intervention type is required', 'manageentities');
         }
         return ['valid' => empty($errors), 'errors' => $errors];
