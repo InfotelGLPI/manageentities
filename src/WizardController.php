@@ -1092,19 +1092,17 @@ class WizardController
             return ['success' => false, 'errors' => ['global' => __('Error creating contract', 'manageentities')]];
         }
 
-        // 3b. Link uploaded documents to the contract now that we have a real ID
+        // 3b. Link uploaded documents to the contract via Document_Item
         foreach (($session['documents_ids'] ?? []) as $doc_id) {
             $doc_id = (int)$doc_id;
             if ($doc_id <= 0) continue;
-            $d = new Document();
-            if ($d->getFromDB($doc_id)) {
-                $d->update([
-                    'id'         => $doc_id,
-                    'entities_id'=> $entities_id,
-                    'itemtype'   => \Contract::class,
-                    'items_id'   => $contracts_id,
-                ]);
-            }
+            $di = new \Document_Item();
+            $di->add([
+                'documents_id' => $doc_id,
+                'itemtype'     => \Contract::class,
+                'items_id'     => $contracts_id,
+                'entities_id'  => $entities_id,
+            ]);
         }
 
         // 4. Plugin contract (management type)

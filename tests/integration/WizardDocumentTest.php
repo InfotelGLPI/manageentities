@@ -184,10 +184,14 @@ class WizardDocumentTest extends DbTestCase
         $rc = WizardController::commitWizardAndReturn();
         $this->assertTrue($rc['success'], json_encode($rc));
 
-        // After commit the document must be linked to the contract
-        $doc = new Document();
-        $doc->getFromDB($doc_id);
-        $this->assertSame(\Contract::class, $doc->fields['itemtype']);
-        $this->assertGreaterThan(0, (int)$doc->fields['items_id']);
+        // After commit the document must be linked to the contract via Document_Item
+        $this->assertEquals(
+            1,
+            countElementsInTable('glpi_documents_items', [
+                'documents_id' => $doc_id,
+                'itemtype'     => \Contract::class,
+            ]),
+            'Document should be linked to the contract in glpi_documents_items'
+        );
     }
 }
