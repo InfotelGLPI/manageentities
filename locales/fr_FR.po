@@ -1253,8 +1253,7 @@ msgstr ""
 #: templates/config_options_form.html.twig:150
 msgid "Pre-selected state when creating a service period in the wizard."
 msgstr ""
-"Statut présélectionné lors de la création d'une période de service dans le "
-"wizard."
+"Statut présélectionné lors de la création d'une prestation dans le wizard."
 
 #: src/GenerateCRI.php:480
 msgid "Predefined task informations"
