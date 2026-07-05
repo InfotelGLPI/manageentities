@@ -173,7 +173,7 @@ function wizardLoadFinishSummary(url) {
         saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>';
     }
 
-    wizardFetch(url, { action: 'save_interventions' })
+    wizardFetch(url, { action: 'finish_wizard' })
         .then(function (r) { return r.json(); })
         .then(function (res) {
             if (saveBtn) {

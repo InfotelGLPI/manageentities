@@ -73,6 +73,10 @@ switch ($action) {
         WizardController::saveInterventions();
         break;
 
+    case 'finish_wizard':
+        WizardController::finishWizard();
+        break;
+
     case 'add_intervention_block':
         WizardController::renderInterventionBlock();
         break;

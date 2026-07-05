@@ -121,21 +121,6 @@ class WizardController
         if (empty(trim($input['name'] ?? ''))) {
             $errors['name'] = __('Name is required', 'manageentities');
         }
-        if (empty(trim($input['num'] ?? ''))) {
-            $errors['num'] = __('Contract number is required', 'manageentities');
-        }
-        if (empty($input['begin_date'] ?? '')) {
-            $errors['begin_date'] = __('Start date is required', 'manageentities');
-        }
-        if (empty((int)($input['duration'] ?? 0))) {
-            $errors['duration'] = __('Duration is required', 'manageentities');
-        }
-        if (empty((int)($input['contracttypes_id'] ?? 0))) {
-            $errors['contracttypes_id'] = __('Contract type is required', 'manageentities');
-        }
-        if (empty((int)($input['states_id'] ?? 0))) {
-            $errors['states_id'] = __('Status is required', 'manageentities');
-        }
         return ['valid' => empty($errors), 'errors' => $errors];
     }
 
@@ -786,12 +771,37 @@ class WizardController
 
         self::saveSession($session);
 
-        // At least one intervention with at least one rate is required to finish
-        if (empty($savedIds) && empty($session['contractdays'])) {
-            return ['success' => false, 'errors' => ['global' => __('At least one service period with a rate is required', 'manageentities')]];
-        }
+        return [
+            'success'     => true,
+            'contractdays'=> $savedIds,
+            'step'        => $session['step'],
+        ];
+    }
 
-        $allIds = array_filter(array_values($session['contractdays']));
+    private static function buildEntityRedirectUrl(int $entities_id): string
+    {
+        if ($entities_id <= 0) {
+            return '';
+        }
+        return \Toolbox::getItemTypeFormURL('Entity') . '?id=' . $entities_id;
+    }
+
+    // -------------------------------------------------------------------------
+    // Step 5 finish — validate CriPrices then return summary
+    // -------------------------------------------------------------------------
+
+    public static function finishWizard(): void
+    {
+        header('Content-Type: application/json');
+        echo json_encode(self::finishWizardAndReturn());
+        exit;
+    }
+
+    public static function finishWizardAndReturn(): array
+    {
+        $session = self::getSession();
+        $allIds  = array_filter(array_values($session['contractdays'] ?? []));
+
         if (empty($allIds)) {
             return ['success' => false, 'errors' => ['global' => __('At least one service period with a rate is required', 'manageentities')]];
         }
@@ -812,19 +822,9 @@ class WizardController
 
         return [
             'success'     => true,
-            'contractdays'=> $savedIds,
-            'step'        => $session['step'],
             'summary'     => $summary['items'] ?? [],
             'redirect_url'=> self::buildEntityRedirectUrl((int)($session['entities_id'] ?? 0)),
         ];
-    }
-
-    private static function buildEntityRedirectUrl(int $entities_id): string
-    {
-        if ($entities_id <= 0) {
-            return '';
-        }
-        return \Toolbox::getItemTypeFormURL('Entity') . '?id=' . $entities_id;
     }
 
     public static function getFinishSummaryAndReturn(): array
