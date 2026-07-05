@@ -496,7 +496,7 @@ msgstr "Durée par défaut"
 
 #: templates/config_options_form.html.twig:145
 msgid "Default intervention state"
-msgstr "Statut d'intervention par défaut"
+msgstr "Statut de prestation par défaut"
 
 #: templates/config_options_form.html.twig:169
 msgid "Default intervention type"
