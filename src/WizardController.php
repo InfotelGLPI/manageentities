@@ -157,7 +157,7 @@ class WizardController
         } catch (\Throwable $e) {
             $hourorday = null;
         }
-        if ($hourorday == Config::DAY && empty((int)($input['contract_type'] ?? 0))) {
+        if ($hourorday !== null && $hourorday == Config::DAY && empty((int)($input['contract_type'] ?? 0))) {
             $errors['contract_type'] = __('Intervention type is required', 'manageentities');
         }
         return ['valid' => empty($errors), 'errors' => $errors];
