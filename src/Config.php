@@ -237,10 +237,7 @@ class Config extends CommonDBTM
         $wizard_contractstate_html = ob_get_clean();
 
         ob_start();
-        \Dropdown::show(CriType::class, [
-            'name'  => 'wizard_contract_type',
-            'value' => $this->fields['wizard_contract_type'] ?? 0,
-        ]);
+        Contract::dropdownContractType('wizard_contract_type', (int)($this->fields['wizard_contract_type'] ?? 0));
         $wizard_contract_type_html = ob_get_clean();
 
         ob_start();

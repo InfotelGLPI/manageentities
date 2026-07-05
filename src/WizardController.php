@@ -857,13 +857,18 @@ class WizardController
             $items[] = ['type' => _n('Document', 'Documents', count($docNames)), 'label' => implode(', ', $docNames)];
         }
 
+        $cfg         = Config::getInstance();
+        $unit_label  = ($cfg->fields['hourorday'] == Config::HOUR)
+            ? __('hours', 'manageentities')
+            : __('days', 'manageentities');
+
         foreach (($session['contractdays'] ?? []) as $cd_id) {
             $cd = new ContractDay();
             if (!$cd->getFromDB((int)$cd_id)) continue;
 
             $cdLabel = $cd->fields['name'] ?? ('ID ' . $cd_id);
             if ((float)($cd->fields['nbday'] ?? 0) > 0) {
-                $cdLabel .= ' — ' . number_format((float)$cd->fields['nbday'], 2) . ' ' . __('days');
+                $cdLabel .= ' — ' . number_format((float)$cd->fields['nbday'], 2) . ' ' . $unit_label;
             }
             $items[] = ['type' => __('Period of contract', 'manageentities'), 'label' => $cdLabel];
 
@@ -882,7 +887,7 @@ class WizardController
             foreach ($sh->find(['plugin_manageentities_contractdays_id' => (int)$cd_id]) as $row) {
                 $u = new User();
                 $names[] = $u->getFromDB((int)($row['users_id'] ?? 0))
-                    ? $u->getFriendlyName() . ' (' . number_format((float)($row['number_affected_days'] ?? 0), 2) . ' ' . __('days') . ')'
+                    ? $u->getFriendlyName() . ' (' . number_format((float)($row['number_affected_days'] ?? 0), 2) . ' ' . $unit_label . ')'
                     : ('User #' . $row['users_id']);
             }
             if (!empty($names)) {
