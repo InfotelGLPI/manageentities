@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-06 17:43+0000\n"
+"POT-Creation-Date: 2026-07-06 17:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:1684
+#: src/WizardController.php:1690
 msgid "-- Select a template --"
 msgstr ""
 
@@ -1134,7 +1134,7 @@ msgstr ""
 msgid "Nothing to display"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:173
+#: src/WizardController.php:1492
 msgid "Nothing to display."
 msgstr ""
 
@@ -1622,14 +1622,14 @@ msgstr ""
 msgid "The contract period %s already exists"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:175
+#: src/WizardController.php:1494
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
 "place it under the default parent entity to continue?"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:174
+#: src/WizardController.php:1493
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
@@ -1757,7 +1757,7 @@ msgstr ""
 msgid "Type of service contract missing"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:103
+#: src/WizardController.php:1495
 msgid "Unarchive and continue"
 msgstr ""
 
