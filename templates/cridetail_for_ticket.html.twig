@@ -113,8 +113,8 @@
             </label>
             <div class="col-sm-9 d-flex flex-wrap gap-2 pt-2">
                 <span id="contract_editor_sub_badge" class="badge bg-outline-secondary"></span>
-                <span id="contract_cloud_badge" class="badge bg-outline-secondary"></span>
-                <span id="contract_inet_badge" class="badge bg-outline-secondary"></span>
+                <span id="contract_cloud_badge" class="badge bg-outline-secondary" style="display:none"></span>
+                <span id="contract_inet_badge" class="badge bg-outline-secondary" style="display:none"></span>
             </div>
         </div>
 
@@ -394,23 +394,29 @@
                 if (cloud) {
                     cloudBadge.textContent = '{{ __('Cloud client', 'manageentities')|e('js') }}';
                     cloudBadge.className = 'badge bg-outline-azure';
+                    cloudBadge.style.display = '';
                 } else {
                     cloudBadge.textContent = '';
                     cloudBadge.className = '';
+                    cloudBadge.style.display = 'none';
                 }
                 // Internet publication — shown only when active
                 if (inet) {
                     inetBadge.textContent = '{{ __('Internet publication', 'manageentities')|e('js') }}';
                     inetBadge.className = 'badge bg-outline-cyan';
+                    inetBadge.style.display = '';
                 } else {
                     inetBadge.textContent = '';
                     inetBadge.className = '';
+                    inetBadge.style.display = 'none';
                 }
                 flagsBlock.style.display = '';
             } else {
                 editorBadge.textContent = '';
                 cloudBadge.textContent  = '';
+                cloudBadge.style.display = 'none';
                 inetBadge.textContent   = '';
+                inetBadge.style.display = 'none';
                 flagsBlock.style.display = 'none';
             }
         }

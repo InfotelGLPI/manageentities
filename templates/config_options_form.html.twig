@@ -211,6 +211,18 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>
             </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
+                    {{ __('Customer archiving entity', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ wizard_archive_entity_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('Entity used to archive customers.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

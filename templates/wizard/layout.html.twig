@@ -82,6 +82,31 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
     </div>
 </div>
 
+{# Entity in archive modal #}
+<div class="modal fade" id="wizard-entity-archived-modal" tabindex="-1" aria-labelledby="wizard-entity-archived-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="wizard-entity-archived-label">
+                    <i class="ti ti-archive me-2 text-warning"></i>{{ __('Archived customer', 'manageentities') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="wizard-entity-archived-msg" class="mb-0"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {{ __('Cancel') }}
+                </button>
+                <button type="button" class="btn btn-warning" id="wizard-entity-archived-confirm-btn">
+                    <i class="ti ti-archive-off me-1"></i>{{ __('Unarchive and continue', 'manageentities') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {# Finish confirmation modal #}
 <div class="modal fade" id="wizard-finish-modal" tabindex="-1" aria-labelledby="wizard-finish-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -145,7 +170,8 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
 <script>
     var WIZARD_URL = {{ wizard_url|json_encode|raw }};
     var WIZARD_I18N = {
-        nothingToDisplay: {{ __('Nothing to display.', 'manageentities')|json_encode|raw }},
-        entityExistsMsg:  {{ __('The entity "%s" already exists. Do you want to use it to create a new contract?', 'manageentities')|json_encode|raw }},
+        nothingToDisplay:   {{ __('Nothing to display.', 'manageentities')|json_encode|raw }},
+        entityExistsMsg:    {{ __('The entity "%s" already exists. Do you want to use it to create a new contract?', 'manageentities')|json_encode|raw }},
+        entityArchivedMsg:  {{ __('The customer "%s" is currently archived. Do you want to unarchive it and place it under the default parent entity to continue?', 'manageentities')|json_encode|raw }},
     };
 </script>

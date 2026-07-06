@@ -270,6 +270,14 @@ class Config extends CommonDBTM
         ]);
         $wizard_default_entity_html = ob_get_clean();
 
+        $wizard_archive_entities_id = (int)($this->fields['wizard_archive_entities_id'] ?? 0);
+        ob_start();
+        \Dropdown::show(\Entity::class, [
+            'name'  => 'wizard_archive_entities_id',
+            'value' => $wizard_archive_entities_id,
+        ]);
+        $wizard_archive_entity_html = ob_get_clean();
+
         TemplateRenderer::getInstance()->display(
             '@manageentities/config_options_form.html.twig',
             [
@@ -292,6 +300,7 @@ class Config extends CommonDBTM
                 'wizard_documentcategory_html'  => $wizard_documentcategory_html,
                 'wizard_contacttype_html'       => $wizard_contacttype_html,
                 'wizard_default_entity_html'    => $wizard_default_entity_html,
+                'wizard_archive_entity_html'    => $wizard_archive_entity_html,
             ]
         );
     }

@@ -88,6 +88,7 @@ CREATE TABLE `glpi_plugin_manageentities_configs` (
    `wizard_documentcategories_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id) — default document category in wizard',
    `wizard_contacttypes_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_contacttypes (id) — default contact type in wizard',
    `wizard_default_entities_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_entities (id) — parent entity pre-selected and locked in wizard step 1',
+   `wizard_archive_entities_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_entities (id) — entity used to archive customers',
    PRIMARY KEY  (`id`),
    KEY `documentcategories_id` (`documentcategories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

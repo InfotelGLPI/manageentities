@@ -117,6 +117,10 @@ switch ($action) {
         WizardController::chooseMode();
         break;
 
+    case 'unarchive_entity':
+        WizardController::unarchiveEntity();
+        break;
+
     case 'get_reset_summary':
         WizardController::getResetSummary();
         break;

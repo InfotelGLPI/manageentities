@@ -124,10 +124,21 @@ class WizardController
 
     public static function validateContractInput(array $input): array
     {
+        global $DB;
+
         $errors = [];
         if (empty(trim($input['name'] ?? ''))) {
             $errors['name'] = __('Name is required', 'manageentities');
         }
+
+        $num = trim($input['num'] ?? '');
+        if ($num !== '') {
+            $exists = countElementsInTable(\Contract::getTable(), ['num' => $num]) > 0;
+            if ($exists) {
+                $errors['num'] = __('A contract with this number already exists', 'manageentities');
+            }
+        }
+
         return ['valid' => empty($errors), 'errors' => $errors];
     }
 
@@ -150,6 +161,58 @@ class WizardController
             $errors['nbday'] = __('Initial credit is required', 'manageentities');
         }
         return ['valid' => empty($errors), 'errors' => $errors];
+    }
+
+    // -------------------------------------------------------------------------
+    // Archive helpers
+    // -------------------------------------------------------------------------
+
+    private static function isArchivedEntity(int $entities_id): bool
+    {
+        $config = Config::getInstance();
+        $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive_entities_id <= 0 || $entities_id <= 0) {
+            return false;
+        }
+        $sons = getSonsOf('glpi_entities', $archive_entities_id);
+        unset($sons[$archive_entities_id]);
+        return isset($sons[$entities_id]);
+    }
+
+    public static function unarchiveEntity(): void
+    {
+        header('Content-Type: application/json');
+        echo json_encode(self::unarchiveEntityAndReturn($_POST));
+        exit;
+    }
+
+    public static function unarchiveEntityAndReturn(array $input = []): array
+    {
+        if (empty($input)) {
+            $input = $_POST;
+        }
+        $entities_id = (int)($input['entities_id'] ?? 0);
+        if ($entities_id <= 0) {
+            return ['success' => false, 'errors' => ['entities_id' => __('Please select an entity', 'manageentities')]];
+        }
+        $entity = new \Entity();
+        if (!$entity->getFromDB($entities_id)) {
+            return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
+        }
+        $config = Config::getInstance();
+        $target_entities_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        if ($target_entities_id <= 0) {
+            return ['success' => false, 'message' => __('Default parent entity is not configured', 'manageentities')];
+        }
+        if (!$entity->update(['id' => $entities_id, 'entities_id' => $target_entities_id])) {
+            return ['success' => false, 'message' => __('Error unarchiving entity', 'manageentities')];
+        }
+        $session = self::getSession();
+        $session['wizard_mode'] = 'existing_entity';
+        $session['entities_id'] = $entities_id;
+        $session['step']        = max($session['step'], 3);
+        self::saveSession($session);
+        return ['success' => true, 'entities_id' => $entities_id, 'step' => 3];
     }
 
     // -------------------------------------------------------------------------
@@ -215,6 +278,25 @@ class WizardController
         if (!$entity->getFromDB($entities_id)) {
             return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
         }
+        // If the entity is in the archive, propose unarchiving
+        if (self::isArchivedEntity($entities_id)) {
+            return [
+                'success'         => false,
+                'entity_archived' => true,
+                'entities_id'     => $entities_id,
+                'entity_name'     => $entity->fields['name'] ?? '',
+            ];
+        }
+
+        $config = Config::getInstance();
+        $forced_entities_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        if ($forced_entities_id > 0) {
+            $sons = getSonsOf('glpi_entities', $forced_entities_id);
+            unset($sons[$forced_entities_id]);
+            if (!isset($sons[$entities_id])) {
+                return ['success' => false, 'errors' => ['entities_id' => __('Please select a child entity', 'manageentities')]];
+            }
+        }
         $session = self::getSession();
         $session['entities_id'] = $entities_id;
         $session['step']        = max($session['step'], 3);
@@ -266,6 +348,26 @@ class WizardController
                 'entities_id'   => (int)$existing_entity['id'],
                 'entity_name'   => $existing_entity['name'],
             ];
+        }
+
+        // Check if an entity with the same name exists in the archive
+        $config_arc = Config::getInstance();
+        $archive_id = (int)($config_arc->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive_id > 0) {
+            $archived_sons = getSonsOf('glpi_entities', $archive_id);
+            unset($archived_sons[$archive_id]);
+            if (!empty($archived_sons)) {
+                $archived = $entity->find(['name' => $entity_data['name'], 'id' => array_keys($archived_sons)], [], 1);
+                if (!empty($archived)) {
+                    $archived_row = reset($archived);
+                    return [
+                        'success'          => false,
+                        'entity_archived'  => true,
+                        'entities_id'      => (int)$archived_row['id'],
+                        'entity_name'      => $archived_row['name'],
+                    ];
+                }
+            }
         }
 
         $session['entity_data'] = $entity_data;
@@ -1423,8 +1525,25 @@ class WizardController
     private static function buildEntityVars(array $session, int $rand): array
     {
         if ($session['wizard_mode'] === 'existing_entity') {
+            $config = Config::getInstance();
+            $forced_entities_id  = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+            $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+            $allowed_ids = [];
+
+            if ($forced_entities_id > 0) {
+                $sons = getSonsOf('glpi_entities', $forced_entities_id);
+                unset($sons[$forced_entities_id]); // exclude the parent entity itself
+                $allowed_ids = array_keys($sons);
+            }
+            if ($archive_entities_id > 0) {
+                $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
+                unset($archive_sons[$archive_entities_id]); // exclude the archive root itself
+                $allowed_ids = array_unique(array_merge($allowed_ids, array_keys($archive_sons)));
+            }
+            $condition = !empty($allowed_ids) ? ['id' => $allowed_ids] : [];
+
             return [
-                'entity_select_html' => self::buildEntityHtml('entities_id', $session['entities_id'], $rand),
+                'entity_select_html' => self::buildEntityHtml('entities_id', $session['entities_id'], $rand, $condition),
             ];
         }
 
@@ -1619,7 +1738,8 @@ class WizardController
             'is_day_price'             => $is_day,
             'show_on_global_gantt'     => $is_first ? true : (bool)($fields['show_on_global_gantt'] ?? false),
             'refacturable_costs'       => (bool)($fields['refacturable_costs'] ?? false),
-            'contract_added'           => (bool)($fields['contract_added'] ?? false),
+            'contract_added'           => !empty($session['documents_ids'])
+                                           || (bool)($fields['contract_added'] ?? false),
             'active_editor_suscription'=> $is_first ? true : (bool)($fields['active_editor_suscription'] ?? false),
             'cloud_client'             => (bool)($fields['cloud_client'] ?? false),
             'internet_publication'     => (bool)($fields['internet_publication'] ?? false),
@@ -1696,7 +1816,7 @@ class WizardController
         return is_string($returned) && $returned !== '' ? $returned : (string)$captured;
     }
 
-    private static function buildEntityHtml(string $name, int $value = 0, int $rand = 0): string
+    private static function buildEntityHtml(string $name, int $value = 0, int $rand = 0, array $condition = []): string
     {
         if ($value > 0) {
             $entity = new \Entity();
@@ -1708,9 +1828,10 @@ class WizardController
 
         ob_start();
         Dropdown::show(\Entity::class, [
-            'name'  => $name,
-            'rand'  => $rand ?: mt_rand(),
-            'value' => $value,
+            'name'      => $name,
+            'rand'      => $rand ?: mt_rand(),
+            'value'     => $value,
+            'condition' => $condition,
         ]);
         return ob_get_clean();
     }

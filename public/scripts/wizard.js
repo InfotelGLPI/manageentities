@@ -155,6 +155,10 @@ function handleStepResponse(step, res, url) {
             wizardPromptUseExistingEntity(res.entities_id, res.entity_name, url);
             return;
         }
+        if (res.entity_archived && step === 1) {
+            wizardPromptUnarchiveEntity(res.entities_id, res.entity_name, url);
+            return;
+        }
         showStepErrors(step, res.errors || res.message || 'Error');
         return;
     }
@@ -180,6 +184,33 @@ function wizardPromptUseExistingEntity(entitiesId, entityName, url) {
             .then(function () {
                 return wizardFetch(url, { action: 'save_entity', entities_id: entitiesId });
             })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res.success) {
+                    reloadStep(res.step || 3, url);
+                } else {
+                    showStepErrors(1, res.errors || res.message || 'Error');
+                }
+            })
+            .catch(function () { showStepErrors(1, 'Network error'); });
+    });
+
+    new bootstrap.Modal(modal).show();
+}
+
+function wizardPromptUnarchiveEntity(entitiesId, entityName, url) {
+    var modal  = document.getElementById('wizard-entity-archived-modal');
+    var msgEl  = document.getElementById('wizard-entity-archived-msg');
+    var btn    = document.getElementById('wizard-entity-archived-confirm-btn');
+    if (!modal || !msgEl || !btn) return;
+
+    msgEl.textContent = WIZARD_I18N.entityArchivedMsg.replace('%s', entityName);
+
+    var newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.addEventListener('click', function () {
+        bootstrap.Modal.getInstance(modal).hide();
+        wizardFetch(url, { action: 'unarchive_entity', entities_id: entitiesId })
             .then(function (r) { return r.json(); })
             .then(function (res) {
                 if (res.success) {
