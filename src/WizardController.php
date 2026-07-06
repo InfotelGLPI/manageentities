@@ -132,7 +132,7 @@ class WizardController
         }
 
         $num = trim($input['num'] ?? '');
-        if ($num !== '') {
+        if ($num !== '' && $DB !== null) {
             $exists = countElementsInTable(\Contract::getTable(), ['num' => $num]) > 0;
             if ($exists) {
                 $errors['num'] = __('A contract with this number already exists', 'manageentities');
