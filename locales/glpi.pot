@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-06 10:25+0000\n"
+"POT-Creation-Date: 2026-07-06 11:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,14 +55,16 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/Contract.php:942 templates/contract_detail_form.html.twig:105
+#: src/Contract.php:948 hook.php:774
+#: templates/cridetail_for_ticket.html.twig:390
+#: templates/contract_detail_form.html.twig:105
 #: templates/wizard/step4_management.html.twig:104
 msgid "Active editor subscription"
 msgstr ""
 
 #: templates/interventionstakeholder_form.html.twig:62
-#: templates/cridetail_for_ticket.html.twig:198
-#: templates/contract_detail_form.html.twig:150
+#: templates/cridetail_for_ticket.html.twig:211
+#: templates/contract_detail_form.html.twig:153
 #: templates/entity/contacts_card.html.twig:108
 #: templates/entity/contacts_card.html.twig:112
 #: templates/entity/business_card.html.twig:87
@@ -163,7 +165,7 @@ msgstr ""
 msgid "An error happened while saving the data."
 msgstr ""
 
-#: src/Contract.php:622 src/Contract.php:651
+#: src/Contract.php:628 src/Contract.php:657
 msgid "Annual"
 msgstr ""
 
@@ -217,7 +219,7 @@ msgstr ""
 msgid "Attach documents"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:112
+#: templates/cridetail_for_ticket.html.twig:125
 #: templates/contractday_form.html.twig:64
 #: templates/wizard/step5_intervention_block.html.twig:38
 msgid "Begin date"
@@ -227,7 +229,7 @@ msgstr ""
 msgid "Begin date is required"
 msgstr ""
 
-#: src/Contract.php:675 src/Contract.php:712
+#: src/Contract.php:681 src/Contract.php:718
 msgid "By intervention"
 msgstr ""
 
@@ -280,8 +282,10 @@ msgstr ""
 msgid "Closed contract period state"
 msgstr ""
 
-#: src/Contract.php:943 templates/contract_detail_form.html.twig:112
-#: templates/wizard/step4_management.html.twig:112
+#: src/Contract.php:949 hook.php:787
+#: templates/cridetail_for_ticket.html.twig:395
+#: templates/contract_detail_form.html.twig:113
+#: templates/wizard/step4_management.html.twig:113
 msgid "Cloud client"
 msgstr ""
 
@@ -539,8 +543,8 @@ msgstr ""
 msgid "Delete and reinitialize"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:205
-#: templates/contract_detail_form.html.twig:157
+#: templates/cridetail_for_ticket.html.twig:218
+#: templates/contract_detail_form.html.twig:160
 #: templates/entity/contacts_card.html.twig:87
 #: templates/entity/business_card.html.twig:66
 #: templates/entity/description.html.twig:204
@@ -581,8 +585,8 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: templates/contract_detail_form.html.twig:139
-#: templates/wizard/step4_management.html.twig:140
+#: templates/contract_detail_form.html.twig:142
+#: templates/wizard/step4_management.html.twig:143
 msgid "Duration of moving"
 msgstr ""
 
@@ -600,7 +604,7 @@ msgid "Email address"
 msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:85
-#: templates/cridetail_for_ticket.html.twig:127
+#: templates/cridetail_for_ticket.html.twig:140
 #: templates/contractday_form.html.twig:69
 #: templates/wizard/step5_intervention_block.html.twig:43
 msgid "End date"
@@ -750,7 +754,7 @@ msgstr ""
 msgid "Hour of"
 msgstr ""
 
-#: src/Contract.php:674 src/Contract.php:710 src/Config.php:563
+#: src/Contract.php:680 src/Contract.php:716 src/Config.php:563
 msgid "Hourly"
 msgstr ""
 
@@ -772,6 +776,10 @@ msgstr ""
 msgid "In progress"
 msgstr ""
 
+#: templates/cridetail_for_ticket.html.twig:391
+msgid "Inactive editor subscription"
+msgstr ""
+
 #: ajax/interventionstakeholderactions.php:76
 msgid "Informations successfully added."
 msgstr ""
@@ -791,12 +799,14 @@ msgstr ""
 msgid "Initial credit is required"
 msgstr ""
 
-#: src/Contract.php:944 templates/contract_detail_form.html.twig:119
-#: templates/wizard/step4_management.html.twig:120
+#: src/Contract.php:950 hook.php:800
+#: templates/cridetail_for_ticket.html.twig:403
+#: templates/contract_detail_form.html.twig:121
+#: templates/wizard/step4_management.html.twig:122
 msgid "Internet publication"
 msgstr ""
 
-#: src/Contract.php:739
+#: src/Contract.php:745
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
@@ -911,7 +921,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:831
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:870
 msgid "Manage your contracts"
 msgstr ""
 
@@ -971,8 +981,8 @@ msgstr ""
 msgid "Monthly follow-up"
 msgstr ""
 
-#: src/Contract.php:946 templates/contract_detail_form.html.twig:129
-#: templates/wizard/step4_management.html.twig:128
+#: src/Contract.php:952 templates/contract_detail_form.html.twig:132
+#: templates/wizard/step4_management.html.twig:131
 msgid "Movement management"
 msgstr ""
 
@@ -1011,7 +1021,7 @@ msgstr ""
 
 #: templates/wizard/step2_contacts.html.twig:59
 #: templates/wizard/step1_entity.html.twig:126
-#: templates/wizard/step4_management.html.twig:153
+#: templates/wizard/step4_management.html.twig:156
 #: templates/wizard/step1_select_entity.html.twig:50
 #: templates/wizard/step3_contract.html.twig:123
 msgid "Next"
@@ -1035,8 +1045,8 @@ msgstr ""
 msgid "No contract found"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:159
-#: templates/cridetail_for_ticket.html.twig:286
+#: templates/cridetail_for_ticket.html.twig:172
+#: templates/cridetail_for_ticket.html.twig:299
 msgid "No days remaining on this contract period"
 msgstr ""
 
@@ -1149,7 +1159,7 @@ msgstr ""
 msgid "Optional"
 msgstr ""
 
-#: src/Config.php:306
+#: src/Config.php:306 templates/cridetail_for_ticket.html.twig:112
 msgid "Options"
 msgstr ""
 
@@ -1157,7 +1167,7 @@ msgstr ""
 msgid "Out of contract"
 msgstr ""
 
-#: src/Contract.php:682 src/Contract.php:718
+#: src/Contract.php:688 src/Contract.php:724
 msgid "Package"
 msgstr ""
 
@@ -1169,7 +1179,7 @@ msgstr ""
 msgid "Parent entity"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:143
+#: templates/cridetail_for_ticket.html.twig:156
 msgid "Period comment"
 msgstr ""
 
@@ -1190,8 +1200,8 @@ msgstr[1] ""
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: src/GenerateCRI.php:1360 src/CriDetail.php:748 src/CriDetail.php:1806
-#: src/CriDetail.php:1843 hook.php:738 templates/contractday_list.html.twig:33
+#: src/GenerateCRI.php:1360 src/CriDetail.php:748 src/CriDetail.php:1832
+#: src/CriDetail.php:1869 hook.php:738 templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr ""
 
@@ -1223,8 +1233,8 @@ msgstr ""
 msgid "Please activate the plugin"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:171
-#: templates/cridetail_for_ticket.html.twig:293
+#: templates/cridetail_for_ticket.html.twig:184
+#: templates/cridetail_for_ticket.html.twig:306
 msgid "Please anticipate the end of the service period if necessary"
 msgstr ""
 
@@ -1244,7 +1254,7 @@ msgstr ""
 msgid "Please fill the contract period end date."
 msgstr ""
 
-#: src/Contract.php:600
+#: src/Contract.php:606
 msgid ""
 "Please note that there are no more contracts with days available for this "
 "customer."
@@ -1319,7 +1329,7 @@ msgid "Prestation"
 msgstr ""
 
 #: templates/wizard/step2_contacts.html.twig:55
-#: templates/wizard/step4_management.html.twig:149
+#: templates/wizard/step4_management.html.twig:152
 #: templates/wizard/step5_interventions.html.twig:59
 #: templates/wizard/step3_contract.html.twig:119
 msgid "Previous"
@@ -1338,7 +1348,7 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
-#: src/Contract.php:621 src/Contract.php:649
+#: src/Contract.php:627 src/Contract.php:655
 msgid "Quarterly"
 msgstr ""
 
@@ -1346,7 +1356,7 @@ msgstr ""
 msgid "Rates"
 msgstr ""
 
-#: src/Contract.php:947 templates/contract_detail_form.html.twig:95
+#: src/Contract.php:953 templates/contract_detail_form.html.twig:95
 #: templates/wizard/step4_management.html.twig:81
 msgid "Refacturable costs"
 msgstr ""
@@ -1371,12 +1381,12 @@ msgstr ""
 msgid "Remaining"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:161
-#: templates/cridetail_for_ticket.html.twig:168
-#: templates/cridetail_for_ticket.html.twig:178
-#: templates/cridetail_for_ticket.html.twig:287
-#: templates/cridetail_for_ticket.html.twig:292
-#: templates/cridetail_for_ticket.html.twig:298
+#: templates/cridetail_for_ticket.html.twig:174
+#: templates/cridetail_for_ticket.html.twig:181
+#: templates/cridetail_for_ticket.html.twig:191
+#: templates/cridetail_for_ticket.html.twig:300
+#: templates/cridetail_for_ticket.html.twig:305
+#: templates/cridetail_for_ticket.html.twig:311
 msgid "Remaining days"
 msgstr ""
 
@@ -1470,7 +1480,7 @@ msgstr ""
 msgid "Setup for Generate Intervention report"
 msgstr ""
 
-#: src/Contract.php:945 templates/contract_detail_form.html.twig:87
+#: src/Contract.php:951 templates/contract_detail_form.html.twig:87
 #: templates/wizard/step4_management.html.twig:73
 msgid "Show on GANTT"
 msgstr ""
@@ -1555,7 +1565,7 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
-#: src/Contract.php:681 src/Contract.php:716
+#: src/Contract.php:687 src/Contract.php:722
 msgid "Technical Assistance"
 msgstr ""
 
@@ -1611,7 +1621,7 @@ msgstr ""
 msgid "Ticket informations"
 msgstr ""
 
-#: src/CriDetail.php:1402 src/CriDetail.php:1877
+#: src/CriDetail.php:1402 src/CriDetail.php:1903
 msgid "Ticket not validated"
 msgstr ""
 
@@ -1708,12 +1718,12 @@ msgstr ""
 msgid "Type of service contract"
 msgstr ""
 
-#: src/CriDetail.php:1411 src/CriDetail.php:1884
+#: src/CriDetail.php:1411 src/CriDetail.php:1910
 msgid "Type of service contract missing"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:202
-#: templates/contract_detail_form.html.twig:154
+#: templates/cridetail_for_ticket.html.twig:215
+#: templates/contract_detail_form.html.twig:157
 msgid "Update"
 msgstr ""
 
@@ -1725,11 +1735,11 @@ msgstr ""
 msgid "Update logo"
 msgstr ""
 
-#: src/Contract.php:932
+#: src/Contract.php:938
 msgid "Update management fields"
 msgstr ""
 
-#: hook.php:903
+#: hook.php:942
 msgid "Update subscription fields"
 msgstr ""
 
