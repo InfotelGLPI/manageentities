@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-05 18:05+0000\n"
+"POT-Creation-Date: 2026-07-05 18:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:1567
+#: src/WizardController.php:1565
 msgid "-- Select a template --"
 msgstr ""
 
@@ -317,7 +317,7 @@ msgid_plural "Contacts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1363
+#: src/WizardController.php:1361
 msgid "Contacts"
 msgstr ""
 
@@ -325,7 +325,7 @@ msgstr ""
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 
-#: src/WizardController.php:1356 src/WizardController.php:1364
+#: src/WizardController.php:1354 src/WizardController.php:1362
 #: templates/contractday_form.html.twig:46
 #: templates/wizard/step3_contract.html.twig:36
 #: templates/wizard/step5_intervention_block.html.twig:76
@@ -595,7 +595,7 @@ msgstr ""
 msgid "Entities portal"
 msgstr ""
 
-#: src/WizardController.php:1355 src/WizardController.php:1362
+#: src/WizardController.php:1353 src/WizardController.php:1360
 #: templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
@@ -628,7 +628,7 @@ msgstr ""
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:1125
+#: src/WizardController.php:1123
 msgid "Error creating management type"
 msgstr ""
 
@@ -866,7 +866,7 @@ msgstr ""
 msgid "Manage your contracts"
 msgstr ""
 
-#: src/WizardController.php:1113
+#: src/WizardController.php:1111
 msgid "Management data is missing"
 msgstr ""
 
@@ -876,8 +876,8 @@ msgid_plural "Management of task categories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:65 src/WizardController.php:1357
-#: src/WizardController.php:1365 templates/contract_detail_form.html.twig:44
+#: src/Contract.php:65 src/WizardController.php:1355
+#: src/WizardController.php:1363 templates/contract_detail_form.html.twig:44
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
 msgstr ""
@@ -1084,9 +1084,9 @@ msgstr ""
 
 #: src/Entity.php:128 src/Config.php:571 src/ContractDay.php:61
 #: src/ContractDay.php:63 src/ContractDay.php:480 src/Followup.php:921
-#: src/Followup.php:1177 src/WizardController.php:1207
-#: src/WizardController.php:1283 src/WizardController.php:1358
-#: src/WizardController.php:1366 templates/contractday_form.html.twig:52
+#: src/Followup.php:1177 src/WizardController.php:1205
+#: src/WizardController.php:1281 src/WizardController.php:1356
+#: src/WizardController.php:1364 templates/contractday_form.html.twig:52
 #: templates/wizard/step5_interventions.html.twig:35
 #: templates/wizard/step5_intervention_block.html.twig:13
 msgid "Period of contract"
@@ -1644,7 +1644,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: src/WizardController.php:1223 src/InterventionStakeholder.php:53
+#: src/WizardController.php:1221 src/InterventionStakeholder.php:53
 #: templates/wizard/step5_stakeholders_section.html.twig:11
 msgid "User affected"
 msgid_plural "Users affected"
@@ -1721,12 +1721,12 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1181
+#: src/WizardController.php:1179
 #: templates/wizard/step5_stakeholders_section.html.twig:18
 msgid "days"
 msgstr ""
 
-#: src/WizardController.php:1180
+#: src/WizardController.php:1178
 msgid "hours"
 msgstr ""
 
