@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-05 18:05+0000\n"
+"POT-Creation-Date: 2026-07-06 10:25+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -35,11 +35,11 @@ msgstr "(en jours)"
 msgid "(in hours)"
 msgstr "(en heures)"
 
-#: src/Contract.php:190
+#: src/Contract.php:191
 msgid "+ 12 months"
 msgstr "+ 12 mois"
 
-#: src/WizardController.php:1567
+#: src/WizardController.php:1565
 msgid "-- Select a template --"
 msgstr "-- Sélectionner un gabarit --"
 
@@ -59,7 +59,7 @@ msgstr "Informations sur les tâches accomplies"
 msgid "Accounts"
 msgstr "Comptes"
 
-#: src/Contract.php:952 templates/contract_detail_form.html.twig:105
+#: src/Contract.php:942 templates/contract_detail_form.html.twig:105
 #: templates/wizard/step4_management.html.twig:104
 msgid "Active editor subscription"
 msgstr "Souscription active éditeur"
@@ -67,10 +67,18 @@ msgstr "Souscription active éditeur"
 #: templates/interventionstakeholder_form.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:198
 #: templates/contract_detail_form.html.twig:150
+#: templates/entity/contacts_card.html.twig:108
+#: templates/entity/contacts_card.html.twig:112
+#: templates/entity/business_card.html.twig:87
+#: templates/entity/business_card.html.twig:91
+#: templates/entity/description.html.twig:225
+#: templates/entity/description.html.twig:228
+#: templates/entity/description.html.twig:295
+#: templates/entity/description.html.twig:298
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/Contract.php:191
+#: src/Contract.php:192
 msgid "Add 12 months to the initial contract period"
 msgstr "Ajoutez 12 mois à la période contractuelle initiale"
 
@@ -124,6 +132,7 @@ msgstr "Ajouter cette tâche"
 msgid "Add user"
 msgstr "Ajouter un intervenant"
 
+#: templates/entity/description.html.twig:112
 #: templates/wizard/step1_entity.html.twig:92
 msgid "Address"
 msgstr "Adresse"
@@ -160,7 +169,7 @@ msgstr "Une erreur est survenue lors de la suppressions des données"
 msgid "An error happened while saving the data."
 msgstr "Une erreur est survenue lors de la sauvegarde des données."
 
-#: src/Contract.php:632 src/Contract.php:661
+#: src/Contract.php:622 src/Contract.php:651
 msgid "Annual"
 msgstr "Annuel"
 
@@ -180,9 +189,25 @@ msgstr "Tarif appliqué"
 msgid "Associate to a contract"
 msgstr "Associer à un contrat"
 
-#: src/Contract.php:359 src/Contract.php:493
+#: templates/entity/contracts_tab.html.twig:32
 msgid "Associated assistance contracts"
 msgstr "Contrats d'assistance associés"
+
+#: templates/entity/business_card.html.twig:32
+#: templates/entity/description.html.twig:240
+msgid "Associated commercial"
+msgid_plural "Associated business"
+msgstr[0] "Commercial associé"
+msgstr[1] "Commerciaux associés"
+msgstr[2] "Commerciaux associés"
+
+#: templates/entity/contacts_card.html.twig:32
+#: templates/entity/description.html.twig:153
+msgid "Associated contact"
+msgid_plural "Associated contacts"
+msgstr[0] "Contact associé"
+msgstr[1] "Contacts associés"
+msgstr[2] "Contacts associés"
 
 #: templates/cri_reports.html.twig:33
 msgid "Associated intervention reports"
@@ -210,7 +235,7 @@ msgstr "Date de début"
 msgid "Begin date is required"
 msgstr "La date de début est obligatoire"
 
-#: src/Contract.php:685 src/Contract.php:722
+#: src/Contract.php:675 src/Contract.php:712
 msgid "By intervention"
 msgstr "A l'intervention"
 
@@ -234,6 +259,7 @@ msgstr ""
 "Impossible d'assigner %.2f jour(s) : seulement %.2f jours(s) restants sur "
 "%.2f"
 
+#: templates/entity/description.html.twig:118
 #: templates/wizard/step1_entity.html.twig:102
 msgid "City"
 msgstr "Ville"
@@ -266,7 +292,7 @@ msgstr "État du contrat GLPI fermé"
 msgid "Closed contract period state"
 msgstr "État de la période contractuelle fermée"
 
-#: src/Contract.php:953 templates/contract_detail_form.html.twig:112
+#: src/Contract.php:943 templates/contract_detail_form.html.twig:112
 #: templates/wizard/step4_management.html.twig:112
 msgid "Cloud client"
 msgstr "Client cloud"
@@ -288,6 +314,8 @@ msgstr[2] "Commentaires"
 
 #: templates/cridetail_for_ticket.html.twig:100
 #: templates/contractday_form.html.twig:111
+#: templates/entity/contracts_tab.html.twig:54
+#: templates/entity/description.html.twig:88
 #: templates/wizard/step1_entity.html.twig:118
 #: templates/wizard/step2_contact_block.html.twig:93
 #: templates/wizard/step3_contract.html.twig:95
@@ -330,7 +358,7 @@ msgstr[0] "Contact"
 msgstr[1] "Contacts"
 msgstr[2] "Contacts"
 
-#: src/WizardController.php:1363
+#: src/WizardController.php:1361
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -339,7 +367,7 @@ msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 "Le contenu, la date de fin et de début sont obligatoires pour une tâche!"
 
-#: src/WizardController.php:1356 src/WizardController.php:1364
+#: src/WizardController.php:1354 src/WizardController.php:1362
 #: templates/contractday_form.html.twig:46
 #: templates/wizard/step3_contract.html.twig:36
 #: templates/wizard/step5_intervention_block.html.twig:76
@@ -354,7 +382,7 @@ msgstr "Clôture des contrats"
 msgid "Contract data is missing"
 msgstr "Les données du contrat sont manquantes"
 
-#: src/Contract.php:162 src/Contract.php:164
+#: src/Contract.php:163 src/Contract.php:165
 msgid "Contract detail"
 msgstr "Détail du contrat"
 
@@ -377,6 +405,7 @@ msgstr "Contrat présent"
 msgid "Contract type"
 msgstr "Type de contrat"
 
+#: templates/entity/description.html.twig:124
 #: templates/wizard/step1_entity.html.twig:112
 msgid "Country"
 msgstr "Etat"
@@ -432,7 +461,7 @@ msgstr "Tarif journalier"
 msgid "Daily schedule"
 msgstr "Temps quotidien"
 
-#: src/Entity.php:105
+#: src/Entity.php:105 templates/entity/description.html.twig:38
 msgid "Data administrative"
 msgstr "Données administratives"
 
@@ -529,6 +558,10 @@ msgstr "Supprimer et réinitialiser"
 
 #: templates/cridetail_for_ticket.html.twig:205
 #: templates/contract_detail_form.html.twig:157
+#: templates/entity/contacts_card.html.twig:87
+#: templates/entity/business_card.html.twig:66
+#: templates/entity/description.html.twig:204
+#: templates/entity/description.html.twig:274
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
@@ -575,6 +608,14 @@ msgstr "Durée du trajet"
 msgid "Email"
 msgstr "Courriel"
 
+#: templates/entity/contacts_card.html.twig:44
+#: templates/entity/business_card.html.twig:45
+#: templates/entity/description.html.twig:105
+#: templates/entity/description.html.twig:165
+#: templates/entity/description.html.twig:253
+msgid "Email address"
+msgstr "Courriel"
+
 #: templates/cridetail_for_ticket.html.twig:85
 #: templates/cridetail_for_ticket.html.twig:127
 #: templates/contractday_form.html.twig:69
@@ -610,10 +651,11 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 msgid "Entities portal"
 msgstr "Portail Clients"
 
-#: src/WizardController.php:1355 src/WizardController.php:1362
+#: src/WizardController.php:1353 src/WizardController.php:1360
 #: templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
+#: templates/entity/contracts_tab.html.twig:51
 #: templates/wizard/step2_contact_block.html.twig:89
 #: templates/wizard/step1_select_entity.html.twig:42
 #: templates/wizard/step3_contract.html.twig:90
@@ -644,7 +686,7 @@ msgstr "Erreur à l'ajout du contrat"
 msgid "Error creating entity"
 msgstr "Erreur à la création de l'entité"
 
-#: src/WizardController.php:1125
+#: src/WizardController.php:1123
 msgid "Error creating management type"
 msgstr "Erreur à la création du type de gestion"
 
@@ -656,9 +698,18 @@ msgstr "Estimation Nombre de jours restant"
 msgid "Exceeding"
 msgstr "Dépassement"
 
+#: templates/entity/description.html.twig:95
 #: templates/wizard/step1_entity.html.twig:75
 msgid "Fax"
 msgstr "Fax"
+
+#: templates/entity/contracts_tab.html.twig:38
+msgid "Filtered"
+msgstr "Filtré"
+
+#: templates/entity/contracts_tab.html.twig:37
+msgid "Filtered by default state list"
+msgstr "Liste filtrée par défaut sur le statut"
 
 #: templates/wizard/step2_contact_block.html.twig:53
 msgid "First name"
@@ -720,7 +771,7 @@ msgstr "Assistance sur contrat"
 msgid "Hour of"
 msgstr "Heure de"
 
-#: src/Contract.php:684 src/Contract.php:720 src/Config.php:563
+#: src/Contract.php:674 src/Contract.php:710 src/Config.php:563
 msgid "Hourly"
 msgstr "Horaire"
 
@@ -761,12 +812,12 @@ msgstr "Crédit initial"
 msgid "Initial credit is required"
 msgstr "Le crédit initial est obligatoire"
 
-#: src/Contract.php:954 templates/contract_detail_form.html.twig:119
+#: src/Contract.php:944 templates/contract_detail_form.html.twig:119
 #: templates/wizard/step4_management.html.twig:120
 msgid "Internet publication"
 msgstr "Publié sur internet"
 
-#: src/Contract.php:749
+#: src/Contract.php:739
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] "Intervention"
@@ -871,7 +922,7 @@ msgstr "Liste par défaut des statuts pour le suivi général"
 msgid "Load"
 msgstr "Charger"
 
-#: src/EntityLogo.php:161
+#: src/EntityLogo.php:161 templates/entity/description.html.twig:49
 msgid "Logo"
 msgstr "Logo"
 
@@ -889,7 +940,7 @@ msgstr "Logo (format JPG ou JPEG)"
 msgid "Manage your contracts"
 msgstr "Gérer vos contrats"
 
-#: src/WizardController.php:1113
+#: src/WizardController.php:1111
 msgid "Management data is missing"
 msgstr "Les données du type de gestion sont manquantes"
 
@@ -900,11 +951,20 @@ msgstr[0] "Gestion des catégories de tâches"
 msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
-#: src/Contract.php:65 src/WizardController.php:1357
-#: src/WizardController.php:1365 templates/contract_detail_form.html.twig:44
+#: src/Contract.php:66 src/WizardController.php:1355
+#: src/WizardController.php:1363 templates/contract_detail_form.html.twig:44
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
 msgstr "Type de gestion"
+
+#: templates/entity/contacts_card.html.twig:67
+#: templates/entity/contacts_card.html.twig:74
+#: templates/entity/contacts_card.html.twig:79
+#: templates/entity/description.html.twig:186
+#: templates/entity/description.html.twig:192
+#: templates/entity/description.html.twig:196
+msgid "Manager"
+msgstr "Responsable"
 
 #: templates/wizard/step2_contact_block.html.twig:104
 msgid "Manager (main contact)"
@@ -918,8 +978,16 @@ msgstr "Des champs obligatoires sont manquants"
 msgid "Mobile"
 msgstr "Mobile"
 
-#: src/Contract.php:400 src/Monthly.php:701 src/Monthly.php:733
-#: src/Followup.php:1135 templates/contract_detail_form.html.twig:63
+#: templates/entity/contacts_card.html.twig:43
+#: templates/entity/business_card.html.twig:44
+#: templates/entity/description.html.twig:164
+#: templates/entity/description.html.twig:252
+msgid "Mobile phone"
+msgstr "Mobile"
+
+#: src/Monthly.php:701 src/Monthly.php:733 src/Followup.php:1135
+#: templates/contract_detail_form.html.twig:63
+#: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step4_management.html.twig:60
 msgid "Mode of management"
 msgstr "Mode de gestion"
@@ -929,11 +997,17 @@ msgstr "Mode de gestion"
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
 
-#: src/Contract.php:956 templates/contract_detail_form.html.twig:129
+#: src/Contract.php:946 templates/contract_detail_form.html.twig:129
 #: templates/wizard/step4_management.html.twig:128
 msgid "Movement management"
 msgstr "Gestion des déplacements"
 
+#: templates/entity/contacts_card.html.twig:41
+#: templates/entity/business_card.html.twig:41
+#: templates/entity/contracts_tab.html.twig:50
+#: templates/entity/description.html.twig:77
+#: templates/entity/description.html.twig:162
+#: templates/entity/description.html.twig:249
 #: templates/wizard/step1_entity.html.twig:42
 #: templates/wizard/step3_contract.html.twig:61
 #: templates/wizard/step5_intervention_block.html.twig:33
@@ -972,6 +1046,20 @@ msgstr "Suivant"
 #: src/GenerateCRI.php:1324 src/CriDetail.php:1771
 msgid "No active contracts"
 msgstr "Aucun contrats en cours"
+
+#: templates/entity/business_card.html.twig:78
+#: templates/entity/description.html.twig:286
+msgid "No business contact"
+msgstr "Pas de commercial trouvé"
+
+#: templates/entity/contacts_card.html.twig:99
+#: templates/entity/description.html.twig:216
+msgid "No contact"
+msgstr "Pas decontact trouvé"
+
+#: templates/entity/contracts_tab.html.twig:89
+msgid "No contract found"
+msgstr "Pas de contrat trouvé"
 
 #: templates/cridetail_for_ticket.html.twig:159
 #: templates/cridetail_for_ticket.html.twig:286
@@ -1045,6 +1133,11 @@ msgstr "Rien à afficher"
 msgid "Nothing to display."
 msgstr "Rien à afficher."
 
+#: templates/entity/contracts_tab.html.twig:52
+msgctxt "phone"
+msgid "Number"
+msgstr "Numéro"
+
 #: src/WizardController.php:874
 msgid "Number of days must be greater than 0"
 msgstr "Le nombre de jours doit être supérieur à 0"
@@ -1095,7 +1188,7 @@ msgstr "Options"
 msgid "Out of contract"
 msgstr "Hors contrat"
 
-#: src/Contract.php:692 src/Contract.php:728
+#: src/Contract.php:682 src/Contract.php:718
 msgid "Package"
 msgstr "Forfait"
 
@@ -1113,9 +1206,9 @@ msgstr "Commentaires de la prestation"
 
 #: src/Entity.php:128 src/Config.php:571 src/ContractDay.php:61
 #: src/ContractDay.php:63 src/ContractDay.php:480 src/Followup.php:921
-#: src/Followup.php:1177 src/WizardController.php:1207
-#: src/WizardController.php:1283 src/WizardController.php:1358
-#: src/WizardController.php:1366 templates/contractday_form.html.twig:52
+#: src/Followup.php:1177 src/WizardController.php:1205
+#: src/WizardController.php:1281 src/WizardController.php:1356
+#: src/WizardController.php:1364 templates/contractday_form.html.twig:52
 #: templates/wizard/step5_interventions.html.twig:35
 #: templates/wizard/step5_intervention_block.html.twig:13
 msgid "Period of contract"
@@ -1138,6 +1231,13 @@ msgstr "Prestations du contrat"
 msgid "Person in charge"
 msgstr "Responsable"
 
+#: templates/entity/contacts_card.html.twig:42
+#: templates/entity/business_card.html.twig:42
+#: templates/entity/business_card.html.twig:43
+#: templates/entity/description.html.twig:92
+#: templates/entity/description.html.twig:163
+#: templates/entity/description.html.twig:250
+#: templates/entity/description.html.twig:251
 #: templates/wizard/step1_entity.html.twig:70
 #: templates/wizard/step2_contact_block.html.twig:63
 msgid "Phone"
@@ -1146,6 +1246,10 @@ msgstr "Téléphone"
 #: templates/wizard/step2_contact_block.html.twig:68
 msgid "Phone 2"
 msgstr "Téléphone 2"
+
+#: templates/entity/description.html.twig:52
+msgid "Picture"
+msgstr "Logo"
 
 #: front/config.form.php:56
 msgid "Please activate the plugin"
@@ -1174,7 +1278,7 @@ msgstr "Merci de renseigner la date de début de la prestation du contrat."
 msgid "Please fill the contract period end date."
 msgstr "Merci de renseigner la date de fin de la prestation du contrat."
 
-#: src/Contract.php:610
+#: src/Contract.php:600
 msgid ""
 "Please note that there are no more contracts with days available for this "
 "customer."
@@ -1204,6 +1308,7 @@ msgstr "Le plugin n'est pas activé"
 msgid "Portal"
 msgstr "Portail"
 
+#: templates/entity/description.html.twig:115
 #: templates/wizard/step1_entity.html.twig:97
 msgid "Postal code"
 msgstr "Code postal"
@@ -1279,7 +1384,7 @@ msgstr "Le prix doit être supérieur à 0"
 msgid "Production"
 msgstr "Production"
 
-#: src/Contract.php:631 src/Contract.php:659
+#: src/Contract.php:621 src/Contract.php:649
 msgid "Quarterly"
 msgstr "Trimestriel"
 
@@ -1287,7 +1392,7 @@ msgstr "Trimestriel"
 msgid "Rates"
 msgstr "Tarifs"
 
-#: src/Contract.php:957 templates/contract_detail_form.html.twig:95
+#: src/Contract.php:947 templates/contract_detail_form.html.twig:95
 #: templates/wizard/step4_management.html.twig:81
 msgid "Refacturable costs"
 msgstr "Frais refacturables"
@@ -1353,6 +1458,10 @@ msgstr[0] "Gestion des droits"
 msgstr[1] "Gestion des droits"
 msgstr[2] "Gestion des droits"
 
+#: templates/entity/description.html.twig:80
+msgid "Root entity"
+msgstr "Entité racine"
+
 #: src/Config.php:313 templates/config_options_form.html.twig:46
 msgid "Rubric by default for reports"
 msgstr "Rubrique par défaut pour les rapports"
@@ -1408,7 +1517,7 @@ msgstr "Configuration"
 msgid "Setup for Generate Intervention report"
 msgstr "Configuration pour \"Générer le rapport d'intervention\""
 
-#: src/Contract.php:955 templates/contract_detail_form.html.twig:87
+#: src/Contract.php:945 templates/contract_detail_form.html.twig:87
 #: templates/wizard/step4_management.html.twig:73
 msgid "Show on GANTT"
 msgstr "Voir sur le GANTT"
@@ -1430,6 +1539,7 @@ msgstr "Commencer"
 msgid "Start date"
 msgstr "Date de début"
 
+#: templates/entity/description.html.twig:121
 #: templates/wizard/step1_entity.html.twig:107
 msgid "State"
 msgstr "Etat"
@@ -1461,6 +1571,7 @@ msgstr "Etat de l'intervention"
 msgid "State of ticket created"
 msgstr "État du ticket créé"
 
+#: templates/entity/contracts_tab.html.twig:53
 #: templates/wizard/step3_contract.html.twig:85
 #: templates/wizard/step5_intervention_block.html.twig:59
 msgid "Status"
@@ -1494,7 +1605,7 @@ msgstr "La catégorie de tâche doit être définie"
 msgid "Team"
 msgstr "Equipe"
 
-#: src/Contract.php:691 src/Contract.php:726
+#: src/Contract.php:681 src/Contract.php:716
 msgid "Technical Assistance"
 msgstr "Assistance Technique"
 
@@ -1635,6 +1746,8 @@ msgstr "Déplacement"
 msgid "Travel (in days)"
 msgstr "Déplacement (en jours)"
 
+#: templates/entity/contacts_card.html.twig:45
+#: templates/entity/description.html.twig:166
 #: templates/wizard/step2_contact_block.html.twig:84
 msgid "Type"
 msgstr "Type"
@@ -1644,8 +1757,7 @@ msgstr "Type"
 msgid "Type of contract"
 msgstr "Type de contrat"
 
-#: src/Contract.php:401 src/Contract.php:404 src/ContractDay.php:168
-#: src/ContractDay.php:888 src/Followup.php:1143
+#: src/ContractDay.php:168 src/ContractDay.php:888 src/Followup.php:1143
 #: templates/contract_detail_form.html.twig:67
 #: templates/contractday_form.html.twig:58
 #: templates/wizard/step4_management.html.twig:64
@@ -1661,7 +1773,15 @@ msgstr "Type de contrat de service manquant"
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: src/Contract.php:942
+#: templates/entity/description.html.twig:133
+msgid "Update administrative data"
+msgstr "Mise à jour des données administratives"
+
+#: templates/entity/description.html.twig:61
+msgid "Update logo"
+msgstr "Mise à jour du logo"
+
+#: src/Contract.php:932
 msgid "Update management fields"
 msgstr "Mise à jour des champs du type de gestion"
 
@@ -1689,16 +1809,12 @@ msgstr "Utilisation de la tarification"
 msgid "Use this entity"
 msgstr "Utiliser cette entité"
 
-#: src/Contract.php:406
-msgid "Used by default"
-msgstr "Utilisé par défaut"
-
 #: templates/interventionstakeholder_form.html.twig:41
 #: templates/interventionstakeholder_list.html.twig:40
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/WizardController.php:1223 src/InterventionStakeholder.php:53
+#: src/WizardController.php:1221 src/InterventionStakeholder.php:53
 #: templates/wizard/step5_stakeholders_section.html.twig:11
 msgid "User affected"
 msgid_plural "Users affected"
@@ -1734,6 +1850,7 @@ msgstr ""
 "Attention : le changement de la configuration journalière ou horaire impacte"
 " les types de contrat."
 
+#: templates/entity/description.html.twig:98
 #: templates/wizard/step1_entity.html.twig:86
 msgid "Website"
 msgstr "Site web"
@@ -1782,6 +1899,11 @@ msgstr "Année"
 msgid "You cannot add an intervention on this entity"
 msgstr "Vous ne pouvez pas ajouter d'intervention dans cette entité"
 
+#: templates/entity/contracts_tab.html.twig:104
+msgctxt "Add"
+msgid "button"
+msgstr "Bouton"
+
 #: templates/wizard/step5_stakeholders_section.html.twig:27
 msgid "day"
 msgid_plural "days"
@@ -1789,12 +1911,12 @@ msgstr[0] "jour"
 msgstr[1] "jours"
 msgstr[2] "jours"
 
-#: src/WizardController.php:1181
+#: src/WizardController.php:1179
 #: templates/wizard/step5_stakeholders_section.html.twig:18
 msgid "days"
 msgstr "jours"
 
-#: src/WizardController.php:1180
+#: src/WizardController.php:1178
 msgid "hours"
 msgstr "heures"
 
@@ -1814,3 +1936,9 @@ msgstr "d'intervention"
 #: src/CriPDF.php:945
 msgid "on"
 msgstr "sur"
+
+#: templates/entity/contracts_tab.html.twig:91
+msgid "try adjusting the default state filter in configuration"
+msgstr ""
+"Essayez de modifier le filtre sur le statut par défaut dans la "
+"configuration."
