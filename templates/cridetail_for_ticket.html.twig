@@ -105,6 +105,19 @@
             </div>
         </div>
 
+        {# Row plugin contract flags #}
+        <div id="contract_flags_block" class="row mt-2 align-items-center"
+             style="display:none">
+            <label class="col-sm-3 col-form-label fw-bold text-muted">
+                <i class="ti ti-tags me-1"></i>{{ __('Options', 'manageentities') }}
+            </label>
+            <div class="col-sm-9 d-flex flex-wrap gap-2 pt-2">
+                <span id="contract_editor_sub_badge" class="badge bg-outline-secondary"></span>
+                <span id="contract_cloud_badge" class="badge bg-outline-secondary"></span>
+                <span id="contract_inet_badge" class="badge bg-outline-secondary"></span>
+            </div>
+        </div>
+
         {# Row contractday begin date #}
         <div id="contractday_begin_date_block" class="row mt-2 align-items-center"
              {% if not contractday_begin_date %}style="display:none"{% endif %}>
@@ -355,6 +368,50 @@
             } else {
                 endDateText.textContent = '';
                 endDateBlock.style.display = 'none';
+            }
+        }
+
+        // Plugin contract flags
+        const flagsBlock     = document.getElementById('contract_flags_block');
+        const editorBadge    = document.getElementById('contract_editor_sub_badge');
+        const cloudBadge     = document.getElementById('contract_cloud_badge');
+        const inetBadge      = document.getElementById('contract_inet_badge');
+        if (flagsBlock && editorBadge && cloudBadge && inetBadge) {
+            const editorEl = container.querySelector('.me-contract-editor-sub-data');
+            const cloudEl  = container.querySelector('.me-contract-cloud-data');
+            const inetEl   = container.querySelector('.me-contract-inet-data');
+            const hasData = !!(editorEl || cloudEl || inetEl);
+            const editor = editorEl ? parseInt(editorEl.textContent.trim(), 10) : 0;
+            const cloud  = cloudEl  ? parseInt(cloudEl.textContent.trim(),  10) : 0;
+            const inet   = inetEl   ? parseInt(inetEl.textContent.trim(),   10) : 0;
+            if (hasData) {
+                // Active editor subscription — always shown, red when inactive
+                editorBadge.textContent = editor
+                    ? '{{ __('Active editor subscription', 'manageentities')|e('js') }}'
+                    : '{{ __('Inactive editor subscription', 'manageentities')|e('js') }}';
+                editorBadge.className = editor ? 'badge bg-outline-info' : 'badge bg-danger-lt';
+                // Cloud client — shown only when active
+                if (cloud) {
+                    cloudBadge.textContent = '{{ __('Cloud client', 'manageentities')|e('js') }}';
+                    cloudBadge.className = 'badge bg-outline-azure';
+                } else {
+                    cloudBadge.textContent = '';
+                    cloudBadge.className = '';
+                }
+                // Internet publication — shown only when active
+                if (inet) {
+                    inetBadge.textContent = '{{ __('Internet publication', 'manageentities')|e('js') }}';
+                    inetBadge.className = 'badge bg-outline-cyan';
+                } else {
+                    inetBadge.textContent = '';
+                    inetBadge.className = '';
+                }
+                flagsBlock.style.display = '';
+            } else {
+                editorBadge.textContent = '';
+                cloudBadge.textContent  = '';
+                inetBadge.textContent   = '';
+                flagsBlock.style.display = 'none';
             }
         }
     }

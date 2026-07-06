@@ -105,6 +105,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                 <div class="form-check form-switch mt-2">
                     <input type="hidden" name="active_editor_suscription" value="0">
                     <input type="checkbox" class="form-check-input" name="active_editor_suscription" value="1"
+                        id="active_editor_suscription_{{ rand }}"
                         {% if active_editor_suscription %}checked{% endif %}>
                 </div>
             </div>
@@ -113,6 +114,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                 <div class="form-check form-switch mt-2">
                     <input type="hidden" name="cloud_client" value="0">
                     <input type="checkbox" class="form-check-input" name="cloud_client" value="1"
+                        id="cloud_client_{{ rand }}"
                         {% if cloud_client %}checked{% endif %}>
                 </div>
             </div>
@@ -121,6 +123,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                 <div class="form-check form-switch mt-2">
                     <input type="hidden" name="internet_publication" value="0">
                     <input type="checkbox" class="form-check-input" name="internet_publication" value="1"
+                        id="internet_publication_{{ rand }}"
                         {% if internet_publication %}checked{% endif %}>
                 </div>
             </div>
@@ -154,3 +157,27 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
         </button>
     </div>
 </div>
+<script>
+(function() {
+    var editor = document.getElementById('active_editor_suscription_{{ rand }}');
+    var cloud  = document.getElementById('cloud_client_{{ rand }}');
+    var inet   = document.getElementById('internet_publication_{{ rand }}');
+    function syncFlags() {
+        if (cloud.checked) {
+            editor.checked = true;
+            editor.style.pointerEvents = 'none';
+            editor.style.opacity = '0.6';
+            inet.checked = true;
+            inet.style.pointerEvents = 'none';
+            inet.style.opacity = '0.6';
+        } else {
+            editor.style.pointerEvents = '';
+            editor.style.opacity = '';
+            inet.style.pointerEvents = '';
+            inet.style.opacity = '';
+        }
+    }
+    cloud.addEventListener('change', syncFlags);
+    syncFlags();
+})();
+</script>

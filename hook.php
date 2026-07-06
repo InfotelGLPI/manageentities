@@ -767,6 +767,45 @@ function plugin_manageentities_getAddSearchOptionsNew($itemtype)
                 'linkfield' => 'contracts_id',
             ],
         ];
+        $options[] = [
+            'id'            => '4461',
+            'table'         => 'glpi_plugin_manageentities_contracts',
+            'field'         => 'active_editor_suscription',
+            'name'          => __('Active editor subscription', 'manageentities'),
+            'datatype'      => 'bool',
+            'nosort'        => false,
+            'massiveaction' => false,
+            'joinparams'    => [
+                'jointype'  => 'child',
+                'linkfield' => 'contracts_id',
+            ],
+        ];
+        $options[] = [
+            'id'            => '4462',
+            'table'         => 'glpi_plugin_manageentities_contracts',
+            'field'         => 'cloud_client',
+            'name'          => __('Cloud client', 'manageentities'),
+            'datatype'      => 'bool',
+            'nosort'        => false,
+            'massiveaction' => false,
+            'joinparams'    => [
+                'jointype'  => 'child',
+                'linkfield' => 'contracts_id',
+            ],
+        ];
+        $options[] = [
+            'id'            => '4463',
+            'table'         => 'glpi_plugin_manageentities_contracts',
+            'field'         => 'internet_publication',
+            'name'          => __('Internet publication', 'manageentities'),
+            'datatype'      => 'bool',
+            'nosort'        => false,
+            'massiveaction' => false,
+            'joinparams'    => [
+                'jointype'  => 'child',
+                'linkfield' => 'contracts_id',
+            ],
+        ];
     }
 
     return $options;

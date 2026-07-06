@@ -105,6 +105,7 @@
                 <label class="col-form-label fw-bold">{{ __('Active editor subscription', 'manageentities') }}</label>
                 <div class="form-check form-switch mt-2">
                     <input type="checkbox" name="active_editor_suscription" class="form-check-input"
+                        id="active_editor_suscription_{{ rand }}"
                         {% if active_editor_suscription %}checked{% endif %}>
                 </div>
             </div>
@@ -112,6 +113,7 @@
                 <label class="col-form-label fw-bold">{{ __('Cloud client', 'manageentities') }}</label>
                 <div class="form-check form-switch mt-2">
                     <input type="checkbox" name="cloud_client" class="form-check-input"
+                        id="cloud_client_{{ rand }}"
                         {% if cloud_client %}checked{% endif %}>
                 </div>
             </div>
@@ -119,6 +121,7 @@
                 <label class="col-form-label fw-bold">{{ __('Internet publication', 'manageentities') }}</label>
                 <div class="form-check form-switch mt-2">
                     <input type="checkbox" name="internet_publication" class="form-check-input"
+                        id="internet_publication_{{ rand }}"
                         {% if internet_publication %}checked{% endif %}>
                 </div>
             </div>
@@ -164,3 +167,27 @@
 {% if can_edit %}
 </form>
 {% endif %}
+<script>
+(function() {
+    var editor = document.getElementById('active_editor_suscription_{{ rand }}');
+    var cloud  = document.getElementById('cloud_client_{{ rand }}');
+    var inet   = document.getElementById('internet_publication_{{ rand }}');
+    function syncFlags() {
+        if (cloud.checked) {
+            editor.checked = true;
+            editor.style.pointerEvents = 'none';
+            editor.style.opacity = '0.6';
+            inet.checked = true;
+            inet.style.pointerEvents = 'none';
+            inet.style.opacity = '0.6';
+        } else {
+            editor.style.pointerEvents = '';
+            editor.style.opacity = '';
+            inet.style.pointerEvents = '';
+            inet.style.opacity = '';
+        }
+    }
+    cloud.addEventListener('change', syncFlags);
+    syncFlags();
+})();
+</script>

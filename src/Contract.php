@@ -417,10 +417,16 @@ class Contract extends CommonDBTM
                         'glpi_contracts'  => 'id',
                     ],
                 ],
+                'glpi_entities' => [
+                    'ON' => [
+                        $this->getTable() => 'entities_id',
+                        'glpi_entities'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'   => $where,
             'ORDERBY' => [
-                'glpi_contracts.begin_date',
+                'glpi_entities.name',
                 'glpi_contracts.name',
             ],
         ]);

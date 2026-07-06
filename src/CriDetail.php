@@ -1771,7 +1771,7 @@ class CriDetail extends CommonDBTM
             echo __('No active contracts', 'manageentities');
         }
 
-        // Tooltip for contract
+        // Tooltip for contract + hidden data spans for JS
         if (!empty($contractSelected)) {
             echo '&nbsp;';
             $contract->getFromDB($contractSelected);
@@ -1779,6 +1779,32 @@ class CriDetail extends CommonDBTM
                 'link' => $contract->getLinkURL(),
                 'linktarget' => '_blank',
             ]);
+            if (isset($contract->fields['states_id']) && $contract->fields['states_id'] > 0) {
+                echo "<span class='me-contract-status-data' style='display:none'>"
+                    . htmlspecialchars(\Dropdown::getDropdownName('glpi_states', $contract->fields['states_id']), ENT_QUOTES)
+                    . "</span>";
+                echo "<span class='me-contract-states-id-data' style='display:none'>"
+                    . (int)$contract->fields['states_id']
+                    . "</span>";
+            }
+            echo "<span class='me-contract-comment-data' style='display:none'>"
+                . htmlspecialchars($contract->fields['comment'] ?? '', ENT_QUOTES)
+                . "</span>";
+            echo "<span class='me-contract-end-date-data' style='display:none'>"
+                . htmlspecialchars($contract->fields['end_date'] ?? '', ENT_QUOTES)
+                . "</span>";
+            $pluginContract = new Contract();
+            $pluginContracts = $pluginContract->find(['contracts_id' => $contractSelected]);
+            $pluginData = reset($pluginContracts) ?: [];
+            echo "<span class='me-contract-editor-sub-data' style='display:none'>"
+                . (int)($pluginData['active_editor_suscription'] ?? 0)
+                . "</span>";
+            echo "<span class='me-contract-cloud-data' style='display:none'>"
+                . (int)($pluginData['cloud_client'] ?? 0)
+                . "</span>";
+            echo "<span class='me-contract-inet-data' style='display:none'>"
+                . (int)($pluginData['internet_publication'] ?? 0)
+                . "</span>";
         }
 
         // Ajax for contract

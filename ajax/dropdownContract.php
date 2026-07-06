@@ -28,6 +28,7 @@
  */
 
 use Glpi\Exception\Http\NotFoundHttpException;
+use GlpiPlugin\Manageentities\Contract as PluginContract;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\ContractState;
 
@@ -80,6 +81,20 @@ if (isset($_POST["contracts_id"])) {
       . "</span>";
    echo "<span class='me-contract-end-date-data' style='display:none'>"
       . htmlspecialchars($contract->fields['end_date'] ?? '', ENT_QUOTES)
+      . "</span>";
+
+   // Plugin contract fields
+   $pluginContract = new PluginContract();
+   $pluginContracts = $pluginContract->find(['contracts_id' => (int)$_POST["contracts_id"]]);
+   $pluginData = reset($pluginContracts) ?: [];
+   echo "<span class='me-contract-editor-sub-data' style='display:none'>"
+      . (int)($pluginData['active_editor_suscription'] ?? 0)
+      . "</span>";
+   echo "<span class='me-contract-cloud-data' style='display:none'>"
+      . (int)($pluginData['cloud_client'] ?? 0)
+      . "</span>";
+   echo "<span class='me-contract-inet-data' style='display:none'>"
+      . (int)($pluginData['internet_publication'] ?? 0)
       . "</span>";
 
    $restrict = ['entities_id'  => $contract->fields['entities_id'],
