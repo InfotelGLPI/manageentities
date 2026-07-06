@@ -100,7 +100,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                     {{ __('Cancel') }}
                 </button>
                 <button type="button" class="btn btn-warning" id="wizard-entity-archived-confirm-btn">
-                    <i class="ti ti-archive-off me-1"></i>{{ __('Unarchive and continue', 'manageentities') }}
+                    <i class="ti ti-archive-off me-1"></i>{{ wizard_i18n.unarchiveAndContinue }}
                 </button>
             </div>
         </div>
@@ -169,9 +169,5 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
 
 <script>
     var WIZARD_URL = {{ wizard_url|json_encode|raw }};
-    var WIZARD_I18N = {
-        nothingToDisplay:   {{ __('Nothing to display.', 'manageentities')|json_encode|raw }},
-        entityExistsMsg:    {{ __('The entity "%s" already exists. Do you want to use it to create a new contract?', 'manageentities')|json_encode|raw }},
-        entityArchivedMsg:  {{ __('The customer "%s" is currently archived. Do you want to unarchive it and place it under the default parent entity to continue?', 'manageentities')|json_encode|raw }},
-    };
+    var WIZARD_I18N = {{ wizard_i18n|json_encode|raw }};
 </script>

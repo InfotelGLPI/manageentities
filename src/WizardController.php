@@ -1488,6 +1488,12 @@ class WizardController
             'step_template' => $step_template,
             'step_vars'     => $vars,
             'redirect_url'  => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php',
+            'wizard_i18n'   => [
+                'nothingToDisplay'      => __('Nothing to display.', 'manageentities'),
+                'entityExistsMsg'       => __('The entity "%s" already exists. Do you want to use it to create a new contract?', 'manageentities'),
+                'entityArchivedMsg'     => __('The customer "%s" is currently archived. Do you want to unarchive it and place it under the default parent entity to continue?', 'manageentities'),
+                'unarchiveAndContinue'  => __('Unarchive and continue', 'manageentities'),
+            ],
         ]));
     }
 
