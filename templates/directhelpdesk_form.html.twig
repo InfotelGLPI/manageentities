@@ -129,8 +129,7 @@
                          {% if item.isField('is_billed') %}
                          {{ fields.sliderField('is_billed',
                              item.fields['is_billed'],
-                             __('Is billed', 'manageentities'),
-                             field_options) }}
+                             __('Is billed', 'manageentities')) }}
                          {% endif %}
 
                         {% if item.isField('tickets_id') %}

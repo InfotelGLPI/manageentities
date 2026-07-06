@@ -1,0 +1,97 @@
+{#
+-------------------------------------------------------------------------
+manageentities plugin for GLPI
+Copyright (C) 2017-2026 by the manageentities Development Team.
+
+https://github.com/InfotelGLPI/manageentities
+-------------------------------------------------------------------------
+
+LICENSE
+
+This file is part of manageentities.
+
+manageentities is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+manageentities is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+#}
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-briefcase me-1"></i>
+            {{ _n('Associated commercial', 'Associated business', 2, 'manageentities') }}
+        </h3>
+    </div>
+    <div class="card-body p-0">
+        {% if business is not empty %}
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ __('Phone') }}</th>
+                        <th>{{ __('Phone') }} 2</th>
+                        <th>{{ __('Mobile phone') }}</th>
+                        <th>{{ __('Email address') }}</th>
+                        {% if can_edit_business and is_single %}<th></th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for bc in business %}
+                    <tr>
+                        <td><a href="{{ bc.url }}">{{ bc.realname }} {{ bc.firstname }}</a></td>
+                        <td>{{ bc.phone }}</td>
+                        <td>{{ bc.phone2 }}</td>
+                        <td>{{ bc.mobile }}</td>
+                        <td>
+                            {% if bc.email %}
+                                <a href="mailto:{{ bc.email }}">{{ bc.email }}</a>
+                            {% endif %}
+                        </td>
+                        {% if can_edit_business and is_single %}
+                        <td class="text-center">
+                            <form method="post" action="{{ entity_action_url }}" class="d-inline">
+                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="id" value="{{ bc.link_id }}">
+                                <button type="submit" name="deletebusiness" class="btn btn-link text-danger p-0" title="{{ __('Delete permanently') }}">
+                                    <i class="ti ti-circle-x"></i>
+                                </button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="text-muted text-center py-3 mb-0">{{ __('No business contact', 'manageentities') }}</p>
+        {% endif %}
+
+        {% if can_edit_business and is_single %}
+        <div class="card-footer">
+            <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="entities_id" value="{{ entity_id }}">
+                <div class="flex-grow-1">{{ user_dropdown_html|raw }}</div>
+                <a href="{{ user_form_url }}" target="_blank" title="{{ __('Add') }}">
+                    <i class="ti ti-square-plus"></i>
+                </a>
+                <button type="submit" name="addbusiness" class="btn btn-sm btn-primary">
+                    {{ __('Add') }}
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>{# /card-body #}
+</div>{# /card #}

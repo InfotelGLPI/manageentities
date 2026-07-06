@@ -1,0 +1,110 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-file-contract me-2"></i>
+            {{ __('Associated assistance contracts', 'manageentities') }}
+            <span class="badge bg-outline-secondary ms-1">{{ rows|length }}</span>
+        </h3>
+        {% if allowed_states is not empty %}
+        <div class="card-options">
+            <span class="badge bg-outline-info" title="{{ __('Filtered by default state list', 'manageentities') }}">
+                <i class="ti ti-filter me-1"></i>{{ __('Filtered', 'manageentities') }}
+            </span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card-body p-0">
+        {% if rows is not empty %}
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ __('Entity') }}</th>
+                        <th class="text-center">{{ _x('phone', 'Number') }}</th>
+                        <th>{{ __('Status') }}</th>
+                        <th>{{ __('Comments') }}</th>
+                        {% if show_management %}
+                        <th class="text-center">{{ __('Mode of management', 'manageentities') }}</th>
+                        {% endif %}
+                        {% if can_edit %}
+                        <th class="text-center">&nbsp;</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>
+                            <a href="{{ row.url }}">{{ row.label }}</a>
+                        </td>
+                        <td>{{ row.entity_name }}</td>
+                        <td class="text-center">{{ row.num }}</td>
+                        <td>{{ row.state }}</td>
+                        <td>{{ row.comment|raw }}</td>
+                        {% if show_management %}
+                        <td class="text-center">{{ row.management }}</td>
+                        {% endif %}
+                        {% if can_edit %}
+                        <td class="text-center">
+                            {{ row.delete_form|raw }}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-3 text-muted">
+            <i class="ti ti-info-circle me-1"></i>
+            {{ __('No contract found', 'manageentities') }}
+            {% if allowed_states is not empty %}
+            — {{ __('try adjusting the default state filter in configuration', 'manageentities') }}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    {% if can_edit %}
+    <div class="card-footer">
+        <form method="post" action="{{ entity_url }}">
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            <div class="d-flex align-items-center gap-2">
+                {{ add_dropdown_html|raw }}
+                <button type="submit" name="addcontracts" class="btn btn-primary btn-sm">
+                    <i class="ti ti-plus me-1"></i>{{ _x('Add', 'button') }}
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+</div>

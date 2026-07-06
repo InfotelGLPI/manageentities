@@ -33,6 +33,7 @@ use CommonDBTM;
 use CommonGLPI;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use GlpiPlugin\Manageentities\Entity;
 use Html;
 use MassiveAction;
@@ -356,164 +357,153 @@ class Contract extends CommonDBTM
     {
         global $DB, $CFG_GLPI;
 
-        Entity::showManageentitiesHeader(__('Associated assistance contracts', 'manageentities'));
-
         $this->displayAlertforEntity($instID);
 
-        $config = Config::getInstance();
+        $config    = Config::getInstance();
+        $is_single = (count($instID) === 1);
+        $can_edit  = $this->canCreate() && $is_single;
+
+        // Resolve contract_states filter: user preferences → global config
+        $allowed_states = [];
+        $users_id       = \Session::getLoginUserID();
+        $pref_id        = Preference::checkIfPreferenceExists($users_id);
+        if ($pref_id > 0) {
+            $pref = new Preference();
+            $pref->getFromDB($pref_id);
+            $decoded = json_decode($pref->fields['contract_states'] ?? '', true);
+            if (is_array($decoded) && count($decoded) > 0) {
+                $allowed_states = $decoded;
+            }
+        }
+        if (empty($allowed_states)) {
+            $decoded = json_decode($config->fields['contract_states'] ?? '', true);
+            if (is_array($decoded) && count($decoded) > 0) {
+                $allowed_states = $decoded;
+            }
+        }
+
+        // Build query — filter by states via contractdays sub-query when states are configured
+        $where = [
+            'glpi_contracts.is_deleted'              => 0,
+            $this->getTable() . '.entities_id'       => $instID,
+        ];
+
+        if (!empty($allowed_states)) {
+            $states_in = implode(',', array_map('intval', $allowed_states));
+            $where[]   = new QueryExpression(
+                'EXISTS (SELECT 1 FROM `glpi_plugin_manageentities_contractdays`'
+                . ' WHERE `glpi_plugin_manageentities_contractdays`.`contracts_id` = '
+                . $DB->quoteName($this->getTable() . '.contracts_id')
+                . ' AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`'
+                . ' IN (' . $states_in . '))'
+            );
+        }
 
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_contracts.*',
                 $this->getTable() . '.contracts_id',
+                $this->getTable() . '.entities_id as plugin_entities_id',
                 $this->getTable() . '.management',
                 $this->getTable() . '.contract_type',
                 $this->getTable() . '.is_default',
                 $this->getTable() . '.id as myid',
             ],
-            'FROM' => $this->getTable(),
+            'FROM'     => $this->getTable(),
             'LEFT JOIN' => [
                 'glpi_contracts' => [
                     'ON' => [
                         $this->getTable() => 'contracts_id',
-                        'glpi_contracts' => 'id'
-                    ]
-                ]
+                        'glpi_contracts'  => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => [
-                'glpi_contracts.is_deleted' => 0,
-                $this->getTable() . '.entities_id' => $instID
-            ],
+            'WHERE'   => $where,
             'ORDERBY' => [
                 'glpi_contracts.begin_date',
-                'glpi_contracts.name'
+                'glpi_contracts.name',
             ],
         ]);
 
-        if (count($iterator) > 0) {
-            echo "<form method='post' action=\"./entity.php\">";
-            echo "<div class='center'><table class='tab_cadre_me center'>";
-            echo "<tr><th>" . __('Name') . "</th>";
-            echo "<th>" . _x('phone', 'Number') . "</th>";
-            echo "<th>" . __('Comments') . "</th>";
-            if ($config->fields['hourorday'] == Config::HOUR) {
-                echo "<th>" . __('Mode of management', 'manageentities') . "</th>";
-                echo "<th>" . __('Type of service contract', 'manageentities') . "</th>";
-            } elseif ($config->fields['hourorday'] == Config::DAY
-                && $config->fields['useprice'] == Config::PRICE) {
-                echo "<th>" . __('Type of service contract', 'manageentities') . "</th>";
-            }
-            echo "<th>" . __('Used by default', 'manageentities') . "</th>";
-            if ($this->canCreate() && sizeof($instID) == 1) {
-                echo "<th>&nbsp;</th>";
-            }
-            echo "</tr>";
+        $show_management  = ($config->fields['hourorday'] == Config::HOUR);
+        $show_type        = ($config->fields['hourorday'] == Config::HOUR)
+                         || ($config->fields['hourorday'] == Config::DAY && $config->fields['useprice'] == Config::PRICE);
 
-            $used = [];
-
-            foreach ($iterator as $data) {
-                $used[] = $data["contracts_id"];
-
-                echo "<tr class='" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
-                echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/contract.form.php?id=" . $data["contracts_id"] . "\">" . $data["name"] . "";
-                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                    echo " (" . $data["contracts_id"] . ")";
-                }
-                echo "</a></td>";
-                echo "<td class='center'>" . $data["num"] . "</td>";
-                echo "<td class='center'>" . nl2br($data["comment"]) . "</td>";
-                if ($config->fields['hourorday'] == Config::HOUR) {
-                    echo "<td class='center'>" . self::getContractManagement($data["management"]) . "</td>";
-                    echo "<td class='center'>" . self::getContractType($data['contract_type']) . "</td>";
-                } elseif ($config->fields['hourorday'] == Config::DAY
-                    && $config->fields['useprice'] == Config::PRICE) {
-                    echo "<td class='center'></td>";
-                    //               echo "<td class='center'>".self::getContractType($data['contract_type'])."</td>";
-                }
-                echo "<td class='center'>";
-                if (sizeof($instID) == 1) {
-                    if ($data["is_default"]) {
-                        echo __('Yes');
-                    } else {
-                        Html::showSimpleForm(
-                            PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
-                            'contractbydefault',
-                            __('No'),
-                            ['myid' => $data["myid"], 'entities_id' => $_SESSION["glpiactive_entity"]]
-                        );
-                    }
-                } else {
-                    echo \Dropdown::getYesNo($data["is_default"]);
-                }
-                echo "</td>";
-                if ($this->canCreate() && sizeof($instID) == 1) {
-                    echo "<td class='center' class='tab_bg_2'>";
-
-                    Html::showSimpleForm(
-                        PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
-                        'deletecontracts',
-                        _x('button', 'Delete permanently'),
-                        ['id' => $data["myid"]]
-                    );
-                    echo "</td>";
-                }
-                echo "</tr>";
+        // Build rows for the template
+        $rows = [];
+        $used = [];
+        foreach ($iterator as $data) {
+            $used[] = $data['contracts_id'];
+            $label  = $data['name'];
+            if ($_SESSION['glpiis_ids_visible'] || empty($data['name'])) {
+                $label .= ' (' . $data['contracts_id'] . ')';
             }
 
-            if ($this->canCreate() && sizeof($instID) == 1) {
-                if ($config->fields['hourorday'] == Config::HOUR) {
-                    echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
-                } elseif ($config->fields['hourorday'] == Config::DAY
-                    && $config->fields['useprice'] == Config::PRICE) {
-                    echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
-                } else {
-                    echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-                }
-                echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
-                \Dropdown::show('Contract', [
-                    'name' => "contracts_id",
-                    'used' => $used
-                ]);
-                echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>";
-                echo "<i title=\"" . _sx(
-                        'button',
-                        'Add'
-                    ) . "\" class=\"ti ti-square-plus\" style='cursor:pointer; margin-left:2px;'></i>";
-                echo "</a>";
-                echo "</td><td class='center'>";
-                echo Html::submit(_sx('button', 'Add'), ['name' => 'addcontracts', 'class' => 'btn btn-primary']);
-                echo "</td>";
-                echo "</tr>";
+            ob_start();
+            if ($is_single && !$data['is_default']) {
+                Html::showSimpleForm(
+                    PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
+                    'contractbydefault',
+                    __('No'),
+                    ['myid' => $data['myid'], 'entities_id' => $_SESSION['glpiactive_entity']]
+                );
             }
-            echo "</table></div>";
-            Html::closeForm();
-        } else {
-            echo "<form method='post' action=\"./entity.php\">";
-            echo "<div class='center'><table class='tab_cadre_fixe center'>";
-            echo "<tr><th colspan='3'>" . __('Associated assistance contracts', 'manageentities') . ":</th></tr>";
-            echo "<tr><th>" . __('Name') . "</th>";
-            echo "<th>" . _x('phone', 'Number') . "</th>";
-            echo "<th>" . __('Comments') . "</th>";
+            $default_form = ob_get_clean();
 
-            echo "</tr>";
-            if ($this->canCreate()) {
-                echo "<tr class='tab_bg_1'><td class='center'>";
-                echo Html::hidden('entities_id', ['value' => $_SESSION["glpiactive_entity"]]);
-                \Dropdown::show('Contract', ['name' => "contracts_id"]);
-                echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>";
-                echo "<i title=\"" . _sx(
-                        'button',
-                        'Add'
-                    ) . "\" class=\"ti ti-square-plus\" style='cursor:pointer; margin-left:2px;'></i>";
-                echo "</a>";
-                echo "</td><td class='center'>";
-                echo Html::submit(_sx('button', 'Add'), ['name' => 'addcontracts', 'class' => 'btn btn-primary']);
-                echo "</td><td></td>";
-                echo "</tr>";
+            ob_start();
+            if ($can_edit) {
+                Html::showSimpleForm(
+                    PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
+                    'deletecontracts',
+                    _x('button', 'Delete permanently'),
+                    ['id' => $data['myid']]
+                );
             }
-            echo "</table></div>";
-            Html::closeForm();
+            $delete_form = ob_get_clean();
+
+            $rows[] = [
+                'contracts_id'  => $data['contracts_id'],
+                'myid'          => $data['myid'],
+                'label'         => $label,
+                'url'           => $CFG_GLPI['root_doc'] . '/front/contract.form.php?id=' . $data['contracts_id'],
+                'entity_name'   => \Dropdown::getDropdownName('glpi_entities', $data['plugin_entities_id']),
+                'num'           => $data['num'],
+                'state'         => \Dropdown::getDropdownName('glpi_states', $data['states_id'] ?? 0),
+                'comment'       => nl2br($data['comment'] ?? ''),
+                'management'    => $show_management ? self::getContractManagement($data['management']) : '',
+                'contract_type' => $show_type ? self::getContractType($data['contract_type']) : '',
+                'is_default'    => (bool)$data['is_default'],
+                'default_label' => $is_single
+                    ? ($data['is_default'] ? __('Yes') : '')
+                    : \Dropdown::getYesNo($data['is_default']),
+                'default_form'  => $default_form,
+                'delete_form'   => $delete_form,
+            ];
         }
+
+        // Add-contract dropdown
+        $add_dropdown_html = '';
+        if ($can_edit) {
+            ob_start();
+            echo Html::hidden('entities_id', ['value' => $_SESSION['glpiactive_entity']]);
+            \Dropdown::show('Contract', ['name' => 'contracts_id', 'used' => $used]);
+            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>";
+            echo "<i title=\"" . _sx('button', 'Add') . "\" class=\"ti ti-square-plus ms-1\"></i>";
+            echo "</a>";
+            $add_dropdown_html = ob_get_clean();
+        }
+
+        TemplateRenderer::getInstance()->display('@manageentities/entity/contracts_tab.html.twig', [
+            'rows'             => $rows,
+            'can_edit'         => $can_edit,
+            'is_single'        => $is_single,
+            'show_management'  => $show_management,
+            'show_type'        => $show_type,
+            'add_dropdown_html'=> $add_dropdown_html,
+            'entity_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
+            'allowed_states'   => $allowed_states,
+            'rand'             => mt_rand(),
+        ]);
     }
 
     function displayAlertforEntity($instID)
