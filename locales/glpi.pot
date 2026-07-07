@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 17:36+0000\n"
+"POT-Creation-Date: 2026-07-07 17:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,7 +63,7 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/EditorSubscription.php:177 hook.php:782
+#: src/EditorSubscription.php:177 hook.php:813
 #: templates/wizard/step4_management.html.twig:120
 msgid "Active editor subscription"
 msgstr ""
@@ -329,7 +329,7 @@ msgid "Cloud"
 msgstr ""
 
 #: src/EditorSubscription.php:155 src/EditorSubscription.php:178
-#: src/EditorSubscription.php:598 hook.php:795
+#: src/EditorSubscription.php:598 hook.php:826
 #: templates/cridetail_for_ticket.html.twig:78
 #: templates/contract_detail_form.html.twig:54
 #: templates/wizard/step4_management.html.twig:129
@@ -956,7 +956,7 @@ msgstr ""
 msgid "Initial credit is required"
 msgstr ""
 
-#: src/EditorSubscription.php:179 src/EditorSubscription.php:606 hook.php:808
+#: src/EditorSubscription.php:179 src/EditorSubscription.php:606 hook.php:839
 #: templates/cridetail_for_ticket.html.twig:420
 #: templates/contract_detail_form.html.twig:79
 #: templates/editorsubscription_fields.html.twig:64
@@ -1083,7 +1083,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:878
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:909
 msgid "Manage your contracts"
 msgstr ""
 
@@ -1427,7 +1427,7 @@ msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
 #: src/GenerateCRI.php:1360 src/CriDetail.php:756 src/CriDetail.php:1859
-#: src/CriDetail.php:1896 hook.php:746 templates/contractday_list.html.twig:33
+#: src/CriDetail.php:1896 hook.php:777 templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr ""
 
@@ -2028,7 +2028,7 @@ msgid "Total production"
 msgstr ""
 
 #: src/ContractDay.php:541 src/Followup.php:939 src/Followup.php:1255
-#: src/Dashboard.php:167 src/Dashboard.php:439 hook.php:768
+#: src/Dashboard.php:167 src/Dashboard.php:439 hook.php:799
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr ""
@@ -2102,7 +2102,7 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:951
+#: hook.php:982
 msgid "Update subscription fields"
 msgstr ""
 
