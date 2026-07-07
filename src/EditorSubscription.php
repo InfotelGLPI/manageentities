@@ -244,8 +244,11 @@ class EditorSubscription extends CommonDBTM
                 )
             );
 
+            $archive_son_ids_in_session = array_values(
+                array_intersect($archive_son_ids, $entity_ids)
+            );
             $all_scoped_ids = array_values(
-                array_unique(array_merge($concerned_ids, $archive_son_ids))
+                array_unique(array_merge($concerned_ids, $archive_son_ids_in_session))
             );
         }
 
