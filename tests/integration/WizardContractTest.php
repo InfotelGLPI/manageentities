@@ -107,8 +107,6 @@ class WizardContractTest extends DbTestCase
         $mr = WizardController::saveManagementTypeAndReturn([
             'date_signature'       => '2026-01-01',
             'show_on_global_gantt' => 1,
-            'cloud_client'         => 1,
-            'internet_publication' => 0,
         ]);
 
         $this->assertTrue($mr['success'], $mr['message'] ?? '');
@@ -116,8 +114,9 @@ class WizardContractTest extends DbTestCase
         $session = WizardController::getSession();
         $this->assertNotEmpty($session['management_data']);
         $this->assertSame(1, $session['management_data']['show_on_global_gantt']);
-        $this->assertSame(1, $session['management_data']['cloud_client']);
-        $this->assertSame(0, $session['management_data']['internet_publication']);
+        // cloud_client and internet_publication are managed by EditorSubscription, not management_data
+        $this->assertArrayNotHasKey('cloud_client',         $session['management_data']);
+        $this->assertArrayNotHasKey('internet_publication', $session['management_data']);
     }
 
     public function testSaveManagementTypeFailsWithoutDateSignature(): void

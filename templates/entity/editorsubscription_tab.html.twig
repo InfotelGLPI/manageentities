@@ -30,14 +30,25 @@
         <h3 class="card-title">
             <i class="ti ti-certificate me-2"></i>
             {{ __('Publisher subscriptions', 'manageentities') }}
+            {% set expired_count = rows|filter(r => r.end_date_expired)|length %}
+            {% if expired_count > 0 %}
+                <span class="badge bg-outline-danger ms-2">{{ expired_count }}</span>
+            {% endif %}
         </h3>
-        {% if can_edit %}
-        <div class="card-options ms-auto">
+        <div class="card-options ms-auto d-flex gap-2">
+            <button type="button" id="me_sub_filter_expired" class="btn btn-sm btn-outline-warning"
+                    title="{{ __('Show expired subscriptions only', 'manageentities') }}">
+                <i class="ti ti-clock-exclamation me-1"></i>{{ __('Expired only', 'manageentities') }}
+            </button>
+            <a href="{{ export_url }}" id="me_sub_export_btn" class="btn btn-sm btn-outline-secondary">
+                <i class="ti ti-table-export me-1"></i>{{ __('Export CSV', 'manageentities') }}
+            </a>
+            {% if can_edit %}
             <a href="{{ wizard_url }}" class="btn btn-sm btn-outline-success">
                 <i class="ti ti-plus me-1"></i>{{ __('Create subscription', 'manageentities') }}
             </a>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 
     <div class="card-body p-0">
@@ -58,7 +69,7 @@
                 </thead>
                 <tbody>
                     {% for row in rows %}
-                    <tr>
+                    <tr data-expired="{{ row.end_date_expired ? '1' : '0' }}">
                         <td>{{ row.entity_completename ?: '—' }}</td>
                         <td>{{ row.customer_account_id ?: '—' }}</td>
                         <td>{{ row.name ?: '—' }}</td>
@@ -96,3 +107,34 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+(function () {
+    var btn       = document.getElementById('me_sub_filter_expired');
+    var exportBtn = document.getElementById('me_sub_export_btn');
+    if (!btn) { return; }
+
+    var baseExportUrl    = {{ export_url|json_encode|raw }};
+    var expiredExportUrl = baseExportUrl + '&sub_expired=1';
+    var active           = false;
+
+    btn.addEventListener('click', function () {
+        active = !active;
+        btn.classList.toggle('btn-outline-warning', !active);
+        btn.classList.toggle('btn-warning',         active);
+
+        var rows = document.querySelectorAll('[data-expired]');
+        rows.forEach(function (tr) {
+            if (active) {
+                tr.style.display = tr.getAttribute('data-expired') === '1' ? '' : 'none';
+            } else {
+                tr.style.display = '';
+            }
+        });
+
+        if (exportBtn) {
+            exportBtn.href = active ? expiredExportUrl : baseExportUrl;
+        }
+    });
+})();
+</script>

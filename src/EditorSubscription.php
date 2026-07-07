@@ -102,6 +102,110 @@ class EditorSubscription extends CommonDBTM
     }
 
     // -----------------------------------------------------------------------
+    // CSV export
+    // -----------------------------------------------------------------------
+
+    static function exportCsv(): void
+    {
+        global $DB;
+
+        Session::checkLoginUser();
+        if (!self::canView()) {
+            \Html::displayRightError();
+            exit;
+        }
+
+        if (Session::getCurrentInterface() === 'helpdesk') {
+            $entity_ids = [$_SESSION['glpiactive_entity']];
+        } else {
+            $entity_ids = $_SESSION['glpiactiveentities'];
+        }
+
+        $config              = Config::getInstance();
+        $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive_entities_id > 0) {
+            $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
+            unset($archive_sons[$archive_entities_id]);
+            $entity_ids = array_values(array_diff($entity_ids, array_keys($archive_sons)));
+        }
+
+        $now          = date('Y-m-d');
+        $only_expired = !empty($_GET['sub_expired']);
+        $rows         = [];
+
+        if (!empty($entity_ids)) {
+            $where = ['s.entities_id' => $entity_ids];
+            if ($only_expired) {
+                $where[] = ['s.end_date' => ['<', $now . ' 00:00:00']];
+                $where[] = ['NOT' => ['s.end_date' => null]];
+            }
+
+            $iterator = $DB->request([
+                'SELECT'    => ['s.*', 'e.completename AS entity_completename'],
+                'FROM'      => self::getTable() . ' AS s',
+                'LEFT JOIN' => [
+                    'glpi_entities AS e' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
+                ],
+                'WHERE' => $where,
+                'ORDER' => ['e.completename ASC'],
+            ]);
+
+            foreach ($iterator as $row) {
+                $row['level_name'] = !empty($row['plugin_manageentities_subscriptionlevels_id'])
+                    ? Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$row['plugin_manageentities_subscriptionlevels_id'])
+                    : '';
+                $row['type_label'] = $row['cloud_client']
+                    ? __('Cloud client', 'manageentities')
+                    : __('Editor subscription', 'manageentities');
+                $rows[] = $row;
+            }
+        }
+
+        $filename = ($only_expired ? 'subscriptions_expired_' : 'subscriptions_') . date('Ymd_His') . '.csv';
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        \Html::header_nocache();
+
+        $out = fopen('php://output', 'w');
+        // UTF-8 BOM for Excel
+        fwrite($out, "\xEF\xBB\xBF");
+
+        fputcsv($out, [
+            __('Entity', 'manageentities'),
+            __('Publisher customer account ID', 'manageentities'),
+            __('Referenced name at the publisher', 'manageentities'),
+            __('Type', 'manageentities'),
+            __('Subscription level', 'manageentities'),
+            __('Active editor subscription', 'manageentities'),
+            __('Cloud client', 'manageentities'),
+            __('Internet publication', 'manageentities'),
+            __('Start date', 'manageentities'),
+            __('End date', 'manageentities'),
+            __('Comments'),
+        ], ';');
+
+        foreach ($rows as $row) {
+            fputcsv($out, [
+                $row['entity_completename'] ?? '',
+                $row['customer_account_id'] ?? '',
+                $row['name'] ?? '',
+                $row['type_label'],
+                $row['level_name'],
+                $row['active_editor_suscription'] ? '1' : '0',
+                $row['cloud_client'] ? '1' : '0',
+                $row['internet_publication'] ? '1' : '0',
+                !empty($row['begin_date']) ? substr($row['begin_date'], 0, 10) : '',
+                !empty($row['end_date'])   ? substr($row['end_date'],   0, 10) : '',
+                $row['comment'] ?? '',
+            ], ';');
+        }
+
+        fclose($out);
+        exit;
+    }
+
+    // -----------------------------------------------------------------------
     // Display
     // -----------------------------------------------------------------------
 
@@ -152,6 +256,7 @@ class EditorSubscription extends CommonDBTM
         }
 
         $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
+        $export_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php?export=subscriptions';
 
         TemplateRenderer::getInstance()->display(
             '@manageentities/entity/editorsubscription_tab.html.twig',
@@ -159,6 +264,7 @@ class EditorSubscription extends CommonDBTM
                 'rows'        => $rows,
                 'can_edit'    => $can_edit,
                 'wizard_url'  => $wizard_url,
+                'export_url'  => $export_url,
             ]
         );
     }
