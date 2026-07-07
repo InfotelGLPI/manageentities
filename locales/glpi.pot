@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 12:11+0000\n"
+"POT-Creation-Date: 2026-07-07 12:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 msgid "(in hours)"
 msgstr ""
 
-#: src/WizardController.php:1432
+#: src/WizardController.php:1427
 msgid "(no name)"
 msgstr ""
 
@@ -39,7 +39,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:1890
+#: src/WizardController.php:1885
 msgid "-- Select a template --"
 msgstr ""
 
@@ -240,7 +240,7 @@ msgstr ""
 msgid "Associated ticket"
 msgstr ""
 
-#: src/WizardController.php:1243 src/WizardController.php:1269
+#: src/WizardController.php:1238 src/WizardController.php:1264
 msgid "At least one service period with a rate is required"
 msgstr ""
 
@@ -279,7 +279,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/WizardController.php:1126
+#: src/WizardController.php:1121
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -389,7 +389,7 @@ msgid_plural "Contacts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1632
+#: src/WizardController.php:1627
 msgid "Contacts"
 msgstr ""
 
@@ -397,7 +397,7 @@ msgstr ""
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 
-#: src/WizardController.php:1625 src/WizardController.php:1634
+#: src/WizardController.php:1620 src/WizardController.php:1629
 #: templates/contractday_form.html.twig:46
 #: templates/wizard/step6_intervention_block.html.twig:76
 #: templates/wizard/step4_contract.html.twig:36
@@ -410,7 +410,7 @@ msgstr ""
 msgid "Contract closure"
 msgstr ""
 
-#: src/WizardController.php:1316
+#: src/WizardController.php:1311
 msgid "Contract data is missing"
 msgstr ""
 
@@ -771,7 +771,7 @@ msgstr[1] ""
 msgid "Entity already exists"
 msgstr ""
 
-#: src/WizardController.php:1277
+#: src/WizardController.php:1272
 msgid "Entity data is missing"
 msgstr ""
 
@@ -783,15 +783,15 @@ msgstr ""
 msgid "Entity used to archive customers."
 msgstr ""
 
-#: src/WizardController.php:1328
+#: src/WizardController.php:1323
 msgid "Error creating contract"
 msgstr ""
 
-#: src/WizardController.php:1282
+#: src/WizardController.php:1277
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:1359
+#: src/WizardController.php:1354
 msgid "Error creating management type"
 msgstr ""
 
@@ -953,8 +953,8 @@ msgstr[1] ""
 msgid "Intervention date"
 msgstr ""
 
-#: src/WizardController.php:1017 src/WizardController.php:1028
-#: src/WizardController.php:1106
+#: src/WizardController.php:1012 src/WizardController.php:1023
+#: src/WizardController.php:1101
 msgid "Intervention not saved yet"
 msgstr ""
 
@@ -1061,7 +1061,7 @@ msgstr ""
 msgid "Manage your contracts"
 msgstr ""
 
-#: src/WizardController.php:1347
+#: src/WizardController.php:1342
 msgid "Management data is missing"
 msgstr ""
 
@@ -1071,8 +1071,8 @@ msgid_plural "Management of task categories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:66 src/WizardController.php:1626
-#: src/WizardController.php:1635 templates/contract_detail_form.html.twig:120
+#: src/Contract.php:66 src/WizardController.php:1621
+#: src/WizardController.php:1630 templates/contract_detail_form.html.twig:120
 #: templates/wizard/step5_management.html.twig:39
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
@@ -1091,7 +1091,7 @@ msgstr ""
 msgid "Manager (main contact)"
 msgstr ""
 
-#: src/WizardController.php:1097
+#: src/WizardController.php:1092
 msgid "Missing required fields"
 msgstr ""
 
@@ -1280,7 +1280,7 @@ msgstr ""
 msgid "Nothing to display"
 msgstr ""
 
-#: src/WizardController.php:1664
+#: src/WizardController.php:1659
 msgid "Nothing to display."
 msgstr ""
 
@@ -1289,7 +1289,7 @@ msgctxt "phone"
 msgid "Number"
 msgstr ""
 
-#: src/WizardController.php:1100
+#: src/WizardController.php:1095
 msgid "Number of days must be greater than 0"
 msgstr ""
 
@@ -1309,7 +1309,7 @@ msgstr ""
 msgid "On premise"
 msgstr ""
 
-#: src/WizardController.php:1035
+#: src/WizardController.php:1030
 msgid "Only one rate is allowed per service period"
 msgstr ""
 
@@ -1363,9 +1363,9 @@ msgstr ""
 
 #: src/Entity.php:128 src/Config.php:580 src/ContractDay.php:61
 #: src/ContractDay.php:63 src/ContractDay.php:480 src/Followup.php:921
-#: src/Followup.php:1177 src/WizardController.php:1460
-#: src/WizardController.php:1535 src/WizardController.php:1627
-#: src/WizardController.php:1636 templates/contractday_form.html.twig:52
+#: src/Followup.php:1177 src/WizardController.php:1455
+#: src/WizardController.php:1530 src/WizardController.php:1622
+#: src/WizardController.php:1631 templates/contractday_form.html.twig:52
 #: templates/wizard/step6_intervention_block.html.twig:13
 #: templates/wizard/step5_interventions.html.twig:35
 #: templates/wizard/step5_intervention_block.html.twig:13
@@ -1375,7 +1375,7 @@ msgid_plural "Periods of contract"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1249
+#: src/WizardController.php:1244
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
@@ -1532,7 +1532,7 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: src/WizardController.php:1022
+#: src/WizardController.php:1017
 msgid "Price must be greater than 0"
 msgstr ""
 
@@ -1798,7 +1798,7 @@ msgstr ""
 msgid "Study and advice"
 msgstr ""
 
-#: src/WizardController.php:1633
+#: src/WizardController.php:1628
 msgid "Subscription"
 msgstr ""
 
@@ -1878,14 +1878,14 @@ msgstr ""
 msgid "The contract period %s already exists"
 msgstr ""
 
-#: src/WizardController.php:1666
+#: src/WizardController.php:1661
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
 "place it under the default parent entity to continue?"
 msgstr ""
 
-#: src/WizardController.php:1665
+#: src/WizardController.php:1660
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
@@ -2016,7 +2016,7 @@ msgstr ""
 msgid "Type of service contract missing"
 msgstr ""
 
-#: src/WizardController.php:1667
+#: src/WizardController.php:1662
 msgid "Unarchive and continue"
 msgstr ""
 
@@ -2073,7 +2073,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: src/WizardController.php:1476 src/InterventionStakeholder.php:53
+#: src/WizardController.php:1471 src/InterventionStakeholder.php:53
 #: templates/wizard/step5_stakeholders_section.html.twig:11
 #: templates/wizard/step6_stakeholders_section.html.twig:11
 msgid "User affected"
@@ -2081,7 +2081,7 @@ msgid_plural "Users affected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1117
+#: src/WizardController.php:1112
 msgid "User already added"
 msgstr ""
 
@@ -2162,13 +2162,13 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1415
+#: src/WizardController.php:1410
 #: templates/wizard/step5_stakeholders_section.html.twig:18
 #: templates/wizard/step6_stakeholders_section.html.twig:18
 msgid "days"
 msgstr ""
 
-#: src/WizardController.php:1414
+#: src/WizardController.php:1409
 msgid "hours"
 msgstr ""
 
