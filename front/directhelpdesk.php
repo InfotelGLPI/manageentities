@@ -44,14 +44,10 @@ if (Session::getCurrentInterface() == 'central') {
 
 echo Html::scriptBlock("
     function reloadPageWithParam(namecheck) {
-    if (namecheck == 'checkbox3') {
-      var param = document.getElementById('checkbox3').checked ? '1' : '0';
-      window.location.href = '?checkbox3=' + param;
-    }
-    if (namecheck == 'checkbox2') {
-      var param = document.getElementById('checkbox2').checked ? '1' : '0';
-      window.location.href = '?checkbox2=' + param;
-    }
+        var params = new URLSearchParams(window.location.search);
+        params.set('checkbox2', document.getElementById('checkbox2').checked ? '1' : '0');
+        params.set('checkbox3', document.getElementById('checkbox3').checked ? '1' : '0');
+        window.location.href = '?' + params.toString();
     }");
 
 if (!isset($_GET['checkbox3'])) {

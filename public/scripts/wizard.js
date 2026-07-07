@@ -32,7 +32,17 @@ function wizardFetch(url, body) {
         headers['Content-Type'] = 'application/x-www-form-urlencoded';
         init = { method: 'POST', headers: headers, body: new URLSearchParams(body).toString() };
     }
-    return fetch(url, init);
+    return fetch(url, init).then(function (response) {
+        if (!response.ok) {
+            return Promise.reject(new Error('HTTP ' + response.status + ' ' + response.statusText));
+        }
+        return response;
+    });
+}
+
+function _networkErrMsg(err) {
+    if (err && err.message) return 'Network error: ' + err.message;
+    return 'Network error';
 }
 
 function collectSection(sectionEl) {
@@ -136,7 +146,7 @@ function wizardSaveStep(step, url) {
             .then(function (res) {
                 if (res) handleStepResponse(step, res, url);
             })
-            .catch(function () { showStepErrors(step, 'Network error'); });
+            .catch(function (err) { showStepErrors(step, _networkErrMsg(err)); });
         return;
     }
 
@@ -146,7 +156,7 @@ function wizardSaveStep(step, url) {
     wizardFetch(url, payload)
         .then(function (r) { return r.json(); })
         .then(function (res) { handleStepResponse(step, res, url); })
-        .catch(function () { showStepErrors(step, 'Network error'); });
+        .catch(function (err) { showStepErrors(step, _networkErrMsg(err)); });
 }
 
 function handleStepResponse(step, res, url) {
@@ -192,7 +202,7 @@ function wizardPromptUseExistingEntity(entitiesId, entityName, url) {
                     showStepErrors(1, res.errors || res.message || 'Error');
                 }
             })
-            .catch(function () { showStepErrors(1, 'Network error'); });
+            .catch(function (err) { showStepErrors(1, _networkErrMsg(err)); });
     });
 
     new bootstrap.Modal(modal).show();
@@ -219,7 +229,7 @@ function wizardPromptUnarchiveEntity(entitiesId, entityName, url) {
                     showStepErrors(1, res.errors || res.message || 'Error');
                 }
             })
-            .catch(function () { showStepErrors(1, 'Network error'); });
+            .catch(function (err) { showStepErrors(1, _networkErrMsg(err)); });
     });
 
     new bootstrap.Modal(modal).show();
@@ -292,12 +302,12 @@ function wizardLoadFinishSummary(url) {
                 modal.show();
             }
         })
-        .catch(function () {
+        .catch(function (err) {
             if (saveBtn) {
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="ti ti-check me-1"></i>' + (saveBtn.dataset.label || 'Save and finish');
             }
-            showStepErrors(5, 'Network error');
+            showStepErrors(5, _networkErrMsg(err));
         });
 }
 
@@ -326,12 +336,12 @@ function wizardConfirmFinish(url) {
                 reloadStep(1, url);
             }
         })
-        .catch(function () {
+        .catch(function (err) {
             if (confirmBtn) {
                 confirmBtn.disabled = false;
                 confirmBtn.innerHTML = '<i class="ti ti-check me-1"></i>' + (confirmBtn.dataset.label || 'Confirm');
             }
-            showStepErrors(5, 'Network error');
+            showStepErrors(5, _networkErrMsg(err));
         });
 }
 
@@ -363,8 +373,8 @@ function wizardLoadResetSummary(url) {
             }
             summaryEl.innerHTML = html;
         })
-        .catch(function () {
-            if (summaryEl) summaryEl.innerHTML = '<p class="text-danger">Network error</p>';
+        .catch(function (err) {
+            if (summaryEl) summaryEl.innerHTML = '<p class="text-danger">' + _escHtml(_networkErrMsg(err)) + '</p>';
         });
 }
 
@@ -440,8 +450,8 @@ function wizardSaveIntervention(idx, url) {
                 _execScripts(sectionsEl);
             }
         })
-        .catch(function () {
-            if (errEl) errEl.textContent = 'Network error';
+        .catch(function (err) {
+            if (errEl) errEl.textContent = _networkErrMsg(err);
         });
 }
 
