@@ -256,7 +256,7 @@ class CriPrice extends CommonDBTM
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<th>" . ContractDay::getTypeName() . "</th>";
-            echo "<th>" . __('Entity') . "</th>";
+            echo "<th>" . _n('Entity', 'Entities', 1) . "</th>";
             echo "<th>" . CriPrice::getTypeName() . "</th>";
             echo "</tr>";
             foreach ($data as $value) {
@@ -350,9 +350,9 @@ class CriPrice extends CommonDBTM
         // Build columns
         $columns = ['_checkbox' => ''];
         if ($multi_entity) {
-            $columns['entities_name'] = __('Entity');
+            $columns['entities_name'] = _n('Entity', 'Entities', 1);
         }
-        $columns['critypes_name'] = __('Intervention type', 'manageentities');
+        $columns['critypes_name'] = CriType::getTypeName(1);
         $columns['price']         = $is_day ? __('Daily rate', 'manageentities') : __('Hourly rate', 'manageentities');
         $columns['is_default']    = __('Is default', 'manageentities');
 

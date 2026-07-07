@@ -125,7 +125,7 @@ class TaskCategory extends CommonDBTM
 
         echo "<tr><th colspan='2'>";
 
-        echo __('Management of task category', 'manageentities') . " - " . $taskCategory->fields["name"];
+        echo self::getTypeName(1) . " - " . $taskCategory->fields["name"];
 
         echo "</th></tr>";
 

@@ -208,7 +208,7 @@ class Company extends CommonDBTM
 
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Entity') . "</td>";
+        echo "<td>" . _n('Entity', 'Entities', 1) . "</td>";
         echo "<td>";
 
 

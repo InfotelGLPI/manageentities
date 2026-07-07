@@ -49,7 +49,7 @@
                 }) }}
 
                 {# Period name #}
-                {{ fields.textField('name', name, __('Period of contract', 'manageentities'), {
+                {{ fields.textField('name', name, _n('Period of contract', 'Periods of contract', 1, 'manageentities'), {
                     'full_width': true
                 }) }}
 
@@ -98,7 +98,7 @@
 
                 {# State #}
                 {{ fields.field('plugin_manageentities_contractstates_id', contractstate_html,
-                    __('State of contract', 'manageentities'), {
+                    ContractState::getTypeName(1), {
                     'full_width': false
                 }) }}
 

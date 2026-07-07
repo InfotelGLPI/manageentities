@@ -161,7 +161,7 @@ class Dashboard extends CommonGLPI
 
                     $headers = [
                         __('Team', 'manageentities'),
-                        __('Entity'),
+                        _n('Entity', 'Entities', 1),
                         __('Contract'),
                         __('Prestation', 'manageentities'),
                         __('Total remaining', 'manageentities'),
@@ -433,7 +433,7 @@ class Dashboard extends CommonGLPI
 
                     $headers = [
                         __('Team', 'manageentities'),
-                        __('Entity'),
+                        _n('Entity', 'Entities', 1),
                         __('Contract'),
                         __('Prestation', 'manageentities'),
                         __('Total remaining', 'manageentities'),

@@ -354,7 +354,7 @@ class CriDetail extends CommonDBTM
             echo "<th>" . __('Date') . "</th>";
             echo "<th>" . __('Technicians', 'manageentities') . "</th>";
             if ($config->fields['useprice'] == Config::PRICE) {
-                echo "<th>" . __('Intervention type', 'manageentities') . "</th>";
+                echo "<th>" . CriType::getTypeName(1) . "</th>";
             }
             echo "<th>" . __('Crossed time (itinerary including)', 'manageentities') . "</th>";
             echo "<th>" . __('Intervention with contract', 'manageentities') . "</th>";
@@ -477,7 +477,7 @@ class CriDetail extends CommonDBTM
             }
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><th>";
-            echo __('Intervention report', 'manageentities');
+            echo _n('Intervention report', 'Intervention reports', 1, 'manageentities');
             echo "</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td class='center'>";
@@ -612,7 +612,7 @@ class CriDetail extends CommonDBTM
             $columns['date']         = __('Date');
             $columns['technicians']  = __('Technicians', 'manageentities');
             if ($use_price) {
-                $columns['critype'] = __('Intervention type', 'manageentities');
+                $columns['critype'] = CriType::getTypeName(1);
             }
             $columns['realtime']     = __('Crossed time (itinerary including)', 'manageentities');
             $columns['withcontract'] = __('Intervention with contract', 'manageentities');
@@ -727,7 +727,7 @@ class CriDetail extends CommonDBTM
                 echo "<tr>";
                 echo "<th>" . __('Date') . "</th>";
                 echo "<th>" . __('Object of intervention', 'manageentities') . "</th>";
-                echo "<th>" . __('Intervention type', 'manageentities') . "</th>";
+                echo "<th>" . CriType::getTypeName(1) . "</th>";
                 echo "<th>" . __('File') . "</th>";
                 echo "<th>" . __('Crossed time (itinerary including)', 'manageentities') . "</th>";
                 echo "<th>" . __('Technicians', 'manageentities') . "</th>";
@@ -1446,7 +1446,7 @@ class CriDetail extends CommonDBTM
             $columns = [
                 'date'   => __('Date'),
                 'object' => __('Object of intervention', 'manageentities'),
-                'type'   => __('Intervention type', 'manageentities'),
+                'type'   => CriType::getTypeName(1),
                 'file'   => __('File'),
                 'conso'  => $conso_label,
                 'tech'   => __('Technicians', 'manageentities'),
@@ -2078,7 +2078,7 @@ class CriDetail extends CommonDBTM
         $dbu = new DbUtils();
         if ($complete) {
             if ($val["entities_name"]) {
-                $html .= "<strong>" . __('Entity') . "</strong> : " . $val['entities_name'] . "<br>";
+                $html .= "<strong>" . _n('Entity', 'Entities', 1) . "</strong> : " . $val['entities_name'] . "<br>";
             }
 
             if ($val["end"]) {
@@ -2097,7 +2097,7 @@ class CriDetail extends CommonDBTM
             $html .= "<div class='event-description'>" . htmlspecialchars($val["content"]) . "</div>";
         } else {
             if ($val["entities_name"]) {
-                $html .= "<strong>" . __('Entity') . "</strong> : " . $val['entities_name'] . "<br>";
+                $html .= "<strong>" . _n('Entity', 'Entities', 1) . "</strong> : " . $val['entities_name'] . "<br>";
             }
             if ($val["actiontime"]) {
                 $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(

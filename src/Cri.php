@@ -200,7 +200,7 @@ class Cri extends CommonDBTM
                 /* Information complémentaire pour le libellés des activités. */
                 echo "<tr class='tab_bg_1'>";
                 echo "<th>";
-                echo __('Intervention type', 'manageentities');
+                echo CriType::getTypeName(1);
                 echo "</th>";
 
                 echo "<td colspan='2'>";

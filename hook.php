@@ -685,8 +685,8 @@ function plugin_manageentities_getDropdown()
 {
 
     if (Plugin::isPluginActive("manageentities")) {
-        return [CriType::class       => __('Intervention type', 'manageentities'),
-            ContractState::class => __('State of contract', 'manageentities')];
+        return [CriType::class       => CriType::getTypeName(1),
+            ContractState::class => ContractState::getTypeName(1)];
     } else {
         return [];
     }

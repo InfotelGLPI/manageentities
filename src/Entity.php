@@ -509,7 +509,7 @@ class Entity extends CommonGLPI
             echo "</tr>";
 
             echo "<tr>";
-            echo "<th>" . __('Entity') . "</th>";
+            echo "<th>" . _n('Entity', 'Entities', 1) . "</th>";
             echo "<th>" . __('Date of signature', 'manageentities') . "</th>";
             echo "</tr>";
 

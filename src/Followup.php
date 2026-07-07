@@ -918,8 +918,8 @@ class Followup extends CommonDBTM
 
             // 2eme ligne header only for pdf
             if (!$is_html_output) {
-                $headers[] = __('Period of contract', 'manageentities');
-                $headers[] = __('State of contract', 'manageentities');
+                $headers[] = _n('Period of contract', 'Periods of contract', 1, 'manageentities');
+                $headers[] = ContractState::getTypeName(1);
                 $headers[] = __('Type of contract', 'manageentities');
                 if ($config->fields['hourorday'] == Config::HOUR) {
                     $headers[] = __('End date');
@@ -1174,7 +1174,7 @@ class Followup extends CommonDBTM
                         if ($is_html_output) {
                             $html_output .= $output::showNewLine();
                             $html_output .= $output::showHeaderItem(
-                                __('Period of contract', 'manageentities'),
+                                _n('Period of contract', 'Periods of contract', 1, 'manageentities'),
                                 $item_num,
                                 '',
                                 0,
@@ -1182,7 +1182,7 @@ class Followup extends CommonDBTM
                                 " $colspanNoprice style='" . Monthly::$style[1] . "'"
                             );
                             $html_output .= $output::showHeaderItem(
-                                __('State of contract', 'manageentities'),
+                                ContractState::getTypeName(1),
                                 $item_num,
                                 '',
                                 0,
@@ -2323,7 +2323,7 @@ class Followup extends CommonDBTM
                     && $_SESSION['glpiactive_entity_recursive'])
                 || (isset($_SESSION['glpishowallentities'])
                     && $_SESSION['glpishowallentities'])) {
-                echo "<td>" . __('Entity') . "</td>";
+                echo "<td>" . _n('Entity', 'Entities', 1) . "</td>";
                 echo "<td>";
                 \Dropdown::show('Entity', ['value' => $options['entities_id']]);
                 echo "</td>";
@@ -2347,12 +2347,7 @@ class Followup extends CommonDBTM
             foreach ($contractstates as $key => $val) {
                 $states[$key] = $val['name'];
             }
-            echo "<td class='left' colspan='$colspan'>" . _n(
-                    'State of contract',
-                    'States of contract',
-                    2,
-                    'manageentities'
-                ) . "</td>";
+            echo "<td class='left' colspan='$colspan'>" . ContractState::getTypeName(2) . "</td>";
             echo "<td class='left' colspan='$colspan'>";
 
             //            Toolbox::logInfo($options['contract_states']);

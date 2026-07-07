@@ -1283,7 +1283,7 @@ class WizardController
         $items = [];
 
         if ($session['wizard_mode'] !== 'existing_entity' && !empty($session['entity_data']['name'])) {
-            $items[] = ['type' => __('Entity'), 'label' => $session['entity_data']['name']];
+            $items[] = ['type' => _n('Entity', 'Entities', 1), 'label' => $session['entity_data']['name']];
         }
 
         foreach (($session['contacts_data'] ?? []) as $c) {
@@ -1304,7 +1304,7 @@ class WizardController
             if ((float)($iv['fields']['nbday'] ?? 0) > 0) {
                 $cdLabel .= ' — ' . number_format((float)$iv['fields']['nbday'], 2) . ' ' . $unit_label;
             }
-            $items[] = ['type' => __('Period of contract', 'manageentities'), 'label' => $cdLabel];
+            $items[] = ['type' => _n('Period of contract', 'Periods of contract', 1, 'manageentities'), 'label' => $cdLabel];
 
             foreach (($iv['criprices'] ?? []) as $cp) {
                 $criType  = new CriType();
@@ -1357,11 +1357,11 @@ class WizardController
         $items   = [];
 
         if ($session['wizard_mode'] !== 'existing_entity' && !empty($session['entity_data']['name'])) {
-            $items[] = ['type' => __('Entity'), 'label' => $session['entity_data']['name'], 'id' => 0];
+            $items[] = ['type' => _n('Entity', 'Entities', 1), 'label' => $session['entity_data']['name'], 'id' => 0];
         } elseif ($session['wizard_mode'] === 'existing_entity' && $session['entities_id'] > 0) {
             $e = new \Entity();
             if ($e->getFromDB($session['entities_id'])) {
-                $items[] = ['type' => __('Entity'), 'label' => $e->fields['completename'] ?? $e->fields['name'], 'id' => 0];
+                $items[] = ['type' => _n('Entity', 'Entities', 1), 'label' => $e->fields['completename'] ?? $e->fields['name'], 'id' => 0];
             }
         }
 
@@ -1452,14 +1452,14 @@ class WizardController
 
         if ($session['wizard_mode'] === 'existing_entity') {
             $steps = [
-                1 => __('Entity', 'manageentities'),
+                1 => _n('Entity', 'Entities', 1),
                 3 => __('Contract', 'manageentities'),
                 4 => __('Management type', 'manageentities'),
                 5 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
             ];
         } else {
             $steps = [
-                1 => __('Entity', 'manageentities'),
+                1 => _n('Entity', 'Entities', 1),
                 2 => __('Contacts', 'manageentities'),
                 3 => __('Contract', 'manageentities'),
                 4 => __('Management type', 'manageentities'),

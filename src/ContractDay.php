@@ -147,7 +147,7 @@ class ContractDay extends CommonDBTM
             'id' => '8',
             'table' => 'glpi_plugin_manageentities_contractstates',
             'field' => 'name',
-            'name' => __('State of contract', 'manageentities'),
+            'name' => ContractState::getTypeName(1),
             'datatype' => 'dropdown',
         ];
 
@@ -525,14 +525,14 @@ class ContractDay extends CommonDBTM
         $columns['name']    = ContractDay::getTypeName(1);
         $formatters['name'] = 'raw_html';
         if ($is_day) {
-            $columns['contract_type'] = __('Type of contract', 'manageentities');
+            $columns['contract_type'] = Contract::getTypeName(1);
         }
         $columns['begin_date'] = __('Begin date');
         $columns['end_date']   = __('End date');
         if ($show_credit) {
             $columns['nbday'] = __('Initial credit', 'manageentities');
         }
-        $columns['state'] = __('State of contract', 'manageentities');
+        $columns['state'] = ContractState::getTypeName(1);
         if ($show_credit) {
             $columns['report'] = __('Postponement', 'manageentities');
         }

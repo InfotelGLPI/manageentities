@@ -693,7 +693,7 @@ class DirectHelpdesk extends CommonDBTM
             'id' => '80',
             'table' => 'glpi_entities',
             'field' => 'completename',
-            'name' => __('Entity'),
+            'name' => _n('Entity', 'Entities', 1),
             'datatype' => 'dropdown',
         ];
 
@@ -701,7 +701,7 @@ class DirectHelpdesk extends CommonDBTM
             'id' => '81',
             'table' => 'glpi_entities',
             'field' => 'entities_id',
-            'name' => __('Entity') . "-" . __('ID'),
+            'name' => _n('Entity', 'Entities', 1) . "-" . __('ID'),
         ];
 
         return $tab;

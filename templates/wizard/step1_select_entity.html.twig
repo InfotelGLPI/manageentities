@@ -39,7 +39,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
         <div class="row g-3">
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">
-                    {{ __('Entity') }} <span class="text-danger">*</span>
+                    {{ _n('Entity', 'Entities', 1) }} <span class="text-danger">*</span>
                 </label>
                 {{ entity_select_html|raw }}
             </div>

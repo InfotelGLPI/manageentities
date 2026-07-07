@@ -116,7 +116,7 @@ class Report extends CommonDBTM
             echo "<tr><th colspan='4'>" . __('Report on the movement of technicians', 'manageentities') . "</th></tr>";
             echo "<tr>";
 
-            echo "<th>" . __('Entity') . "</th>";
+            echo "<th>" . _n('Entity', 'Entities', 1). "</th>";
             echo "<th>" . __('Total moving package', 'manageentities') . "</th>";
             echo "<th>" . __('Total time of the tasks of a category', 'manageentities') . "</th>";
             echo "<th>" . __('Total') . "</th>";

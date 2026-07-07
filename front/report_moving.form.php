@@ -71,7 +71,7 @@ if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
       echo "</td></tr>";
       //stats Entity
       echo "<tr class='tab_bg_2'><td class='right'>";
-      echo __('Entity') . " :</td><td>";
+      echo _n('Entity', 'Entities', 1) . " :</td><td>";
 
       $entity    = new \Entity();
 //      $data      = [Dropdown::EMPTY_VALUE];
@@ -111,7 +111,7 @@ if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
       echo "</td></tr>";
       //stats Entity
       echo "<tr class='tab_bg_2'><td class='right'>";
-      echo __('Entity') . " :</td><td>";
+      echo _n('Entity', 'Entities', 1) . " :</td><td>";
 
       $entity    = new \Entity();
 //      $data      = [Dropdown::EMPTY_VALUE];
