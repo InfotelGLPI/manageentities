@@ -559,95 +559,126 @@ function plugin_pre_item_purge_manageentities($item)
 // Hook done on transfered item case
 function plugin_item_transfer_manageentities($parm)
 {
-    $dbu = new DbUtils();
+    global $DB;
 
     switch ($parm['type']) {
         case 'Contract':
-            $contract = new Contract();
-            $contract->getFromDB($parm['id']);
-            $pluginContract     = new Contract();
-            $old_entity         = '';
-            $restrict           = ["`glpi_plugin_manageentities_contracts`.`contracts_id`" => $parm['id']];
-            $allPluginContracts = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contracts', $restrict);
-            if (!empty($allPluginContracts)) {
-                foreach ($allPluginContracts as $onePluginContract) {
-                    $old_entity = $onePluginContract['entities_id'];
-                    $pluginContract->update(['id'           => $onePluginContract['id'],
-                        'contracts_id' => $contract->fields['id'],
-                        'entities_id'  => $contract->fields['entities_id']]);
-                }
+            $contract = new \GlpiPlugin\Manageentities\Contract();
+            $glpiContract = new \Contract();
+            $glpiContract->getFromDB($parm['id']);
+            $new_entities_id = (int)$glpiContract->fields['entities_id'];
+            $contracts_id    = (int)$parm['id'];
+
+            $old_entity = 0;
+
+            // Update plugin contracts rows
+            $iter = $DB->request([
+                'SELECT' => ['id', 'entities_id'],
+                'FROM'   => 'glpi_plugin_manageentities_contracts',
+                'WHERE'  => ['contracts_id' => $contracts_id],
+            ]);
+            foreach ($iter as $row) {
+                $old_entity = (int)$row['entities_id'];
+                $contract->update([
+                    'id'           => $row['id'],
+                    'contracts_id' => $contracts_id,
+                    'entities_id'  => $new_entities_id,
+                ]);
             }
 
-            $contractDay           = new ContractDay();
-            $condition             = ["`glpi_plugin_manageentities_contractdays`.`contracts_id`" => $parm['id']];
-            $allPluginContractDays = $dbu->getAllDataFromTable('glpi_plugin_manageentities_contractdays', $condition);
-            if (!empty($allPluginContractDays)) {
-                foreach ($allPluginContractDays as $onePluginContractDays) {
-                    $criPrice  = new CriPrice();
-                    $cond      = ["`glpi_plugin_manageentities_criprices`.`entities_id`"                       => $old_entity,
-                        "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`"
-                           => $onePluginContractDays['plugin_manageentities_critypes_id']];
-                    $allPrices = $dbu->getAllDataFromTable('glpi_plugin_manageentities_criprices', $cond);
-                    if (!empty($allPrices)) {
-                        foreach ($allPrices as $onePrice) {
-                            //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
-                            //                     $newPrice = $criPrice->getFromDBbyType($onePluginContractDays['plugin_manageentities_critypes_id'],
-                            //                                                            $contract->fields['entities_id']);
+            // Update contract days and migrate CRI prices
+            $contractDay = new \GlpiPlugin\Manageentities\ContractDay();
+            $criPrice    = new \GlpiPlugin\Manageentities\CriPrice();
 
-                            $newPrice = $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id' => $onePluginContractDays['plugin_manageentities_critypes_id'],
-                                'entities_id' => $contract->fields["entities_id"]]);
-                            if (!$newPrice) {
-                                $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
-                                    'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
-                                    'price'                             => $onePrice['price']]);
-                            }
-                        }
+            $iter = $DB->request([
+                'SELECT' => ['id', 'plugin_manageentities_critypes_id'],
+                'FROM'   => 'glpi_plugin_manageentities_contractdays',
+                'WHERE'  => ['contracts_id' => $contracts_id],
+            ]);
+            foreach ($iter as $day) {
+                // Migrate price from old entity to new entity if not already present
+                $priceIter = $DB->request([
+                    'SELECT' => ['id', 'plugin_manageentities_critypes_id', 'price'],
+                    'FROM'   => 'glpi_plugin_manageentities_criprices',
+                    'WHERE'  => [
+                        'entities_id'                       => $old_entity,
+                        'plugin_manageentities_critypes_id' => $day['plugin_manageentities_critypes_id'],
+                    ],
+                ]);
+                foreach ($priceIter as $onePrice) {
+                    $exists = $criPrice->find([
+                        'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
+                        'entities_id'                       => $new_entities_id,
+                    ], [], 1);
+                    if (empty($exists)) {
+                        $criPrice->add([
+                            'entities_id'                       => $new_entities_id,
+                            'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
+                            'price'                             => $onePrice['price'],
+                        ]);
                     }
-                    $contractDay->update(['id'           => $onePluginContractDays['id'],
-                        'contracts_id' => $contract->fields['id'],
-                        'entities_id'  => $contract->fields['entities_id']]);
                 }
+
+                $contractDay->update([
+                    'id'           => $day['id'],
+                    'contracts_id' => $contracts_id,
+                    'entities_id'  => $new_entities_id,
+                ]);
             }
 
-            $criDetail           = new CriDetail();
-            $restr               = ["`glpi_plugin_manageentities_cridetails`.`contracts_id`" => $parm['id']];
-            $allPluginCriDetails = $dbu->getAllDataFromTable('glpi_plugin_manageentities_cridetails', $restr);
-            if (!empty($allPluginCriDetails)) {
-                foreach ($allPluginCriDetails as $onePluginCriDetail) {
-                    $criPrice  = new CriPrice();
-                    $cond      = ["`glpi_plugin_manageentities_criprices`.`entities_id`"                       => $old_entity,
-                        "`glpi_plugin_manageentities_criprices`.`plugin_manageentities_critypes_id`"
-                           => $onePluginCriDetail['plugin_manageentities_critypes_id']];
-                    $allPrices = $dbu->getAllDataFromTable('glpi_plugin_manageentities_criprices', $cond);
-                    if (!empty($allPrices)) {
-                        foreach ($allPrices as $onePrice) {
-                            //créer un nouveau si n'existe pas dans la nouvelle entité sinon prendre l'ID de l'existant
-                            //                     $newPrice = $criPrice->getFromDBbyType($onePluginCriDetail['plugin_manageentities_critypes_id'],
-                            //                                                            $contract->fields['entities_id']);
-                            $newPrice = $criPrice->getFromDBByCrit(['plugin_manageentities_critypes_id' => $onePluginCriDetail['plugin_manageentities_critypes_id'],
-                                'entities_id' => $contract->fields["entities_id"]]);
-                            if (!$newPrice) {
-                                $criPrice->add(['entities_id'                       => $contract->fields['entities_id'],
-                                    'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
-                                    'price'                             => $onePrice['price']]);
-                            }
-                        }
+            // Update CRI details
+            $criDetail = new \GlpiPlugin\Manageentities\CriDetail();
+
+            $iter = $DB->request([
+                'SELECT' => ['id', 'plugin_manageentities_critypes_id', 'documents_id', 'tickets_id'],
+                'FROM'   => 'glpi_plugin_manageentities_cridetails',
+                'WHERE'  => ['contracts_id' => $contracts_id],
+            ]);
+            foreach ($iter as $detail) {
+                // Migrate price
+                $priceIter = $DB->request([
+                    'SELECT' => ['plugin_manageentities_critypes_id', 'price'],
+                    'FROM'   => 'glpi_plugin_manageentities_criprices',
+                    'WHERE'  => [
+                        'entities_id'                       => $old_entity,
+                        'plugin_manageentities_critypes_id' => $detail['plugin_manageentities_critypes_id'],
+                    ],
+                ]);
+                foreach ($priceIter as $onePrice) {
+                    $exists = $criPrice->find([
+                        'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
+                        'entities_id'                       => $new_entities_id,
+                    ], [], 1);
+                    if (empty($exists)) {
+                        $criPrice->add([
+                            'entities_id'                       => $new_entities_id,
+                            'plugin_manageentities_critypes_id' => $onePrice['plugin_manageentities_critypes_id'],
+                            'price'                             => $onePrice['price'],
+                        ]);
                     }
-
-                    $document = new Document();
-                    $document->getFromDB($onePluginCriDetail['documents_id']);
-                    $document->update(['id'          => $onePluginCriDetail['documents_id'],
-                        'entities_id' => $contract->fields['entities_id']]);
-
-                    $ticket = new Ticket();
-                    $ticket->getFromDB($onePluginCriDetail['tickets_id']);
-                    $ticket->update(['id'          => $onePluginCriDetail['tickets_id'],
-                        'entities_id' => $contract->fields['entities_id']]);
-
-                    $criDetail->update(['id'           => $onePluginCriDetail['id'],
-                        'contracts_id' => $contract->fields['id'],
-                        'entities_id'  => $contract->fields['entities_id']]);
                 }
+
+                if (!empty($detail['documents_id'])) {
+                    $document = new \Document();
+                    $document->update([
+                        'id'          => $detail['documents_id'],
+                        'entities_id' => $new_entities_id,
+                    ]);
+                }
+
+                if (!empty($detail['tickets_id'])) {
+                    $ticket = new \Ticket();
+                    $ticket->update([
+                        'id'          => $detail['tickets_id'],
+                        'entities_id' => $new_entities_id,
+                    ]);
+                }
+
+                $criDetail->update([
+                    'id'           => $detail['id'],
+                    'contracts_id' => $contracts_id,
+                    'entities_id'  => $new_entities_id,
+                ]);
             }
             break;
     }
