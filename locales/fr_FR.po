@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 10:40+0000\n"
+"POT-Creation-Date: 2026-07-07 12:11+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -35,11 +35,15 @@ msgstr "(en jours)"
 msgid "(in hours)"
 msgstr "(en heures)"
 
+#: src/WizardController.php:1432
+msgid "(no name)"
+msgstr "(pas de nom)"
+
 #: src/Contract.php:193
 msgid "+ 12 months"
 msgstr "+ 12 mois"
 
-#: src/WizardController.php:1772
+#: src/WizardController.php:1890
 msgid "-- Select a template --"
 msgstr "-- Sélectionner un gabarit --"
 
@@ -51,7 +55,7 @@ msgstr "2 heures minimum"
 msgid "3 hours minimum"
 msgstr "3 heures minimum"
 
-#: src/WizardController.php:139
+#: src/WizardController.php:210
 msgid "A contract with this number already exists"
 msgstr "Un contrat avec ce numéro existe déjà"
 
@@ -64,15 +68,14 @@ msgid "Accounts"
 msgstr "Comptes"
 
 #: src/EditorSubscription.php:180 hook.php:782
-#: templates/wizard/step4_management.html.twig:104
+#: templates/wizard/step4_management.html.twig:120
 msgid "Active editor subscription"
 msgstr "Souscription active éditeur"
 
 #: templates/interventionstakeholder_form.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:248
-#: templates/contract_detail_form.html.twig:204
-#: templates/editorsubscription_wizard.html.twig:187
-#: templates/editorsubscription_wizard.html.twig:265
+#: templates/contract_detail_form.html.twig:203
+#: templates/editorsubscription_wizard.html.twig:92
 #: templates/entity/contacts_card.html.twig:108
 #: templates/entity/contacts_card.html.twig:112
 #: templates/entity/business_card.html.twig:87
@@ -81,6 +84,7 @@ msgstr "Souscription active éditeur"
 #: templates/entity/description.html.twig:228
 #: templates/entity/description.html.twig:295
 #: templates/entity/description.html.twig:298
+#: templates/editorsubscription_fields_js.html.twig:68
 msgid "Add"
 msgstr "Ajouter"
 
@@ -208,7 +212,7 @@ msgstr "Tarif appliqué"
 msgid "Archived customer"
 msgstr "Client archivé"
 
-#: templates/editorsubscription_wizard.html.twig:174
+#: templates/editorsubscription_wizard.html.twig:79
 msgid "Are you sure you want to permanently delete this subscription?"
 msgstr ""
 "Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
@@ -245,7 +249,7 @@ msgstr "Rapports d'intervention associés"
 msgid "Associated ticket"
 msgstr "Ticket associé"
 
-#: src/WizardController.php:1165 src/WizardController.php:1191
+#: src/WizardController.php:1243 src/WizardController.php:1269
 msgid "At least one service period with a rate is required"
 msgstr "Au moins une prestation avec un tarif est requis"
 
@@ -261,7 +265,8 @@ msgstr "Attacher des documents"
 msgid "Begin date"
 msgstr "Date de début"
 
-#: src/WizardController.php:153
+#: src/EditorSubscriptionWizard.php:146 src/WizardController.php:191
+#: src/WizardController.php:224
 msgid "Begin date is required"
 msgstr "La date de début est obligatoire"
 
@@ -277,13 +282,13 @@ msgstr "Génération du CRI"
 msgid "CRI generation form"
 msgstr "Formulaire de génération de CRI"
 
-#: templates/editorsubscription_wizard.html.twig:169
+#: templates/editorsubscription_wizard.html.twig:74
 #: templates/wizard/layout.html.twig:74 templates/wizard/layout.html.twig:100
 #: templates/wizard/layout.html.twig:128 templates/wizard/layout.html.twig:158
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/WizardController.php:1044
+#: src/WizardController.php:1126
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -324,17 +329,16 @@ msgid "Closed contract period state"
 msgstr "État de la période contractuelle fermée"
 
 #: src/SubscriptionLevel.php:74
-#: templates/entity/editorsubscription_tab.html.twig:78
+#: templates/entity/editorsubscription_tab.html.twig:84
 msgid "Cloud"
 msgstr "Cloud"
 
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:181
-#: src/EditorSubscription.php:415 hook.php:795
+#: src/EditorSubscription.php:423 hook.php:795
 #: templates/cridetail_for_ticket.html.twig:76
 #: templates/contract_detail_form.html.twig:54
-#: templates/editorsubscription_wizard.html.twig:107
-#: templates/wizard/step4_management.html.twig:113
-#: templates/wizard/step3_subscription.html.twig:73
+#: templates/wizard/step4_management.html.twig:129
+#: templates/editorsubscription_fields.html.twig:56
 msgid "Cloud client"
 msgstr "Client cloud"
 
@@ -354,7 +358,6 @@ msgstr[1] "Commentaires"
 msgstr[2] "Commentaires"
 
 #: templates/cridetail_for_ticket.html.twig:139
-#: templates/editorsubscription_wizard.html.twig:159
 #: templates/contractday_form.html.twig:111
 #: templates/entity/contracts_tab.html.twig:54
 #: templates/entity/description.html.twig:88
@@ -362,6 +365,7 @@ msgstr[2] "Commentaires"
 #: templates/wizard/step4_contract.html.twig:95
 #: templates/wizard/step2_contact_block.html.twig:93
 #: templates/wizard/step3_contract.html.twig:95
+#: templates/editorsubscription_fields.html.twig:122
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -401,7 +405,7 @@ msgstr[0] "Contact"
 msgstr[1] "Contacts"
 msgstr[2] "Contacts"
 
-#: src/WizardController.php:1512
+#: src/WizardController.php:1632
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -410,7 +414,7 @@ msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 "Le contenu, la date de fin et de début sont obligatoires pour une tâche!"
 
-#: src/WizardController.php:1505 src/WizardController.php:1514
+#: src/WizardController.php:1625 src/WizardController.php:1634
 #: templates/contractday_form.html.twig:46
 #: templates/wizard/step6_intervention_block.html.twig:76
 #: templates/wizard/step4_contract.html.twig:36
@@ -423,7 +427,7 @@ msgstr "Contrat"
 msgid "Contract closure"
 msgstr "Clôture des contrats"
 
-#: src/WizardController.php:1231
+#: src/WizardController.php:1316
 msgid "Contract data is missing"
 msgstr "Les données du contrat sont manquantes"
 
@@ -431,7 +435,7 @@ msgstr "Les données du contrat sont manquantes"
 msgid "Contract detail"
 msgstr "Détail du contrat"
 
-#: templates/contract_detail_form.html.twig:154
+#: templates/contract_detail_form.html.twig:170
 #: templates/wizard/step5_management.html.twig:90
 #: templates/wizard/step4_management.html.twig:90
 msgid "Contract is imported in GLPI"
@@ -443,6 +447,10 @@ msgstr "Le contrat est importé dans GLPI"
 msgid "Contract number"
 msgstr "N° du contrat"
 
+#: src/WizardController.php:187
+msgid "Contract number is required"
+msgstr "Le numéro de contrat est obligatoire"
+
 #: src/Gantt.php:344 src/Followup.php:1076
 msgid "Contract present"
 msgstr "Contrat présent"
@@ -452,6 +460,10 @@ msgstr "Contrat présent"
 #: templates/wizard/step3_contract.html.twig:81
 msgid "Contract type"
 msgstr "Type de contrat"
+
+#: src/WizardController.php:199
+msgid "Contract type is required"
+msgstr "Le type de contrat est obligatoire"
 
 #: templates/entity/description.html.twig:124
 #: templates/wizard/step1_entity.html.twig:112
@@ -466,12 +478,12 @@ msgstr "Créer un nouveau client, des contacts, un contrat et des prestations."
 msgid "Create or update the publisher subscription for a client."
 msgstr "Créer ou mettre à jour la souscription éditeur pour un client."
 
-#: templates/editorsubscription_wizard.html.twig:61
-#: templates/editorsubscription_wizard.html.twig:263
+#: templates/editorsubscription_wizard.html.twig:57
+#: templates/editorsubscription_fields_js.html.twig:66
 msgid "Create publisher subscription"
 msgstr "Créer la souscription éditeur"
 
-#: templates/entity/editorsubscription_tab.html.twig:48
+#: templates/entity/editorsubscription_tab.html.twig:54
 msgid "Create subscription"
 msgstr "Créer la souscription"
 
@@ -553,7 +565,7 @@ msgstr "Date de reconduction"
 msgid "Date of signature"
 msgstr "Date de signature"
 
-#: src/WizardController.php:733
+#: src/WizardController.php:813
 msgid "Date of signature is required"
 msgstr "La date de signature est obligatoire"
 
@@ -605,7 +617,7 @@ msgstr "Liste par défaut des sociétés pour le suivi général"
 msgid "Default parent entity"
 msgstr "Entité parente par défaut"
 
-#: src/WizardController.php:206
+#: src/WizardController.php:276
 msgid "Default parent entity is not configured"
 msgstr "L'entité parente par défaut n'est pas configurée"
 
@@ -634,8 +646,8 @@ msgid "Delete and reinitialize"
 msgstr "Supprimer et réinitialiser"
 
 #: templates/cridetail_for_ticket.html.twig:255
-#: templates/contract_detail_form.html.twig:211
-#: templates/editorsubscription_wizard.html.twig:183
+#: templates/contract_detail_form.html.twig:210
+#: templates/editorsubscription_wizard.html.twig:88
 #: templates/entity/contacts_card.html.twig:87
 #: templates/entity/business_card.html.twig:66
 #: templates/entity/description.html.twig:204
@@ -677,26 +689,29 @@ msgstr "Afficher les commentaires de la société dans le CRI"
 msgid "Duration"
 msgstr "Durée"
 
-#: templates/contract_detail_form.html.twig:193
-#: templates/wizard/step5_management.html.twig:116
-#: templates/wizard/step4_management.html.twig:134
+#: src/WizardController.php:195
+msgid "Duration is required"
+msgstr "La durée est obligatoire"
+
+#: templates/contract_detail_form.html.twig:191
+#: templates/wizard/step5_management.html.twig:113
+#: templates/wizard/step4_management.html.twig:113
 msgid "Duration of moving"
 msgstr "Durée du trajet"
 
 #: templates/contract_detail_form.html.twig:43
-#: templates/entity/editorsubscription_tab.html.twig:93
+#: templates/entity/editorsubscription_tab.html.twig:99
 msgid "Edit"
 msgstr "Editer"
 
-#: templates/entity/editorsubscription_tab.html.twig:80
+#: templates/entity/editorsubscription_tab.html.twig:86
 msgid "Editor"
 msgstr "Editeur"
 
-#: src/EditorSubscription.php:159 src/EditorSubscription.php:407
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:415
 #: templates/cridetail_for_ticket.html.twig:78
 #: templates/contract_detail_form.html.twig:56
-#: templates/editorsubscription_wizard.html.twig:99
-#: templates/wizard/step3_subscription.html.twig:65
+#: templates/editorsubscription_fields.html.twig:48
 msgid "Editor subscription"
 msgstr "Souscription Editeur"
 
@@ -716,12 +731,11 @@ msgstr "Courriel"
 #: src/EditorSubscription.php:184 templates/cridetail_for_ticket.html.twig:124
 #: templates/cridetail_for_ticket.html.twig:177
 #: templates/contract_detail_form.html.twig:95
-#: templates/editorsubscription_wizard.html.twig:148
 #: templates/contractday_form.html.twig:69
-#: templates/entity/editorsubscription_tab.html.twig:66
+#: templates/entity/editorsubscription_tab.html.twig:72
 #: templates/wizard/step6_intervention_block.html.twig:43
-#: templates/wizard/step3_subscription.html.twig:94
 #: templates/wizard/step5_intervention_block.html.twig:43
+#: templates/editorsubscription_fields.html.twig:106
 msgid "End date"
 msgstr "Date de fin"
 
@@ -729,13 +743,9 @@ msgstr "Date de fin"
 msgid "End date cannot be less than begin date"
 msgstr "La date de début ne peut pas être inférieure à la date de fin"
 
-#: src/WizardController.php:156
+#: src/EditorSubscriptionWizard.php:149 src/WizardController.php:227
 msgid "End date is required"
 msgstr "La date de fin est obligatoire"
-
-#: src/EditorSubscriptionWizard.php:149
-msgid "End date is required."
-msgstr "La date de fin est obligatoire."
 
 #: src/GenerateCRI.php:719
 msgid "End date must be after the begin date !"
@@ -760,10 +770,10 @@ msgstr "Portail Clients"
 #: src/EditorSubscription.php:175 templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
-#: templates/editorsubscription_wizard.html.twig:40
-#: templates/editorsubscription_wizard.html.twig:46
+#: templates/editorsubscription_wizard.html.twig:38
+#: templates/editorsubscription_wizard.html.twig:44
 #: templates/entity/contracts_tab.html.twig:51
-#: templates/entity/editorsubscription_tab.html.twig:60
+#: templates/entity/editorsubscription_tab.html.twig:66
 #: templates/wizard/step6_intervention_block.html.twig:72
 #: templates/wizard/step4_contract.html.twig:90
 #: templates/wizard/step2_contact_block.html.twig:89
@@ -780,11 +790,11 @@ msgstr[2] "Entités"
 msgid "Entity already exists"
 msgstr "L'entité existe déjà"
 
-#: src/WizardController.php:1199
+#: src/WizardController.php:1277
 msgid "Entity data is missing"
 msgstr "Les données de l'entité sont manquantes"
 
-#: src/WizardController.php:201 src/WizardController.php:283
+#: src/WizardController.php:271 src/WizardController.php:353
 msgid "Entity not found"
 msgstr "Entité non trouvée"
 
@@ -792,19 +802,19 @@ msgstr "Entité non trouvée"
 msgid "Entity used to archive customers."
 msgstr "Entité utilisé pour archiver les clients"
 
-#: src/WizardController.php:1243
+#: src/WizardController.php:1328
 msgid "Error creating contract"
 msgstr "Erreur à l'ajout du contrat"
 
-#: src/WizardController.php:1204
+#: src/WizardController.php:1282
 msgid "Error creating entity"
 msgstr "Erreur à la création de l'entité"
 
-#: src/WizardController.php:1274
+#: src/WizardController.php:1359
 msgid "Error creating management type"
 msgstr "Erreur à la création du type de gestion"
 
-#: src/WizardController.php:209
+#: src/WizardController.php:279
 msgid "Error unarchiving entity"
 msgstr "Erreur au désarchivage de l'entité"
 
@@ -816,16 +826,19 @@ msgstr "Estimation Nombre de jours restant"
 msgid "Exceeding"
 msgstr "Dépassement"
 
-#: templates/editorsubscription_wizard.html.twig:152
-#: templates/wizard/step3_subscription.html.twig:98
+#: templates/editorsubscription_fields.html.twig:114
 msgid "Expired"
 msgstr "Expirée"
 
-#: templates/entity/editorsubscription_tab.html.twig:41
+#: templates/entity/editorsubscription_tab.html.twig:47
 msgid "Expired only"
 msgstr "Expirés uniquement"
 
-#: templates/entity/editorsubscription_tab.html.twig:44
+#: templates/entity/editorsubscription_tab.html.twig:39
+msgid "Expired subscriptions"
+msgstr "Souscriptions expirées"
+
+#: templates/entity/editorsubscription_tab.html.twig:50
 msgid "Export CSV"
 msgstr "Export CSV"
 
@@ -846,7 +859,7 @@ msgstr "Liste filtrée par défaut sur le statut"
 msgid "First name"
 msgstr "Prénom"
 
-#: src/WizardController.php:121
+#: src/WizardController.php:172
 msgid "First name is required"
 msgstr "Le prénom est obligatoire"
 
@@ -941,14 +954,14 @@ msgstr "Les informations ont bien été supprimées"
 msgid "Initial credit"
 msgstr "Crédit initial"
 
-#: src/WizardController.php:162
+#: src/WizardController.php:233
 msgid "Initial credit is required"
 msgstr "Le crédit initial est obligatoire"
 
 #: src/EditorSubscription.php:182 hook.php:808
 #: templates/cridetail_for_ticket.html.twig:418
 #: templates/contract_detail_form.html.twig:79
-#: templates/editorsubscription_wizard.html.twig:115
+#: templates/editorsubscription_fields.html.twig:64
 msgid "Internet publication"
 msgstr "Publié sur internet"
 
@@ -963,8 +976,8 @@ msgstr[2] "Interventions"
 msgid "Intervention date"
 msgstr "Date d'intervention"
 
-#: src/WizardController.php:932 src/WizardController.php:943
-#: src/WizardController.php:1024
+#: src/WizardController.php:1017 src/WizardController.php:1028
+#: src/WizardController.php:1106
 msgid "Intervention not saved yet"
 msgstr "La prestation n'est pas encore sauvée"
 
@@ -1013,7 +1026,7 @@ msgstr "Rapports d'interventions"
 msgid "Interventions with old contract"
 msgstr "Interventions sur des contrats terminés"
 
-#: src/WizardController.php:248
+#: src/WizardController.php:319
 msgid "Invalid wizard mode"
 msgstr "Mode wizard invalide"
 
@@ -1030,7 +1043,7 @@ msgstr "Utilisé par défaut"
 msgid "Last name"
 msgstr "Nom"
 
-#: src/WizardController.php:118
+#: src/WizardController.php:169
 msgid "Last name is required"
 msgstr "Le nom est obligatoire"
 
@@ -1074,7 +1087,7 @@ msgstr "Logo (format JPG ou JPEG)"
 msgid "Manage your contracts"
 msgstr "Gérer vos contrats"
 
-#: src/WizardController.php:1262
+#: src/WizardController.php:1347
 msgid "Management data is missing"
 msgstr "Les données du type de gestion sont manquantes"
 
@@ -1085,8 +1098,8 @@ msgstr[0] "Gestion des catégories de tâches"
 msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
-#: src/Contract.php:66 src/WizardController.php:1506
-#: src/WizardController.php:1515 templates/contract_detail_form.html.twig:120
+#: src/Contract.php:66 src/WizardController.php:1626
+#: src/WizardController.php:1635 templates/contract_detail_form.html.twig:120
 #: templates/wizard/step5_management.html.twig:39
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
@@ -1105,7 +1118,7 @@ msgstr "Responsable"
 msgid "Manager (main contact)"
 msgstr "Responsable (contact principal)"
 
-#: src/WizardController.php:1015
+#: src/WizardController.php:1097
 msgid "Missing required fields"
 msgstr "Des champs obligatoires sont manquants"
 
@@ -1133,9 +1146,9 @@ msgstr "Mode de gestion"
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
 
-#: src/Contract.php:969 templates/contract_detail_form.html.twig:183
-#: templates/wizard/step5_management.html.twig:104
-#: templates/wizard/step4_management.html.twig:122
+#: src/Contract.php:969 templates/contract_detail_form.html.twig:181
+#: templates/wizard/step5_management.html.twig:101
+#: templates/wizard/step4_management.html.twig:101
 msgid "Movement management"
 msgstr "Gestion des déplacements"
 
@@ -1153,8 +1166,8 @@ msgstr "Gestion des déplacements"
 msgid "Name"
 msgstr "Nom"
 
-#: src/WizardController.php:109 src/WizardController.php:132
-#: src/WizardController.php:150
+#: src/WizardController.php:160 src/WizardController.php:183
+#: src/WizardController.php:221
 msgid "Name is required"
 msgstr "Le nom est requis"
 
@@ -1179,13 +1192,13 @@ msgid "New subscription"
 msgstr "Nouvelle souscription"
 
 #: templates/wizard/step2_contacts.html.twig:59
-#: templates/wizard/step5_management.html.twig:129
+#: templates/wizard/step5_management.html.twig:127
 #: templates/wizard/step1_entity.html.twig:126
-#: templates/wizard/step4_management.html.twig:147
+#: templates/wizard/step4_management.html.twig:148
 #: templates/wizard/step4_contract.html.twig:123
 #: templates/wizard/step1_select_entity.html.twig:50
 #: templates/wizard/step3_contract.html.twig:123
-#: templates/wizard/step3_subscription.html.twig:111
+#: templates/wizard/step3_subscription.html.twig:60
 msgid "Next"
 msgstr "Suivant"
 
@@ -1238,7 +1251,7 @@ msgstr "Pas de période trouvée"
 msgid "No picture uploaded"
 msgstr "Pas d'image téléchargée"
 
-#: templates/entity/editorsubscription_tab.html.twig:105
+#: templates/entity/editorsubscription_tab.html.twig:111
 msgid "No publisher subscription recorded for this entity."
 msgstr "Pas de souscriptions éditeur enregistré pour cette entité."
 
@@ -1297,7 +1310,7 @@ msgstr "Non sauvé"
 msgid "Nothing to display"
 msgstr "Rien à afficher"
 
-#: src/WizardController.php:1542
+#: src/WizardController.php:1664
 msgid "Nothing to display."
 msgstr "Rien à afficher."
 
@@ -1306,7 +1319,7 @@ msgctxt "phone"
 msgid "Number"
 msgstr "Numéro"
 
-#: src/WizardController.php:1018
+#: src/WizardController.php:1100
 msgid "Number of days must be greater than 0"
 msgstr "Le nombre de jours doit être supérieur à 0"
 
@@ -1326,7 +1339,7 @@ msgstr "Objet de l'intervention"
 msgid "On premise"
 msgstr "On premise"
 
-#: src/WizardController.php:950
+#: src/WizardController.php:1035
 msgid "Only one rate is allowed per service period"
 msgstr "Seulement un seul tarif est autorisé par prestation"
 
@@ -1352,6 +1365,7 @@ msgstr "Prestations de contrat en cours sans jours restants"
 #: templates/wizard/step6_stakeholders_section.html.twig:12
 #: templates/wizard/step3_contract.html.twig:46
 #: templates/wizard/step3_contract.html.twig:106
+#: templates/wizard/step3_subscription.html.twig:39
 msgid "Optional"
 msgstr "Optionnel"
 
@@ -1381,9 +1395,9 @@ msgstr "Commentaires de la prestation"
 
 #: src/Entity.php:128 src/Config.php:580 src/ContractDay.php:61
 #: src/ContractDay.php:63 src/ContractDay.php:480 src/Followup.php:921
-#: src/Followup.php:1177 src/WizardController.php:1356
-#: src/WizardController.php:1432 src/WizardController.php:1507
-#: src/WizardController.php:1516 templates/contractday_form.html.twig:52
+#: src/Followup.php:1177 src/WizardController.php:1460
+#: src/WizardController.php:1535 src/WizardController.php:1627
+#: src/WizardController.php:1636 templates/contractday_form.html.twig:52
 #: templates/wizard/step6_intervention_block.html.twig:13
 #: templates/wizard/step5_interventions.html.twig:35
 #: templates/wizard/step5_intervention_block.html.twig:13
@@ -1394,7 +1408,7 @@ msgstr[0] "Prestation du contrat"
 msgstr[1] "Prestations de contrat"
 msgstr[2] "Prestations de contrat"
 
-#: src/WizardController.php:1171
+#: src/WizardController.php:1249
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
@@ -1468,11 +1482,11 @@ msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 "Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
 
-#: src/WizardController.php:301
+#: src/WizardController.php:371
 msgid "Please select a child entity"
 msgstr "Merci de sélectionner une entité enfant"
 
-#: src/WizardController.php:197 src/WizardController.php:279
+#: src/WizardController.php:267 src/WizardController.php:349
 msgid "Please select an entity"
 msgstr "Veuillez sélectionner une entité"
 
@@ -1548,12 +1562,12 @@ msgid "Prestation"
 msgstr "Prestation"
 
 #: templates/wizard/step2_contacts.html.twig:55
-#: templates/wizard/step5_management.html.twig:125
-#: templates/wizard/step4_management.html.twig:143
+#: templates/wizard/step5_management.html.twig:123
+#: templates/wizard/step4_management.html.twig:144
 #: templates/wizard/step4_contract.html.twig:119
 #: templates/wizard/step5_interventions.html.twig:59
 #: templates/wizard/step3_contract.html.twig:119
-#: templates/wizard/step3_subscription.html.twig:107
+#: templates/wizard/step3_subscription.html.twig:56
 #: templates/wizard/step6_interventions.html.twig:59
 msgid "Previous"
 msgstr "Précédent"
@@ -1565,7 +1579,7 @@ msgstr "Précédent"
 msgid "Price"
 msgstr "Prix"
 
-#: src/WizardController.php:937
+#: src/WizardController.php:1022
 msgid "Price must be greater than 0"
 msgstr "Le prix doit être supérieur à 0"
 
@@ -1573,10 +1587,10 @@ msgstr "Le prix doit être supérieur à 0"
 msgid "Production"
 msgstr "Production"
 
-#: src/EditorSubscription.php:176 src/EditorSubscription.php:391
+#: src/EditorSubscription.php:176 src/EditorSubscription.php:399
 #: templates/contract_detail_form.html.twig:62
-#: templates/editorsubscription_wizard.html.twig:82
-#: templates/entity/editorsubscription_tab.html.twig:61
+#: templates/entity/editorsubscription_tab.html.twig:67
+#: templates/editorsubscription_fields.html.twig:27
 msgid "Publisher customer account ID"
 msgstr "ID du compte client chez l'éditeur"
 
@@ -1587,7 +1601,7 @@ msgstr "Informations de l'éditeur"
 #: front/editorsubscription.form.php:89 src/EditorSubscription.php:49
 #: templates/cridetail_for_ticket.html.twig:69
 #: templates/contract_detail_form.html.twig:38
-#: templates/wizard/step3_subscription.html.twig:37
+#: templates/wizard/step3_subscription.html.twig:38
 msgid "Publisher subscription"
 msgid_plural "Publisher subscriptions"
 msgstr[0] "Souscription éditeur"
@@ -1606,6 +1620,10 @@ msgstr "La souscription éditeur a été sauvée avec succès."
 msgid "Publisher subscriptions"
 msgstr "Souscriptions éditeurs"
 
+#: src/EditorSubscription.php:280
+msgid "Publisher subscriptions cannot be created for the root entity."
+msgstr "La souscription éditeur ne peut pas être créé pour l'entité racine."
+
 #: src/Contract.php:647 src/Contract.php:675
 msgid "Quarterly"
 msgstr "Trimestriel"
@@ -1614,16 +1632,15 @@ msgstr "Trimestriel"
 msgid "Rates"
 msgstr "Tarifs"
 
-#: src/Contract.php:970 templates/contract_detail_form.html.twig:171
+#: src/Contract.php:970 templates/contract_detail_form.html.twig:161
 #: templates/wizard/step5_management.html.twig:81
 #: templates/wizard/step4_management.html.twig:81
 msgid "Refacturable costs"
 msgstr "Frais refacturables"
 
 #: src/EditorSubscription.php:177 templates/contract_detail_form.html.twig:68
-#: templates/editorsubscription_wizard.html.twig:73
-#: templates/entity/editorsubscription_tab.html.twig:62
-#: templates/wizard/step3_subscription.html.twig:47
+#: templates/entity/editorsubscription_tab.html.twig:68
+#: templates/editorsubscription_fields.html.twig:20
 msgid "Referenced name at the publisher"
 msgstr "Nom référencé chez l'éditeur"
 
@@ -1731,7 +1748,7 @@ msgstr "Intervention planifiée"
 msgid "Select"
 msgstr "Sélection"
 
-#: templates/editorsubscription_wizard.html.twig:128
+#: templates/editorsubscription_fields.html.twig:81
 msgid "Select a level..."
 msgstr "Sélectionnez un niveau..."
 
@@ -1755,11 +1772,11 @@ msgstr "Configuration"
 msgid "Setup for Generate Intervention report"
 msgstr "Configuration pour \"Générer le rapport d'intervention\""
 
-#: templates/entity/editorsubscription_tab.html.twig:40
+#: templates/entity/editorsubscription_tab.html.twig:46
 msgid "Show expired subscriptions only"
 msgstr "Voir les souscriptions expirées uniquement"
 
-#: src/Contract.php:968 templates/contract_detail_form.html.twig:163
+#: src/Contract.php:968 templates/contract_detail_form.html.twig:153
 #: templates/wizard/step5_management.html.twig:73
 #: templates/wizard/step4_management.html.twig:73
 msgid "Show on GANTT"
@@ -1780,17 +1797,12 @@ msgid "Start"
 msgstr "Commencer"
 
 #: src/EditorSubscription.php:183 templates/contract_detail_form.html.twig:89
-#: templates/editorsubscription_wizard.html.twig:143
-#: templates/entity/editorsubscription_tab.html.twig:65
+#: templates/entity/editorsubscription_tab.html.twig:71
 #: templates/wizard/step4_contract.html.twig:71
 #: templates/wizard/step3_contract.html.twig:71
-#: templates/wizard/step3_subscription.html.twig:89
+#: templates/editorsubscription_fields.html.twig:97
 msgid "Start date"
 msgstr "Date de début"
-
-#: src/EditorSubscriptionWizard.php:146
-msgid "Start date is required."
-msgstr "La date de début est obligatoire."
 
 #: templates/entity/description.html.twig:121
 #: templates/wizard/step1_entity.html.twig:107
@@ -1802,10 +1814,6 @@ msgid "State applied to contract periods when the GLPI contract is closed."
 msgstr ""
 "Statut appliqué aux périodes contractuelles lorsque le contrat GLPI est "
 "clôturé"
-
-#: src/WizardController.php:159
-msgid "State is required"
-msgstr "L'état est obligatoire"
 
 #: src/ContractState.php:48 templates/contractday_form.html.twig:101
 msgid "State of contract"
@@ -1830,6 +1838,10 @@ msgstr "État du ticket créé"
 msgid "Status"
 msgstr "Statut"
 
+#: src/WizardController.php:203 src/WizardController.php:230
+msgid "Status is required"
+msgstr "Le statut est obligatoire"
+
 #: src/Preference.php:160
 msgid "Status list contract for the general monitoring"
 msgstr "Liste des statuts du contrat pour le suivi général"
@@ -1838,16 +1850,15 @@ msgstr "Liste des statuts du contrat pour le suivi général"
 msgid "Study and advice"
 msgstr "Étude et conseil"
 
-#: src/WizardController.php:1513
+#: src/WizardController.php:1633
 msgid "Subscription"
 msgstr "Souscription"
 
 #: src/SubscriptionLevel.php:50 src/EditorSubscription.php:179
-#: src/EditorSubscription.php:399 src/EditorSubscription.php:446
+#: src/EditorSubscription.php:407 src/EditorSubscription.php:454
 #: templates/contract_detail_form.html.twig:74
-#: templates/editorsubscription_wizard.html.twig:126
-#: templates/entity/editorsubscription_tab.html.twig:64
-#: templates/wizard/step3_subscription.html.twig:81
+#: templates/entity/editorsubscription_tab.html.twig:70
+#: templates/editorsubscription_fields.html.twig:76
 msgid "Subscription level"
 msgid_plural "Subscription levels"
 msgstr[0] "Niveau de souscription"
@@ -1855,19 +1866,21 @@ msgstr[1] "Niveaux de souscription"
 msgstr[2] "Niveaux de souscription"
 
 #: src/EditorSubscriptionWizard.php:143
-#: templates/editorsubscription_wizard.html.twig:343
+msgid "Subscription level is required"
+msgstr "Le niveau de souscription est obligatoire"
+
+#: templates/editorsubscription_fields_js.html.twig:133
 msgid "Subscription level is required."
 msgstr "Le niveau de souscription est obligatoire."
 
 #: src/SubscriptionLevel.php:83 src/SubscriptionLevel.php:110
-#: templates/editorsubscription_wizard.html.twig:92
-#: templates/wizard/step3_subscription.html.twig:58
+#: templates/editorsubscription_fields.html.twig:38
 msgid "Subscription type"
 msgstr "Type de souscription"
 
 #: src/EditorSubscriptionWizard.php:140
-msgid "Subscription type is required."
-msgstr "Le type de souscription est obligatoire."
+msgid "Subscription type is required"
+msgstr "Le type de souscription est obligatoire"
 
 #: templates/wizard/layout.html.twig:116
 msgid "Summary of created items"
@@ -1919,7 +1932,7 @@ msgstr "Merci de sélectionner un type d'intervention"
 msgid "The contract period %s already exists"
 msgstr "La prestation du contrat %s existe déja"
 
-#: src/WizardController.php:1544
+#: src/WizardController.php:1666
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
@@ -1928,7 +1941,7 @@ msgstr ""
 "Le client \"%s\" est actuellement archivé. Souhaitez-vous le désarchiver et "
 "le placer sous l'entité parente par défaut pour continuer ?"
 
-#: src/WizardController.php:1543
+#: src/WizardController.php:1665
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
@@ -2042,7 +2055,7 @@ msgstr "Déplacement (en jours)"
 #: src/EditorSubscription.php:178 templates/contract_detail_form.html.twig:51
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/description.html.twig:166
-#: templates/entity/editorsubscription_tab.html.twig:63
+#: templates/entity/editorsubscription_tab.html.twig:69
 #: templates/wizard/step2_contact_block.html.twig:84
 msgid "Type"
 msgstr "Type"
@@ -2064,14 +2077,14 @@ msgstr "Type de contrat de service"
 msgid "Type of service contract missing"
 msgstr "Type de contrat de service manquant"
 
-#: src/WizardController.php:1545
+#: src/WizardController.php:1667
 msgid "Unarchive and continue"
 msgstr "Désarchiver et continuer"
 
 #: templates/cridetail_for_ticket.html.twig:252
-#: templates/contract_detail_form.html.twig:208
-#: templates/editorsubscription_wizard.html.twig:187
-#: templates/editorsubscription_wizard.html.twig:266
+#: templates/contract_detail_form.html.twig:207
+#: templates/editorsubscription_wizard.html.twig:92
+#: templates/editorsubscription_fields_js.html.twig:69
 msgid "Update"
 msgstr "Mettre à jour"
 
@@ -2087,8 +2100,8 @@ msgstr "Mise à jour du logo"
 msgid "Update management fields"
 msgstr "Mise à jour des champs du type de gestion"
 
-#: templates/editorsubscription_wizard.html.twig:63
-#: templates/editorsubscription_wizard.html.twig:264
+#: templates/editorsubscription_wizard.html.twig:59
+#: templates/editorsubscription_fields_js.html.twig:67
 msgid "Update publisher subscription"
 msgstr "Mise à jour de la souscription éditeur"
 
@@ -2121,7 +2134,7 @@ msgstr "Utiliser cette entité"
 msgid "User"
 msgstr "Utilisateur"
 
-#: src/WizardController.php:1372 src/InterventionStakeholder.php:53
+#: src/WizardController.php:1476 src/InterventionStakeholder.php:53
 #: templates/wizard/step5_stakeholders_section.html.twig:11
 #: templates/wizard/step6_stakeholders_section.html.twig:11
 msgid "User affected"
@@ -2130,7 +2143,7 @@ msgstr[0] "Utilisateur affecté"
 msgstr[1] "Utilisateurs affectés"
 msgstr[2] "Utilisateurs affectés"
 
-#: src/WizardController.php:1035
+#: src/WizardController.php:1117
 msgid "User already added"
 msgstr "Intervenant déjà ajouté"
 
@@ -2224,13 +2237,13 @@ msgstr[0] "jour"
 msgstr[1] "jours"
 msgstr[2] "jours"
 
-#: src/WizardController.php:1330
+#: src/WizardController.php:1415
 #: templates/wizard/step5_stakeholders_section.html.twig:18
 #: templates/wizard/step6_stakeholders_section.html.twig:18
 msgid "days"
 msgstr "jours"
 
-#: src/WizardController.php:1329
+#: src/WizardController.php:1414
 msgid "hours"
 msgstr "heures"
 
