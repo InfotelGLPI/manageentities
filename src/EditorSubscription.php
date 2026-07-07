@@ -33,6 +33,7 @@ use CommonDBTM;
 use CommonGLPI;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Session;
 
 if (!defined('GLPI_ROOT')) {
@@ -202,6 +203,184 @@ class EditorSubscription extends CommonDBTM
     }
 
     // -----------------------------------------------------------------------
+    // Status overview tab
+    // -----------------------------------------------------------------------
+
+    static function showStatusTab(): void
+    {
+        global $DB;
+
+        $entity_ids = $_SESSION['glpiactiveentities'];
+        $config     = Config::getInstance();
+
+        $parent_id           = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+
+        // Build the scoped + non-archived concerned_ids list
+        $concerned_ids = [];
+        if ($parent_id > 0 && !empty($entity_ids)) {
+            $customer_sons = getSonsOf('glpi_entities', $parent_id);
+            unset($customer_sons[$parent_id]);
+
+            $excluded_ids = [];
+            if ($archive_entities_id > 0) {
+                $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
+                $excluded_ids = array_keys($archive_sons); // includes root
+            }
+
+            $concerned_ids = array_values(
+                array_diff(
+                    array_intersect($entity_ids, array_keys($customer_sons)),
+                    $excluded_ids
+                )
+            );
+        }
+
+        $active_states = json_decode($config->fields['contract_states'] ?? '', true);
+        $active_states = is_array($active_states) && !empty($active_states)
+            ? array_map('intval', $active_states)
+            : [];
+
+        // Entities that have at least one active contract (matching contract_states)
+        $with_active_contract = [];
+        if (!empty($concerned_ids) && !empty($active_states)) {
+            $iter = $DB->request([
+                'SELECT'     => ['c.entities_id'],
+                'DISTINCT'   => true,
+                'FROM'       => 'glpi_plugin_manageentities_contractdays AS cd',
+                'INNER JOIN' => [
+                    'glpi_contracts AS c' => ['FKEY' => ['cd' => 'contracts_id', 'c' => 'id']],
+                ],
+                'WHERE' => [
+                    'c.entities_id' => $concerned_ids,
+                    'cd.plugin_manageentities_contractstates_id' => $active_states,
+                    'c.is_deleted'  => 0,
+                ],
+            ]);
+            $with_active_contract = array_column(iterator_to_array($iter), 'entities_id');
+        }
+
+        // Entities that have at least one subscription
+        $with_subscription = [];
+        if (!empty($concerned_ids)) {
+            $iter = $DB->request([
+                'SELECT'   => ['entities_id'],
+                'DISTINCT' => true,
+                'FROM'     => self::getTable(),
+                'WHERE'    => ['entities_id' => $concerned_ids],
+            ]);
+            $with_subscription = array_column(iterator_to_array($iter), 'entities_id');
+        }
+
+        // Alert 1: active contract but no subscription
+        $ids_no_sub = array_values(array_diff($with_active_contract, $with_subscription));
+        $no_subscription = [];
+        if (!empty($ids_no_sub)) {
+            $iter = $DB->request([
+                'SELECT' => ['completename'],
+                'FROM'   => 'glpi_entities',
+                'WHERE'  => ['id' => $ids_no_sub],
+                'ORDER'  => ['completename ASC'],
+            ]);
+            foreach ($iter as $row) {
+                $no_subscription[] = $row['completename'];
+            }
+        }
+
+        // Alert 2: subscription but no active contract
+        $ids_no_contract = array_values(array_diff($with_subscription, $with_active_contract));
+        $no_contract = [];
+        if (!empty($ids_no_contract)) {
+            $iter = $DB->request([
+                'SELECT' => ['completename'],
+                'FROM'   => 'glpi_entities',
+                'WHERE'  => ['id' => $ids_no_contract],
+                'ORDER'  => ['completename ASC'],
+            ]);
+            foreach ($iter as $row) {
+                $no_contract[] = $row['completename'];
+            }
+        }
+
+        // Alert 3: entities with an expired subscription
+        $expired_subscription = [];
+        if (!empty($concerned_ids)) {
+            $now = date('Y-m-d');
+            $iter = $DB->request([
+                'SELECT'   => ['e.completename'],
+                'FROM'     => self::getTable() . ' AS s',
+                'LEFT JOIN' => [
+                    'glpi_entities AS e' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
+                ],
+                'WHERE'    => [
+                    's.entities_id' => $concerned_ids,
+                    ['NOT' => ['s.end_date' => null]],
+                    ['s.end_date' => ['<', $now . ' 00:00:00']],
+                ],
+                'ORDER'    => ['e.completename ASC'],
+            ]);
+            foreach ($iter as $row) {
+                $expired_subscription[] = $row['completename'];
+            }
+        }
+
+        // Subscriptions count per level
+        $level_counts = [];
+        if (!empty($concerned_ids)) {
+            $iter = $DB->request([
+                'SELECT'   => [
+                    'l.name AS level_name',
+                    \Glpi\DBAL\QueryFunction::count('s.id', false, 'cnt'),
+                ],
+                'FROM'     => self::getTable() . ' AS s',
+                'LEFT JOIN' => [
+                    SubscriptionLevel::getTable() . ' AS l' => [
+                        'FKEY' => ['s' => 'plugin_manageentities_subscriptionlevels_id', 'l' => 'id'],
+                    ],
+                ],
+                'WHERE'   => ['s.entities_id' => $concerned_ids],
+                'GROUPBY' => ['s.plugin_manageentities_subscriptionlevels_id'],
+                'ORDER'   => ['cnt DESC'],
+            ]);
+            foreach ($iter as $row) {
+                $level_counts[] = [
+                    'name'  => $row['level_name'] ?: __('No level', 'manageentities'),
+                    'count' => (int)$row['cnt'],
+                ];
+            }
+        }
+
+        // Subscriptions count by type (cloud vs on-premise) — counted in PHP
+        // to match the same truthiness check as the template ({% if row.cloud_client %})
+        $type_counts = ['cloud' => 0, 'onpremise' => 0];
+        if (!empty($concerned_ids)) {
+            $iter = $DB->request([
+                'SELECT' => ['cloud_client'],
+                'FROM'   => self::getTable(),
+                'WHERE'  => ['entities_id' => $concerned_ids],
+            ]);
+            foreach ($iter as $row) {
+                if ($row['cloud_client']) {
+                    $type_counts['cloud']++;
+                } else {
+                    $type_counts['onpremise']++;
+                }
+            }
+        }
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/entity/status_tab.html.twig',
+            [
+                'no_subscription'      => $no_subscription,
+                'no_contract'          => $no_contract,
+                'expired_subscription' => $expired_subscription,
+                'level_counts'         => $level_counts,
+                'type_counts'          => $type_counts,
+            ]
+        );
+    }
+
+    // -----------------------------------------------------------------------
     // Display
     // -----------------------------------------------------------------------
 
@@ -212,107 +391,43 @@ class EditorSubscription extends CommonDBTM
         $can_edit = Session::getCurrentInterface() !== 'helpdesk'
             && Session::haveRightsOr(self::$rightname, [CREATE, UPDATE]);
 
-        // Fetch all subscriptions for entities visible in the current session
-        if (Session::getCurrentInterface() === 'helpdesk') {
-            $entity_ids = [$_SESSION['glpiactive_entity']];
-        } else {
-            $entity_ids = $_SESSION['glpiactiveentities'];
-        }
+        $config = Config::getInstance();
 
-        // Exclude archived entities (wizard_archive_entities_id config)
-        $config              = Config::getInstance();
-        $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
-        $archive_sons        = [];
-        if ($archive_entities_id > 0) {
-            $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
-            unset($archive_sons[$archive_entities_id]);
-            $entity_ids = array_values(array_diff($entity_ids, array_keys($archive_sons)));
+        // Helpdesk: restrict to the user's active entity only
+        if (Session::getCurrentInterface() === 'helpdesk') {
+            $where = ['s.entities_id' => (int)$_SESSION['glpiactive_entity']];
+        } else {
+            // Central: scope to all customer entities (wizard_default_entities_id sons)
+            $parent_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+            $where = [];
+            if ($parent_id > 0) {
+                $customer_sons = getSonsOf('glpi_entities', $parent_id);
+                unset($customer_sons[$parent_id]);
+                if (!empty($customer_sons)) {
+                    $where = ['s.entities_id' => array_keys($customer_sons)];
+                }
+            }
         }
 
         $now  = date('Y-m-d');
         $rows = [];
 
-        if (!empty($entity_ids)) {
-            $iterator = $DB->request([
-                'SELECT' => ['s.*', 'e.completename AS entity_completename'],
-                'FROM'   => self::getTable() . ' AS s',
-                'LEFT JOIN' => [
-                    'glpi_entities AS e' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
-                ],
-                'WHERE'  => ['s.entities_id' => $entity_ids],
-                'ORDER'  => ['e.completename ASC'],
-            ]);
+        $iterator = $DB->request([
+            'SELECT'   => ['s.*', 'e.completename AS entity_completename'],
+            'FROM'     => self::getTable() . ' AS s',
+            'LEFT JOIN' => [
+                'glpi_entities AS e' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
+            ],
+            'WHERE'  => $where,
+            'ORDER'  => [new QueryExpression('ISNULL(s.end_date) DESC'), 's.end_date ASC', 'e.completename ASC'],
+        ]);
 
-            foreach ($iterator as $row) {
-                $row['level_name']       = !empty($row['plugin_manageentities_subscriptionlevels_id'])
-                    ? Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$row['plugin_manageentities_subscriptionlevels_id'])
-                    : '';
-                $row['end_date_expired'] = !empty($row['end_date']) && substr($row['end_date'], 0, 10) < $now;
-                $rows[]                  = $row;
-            }
-        }
-
-        // Entities without any subscription — scoped to wizard_default_entities_id, archives excluded
-        $missing_entities = [];
-        $parent_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
-        if ($parent_id > 0 && !empty($entity_ids)) {
-            $customer_sons = getSonsOf('glpi_entities', $parent_id);
-            unset($customer_sons[$parent_id]);
-
-            // Exclude archive root + all its sons (archive_sons already computed above, root was unset from it)
-            $excluded_ids = $archive_entities_id > 0
-                ? array_merge([$archive_entities_id], array_keys($archive_sons))
-                : [];
-
-            $concerned_ids = array_values(
-                array_diff(
-                    array_intersect($entity_ids, array_keys($customer_sons)),
-                    $excluded_ids
-                )
-            );
-
-            if (!empty($concerned_ids)) {
-                // Restrict to entities that have at least one active contract period
-                // matching the configured contract_states filter
-                $active_states = json_decode($config->fields['contract_states'] ?? '', true);
-                $active_states = is_array($active_states) && !empty($active_states)
-                    ? array_map('intval', $active_states)
-                    : [];
-
-                if (!empty($active_states)) {
-                    $active_iter = $DB->request([
-                        'SELECT'     => ['c.entities_id'],
-                        'DISTINCT'   => true,
-                        'FROM'       => 'glpi_plugin_manageentities_contractdays AS cd',
-                        'INNER JOIN' => [
-                            'glpi_contracts AS c' => ['FKEY' => ['cd' => 'contracts_id', 'c' => 'id']],
-                        ],
-                        'WHERE'      => [
-                            'c.entities_id' => $concerned_ids,
-                            'cd.plugin_manageentities_contractstates_id' => $active_states,
-                            'c.is_deleted'  => 0,
-                        ],
-                    ]);
-                    $with_active = array_column(iterator_to_array($active_iter), 'entities_id');
-                    $concerned_ids = array_values(array_intersect($concerned_ids, $with_active));
-                }
-
-                if (!empty($concerned_ids)) {
-                    // Single LEFT JOIN: entities in scope with no subscription row
-                    $name_iter = $DB->request([
-                        'SELECT'    => ['e.id', 'e.completename'],
-                        'FROM'      => 'glpi_entities AS e',
-                        'LEFT JOIN' => [
-                            self::getTable() . ' AS s' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
-                        ],
-                        'WHERE'     => ['e.id' => $concerned_ids, 's.id' => null],
-                        'ORDER'     => ['e.completename ASC'],
-                    ]);
-                    foreach ($name_iter as $row) {
-                        $missing_entities[] = $row['completename'];
-                    }
-                }
-            }
+        foreach ($iterator as $row) {
+            $row['level_name']       = !empty($row['plugin_manageentities_subscriptionlevels_id'])
+                ? Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$row['plugin_manageentities_subscriptionlevels_id'])
+                : '';
+            $row['end_date_expired'] = !empty($row['end_date']) && substr($row['end_date'], 0, 10) < $now;
+            $rows[]                  = $row;
         }
 
         $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
@@ -321,11 +436,10 @@ class EditorSubscription extends CommonDBTM
         TemplateRenderer::getInstance()->display(
             '@manageentities/entity/editorsubscription_tab.html.twig',
             [
-                'rows'             => $rows,
-                'can_edit'         => $can_edit,
-                'wizard_url'       => $wizard_url,
-                'export_url'       => $export_url,
-                'missing_entities' => $missing_entities,
+                'rows'       => $rows,
+                'can_edit'   => $can_edit,
+                'wizard_url' => $wizard_url,
+                'export_url' => $export_url,
             ]
         );
     }

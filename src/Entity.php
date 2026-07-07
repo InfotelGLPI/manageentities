@@ -110,11 +110,20 @@ class Entity extends CommonGLPI
             }
 
             $tabs[6] = EditorSubscription::createTabEntry(
-                __('Publisher information', 'manageentities'),
+                _n('Publisher subscription', 'Publisher subscriptions', 2, 'manageentities'),
                 0,
                 self::class,
                 EditorSubscription::getIcon()
             );
+
+            if (Session::getCurrentInterface() == 'central') {
+                $tabs[7] = self::createTabEntry(
+                    __('Status overview', 'manageentities'),
+                    0,
+                    self::class,
+                    'ti ti-clipboard-check'
+                );
+            }
 
             // ajout de la configuration du plugin
             $config = Config::getInstance();
@@ -122,29 +131,29 @@ class Entity extends CommonGLPI
                 || (Session::getCurrentInterface() == 'helpdesk'
                     && $config->fields['choice_intervention'] == Config::REPORT_INTERVENTION)) {
                 if ($Cri->canView()) {
-                    $tabs[7] = CriDetail::createTabEntry(
+                    $tabs[8] = CriDetail::createTabEntry(
                         __("Interventions reports", 'manageentities')
                     );
                 }
             } elseif (Session::getCurrentInterface() == 'helpdesk'
                 && $config->fields['choice_intervention'] == Config::PERIOD_INTERVENTION) {
-                $tabs[7] = CriDetail::createTabEntry(
+                $tabs[8] = CriDetail::createTabEntry(
                     _n('Period of contract', 'Periods of contract', 2, 'manageentities')
                 );
             }
 
             if (Session::haveRight("document", UPDATE)) {
-                $tabs[8] = Document::createTabEntry(_n('Document', 'Documents', 2));
+                $tabs[9] = Document::createTabEntry(_n('Document', 'Documents', 2));
             }
 
             if (Plugin::isPluginActive('accounts')) {
                 if (Session::haveRight("plugin_accounts", READ)) {
-                    $tabs[10] = Account::createTabEntry(__('Accounts', 'manageentities'));
+                    $tabs[11] = Account::createTabEntry(__('Accounts', 'manageentities'));
                 }
             }
 
             if (Session::getCurrentInterface() != 'helpdesk' && $this->canview()) {
-                $tabs[11] = self::createTabEntry(__('References', 'manageentities'));
+                $tabs[12] = self::createTabEntry(__('References', 'manageentities'));
             }
 
             return $tabs;
@@ -198,12 +207,12 @@ class Entity extends CommonGLPI
                     $Contract->showContracts($entities);
                     break;
                 case 6:
-                    foreach ($entities as $entity_id) {
-                        $entity->getFromDB($entity_id);
-                        EditorSubscription::showForEntity($entity);
-                    }
+                    EditorSubscription::showForEntity($item);
                     break;
                 case 7:
+                    EditorSubscription::showStatusTab();
+                    break;
+                case 8:
                     $config = Config::getInstance();
                     if ((Session::getCurrentInterface() == 'central')
                         || (Session::getCurrentInterface() == 'helpdesk'
@@ -220,19 +229,19 @@ class Entity extends CommonGLPI
                     }
 
                     break;
-                case 8:
+                case 9:
                     foreach ($entities as $entity_id) {
                         $entity->getFromDB($entity_id);
                         Document_Item::showForItem($entity);
                     }
                     break;
-                case 10:
+                case 11:
                     foreach ($entities as $entity_id) {
                         $entity->getFromDB($entity_id);
                         Account_Item::showForAsset($entity);
                     }
                     break;
-                case 11:
+                case 12:
                     $ManageentitiesEntity->showReferences($entities);
                     break;
                 default:

@@ -556,13 +556,16 @@ class ContractDay extends CommonDBTM
                 $conso += $dataCriDetail['conso'];
             }
 
-            $criprice = new CriPrice();
+            $criprice  = new CriPrice();
             $price_val = '';
-            if ($criprice->getFromDBByCrit([
-                'plugin_manageentities_contractdays_id' => $contractDay->fields['id'],
-                'is_default' => 1,
-            ])) {
-                $price_val = Html::formatNumber($criprice->fields["price"], false);
+            $cp_rows   = $criprice->find(
+                ['plugin_manageentities_contractdays_id' => $contractDay->fields['id'], 'is_default' => 1],
+                [],
+                1
+            );
+            if (!empty($cp_rows)) {
+                $criprice->fields = reset($cp_rows);
+                $price_val = Html::formatNumber($criprice->fields['price'], false);
             }
 
             $entry = [

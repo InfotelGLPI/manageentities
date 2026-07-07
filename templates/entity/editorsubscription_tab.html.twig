@@ -57,33 +57,19 @@
         </div>
     </div>
 
-    {% if missing_entities|length > 0 %}
-    <div class="alert alert-danger alert-important d-flex align-items-start gap-2 mb-0 border-0 rounded-0" role="alert">
-        <i class="ti ti-alert-triangle flex-shrink-0 mt-1"></i>
-        <div>
-            <strong>{{ __('The following entities have no publisher subscription:', 'manageentities') }}</strong>
-            <ul class="mb-0 mt-1">
-                {% for name in missing_entities %}
-                    <li>{{ name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    {% endif %}
-
     <div class="card-body p-0">
         {% if rows|length > 0 %}
         <div class="table-responsive">
             <table class="table table-hover table-sm mb-0" id="me_sub_table">
                 <thead>
                     <tr>
-                        <th data-col="0" class="me-sub-sortable" style="cursor:pointer;white-space:nowrap;">{{ _n('Entity', 'Entities', 1) }} <i class="ti ti-arrows-sort ms-1 text-muted"></i></th>
-                        <th data-col="1" class="me-sub-sortable" style="cursor:pointer;white-space:nowrap;">{{ __('Publisher customer account ID', 'manageentities') }} <i class="ti ti-arrows-sort ms-1 text-muted"></i></th>
-                        <th data-col="2" class="me-sub-sortable" style="cursor:pointer;white-space:nowrap;">{{ __('Referenced name at the publisher', 'manageentities') }} <i class="ti ti-arrows-sort ms-1 text-muted"></i></th>
-                        <th data-col="3" class="text-center me-sub-sortable" style="cursor:pointer;white-space:nowrap;">{{ __('Type', 'manageentities') }} <i class="ti ti-arrows-sort ms-1 text-muted"></i></th>
-                        <th data-col="4" class="me-sub-sortable" style="cursor:pointer;white-space:nowrap;">{{ __('Subscription level', 'manageentities') }} <i class="ti ti-arrows-sort ms-1 text-muted"></i></th>
-                        <th data-col="5" class="me-sub-sortable" style="cursor:pointer;white-space:nowrap;">{{ __('Start date', 'manageentities') }} <i class="ti ti-arrows-sort ms-1 text-muted"></i></th>
-                        <th data-col="6" class="me-sub-sortable" style="cursor:pointer;white-space:nowrap;">{{ __('End date', 'manageentities') }} <i class="ti ti-arrows-sort ms-1 text-muted"></i></th>
+                        <th>{{ _n('Entity', 'Entities', 1) }}</th>
+                        <th>{{ __('Publisher customer account ID', 'manageentities') }}</th>
+                        <th>{{ __('Referenced name at the publisher', 'manageentities') }}</th>
+                        <th class="text-center">{{ __('Type', 'manageentities') }}</th>
+                        <th>{{ __('Subscription level', 'manageentities') }}</th>
+                        <th>{{ __('Start date', 'manageentities') }}</th>
+                        <th>{{ __('End date', 'manageentities') }} <i class="ti ti-sort-ascending ms-1 text-muted" title="{{ __('Sorted by oldest end date first', 'manageentities') }}"></i></th>
                         {% if can_edit %}<th></th>{% endif %}
                     </tr>
                 </thead>
@@ -101,9 +87,8 @@
                             {% endif %}
                         </td>
                         <td>{{ row.level_name ?: '—' }}</td>
-                        <td data-sort="{{ row.begin_date ? row.begin_date|date('Y-m-d') : '' }}">{{ row.begin_date ? row.begin_date|date('d/m/Y') : '—' }}</td>
-                        <td class="{% if row.end_date_expired %}text-danger fw-bold{% endif %}"
-                            data-sort="{{ row.end_date ? row.end_date|date('Y-m-d') : '' }}">
+                        <td>{{ row.begin_date ? row.begin_date|date('d/m/Y') : '—' }}</td>
+                        <td class="{% if row.end_date_expired %}text-danger fw-bold{% endif %}">
                             {{ row.end_date ? row.end_date|date('d/m/Y') : '—' }}
                             {% if row.end_date_expired %}<i class="ti ti-alert-circle ms-1"></i>{% endif %}
                         </td>
@@ -159,44 +144,5 @@
         });
     }
 
-    /* ---- column sort ---- */
-    var table = document.getElementById('me_sub_table');
-    if (!table) { return; }
-    var sortCol = -1;
-    var sortAsc = true;
-
-    function cellVal(tr, col) {
-        var td = tr.querySelectorAll('td')[col];
-        if (!td) { return ''; }
-        var v = td.getAttribute('data-sort');
-        if (v === null) { v = td.textContent; }
-        v = v.trim();
-        return (v === '' || v === '—') ? '￿' : v.toLowerCase();
-    }
-
-    table.querySelectorAll('th.me-sub-sortable').forEach(function (th) {
-        th.addEventListener('click', function () {
-            var col = parseInt(th.getAttribute('data-col'), 10);
-            if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
-
-            table.querySelectorAll('th.me-sub-sortable i').forEach(function (i) {
-                i.className = 'ti ti-arrows-sort ms-1 text-muted';
-            });
-            th.querySelector('i').className = sortAsc
-                ? 'ti ti-sort-ascending ms-1 text-primary'
-                : 'ti ti-sort-descending ms-1 text-primary';
-
-            var tbody = table.querySelector('tbody');
-            var trs   = Array.from(tbody.querySelectorAll('tr'));
-            trs.sort(function (a, b) {
-                var va = cellVal(a, col);
-                var vb = cellVal(b, col);
-                if (va === vb) { return 0; }
-                var gt = va > vb;
-                return sortAsc ? (gt ? 1 : -1) : (gt ? -1 : 1);
-            });
-            trs.forEach(function (tr) { tbody.appendChild(tr); });
-        });
-    });
 })();
 </script>

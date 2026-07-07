@@ -1,0 +1,158 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-clipboard-check me-2"></i>
+            {{ __('Status overview', 'manageentities') }}
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+
+            {# Left column: alert 1 (no subscription) + alert 2 (expired) #}
+            <div class="col-12 col-lg-8 d-flex flex-column gap-3">
+
+                {# Alert 1: entities with active contract but no subscription #}
+                {% if no_subscription|length > 0 %}
+                <div class="alert alert-danger d-flex align-items-start gap-2 mb-0" role="alert">
+                    <i class="ti ti-alert-triangle flex-shrink-0 mt-1"></i>
+                    <div>
+                        <strong>{{ __('Entities with an active contract but no publisher subscription:', 'manageentities') }}</strong>
+                        <ul class="mb-0 mt-1">
+                            {% for name in no_subscription %}
+                                <li>{{ name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
+                    <i class="ti ti-circle-check flex-shrink-0"></i>
+                    {{ __('All entities with an active contract have a publisher subscription.', 'manageentities') }}
+                </div>
+                {% endif %}
+
+                {# Alert 2: entities with an expired subscription #}
+                {% if expired_subscription|length > 0 %}
+                <div class="alert alert-danger d-flex align-items-start gap-2 mb-0" role="alert">
+                    <i class="ti ti-clock-exclamation flex-shrink-0 mt-1"></i>
+                    <div>
+                        <strong>{{ __('Entities with an expired publisher subscription:', 'manageentities') }}</strong>
+                        <ul class="mb-0 mt-1">
+                            {% for name in expired_subscription %}
+                                <li>{{ name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
+                    <i class="ti ti-circle-check flex-shrink-0"></i>
+                    {{ __('No expired publisher subscription.', 'manageentities') }}
+                </div>
+                {% endif %}
+
+            </div>
+
+            {# Right column: alert 3 (no contract) + subscription counts #}
+            <div class="col-12 col-lg-4 d-flex flex-column gap-4">
+
+                {# Alert 3: entities with subscription but no active contract #}
+                {% if no_contract|length > 0 %}
+                <div class="alert alert-warning d-flex align-items-start gap-2 mb-0" role="alert">
+                    <i class="ti ti-alert-circle flex-shrink-0 mt-1"></i>
+                    <div>
+                        <strong>{{ __('Entities with a publisher subscription but no active contract:', 'manageentities') }}</strong>
+                        <ul class="mb-0 mt-1">
+                            {% for name in no_contract %}
+                                <li>{{ name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
+                    <i class="ti ti-circle-check flex-shrink-0"></i>
+                    {{ __('All entities with a publisher subscription have an active contract.', 'manageentities') }}
+                </div>
+                {% endif %}
+
+                {# By type #}
+                <div>
+                    <h4 class="text-muted mb-3 fs-5">
+                        <i class="ti ti-layout-grid me-1"></i>
+                        {{ __('Subscriptions by type', 'manageentities') }}
+                    </h4>
+                    <div class="d-flex gap-2">
+                        <div class="card text-center border-2 flex-shrink-0 flex-grow-1">
+                            <div class="card-body p-3">
+                                <div class="display-6 fw-bold text-info">{{ type_counts.cloud }}</div>
+                                <div class="text-muted small mt-1">
+                                    <i class="ti ti-cloud me-1"></i>{{ __('Cloud', 'manageentities') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card text-center border-2 flex-shrink-0 flex-grow-1">
+                            <div class="card-body p-3">
+                                <div class="display-6 fw-bold text-success">{{ type_counts.onpremise }}</div>
+                                <div class="text-muted small mt-1">
+                                    <i class="ti ti-server me-1"></i>{{ __('On-premise', 'manageentities') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# By level #}
+                <div>
+                    <h4 class="text-muted mb-3 fs-5">
+                        <i class="ti ti-certificate me-1"></i>
+                        {{ __('Subscriptions by level', 'manageentities') }}
+                    </h4>
+                    {% if level_counts|length > 0 %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for item in level_counts %}
+                        <div class="card text-center border-2 flex-shrink-0" style="min-width:110px">
+                            <div class="card-body p-3">
+                                <div class="display-6 fw-bold text-primary">{{ item.count }}</div>
+                                <div class="text-muted small mt-1">{{ item.name }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">{{ __('No subscription recorded.', 'manageentities') }}</p>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
