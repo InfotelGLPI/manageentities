@@ -216,23 +216,36 @@ class EditorSubscription extends CommonDBTM
         $parent_id           = (int)($config->fields['wizard_default_entities_id'] ?? 0);
         $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
 
-        // Build the scoped + non-archived concerned_ids list
+        // concerned_ids: customer entities (non-archived) — used for alerts
         $concerned_ids = [];
+        // all_scoped_ids: customer + archived entities — used for counters only
+        $all_scoped_ids = [];
+
         if ($parent_id > 0 && !empty($entity_ids)) {
             $customer_sons = getSonsOf('glpi_entities', $parent_id);
             unset($customer_sons[$parent_id]);
 
-            $excluded_ids = [];
+            $archive_sons = [];
             if ($archive_entities_id > 0) {
                 $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
-                $excluded_ids = array_keys($archive_sons); // includes root
+                // also include archived sons in the counter scope
+                $archive_son_ids = array_keys($archive_sons);
+                unset($archive_sons[$archive_entities_id]);
+            } else {
+                $archive_son_ids = [];
             }
+
+            $excluded_ids = $archive_son_ids; // includes root + all sons
 
             $concerned_ids = array_values(
                 array_diff(
                     array_intersect($entity_ids, array_keys($customer_sons)),
                     $excluded_ids
                 )
+            );
+
+            $all_scoped_ids = array_values(
+                array_unique(array_merge($concerned_ids, $archive_son_ids))
             );
         }
 
@@ -324,9 +337,9 @@ class EditorSubscription extends CommonDBTM
             }
         }
 
-        // Subscriptions count per level
+        // Subscriptions count per level (includes archived entities)
         $level_counts = [];
-        if (!empty($concerned_ids)) {
+        if (!empty($all_scoped_ids)) {
             $iter = $DB->request([
                 'SELECT'   => [
                     'l.name AS level_name',
@@ -338,7 +351,7 @@ class EditorSubscription extends CommonDBTM
                         'FKEY' => ['s' => 'plugin_manageentities_subscriptionlevels_id', 'l' => 'id'],
                     ],
                 ],
-                'WHERE'   => ['s.entities_id' => $concerned_ids],
+                'WHERE'   => ['s.entities_id' => $all_scoped_ids],
                 'GROUPBY' => ['s.plugin_manageentities_subscriptionlevels_id'],
                 'ORDER'   => ['cnt DESC'],
             ]);
@@ -350,14 +363,13 @@ class EditorSubscription extends CommonDBTM
             }
         }
 
-        // Subscriptions count by type (cloud vs on-premise) — counted in PHP
-        // to match the same truthiness check as the template ({% if row.cloud_client %})
+        // Subscriptions count by type (cloud vs on-premise, includes archived entities)
         $type_counts = ['cloud' => 0, 'onpremise' => 0];
-        if (!empty($concerned_ids)) {
+        if (!empty($all_scoped_ids)) {
             $iter = $DB->request([
                 'SELECT' => ['cloud_client'],
                 'FROM'   => self::getTable(),
-                'WHERE'  => ['entities_id' => $concerned_ids],
+                'WHERE'  => ['entities_id' => $all_scoped_ids],
             ]);
             foreach ($iter as $row) {
                 if ($row['cloud_client']) {
@@ -397,16 +409,23 @@ class EditorSubscription extends CommonDBTM
         if (Session::getCurrentInterface() === 'helpdesk') {
             $where = ['s.entities_id' => (int)$_SESSION['glpiactive_entity']];
         } else {
-            // Central: scope to all customer entities (wizard_default_entities_id sons)
-            $parent_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
-            $where = [];
+            // Central: scope to customer entities + archived entities
+            $parent_id           = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+            $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+
+            $scoped_ids = [];
             if ($parent_id > 0) {
-                $customer_sons = getSonsOf('glpi_entities', $parent_id);
-                unset($customer_sons[$parent_id]);
-                if (!empty($customer_sons)) {
-                    $where = ['s.entities_id' => array_keys($customer_sons)];
-                }
+                $sons = getSonsOf('glpi_entities', $parent_id);
+                unset($sons[$parent_id]);
+                $scoped_ids = array_keys($sons);
             }
+            if ($archive_entities_id > 0) {
+                $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
+                unset($archive_sons[$archive_entities_id]);
+                $scoped_ids = array_unique(array_merge($scoped_ids, array_keys($archive_sons)));
+            }
+
+            $where = !empty($scoped_ids) ? ['s.entities_id' => $scoped_ids] : [];
         }
 
         $now  = date('Y-m-d');
