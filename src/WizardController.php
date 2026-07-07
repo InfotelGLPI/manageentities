@@ -69,6 +69,8 @@ class WizardController
 
     private static function jsonOut(mixed $data): never
     {
+        // JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP encode all dangerous chars as \uXXXX
+        /** @psalm-suppress TaintedTextWithQuotes */
         echo json_encode($data, self::JSON_FLAGS);
         exit;
     }
