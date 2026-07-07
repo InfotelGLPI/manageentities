@@ -61,7 +61,7 @@
             </div>
             {% if is_day %}
             <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ CriType::getTypeName(1) }} <span class="text-danger">*</span></label>
+                <label class="col-form-label fw-bold">{{ _n('Intervention type', 'Intervention types', 2, 'manageentities') }} <span class="text-danger">*</span></label>
                 {{ contract_type_html|raw }}
             </div>
             {% else %}
