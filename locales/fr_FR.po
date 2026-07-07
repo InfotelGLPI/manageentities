@@ -1965,7 +1965,7 @@ msgstr ""
 
 #: templates/entity/editorsubscription_tab.html.twig:64
 msgid "The following entities have no publisher subscription:"
-msgstr "Les clients suivants no pas de souscription éditeur :"
+msgstr "Les clients suivants n'ont pas de souscription éditeur :"
 
 #: templates/wizard/layout.html.twig:121
 msgid "The following items will be saved. Please review before confirming."
