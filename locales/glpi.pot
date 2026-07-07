@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-06 17:51+0000\n"
+"POT-Creation-Date: 2026-07-07 05:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -321,7 +321,7 @@ msgstr[1] ""
 msgid "Comments"
 msgstr ""
 
-#: src/Company.php:56 src/Followup.php:2504 templates/company_list.html.twig:33
+#: src/Company.php:56 src/Followup.php:2499 templates/company_list.html.twig:33
 #: templates/company_list.html.twig:42
 msgid "Company"
 msgid_plural "Companies"
@@ -654,7 +654,6 @@ msgstr ""
 msgid "Entities portal"
 msgstr ""
 
-#: src/WizardController.php:1455 src/WizardController.php:1462
 #: templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
@@ -866,11 +865,7 @@ msgid_plural "Intervention tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Cri.php:203 src/CriPrice.php:355 src/CriDetail.php:357
-#: src/CriDetail.php:615 src/CriDetail.php:730 src/CriDetail.php:1449
-#: src/CriType.php:48 hook.php:688
-#: templates/wizard/step5_intervention_block.html.twig:64
-#: templates/criprice_form.html.twig:42
+#: src/CriType.php:48 templates/criprice_form.html.twig:42
 msgid "Intervention type"
 msgid_plural "Intervention types"
 msgstr[0] ""
@@ -953,7 +948,7 @@ msgstr ""
 msgid "Management data is missing"
 msgstr ""
 
-#: src/TaskCategory.php:49 src/TaskCategory.php:128
+#: src/TaskCategory.php:49
 msgid "Management of task category"
 msgid_plural "Management of task categories"
 msgstr[0] ""
@@ -1543,9 +1538,7 @@ msgstr ""
 msgid "State is required"
 msgstr ""
 
-#: src/ContractDay.php:150 src/ContractDay.php:535 src/ContractState.php:48
-#: src/Followup.php:922 src/Followup.php:1185 src/Followup.php:2351
-#: hook.php:689 templates/contractday_form.html.twig:101
+#: src/ContractState.php:48
 msgid "State of contract"
 msgid_plural "States of contracts"
 msgstr[0] ""
@@ -1741,8 +1734,8 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/Monthly.php:703 src/Monthly.php:735 src/ContractDay.php:528
-#: src/Followup.php:923 src/Followup.php:1194
+#: src/Monthly.php:703 src/Monthly.php:735 src/Followup.php:923
+#: src/Followup.php:1194
 msgid "Type of contract"
 msgstr ""
 
@@ -1903,8 +1896,8 @@ msgstr ""
 msgid "in"
 msgstr ""
 
-#: src/Followup.php:2401 src/Followup.php:2406 src/Followup.php:2414
-#: src/Followup.php:2419
+#: src/Followup.php:2396 src/Followup.php:2401 src/Followup.php:2409
+#: src/Followup.php:2414
 msgid "of period of contract"
 msgstr ""
 
