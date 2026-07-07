@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 05:36+0000\n"
+"POT-Creation-Date: 2026-07-07 06:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,11 +39,11 @@ msgstr ""
 msgid "-- Select a template --"
 msgstr ""
 
-#: front/directhelpdesk.php:70
+#: front/directhelpdesk.php:66
 msgid "2 hours minimum"
 msgstr ""
 
-#: front/directhelpdesk.php:77
+#: front/directhelpdesk.php:73
 msgid "3 hours minimum"
 msgstr ""
 
