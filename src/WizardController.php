@@ -825,11 +825,6 @@ class WizardController
             'duration_moving'      => (int)($input['duration_moving'] ?? 0),
         ];
 
-        // active_editor_suscription and cloud_client come from the subscription step
-        $sub = $session['subscription_data'] ?? [];
-        $management_data['active_editor_suscription'] = (int)(bool)($sub['active_editor_suscription'] ?? 0);
-        $management_data['cloud_client']              = (int)(bool)($sub['cloud_client'] ?? 0);
-
         $session['management_data'] = $management_data;
         $session['step']            = max($session['step'], 6);
         self::saveSession($session);

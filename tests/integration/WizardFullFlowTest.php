@@ -34,10 +34,13 @@ use GlpiPlugin\Manageentities\WizardController;
 
 class WizardFullFlowTest extends DbTestCase
 {
+    use WizardTestHelpers;
+
     public function setUp(): void
     {
         parent::setUp();
         unset($_SESSION['manageentities_wizard']);
+        $this->setUpWizardContractTypes();
     }
 
     public function tearDown(): void
@@ -64,11 +67,7 @@ class WizardFullFlowTest extends DbTestCase
         $this->assertTrue($r2['success'], 'Step 2 failed: ' . json_encode($r2));
 
         // Step 3 — Contract (stored in session only)
-        $r3 = WizardController::saveContractAndReturn([
-            'name'       => "CTR-{$uid}",
-            'begin_date' => '2026-01-01',
-            'duration'   => 12,
-        ]);
+        $r3 = WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "CTR-{$uid}"]));
         $this->assertTrue($r3['success'], 'Step 3 failed: ' . json_encode($r3));
 
         // Step 4 — Management type (stored in session only)
@@ -180,7 +179,7 @@ class WizardFullFlowTest extends DbTestCase
         $uid = $this->getUniqueString();
 
         WizardController::saveEntityAndReturn(['name' => "ResetEnt-{$uid}", 'entities_id' => 0]);
-        WizardController::saveContractAndReturn(['name' => "ResetCTR-{$uid}"]);
+        WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "ResetCTR-{$uid}"]));
         WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-01-01']);
 
         // Nothing is in DB (session-only)

@@ -35,10 +35,13 @@ use GlpiPlugin\Manageentities\WizardController;
 
 class WizardDocumentTest extends DbTestCase
 {
+    use WizardTestHelpers;
+
     public function setUp(): void
     {
         parent::setUp();
         unset($_SESSION['manageentities_wizard']);
+        $this->setUpWizardContractTypes();
     }
 
     public function tearDown(): void
@@ -151,7 +154,7 @@ class WizardDocumentTest extends DbTestCase
 
         WizardController::saveEntityAndReturn(['name' => "DocEnt-{$uid}", 'entities_id' => 0]);
         WizardController::saveContactsAndReturn(['contacts' => []]);
-        WizardController::saveContractAndReturn(['name' => "DocCTR-{$uid}", 'begin_date' => '2026-01-01', 'duration' => 12]);
+        WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "DocCTR-{$uid}"]));
         WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-01-01']);
 
         $state = new \GlpiPlugin\Manageentities\ContractState();

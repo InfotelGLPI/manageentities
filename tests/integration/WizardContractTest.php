@@ -34,10 +34,13 @@ use GlpiPlugin\Manageentities\WizardController;
 
 class WizardContractTest extends DbTestCase
 {
+    use WizardTestHelpers;
+
     public function setUp(): void
     {
         parent::setUp();
         unset($_SESSION['manageentities_wizard']);
+        $this->setUpWizardContractTypes();
     }
 
     public function tearDown(): void
@@ -46,8 +49,8 @@ class WizardContractTest extends DbTestCase
         parent::tearDown();
     }
 
-    /** Populate entity and contract data in session (no DB writes). */
-    private function prepareEntityAndContractInSession(): void
+    /** Populate entity data in session (no DB writes). */
+    private function prepareEntityInSession(): void
     {
         WizardController::saveEntityAndReturn([
             'name'        => 'Entity for Contract ' . $this->getUniqueString(),
@@ -58,13 +61,11 @@ class WizardContractTest extends DbTestCase
     public function testSaveContractStoresDataInSession(): void
     {
         $this->login();
-        $this->prepareEntityAndContractInSession();
+        $this->prepareEntityInSession();
 
-        $result = WizardController::saveContractAndReturn([
-            'name' => 'CTR-TEST-' . $this->getUniqueString(),
-        ]);
+        $result = WizardController::saveContractAndReturn($this->minimalContractInput());
 
-        $this->assertTrue($result['success'], $result['message'] ?? '');
+        $this->assertTrue($result['success'], json_encode($result));
 
         $session = WizardController::getSession();
         $this->assertNotEmpty($session['contract_data']['name']);
@@ -76,9 +77,7 @@ class WizardContractTest extends DbTestCase
     {
         $this->login();
 
-        $result = WizardController::saveContractAndReturn([
-            'name' => '',
-        ]);
+        $result = WizardController::saveContractAndReturn($this->minimalContractInput(['name' => '']));
 
         $this->assertFalse($result['success']);
         $this->assertArrayHasKey('name', $result['errors']);
@@ -87,11 +86,9 @@ class WizardContractTest extends DbTestCase
     public function testSaveContractAdvancesStepTo4(): void
     {
         $this->login();
-        $this->prepareEntityAndContractInSession();
+        $this->prepareEntityInSession();
 
-        WizardController::saveContractAndReturn([
-            'name' => 'CTR-' . $this->getUniqueString(),
-        ]);
+        WizardController::saveContractAndReturn($this->minimalContractInput());
 
         $session = WizardController::getSession();
         $this->assertGreaterThanOrEqual(4, $session['step']);
@@ -100,16 +97,16 @@ class WizardContractTest extends DbTestCase
     public function testSaveManagementTypeStoresDataInSession(): void
     {
         $this->login();
-        $this->prepareEntityAndContractInSession();
+        $this->prepareEntityInSession();
 
-        WizardController::saveContractAndReturn(['name' => 'CTR-' . $this->getUniqueString()]);
+        WizardController::saveContractAndReturn($this->minimalContractInput());
 
         $mr = WizardController::saveManagementTypeAndReturn([
             'date_signature'       => '2026-01-01',
             'show_on_global_gantt' => 1,
         ]);
 
-        $this->assertTrue($mr['success'], $mr['message'] ?? '');
+        $this->assertTrue($mr['success'], json_encode($mr));
 
         $session = WizardController::getSession();
         $this->assertNotEmpty($session['management_data']);
@@ -137,7 +134,7 @@ class WizardContractTest extends DbTestCase
 
         WizardController::saveEntityAndReturn(['name' => "Ent-{$uid}", 'entities_id' => 0]);
         WizardController::saveContactsAndReturn(['contacts' => []]);
-        WizardController::saveContractAndReturn(['name' => "CTR-{$uid}", 'begin_date' => '2026-01-01', 'duration' => 12]);
+        WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "CTR-{$uid}"]));
         WizardController::saveManagementTypeAndReturn([
             'date_signature'       => '2026-01-01',
             'show_on_global_gantt' => 1,

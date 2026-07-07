@@ -34,10 +34,13 @@ use GlpiPlugin\Manageentities\WizardController;
 
 class WizardEntityTest extends DbTestCase
 {
+    use WizardTestHelpers;
+
     public function setUp(): void
     {
         parent::setUp();
         unset($_SESSION['manageentities_wizard']);
+        $this->setUpWizardContractTypes();
     }
 
     public function tearDown(): void
@@ -159,11 +162,7 @@ class WizardEntityTest extends DbTestCase
         $r2 = WizardController::saveContactsAndReturn(['contacts' => []]);
         $this->assertTrue($r2['success']);
 
-        $r3 = WizardController::saveContractAndReturn([
-            'name'       => "CTR-{$uid}",
-            'begin_date' => '2026-01-01',
-            'duration'   => 12,
-        ]);
+        $r3 = WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "CTR-{$uid}"]));
         $this->assertTrue($r3['success']);
 
         $r4 = WizardController::saveManagementTypeAndReturn([

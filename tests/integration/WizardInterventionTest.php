@@ -34,12 +34,15 @@ use GlpiPlugin\Manageentities\WizardController;
 
 class WizardInterventionTest extends DbTestCase
 {
+    use WizardTestHelpers;
+
     private int $contractstate_id = 0;
 
     public function setUp(): void
     {
         parent::setUp();
         unset($_SESSION['manageentities_wizard']);
+        $this->setUpWizardContractTypes();
     }
 
     public function tearDown(): void
@@ -56,11 +59,7 @@ class WizardInterventionTest extends DbTestCase
             'entities_id' => 0,
         ]);
 
-        WizardController::saveContractAndReturn([
-            'name'       => 'CTR-' . $this->getUniqueString(),
-            'begin_date' => '2026-01-01',
-            'duration'   => 12,
-        ]);
+        WizardController::saveContractAndReturn($this->minimalContractInput());
 
         $state = new \GlpiPlugin\Manageentities\ContractState();
         $this->contractstate_id = $state->add([
@@ -270,7 +269,7 @@ class WizardInterventionTest extends DbTestCase
 
         WizardController::saveEntityAndReturn(['name' => "E-{$uid}", 'entities_id' => 0]);
         WizardController::saveContactsAndReturn(['contacts' => []]);
-        WizardController::saveContractAndReturn(['name' => "C-{$uid}", 'begin_date' => '2026-01-01', 'duration' => 12]);
+        WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "C-{$uid}"]));
         WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-01-01']);
 
         $state = new \GlpiPlugin\Manageentities\ContractState();
