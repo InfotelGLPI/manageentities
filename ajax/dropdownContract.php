@@ -31,6 +31,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use GlpiPlugin\Manageentities\Contract as PluginContract;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\ContractState;
+use GlpiPlugin\Manageentities\EditorSubscription;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -83,18 +84,16 @@ if (isset($_POST["contracts_id"])) {
       . htmlspecialchars($contract->fields['end_date'] ?? '', ENT_QUOTES)
       . "</span>";
 
-   // Plugin contract fields
-   $pluginContract = new PluginContract();
-   $pluginContracts = $pluginContract->find(['contracts_id' => (int)$_POST["contracts_id"]]);
-   $pluginData = reset($pluginContracts) ?: [];
+   // Plugin contract fields — subscription flags read from EditorSubscription
+   $subData = EditorSubscription::getForEntity((int)$contract->fields['entities_id']);
    echo "<span class='me-contract-editor-sub-data' style='display:none'>"
-      . (int)($pluginData['active_editor_suscription'] ?? 0)
+      . (int)($subData['active_editor_suscription'] ?? 0)
       . "</span>";
    echo "<span class='me-contract-cloud-data' style='display:none'>"
-      . (int)($pluginData['cloud_client'] ?? 0)
+      . (int)($subData['cloud_client'] ?? 0)
       . "</span>";
    echo "<span class='me-contract-inet-data' style='display:none'>"
-      . (int)($pluginData['internet_publication'] ?? 0)
+      . (int)($subData['internet_publication'] ?? 0)
       . "</span>";
 
    $restrict = ['entities_id'  => $contract->fields['entities_id'],

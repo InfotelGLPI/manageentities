@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.2');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.3');
 
 global $CFG_GLPI;
 
@@ -45,6 +45,8 @@ use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Servicecatalog;
+use GlpiPlugin\Manageentities\EditorSubscription;
+use GlpiPlugin\Manageentities\SubscriptionLevel;
 use GlpiPlugin\Manageentities\TaskCategory;
 use GlpiPlugin\Manageentities\TicketTask;
 
@@ -85,6 +87,8 @@ function plugin_init_manageentities()
     $PLUGIN_HOOKS[Hooks::ITEM_TRANSFER]['manageentities'] = 'plugin_item_transfer_manageentities';
 
     if (Session::getLoginUserID()) {
+        Plugin::registerClass(EditorSubscription::class, ['addtabon' => Entity::class]);
+        Plugin::registerClass(SubscriptionLevel::class);
         Plugin::registerClass(Profile::class, ['addtabon' => 'Profile']);
         Plugin::registerClass(Contract::class, ['addtabon' => 'Contract']);
         Plugin::registerClass(CriDetail::class, [

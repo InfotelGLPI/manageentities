@@ -38,12 +38,14 @@ use GlpiPlugin\Manageentities\CriTechnician;
 use GlpiPlugin\Manageentities\CriType;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdeskInjection;
+use GlpiPlugin\Manageentities\EditorSubscriptionInjection;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
 use GlpiPlugin\Manageentities\Gantt;
 use GlpiPlugin\Manageentities\Monthly;
 use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\Profile;
+use GlpiPlugin\Manageentities\SubscriptionLevel;
 use GlpiPlugin\Manageentities\TaskCategory;
 use GlpiPlugin\Manageentities\TicketTask;
 
@@ -340,6 +342,11 @@ function plugin_manageentities_install()
     //version 4.2.2
     if (!$DB->fieldExists("glpi_plugin_manageentities_configs", "wizard_contractstate_id")) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.2.2.sql");
+    }
+
+    //version 4.2.3
+    if (!$DB->tableExists("glpi_plugin_manageentities_editorsubscriptions")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.2.3.sql");
     }
 
 
@@ -686,7 +693,8 @@ function plugin_manageentities_getDropdown()
 
     if (Plugin::isPluginActive("manageentities")) {
         return [CriType::class       => CriType::getTypeName(1),
-            ContractState::class => ContractState::getTypeName(1)];
+            ContractState::class => ContractState::getTypeName(1),
+            SubscriptionLevel::class => SubscriptionLevel::getTypeName(1)];
     } else {
         return [];
     }
@@ -919,6 +927,7 @@ function plugin_datainjection_populate_manageentities()
 {
     global $INJECTABLE_TYPES;
     $INJECTABLE_TYPES[DirectHelpdeskInjection::class] = 'manageentities';
+    $INJECTABLE_TYPES[EditorSubscriptionInjection::class] = 'manageentities';
 }
 
 /**

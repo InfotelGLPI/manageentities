@@ -101,24 +101,6 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
 
             {# Switches row 2 #}
             <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Active editor subscription', 'manageentities') }}</label>
-                <div class="form-check form-switch mt-2">
-                    <input type="hidden" name="active_editor_suscription" value="0">
-                    <input type="checkbox" class="form-check-input" name="active_editor_suscription" value="1"
-                        id="active_editor_suscription_{{ rand }}"
-                        {% if active_editor_suscription %}checked{% endif %}>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Cloud client', 'manageentities') }}</label>
-                <div class="form-check form-switch mt-2">
-                    <input type="hidden" name="cloud_client" value="0">
-                    <input type="checkbox" class="form-check-input" name="cloud_client" value="1"
-                        id="cloud_client_{{ rand }}"
-                        {% if cloud_client %}checked{% endif %}>
-                </div>
-            </div>
-            <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
                 <div class="form-check form-switch mt-2">
                     <input type="hidden" name="moving_management" value="0">
@@ -143,26 +125,8 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
             <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
         </button>
         <button type="button" class="btn btn-primary"
-            onclick="wizardSaveStep(4, '{{ wizard_url }}')">
+            onclick="wizardSaveStep(5, '{{ wizard_url }}')">
             <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
         </button>
     </div>
 </div>
-<script>
-(function() {
-    var editor = document.getElementById('active_editor_suscription_{{ rand }}');
-    var cloud  = document.getElementById('cloud_client_{{ rand }}');
-    function syncFlags() {
-        if (cloud.checked) {
-            editor.checked = true;
-            editor.style.pointerEvents = 'none';
-            editor.style.opacity = '0.6';
-        } else {
-            editor.style.pointerEvents = '';
-            editor.style.opacity = '';
-        }
-    }
-    cloud.addEventListener('change', syncFlags);
-    syncFlags();
-})();
-</script>

@@ -98,7 +98,7 @@
 
                 {# State #}
                 {{ fields.field('plugin_manageentities_contractstates_id', contractstate_html,
-                    ContractState::getTypeName(1), {
+                    _n('State of contract', 'States of contracts', 1, 'manageentities'), {
                     'full_width': false
                 }) }}
 

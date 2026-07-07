@@ -107,10 +107,11 @@ class Contract extends CommonDBTM
             $input['refacturable_costs'] = 0;
         }
 
-        foreach (['active_editor_suscription', 'cloud_client', 'internet_publication',
-                  'show_on_global_gantt', 'moving_management'] as $field) {
+        // active_editor_suscription, cloud_client and internet_publication are managed by EditorSubscription
+        foreach (['show_on_global_gantt', 'moving_management'] as $field) {
             $input[$field] = (isset($input[$field]) && ($input[$field] === "on" || $input[$field])) ? 1 : 0;
         }
+        unset($input['active_editor_suscription'], $input['cloud_client'], $input['internet_publication']);
 
         return $input;
     }
@@ -141,10 +142,11 @@ class Contract extends CommonDBTM
             $input['refacturable_costs'] = 0;
         }
 
-        foreach (['active_editor_suscription', 'cloud_client', 'internet_publication',
-                  'show_on_global_gantt', 'moving_management'] as $field) {
+        // active_editor_suscription, cloud_client and internet_publication are managed by EditorSubscription
+        foreach (['show_on_global_gantt', 'moving_management'] as $field) {
             $input[$field] = (isset($input[$field]) && ($input[$field] === "on" || $input[$field])) ? 1 : 0;
         }
+        unset($input['active_editor_suscription'], $input['cloud_client'], $input['internet_publication']);
 
         return $input;
     }
@@ -327,6 +329,15 @@ class Contract extends CommonDBTM
         \Dropdown::showTimeStamp('duration_moving', ['value' => $pluginContract['duration_moving'] ?? null, 'addfirstminutes' => true]);
         $duration_moving_html = ob_get_clean();
 
+        $sub              = EditorSubscription::getForEntity((int)$contract->fields['entities_id']);
+        $now              = date('Y-m-d');
+        $sub_end_expired  = !empty($sub['end_date'])   && substr($sub['end_date'],   0, 10) < $now;
+        $sub_level_name   = !empty($sub['plugin_manageentities_subscriptionlevels_id'])
+            ? \Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$sub['plugin_manageentities_subscriptionlevels_id'])
+            : '';
+        $sub_wizard_url   = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php'
+            . '?entities_id=' . (int)$contract->fields['entities_id'];
+
         TemplateRenderer::getInstance()->display('@manageentities/contract_detail_form.html.twig', [
             'rand'                       => $rand,
             'can_edit'                   => $canEdit,
@@ -346,9 +357,18 @@ class Contract extends CommonDBTM
             'show_on_global_gantt'       => (int)($pluginContract['show_on_global_gantt'] ?? 0),
             'moving_management'          => (int)($pluginContract['moving_management'] ?? 0),
             'duration_moving_html'       => $duration_moving_html,
-            'active_editor_suscription'  => (int)($pluginContract['active_editor_suscription'] ?? 0),
-            'cloud_client'               => (int)($pluginContract['cloud_client'] ?? 0),
-            'internet_publication'       => (int)($pluginContract['internet_publication'] ?? 0),
+            'internet_publication'       => (int)($sub['internet_publication'] ?? 0),
+            // Publisher subscription — read-only card
+            'has_subscription'           => !empty($sub),
+            'sub_customer_account_id'    => $sub['customer_account_id'] ?? '',
+            'sub_name'                   => $sub['name'] ?? '',
+            'sub_active'                 => (int)($sub['active_editor_suscription'] ?? 0),
+            'sub_cloud'                  => (int)($sub['cloud_client'] ?? 0),
+            'sub_begin_date'             => $sub['begin_date'] ?? '',
+            'sub_end_date'               => $sub['end_date'] ?? '',
+            'sub_end_expired'            => $sub_end_expired,
+            'sub_level_name'             => $sub_level_name,
+            'sub_wizard_url'             => $sub_wizard_url,
         ]);
     }
 
@@ -945,12 +965,9 @@ class Contract extends CommonDBTM
     {
         if ($ma->getAction() === 'update_subscription_fields') {
             $fields = [
-                'active_editor_suscription' => __('Active editor subscription', 'manageentities'),
-                'cloud_client'              => __('Cloud client', 'manageentities'),
-                'internet_publication'      => __('Internet publication', 'manageentities'),
-                'show_on_global_gantt'      => __('Show on GANTT', 'manageentities'),
-                'moving_management'         => __('Movement management', 'manageentities'),
-                'refacturable_costs'        => __('Refacturable costs', 'manageentities'),
+                'show_on_global_gantt' => __('Show on GANTT', 'manageentities'),
+                'moving_management'    => __('Movement management', 'manageentities'),
+                'refacturable_costs'   => __('Refacturable costs', 'manageentities'),
             ];
 
             echo "<div class='d-flex flex-wrap gap-4 my-2'>";
@@ -980,9 +997,6 @@ class Contract extends CommonDBTM
             $input = $ma->getInput();
 
             $allowed = [
-                'active_editor_suscription',
-                'cloud_client',
-                'internet_publication',
                 'show_on_global_gantt',
                 'moving_management',
                 'refacturable_costs',

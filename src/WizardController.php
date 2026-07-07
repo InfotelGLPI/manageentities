@@ -69,17 +69,18 @@ class WizardController
     public static function buildDefaultSession(): array
     {
         return [
-            'wizard_mode'       => '',   // '' = choice not made | 'new_entity' | 'existing_entity'
-            'step'              => 1,
+            'wizard_mode'        => '',   // '' = choice not made | 'new_entity' | 'existing_entity'
+            'step'               => 1,
             // Raw data — nothing written to DB until finishWizard()
-            'entity_data'       => [],
-            'entities_id'       => 0,   // set only in existing_entity mode or after finishWizard
-            'contacts_data'     => [],   // [idx => [fields]]
-            'contract_data'     => [],
-            'contract_prefill'  => [],
-            'management_data'   => [],
-            'documents_ids'     => [],   // uploaded document IDs (pre-created, linked at finish)
-            'interventions_data'=> [],   // [idx => ['fields'=>[], 'criprices'=>[], 'stakeholders'=>[]]]
+            'entity_data'        => [],
+            'entities_id'        => 0,   // set only in existing_entity mode or after finishWizard
+            'contacts_data'      => [],   // [idx => [fields]]
+            'subscription_data'  => [],   // new_entity mode only: EditorSubscription fields
+            'contract_data'      => [],
+            'contract_prefill'   => [],
+            'management_data'    => [],
+            'documents_ids'      => [],   // uploaded document IDs (pre-created, linked at finish)
+            'interventions_data' => [],   // [idx => ['fields'=>[], 'criprices'=>[], 'stakeholders'=>[]]]
         ];
     }
 
@@ -210,9 +211,10 @@ class WizardController
         $session = self::getSession();
         $session['wizard_mode'] = 'existing_entity';
         $session['entities_id'] = $entities_id;
-        $session['step']        = max($session['step'], 3);
+        // existing_entity skips step 3 (subscription, new_entity only) → go to step 4 (contract)
+        $session['step']        = max($session['step'], 4);
         self::saveSession($session);
-        return ['success' => true, 'entities_id' => $entities_id, 'step' => 3];
+        return ['success' => true, 'entities_id' => $entities_id, 'step' => 4];
     }
 
     // -------------------------------------------------------------------------
@@ -221,9 +223,11 @@ class WizardController
 
     public static function renderModeChoice(): void
     {
-        $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php';
+        $wizard_url        = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php';
+        $subscription_url  = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
         TemplateRenderer::getInstance()->display('@manageentities/wizard/mode_choice.html.twig', [
-            'wizard_url' => $wizard_url,
+            'wizard_url'       => $wizard_url,
+            'subscription_url' => $subscription_url,
         ]);
     }
 
@@ -299,7 +303,8 @@ class WizardController
         }
         $session = self::getSession();
         $session['entities_id'] = $entities_id;
-        $session['step']        = max($session['step'], 3);
+        // existing_entity skips step 3 (subscription, new_entity only) → go to step 4 (contract)
+        $session['step']        = max($session['step'], 4);
         self::saveSession($session);
         return ['success' => true, 'entities_id' => $entities_id, 'step' => $session['step']];
     }
@@ -431,7 +436,7 @@ class WizardController
         }
 
         $session['contacts_data'] = $savedData;
-        $session['step']          = max($session['step'], 3);
+        $session['step']          = max($session['step'], 3); // next is step 3 = subscription
         self::saveSession($session);
 
         return ['success' => true, 'step' => $session['step']];
@@ -546,7 +551,42 @@ class WizardController
         }
 
         $session['contract_data'] = $contract_data;
-        $session['step']          = max($session['step'], 4);
+        $session['step']          = max($session['step'], 5);
+        self::saveSession($session);
+
+        return ['success' => true, 'step' => $session['step']];
+    }
+
+    // -------------------------------------------------------------------------
+    // Step 3 — Subscription (new_entity mode only)
+    // -------------------------------------------------------------------------
+
+    public static function saveSubscription(): void
+    {
+        header('Content-Type: application/json');
+        echo json_encode(self::saveSubscriptionAndReturn($_POST));
+        exit;
+    }
+
+    public static function saveSubscriptionAndReturn(array $input = []): array
+    {
+        if (empty($input)) {
+            $input = $_POST;
+        }
+
+        $session = self::getSession();
+
+        $subscription_data = [
+            'name'                      => trim($input['name'] ?? ''),
+            'active_editor_suscription' => (int)(bool)($input['active_editor_suscription'] ?? 0),
+            'cloud_client'              => (int)(bool)($input['cloud_client'] ?? 0),
+            'plugin_manageentities_subscriptionlevels_id'     => (int)($input['plugin_manageentities_subscriptionlevels_id'] ?? 0),
+            'begin_date'                => $input['begin_date'] !== '' ? $input['begin_date'] : null,
+            'end_date'                  => $input['end_date'] !== '' ? $input['end_date'] : null,
+        ];
+
+        $session['subscription_data'] = $subscription_data;
+        $session['step']              = max($session['step'], 4); // next is step 4 = contract
         self::saveSession($session);
 
         return ['success' => true, 'step' => $session['step']];
@@ -694,22 +734,24 @@ class WizardController
         }
 
         $management_data = [
-            'date_signature'            => $input['date_signature'],
-            'date_renewal'              => !empty($input['date_renewal']) ? $input['date_renewal'] : '',
-            'management'                => (int)($input['management'] ?? 0),
-            'contract_type'             => (int)($input['contract_type'] ?? 0),
-            'contract_added'            => (int)(bool)($input['contract_added'] ?? 0),
-            'show_on_global_gantt'      => (int)(bool)($input['show_on_global_gantt'] ?? 0),
-            'refacturable_costs'        => (int)(bool)($input['refacturable_costs'] ?? 0),
-            'moving_management'         => (int)(bool)($input['moving_management'] ?? 0),
-            'duration_moving'           => (int)($input['duration_moving'] ?? 0),
-            'active_editor_suscription' => (int)(bool)($input['active_editor_suscription'] ?? 0),
-            'cloud_client'              => (int)(bool)($input['cloud_client'] ?? 0),
-            'internet_publication'      => (int)(bool)($input['internet_publication'] ?? 0),
+            'date_signature'       => $input['date_signature'],
+            'date_renewal'         => !empty($input['date_renewal']) ? $input['date_renewal'] : '',
+            'management'           => (int)($input['management'] ?? 0),
+            'contract_type'        => (int)($input['contract_type'] ?? 0),
+            'contract_added'       => (int)(bool)($input['contract_added'] ?? 0),
+            'show_on_global_gantt' => (int)(bool)($input['show_on_global_gantt'] ?? 0),
+            'refacturable_costs'   => (int)(bool)($input['refacturable_costs'] ?? 0),
+            'moving_management'    => (int)(bool)($input['moving_management'] ?? 0),
+            'duration_moving'      => (int)($input['duration_moving'] ?? 0),
         ];
 
+        // active_editor_suscription and cloud_client come from the subscription step
+        $sub = $session['subscription_data'] ?? [];
+        $management_data['active_editor_suscription'] = (int)(bool)($sub['active_editor_suscription'] ?? 0);
+        $management_data['cloud_client']              = (int)(bool)($sub['cloud_client'] ?? 0);
+
         $session['management_data'] = $management_data;
-        $session['step']            = max($session['step'], 5);
+        $session['step']            = max($session['step'], 6);
         self::saveSession($session);
 
         return ['success' => true, 'step' => $session['step']];
@@ -844,7 +886,7 @@ class WizardController
 
         $contractDates = self::getContractDatesFromSession($session);
         $cfg = Config::getInstance();
-        TemplateRenderer::getInstance()->display('@manageentities/wizard/step5_intervention_block.html.twig', [
+        TemplateRenderer::getInstance()->display('@manageentities/wizard/step6_intervention_block.html.twig', [
             'idx'                  => $idx,
             'rand'                 => $rand,
             'is_day'               => $is_day,
@@ -1163,6 +1205,13 @@ class WizardController
             }
         }
 
+        // 1b. Publisher subscription (new_entity mode only)
+        $subscription_data = $session['subscription_data'] ?? [];
+        if ($session['wizard_mode'] !== 'existing_entity' && !empty($subscription_data)) {
+            $sub = new EditorSubscription();
+            $sub->add(array_merge($subscription_data, ['entities_id' => $entities_id]));
+        }
+
         // 2. Contacts
         $contact_ids = [];
         foreach (($session['contacts_data'] ?? []) as $idx => $cData) {
@@ -1442,7 +1491,7 @@ class WizardController
         }
 
         $step = (int)($_GET['step'] ?? $session['step']);
-        $step = max(1, min(5, $step));
+        $step = max(1, min(6, $step));
 
         $config  = Config::getInstance();
         $is_day  = ($config->fields['hourorday'] == Config::DAY);
@@ -1453,17 +1502,18 @@ class WizardController
         if ($session['wizard_mode'] === 'existing_entity') {
             $steps = [
                 1 => _n('Entity', 'Entities', 1),
-                3 => __('Contract', 'manageentities'),
-                4 => __('Management type', 'manageentities'),
-                5 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
+                4 => __('Contract', 'manageentities'),
+                5 => __('Management type', 'manageentities'),
+                6 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
             ];
         } else {
             $steps = [
                 1 => _n('Entity', 'Entities', 1),
                 2 => __('Contacts', 'manageentities'),
-                3 => __('Contract', 'manageentities'),
-                4 => __('Management type', 'manageentities'),
-                5 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
+                3 => __('Subscription', 'manageentities'),
+                4 => __('Contract', 'manageentities'),
+                5 => __('Management type', 'manageentities'),
+                6 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
             ];
         }
 
@@ -1505,9 +1555,10 @@ class WizardController
         return match ($step) {
             1 => 'entity',
             2 => 'contacts',
-            3 => 'contract',
-            4 => 'management',
-            5 => 'interventions',
+            3 => 'subscription',
+            4 => 'contract',
+            5 => 'management',
+            6 => 'interventions',
             default => 'entity',
         };
     }
@@ -1517,9 +1568,10 @@ class WizardController
         return match ($step) {
             1 => self::buildEntityVars($session, $rand),
             2 => self::buildContactsVars($session, $rand),
-            3 => self::buildContractVars($session, $rand),
-            4 => self::buildManagementVars($session, $rand, $is_day, $is_hour),
-            5 => self::buildInterventionsVars($session, $rand, $is_day),
+            3 => self::buildSubscriptionVars($session, $rand),
+            4 => self::buildContractVars($session, $rand),
+            5 => self::buildManagementVars($session, $rand, $is_day, $is_hour),
+            6 => self::buildInterventionsVars($session, $rand, $is_day),
             default => [],
         };
     }
@@ -1612,6 +1664,36 @@ class WizardController
                 fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false])
             ),
             'entities_html'    => self::buildSessionEntityHtml("contacts[{$idx}][entities_id]", $session),
+        ];
+    }
+
+    private static function buildSubscriptionVars(array $session, int $rand): array
+    {
+        $fields = $session['subscription_data'] ?? [];
+        $now    = date('Y-m-d');
+        $end_date_expired       = !empty($fields['end_date'])       && substr($fields['end_date'], 0, 10) < $now;
+        // Default "Referenced name" to the entity name if not yet filled
+        $sub_name = $fields['name'] ?? '';
+        if ($sub_name === '') {
+            $sub_name = $session['entity_data']['name'] ?? '';
+        }
+
+        $level_dropdown_html = self::buildDropdownHtml(
+            fn() => Dropdown::show(
+                SubscriptionLevel::class,
+                ['name' => 'plugin_manageentities_subscriptionlevels_id', 'value' => (int)($fields['plugin_manageentities_subscriptionlevels_id'] ?? 0)]
+            )
+        );
+
+        return [
+            'sub_name'                  => $sub_name,
+            'active_editor_suscription' => (int)($fields['active_editor_suscription'] ?? 0),
+            'cloud_client'              => (int)($fields['cloud_client'] ?? 0),
+            'plugin_manageentities_subscriptionlevels_id'     => (int)($fields['plugin_manageentities_subscriptionlevels_id'] ?? 0),
+            'begin_date'                => $fields['begin_date'] ?? '',
+            'end_date'                  => $fields['end_date'] ?? '',
+            'end_date_expired'          => $end_date_expired,
+            'level_dropdown_html'       => $level_dropdown_html,
         ];
     }
 
@@ -1742,14 +1824,11 @@ class WizardController
             'duration_moving_html'     => $duration_moving_html,
             'is_hour_mode'             => $is_hour,
             'is_day_price'             => $is_day,
-            'show_on_global_gantt'     => $is_first ? true : (bool)($fields['show_on_global_gantt'] ?? false),
-            'refacturable_costs'       => (bool)($fields['refacturable_costs'] ?? false),
-            'contract_added'           => !empty($session['documents_ids'])
-                                           || (bool)($fields['contract_added'] ?? false),
-            'active_editor_suscription'=> $is_first ? true : (bool)($fields['active_editor_suscription'] ?? false),
-            'cloud_client'             => (bool)($fields['cloud_client'] ?? false),
-            'internet_publication'     => (bool)($fields['internet_publication'] ?? false),
-            'moving_management'        => (bool)($fields['moving_management'] ?? false),
+            'show_on_global_gantt' => $is_first ? true : (bool)($fields['show_on_global_gantt'] ?? false),
+            'refacturable_costs'   => (bool)($fields['refacturable_costs'] ?? false),
+            'contract_added'       => !empty($session['documents_ids'])
+                                       || (bool)($fields['contract_added'] ?? false),
+            'moving_management'    => (bool)($fields['moving_management'] ?? false),
         ];
     }
 
@@ -1936,7 +2015,7 @@ class WizardController
         }
 
         ob_start();
-        TemplateRenderer::getInstance()->display('@manageentities/wizard/step5_criprices_section.html.twig', [
+        TemplateRenderer::getInstance()->display('@manageentities/wizard/step6_criprices_section.html.twig', [
             'intervention_idx' => $idx,
             'rand'             => $rand,
             'is_day'           => $is_day,
@@ -1973,7 +2052,7 @@ class WizardController
         }
 
         ob_start();
-        TemplateRenderer::getInstance()->display('@manageentities/wizard/step5_stakeholders_section.html.twig', [
+        TemplateRenderer::getInstance()->display('@manageentities/wizard/step6_stakeholders_section.html.twig', [
             'intervention_idx' => $idx,
             'rand'             => $rand,
             'stakeholders'     => $enriched,

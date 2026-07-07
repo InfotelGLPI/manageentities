@@ -1,0 +1,14 @@
+{#
+ Document block — rendered server-side and injected dynamically.
+ Variables: idx, rand, doccat_html, wizard_url
+ #}
+<div class="document-block d-flex align-items-center gap-2 mb-2 flex-wrap" data-idx="{{ idx }}">
+    <div style="min-width:200px">{{ doccat_html|raw }}</div>
+    <input type="file" name="documents[{{ idx }}][file]"
+           class="form-control" style="max-width:320px"
+           accept=".pdf,.doc,.docx,.xls,.xlsx,.odt,.ods">
+    <button type="button" class="btn btn-sm btn-outline-danger"
+            onclick="removeDocumentBlock({{ idx }})">
+        <i class="ti ti-trash"></i>
+    </button>
+</div>

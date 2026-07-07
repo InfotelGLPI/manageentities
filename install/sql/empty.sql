@@ -246,6 +246,34 @@ CREATE TABLE `glpi_plugin_manageentities_directhelpdesks` (
     KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_subscriptionlevels`;
+CREATE TABLE `glpi_plugin_manageentities_subscriptionlevels` (
+   `id`                int unsigned NOT NULL auto_increment,
+   `name`              varchar(255) collate utf8mb4_unicode_ci default NULL,
+   `comment`           text collate utf8mb4_unicode_ci,
+   `subscription_type` tinyint NOT NULL DEFAULT '0' COMMENT '0=all, 1=on_premise, 2=cloud',
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_editorsubscriptions`;
+CREATE TABLE `glpi_plugin_manageentities_editorsubscriptions` (
+   `id`                        int unsigned NOT NULL auto_increment,
+   `entities_id`               int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_entities (id)',
+   `name`                      varchar(255) collate utf8mb4_unicode_ci default NULL COMMENT 'Referenced name at the publisher',
+   `customer_account_id`       varchar(255) collate utf8mb4_unicode_ci default NULL COMMENT 'Publisher customer account ID',
+   `active_editor_suscription` tinyint NOT NULL DEFAULT '0',
+   `cloud_client`              tinyint NOT NULL DEFAULT '0',
+   `plugin_manageentities_subscriptionlevels_id`     int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_subscriptionlevels (id)',
+   `begin_date`                timestamp NULL DEFAULT NULL,
+   `end_date`                  timestamp NULL DEFAULT NULL,
+   `internet_publication`      tinyint NOT NULL DEFAULT '0' COMMENT 'Internet publication flag (migrated from contracts)',
+   `comment`                   text collate utf8mb4_unicode_ci,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`entities_id`),
+   KEY `entities_id` (`entities_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_directhelpdesks_tickets`;
 CREATE TABLE `glpi_plugin_manageentities_directhelpdesks_tickets` (
     `id` int unsigned NOT NULL auto_increment,

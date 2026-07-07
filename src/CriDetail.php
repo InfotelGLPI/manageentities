@@ -1662,6 +1662,15 @@ class CriDetail extends CommonDBTM
             changecontract();
         ");
 
+        // Publisher subscription for the ticket's entity
+        $sub              = EditorSubscription::getForEntity((int)$ticket->fields['entities_id']);
+        $now              = date('Y-m-d');
+        $sub_end_expired  = !empty($sub['end_date']) && substr($sub['end_date'], 0, 10) < $now;
+        $sub_level_name   = !empty($sub['plugin_manageentities_subscriptionlevels_id'])
+            ? \Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$sub['plugin_manageentities_subscriptionlevels_id'])
+            : '';
+        $sub_no_active    = !empty($sub) && !($sub['active_editor_suscription'] ?? 0) && !($sub['cloud_client'] ?? 0);
+
         TemplateRenderer::getInstance()->display('@manageentities/cridetail_for_ticket.html.twig', [
             'rand'                      => $rand,
             'can_edit'                  => $canEdit,
@@ -1685,6 +1694,17 @@ class CriDetail extends CommonDBTM
             'contract_type_dropdown'    => $contract_type_dropdown,
             'contract_link_dropdown'    => $contract_link_dropdown,
             'change_contract_script'    => $change_contract_script,
+            // Publisher subscription
+            'has_subscription'          => !empty($sub),
+            'sub_customer_account_id'   => $sub['customer_account_id'] ?? '',
+            'sub_name'                  => $sub['name'] ?? '',
+            'sub_active'                => (int)($sub['active_editor_suscription'] ?? 0),
+            'sub_cloud'                 => (int)($sub['cloud_client'] ?? 0),
+            'sub_begin_date'            => $sub['begin_date'] ?? '',
+            'sub_end_date'              => $sub['end_date'] ?? '',
+            'sub_end_expired'           => $sub_end_expired,
+            'sub_level_name'            => $sub_level_name,
+            'sub_no_active'             => $sub_no_active,
         ]);
     }
 
@@ -1793,17 +1813,16 @@ class CriDetail extends CommonDBTM
             echo "<span class='me-contract-end-date-data' style='display:none'>"
                 . htmlspecialchars($contract->fields['end_date'] ?? '', ENT_QUOTES)
                 . "</span>";
-            $pluginContract = new Contract();
-            $pluginContracts = $pluginContract->find(['contracts_id' => $contractSelected]);
-            $pluginData = reset($pluginContracts) ?: [];
+            // Subscription flags read from EditorSubscription (internet_publication now lives there)
+            $subData = EditorSubscription::getForEntity((int)$contract->fields['entities_id']);
             echo "<span class='me-contract-editor-sub-data' style='display:none'>"
-                . (int)($pluginData['active_editor_suscription'] ?? 0)
+                . (int)($subData['active_editor_suscription'] ?? 0)
                 . "</span>";
             echo "<span class='me-contract-cloud-data' style='display:none'>"
-                . (int)($pluginData['cloud_client'] ?? 0)
+                . (int)($subData['cloud_client'] ?? 0)
                 . "</span>";
             echo "<span class='me-contract-inet-data' style='display:none'>"
-                . (int)($pluginData['internet_publication'] ?? 0)
+                . (int)($subData['internet_publication'] ?? 0)
                 . "</span>";
         }
 

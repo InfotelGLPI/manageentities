@@ -49,6 +49,10 @@ switch ($action) {
         WizardController::renderContactBlock();
         break;
 
+    case 'save_subscription':
+        WizardController::saveSubscription();
+        break;
+
     case 'save_contract':
         WizardController::saveContract();
         break;

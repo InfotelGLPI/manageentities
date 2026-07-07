@@ -98,19 +98,27 @@ function wizardSaveStep(step, url) {
     clearStepErrors(step);
     var card = document.querySelector('#wizard-step-content .card');
 
-    var actionMap = {
-        1: 'save_entity',
-        2: 'save_contacts',
-        3: 'save_contract',
-        4: 'save_management_type',
-        5: 'save_interventions',
-    };
+    var actionMap = (typeof WIZARD_MODE !== 'undefined' && WIZARD_MODE === 'existing_entity')
+        ? {
+            1: 'save_entity',
+            4: 'save_contract',
+            5: 'save_management_type',
+            6: 'save_interventions',
+        }
+        : {
+            1: 'save_entity',
+            2: 'save_contacts',
+            3: 'save_subscription',
+            4: 'save_contract',
+            5: 'save_management_type',
+            6: 'save_interventions',
+        };
 
     var action = actionMap[step];
     if (!action) return;
 
-    // Step 3 — contract fields (text) then documents (files) as a second POST
-    if (step === 3) {
+    // Step 4 — contract fields (text) then documents (files) as a second POST
+    if (step === 4) {
         var fdContract = new FormData();
         var fdDocs     = new FormData();
         fdContract.append('action', action);
@@ -172,8 +180,9 @@ function handleStepResponse(step, res, url) {
         showStepErrors(step, res.errors || res.message || 'Error');
         return;
     }
-    // Server may skip steps (e.g. existing_entity mode jumps step 1 → step 3)
-    var nextStep = (res.step && res.step > step) ? res.step : (step < 5 ? step + 1 : step);
+    // Server may skip steps (e.g. existing_entity mode jumps step 1 → step 4)
+    var maxStep = (typeof WIZARD_MODE !== 'undefined' && WIZARD_MODE === 'existing_entity') ? 6 : 6;
+    var nextStep = (res.step && res.step > step) ? res.step : (step < maxStep ? step + 1 : step);
     reloadStep(nextStep, url);
 }
 

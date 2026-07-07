@@ -142,6 +142,7 @@ class Entity extends CommonGLPI
             if (Session::getCurrentInterface() != 'helpdesk' && $this->canview()) {
                 $tabs[11] = self::createTabEntry(__('References', 'manageentities'));
             }
+
             return $tabs;
         }
         return '';

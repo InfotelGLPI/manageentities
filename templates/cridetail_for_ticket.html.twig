@@ -62,6 +62,45 @@
             </div>
         </div>
 
+        {# Row 0b — publisher subscription #}
+        {% if has_subscription %}
+        <div class="row mb-3 align-items-start">
+            <label class="col-sm-3 col-form-label fw-bold text-muted">
+                <i class="ti ti-certificate me-1"></i>{{ __('Publisher subscription', 'manageentities') }}
+            </label>
+            <div class="col-sm-9 d-flex flex-wrap gap-2 pt-1">
+                {# Type badge — red if neither editor nor cloud active #}
+                {% if sub_no_active %}
+                    <span class="badge bg-danger-lt"><i class="ti ti-alert-circle me-1"></i>{{ __('No active subscription', 'manageentities') }}</span>
+                {% elseif sub_cloud %}
+                    <span class="badge bg-outline-info"><i class="ti ti-cloud me-1"></i>{{ __('Cloud client', 'manageentities') }}</span>
+                {% else %}
+                    <span class="badge bg-outline-success"><i class="ti ti-certificate me-1"></i>{{ __('Editor subscription', 'manageentities') }}</span>
+                {% endif %}
+                {% if sub_customer_account_id %}
+                    <span class="badge bg-outline-secondary"><i class="ti ti-id-badge me-1"></i>{{ sub_customer_account_id }}</span>
+                {% endif %}
+                {% if sub_name %}
+                    <span class="badge bg-outline-secondary">{{ sub_name }}</span>
+                {% endif %}
+                {% if sub_level_name %}
+                    <span class="badge bg-outline-secondary"><i class="ti ti-layer-group me-1"></i>{{ sub_level_name }}</span>
+                {% endif %}
+                {% if sub_begin_date %}
+                    <span class="badge bg-outline-secondary">
+                        <i class="ti ti-calendar-plus me-1"></i>{{ sub_begin_date|date('d/m/Y') }}
+                    </span>
+                {% endif %}
+                {% if sub_end_date %}
+                    <span class="badge {% if sub_end_expired %}bg-danger-lt{% else %}bg-outline-secondary{% endif %}">
+                        <i class="ti ti-calendar-event me-1"></i>{{ sub_end_date|date('d/m/Y') }}
+                        {% if sub_end_expired %}<i class="ti ti-alert-circle ms-1"></i>{% endif %}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
         {# Row 1 — with/without contract #}
         <div class="row mb-3 align-items-center">
             <label class="col-sm-3 col-form-label fw-bold">
@@ -105,15 +144,13 @@
             </div>
         </div>
 
-        {# Row plugin contract flags #}
+        {# Row plugin contract flags — internet publication only #}
         <div id="contract_flags_block" class="row mt-2 align-items-center"
              style="display:none">
             <label class="col-sm-3 col-form-label fw-bold text-muted">
                 <i class="ti ti-tags me-1"></i>{{ __('Options', 'manageentities') }}
             </label>
             <div class="col-sm-9 d-flex flex-wrap gap-2 pt-2">
-                <span id="contract_editor_sub_badge" class="badge bg-outline-secondary"></span>
-                <span id="contract_cloud_badge" class="badge bg-outline-secondary" style="display:none"></span>
                 <span id="contract_inet_badge" class="badge bg-outline-secondary" style="display:none"></span>
             </div>
         </div>
@@ -371,51 +408,19 @@
             }
         }
 
-        // Plugin contract flags
-        const flagsBlock     = document.getElementById('contract_flags_block');
-        const editorBadge    = document.getElementById('contract_editor_sub_badge');
-        const cloudBadge     = document.getElementById('contract_cloud_badge');
-        const inetBadge      = document.getElementById('contract_inet_badge');
-        if (flagsBlock && editorBadge && cloudBadge && inetBadge) {
-            const editorEl = container.querySelector('.me-contract-editor-sub-data');
-            const cloudEl  = container.querySelector('.me-contract-cloud-data');
-            const inetEl   = container.querySelector('.me-contract-inet-data');
-            const hasData = !!(editorEl || cloudEl || inetEl);
-            const editor = editorEl ? parseInt(editorEl.textContent.trim(), 10) : 0;
-            const cloud  = cloudEl  ? parseInt(cloudEl.textContent.trim(),  10) : 0;
-            const inet   = inetEl   ? parseInt(inetEl.textContent.trim(),   10) : 0;
-            if (hasData) {
-                // Active editor subscription — always shown, red when inactive
-                editorBadge.textContent = editor
-                    ? '{{ __('Active editor subscription', 'manageentities')|e('js') }}'
-                    : '{{ __('Inactive editor subscription', 'manageentities')|e('js') }}';
-                editorBadge.className = editor ? 'badge bg-outline-info' : 'badge bg-danger-lt';
-                // Cloud client — shown only when active
-                if (cloud) {
-                    cloudBadge.textContent = '{{ __('Cloud client', 'manageentities')|e('js') }}';
-                    cloudBadge.className = 'badge bg-outline-azure';
-                    cloudBadge.style.display = '';
-                } else {
-                    cloudBadge.textContent = '';
-                    cloudBadge.className = '';
-                    cloudBadge.style.display = 'none';
-                }
-                // Internet publication — shown only when active
-                if (inet) {
-                    inetBadge.textContent = '{{ __('Internet publication', 'manageentities')|e('js') }}';
-                    inetBadge.className = 'badge bg-outline-cyan';
-                    inetBadge.style.display = '';
-                } else {
-                    inetBadge.textContent = '';
-                    inetBadge.className = '';
-                    inetBadge.style.display = 'none';
-                }
+        // Plugin contract flags — internet publication only
+        const flagsBlock = document.getElementById('contract_flags_block');
+        const inetBadge  = document.getElementById('contract_inet_badge');
+        if (flagsBlock && inetBadge) {
+            const inetEl = container.querySelector('.me-contract-inet-data');
+            const inet   = inetEl ? parseInt(inetEl.textContent.trim(), 10) : 0;
+            if (inet) {
+                inetBadge.textContent = '{{ __('Internet publication', 'manageentities')|e('js') }}';
+                inetBadge.className = 'badge bg-outline-cyan';
+                inetBadge.style.display = '';
                 flagsBlock.style.display = '';
             } else {
-                editorBadge.textContent = '';
-                cloudBadge.textContent  = '';
-                cloudBadge.style.display = 'none';
-                inetBadge.textContent   = '';
+                inetBadge.textContent = '';
                 inetBadge.style.display = 'none';
                 flagsBlock.style.display = 'none';
             }
