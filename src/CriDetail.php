@@ -64,6 +64,14 @@ class CriDetail extends CommonDBTM
     {
         if ($item->getType() == 'Ticket'
             && Session::haveRight("plugin_manageentities_cri_create", READ)) {
+            $config    = Config::getInstance();
+            $parent_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+            if ($parent_id > 0) {
+                $sons = getSonsOf('glpi_entities', $parent_id);
+                if (!in_array((int)$item->fields['entities_id'], $sons)) {
+                    return '';
+                }
+            }
             return self::createTabEntry(Cri::getTypeName(1));
         } elseif ($item->getType() == ContractDay::class) {
             return self::createTabEntry(__('Linked interventions', 'manageentities'), self::countForContract($item));

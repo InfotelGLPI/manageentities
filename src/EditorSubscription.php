@@ -70,17 +70,13 @@ class EditorSubscription extends CommonDBTM
 
     function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item instanceof Entity) {
-            return self::createTabEntry(__('Publisher information', 'manageentities'), 0, $item::class, self::getIcon());
-        }
+        // Tab is registered directly in Entity::getTabNameForItem() as tab 6
+        // to ensure correct ordering before Interventions reports (tab 7).
         return '';
     }
 
     static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item instanceof Entity) {
-            self::showForEntity($item);
-        }
         return true;
     }
 
@@ -209,7 +205,7 @@ class EditorSubscription extends CommonDBTM
     // Display
     // -----------------------------------------------------------------------
 
-    static function showForEntity(Entity $item): void
+    static function showForEntity(\CommonGLPI $item): void
     {
         global $DB;
 
@@ -226,6 +222,7 @@ class EditorSubscription extends CommonDBTM
         // Exclude archived entities (wizard_archive_entities_id config)
         $config              = Config::getInstance();
         $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+        $archive_sons        = [];
         if ($archive_entities_id > 0) {
             $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
             unset($archive_sons[$archive_entities_id]);
@@ -255,16 +252,80 @@ class EditorSubscription extends CommonDBTM
             }
         }
 
+        // Entities without any subscription — scoped to wizard_default_entities_id, archives excluded
+        $missing_entities = [];
+        $parent_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        if ($parent_id > 0 && !empty($entity_ids)) {
+            $customer_sons = getSonsOf('glpi_entities', $parent_id);
+            unset($customer_sons[$parent_id]);
+
+            // Exclude archive root + all its sons (archive_sons already computed above, root was unset from it)
+            $excluded_ids = $archive_entities_id > 0
+                ? array_merge([$archive_entities_id], array_keys($archive_sons))
+                : [];
+
+            $concerned_ids = array_values(
+                array_diff(
+                    array_intersect($entity_ids, array_keys($customer_sons)),
+                    $excluded_ids
+                )
+            );
+
+            if (!empty($concerned_ids)) {
+                // Restrict to entities that have at least one active contract period
+                // matching the configured contract_states filter
+                $active_states = json_decode($config->fields['contract_states'] ?? '', true);
+                $active_states = is_array($active_states) && !empty($active_states)
+                    ? array_map('intval', $active_states)
+                    : [];
+
+                if (!empty($active_states)) {
+                    $active_iter = $DB->request([
+                        'SELECT'     => ['c.entities_id'],
+                        'DISTINCT'   => true,
+                        'FROM'       => 'glpi_plugin_manageentities_contractdays AS cd',
+                        'INNER JOIN' => [
+                            'glpi_contracts AS c' => ['FKEY' => ['cd' => 'contracts_id', 'c' => 'id']],
+                        ],
+                        'WHERE'      => [
+                            'c.entities_id' => $concerned_ids,
+                            'cd.plugin_manageentities_contractstates_id' => $active_states,
+                            'c.is_deleted'  => 0,
+                        ],
+                    ]);
+                    $with_active = array_column(iterator_to_array($active_iter), 'entities_id');
+                    $concerned_ids = array_values(array_intersect($concerned_ids, $with_active));
+                }
+
+                if (!empty($concerned_ids)) {
+                    // Single LEFT JOIN: entities in scope with no subscription row
+                    $name_iter = $DB->request([
+                        'SELECT'    => ['e.id', 'e.completename'],
+                        'FROM'      => 'glpi_entities AS e',
+                        'LEFT JOIN' => [
+                            self::getTable() . ' AS s' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
+                        ],
+                        'WHERE'     => ['e.id' => $concerned_ids, 's.id' => null],
+                        'ORDER'     => ['e.completename ASC'],
+                    ]);
+                    foreach ($name_iter as $row) {
+                        $missing_entities[] = $row['completename'];
+                    }
+                }
+            }
+        }
+
         $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
         $export_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php?export=subscriptions';
 
         TemplateRenderer::getInstance()->display(
             '@manageentities/entity/editorsubscription_tab.html.twig',
             [
-                'rows'        => $rows,
-                'can_edit'    => $can_edit,
-                'wizard_url'  => $wizard_url,
-                'export_url'  => $export_url,
+                'rows'             => $rows,
+                'can_edit'         => $can_edit,
+                'wizard_url'       => $wizard_url,
+                'export_url'       => $export_url,
+                'missing_entities' => $missing_entities,
             ]
         );
     }
@@ -421,6 +482,14 @@ class EditorSubscription extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'cloud_client',
             'name' => __('Cloud client', 'manageentities'),
+            'datatype' => 'bool',
+        ];
+
+        $tab[] = [
+            'id' => '13',
+            'table' => $this->getTable(),
+            'field' => 'internet_publication',
+            'name' => __('Internet publication', 'manageentities'),
             'datatype' => 'bool',
         ];
 

@@ -42,6 +42,7 @@ use Session;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\EditorSubscription;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
@@ -108,9 +109,12 @@ class Entity extends CommonGLPI
                 $tabs[5] = Contract::createTabEntry(_n('Contract', 'Contracts', 2));
             }
 
-//          if (Session::getCurrentInterface() != 'helpdesk') {
-//            $tabs[6] = self::createTabEntry(__('Client planning', 'manageentities'));
-//         }
+            $tabs[6] = EditorSubscription::createTabEntry(
+                __('Publisher information', 'manageentities'),
+                0,
+                self::class,
+                EditorSubscription::getIcon()
+            );
 
             // ajout de la configuration du plugin
             $config = Config::getInstance();
@@ -194,7 +198,10 @@ class Entity extends CommonGLPI
                     $Contract->showContracts($entities);
                     break;
                 case 6:
-//               $ManageentitiesEntity->showTickets($entities);
+                    foreach ($entities as $entity_id) {
+                        $entity->getFromDB($entity_id);
+                        EditorSubscription::showForEntity($entity);
+                    }
                     break;
                 case 7:
                     $config = Config::getInstance();

@@ -63,43 +63,45 @@
         </div>
 
         {# Row 0b — publisher subscription #}
-        {% if has_subscription %}
         <div class="row mb-3 align-items-start">
             <label class="col-sm-3 col-form-label fw-bold text-muted">
                 <i class="ti ti-certificate me-1"></i>{{ __('Publisher subscription', 'manageentities') }}
             </label>
             <div class="col-sm-9 d-flex flex-wrap gap-2 pt-1">
-                {# Type badge — red if neither editor nor cloud active #}
-                {% if sub_no_active %}
-                    <span class="badge bg-danger-lt"><i class="ti ti-alert-circle me-1"></i>{{ __('No active subscription', 'manageentities') }}</span>
-                {% elseif sub_cloud %}
-                    <span class="badge bg-outline-info"><i class="ti ti-cloud me-1"></i>{{ __('Cloud client', 'manageentities') }}</span>
+                {% if not has_subscription %}
+                    <span class="badge bg-danger-lt"><i class="ti ti-alert-triangle me-1"></i>{{ __('No publisher subscription', 'manageentities') }}</span>
                 {% else %}
-                    <span class="badge bg-outline-success"><i class="ti ti-certificate me-1"></i>{{ __('Editor subscription', 'manageentities') }}</span>
-                {% endif %}
-                {% if sub_customer_account_id %}
-                    <span class="badge bg-outline-secondary"><i class="ti ti-id-badge me-1"></i>{{ sub_customer_account_id }}</span>
-                {% endif %}
-                {% if sub_name %}
-                    <span class="badge bg-outline-secondary">{{ sub_name }}</span>
-                {% endif %}
-                {% if sub_level_name %}
-                    <span class="badge bg-outline-secondary"><i class="ti ti-layer-group me-1"></i>{{ sub_level_name }}</span>
-                {% endif %}
-                {% if sub_begin_date %}
-                    <span class="badge bg-outline-secondary">
-                        <i class="ti ti-calendar-plus me-1"></i>{{ sub_begin_date|date('d/m/Y') }}
-                    </span>
-                {% endif %}
-                {% if sub_end_date %}
-                    <span class="badge {% if sub_end_expired %}bg-danger-lt{% else %}bg-outline-secondary{% endif %}">
-                        <i class="ti ti-calendar-event me-1"></i>{{ sub_end_date|date('d/m/Y') }}
-                        {% if sub_end_expired %}<i class="ti ti-alert-circle ms-1"></i>{% endif %}
-                    </span>
+                    {# Type badge — red if neither editor nor cloud active #}
+                    {% if sub_no_active %}
+                        <span class="badge bg-danger-lt"><i class="ti ti-alert-circle me-1"></i>{{ __('No active subscription', 'manageentities') }}</span>
+                    {% elseif sub_cloud %}
+                        <span class="badge bg-outline-info"><i class="ti ti-cloud me-1"></i>{{ __('Cloud client', 'manageentities') }}</span>
+                    {% else %}
+                        <span class="badge bg-outline-success"><i class="ti ti-certificate me-1"></i>{{ __('Editor subscription', 'manageentities') }}</span>
+                    {% endif %}
+                    {% if sub_customer_account_id %}
+                        <span class="badge bg-outline-secondary"><i class="ti ti-id-badge me-1"></i>{{ sub_customer_account_id }}</span>
+                    {% endif %}
+                    {% if sub_name %}
+                        <span class="badge bg-outline-secondary">{{ sub_name }}</span>
+                    {% endif %}
+                    {% if sub_level_name %}
+                        <span class="badge bg-outline-secondary"><i class="ti ti-layer-group me-1"></i>{{ sub_level_name }}</span>
+                    {% endif %}
+                    {% if sub_begin_date %}
+                        <span class="badge bg-outline-secondary">
+                            <i class="ti ti-calendar-plus me-1"></i>{{ sub_begin_date|date('d/m/Y') }}
+                        </span>
+                    {% endif %}
+                    {% if sub_end_date %}
+                        <span class="badge {% if sub_end_expired %}bg-danger-lt{% else %}bg-outline-secondary{% endif %}">
+                            <i class="ti ti-calendar-event me-1"></i>{{ sub_end_date|date('d/m/Y') }}
+                            {% if sub_end_expired %}<i class="ti ti-alert-circle ms-1"></i>{% endif %}
+                        </span>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
-        {% endif %}
 
         {# Row 1 — with/without contract #}
         <div class="row mb-3 align-items-center">

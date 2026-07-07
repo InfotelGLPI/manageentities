@@ -104,7 +104,7 @@ class EditorSubscriptionWizard
                 'entity_dropdown_html'      => $entity_dropdown_html,
                 'sub_id'                    => $sub['id'] ?? 0,
                 'is_new_sub'                => empty($sub),
-                'name'                      => $sub_name,
+                'sub_name'                  => $sub_name,
                 'customer_account_id'       => $sub['customer_account_id'] ?? '',
                 'active_editor_suscription' => (int)($sub['active_editor_suscription'] ?? 0),
                 'cloud_client'              => (int)($sub['cloud_client'] ?? 0),
