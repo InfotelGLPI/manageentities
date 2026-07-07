@@ -79,7 +79,7 @@ class WizardDocumentTest extends DbTestCase
 
         $session = WizardController::getSession();
         $session['documents_ids'][] = $doc_id;
-        $_SESSION['manageentities_wizard'] = $session;
+        $_SESSION['manageentities_wizard'] = ['default' => $session];
 
         return $doc_id;
     }
@@ -118,7 +118,7 @@ class WizardDocumentTest extends DbTestCase
             $session['documents_ids'],
             fn($id) => (int)$id !== $doc_id
         ));
-        $_SESSION['manageentities_wizard'] = $session;
+        $_SESSION['manageentities_wizard'] = ['default' => $session];
 
         $updated = WizardController::getSession();
         $this->assertNotContains($doc_id, $updated['documents_ids']);

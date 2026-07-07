@@ -87,7 +87,8 @@ function clearStepErrors(step) {
 }
 
 function reloadStep(step, url) {
-    window.location.href = url.replace(/wizard\.php.*/, '') + '../front/addelements.form.php?step=' + step;
+    var widParam = (typeof WIZARD_ID !== 'undefined' && WIZARD_ID) ? '&wid=' + WIZARD_ID : '';
+    window.location.href = url.replace(/wizard\.php.*/, '') + '../front/addelements.form.php?step=' + step + widParam;
 }
 
 // -------------------------------------------------------------------------
@@ -246,7 +247,12 @@ function wizardPromptUnarchiveEntity(entitiesId, entityName, url) {
 
 function wizardBack(step, url) {
     if (step <= 1) return;
-    reloadStep(step - 1, url);
+    var sequence = (typeof WIZARD_MODE !== 'undefined' && WIZARD_MODE === 'existing_entity')
+        ? [1, 4, 5, 6]
+        : [1, 2, 3, 4, 5, 6];
+    var idx = sequence.indexOf(step);
+    var prevStep = idx > 0 ? sequence[idx - 1] : sequence[0];
+    reloadStep(prevStep, url);
 }
 
 function wizardChooseMode(mode, url) {
@@ -262,7 +268,8 @@ function wizardReset(url) {
         .catch(function () { reloadStep(1, url); });
 }
 
-function wizardLoadFinishSummary(url) {
+function wizardLoadFinishSummary(url, step) {
+    var currentStep = step || 6;
     var saveBtn = document.getElementById('btn-save-finish');
     if (saveBtn) {
         saveBtn.disabled = true;
@@ -277,7 +284,7 @@ function wizardLoadFinishSummary(url) {
                 saveBtn.innerHTML = '<i class="ti ti-check me-1"></i>' + saveBtn.dataset.label;
             }
             if (!res.success) {
-                showStepErrors(5, res.errors || res.message || 'Error');
+                showStepErrors(currentStep, res.errors || res.message || 'Error');
                 return;
             }
 
@@ -316,7 +323,7 @@ function wizardLoadFinishSummary(url) {
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="ti ti-check me-1"></i>' + (saveBtn.dataset.label || 'Save and finish');
             }
-            showStepErrors(5, _networkErrMsg(err));
+            showStepErrors(currentStep, _networkErrMsg(err));
         });
 }
 
@@ -608,7 +615,7 @@ function wizardLoadContractTemplate(randTpl, url) {
         .then(function (r) { return r.json(); })
         .then(function (res) {
             if (res.success && res.redirect) {
-                reloadStep(3, url);
+                reloadStep(res.step || 3, url);
             }
         });
 }

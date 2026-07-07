@@ -39,7 +39,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
         <h3 class="card-title mb-0">{{ __('Management type', 'manageentities') }}</h3>
     </div>
     <div class="card-body">
-        <div id="step4-errors" class="alert alert-danger d-none"></div>
+        <div id="step5-errors" class="alert alert-danger d-none"></div>
 
         <input type="hidden" name="contracts_id" value="{{ contracts_id }}">
         <input type="hidden" name="entities_id"  value="{{ entities_id }}">
@@ -68,7 +68,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-sm-6"></div>
             {% endif %}
 
-            {# Switches row 1 #}
+            {# Switches row 1 : GANTT / Refacturable / Contract imported / Movement management #}
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Show on GANTT', 'manageentities') }}</label>
                 <div class="form-check form-switch mt-2">
@@ -94,12 +94,9 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                         {% if contract_added %}checked{% endif %}>
                 </div>
             </div>
-            <div class="col-sm-3"></div>
             {% else %}
-            <div class="col-sm-6"></div>
+            <div class="col-sm-3"></div>
             {% endif %}
-
-            {# Switches row 2 #}
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
                 <div class="form-check form-switch mt-2">
@@ -116,6 +113,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                 <label class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
                 {{ duration_moving_html|raw }}
             </div>
+            <div class="col-sm-9"></div>
 
         </div>
     </div>

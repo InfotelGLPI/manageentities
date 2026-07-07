@@ -31,9 +31,7 @@
     <input type="hidden" name="action" value="save">
     <input type="hidden" name="sub_id" id="me_sub_id_{{ rand }}" value="{{ sub_id }}">
 
-    {# ------------------------------------------------------------------ #}
-    {# Entity                                                              #}
-    {# ------------------------------------------------------------------ #}
+    {# Entity #}
     <div class="card mb-3">
         <div class="card-header">
             <h3 class="card-title mb-0">
@@ -50,9 +48,7 @@
         </div>
     </div>
 
-    {# ------------------------------------------------------------------ #}
-    {# Subscription fields                                                 #}
-    {# ------------------------------------------------------------------ #}
+    {# Subscription fields #}
     <div class="card mb-3">
         <div class="card-header">
             <h3 class="card-title mb-0" id="me_sub_card_title_{{ rand }}">
@@ -66,102 +62,11 @@
         </div>
         <div class="card-body">
             <div class="row g-3" id="me-sub-fields-{{ rand }}">
-
-                {# Referenced name #}
-                <div class="col-sm-6">
-                    <label class="col-form-label fw-bold" for="me_sub_name_{{ rand }}">
-                        {{ __('Referenced name at the publisher', 'manageentities') }}
-                    </label>
-                    <input type="text" name="name" id="me_sub_name_{{ rand }}"
-                           class="form-control" value="{{ name }}">
-                </div>
-
-                {# Publisher customer account ID #}
-                <div class="col-sm-6">
-                    <label class="col-form-label fw-bold" for="me_sub_account_{{ rand }}">
-                        {{ __('Publisher customer account ID', 'manageentities') }}
-                    </label>
-                    <input type="text" name="customer_account_id" id="me_sub_account_{{ rand }}"
-                           class="form-control" value="{{ customer_account_id }}">
-                </div>
-
-                {# Subscription type — mutually exclusive #}
-                <input type="hidden" name="active_editor_suscription" value="0">
-                <input type="hidden" name="cloud_client" value="0">
-                <div class="col-sm-6">
-                    <label class="col-form-label fw-bold">{{ __('Subscription type', 'manageentities') }} <span class="text-danger">*</span></label>
-                    <div class="d-flex gap-3 mt-2">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="subscription_type" value="editor"
-                                   id="me_sub_type_editor_{{ rand }}" required
-                                   {% if not cloud_client %}checked{% endif %}>
-                            <label class="form-check-label" for="me_sub_type_editor_{{ rand }}">
-                                {{ __('Editor subscription', 'manageentities') }}
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="subscription_type" value="cloud"
-                                   id="me_sub_type_cloud_{{ rand }}"
-                                   {% if cloud_client %}checked{% endif %}>
-                            <label class="form-check-label" for="me_sub_type_cloud_{{ rand }}">
-                                {{ __('Cloud client', 'manageentities') }}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                {# Internet publication #}
-                <div class="col-sm-6">
-                    <label class="col-form-label fw-bold">{{ __('Internet publication', 'manageentities') }}</label>
-                    <div class="form-check form-switch mt-2">
-                        <input type="hidden" name="internet_publication" value="0">
-                        <input type="checkbox" class="form-check-input" name="internet_publication" value="1"
-                               id="me_sub_inet_{{ rand }}"
-                               {% if internet_publication or cloud_client %}checked{% endif %}>
-                    </div>
-                </div>
-
-                {# Subscription level — filtered by subscription type #}
-                <div class="col-sm-4">
-                    <label class="col-form-label fw-bold">{{ __('Subscription level', 'manageentities') }} <span class="text-danger">*</span></label>
-                    <select name="plugin_manageentities_subscriptionlevels_id" id="me_sub_level_{{ rand }}" class="form-select">
-                        <option value="0">{{ __('Select a level...', 'manageentities') }}</option>
-                        {% for level in all_levels %}
-                        <option value="{{ level.id }}"
-                                data-sub-type="{{ level.type }}"
-                                {% if level.id == plugin_manageentities_subscriptionlevels_id %}selected{% endif %}>
-                            {{ level.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col-12"></div>
-
-                {# Begin / End dates #}
-                <div class="col-sm-3">
-                    <label class="col-form-label fw-bold">{{ __('Start date', 'manageentities') }} <span class="text-danger">*</span></label>
-                    <input type="date" name="begin_date" id="me_sub_begin_{{ rand }}" class="form-control" required
-                           value="{{ begin_date ? begin_date|date('Y-m-d') : '' }}">
-                </div>
-                <div class="col-sm-3">
-                    <label class="col-form-label fw-bold">{{ __('End date', 'manageentities') }} <span class="text-danger">*</span></label>
-                    <input type="date" name="end_date" id="me_sub_end_{{ rand }}" class="form-control {% if end_date_expired %}border-danger{% endif %}" required
-                           value="{{ end_date ? end_date|date('Y-m-d') : '' }}">
-                    {% if end_date_expired %}
-                        <small class="text-danger"><i class="ti ti-alert-circle me-1"></i>{{ __('Expired', 'manageentities') }}</small>
-                    {% endif %}
-                </div>
-
-                {# Comment #}
-                <div class="col-sm-12">
-                    <label class="col-form-label fw-bold" for="me_sub_comment_{{ rand }}">
-                        {{ __('Comments') }}
-                    </label>
-                    <textarea name="comment" id="me_sub_comment_{{ rand }}"
-                              class="form-control" rows="3">{{ comment }}</textarea>
-                </div>
-
+                {% include '@manageentities/editorsubscription_fields.html.twig' with {
+                    fields_required: true,
+                    container_id: 'me-sub-fields-' ~ rand,
+                    load_entity_ajax: entities_id == 0
+                } %}
             </div>
         </div>
         <div class="card-footer d-flex gap-2 justify-content-between">
@@ -193,161 +98,8 @@
 </form>
 </div>
 
-<script>
-(function () {
-    var container    = document.getElementById('me-sub-fields-{{ rand }}');
-    var form         = document.getElementById('me-sub-form');
-    var radios       = container.querySelectorAll('input[name="subscription_type"]');
-    var hiddenActive = container.querySelector('input[type="hidden"][name="active_editor_suscription"]');
-    var hiddenCloud  = container.querySelector('input[type="hidden"][name="cloud_client"]');
-
-    var levelSelect = document.getElementById('me_sub_level_{{ rand }}');
-    var inetCheck   = document.getElementById('me_sub_inet_{{ rand }}');
-    // TYPE constants: 0=all, 1=on_premise, 2=cloud
-    var TYPE_ALL = 0, TYPE_ON_PREMISE = 1, TYPE_CLOUD = 2;
-
-    function filterLevels() {
-        var checked = container.querySelector('input[name="subscription_type"]:checked');
-        if (!levelSelect || !checked) { return; }
-        var targetType = (checked.value === 'cloud') ? TYPE_CLOUD : TYPE_ON_PREMISE;
-        var currentVal = levelSelect.value;
-        var firstVisible = null;
-        Array.prototype.forEach.call(levelSelect.options, function (opt) {
-            if (opt.value === '0') { return; } // keep placeholder
-            var t = parseInt(opt.getAttribute('data-sub-type'), 10);
-            var visible = (t === TYPE_ALL || t === targetType);
-            opt.hidden = !visible;
-            opt.disabled = !visible;
-            if (visible && firstVisible === null) { firstVisible = opt.value; }
-        });
-        // If current selection is now hidden, reset to placeholder
-        var selOpt = levelSelect.querySelector('option[value="' + currentVal + '"]');
-        if (!selOpt || selOpt.hidden) {
-            levelSelect.value = '0';
-        }
-    }
-
-    function syncHiddens() {
-        var checked = container.querySelector('input[name="subscription_type"]:checked');
-        if (!checked) { return; }
-        hiddenActive.value = (checked.value === 'editor') ? '1' : '0';
-        hiddenCloud.value  = (checked.value === 'cloud')  ? '1' : '0';
-        if (inetCheck) {
-            if (checked.value === 'cloud') {
-                inetCheck.checked = true;
-                inetCheck.style.pointerEvents = 'none';
-                inetCheck.style.opacity = '0.6';
-            } else {
-                inetCheck.style.pointerEvents = '';
-                inetCheck.style.opacity = '';
-            }
-        }
-        filterLevels();
-    }
-    radios.forEach(function (r) { r.addEventListener('change', syncHiddens); });
-    syncHiddens();
-
-    {% if entities_id == 0 %}
-    var nameInput    = container.querySelector('input[name="name"]');
-    var accountInput = document.getElementById('me_sub_account_{{ rand }}');
-    var commentInput = document.getElementById('me_sub_comment_{{ rand }}');
-    var entitySelect = document.querySelector('select[name="entities_id"]');
-    var subIdInput   = document.getElementById('me_sub_id_{{ rand }}');
-    var beginInput   = document.getElementById('me_sub_begin_{{ rand }}');
-    var endInput     = document.getElementById('me_sub_end_{{ rand }}');
-    var cardTitle    = document.getElementById('me_sub_card_title_{{ rand }}');
-    var deleteBtn    = document.getElementById('me_sub_delete_btn_{{ rand }}');
-    var submitLabel  = document.getElementById('me_sub_submit_label_{{ rand }}');
-    var ajaxUrl      = '{{ (constant('PLUGIN_MANAGEENTITIES_WEBDIR') ~ '/ajax/getSubscription.php')|e('js') }}';
-
-    var labelCreate  = '{{ __('Create publisher subscription', 'manageentities')|e('js') }}';
-    var labelUpdate  = '{{ __('Update publisher subscription', 'manageentities')|e('js') }}';
-    var labelAdd     = '{{ __('Add')|e('js') }}';
-    var labelUpdate2 = '{{ __('Update')|e('js') }}';
-    var iconCert     = '<i class="ti ti-certificate me-2"></i>';
-
-    function setFormMode(isNew) {
-        if (cardTitle) { cardTitle.innerHTML = iconCert + (isNew ? labelCreate : labelUpdate); }
-        if (submitLabel) { submitLabel.textContent = isNew ? labelAdd : labelUpdate2; }
-        if (deleteBtn) { deleteBtn.style.display = isNew ? 'none' : ''; }
-    }
-
-    function fillNameFromEntity(entityName) {
-        if (nameInput && nameInput.value.trim() === '') {
-            nameInput.value = entityName;
-        }
-    }
-
-    function loadSubscription(entitiesId) {
-        if (!entitiesId || entitiesId === '0') {
-            // Reset to create mode
-            if (subIdInput) { subIdInput.value = '0'; }
-            setFormMode(true);
-            return;
-        }
-        $.post(ajaxUrl, { entities_id: entitiesId }, function (data) {
-            if (data.found) {
-                // Pre-fill all fields from existing subscription
-                if (subIdInput)  { subIdInput.value   = data.sub_id; }
-                if (nameInput)   { nameInput.value    = data.name; }
-                if (accountInput){ accountInput.value = data.customer_account_id; }
-                if (beginInput)  { beginInput.value   = data.begin_date; }
-                if (endInput)    { endInput.value      = data.end_date; }
-                if (commentInput){ commentInput.value  = data.comment; }
-                // Set subscription type radio
-                var typeVal = data.cloud_client ? 'cloud' : 'editor';
-                var radio = container.querySelector('input[name="subscription_type"][value="' + typeVal + '"]');
-                if (radio) { radio.checked = true; }
-                // Set internet_publication before syncHiddens (cloud will override anyway)
-                if (inetCheck) { inetCheck.checked = !!data.internet_publication; }
-                // Set level (after syncHiddens re-filters)
-                syncHiddens();
-                if (levelSelect) { levelSelect.value = String(data.plugin_manageentities_subscriptionlevels_id); }
-                setFormMode(false);
-            } else {
-                // New subscription — just fill entity name
-                if (subIdInput) { subIdInput.value = '0'; }
-                var opt = entitySelect ? entitySelect.options[entitySelect.selectedIndex] : null;
-                if (opt && opt.value && opt.value !== '0') {
-                    var parts = opt.text.trim().split(' > ');
-                    fillNameFromEntity(parts[parts.length - 1].trim());
-                }
-                setFormMode(true);
-            }
-        }, 'json');
-    }
-
-    if (entitySelect) {
-        entitySelect.addEventListener('change', function () {
-            loadSubscription(this.value);
-        });
-        $(entitySelect).on('select2:select', function () {
-            loadSubscription($(this).val());
-        });
-        $(entitySelect).on('select2:clear', function () {
-            loadSubscription('0');
-        });
-    }
-    {% endif %}
-
-    // Validate plugin_manageentities_subscriptionlevels_id
-    if (form) {
-        form.addEventListener('submit', function (e) {
-            if (levelSelect && (!levelSelect.value || levelSelect.value === '0')) {
-                e.preventDefault();
-                levelSelect.classList.add('is-invalid');
-                var fb = levelSelect.parentNode.querySelector('.invalid-feedback');
-                if (!fb) {
-                    fb = document.createElement('div');
-                    fb.className = 'invalid-feedback';
-                    fb.textContent = '{{ __('Subscription level is required.', 'manageentities')|e('js') }}';
-                    levelSelect.parentNode.appendChild(fb);
-                }
-                levelSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else if (levelSelect) {
-                levelSelect.classList.remove('is-invalid');
-            }
-        });
-    }
-})();
-</script>
+{% include '@manageentities/editorsubscription_fields_js.html.twig' with {
+    container_id: 'me-sub-fields-' ~ rand,
+    fields_required: true,
+    load_entity_ajax: entities_id == 0
+} %}

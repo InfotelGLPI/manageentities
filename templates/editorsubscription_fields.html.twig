@@ -1,0 +1,126 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+ -------------------------------------------------------------------------
+ Shared subscription fields partial — included by:
+   - wizard/step3_subscription.html.twig  (new_entity wizard, no required attrs)
+   - editorsubscription_wizard.html.twig  (standalone form, required attrs)
+
+ Variables:
+   rand, sub_name, customer_account_id, active_editor_suscription, cloud_client,
+   internet_publication, plugin_manageentities_subscriptionlevels_id, all_levels,
+   begin_date, end_date, end_date_expired, comment,
+   fields_required  — true in standalone form, false in wizard step
+ #}
+
+{# Referenced name + customer account ID #}
+<div class="col-sm-6">
+    <label class="col-form-label fw-bold" for="me_sub_name_{{ rand }}">
+        {{ __('Referenced name at the publisher', 'manageentities') }}
+    </label>
+    <input type="text" name="name" id="me_sub_name_{{ rand }}"
+           class="form-control" value="{{ sub_name }}">
+</div>
+<div class="col-sm-6">
+    <label class="col-form-label fw-bold" for="me_sub_account_{{ rand }}">
+        {{ __('Publisher customer account ID', 'manageentities') }}
+    </label>
+    <input type="text" name="customer_account_id" id="me_sub_account_{{ rand }}"
+           class="form-control" value="{{ customer_account_id }}">
+</div>
+
+{# Subscription type — mutually exclusive radio buttons #}
+<input type="hidden" name="active_editor_suscription" value="0">
+<input type="hidden" name="cloud_client" value="0">
+<div class="col-sm-6">
+    <label class="col-form-label fw-bold">
+        {{ __('Subscription type', 'manageentities') }}
+        {% if fields_required %}<span class="text-danger">*</span>{% endif %}
+    </label>
+    <div class="d-flex gap-3 mt-2">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="subscription_type" value="editor"
+                   id="me_sub_type_editor_{{ rand }}"
+                   {% if fields_required %}required{% endif %}
+                   {% if not cloud_client %}checked{% endif %}>
+            <label class="form-check-label" for="me_sub_type_editor_{{ rand }}">
+                {{ __('Editor subscription', 'manageentities') }}
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="subscription_type" value="cloud"
+                   id="me_sub_type_cloud_{{ rand }}"
+                   {% if cloud_client %}checked{% endif %}>
+            <label class="form-check-label" for="me_sub_type_cloud_{{ rand }}">
+                {{ __('Cloud client', 'manageentities') }}
+            </label>
+        </div>
+    </div>
+</div>
+
+{# Internet publication #}
+<div class="col-sm-6">
+    <label class="col-form-label fw-bold">{{ __('Internet publication', 'manageentities') }}</label>
+    <div class="form-check form-switch mt-2">
+        <input type="hidden" name="internet_publication" value="0">
+        <input type="checkbox" class="form-check-input" name="internet_publication" value="1"
+               id="me_sub_inet_{{ rand }}"
+               {% if internet_publication or cloud_client %}checked{% endif %}>
+    </div>
+</div>
+
+{# Subscription level — filtered by type via JS #}
+<div class="col-sm-4">
+    <label class="col-form-label fw-bold">
+        {{ __('Subscription level', 'manageentities') }}
+        {% if fields_required %}<span class="text-danger">*</span>{% endif %}
+    </label>
+    <select name="plugin_manageentities_subscriptionlevels_id"
+            id="me_sub_level_{{ rand }}" class="form-select">
+        <option value="0">{{ __('Select a level...', 'manageentities') }}</option>
+        {% for level in all_levels %}
+        <option value="{{ level.id }}"
+                data-sub-type="{{ level.type }}"
+                {% if level.id == plugin_manageentities_subscriptionlevels_id %}selected{% endif %}>
+            {{ level.name }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="col-12"></div>
+
+{# Start / End dates #}
+<div class="col-sm-3">
+    <label class="col-form-label fw-bold" for="me_sub_begin_{{ rand }}">
+        {{ __('Start date', 'manageentities') }}
+        {% if fields_required %}<span class="text-danger">*</span>{% endif %}
+    </label>
+    <input type="date" name="begin_date" id="me_sub_begin_{{ rand }}" class="form-control"
+           {% if fields_required %}required{% endif %}
+           value="{{ begin_date ? begin_date|date('Y-m-d') : '' }}">
+</div>
+<div class="col-sm-3">
+    <label class="col-form-label fw-bold" for="me_sub_end_{{ rand }}">
+        {{ __('End date', 'manageentities') }}
+        {% if fields_required %}<span class="text-danger">*</span>{% endif %}
+    </label>
+    <input type="date" name="end_date" id="me_sub_end_{{ rand }}"
+           class="form-control {% if end_date_expired %}border-danger{% endif %}"
+           {% if fields_required %}required{% endif %}
+           value="{{ end_date ? end_date|date('Y-m-d') : '' }}">
+    {% if end_date_expired %}
+        <small class="text-danger"><i class="ti ti-alert-circle me-1"></i>{{ __('Expired', 'manageentities') }}</small>
+    {% endif %}
+</div>
+<div class="col-sm-6"></div>
+
+{# Comment #}
+<div class="col-sm-12">
+    <label class="col-form-label fw-bold" for="me_sub_comment_{{ rand }}">
+        {{ __('Comments') }}
+    </label>
+    <textarea name="comment" id="me_sub_comment_{{ rand }}"
+              class="form-control" rows="3">{{ comment }}</textarea>
+</div>

@@ -275,6 +275,14 @@ class EditorSubscription extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        if ((int)($input['entities_id'] ?? 0) === 0) {
+            Session::addMessageAfterRedirect(
+                __('Publisher subscriptions cannot be created for the root entity.', 'manageentities'),
+                false,
+                ERROR
+            );
+            return false;
+        }
         return $this->prepareInput($input);
     }
 

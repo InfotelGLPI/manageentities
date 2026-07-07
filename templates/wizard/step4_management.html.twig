@@ -68,7 +68,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
             <div class="col-sm-6"></div>
             {% endif %}
 
-            {# Switches row 1 #}
+            {# Switches row 1 : GANTT / Refacturable / Contract imported / Movement management #}
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Show on GANTT', 'manageentities') }}</label>
                 <div class="form-check form-switch mt-2">
@@ -94,12 +94,28 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                         {% if contract_added %}checked{% endif %}>
                 </div>
             </div>
-            <div class="col-sm-3"></div>
             {% else %}
-            <div class="col-sm-6"></div>
+            <div class="col-sm-3"></div>
             {% endif %}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="hidden" name="moving_management" value="0">
+                    <input type="checkbox" class="form-check-input" name="moving_management" value="1"
+                        id="moving_management_{{ rand }}"
+                        {% if moving_management %}checked{% endif %}
+                        onchange="document.getElementById('movement_block_{{ rand }}').style.display = this.checked ? '' : 'none'">
+                </div>
+            </div>
 
-            {# Switches row 2 #}
+            {# Duration of moving (conditional) #}
+            <div class="col-sm-3" id="movement_block_{{ rand }}"{% if not moving_management %} style="display:none"{% endif %}>
+                <label class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
+                {{ duration_moving_html|raw }}
+            </div>
+            <div class="col-sm-9"></div>
+
+            {# Switches row 2 : Active editor subscription / Cloud client #}
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Active editor subscription', 'manageentities') }}</label>
                 <div class="form-check form-switch mt-2">
@@ -118,22 +134,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                         {% if cloud_client %}checked{% endif %}>
                 </div>
             </div>
-            <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
-                <div class="form-check form-switch mt-2">
-                    <input type="hidden" name="moving_management" value="0">
-                    <input type="checkbox" class="form-check-input" name="moving_management" value="1"
-                        id="moving_management_{{ rand }}"
-                        {% if moving_management %}checked{% endif %}
-                        onchange="document.getElementById('movement_block_{{ rand }}').style.display = this.checked ? '' : 'none'">
-                </div>
-            </div>
-
-            {# Duration of moving (conditional) #}
-            <div class="col-sm-3" id="movement_block_{{ rand }}"{% if not moving_management %} style="display:none"{% endif %}>
-                <label class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
-                {{ duration_moving_html|raw }}
-            </div>
+            <div class="col-sm-6"></div>
 
         </div>
     </div>

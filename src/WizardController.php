@@ -60,7 +60,18 @@ if (!defined('GLPI_ROOT')) {
  */
 class WizardController
 {
-    private const SESSION_KEY = 'manageentities_wizard';
+    private const SESSION_KEY     = 'manageentities_wizard';
+    private const SESSION_KEY_MAP = 'manageentities_wizard_map'; // wid → slot index
+
+    // Flags that neutralise HTML special chars in JSON output, preventing XSS
+    // when Content-Type is application/json (Psalm TaintedTextWithQuotes rule)
+    private const JSON_FLAGS = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR;
+
+    private static function jsonOut(mixed $data): never
+    {
+        echo json_encode($data, self::JSON_FLAGS);
+        exit;
+    }
 
     // -------------------------------------------------------------------------
     // Session helpers
@@ -84,18 +95,58 @@ class WizardController
         ];
     }
 
+    // -------------------------------------------------------------------------
+    // Wizard-ID helpers — one isolated session slot per browser tab
+    // -------------------------------------------------------------------------
+
+    /**
+     * Generate a new unique wizard ID (URL-safe, 12 hex chars).
+     */
+    public static function generateWizardId(): string
+    {
+        return bin2hex(random_bytes(6));
+    }
+
+    /**
+     * Resolve the active wizard ID from GET > POST > 'default'.
+     * 'default' is used by unit/integration tests that call the static
+     * methods directly without going through the HTTP layer.
+     */
+    public static function currentWizardId(): string
+    {
+        $wid = $_GET['wid'] ?? $_POST['wid'] ?? '';
+        return (preg_match('/^[0-9a-f]{12}$/', $wid) === 1) ? $wid : 'default';
+    }
+
     public static function getSession(): array
     {
+        $wid = self::currentWizardId();
+
         if (!isset($_SESSION[self::SESSION_KEY]) || !is_array($_SESSION[self::SESSION_KEY])) {
-            $_SESSION[self::SESSION_KEY] = self::buildDefaultSession();
+            $_SESSION[self::SESSION_KEY] = [];
         }
-        $_SESSION[self::SESSION_KEY] = array_merge(self::buildDefaultSession(), $_SESSION[self::SESSION_KEY]);
-        return $_SESSION[self::SESSION_KEY];
+        // Legacy flat structure (tests set $_SESSION['manageentities_wizard'] directly)
+        if (isset($_SESSION[self::SESSION_KEY]['step']) || isset($_SESSION[self::SESSION_KEY]['wizard_mode'])) {
+            // Migrate flat → keyed on first access
+            $_SESSION[self::SESSION_KEY] = ['default' => $_SESSION[self::SESSION_KEY]];
+        }
+        if (!isset($_SESSION[self::SESSION_KEY][$wid]) || !is_array($_SESSION[self::SESSION_KEY][$wid])) {
+            $_SESSION[self::SESSION_KEY][$wid] = self::buildDefaultSession();
+        }
+        $_SESSION[self::SESSION_KEY][$wid] = array_merge(
+            self::buildDefaultSession(),
+            $_SESSION[self::SESSION_KEY][$wid]
+        );
+        return $_SESSION[self::SESSION_KEY][$wid];
     }
 
     private static function saveSession(array $data): void
     {
-        $_SESSION[self::SESSION_KEY] = $data;
+        $wid = self::currentWizardId();
+        if (!isset($_SESSION[self::SESSION_KEY]) || !is_array($_SESSION[self::SESSION_KEY])) {
+            $_SESSION[self::SESSION_KEY] = [];
+        }
+        $_SESSION[self::SESSION_KEY][$wid] = $data;
     }
 
     // -------------------------------------------------------------------------
@@ -132,6 +183,26 @@ class WizardController
             $errors['name'] = __('Name is required', 'manageentities');
         }
 
+        if (empty(trim($input['num'] ?? ''))) {
+            $errors['num'] = __('Contract number is required', 'manageentities');
+        }
+
+        if (empty(trim($input['begin_date'] ?? ''))) {
+            $errors['begin_date'] = __('Begin date is required', 'manageentities');
+        }
+
+        if ((int)($input['duration'] ?? 0) <= 0) {
+            $errors['duration'] = __('Duration is required', 'manageentities');
+        }
+
+        if ((int)($input['contracttypes_id'] ?? 0) <= 0) {
+            $errors['contracttypes_id'] = __('Contract type is required', 'manageentities');
+        }
+
+        if ((int)($input['states_id'] ?? 0) <= 0) {
+            $errors['states_id'] = __('Status is required', 'manageentities');
+        }
+
         $num = trim($input['num'] ?? '');
         if ($num !== '' && $DB !== null) {
             $exists = countElementsInTable(\Contract::getTable(), ['num' => $num]) > 0;
@@ -156,7 +227,7 @@ class WizardController
             $errors['end_date'] = __('End date is required', 'manageentities');
         }
         if (empty($input['plugin_manageentities_contractstates_id'] ?? 0)) {
-            $errors['plugin_manageentities_contractstates_id'] = __('State is required', 'manageentities');
+            $errors['plugin_manageentities_contractstates_id'] = __('Status is required', 'manageentities');
         }
         if (!isset($input['nbday']) || $input['nbday'] === '' || (float)$input['nbday'] < 0) {
             $errors['nbday'] = __('Initial credit is required', 'manageentities');
@@ -183,8 +254,7 @@ class WizardController
     public static function unarchiveEntity(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::unarchiveEntityAndReturn($_POST));
-        exit;
+        self::jsonOut(self::unarchiveEntityAndReturn($_POST));
     }
 
     public static function unarchiveEntityAndReturn(array $input = []): array
@@ -223,10 +293,12 @@ class WizardController
 
     public static function renderModeChoice(): void
     {
-        $wizard_url        = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php';
+        $wid               = self::currentWizardId();
+        $wizard_url        = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid;
         $subscription_url  = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
         TemplateRenderer::getInstance()->display('@manageentities/wizard/mode_choice.html.twig', [
             'wizard_url'       => $wizard_url,
+            'wizard_id'        => $wid,
             'subscription_url' => $subscription_url,
         ]);
     }
@@ -234,8 +306,7 @@ class WizardController
     public static function chooseMode(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::chooseModeAndReturn($_POST));
-        exit;
+        self::jsonOut(self::chooseModeAndReturn($_POST));
     }
 
     public static function chooseModeAndReturn(array $input = []): array
@@ -262,11 +333,10 @@ class WizardController
         header('Content-Type: application/json');
         $session = self::getSession();
         if ($session['wizard_mode'] === 'existing_entity') {
-            echo json_encode(self::saveSelectEntityAndReturn($_POST));
+            self::jsonOut(self::saveSelectEntityAndReturn($_POST));
         } else {
-            echo json_encode(self::saveEntityAndReturn($_POST));
+            self::jsonOut(self::saveEntityAndReturn($_POST));
         }
-        exit;
     }
 
     public static function saveSelectEntityAndReturn(array $input = []): array
@@ -389,8 +459,7 @@ class WizardController
     public static function saveContacts(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::saveContactsAndReturn($_POST));
-        exit;
+        self::jsonOut(self::saveContactsAndReturn($_POST));
     }
 
     public static function saveContactsAndReturn(array $input = []): array
@@ -475,13 +544,11 @@ class WizardController
         header('Content-Type: application/json');
         $contracts_id = (int)($_POST['contracts_id'] ?? 0);
         if ($contracts_id <= 0) {
-            echo json_encode(['success' => false]);
-            exit;
+            self::jsonOut(['success' => false]);
         }
         $contract = new \Contract();
         if (!$contract->getFromDB($contracts_id) || empty($contract->fields['is_template'])) {
-            echo json_encode(['success' => false]);
-            exit;
+            self::jsonOut(['success' => false]);
         }
         $f = $contract->fields;
 
@@ -497,8 +564,7 @@ class WizardController
         ];
         self::saveSession($session);
 
-        echo json_encode(['success' => true, 'redirect' => true]);
-        exit;
+        self::jsonOut(['success' => true, 'redirect' => true, 'step' => 4]);
     }
 
     // -------------------------------------------------------------------------
@@ -508,8 +574,7 @@ class WizardController
     public static function saveContract(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::saveContractAndReturn($_POST));
-        exit;
+        self::jsonOut(self::saveContractAndReturn($_POST));
     }
 
     public static function saveContractAndReturn(array $input = []): array
@@ -564,8 +629,7 @@ class WizardController
     public static function saveSubscription(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::saveSubscriptionAndReturn($_POST));
-        exit;
+        self::jsonOut(self::saveSubscriptionAndReturn($_POST));
     }
 
     public static function saveSubscriptionAndReturn(array $input = []): array
@@ -576,13 +640,31 @@ class WizardController
 
         $session = self::getSession();
 
+        $cloud_client      = (int)(bool)($input['cloud_client'] ?? 0);
+        $active_sub        = (int)(bool)($input['active_editor_suscription'] ?? 0);
+        $name              = trim($input['name'] ?? '');
+        $begin_date        = ($input['begin_date'] ?? '') !== '' ? $input['begin_date'] : null;
+
+        // Only store subscription data if the user actually filled something meaningful
+        $has_content = $active_sub || $cloud_client || $name !== '' || $begin_date !== null;
+
+        if (!$has_content) {
+            $session['subscription_data'] = [];
+            $session['step']              = max($session['step'], 4);
+            self::saveSession($session);
+            return ['success' => true, 'step' => $session['step']];
+        }
+
         $subscription_data = [
-            'name'                      => trim($input['name'] ?? ''),
-            'active_editor_suscription' => (int)(bool)($input['active_editor_suscription'] ?? 0),
-            'cloud_client'              => (int)(bool)($input['cloud_client'] ?? 0),
-            'plugin_manageentities_subscriptionlevels_id'     => (int)($input['plugin_manageentities_subscriptionlevels_id'] ?? 0),
-            'begin_date'                => $input['begin_date'] !== '' ? $input['begin_date'] : null,
-            'end_date'                  => $input['end_date'] !== '' ? $input['end_date'] : null,
+            'name'                                        => $name,
+            'customer_account_id'                         => trim($input['customer_account_id'] ?? ''),
+            'active_editor_suscription'                   => $active_sub,
+            'cloud_client'                                => $cloud_client,
+            'internet_publication'                        => $cloud_client ? 1 : (int)(bool)($input['internet_publication'] ?? 0),
+            'plugin_manageentities_subscriptionlevels_id' => (int)($input['plugin_manageentities_subscriptionlevels_id'] ?? 0),
+            'begin_date'                                  => $begin_date,
+            'end_date'                                    => ($input['end_date'] ?? '') !== '' ? $input['end_date'] : null,
+            'comment'                                     => trim($input['comment'] ?? ''),
         ];
 
         $session['subscription_data'] = $subscription_data;
@@ -646,8 +728,7 @@ class WizardController
         $fileErrors   = $_FILES['documents']['error']    ?? [];
 
         if (empty($fileNames)) {
-            echo json_encode(['success' => true, 'added' => 0]);
-            exit;
+            self::jsonOut(['success' => true, 'added' => 0]);
         }
 
         $list = [];
@@ -702,7 +783,7 @@ class WizardController
             self::saveSession($session);
         }
 
-        echo json_encode([
+        self::jsonOut([
             'success' => empty($errors),
             'added'   => $added,
             'errors'  => $errors,
@@ -717,8 +798,7 @@ class WizardController
     public static function saveManagementType(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::saveManagementTypeAndReturn($_POST));
-        exit;
+        self::jsonOut(self::saveManagementTypeAndReturn($_POST));
     }
 
     public static function saveManagementTypeAndReturn(array $input = []): array
@@ -764,8 +844,7 @@ class WizardController
     public static function saveInterventions(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::saveInterventionsAndReturn($_POST));
-        exit;
+        self::jsonOut(self::saveInterventionsAndReturn($_POST));
     }
 
     public static function saveInterventionsAndReturn(array $input = []): array
@@ -831,8 +910,7 @@ class WizardController
 
         $validation = self::validateInterventionInput($iInput);
         if (!$validation['valid']) {
-            echo json_encode(['success' => false, 'errors' => $validation['errors']]);
-            exit;
+            self::jsonOut(['success' => false, 'errors' => $validation['errors']]);
         }
 
         $existing = $session['interventions_data'][$idx] ?? [];
@@ -866,7 +944,7 @@ class WizardController
         $criprices_html    = self::buildCriPricesSectionHtml($idx, $session['interventions_data'][$idx], $rand, $is_day);
         $stakeholders_html = self::buildStakeholdersSectionHtml($idx, $session['interventions_data'][$idx], $rand, $session['entities_id']);
 
-        echo json_encode([
+        self::jsonOut([
             'success'           => true,
             'intervention_idx'  => $idx,
             'criprices_html'    => $criprices_html,
@@ -886,7 +964,15 @@ class WizardController
 
         $contractDates = self::getContractDatesFromSession($session);
         $cfg = Config::getInstance();
-        TemplateRenderer::getInstance()->display('@manageentities/wizard/step6_intervention_block.html.twig', [
+        $wid        = self::currentWizardId();
+        $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid;
+
+        $mode = $session['wizard_mode'] ?? 'new_entity';
+        $tpl  = $mode === 'existing_entity'
+            ? '@manageentities/wizard/step5_intervention_block.html.twig'
+            : '@manageentities/wizard/step6_intervention_block.html.twig';
+
+        TemplateRenderer::getInstance()->display($tpl, [
             'idx'                  => $idx,
             'rand'                 => $rand,
             'is_day'               => $is_day,
@@ -905,7 +991,7 @@ class WizardController
             'intervention_idx'     => $idx,
             'criprices_section'    => '',
             'stakeholders_section' => '',
-            'wizard_url'           => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php',
+            'wizard_url'           => $wizard_url,
         ]);
         exit;
     }
@@ -917,8 +1003,7 @@ class WizardController
     public static function saveCriPrice(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::saveCriPriceAndReturn($_POST));
-        exit;
+        self::jsonOut(self::saveCriPriceAndReturn($_POST));
     }
 
     public static function saveCriPriceAndReturn(array $input = []): array
@@ -980,15 +1065,13 @@ class WizardController
         }
 
         $has_rate = !empty($session['interventions_data'][$idx]['criprices'] ?? []);
-        echo json_encode(['success' => true, 'has_rate' => $has_rate, 'intervention_idx' => $idx]);
-        exit;
+        self::jsonOut(['success' => true, 'has_rate' => $has_rate, 'intervention_idx' => $idx]);
     }
 
     public static function renderCriPriceBlock(): void
     {
         // Not used in session-only mode (CriPrices are added inline via wizardAddCriPrice)
-        echo json_encode(['success' => false]);
-        exit;
+        self::jsonOut(['success' => false]);
     }
 
     // -------------------------------------------------------------------------
@@ -998,8 +1081,7 @@ class WizardController
     public static function addStakeholder(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::addStakeholderAndReturn($_POST));
-        exit;
+        self::jsonOut(self::addStakeholderAndReturn($_POST));
     }
 
     public static function addStakeholderAndReturn(array $input = []): array
@@ -1093,7 +1175,7 @@ class WizardController
             }
         }
 
-        echo json_encode([
+        self::jsonOut([
             'success'        => true,
             'remaining_days' => $remaining,
             'credit'         => $credit,
@@ -1120,8 +1202,7 @@ class WizardController
         header('Content-Type: application/json');
         $doc_id = (int)($_POST['document_id'] ?? 0);
         if ($doc_id <= 0) {
-            echo json_encode(['success' => false]);
-            exit;
+            self::jsonOut(['success' => false]);
         }
         $d  = new Document();
         $ok = $d->delete(['id' => $doc_id], true);
@@ -1133,8 +1214,7 @@ class WizardController
             ));
             self::saveSession($session);
         }
-        echo json_encode(['success' => (bool)$ok]);
-        exit;
+        self::jsonOut(['success' => (bool)$ok]);
     }
 
     // -------------------------------------------------------------------------
@@ -1144,15 +1224,13 @@ class WizardController
     public static function finishWizard(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::validateAndSummarize());
-        exit;
+        self::jsonOut(self::validateAndSummarize());
     }
 
     public static function commitWizard(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::commitWizardAndReturn());
-        exit;
+        self::jsonOut(self::commitWizardAndReturn());
     }
 
     /** Validate session data and return a preview summary — does NOT write to DB. */
@@ -1205,9 +1283,16 @@ class WizardController
             }
         }
 
-        // 1b. Publisher subscription (new_entity mode only)
+        // 1b. Publisher subscription (new_entity mode only, skipped if user left step blank)
         $subscription_data = $session['subscription_data'] ?? [];
-        if ($session['wizard_mode'] !== 'existing_entity' && !empty($subscription_data)) {
+        $sub_has_content   = !empty($subscription_data)
+            && (
+                !empty($subscription_data['active_editor_suscription'])
+                || !empty($subscription_data['cloud_client'])
+                || ($subscription_data['name'] ?? '') !== ''
+                || !empty($subscription_data['begin_date'])
+            );
+        if ($session['wizard_mode'] !== 'existing_entity' && $sub_has_content) {
             $sub = new EditorSubscription();
             $sub->add(array_merge($subscription_data, ['entities_id' => $entities_id]));
         }
@@ -1312,8 +1397,8 @@ class WizardController
 
         $summary = self::buildFinishSummaryFromSession($session, $entities_id, $contracts_id);
 
-        // Clear wizard session
-        unset($_SESSION[self::SESSION_KEY]);
+        // Clear this wizard slot (not all slots — other tabs stay alive)
+        self::clearWizardSession();
 
         return [
             'success'      => true,
@@ -1333,6 +1418,25 @@ class WizardController
 
         if ($session['wizard_mode'] !== 'existing_entity' && !empty($session['entity_data']['name'])) {
             $items[] = ['type' => _n('Entity', 'Entities', 1), 'label' => $session['entity_data']['name']];
+        }
+
+        $sub = $session['subscription_data'] ?? [];
+        $sub_has_content = !empty($sub)
+            && (
+                !empty($sub['active_editor_suscription'])
+                || !empty($sub['cloud_client'])
+                || ($sub['name'] ?? '') !== ''
+                || !empty($sub['begin_date'])
+            );
+        if ($session['wizard_mode'] !== 'existing_entity' && $sub_has_content) {
+            $sub_label = $sub['name'] !== '' ? $sub['name'] : __('(no name)', 'manageentities');
+            if (!empty($sub['begin_date'])) {
+                $sub_label .= ' — ' . substr($sub['begin_date'], 0, 10);
+            }
+            if (!empty($sub['end_date'])) {
+                $sub_label .= ' → ' . substr($sub['end_date'], 0, 10);
+            }
+            $items[] = ['type' => EditorSubscription::getTypeName(1), 'label' => $sub_label];
         }
 
         foreach (($session['contacts_data'] ?? []) as $c) {
@@ -1396,8 +1500,7 @@ class WizardController
     public static function getResetSummary(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::getResetSummaryAndReturn());
-        exit;
+        self::jsonOut(self::getResetSummaryAndReturn());
     }
 
     public static function getResetSummaryAndReturn(): array
@@ -1445,8 +1548,7 @@ class WizardController
     public static function resetAndDelete(): void
     {
         header('Content-Type: application/json');
-        echo json_encode(self::resetAndDeleteAndReturn());
-        exit;
+        self::jsonOut(self::resetAndDeleteAndReturn());
     }
 
     public static function resetAndDeleteAndReturn(): array
@@ -1461,16 +1563,26 @@ class WizardController
             $d->delete(['id' => $doc_id], true);
         }
 
-        unset($_SESSION[self::SESSION_KEY]);
+        self::clearWizardSession();
         return ['success' => true];
     }
 
     public static function reset(): void
     {
-        unset($_SESSION[self::SESSION_KEY]);
+        self::clearWizardSession();
         header('Content-Type: application/json');
-        echo json_encode(['success' => true]);
-        exit;
+        self::jsonOut(['success' => true]);
+    }
+
+    private static function clearWizardSession(): void
+    {
+        $wid = self::currentWizardId();
+        if ($wid === 'default') {
+            // Tests / legacy: wipe the whole key
+            unset($_SESSION[self::SESSION_KEY]);
+        } else {
+            unset($_SESSION[self::SESSION_KEY][$wid]);
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -1479,8 +1591,16 @@ class WizardController
 
     public static function renderStep(): void
     {
-        if (!isset($_GET['step'])) {
-            unset($_SESSION[self::SESSION_KEY]);
+        $wid = $_GET['wid'] ?? '';
+        $widValid = preg_match('/^[0-9a-f]{12}$/', $wid) === 1;
+
+        // No valid wid yet — allocate one and redirect once (with step=1 to avoid looping back here)
+        if (!$widValid) {
+            $wid  = self::generateWizardId();
+            $base = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php';
+            // step=1 ensures the next request has ?step and won't re-enter this branch
+            Html::redirect($base . '?wid=' . $wid . '&step=1');
+            return;
         }
 
         $session = self::getSession();
@@ -1497,7 +1617,7 @@ class WizardController
         $is_day  = ($config->fields['hourorday'] == Config::DAY);
         $is_hour = ($config->fields['hourorday'] == Config::HOUR);
 
-        $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php';
+        $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid;
 
         if ($session['wizard_mode'] === 'existing_entity') {
             $steps = [
@@ -1527,6 +1647,7 @@ class WizardController
             'session'     => $session,
             'wizard_url'  => $wizard_url,
             'wizard_mode' => $session['wizard_mode'],
+            'wizard_id'   => $wid,
             'rand'        => $rand,
             'is_day'      => $is_day,
             'is_hour'     => $is_hour,
@@ -1534,10 +1655,11 @@ class WizardController
 
         $vars += self::buildStepVars($step, $session, $rand, $is_day, $is_hour);
 
+        $front_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php?wid=' . $wid;
         TemplateRenderer::getInstance()->display('@manageentities/wizard/layout.html.twig', array_merge($vars, [
             'step_template' => $step_template,
             'step_vars'     => $vars,
-            'redirect_url'  => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php',
+            'redirect_url'  => $front_url,
             'wizard_i18n'   => [
                 'nothingToDisplay'      => __('Nothing to display.', 'manageentities'),
                 'entityExistsMsg'       => __('The entity "%s" already exists. Do you want to use it to create a new contract?', 'manageentities'),
@@ -1671,29 +1793,25 @@ class WizardController
     {
         $fields = $session['subscription_data'] ?? [];
         $now    = date('Y-m-d');
-        $end_date_expired       = !empty($fields['end_date'])       && substr($fields['end_date'], 0, 10) < $now;
-        // Default "Referenced name" to the entity name if not yet filled
+        $end_date_expired = !empty($fields['end_date']) && substr($fields['end_date'], 0, 10) < $now;
+
         $sub_name = $fields['name'] ?? '';
         if ($sub_name === '') {
             $sub_name = $session['entity_data']['name'] ?? '';
         }
 
-        $level_dropdown_html = self::buildDropdownHtml(
-            fn() => Dropdown::show(
-                SubscriptionLevel::class,
-                ['name' => 'plugin_manageentities_subscriptionlevels_id', 'value' => (int)($fields['plugin_manageentities_subscriptionlevels_id'] ?? 0)]
-            )
-        );
-
         return [
-            'sub_name'                  => $sub_name,
-            'active_editor_suscription' => (int)($fields['active_editor_suscription'] ?? 0),
-            'cloud_client'              => (int)($fields['cloud_client'] ?? 0),
-            'plugin_manageentities_subscriptionlevels_id'     => (int)($fields['plugin_manageentities_subscriptionlevels_id'] ?? 0),
-            'begin_date'                => $fields['begin_date'] ?? '',
-            'end_date'                  => $fields['end_date'] ?? '',
-            'end_date_expired'          => $end_date_expired,
-            'level_dropdown_html'       => $level_dropdown_html,
+            'sub_name'                                    => $sub_name,
+            'customer_account_id'                         => $fields['customer_account_id'] ?? '',
+            'active_editor_suscription'                   => (int)($fields['active_editor_suscription'] ?? 0),
+            'cloud_client'                                => (int)($fields['cloud_client'] ?? 0),
+            'internet_publication'                        => (int)($fields['internet_publication'] ?? 0),
+            'plugin_manageentities_subscriptionlevels_id' => (int)($fields['plugin_manageentities_subscriptionlevels_id'] ?? 0),
+            'all_levels'                                  => SubscriptionLevel::getAllForJS(),
+            'begin_date'                                  => $fields['begin_date'] ?? '',
+            'end_date'                                    => $fields['end_date'] ?? '',
+            'end_date_expired'                            => $end_date_expired,
+            'comment'                                     => $fields['comment'] ?? '',
         ];
     }
 
@@ -2015,13 +2133,14 @@ class WizardController
         }
 
         ob_start();
+        $wid = self::currentWizardId();
         TemplateRenderer::getInstance()->display('@manageentities/wizard/step6_criprices_section.html.twig', [
             'intervention_idx' => $idx,
             'rand'             => $rand,
             'is_day'           => $is_day,
             'criprices'        => $enriched,
             'has_rate'         => !empty($enriched),
-            'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php',
+            'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid,
             'critype_html'     => self::buildDropdownHtml(
                 fn() => Dropdown::show(CriType::class, [
                     'name'    => 'new_critype_' . $idx,
@@ -2052,13 +2171,14 @@ class WizardController
         }
 
         ob_start();
+        $wid = self::currentWizardId();
         TemplateRenderer::getInstance()->display('@manageentities/wizard/step6_stakeholders_section.html.twig', [
             'intervention_idx' => $idx,
             'rand'             => $rand,
             'stakeholders'     => $enriched,
             'credit'           => $credit,
             'remaining_days'   => $remaining,
-            'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php',
+            'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid,
             'user_html'        => self::buildDropdownHtml(
                 fn() => User::dropdown([
                     'name'    => 'new_user_' . $idx,

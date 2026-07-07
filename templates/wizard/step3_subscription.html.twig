@@ -25,80 +25,29 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------
 #}
 {#
- Step 3 — Publisher subscription (new_entity mode only)
- Variables: sub_name, active_editor_suscription, cloud_client, plugin_manageentities_subscriptionlevels_id,
-            begin_date, end_date, cloud_begin_date, cloud_end_date,
-            level_dropdown_html, rand, wizard_url, step
+ Step 3 — Publisher subscription (new_entity mode only, optional)
+ Variables: sub_name, customer_account_id, active_editor_suscription, cloud_client,
+            internet_publication, plugin_manageentities_subscriptionlevels_id, all_levels,
+            begin_date, end_date, end_date_expired, comment, rand, wizard_url, step
  #}
 
 <div class="card">
     <div class="card-header d-flex align-items-center gap-2">
         <i class="ti ti-certificate me-1"></i>
-        <h3 class="card-title mb-0">{{ __('Publisher subscription', 'manageentities') }}</h3>
+        <h3 class="card-title mb-0">
+            {{ __('Publisher subscription', 'manageentities') }}
+            <small class="text-muted fw-normal ms-1">{{ __('Optional') }}</small>
+        </h3>
     </div>
     <div class="card-body">
         <div id="step3-errors" class="alert alert-danger d-none"></div>
 
         <div class="row g-3" id="step3-fields-{{ rand }}">
-
-            {# Referenced name #}
-            <div class="col-sm-6">
-                <label class="col-form-label fw-bold" for="me_sub_wiz3_name_{{ rand }}">
-                    {{ __('Referenced name at the publisher', 'manageentities') }}
-                </label>
-                <input type="text" name="name" id="me_sub_wiz3_name_{{ rand }}"
-                       class="form-control" value="{{ sub_name }}">
-            </div>
-            <div class="col-sm-6"></div>
-
-            {# Subscription type — mutually exclusive #}
-            <input type="hidden" name="active_editor_suscription" value="0">
-            <input type="hidden" name="cloud_client" value="0">
-            <div class="col-sm-6">
-                <label class="col-form-label fw-bold">{{ __('Subscription type', 'manageentities') }}</label>
-                <div class="d-flex gap-3 mt-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="subscription_type" value="editor"
-                               id="me_sub_wiz3_type_editor_{{ rand }}"
-                               {% if not cloud_client %}checked{% endif %}>
-                        <label class="form-check-label" for="me_sub_wiz3_type_editor_{{ rand }}">
-                            {{ __('Editor subscription', 'manageentities') }}
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="subscription_type" value="cloud"
-                               id="me_sub_wiz3_type_cloud_{{ rand }}"
-                               {% if cloud_client %}checked{% endif %}>
-                        <label class="form-check-label" for="me_sub_wiz3_type_cloud_{{ rand }}">
-                            {{ __('Cloud client', 'manageentities') }}
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            {# Subscription level — always visible #}
-            <div class="col-sm-4">
-                <label class="col-form-label fw-bold">{{ __('Subscription level', 'manageentities') }}</label>
-                {{ level_dropdown_html|raw }}
-            </div>
-
-            <div class="col-12"></div>
-
-            {# Begin / End dates #}
-            <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Start date', 'manageentities') }}</label>
-                <input type="date" name="begin_date" class="form-control"
-                       value="{{ begin_date ? begin_date|date('Y-m-d') : '' }}">
-            </div>
-            <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('End date', 'manageentities') }}</label>
-                <input type="date" name="end_date" class="form-control {% if end_date_expired %}border-danger{% endif %}"
-                       value="{{ end_date ? end_date|date('Y-m-d') : '' }}">
-                {% if end_date_expired %}
-                    <small class="text-danger"><i class="ti ti-alert-circle me-1"></i>{{ __('Expired', 'manageentities') }}</small>
-                {% endif %}
-            </div>
-
+            {% include '@manageentities/editorsubscription_fields.html.twig' with {
+                fields_required: false,
+                container_id: 'step3-fields-' ~ rand,
+                load_entity_ajax: false
+            } %}
         </div>
     </div>
     <div class="card-footer d-flex gap-2 justify-content-between">
@@ -112,19 +61,9 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
         </button>
     </div>
 </div>
-<script>
-(function () {
-    var container    = document.getElementById('step3-fields-{{ rand }}');
-    var radios       = container.querySelectorAll('input[name="subscription_type"]');
-    var hiddenActive = container.querySelector('input[type="hidden"][name="active_editor_suscription"]');
-    var hiddenCloud  = container.querySelector('input[type="hidden"][name="cloud_client"]');
 
-    function syncHiddens() {
-        var val = container.querySelector('input[name="subscription_type"]:checked').value;
-        hiddenActive.value = (val === 'editor') ? '1' : '0';
-        hiddenCloud.value  = (val === 'cloud')  ? '1' : '0';
-    }
-    radios.forEach(function (r) { r.addEventListener('change', syncHiddens); });
-    syncHiddens();
-})();
-</script>
+{% include '@manageentities/editorsubscription_fields_js.html.twig' with {
+    container_id: 'step3-fields-' ~ rand,
+    fields_required: false,
+    load_entity_ajax: false
+} %}

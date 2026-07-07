@@ -30,9 +30,15 @@
         <h3 class="card-title">
             <i class="ti ti-certificate me-2"></i>
             {{ __('Publisher subscriptions', 'manageentities') }}
+            {% set total_count   = rows|length %}
             {% set expired_count = rows|filter(r => r.end_date_expired)|length %}
+            {% if total_count > 0 %}
+                <span class="badge bg-outline-secondary ms-2">{{ total_count }}</span>
+            {% endif %}
             {% if expired_count > 0 %}
-                <span class="badge bg-outline-danger ms-2">{{ expired_count }}</span>
+                <span class="badge bg-danger-lt ms-1" title="{{ __('Expired subscriptions', 'manageentities') }}">
+                    <i class="ti ti-clock-exclamation me-1"></i>{{ expired_count }}
+                </span>
             {% endif %}
         </h3>
         <div class="card-options ms-auto d-flex gap-2">

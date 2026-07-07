@@ -57,8 +57,9 @@ class WizardSessionTest extends TestCase
 
     public function testGetSessionReturnsExistingSession(): void
     {
-        $_SESSION['manageentities_wizard'] = WizardController::buildDefaultSession();
-        $_SESSION['manageentities_wizard']['entities_id'] = 42;
+        $data = WizardController::buildDefaultSession();
+        $data['entities_id'] = 42;
+        $_SESSION['manageentities_wizard'] = ['default' => $data];
 
         $session = WizardController::getSession();
         $this->assertSame(42, $session['entities_id']);
@@ -68,10 +69,12 @@ class WizardSessionTest extends TestCase
     {
         WizardController::getSession();
         $this->assertArrayHasKey('manageentities_wizard', $_SESSION);
+        $this->assertArrayHasKey('default', $_SESSION['manageentities_wizard']);
     }
 
     public function testGetSessionReplacesInvalidSession(): void
     {
+        // Scalar at root level: treated as corrupt, wiped and rebuilt
         $_SESSION['manageentities_wizard'] = 'not-an-array';
 
         $session = WizardController::getSession();
@@ -92,8 +95,9 @@ class WizardSessionTest extends TestCase
 
     public function testDocumentsIdsTrackedInSession(): void
     {
-        $_SESSION['manageentities_wizard'] = WizardController::buildDefaultSession();
-        $_SESSION['manageentities_wizard']['documents_ids'] = [42, 43];
+        $data = WizardController::buildDefaultSession();
+        $data['documents_ids'] = [42, 43];
+        $_SESSION['manageentities_wizard'] = ['default' => $data];
 
         $session = WizardController::getSession();
         $this->assertContains(42, $session['documents_ids']);
@@ -102,8 +106,9 @@ class WizardSessionTest extends TestCase
 
     public function testDocumentsIdsRemovedOnDelete(): void
     {
-        $_SESSION['manageentities_wizard'] = WizardController::buildDefaultSession();
-        $_SESSION['manageentities_wizard']['documents_ids'] = [10, 20, 30];
+        $data = WizardController::buildDefaultSession();
+        $data['documents_ids'] = [10, 20, 30];
+        $_SESSION['manageentities_wizard'] = ['default' => $data];
 
         // Simulate what deleteDocument() does to the session
         $session = WizardController::getSession();
@@ -112,7 +117,7 @@ class WizardSessionTest extends TestCase
             $session['documents_ids'],
             fn($id) => (int)$id !== $removeId
         ));
-        $_SESSION['manageentities_wizard'] = $session;
+        $_SESSION['manageentities_wizard'] = ['default' => $session];
 
         $updated = WizardController::getSession();
         $this->assertNotContains(20, $updated['documents_ids']);

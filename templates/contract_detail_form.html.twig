@@ -147,17 +147,7 @@
             <div class="col-sm-6"></div>
             {% endif %}
 
-            {# Switches ligne 1 : GANTT / Coûts refacturables / Contrat importé GLPI / Souscription active #}
-
-            {% if is_day_price %}
-                <div class="col-sm-3">
-                    <label class="col-form-label fw-bold">{{ __('Contract is imported in GLPI', 'manageentities') }}</label>
-                    <div class="form-check form-switch mt-2">
-                        <input type="checkbox" name="contract_added" class="form-check-input"
-                               {% if contract_added %}checked{% endif %}>
-                    </div>
-                </div>
-            {% endif %}
+            {# Switches : GANTT / Coûts refacturables / Contrat importé GLPI / Gestion des déplacements #}
 
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Show on GANTT', 'manageentities') }}</label>
@@ -174,10 +164,18 @@
                            {% if refacturable_costs %}checked{% endif %}>
                 </div>
             </div>
-            <div class="col-sm-3"></div>
 
-            {# Internet / Déplacements #}
+            {% if is_day_price %}
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Contract is imported in GLPI', 'manageentities') }}</label>
+                <div class="form-check form-switch mt-2">
+                    <input type="checkbox" name="contract_added" class="form-check-input"
+                           {% if contract_added %}checked{% endif %}>
+                </div>
+            </div>
+            {% else %}
             <div class="col-sm-3"></div>
+            {% endif %}
 
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Movement management', 'manageentities') }}</label>
@@ -193,6 +191,7 @@
                 <label class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
                 {{ duration_moving_html|raw }}
             </div>
+            <div class="col-sm-9"></div>
 
         </div>
     </div>

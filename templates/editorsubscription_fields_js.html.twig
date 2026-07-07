@@ -1,0 +1,144 @@
+{#
+ Shared JS for editorsubscription_fields partial.
+ Variables: rand, container_id (the id of the surrounding .row element)
+ Optional: load_entity_ajax (bool) — true in standalone form to wire entity select
+           fields_required (bool) — true in standalone form for level validation
+           entity_list_url, page_url — only needed when load_entity_ajax = true
+ #}
+<script>
+(function () {
+    var container    = document.getElementById('{{ container_id }}');
+    var radios       = container.querySelectorAll('input[name="subscription_type"]');
+    var hiddenActive = container.querySelector('input[type="hidden"][name="active_editor_suscription"]');
+    var hiddenCloud  = container.querySelector('input[type="hidden"][name="cloud_client"]');
+    var levelSelect  = document.getElementById('me_sub_level_{{ rand }}');
+    var inetCheck    = document.getElementById('me_sub_inet_{{ rand }}');
+    var TYPE_ALL = 0, TYPE_ON_PREMISE = 1, TYPE_CLOUD = 2;
+
+    function filterLevels() {
+        var checked = container.querySelector('input[name="subscription_type"]:checked');
+        if (!levelSelect || !checked) { return; }
+        var targetType = (checked.value === 'cloud') ? TYPE_CLOUD : TYPE_ON_PREMISE;
+        var currentVal = levelSelect.value;
+        Array.prototype.forEach.call(levelSelect.options, function (opt) {
+            if (opt.value === '0') { return; }
+            var t = parseInt(opt.getAttribute('data-sub-type'), 10);
+            var visible = (t === TYPE_ALL || t === targetType);
+            opt.hidden   = !visible;
+            opt.disabled = !visible;
+        });
+        var selOpt = levelSelect.querySelector('option[value="' + currentVal + '"]');
+        if (!selOpt || selOpt.hidden) { levelSelect.value = '0'; }
+    }
+
+    function syncHiddens() {
+        var checked = container.querySelector('input[name="subscription_type"]:checked');
+        if (!checked) { return; }
+        hiddenActive.value = (checked.value === 'editor') ? '1' : '0';
+        hiddenCloud.value  = (checked.value === 'cloud')  ? '1' : '0';
+        if (inetCheck) {
+            if (checked.value === 'cloud') {
+                inetCheck.checked = true;
+                inetCheck.style.pointerEvents = 'none';
+                inetCheck.style.opacity = '0.6';
+            } else {
+                inetCheck.style.pointerEvents = '';
+                inetCheck.style.opacity = '';
+            }
+        }
+        filterLevels();
+    }
+    radios.forEach(function (r) { r.addEventListener('change', syncHiddens); });
+    syncHiddens();
+
+{% if load_entity_ajax %}
+    var nameInput    = container.querySelector('input[name="name"]');
+    var accountInput = document.getElementById('me_sub_account_{{ rand }}');
+    var commentInput = document.getElementById('me_sub_comment_{{ rand }}');
+    var entitySelect = document.querySelector('select[name="entities_id"]');
+    var subIdInput   = document.getElementById('me_sub_id_{{ rand }}');
+    var beginInput   = document.getElementById('me_sub_begin_{{ rand }}');
+    var endInput     = document.getElementById('me_sub_end_{{ rand }}');
+    var cardTitle    = document.getElementById('me_sub_card_title_{{ rand }}');
+    var deleteBtn    = document.getElementById('me_sub_delete_btn_{{ rand }}');
+    var submitLabel  = document.getElementById('me_sub_submit_label_{{ rand }}');
+    var ajaxUrl      = '{{ (constant('PLUGIN_MANAGEENTITIES_WEBDIR') ~ '/ajax/getSubscription.php')|e('js') }}';
+    var labelCreate  = '{{ __('Create publisher subscription', 'manageentities')|e('js') }}';
+    var labelUpdate  = '{{ __('Update publisher subscription', 'manageentities')|e('js') }}';
+    var labelAdd     = '{{ __('Add')|e('js') }}';
+    var labelUpdate2 = '{{ __('Update')|e('js') }}';
+    var iconCert     = '<i class="ti ti-certificate me-2"></i>';
+
+    function setFormMode(isNew) {
+        if (cardTitle)   { cardTitle.innerHTML    = iconCert + (isNew ? labelCreate : labelUpdate); }
+        if (submitLabel) { submitLabel.textContent = isNew ? labelAdd : labelUpdate2; }
+        if (deleteBtn)   { deleteBtn.style.display = isNew ? 'none' : ''; }
+    }
+
+    function fillNameFromEntity(entityName) {
+        if (nameInput && nameInput.value.trim() === '') { nameInput.value = entityName; }
+    }
+
+    function loadSubscription(entitiesId) {
+        if (!entitiesId || entitiesId === '0') {
+            if (subIdInput) { subIdInput.value = '0'; }
+            setFormMode(true);
+            return;
+        }
+        $.post(ajaxUrl, { entities_id: entitiesId }, function (data) {
+            if (data.found) {
+                if (subIdInput)   { subIdInput.value    = data.sub_id; }
+                if (nameInput)    { nameInput.value     = data.name; }
+                if (accountInput) { accountInput.value  = data.customer_account_id; }
+                if (beginInput)   { beginInput.value    = data.begin_date; }
+                if (endInput)     { endInput.value      = data.end_date; }
+                if (commentInput) { commentInput.value  = data.comment; }
+                var typeVal = data.cloud_client ? 'cloud' : 'editor';
+                var radio = container.querySelector('input[name="subscription_type"][value="' + typeVal + '"]');
+                if (radio) { radio.checked = true; }
+                if (inetCheck) { inetCheck.checked = !!data.internet_publication; }
+                syncHiddens();
+                if (levelSelect) { levelSelect.value = String(data.plugin_manageentities_subscriptionlevels_id); }
+                setFormMode(false);
+            } else {
+                if (subIdInput) { subIdInput.value = '0'; }
+                var opt = entitySelect ? entitySelect.options[entitySelect.selectedIndex] : null;
+                if (opt && opt.value && opt.value !== '0') {
+                    var parts = opt.text.trim().split(' > ');
+                    fillNameFromEntity(parts[parts.length - 1].trim());
+                }
+                setFormMode(true);
+            }
+        }, 'json');
+    }
+
+    if (entitySelect) {
+        entitySelect.addEventListener('change', function () { loadSubscription(this.value); });
+        $(entitySelect).on('select2:select', function () { loadSubscription($(this).val()); });
+        $(entitySelect).on('select2:clear',  function () { loadSubscription('0'); });
+    }
+{% endif %}
+
+{% if fields_required %}
+    var form = document.getElementById('me-sub-form');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            if (levelSelect && (!levelSelect.value || levelSelect.value === '0')) {
+                e.preventDefault();
+                levelSelect.classList.add('is-invalid');
+                var fb = levelSelect.parentNode.querySelector('.invalid-feedback');
+                if (!fb) {
+                    fb = document.createElement('div');
+                    fb.className = 'invalid-feedback';
+                    fb.textContent = '{{ __('Subscription level is required.', 'manageentities')|e('js') }}';
+                    levelSelect.parentNode.appendChild(fb);
+                }
+                levelSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (levelSelect) {
+                levelSelect.classList.remove('is-invalid');
+            }
+        });
+    }
+{% endif %}
+})();
+</script>

@@ -137,16 +137,16 @@ class EditorSubscriptionWizard
         // Mandatory fields
         $subscription_type = $input['subscription_type'] ?? '';
         if (!in_array($subscription_type, ['editor', 'cloud'], true)) {
-            return ['success' => false, 'message' => __('Subscription type is required.', 'manageentities')];
+            return ['success' => false, 'message' => __('Subscription type is required', 'manageentities')];
         }
         if ((int)($input['plugin_manageentities_subscriptionlevels_id'] ?? 0) <= 0) {
-            return ['success' => false, 'message' => __('Subscription level is required.', 'manageentities')];
+            return ['success' => false, 'message' => __('Subscription level is required', 'manageentities')];
         }
         if ($begin === '') {
-            return ['success' => false, 'message' => __('Start date is required.', 'manageentities')];
+            return ['success' => false, 'message' => __('Begin date is required', 'manageentities')];
         }
         if ($end === '') {
-            return ['success' => false, 'message' => __('End date is required.', 'manageentities')];
+            return ['success' => false, 'message' => __('End date is required', 'manageentities')];
         }
 
         $cloud_client = empty($input['cloud_client']) ? 0 : 1;
