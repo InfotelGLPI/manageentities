@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 10:19+0000\n"
+"POT-Creation-Date: 2026-07-07 10:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,7 +59,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: hook.php:782 templates/wizard/step4_management.html.twig:104
+#: src/EditorSubscription.php:180 hook.php:782
+#: templates/wizard/step4_management.html.twig:104
 msgid "Active editor subscription"
 msgstr ""
 
@@ -310,11 +311,12 @@ msgid "Closed contract period state"
 msgstr ""
 
 #: src/SubscriptionLevel.php:74
-#: templates/entity/editorsubscription_tab.html.twig:67
+#: templates/entity/editorsubscription_tab.html.twig:78
 msgid "Cloud"
 msgstr ""
 
-#: src/EditorSubscription.php:309 hook.php:795
+#: src/EditorSubscription.php:158 src/EditorSubscription.php:181
+#: src/EditorSubscription.php:415 hook.php:795
 #: templates/cridetail_for_ticket.html.twig:76
 #: templates/contract_detail_form.html.twig:54
 #: templates/editorsubscription_wizard.html.twig:107
@@ -452,7 +454,7 @@ msgstr ""
 msgid "Create publisher subscription"
 msgstr ""
 
-#: templates/entity/editorsubscription_tab.html.twig:37
+#: templates/entity/editorsubscription_tab.html.twig:48
 msgid "Create subscription"
 msgstr ""
 
@@ -664,15 +666,16 @@ msgid "Duration of moving"
 msgstr ""
 
 #: templates/contract_detail_form.html.twig:43
-#: templates/entity/editorsubscription_tab.html.twig:82
+#: templates/entity/editorsubscription_tab.html.twig:93
 msgid "Edit"
 msgstr ""
 
-#: templates/entity/editorsubscription_tab.html.twig:69
+#: templates/entity/editorsubscription_tab.html.twig:80
 msgid "Editor"
 msgstr ""
 
-#: src/EditorSubscription.php:301 templates/cridetail_for_ticket.html.twig:78
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:407
+#: templates/cridetail_for_ticket.html.twig:78
 #: templates/contract_detail_form.html.twig:56
 #: templates/editorsubscription_wizard.html.twig:99
 #: templates/wizard/step3_subscription.html.twig:65
@@ -692,12 +695,12 @@ msgstr ""
 msgid "Email address"
 msgstr ""
 
-#: templates/cridetail_for_ticket.html.twig:124
+#: src/EditorSubscription.php:184 templates/cridetail_for_ticket.html.twig:124
 #: templates/cridetail_for_ticket.html.twig:177
 #: templates/contract_detail_form.html.twig:95
 #: templates/editorsubscription_wizard.html.twig:148
 #: templates/contractday_form.html.twig:69
-#: templates/entity/editorsubscription_tab.html.twig:55
+#: templates/entity/editorsubscription_tab.html.twig:66
 #: templates/wizard/step6_intervention_block.html.twig:43
 #: templates/wizard/step3_subscription.html.twig:94
 #: templates/wizard/step5_intervention_block.html.twig:43
@@ -720,7 +723,7 @@ msgstr ""
 msgid "End date must be after the begin date !"
 msgstr ""
 
-#: front/entity.php:46 front/entity.php:49 front/entity.php:51
+#: front/entity.php:53 front/entity.php:56 front/entity.php:58
 #: front/directhelpdesk.form.php:102 front/directhelpdesk.form.php:105
 #: front/directhelpdesk.form.php:107 front/generatecri.form.php:95
 #: front/report_occupation.form.php:34 front/report.form.php:34
@@ -736,13 +739,13 @@ msgstr ""
 msgid "Entities portal"
 msgstr ""
 
-#: templates/directhelpdesk_form.html.twig:58
+#: src/EditorSubscription.php:175 templates/directhelpdesk_form.html.twig:58
 #: templates/directhelpdesk_form.html.twig:68
 #: templates/cridetail_for_ticket.html.twig:56
 #: templates/editorsubscription_wizard.html.twig:40
 #: templates/editorsubscription_wizard.html.twig:46
 #: templates/entity/contracts_tab.html.twig:51
-#: templates/entity/editorsubscription_tab.html.twig:49
+#: templates/entity/editorsubscription_tab.html.twig:60
 #: templates/wizard/step6_intervention_block.html.twig:72
 #: templates/wizard/step4_contract.html.twig:90
 #: templates/wizard/step2_contact_block.html.twig:89
@@ -797,6 +800,14 @@ msgstr ""
 #: templates/editorsubscription_wizard.html.twig:152
 #: templates/wizard/step3_subscription.html.twig:98
 msgid "Expired"
+msgstr ""
+
+#: templates/entity/editorsubscription_tab.html.twig:41
+msgid "Expired only"
+msgstr ""
+
+#: templates/entity/editorsubscription_tab.html.twig:44
+msgid "Export CSV"
 msgstr ""
 
 #: templates/entity/description.html.twig:95
@@ -912,7 +923,8 @@ msgstr ""
 msgid "Initial credit is required"
 msgstr ""
 
-#: hook.php:808 templates/cridetail_for_ticket.html.twig:418
+#: src/EditorSubscription.php:182 hook.php:808
+#: templates/cridetail_for_ticket.html.twig:418
 #: templates/contract_detail_form.html.twig:79
 #: templates/editorsubscription_wizard.html.twig:115
 msgid "Internet publication"
@@ -1197,7 +1209,7 @@ msgstr ""
 msgid "No picture uploaded"
 msgstr ""
 
-#: templates/entity/editorsubscription_tab.html.twig:94
+#: templates/entity/editorsubscription_tab.html.twig:105
 msgid "No publisher subscription recorded for this entity."
 msgstr ""
 
@@ -1514,9 +1526,10 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
-#: src/EditorSubscription.php:285 templates/contract_detail_form.html.twig:62
+#: src/EditorSubscription.php:176 src/EditorSubscription.php:391
+#: templates/contract_detail_form.html.twig:62
 #: templates/editorsubscription_wizard.html.twig:82
-#: templates/entity/editorsubscription_tab.html.twig:50
+#: templates/entity/editorsubscription_tab.html.twig:61
 msgid "Publisher customer account ID"
 msgstr ""
 
@@ -1559,9 +1572,9 @@ msgstr ""
 msgid "Refacturable costs"
 msgstr ""
 
-#: templates/contract_detail_form.html.twig:68
+#: src/EditorSubscription.php:177 templates/contract_detail_form.html.twig:68
 #: templates/editorsubscription_wizard.html.twig:73
-#: templates/entity/editorsubscription_tab.html.twig:51
+#: templates/entity/editorsubscription_tab.html.twig:62
 #: templates/wizard/step3_subscription.html.twig:47
 msgid "Referenced name at the publisher"
 msgstr ""
@@ -1693,6 +1706,10 @@ msgstr ""
 msgid "Setup for Generate Intervention report"
 msgstr ""
 
+#: templates/entity/editorsubscription_tab.html.twig:40
+msgid "Show expired subscriptions only"
+msgstr ""
+
 #: src/Contract.php:968 templates/contract_detail_form.html.twig:163
 #: templates/wizard/step5_management.html.twig:73
 #: templates/wizard/step4_management.html.twig:73
@@ -1713,9 +1730,9 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: templates/contract_detail_form.html.twig:89
+#: src/EditorSubscription.php:183 templates/contract_detail_form.html.twig:89
 #: templates/editorsubscription_wizard.html.twig:143
-#: templates/entity/editorsubscription_tab.html.twig:54
+#: templates/entity/editorsubscription_tab.html.twig:65
 #: templates/wizard/step4_contract.html.twig:71
 #: templates/wizard/step3_contract.html.twig:71
 #: templates/wizard/step3_subscription.html.twig:89
@@ -1773,10 +1790,11 @@ msgstr ""
 msgid "Subscription"
 msgstr ""
 
-#: src/SubscriptionLevel.php:50 src/EditorSubscription.php:293
-#: src/EditorSubscription.php:340 templates/contract_detail_form.html.twig:74
+#: src/SubscriptionLevel.php:50 src/EditorSubscription.php:179
+#: src/EditorSubscription.php:399 src/EditorSubscription.php:446
+#: templates/contract_detail_form.html.twig:74
 #: templates/editorsubscription_wizard.html.twig:126
-#: templates/entity/editorsubscription_tab.html.twig:53
+#: templates/entity/editorsubscription_tab.html.twig:64
 #: templates/wizard/step3_subscription.html.twig:81
 msgid "Subscription level"
 msgid_plural "Subscription levels"
@@ -1960,10 +1978,10 @@ msgstr ""
 msgid "Travel (in days)"
 msgstr ""
 
-#: templates/contract_detail_form.html.twig:51
+#: src/EditorSubscription.php:178 templates/contract_detail_form.html.twig:51
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/description.html.twig:166
-#: templates/entity/editorsubscription_tab.html.twig:52
+#: templates/entity/editorsubscription_tab.html.twig:63
 #: templates/wizard/step2_contact_block.html.twig:84
 msgid "Type"
 msgstr ""
