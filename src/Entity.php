@@ -92,7 +92,11 @@ class Entity extends CommonGLPI
             $config = new Config();
 
             if ($followUp->canView()) {
-                $tabs[1] = Followup::createTabEntry(__('General follow-up', 'manageentities'));
+                $tabs[1] = Followup::createTabEntry(
+                    Session::getCurrentInterface() == 'helpdesk'
+                        ? __('Contractual follow-up', 'manageentities')
+                        : __('General follow-up', 'manageentities')
+                );
             }
 
             if ($monthly->canView() && Session::getCurrentInterface() == 'central') {
@@ -180,16 +184,35 @@ class Entity extends CommonGLPI
             switch ($tabnum) {
                 case 1:
                     $followUp->showCriteriasForm($_GET);
-                    Followup::showFollowUp($_GET);
+                    if (Session::getCurrentInterface() == 'helpdesk') {
+                        echo "<div class='card'>";
+                        echo "<div class='card-header'>";
+                        echo "<h4 class='mb-3'>" . htmlspecialchars(__('Current contracts', 'manageentities')) . "</h4>";
+                        echo "</div>";
+                        echo "<div class='card-body'>";
+                        Followup::showFollowUp($_GET);
+                        echo "</div>";
+                        echo "</div>";
+                    } else {
+                        Followup::showFollowUp($_GET);
+                    }
 
                     $direct = new DirectHelpdesk();
                     if (Session::getCurrentInterface() == 'helpdesk') {
                         if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities], ['date'])) {
-                            echo "<h4 style='margin-top: 10px;margin-bottom: 20px;'>";
-                            echo DirectHelpdesk::getTypeName(2);
-                            echo "</h4>";
+                            echo "<div class='card'>";
+                            echo "<div class='card-header'>";
+                            echo "<h4 class='mb-3'>" . htmlspecialchars(DirectHelpdesk::getTypeName(2)) . "</h4>";
+                            echo "</div>";
+                            echo "<div class='card-body row g-3 mt-2'>";
+                            echo "<div class='col-12 col-md-6'>";
                             DirectHelpdesk::showDashboard();
+                            echo "</div>";
+                            echo "<div class='col-12 col-md-6'>";
                             DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($entities);
+                            echo "</div>";
+                            echo "</div>";
+                            echo "</div>";
                         }
                     }
                     break;
@@ -230,15 +253,30 @@ class Entity extends CommonGLPI
 
                     break;
                 case 9:
+                    $is_single = (count($entities) === 1);
+                    $doc_item  = new Document_Item();
                     foreach ($entities as $entity_id) {
                         $entity->getFromDB($entity_id);
-                        Document_Item::showForItem($entity);
+                        if (!$is_single) {
+                            $has_docs = count($doc_item->find([
+                                'items_id' => $entity_id,
+                                'itemtype' => \Entity::class,
+                            ])) > 0;
+                            if (!$has_docs) {
+                                continue;
+                            }
+                            echo "<h4 class='mt-3 ms-3'><i class='ti ti-building me-1'></i>"
+                                . htmlspecialchars($entity->fields['completename'])
+                                . "</h4>";
+                        }
+                        // withtemplate=2 suppresses the add form in tree mode
+                        Document_Item::showForItem($entity, $is_single ? 0 : 2);
                     }
                     break;
                 case 11:
                     foreach ($entities as $entity_id) {
                         $entity->getFromDB($entity_id);
-                        Account_Item::showForAsset($entity);
+                        Account_Item::showForAsset($entity, true);
                     }
                     break;
                 case 12:

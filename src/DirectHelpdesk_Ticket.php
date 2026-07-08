@@ -33,6 +33,7 @@ use CommonDBTM;
 use CommonITILObject;
 use DbUtils;
 use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Session;
 
@@ -72,6 +73,14 @@ class DirectHelpdesk_Ticket extends CommonDBTM
         if ($item->getType() == 'Ticket'
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+            $config    = Config::getInstance();
+            $parent_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+            if ($parent_id > 0) {
+                $sons = getSonsOf('glpi_entities', $parent_id);
+                if (!in_array((int)$item->fields['entities_id'], $sons)) {
+                    return '';
+                }
+            }
             if (self::countForTicket($item) > 0) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     return self::createTabEntry(
@@ -136,48 +145,24 @@ class DirectHelpdesk_Ticket extends CommonDBTM
     {
         $direct = new DirectHelpdesk();
         if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities_id], ['date'])) {
-            echo "<form method='post' action='" . $direct->getFormURL() . "'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'>";
-            if (Session::getCurrentInterface() == 'central') {
-                echo "<th>" . __('Select', 'manageentities') . "</th>";
-            }
-            echo "<th>" . __('Title') . "</th>";
-            echo "<th>" . __('Date') . "</th>";
-            echo "<th>" . __('Technician') . "</th>";
-            echo "<th>" . __('Duration') . "</th>";
-            if (Session::getCurrentInterface() == 'central') {
-                echo "<th>" . __('Description') . "</th>";
-            }
-            echo "</tr>";
-
+            $rows = [];
             foreach ($items as $item) {
-                echo "<tr class='tab_bg_1'>";
-                if (Session::getCurrentInterface() == 'central') {
-                    echo "<td>";
-                    $id = $item['id'];
-                    Html::showCheckbox(['name' => 'select[' . $id . ']', 'value' => 0]);
-                    echo "</td>";
-                }
-                echo "<td>" . $item['name'] . "</td>";
-                echo "<td>" . Html::convDate($item['date']) . "</td>";
-                echo "<td>" . getUserName($item['users_id']) . "</td>";
-                echo "<td>" . CommonITILObject::getActionTime($item['actiontime']) . "</td>";
-                if (Session::getCurrentInterface() == 'central') {
-                    echo "<td>" . $item['comment'] . "</td>";
-                }
-                echo "</tr>";
+                $rows[] = [
+                    'id'         => $item['id'],
+                    'name'       => $item['name'],
+                    'date'       => Html::convDate($item['date']),
+                    'technician' => getUserName($item['users_id']),
+                    'duration'   => CommonITILObject::getActionTime($item['actiontime']),
+                    'comment'    => $item['comment'],
+                ];
             }
-            if (Session::getCurrentInterface() == 'central') {
-                echo "<tr><th colspan='6'>";
-                echo Html::hidden('entities_id', ['value' => $entities_id]);
-                echo "<div class='center'>";
-                echo Html::submit(_sx('button', 'Post'), ['name' => 'create_ticket', 'class' => 'btn btn-primary me-2']
-                );
-                echo "</div></th></tr>";
-            }
-            echo "</table>";
-            Html::closeForm();
+
+            TemplateRenderer::getInstance()->display('@manageentities/entity/directhelpdesk_ticket_select.html.twig', [
+                'rows'        => $rows,
+                'is_central'  => (Session::getCurrentInterface() == 'central'),
+                'entities_id' => $entities_id,
+                'form_url'    => $direct->getFormURL(),
+            ]);
         }
     }
 }

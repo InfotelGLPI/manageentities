@@ -1,0 +1,76 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<form method="post" action="{{ form_url }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="entities_id" value="{{ entities_id }}">
+
+    <div class="table-responsive">
+        <table class="table table-hover table-sm mb-0">
+            <thead>
+                <tr>
+                    {% if is_central %}
+                    <th class="text-center">{{ __('Select', 'manageentities') }}</th>
+                    {% endif %}
+                    <th>{{ __('Title') }}</th>
+                    <th>{{ __('Date') }}</th>
+                    <th>{{ __('Technician') }}</th>
+                    <th>{{ __('Duration') }}</th>
+                    {% if is_central %}
+                    <th>{{ __('Description') }}</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    {% if is_central %}
+                    <td class="text-center">
+                        <input type="checkbox" name="select[{{ row.id }}]" value="0">
+                    </td>
+                    {% endif %}
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.date }}</td>
+                    <td>{{ row.technician }}</td>
+                    <td>{{ row.duration }}</td>
+                    {% if is_central %}
+                    <td>{{ row.comment|raw }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_central %}
+    <div class="d-flex justify-content-center p-2">
+        <button type="submit" name="create_ticket" class="btn btn-primary btn-sm">
+            {{ _x('button', 'Post') }}
+        </button>
+    </div>
+    {% endif %}
+</form>

@@ -89,40 +89,58 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                         <dd class="col-sm-9 col-form-label py-1">{{ ent.entity_comment|nl2br }}</dd>
                         {% endif %}
 
+                        {% if ent.entity_phonenumber or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('Phone') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">{{ ent.entity_phonenumber }}</dd>
+                        {% endif %}
 
+                        {% if ent.entity_fax or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('Fax') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">{{ ent.entity_fax }}</dd>
+                        {% endif %}
 
+                        {% if ent.entity_website or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('Website') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">
                             {% if ent.entity_website %}
                                 <a href="{{ ent.entity_website }}" target="_blank" rel="noopener">{{ ent.entity_website }}</a>
                             {% endif %}
                         </dd>
+                        {% endif %}
 
+                        {% if ent.entity_email or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('Email address') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">
                             {% if ent.entity_email %}
                                 <a href="mailto:{{ ent.entity_email }}">{{ ent.entity_email }}</a>
                             {% endif %}
                         </dd>
+                        {% endif %}
 
+                        {% if ent.entity_address or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('Address') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">{{ ent.entity_address|nl2br }}</dd>
+                        {% endif %}
 
+                        {% if ent.entity_postcode or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('Postal code') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">{{ ent.entity_postcode }}</dd>
+                        {% endif %}
 
+                        {% if ent.entity_town or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('City') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">{{ ent.entity_town }}</dd>
+                        {% endif %}
 
+                        {% if ent.entity_state or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('State') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">{{ ent.entity_state }}</dd>
+                        {% endif %}
 
+                        {% if ent.entity_country or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('Country') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">{{ ent.entity_country }}</dd>
+                        {% endif %}
 
                     </dl>
 
@@ -145,7 +163,8 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
     {# ── Right column — contacts + business (once for all entities) ── #}
     <div class="col-12 col-xl-5 d-flex flex-column gap-3">
 
-        {# Contacts card #}
+        {# Contacts card — hidden in helpdesk when there are no contacts #}
+        {% if contacts is not empty or can_edit_contacts %}
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -231,8 +250,10 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                 {% endif %}
             </div>
         </div>
+        {% endif %}
 
-        {# Business contacts card #}
+        {# Business contacts card — hidden in helpdesk when there are no business contacts #}
+        {% if business is not empty or can_edit_business %}
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -301,6 +322,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                 {% endif %}
             </div>
         </div>
+        {% endif %}
 
     </div>{# /col right #}
 </div>{# /row #}

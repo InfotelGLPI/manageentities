@@ -555,6 +555,8 @@ class CriDetail extends CommonDBTM
         $ticket->getFromDB($instID);
 
         if ($config->getFromDB(1)) {
+            $is_tree = is_array($entity) && count($entity) > 1;
+
             $criteria = [
                 'SELECT' => [
                     'glpi_documents.*',
@@ -564,6 +566,7 @@ class CriDetail extends CommonDBTM
                     'glpi_plugin_manageentities_cridetails.withcontract',
                     'glpi_plugin_manageentities_cridetails.contracts_id',
                     'glpi_plugin_manageentities_cridetails.realtime',
+                    'glpi_entities.name AS entity_name',
                 ],
                 'FROM' => 'glpi_documents',
                 'LEFT JOIN' => [
@@ -583,6 +586,12 @@ class CriDetail extends CommonDBTM
                         'ON' => [
                             'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
                             'glpi_plugin_manageentities_contractstates' => 'id',
+                        ],
+                    ],
+                    'glpi_entities' => [
+                        'ON' => [
+                            'glpi_documents' => 'entities_id',
+                            'glpi_entities'  => 'id',
                         ],
                     ],
                 ],
@@ -624,6 +633,9 @@ class CriDetail extends CommonDBTM
             }
             $columns['realtime']     = __('Crossed time (itinerary including)', 'manageentities');
             $columns['withcontract'] = __('Intervention with contract', 'manageentities');
+            if ($is_tree) {
+                $columns['entity'] = _n('Entity', 'Entities', 1);
+            }
             $columns['contract_num'] = __('Contract number', 'manageentities');
             $columns['name']         = __('Name');
             $columns['file']         = __('File');
@@ -653,6 +665,7 @@ class CriDetail extends CommonDBTM
                     'technicians'  => htmlspecialchars($data["technicians"] ?? '', ENT_QUOTES),
                     'realtime'     => Html::formatNumber($data["realtime"], 0, 2),
                     'withcontract' => \Dropdown::getYesNo($data["withcontract"]),
+                    'entity'       => htmlspecialchars($data["entity_name"] ?? '', ENT_QUOTES),
                     'contract_num' => $num_contract,
                     'name'         => $name_html,
                     'file'         => $doc->getDownloadLink(),
