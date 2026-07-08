@@ -36,7 +36,7 @@
         <div class="row g-3">
 
             {# Left column: alert 1 (no subscription) + alert 2 (expired) #}
-            <div class="col-12 col-lg-8 d-flex flex-column gap-3">
+            <div class="col-8 col-lg-6 d-flex flex-column gap-3">
 
                 {# Alert 1: entities with active contract but no subscription #}
                 {% if no_subscription|length > 0 %}
@@ -59,16 +59,34 @@
                 {% endif %}
 
                 {# Alert 2: entities with an expired subscription #}
-                {% if expired_subscription|length > 0 %}
+                {% set has_expired = expired_subscription.cloud|length > 0 or expired_subscription.onpremise|length > 0 %}
+                {% if has_expired %}
                 <div class="alert alert-danger d-flex align-items-start gap-2 mb-0" role="alert">
                     <i class="ti ti-clock-exclamation flex-shrink-0 mt-1"></i>
-                    <div>
+                    <div class="w-100">
                         <strong>{{ __('Entities with an expired publisher subscription:', 'manageentities') }}</strong>
-                        <ul class="mb-0 mt-1">
-                            {% for name in expired_subscription %}
-                                <li>{{ name }}</li>
-                            {% endfor %}
-                        </ul>
+                        <div class="row mt-2 g-2">
+                            {% if expired_subscription.cloud|length > 0 %}
+                            <div class="col-12 col-md-6">
+                                <div class="fw-semibold mb-1"><i class="ti ti-cloud me-1"></i>{{ __('Cloud', 'manageentities') }}</div>
+                                <ul class="mb-0">
+                                    {% for name in expired_subscription.cloud %}
+                                        <li>{{ name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            {% if expired_subscription.onpremise|length > 0 %}
+                            <div class="col-12 col-md-6">
+                                <div class="fw-semibold mb-1"><i class="ti ti-server me-1"></i>{{ __('On-premise', 'manageentities') }}</div>
+                                <ul class="mb-0">
+                                    {% for name in expired_subscription.onpremise %}
+                                        <li>{{ name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 {% else %}
@@ -80,20 +98,43 @@
 
             </div>
 
+            {# Vertical divider #}
+            <div class="col-auto d-none d-lg-flex">
+                <div class="vr"></div>
+            </div>
+
             {# Right column: alert 3 (no contract) + subscription counts #}
-            <div class="col-12 col-lg-4 d-flex flex-column gap-4">
+            <div class="col-12 col-lg d-flex flex-column gap-4">
 
                 {# Alert 3: entities with subscription but no active contract #}
-                {% if no_contract|length > 0 %}
+                {% set has_no_contract = no_contract.had_contract|length > 0 or no_contract.never_contract|length > 0 %}
+                {% if has_no_contract %}
                 <div class="alert alert-warning d-flex align-items-start gap-2 mb-0" role="alert">
                     <i class="ti ti-alert-circle flex-shrink-0 mt-1"></i>
-                    <div>
+                    <div class="w-100">
                         <strong>{{ __('Entities with a publisher subscription but no active contract:', 'manageentities') }}</strong>
-                        <ul class="mb-0 mt-1">
-                            {% for name in no_contract %}
-                                <li>{{ name }}</li>
-                            {% endfor %}
-                        </ul>
+                        <div class="row mt-2 g-2">
+                            {% if no_contract.had_contract|length > 0 %}
+                            <div class="col-12 col-md-6">
+                                <div class="fw-semibold mb-1"><i class="ti ti-history me-1"></i>{{ __('Previously had a contract', 'manageentities') }}</div>
+                                <ul class="mb-0">
+                                    {% for name in no_contract.had_contract %}
+                                        <li>{{ name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            {% if no_contract.never_contract|length > 0 %}
+                            <div class="col-12 col-md-6">
+                                <div class="fw-semibold mb-1"><i class="ti ti-file-x me-1"></i>{{ __('Never had a contract', 'manageentities') }}</div>
+                                <ul class="mb-0">
+                                    {% for name in no_contract.never_contract %}
+                                        <li>{{ name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 {% else %}

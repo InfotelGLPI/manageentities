@@ -303,27 +303,56 @@ class EditorSubscription extends CommonDBTM
             }
         }
 
-        // Alert 2: subscription but no active contract
+        // Alert 2: subscription but no active contract, split by history
         $ids_no_contract = array_values(array_diff($with_subscription, $with_active_contract));
-        $no_contract = [];
+        $no_contract = ['had_contract' => [], 'never_contract' => []];
         if (!empty($ids_no_contract)) {
-            $iter = $DB->request([
-                'SELECT' => ['completename'],
-                'FROM'   => 'glpi_entities',
-                'WHERE'  => ['id' => $ids_no_contract],
-                'ORDER'  => ['completename ASC'],
+            // Entities that have at least one closed contract (any state)
+            $had_iter = $DB->request([
+                'SELECT'   => ['c.entities_id'],
+                'DISTINCT' => true,
+                'FROM'     => 'glpi_plugin_manageentities_contractdays AS cd',
+                'INNER JOIN' => [
+                    'glpi_contracts AS c' => ['FKEY' => ['cd' => 'contracts_id', 'c' => 'id']],
+                ],
+                'WHERE' => [
+                    'c.entities_id' => $ids_no_contract,
+                    'c.is_deleted'  => 0,
+                ],
             ]);
-            foreach ($iter as $row) {
-                $no_contract[] = $row['completename'];
+            $ids_had_contract = array_column(iterator_to_array($had_iter), 'entities_id');
+            $ids_never_contract = array_values(array_diff($ids_no_contract, $ids_had_contract));
+
+            if (!empty($ids_had_contract)) {
+                $iter = $DB->request([
+                    'SELECT' => ['completename'],
+                    'FROM'   => 'glpi_entities',
+                    'WHERE'  => ['id' => $ids_had_contract],
+                    'ORDER'  => ['completename ASC'],
+                ]);
+                foreach ($iter as $row) {
+                    $no_contract['had_contract'][] = $row['completename'];
+                }
+            }
+            if (!empty($ids_never_contract)) {
+                $iter = $DB->request([
+                    'SELECT' => ['completename'],
+                    'FROM'   => 'glpi_entities',
+                    'WHERE'  => ['id' => $ids_never_contract],
+                    'ORDER'  => ['completename ASC'],
+                ]);
+                foreach ($iter as $row) {
+                    $no_contract['never_contract'][] = $row['completename'];
+                }
             }
         }
 
-        // Alert 3: entities with an expired subscription
-        $expired_subscription = [];
+        // Alert 3: entities with an expired subscription, split by type
+        $expired_subscription = ['cloud' => [], 'onpremise' => []];
         if (!empty($concerned_ids)) {
             $now = date('Y-m-d');
             $iter = $DB->request([
-                'SELECT'   => ['e.completename'],
+                'SELECT'   => ['e.completename', 's.cloud_client'],
                 'FROM'     => self::getTable() . ' AS s',
                 'LEFT JOIN' => [
                     'glpi_entities AS e' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
@@ -336,7 +365,11 @@ class EditorSubscription extends CommonDBTM
                 'ORDER'    => ['e.completename ASC'],
             ]);
             foreach ($iter as $row) {
-                $expired_subscription[] = $row['completename'];
+                if ($row['cloud_client']) {
+                    $expired_subscription['cloud'][] = $row['completename'];
+                } else {
+                    $expired_subscription['onpremise'][] = $row['completename'];
+                }
             }
         }
 
