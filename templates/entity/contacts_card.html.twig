@@ -62,7 +62,6 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                         <td>
                             {{ contact.contact_type }}
                             {% if is_single and interface != 'helpdesk' %}
-                                <br>
                                 {% if contact.is_default %}
                                     <span class="badge bg-outline-success">{{ __('Manager') }}</span>
                                 {% elseif can_edit_contacts %}
@@ -76,7 +75,7 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
                                     </form>
                                 {% endif %}
                             {% elseif contact.is_default %}
-                                <br><span class="badge bg-outline-success">{{ __('Manager') }}</span>
+                                <span class="badge bg-outline-success">{{ __('Manager') }}</span>
                             {% endif %}
                         </td>
                         {% if can_edit_contacts and is_single %}

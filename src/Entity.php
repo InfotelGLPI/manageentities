@@ -150,11 +150,11 @@ class Entity extends CommonGLPI
                 $tabs[9] = Document::createTabEntry(_n('Document', 'Documents', 2));
             }
 
-            if (Plugin::isPluginActive('accounts')) {
-                if (Session::haveRight("plugin_accounts", READ)) {
-                    $tabs[11] = Account::createTabEntry(__('Accounts', 'manageentities'));
-                }
-            }
+            //if (Plugin::isPluginActive('accounts')) {
+            //    if (Session::haveRight("plugin_accounts", READ)) {
+            //        $tabs[11] = Account::createTabEntry(__('Accounts', 'manageentities'));
+            //    }
+            //}
 
             if (Session::getCurrentInterface() != 'helpdesk' && $this->canview()) {
                 $tabs[12] = self::createTabEntry(__('References', 'manageentities'));
@@ -353,7 +353,7 @@ class Entity extends CommonGLPI
 
             $logos = [];
             foreach ((new EntityLogo())->find(['entities_id' => $f['id']]) as $logo) {
-                $logos[] = $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . $logo['logos_id'];
+                $logos[] = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/logo.send.php?docid=' . $logo['logos_id'];
             }
 
             $file_input_html = '';

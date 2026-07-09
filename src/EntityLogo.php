@@ -133,7 +133,7 @@ class EntityLogo extends CommonDBTM
                     0
                 );
             } else {
-                Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 0, 0, 0);
+                Toolbox::resizePicture($filename, $filename);
             }
 
             //If file tag is present
