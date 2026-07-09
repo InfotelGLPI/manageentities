@@ -432,37 +432,15 @@ class EditorSubscription extends CommonDBTM
     // Display
     // -----------------------------------------------------------------------
 
-    static function showForEntity(\CommonGLPI $item): void
+    static function showForEntity(array $instID): void
     {
         global $DB;
 
         $can_edit = Session::getCurrentInterface() !== 'helpdesk'
             && Session::haveRightsOr(self::$rightname, [CREATE, UPDATE]);
 
-        $config = Config::getInstance();
-
-        // Helpdesk: restrict to the user's active entity only
-        if (Session::getCurrentInterface() === 'helpdesk') {
-            $where = ['s.entities_id' => (int)$_SESSION['glpiactive_entity']];
-        } else {
-            // Central: scope to customer entities + archived entities
-            $parent_id           = (int)($config->fields['wizard_default_entities_id'] ?? 0);
-            $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
-
-            $scoped_ids = [];
-            if ($parent_id > 0) {
-                $sons = getSonsOf('glpi_entities', $parent_id);
-                unset($sons[$parent_id]);
-                $scoped_ids = array_keys($sons);
-            }
-            if ($archive_entities_id > 0) {
-                $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
-                unset($archive_sons[$archive_entities_id]);
-                $scoped_ids = array_unique(array_merge($scoped_ids, array_keys($archive_sons)));
-            }
-
-            $where = !empty($scoped_ids) ? ['s.entities_id' => $scoped_ids] : [];
-        }
+        // Scope to the entity (or entities, if displayed recursively) currently active
+        $where = !empty($instID) ? ['s.entities_id' => $instID] : [];
 
         $now  = date('Y-m-d');
         $rows = [];

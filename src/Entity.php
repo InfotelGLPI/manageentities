@@ -230,7 +230,7 @@ class Entity extends CommonGLPI
                     $Contract->showContracts($entities);
                     break;
                 case 6:
-                    EditorSubscription::showForEntity($item);
+                    EditorSubscription::showForEntity($entities);
                     break;
                 case 7:
                     EditorSubscription::showStatusTab();

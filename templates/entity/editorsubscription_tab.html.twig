@@ -42,6 +42,10 @@
             {% endif %}
         </h3>
         <div class="card-options ms-auto d-flex gap-2">
+            <div class="input-group input-group-sm" style="width: 220px;">
+                <span class="input-group-text"><i class="ti ti-search"></i></span>
+                <input type="text" id="me_sub_search" class="form-control" placeholder="{{ __('Search') }}">
+            </div>
             <button type="button" id="me_sub_filter_expired" class="btn btn-sm btn-outline-warning"
                     title="{{ __('Show expired subscriptions only', 'manageentities') }}">
                 <i class="ti ti-clock-exclamation me-1"></i>{{ __('Expired only', 'manageentities') }}
@@ -116,7 +120,9 @@
 
 <script>
 (function () {
-    /* ---- expired filter ---- */
+    /* ---- expired filter + search ---- */
+    var table     = document.getElementById('me_sub_table');
+    var searchBox = document.getElementById('me_sub_search');
     var btn       = document.getElementById('me_sub_filter_expired');
     var exportBtn = document.getElementById('me_sub_export_btn');
 
@@ -124,25 +130,33 @@
     var expiredExportUrl = baseExportUrl + '&sub_expired=1';
     var filterActive     = false;
 
+    function applyFilters() {
+        if (!table) {
+            return;
+        }
+        var search = searchBox ? searchBox.value.trim().toLowerCase() : '';
+        table.querySelectorAll('tbody tr').forEach(function (tr) {
+            var matchesExpired = !filterActive || tr.getAttribute('data-expired') === '1';
+            var matchesSearch  = !search || tr.textContent.toLowerCase().indexOf(search) !== -1;
+            tr.style.display = (matchesExpired && matchesSearch) ? '' : 'none';
+        });
+    }
+
+    if (searchBox) {
+        searchBox.addEventListener('input', applyFilters);
+    }
+
     if (btn) {
         btn.addEventListener('click', function () {
             filterActive = !filterActive;
             btn.classList.toggle('btn-outline-warning', !filterActive);
             btn.classList.toggle('btn-warning',          filterActive);
-
-            document.querySelectorAll('#me_sub_table tbody tr').forEach(function (tr) {
-                if (filterActive) {
-                    tr.style.display = tr.getAttribute('data-expired') === '1' ? '' : 'none';
-                } else {
-                    tr.style.display = '';
-                }
-            });
+            applyFilters();
 
             if (exportBtn) {
                 exportBtn.href = filterActive ? expiredExportUrl : baseExportUrl;
             }
         });
     }
-
 })();
 </script>
