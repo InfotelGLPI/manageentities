@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-08 17:41+0000\n"
+"POT-Creation-Date: 2026-07-09 06:01+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -63,10 +63,6 @@ msgstr "Un contrat avec ce numéro existe déjà"
 msgid "Accomplished tasks informations"
 msgstr "Informations sur les tâches accomplies"
 
-#: src/Entity.php:155
-msgid "Accounts"
-msgstr "Comptes"
-
 #: src/EditorSubscription.php:177 hook.php:813
 #: templates/wizard/step4_management.html.twig:120
 msgid "Active editor subscription"
@@ -76,14 +72,14 @@ msgstr "Souscription active éditeur"
 #: templates/cridetail_for_ticket.html.twig:250
 #: templates/contract_detail_form.html.twig:203
 #: templates/editorsubscription_wizard.html.twig:92
-#: templates/entity/contacts_card.html.twig:108
-#: templates/entity/contacts_card.html.twig:112
+#: templates/entity/contacts_card.html.twig:107
+#: templates/entity/contacts_card.html.twig:111
 #: templates/entity/business_card.html.twig:87
 #: templates/entity/business_card.html.twig:91
-#: templates/entity/description.html.twig:244
-#: templates/entity/description.html.twig:247
-#: templates/entity/description.html.twig:316
-#: templates/entity/description.html.twig:319
+#: templates/entity/description.html.twig:243
+#: templates/entity/description.html.twig:246
+#: templates/entity/description.html.twig:315
+#: templates/entity/description.html.twig:318
 #: templates/editorsubscription_fields_js.html.twig:68
 msgid "Add"
 msgstr "Ajouter"
@@ -236,7 +232,7 @@ msgid "Associated assistance contracts"
 msgstr "Contrats d'assistance associés"
 
 #: templates/entity/business_card.html.twig:32
-#: templates/entity/description.html.twig:261
+#: templates/entity/description.html.twig:260
 msgid "Associated commercial"
 msgid_plural "Associated business"
 msgstr[0] "Commercial associé"
@@ -668,10 +664,10 @@ msgstr "Supprimer et réinitialiser"
 #: templates/cridetail_for_ticket.html.twig:257
 #: templates/contract_detail_form.html.twig:210
 #: templates/editorsubscription_wizard.html.twig:88
-#: templates/entity/contacts_card.html.twig:87
+#: templates/entity/contacts_card.html.twig:86
 #: templates/entity/business_card.html.twig:66
-#: templates/entity/description.html.twig:223
-#: templates/entity/description.html.twig:295
+#: templates/entity/description.html.twig:222
+#: templates/entity/description.html.twig:294
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
@@ -746,7 +742,7 @@ msgstr "Courriel"
 #: templates/entity/business_card.html.twig:45
 #: templates/entity/description.html.twig:112
 #: templates/entity/description.html.twig:184
-#: templates/entity/description.html.twig:274
+#: templates/entity/description.html.twig:273
 msgid "Email address"
 msgstr "Courriel"
 
@@ -1148,12 +1144,12 @@ msgstr[2] "Gestion des catégories de tâches"
 msgid "Management type"
 msgstr "Type de gestion"
 
-#: templates/entity/contacts_card.html.twig:67
-#: templates/entity/contacts_card.html.twig:74
-#: templates/entity/contacts_card.html.twig:79
-#: templates/entity/description.html.twig:205
-#: templates/entity/description.html.twig:211
-#: templates/entity/description.html.twig:215
+#: templates/entity/contacts_card.html.twig:66
+#: templates/entity/contacts_card.html.twig:73
+#: templates/entity/contacts_card.html.twig:78
+#: templates/entity/description.html.twig:204
+#: templates/entity/description.html.twig:210
+#: templates/entity/description.html.twig:214
 msgid "Manager"
 msgstr "Responsable"
 
@@ -1172,7 +1168,7 @@ msgstr "Mobile"
 #: templates/entity/contacts_card.html.twig:43
 #: templates/entity/business_card.html.twig:44
 #: templates/entity/description.html.twig:183
-#: templates/entity/description.html.twig:273
+#: templates/entity/description.html.twig:272
 msgid "Mobile phone"
 msgstr "Mobile"
 
@@ -1200,7 +1196,7 @@ msgstr "Gestion des déplacements"
 #: templates/entity/contracts_tab.html.twig:50
 #: templates/entity/description.html.twig:77
 #: templates/entity/description.html.twig:181
-#: templates/entity/description.html.twig:270
+#: templates/entity/description.html.twig:269
 #: templates/wizard/step1_entity.html.twig:42
 #: templates/wizard/step6_intervention_block.html.twig:33
 #: templates/wizard/step4_contract.html.twig:61
@@ -1262,12 +1258,12 @@ msgid "No active subscription"
 msgstr "Pas de souscription active"
 
 #: templates/entity/business_card.html.twig:78
-#: templates/entity/description.html.twig:307
+#: templates/entity/description.html.twig:306
 msgid "No business contact"
 msgstr "Pas de commercial trouvé"
 
-#: templates/entity/contacts_card.html.twig:99
-#: templates/entity/description.html.twig:235
+#: templates/entity/contacts_card.html.twig:98
+#: templates/entity/description.html.twig:234
 msgid "No contact"
 msgstr "Pas decontact trouvé"
 
@@ -1495,8 +1491,8 @@ msgstr "Responsable"
 #: templates/entity/business_card.html.twig:43
 #: templates/entity/description.html.twig:93
 #: templates/entity/description.html.twig:182
+#: templates/entity/description.html.twig:270
 #: templates/entity/description.html.twig:271
-#: templates/entity/description.html.twig:272
 #: templates/wizard/step1_entity.html.twig:70
 #: templates/wizard/step2_contact_block.html.twig:63
 msgid "Phone"
