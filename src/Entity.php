@@ -200,7 +200,7 @@ class Entity extends CommonGLPI
                     $direct = new DirectHelpdesk();
                     if (Session::getCurrentInterface() == 'helpdesk') {
                         if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities], ['date'])) {
-                            echo "<div class='card'>";
+                            echo "<br><div class='card'>";
                             echo "<div class='card-header'>";
                             echo "<h4 class='mb-3'>" . htmlspecialchars(DirectHelpdesk::getTypeName(2)) . "</h4>";
                             echo "</div>";
