@@ -244,6 +244,68 @@ class CriDetail extends CommonDBTM
         }
     }
 
+    public static function autoLinkTicketToActiveContractDay(\Ticket_Contract $item): void
+    {
+        global $DB;
+
+        $tickets_id   = (int)($item->fields['tickets_id']   ?? 0);
+        $contracts_id = (int)($item->fields['contracts_id'] ?? 0);
+
+        if ($tickets_id <= 0 || $contracts_id <= 0) {
+            return;
+        }
+
+        $already_linked = $DB->request([
+            'COUNT' => 'id',
+            'FROM'  => 'glpi_plugin_manageentities_cridetails',
+            'WHERE' => [
+                'tickets_id'   => $tickets_id,
+                'contracts_id' => $contracts_id,
+            ],
+        ])->current()['id'] ?? 0;
+
+        if ($already_linked) {
+            return;
+        }
+
+        $iterator = $DB->request([
+            'SELECT'     => ['glpi_plugin_manageentities_contractdays.id'],
+            'FROM'       => 'glpi_plugin_manageentities_contractdays',
+            'INNER JOIN' => [
+                'glpi_plugin_manageentities_contractstates' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_contractdays'   => 'plugin_manageentities_contractstates_id',
+                        'glpi_plugin_manageentities_contractstates' => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                'glpi_plugin_manageentities_contractdays.contracts_id' => $contracts_id,
+                'glpi_plugin_manageentities_contractstates.is_active'  => 1,
+            ],
+        ]);
+
+        if (count($iterator) !== 1) {
+            return;
+        }
+
+        $contractday_id = (int)$iterator->current()['id'];
+
+        $ticket = new \Ticket();
+        if (!$ticket->getFromDB($tickets_id)) {
+            return;
+        }
+
+        $cridetail = new self();
+        $cridetail->add([
+            'entities_id' => $ticket->fields['entities_id'],
+            'tickets_id' => $tickets_id,
+            'contracts_id' => $contracts_id,
+            'plugin_manageentities_contractdays_id' => $contractday_id,
+            'withcontract' => 1,
+        ]);
+    }
+
     public function pre_deleteItem()
     {
         //si un document lié ne pas permettre le delete via le form self::showForTicket($item);

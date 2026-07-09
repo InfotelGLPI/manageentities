@@ -152,6 +152,7 @@ function plugin_init_manageentities()
         $PLUGIN_HOOKS[Hooks::PRE_ITEM_ADD]['manageentities'] = [
             'TicketTask' => [TicketTask::class, 'preItemAdd'],
         ];
+        $PLUGIN_HOOKS[Hooks::ITEM_ADD]['manageentities']['Ticket_Contract'] = [CriDetail::class, 'autoLinkTicketToActiveContractDay'];
         $PLUGIN_HOOKS[Hooks::POST_ITEM_FORM]['manageentities'] = 'plugin_manageentities_post_item_form';
         // Add specific files to add to the header : javascript or css
         $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css", "style.css"];
