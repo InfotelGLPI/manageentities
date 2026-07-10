@@ -32,10 +32,12 @@ namespace GlpiPlugin\Manageentities;
 use Ajax;
 use CommonDBTM;
 use CommonGLPI;
+use DBConnection;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\Config;
 use Html;
+use Migration;
 use Session;
 use Toolbox;
 
@@ -677,5 +679,39 @@ class CriPrice extends CommonDBTM
         ];
 
         return $tab;
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            `plugin_manageentities_critypes_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_critypes (id)',
+                            `plugin_manageentities_contractdays_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractdays (id)',
+                            `price` decimal(20,4) NOT NULL DEFAULT '0.0000',
+                            `is_default` tinyint NOT NULL DEFAULT '0',
+                            PRIMARY KEY  (`id`),
+                            KEY `entities_id` (`entities_id`),
+                            KEY `plugin_manageentities_critypes_id` (`plugin_manageentities_critypes_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }

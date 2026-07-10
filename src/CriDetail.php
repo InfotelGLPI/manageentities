@@ -32,11 +32,13 @@ namespace GlpiPlugin\Manageentities;
 use Ajax;
 use CommonDBTM;
 use CommonGLPI;
+use DBConnection;
 use DbUtils;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Html;
+use Migration;
 use Planning;
 use Session;
 use Ticket;
@@ -2148,42 +2150,69 @@ class CriDetail extends CommonDBTM
         }
 
 
-        $query = "SELECT `glpi_tickettasks`.`users_id_tech`,
-                       `glpi_tickettasks`.`begin`,
-                       `glpi_tickettasks`.`end`,
-                       `glpi_tickettasks`.`id`,
-                       `glpi_tickettasks`.`actiontime`,
-                       `glpi_tickettasks`.`content`,
-                       `glpi_tickets`.`name` AS ticket_name,
-                       `glpi_entities`.`name` AS entities_name,
-                       `glpi_tickets`.`id`AS tickets_id "
-            . " FROM `glpi_plugin_manageentities_cridetails` "
-            . " LEFT JOIN `glpi_tickets` ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickets`.`id`)"
-            . " LEFT JOIN `glpi_entities` ON (`glpi_tickets`.`entities_id` = `glpi_entities`.`id`)"
-            . " LEFT JOIN `glpi_tickets_users` ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`)"
-            . " LEFT JOIN `glpi_tickettasks` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)"
-            . " LEFT JOIN `glpi_plugin_manageentities_critechnicians` ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_plugin_manageentities_critechnicians`.`tickets_id`) "
-            . " WHERE (`glpi_tickettasks`.`begin` >= '" . $begin . "'
+        // The WHERE clause relies on IN (SELECT ...) sub-queries (group membership) and on
+        // getEntitiesRestrictRequest(), which do not map cleanly to the query builder criteria.
+        // It is kept as a QueryExpression: every interpolated value is an int (or intval-mapped)
+        // and the date bounds are validated above, so no unsanitized input reaches the raw SQL.
+        $where = "(`glpi_tickettasks`.`begin` >= '" . $begin . "'
                   AND `glpi_tickettasks`.`end` <= '" . $end . "') "
             . " AND NOT `glpi_tickets`.`is_deleted` "
             . " $addcrit "
-            . " AND $ASSIGN ";
-        $query .= $dbu->getEntitiesRestrictRequest(
-            "AND",
-            "glpi_tickets",
-            '',
-            $_SESSION["glpiactiveentities"],
-            false
-        );
-        $query .= " AND `glpi_tickettasks`.`actiontime` != 0";
-        $query .= " GROUP BY `glpi_tickettasks`.`id` ";
-        //$query.= " ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
+            . " AND $ASSIGN "
+            . $dbu->getEntitiesRestrictRequest("AND", "glpi_tickets", '', $_SESSION["glpiactiveentities"], false)
+            . " AND `glpi_tickettasks`.`actiontime` != 0";
 
-        $result = $DB->doQuery($query);
-        $i = 0;
+        $iterator = $DB->request([
+            'SELECT'    => [
+                'glpi_tickettasks.users_id_tech',
+                'glpi_tickettasks.begin',
+                'glpi_tickettasks.end',
+                'glpi_tickettasks.id',
+                'glpi_tickettasks.actiontime',
+                'glpi_tickettasks.content',
+                'glpi_tickets.name AS ticket_name',
+                'glpi_entities.name AS entities_name',
+                'glpi_tickets.id AS tickets_id',
+            ],
+            'FROM'      => 'glpi_plugin_manageentities_cridetails',
+            'LEFT JOIN' => [
+                'glpi_tickets' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+                        'glpi_tickets'                          => 'id',
+                    ],
+                ],
+                'glpi_entities' => [
+                    'ON' => [
+                        'glpi_tickets'  => 'entities_id',
+                        'glpi_entities' => 'id',
+                    ],
+                ],
+                'glpi_tickets_users' => [
+                    'ON' => [
+                        'glpi_tickets_users' => 'tickets_id',
+                        'glpi_tickets'       => 'id',
+                    ],
+                ],
+                'glpi_tickettasks' => [
+                    'ON' => [
+                        'glpi_tickettasks' => 'tickets_id',
+                        'glpi_tickets'     => 'id',
+                    ],
+                ],
+                'glpi_plugin_manageentities_critechnicians' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_cridetails'     => 'tickets_id',
+                        'glpi_plugin_manageentities_critechnicians' => 'tickets_id',
+                    ],
+                ],
+            ],
+            'WHERE'     => [new \Glpi\DBAL\QueryExpression($where)],
+            'GROUPBY'   => 'glpi_tickettasks.id',
+        ]);
 
-        if ($DB->numrows($result) > 0) {
-            for ($i = 0; $data = $DB->fetchArray($result); $i++) {
+        if (count($iterator) > 0) {
+            foreach ($iterator as $data) {
                 $key = $data["begin"] . "$$" . CriDetail::class . $data["id"];
 
                 $interv[$key]['color'] = $options['color'];
@@ -2289,4 +2318,47 @@ class CriDetail extends CommonDBTM
         return $html;
     }
 
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            `date` timestamp NULL DEFAULT NULL,
+                            `documents_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documents (id)',
+                            `plugin_manageentities_contractdays_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            `plugin_manageentities_critypes_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_critypes (id)',
+                            `withcontract` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            `contracts_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_contracts (id)',
+                            `realtime` decimal(20,2) DEFAULT '0.00',
+                            `technicians` varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
+                            `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_tickets (id)',
+                            `number_moving` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'Number of movements',
+                            PRIMARY KEY  (`id`),
+                            KEY `entities_id` (`entities_id`),
+                            KEY `documents_id` (`documents_id`),
+                            KEY `plugin_manageentities_critypes_id` (`plugin_manageentities_critypes_id`),
+                            KEY `plugin_manageentities_contractdays_id` (`plugin_manageentities_contractdays_id`),
+                            KEY `tickets_id` (`tickets_id`),
+                            KEY `contracts_id` (`contracts_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
+    }
 }

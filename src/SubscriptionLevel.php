@@ -30,6 +30,8 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDropdown;
+use DBConnection;
+use Migration;
 use Session;
 
 if (!defined('GLPI_ROOT')) {
@@ -130,5 +132,36 @@ class SubscriptionLevel extends CommonDropdown
             ];
         }
         return $out;
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `name`              varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
+                            `comment`           text collate utf8mb4_unicode_ci,
+                            `subscription_type` tinyint NOT NULL DEFAULT '0' COMMENT '0=all, 1=on_premise, 2=cloud',
+                            PRIMARY KEY (`id`),
+                            KEY `name` (`name`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }

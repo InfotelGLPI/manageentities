@@ -31,10 +31,12 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use CommonITILObject;
+use DBConnection;
 use DbUtils;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
+use Migration;
 use Session;
 
 if (!defined('GLPI_ROOT')) {
@@ -164,5 +166,36 @@ class DirectHelpdesk_Ticket extends CommonDBTM
                 'form_url'    => $direct->getFormURL(),
             ]);
         }
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_tickets (id)',
+                            `plugin_manageentities_directhelpdesks_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            PRIMARY KEY  (`id`),
+                            KEY `tickets_id` (`tickets_id`),
+                            KEY `plugin_manageentities_directhelpdesks_id` (`plugin_manageentities_directhelpdesks_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }

@@ -33,8 +33,10 @@ use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use ContactType;
+use DBConnection;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
+use Migration;
 use Session;
 use Ticket;
 use Toolbox;
@@ -98,6 +100,7 @@ class Config extends CommonDBTM
         $this->addStandardTab(__CLASS__, $ong, $options);
         $this->addStandardTab(CriDetail::class, $ong, $options);
         $this->addStandardTab(Company::class, $ong, $options);
+        $this->addStandardTab(CheckSchema::class, $ong, $options);
         return $ong;
     }
 
@@ -596,6 +599,72 @@ class Config extends CommonDBTM
         }
 
         return self::$instance;
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `backup` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            `documentcategories_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id)',
+                            `useprice` tinyint NOT NULL DEFAULT '1' COMMENT 'DEFAULT for yes',
+                            `hourorday` tinyint NOT NULL DEFAULT '0' COMMENT 'DEFAULT for day',
+                            `hourbyday` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'if hourorday == 0 then must be different of 0',
+                            `needvalidationforcri` tinyint NOT NULL DEFAULT '0' COMMENT 'only CRI with validated ticket are taking into account for consumption calculation',
+                            `use_publictask` tinyint NOT NULL DEFAULT '0' COMMENT 'DEFAULT for no',
+                            `allow_same_periods` tinyint NOT NULL DEFAULT '0' COMMENT 'allow interventions on the same interval of dates',
+                            `contract_states` text DEFAULT NULL,
+                            `business_id` text DEFAULT NULL,
+                            `choice_intervention` int {$default_key_sign} DEFAULT NULL,
+                            `comment` tinyint NOT NULL DEFAULT '1' COMMENT 'display comments in the CRI',
+                            `non_accomplished_tasks` tinyint NOT NULL DEFAULT '0',
+                            `get_pdf_cri` tinyint NOT NULL DEFAULT '0',
+                            `ticket_state` int {$default_key_sign} NOT NULL DEFAULT '3',
+                            `default_duration` varchar(255) DEFAULT NULL,
+                            `default_time_am` varchar(255) DEFAULT NULL,
+                            `default_time_pm` varchar(255) DEFAULT NULL,
+                            `disable_date_header` tinyint NOT NULL DEFAULT '0',
+                            `closed_contractstate_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractstates (id) — state applied to contract periods when closing',
+                            `closed_glpi_state_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_states (id) — GLPI contract state that triggers period closure and is set when all periods are closed',
+                            `wizard_contractstate_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractstates (id) — DEFAULT intervention state in wizard',
+                            `wizard_contract_type` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_critypes (id) — DEFAULT intervention type in wizard',
+                            `wizard_critype_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_critypes (id) — DEFAULT CriType for rate in wizard',
+                            `wizard_documentcategories_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id) — DEFAULT document category in wizard',
+                            `wizard_contacttypes_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_contacttypes (id) — DEFAULT contact type in wizard',
+                            `wizard_default_entities_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_entities (id) — parent entity pre-selected and locked in wizard step 1',
+                            `wizard_archive_entities_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_entities (id) — entity used to archive customers',
+                            PRIMARY KEY  (`id`),
+                            KEY `documentcategories_id` (`documentcategories_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+
+            $DB->insert(
+                $table,
+                ['id' => 1,
+                    'backup' => 0,
+                    'documentcategories_id' => 0,
+                    'hourorday' => 0,
+                    'hourbyday' => 8,
+                    'needvalidationforcri' => 0]
+            );
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 
 }

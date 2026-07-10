@@ -30,9 +30,11 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
+use DBConnection;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
+use Migration;
 use Session;
 use Toolbox;
 
@@ -946,4 +948,46 @@ class ContractDay extends CommonDBTM
         return false;
     }
 
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            `name` varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
+                            `plugin_manageentities_critypes_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_critypes (id)',
+                            `contracts_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_contracts (id)',
+                            `plugin_manageentities_contractstates_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractstates (id)',
+                            `contract_type` tinyint NOT NULL DEFAULT '0' COMMENT 'for the contract type (hour, intervention, unlimited or not)',
+                            `begin_date` timestamp NULL DEFAULT NULL,
+                            `end_date` timestamp NULL DEFAULT NULL,
+                            `nbday` decimal(20,2) DEFAULT '0.00',
+                            `report` decimal(20,2) DEFAULT '0.00',
+                            `charged` tinyint NOT NULL DEFAULT '0',
+                            `comment` text,
+                            PRIMARY KEY  (`id`),
+                            KEY `entities_id` (`entities_id`),
+                            KEY `contracts_id` (`contracts_id`),
+                            KEY `plugin_manageentities_critypes_id` (`plugin_manageentities_critypes_id`),
+                            KEY `plugin_manageentities_contractstates_id` (`plugin_manageentities_contractstates_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
+    }
 }

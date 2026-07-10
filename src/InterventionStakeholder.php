@@ -31,10 +31,12 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use CommonGLPI;
+use DBConnection;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\Config;
 use Html;
+use Migration;
 use Session;
 use Toolbox;
 use User;
@@ -498,4 +500,34 @@ class InterventionStakeholder extends CommonDBTM
         echo "</script>\n";
     }
 
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `users_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
+                            `number_affected_days` double NOT NULL DEFAULT '0' COMMENT 'Number of days affected to the user to an intervention',
+                            `plugin_manageentities_contractdays_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_contractdays (id)',
+                            PRIMARY KEY  (`id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
+    }
 }

@@ -30,8 +30,10 @@
 namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
+use DBConnection;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
+use Migration;
 use Session;
 
 if (!defined('GLPI_ROOT')) {
@@ -157,5 +159,37 @@ class Contact extends CommonDBTM
                 'contact_dropdown_html'=> $contact_dropdown_html,
             ]
         );
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                        `id` int {$default_key_sign} NOT NULL auto_increment,
+                        `contacts_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_contacts (id)',
+                        `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                        `is_default` tinyint NOT NULL DEFAULT '0',
+                        PRIMARY KEY  (`id`),
+                        UNIQUE KEY `unicity` (`entities_id`),
+                        KEY `entities_id` (`entities_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }

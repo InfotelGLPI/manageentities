@@ -31,12 +31,14 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use CommonGLPI;
+use DBConnection;
 use DbUtils;
 use Document;
 use Document_Item;
 use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\Config;
 use Html;
+use Migration;
 use Session;
 use Toolbox;
 
@@ -551,4 +553,38 @@ class Company extends CommonDBTM
         return null;
     }
 
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                        `id` int {$default_key_sign} NOT NULL auto_increment,
+                        `name` varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
+                        `address` text collate utf8mb4_unicode_ci COMMENT 'address of the company shown on CRI',
+                        `entity_id` text DEFAULT NULL,
+                        `recursive` int {$default_key_sign} DEFAULT 0,
+                        `logo_id` int {$default_key_sign} DEFAULT 0 COMMENT 'RELATION to glpi_documents',
+                        `comment` text collate utf8mb4_unicode_ci,
+                        PRIMARY KEY  (`id`),
+                        KEY `logo_id` (`logo_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
+    }
 }

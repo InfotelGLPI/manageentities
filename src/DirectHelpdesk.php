@@ -31,9 +31,11 @@ namespace GlpiPlugin\Manageentities;
 
 use Ajax;
 use CommonDBTM;
+use DBConnection;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
 use ITILCategory;
+use Migration;
 use Session;
 use Ticket;
 
@@ -731,5 +733,45 @@ class DirectHelpdesk extends CommonDBTM
                 ) . "</b></div>";
         }
         return $alert;
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `users_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
+                            `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            `name` varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
+                            `comment` text collate utf8mb4_unicode_ci,
+                            `is_billed` tinyint NOT NULL DEFAULT '0',
+                            `date` timestamp NULL DEFAULT NULL,
+                            `actiontime` int NOT NULL DEFAULT '0',
+                            `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_tickets (id)',
+                            `date_mod` timestamp NULL DEFAULT NULL,
+                            `date_creation` timestamp NULL DEFAULT NULL,
+                            PRIMARY KEY  (`id`),
+                            KEY `entities_id` (`entities_id`),
+                            KEY `tickets_id` (`tickets_id`),
+                            KEY `users_id` (`users_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }

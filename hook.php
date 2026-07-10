@@ -27,6 +27,8 @@
  --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Manageentities\BusinessContact;
+use GlpiPlugin\Manageentities\Company;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\Contract;
@@ -37,11 +39,14 @@ use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\CriTechnician;
 use GlpiPlugin\Manageentities\CriType;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
+use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\DirectHelpdeskInjection;
+use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\EditorSubscriptionInjection;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
 use GlpiPlugin\Manageentities\Gantt;
+use GlpiPlugin\Manageentities\InterventionStakeholder;
 use GlpiPlugin\Manageentities\Monthly;
 use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\Profile;
@@ -58,20 +63,30 @@ function plugin_manageentities_install()
     $dbu       = new DbUtils();
     $update    = false;
     $update190 = false;
+
     if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
-        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty.sql");
 
+        $migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+        Contract::install($migration);
+        Contact::install($migration);
+        BusinessContact::install($migration);
+        Preference::install($migration);
+        Config::install($migration);
+        CriType::install($migration);
+        CriPrice::install($migration);
+        ContractDay::install($migration);
+        CriTechnician::install($migration);
+        InterventionStakeholder::install($migration);
+        CriDetail::install($migration);
+        ContractState::install($migration);
+        TaskCategory::install($migration);
+        Company::install($migration);
+        EntityLogo::install($migration);
+        DirectHelpdesk::install($migration);
+        SubscriptionLevel::install($migration);
+        EditorSubscription::install($migration);
+        DirectHelpdesk_Ticket::install($migration);
 
-        foreach ([
-            1 => __('Urgent intervention', 'manageentities'),
-            2 => __('Scheduled intervention', 'manageentities'),
-            3 => __('Study and advice', 'manageentities'),
-        ] as $critype_id => $critype_name) {
-            $DB->insert('glpi_plugin_manageentities_critypes', [
-                'id'   => $critype_id,
-                'name' => $critype_name,
-            ]);
-        }
     } elseif ($DB->tableExists("glpi_plugin_manageentity_profiles") && !$DB->tableExists("glpi_plugin_manageentity_preference")) {
         $update = true;
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.4.sql");
@@ -211,25 +226,31 @@ function plugin_manageentities_install()
         if ($config->fields["backup"] == 1) {
             $criDetail = new CriDetail();
 
-            $query = "SELECT `glpi_documents`.`id` AS doc_id,
-                          `glpi_documents`.`tickets_id` AS doc_tickets_id,
-                          `glpi_plugin_manageentities_cridetails`.`id` AS cri_id,
-                          `glpi_plugin_manageentities_cridetails`.`tickets_id` AS cri_tickets_id
-              FROM `glpi_documents`
-              LEFT JOIN `glpi_plugin_manageentities_cridetails`
-                  ON (`glpi_documents`.`id` = `glpi_plugin_manageentities_cridetails`.`documents_id`)
-              WHERE `glpi_documents`.`documentcategories_id` = '"
-                  . $config->fields["documentcategories_id"] . "' ";
+            $iterator = $DB->request([
+                'SELECT'    => [
+                    'glpi_documents.id AS doc_id',
+                    'glpi_documents.tickets_id AS doc_tickets_id',
+                    'glpi_plugin_manageentities_cridetails.id AS cri_id',
+                    'glpi_plugin_manageentities_cridetails.tickets_id AS cri_tickets_id',
+                ],
+                'FROM'      => 'glpi_documents',
+                'LEFT JOIN' => [
+                    'glpi_plugin_manageentities_cridetails' => [
+                        'ON' => [
+                            'glpi_documents'                        => 'id',
+                            'glpi_plugin_manageentities_cridetails' => 'documents_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    'glpi_documents.documentcategories_id' => (int) $config->fields["documentcategories_id"],
+                ],
+            ]);
 
-            $result = $DB->doQuery($query);
-            $number = $DB->numrows($result);
-
-            if ($number != "0") {
-                while ($data = $DB->fetchArray($result)) {
-                    if ($data['cri_tickets_id'] == '0') {
-                        $criDetail->update(['id'         => $data['cri_id'],
-                            'tickets_id' => $data['doc_tickets_id']]);
-                    }
+            foreach ($iterator as $data) {
+                if ($data['cri_tickets_id'] == '0') {
+                    $criDetail->update(['id'         => $data['cri_id'],
+                        'tickets_id' => $data['doc_tickets_id']]);
                 }
             }
         }
@@ -363,6 +384,10 @@ function plugin_manageentities_install()
         addRemainingDaysColumn();
     }
 
+    //version 4.2.4
+    if($DB->tableExists("glpi_plugin_manageentities_interventionstakeholders")) {
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_manageentities_interventionstakeholders`;");
+    }
 
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
     if (!is_dir($rep_files_manageentities)) {
@@ -489,14 +514,17 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num)
                     //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
 
                     $entities_ids = array_map('intval', $_SESSION["glpiactiveentities"]);
-                    $query = "SELECT *
-                       FROM $table
-                       WHERE  id = $table.plugin_manageentities_critypes_id
-                       AND entities_id IN (" . implode(",", $entities_ids) . ")";
-
-                    $result = $DB->doQuery($query);
-                    if ($DB->numrows($result)) {
-                        while ($datas = $DB->fetchAssoc($result)) {
+                    $iterator = $DB->request([
+                        'FROM'  => $table,
+                        'WHERE' => [
+                            'id'          => new \Glpi\DBAL\QueryExpression(
+                                $DB->quoteName($table . '.plugin_manageentities_critypes_id')
+                            ),
+                            'entities_id' => $entities_ids,
+                        ],
+                    ]);
+                    if (count($iterator)) {
+                        foreach ($iterator as $datas) {
                             $data["ITEM_4"] = $datas['price'];
                         }
                     } else {

@@ -31,9 +31,11 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use CommonGLPI;
+use DBConnection;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Migration;
 use Session;
 
 if (!defined('GLPI_ROOT')) {
@@ -671,5 +673,44 @@ class EditorSubscription extends CommonDBTM
         ];
 
         return $tab;
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `entities_id`               int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_entities (id)',
+                            `name`                      varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Referenced name at the publisher',
+                            `customer_account_id`       varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Publisher customer account ID',
+                            `active_editor_suscription` tinyint NOT NULL DEFAULT '0',
+                            `cloud_client`              tinyint NOT NULL DEFAULT '0',
+                            `plugin_manageentities_subscriptionlevels_id`     int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_subscriptionlevels (id)',
+                            `begin_date`                timestamp NULL DEFAULT NULL,
+                            `end_date`                  timestamp NULL DEFAULT NULL,
+                            `internet_publication`      tinyint NOT NULL DEFAULT '0' COMMENT 'Internet publication flag (migrated from contracts)',
+                            `comment`                   text collate utf8mb4_unicode_ci,
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `unicity` (`entities_id`),
+                            KEY `entities_id` (`entities_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }

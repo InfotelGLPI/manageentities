@@ -31,6 +31,8 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDropdown;
 use CommonGLPI;
+use DBConnection;
+use Migration;
 use Session;
 use GlpiPlugin\Manageentities\Config;
 
@@ -127,5 +129,46 @@ class CriType extends CommonDropdown
             $criprice->showForCriType($item);
         }
         return true;
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `name` varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
+                            `comment` text collate utf8mb4_unicode_ci,
+                            PRIMARY KEY  (`id`),
+                            KEY `name` (`name`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+
+            foreach ([
+                         1 => __('Urgent intervention', 'manageentities'),
+                         2 => __('Scheduled intervention', 'manageentities'),
+                         3 => __('Study and advice', 'manageentities'),
+                     ] as $critype_id => $critype_name) {
+                $DB->insert('glpi_plugin_manageentities_critypes', [
+                    'id'   => $critype_id,
+                    'name' => $critype_name,
+                ]);
+            }
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }

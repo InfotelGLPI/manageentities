@@ -225,18 +225,30 @@ class Report extends CommonDBTM
                     $date_begin = date('Y-m-d H:i:s', (strtotime($day['date'])));
                     $date_end = date('Y-m-d H:i:s', (strtotime($day['date'] . '+ 24 hours')));
 
-                    $query = "SELECT `glpi_tickettasks`.*,
-                       `glpi_tickets`.`id`AS tickets_id "
-                        . " FROM `glpi_tickettasks`"
-                        . " LEFT JOIN `glpi_tickets` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)"
-                        . " WHERE (`glpi_tickettasks`.`begin` >= '" . $date_begin . "'
-                  AND `glpi_tickettasks`.`end` <= '" . $date_end . "') "
-                        . " AND `glpi_tickets`.`is_deleted` = 0"
-                        . " AND `glpi_tickettasks`.`users_id_tech` = " . (int)$tech . " "
-                        . " AND `glpi_tickettasks`.`actiontime` != 0";
-                    $result = $DB->doQuery($query);
+                    $iterator = $DB->request([
+                        'SELECT'    => [
+                            'glpi_tickettasks.*',
+                            'glpi_tickets.id AS tickets_id',
+                        ],
+                        'FROM'      => 'glpi_tickettasks',
+                        'LEFT JOIN' => [
+                            'glpi_tickets' => [
+                                'ON' => [
+                                    'glpi_tickettasks' => 'tickets_id',
+                                    'glpi_tickets'     => 'id',
+                                ],
+                            ],
+                        ],
+                        'WHERE'     => [
+                            'glpi_tickettasks.begin'         => ['>=', $date_begin],
+                            'glpi_tickettasks.end'           => ['<=', $date_end],
+                            'glpi_tickets.is_deleted'        => 0,
+                            'glpi_tickettasks.users_id_tech' => (int) $tech,
+                            'glpi_tickettasks.actiontime'    => ['<>', 0],
+                        ],
+                    ]);
 
-                    while ($task = $DB->fetchArray($result)) {
+                    foreach ($iterator as $task) {
                         $actiontime += $task['actiontime'];
                         $total_actiontime += $task['actiontime'];
                     }

@@ -31,12 +31,14 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use CommonGLPI;
+use DBConnection;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use GlpiPlugin\Manageentities\Entity;
 use Html;
 use MassiveAction;
+use Migration;
 use Session;
 
 if (!defined('GLPI_ROOT')) {
@@ -1038,5 +1040,51 @@ class Contract extends CommonDBTM
         }
 
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `contracts_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_contracts (id)',
+                            `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                            `is_default` tinyint NOT NULL DEFAULT '0',
+                            `management` tinyint NOT NULL DEFAULT '0' COMMENT 'for the management mode (quarterly or annual or not)',
+                            `contract_type` tinyint NOT NULL DEFAULT '0' COMMENT 'for the contract type (hour, intervention, unlimited or not)',
+                            `date_signature` timestamp NULL DEFAULT NULL,
+                            `date_renewal` timestamp NULL DEFAULT NULL,
+                            `contract_added` tinyint NOT NULL DEFAULT '0',
+                            `show_on_global_gantt` tinyint NOT NULL DEFAULT '0',
+                            `refacturable_costs` tinyint NOT NULL DEFAULT '0',
+                            `moving_management` tinyint NOT NULL DEFAULT '0',
+                            `duration_moving` decimal(20,2) NOT NULL DEFAULT '0' COMMENT 'Duration of moving',
+                            `remaining_days` decimal(10,2) NOT NULL DEFAULT '0.00',
+                            `active_editor_suscription` tinyint NOT NULL DEFAULT '0',
+                            `cloud_client` tinyint NOT NULL DEFAULT '0',
+                            `internet_publication` tinyint NOT NULL DEFAULT '0',
+                            PRIMARY KEY  (`id`),
+                            UNIQUE KEY `unicity` (`contracts_id`,`entities_id`),
+                            KEY `contracts_id` (`contracts_id`),
+                            KEY `entities_id` (`entities_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }

@@ -31,7 +31,9 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use CommonGLPI;
+use DBConnection;
 use Html;
+use Migration;
 use Session;
 use GlpiPlugin\Manageentities\Config;
 
@@ -146,5 +148,35 @@ class TaskCategory extends CommonDBTM
         $options['candel'] = false;
         $options['colspan'] = '1';
         $this->showFormButtons($options);
+    }
+
+    public static function install(Migration $migration)
+    {
+        global $DB;
+
+        $default_charset   = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+        $table  = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE `$table` (
+                            `id` int {$default_key_sign} NOT NULL auto_increment,
+                            `taskcategories_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to  glpi_taskcategories (id)',
+                            `is_usedforcount` tinyint NOT NULL DEFAULT '0',
+                            PRIMARY KEY  (`id`),
+                            KEY `taskcategories_id` (`taskcategories_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+
+            $DB->doQuery($query);
+        }
+    }
+
+
+    public static function uninstall()
+    {
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 }
