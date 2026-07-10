@@ -31,6 +31,10 @@ use GlpiPlugin\Manageentities\CriPrice;
 
 Html::header_nocache();
 Session::checkLoginUser();
+// Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
+if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
+    Html::displayRightError();
+}
 
 switch ($_POST['action']) {
    case 'loadPrice' :

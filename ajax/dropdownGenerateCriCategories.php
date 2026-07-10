@@ -28,6 +28,10 @@
  */
 
 Session::checkLoginUser();
+// Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
+if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
+    Html::displayRightError();
+}
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownGenerateCriCategories.php")) {
    header("Content-Type: text/html; charset=UTF-8");

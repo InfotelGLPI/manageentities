@@ -1222,6 +1222,28 @@ class CriDetail extends CommonDBTM
 //        return ['result' => $tabResults, 'resultOther' => $tabOther];
 //    }
 
+    /**
+     * Validate that a string is a safe SQL date or datetime (Y-m-d or Y-m-d H:i:s).
+     * Used to guard user-supplied date filters before they reach the query builder.
+     *
+     * @param string $date
+     *
+     * @return bool
+     */
+    private static function isValidSqlDate(string $date): bool
+    {
+        $date = trim($date);
+        if ($date === '') {
+            return false;
+        }
+        $d = \DateTime::createFromFormat('Y-m-d', $date);
+        if ($d !== false && $d->format('Y-m-d') === $date) {
+            return true;
+        }
+        $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $date);
+        return $dt !== false && $dt->format('Y-m-d H:i:s') === $date;
+    }
+
     static function getCriDetailData($contractDayValues = [], $options = []) {
         global $DB;
         $params['condition'] = '1';
@@ -1248,56 +1270,86 @@ class CriDetail extends CommonDBTM
             'reste'         => 0,
             'forfait'       => 0];
 
-        $queryCriDetail = "SELECT `glpi_plugin_manageentities_cridetails`.`realtime` AS actiontime,
-                                `glpi_plugin_manageentities_cridetails`.`documents_id`,
-                                `glpi_documents`.`is_deleted`,
-                                `glpi_plugin_manageentities_cridetails`.`tickets_id`,
-                                `glpi_plugin_manageentities_cridetails`.`id` AS cridetails_id,
-                                `glpi_plugin_manageentities_cridetails`.`technicians` AS technicians,
-                                `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_critypes_id`,
-                                `glpi_plugin_manageentities_cridetails`.`tickets_id`,
-                                `glpi_plugin_manageentities_cridetails`.`date` as cridetails_date,
-                                `glpi_tickets`.`name` AS tickets_name,
-                                `glpi_tickets`.`date` AS tickets_date,
-                                `glpi_plugin_manageentities_critypes`.`name` AS plugin_manageentities_critypes_name,
-                                `glpi_tickets`.`global_validation` "
-            . " FROM `glpi_plugin_manageentities_cridetails` "
-            . " LEFT JOIN `glpi_plugin_manageentities_critypes`
-                     ON (`glpi_plugin_manageentities_critypes`.`id` = `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_critypes_id`) "
-            . " LEFT JOIN `glpi_documents`
-                     ON (`glpi_plugin_manageentities_cridetails`.`documents_id` = `glpi_documents`.`id`)"
-            . " LEFT JOIN `glpi_tickets`
-                     ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickets`.`id`)"
-            . " LEFT JOIN `glpi_tickettasks`
-                     ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)"
-            . " WHERE `glpi_plugin_manageentities_cridetails`.`contracts_id` = '" . $contractDayValues["contracts_id"] . "'
-                 AND `glpi_plugin_manageentities_cridetails`.`entities_id` = '" . $contractDayValues["entities_id"] . "'
-                 AND `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id` = '" . $contractDayValues["contractdays_id"] . "'
-                 AND `glpi_tickets`.`is_deleted` = 0
-                 AND `glpi_tickettasks`.`actiontime` > 0";
-
-        if (isset($options['begin_date'])) {
-            $options['begin_date'] .= ' 00:00:00';
-            $queryCriDetail        .= " AND (`glpi_tickettasks`.`begin` >= '" . $options['begin_date'] . "'
-                                 OR `glpi_tickettasks`.`begin` IS NULL)";
+        // Validate and normalize the user-supplied date filters once (shared by both
+        // queries below). Invalid values are ignored rather than concatenated into SQL.
+        $begin_filter = null;
+        $end_filter   = null;
+        if (isset($options['begin_date']) && self::isValidSqlDate((string) $options['begin_date'])) {
+            $begin_filter = $options['begin_date'] . ' 00:00:00';
+        }
+        if (isset($options['end_date']) && self::isValidSqlDate((string) $options['end_date'])) {
+            $end_filter = $options['end_date'] . ' 23:59:59';
         }
 
-        if (isset($options['end_date'])) {
-            $options['end_date'] .= ' 23:59:59';
-            $queryCriDetail      .= " AND (`glpi_tickettasks`.`end` <= '" . $options['end_date'] . "'
-                                 OR `glpi_tickettasks`.`end` IS NULL)";
+        $criDetailWhere = [
+            'glpi_plugin_manageentities_cridetails.contracts_id'                        => (int) $contractDayValues["contracts_id"],
+            'glpi_plugin_manageentities_cridetails.entities_id'                         => (int) $contractDayValues["entities_id"],
+            'glpi_plugin_manageentities_cridetails.plugin_manageentities_contractdays_id' => (int) $contractDayValues["contractdays_id"],
+            'glpi_tickets.is_deleted'                                                   => 0,
+            'glpi_tickettasks.actiontime'                                               => ['>', 0],
+        ];
+        if ($begin_filter !== null) {
+            $criDetailWhere[] = ['OR' => [
+                ['glpi_tickettasks.begin' => ['>=', $begin_filter]],
+                ['glpi_tickettasks.begin' => null],
+            ]];
         }
-        if (isset($options['sorting_date'])) {
-            $queryCriDetail .= " GROUP BY `glpi_plugin_manageentities_cridetails`.`id`
-                           ORDER BY tickets_date DESC";
-        } else {
-            $queryCriDetail .= " GROUP BY `glpi_plugin_manageentities_cridetails`.`id`
-                           ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
+        if ($end_filter !== null) {
+            $criDetailWhere[] = ['OR' => [
+                ['glpi_tickettasks.end' => ['<=', $end_filter]],
+                ['glpi_tickettasks.end' => null],
+            ]];
         }
 
-
-        $resultCriDetail = $DB->doquery($queryCriDetail);
-        $numberCriDetail = $DB->numrows($resultCriDetail);
+        $iteratorCriDetail = $DB->request([
+            'SELECT'    => [
+                'glpi_plugin_manageentities_cridetails.realtime AS actiontime',
+                'glpi_plugin_manageentities_cridetails.documents_id',
+                'glpi_documents.is_deleted',
+                'glpi_plugin_manageentities_cridetails.tickets_id',
+                'glpi_plugin_manageentities_cridetails.id AS cridetails_id',
+                'glpi_plugin_manageentities_cridetails.technicians AS technicians',
+                'glpi_plugin_manageentities_cridetails.plugin_manageentities_critypes_id',
+                'glpi_plugin_manageentities_cridetails.date AS cridetails_date',
+                'glpi_tickets.name AS tickets_name',
+                'glpi_tickets.date AS tickets_date',
+                'glpi_plugin_manageentities_critypes.name AS plugin_manageentities_critypes_name',
+                'glpi_tickets.global_validation',
+            ],
+            'FROM'      => 'glpi_plugin_manageentities_cridetails',
+            'LEFT JOIN' => [
+                'glpi_plugin_manageentities_critypes' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_critypes'   => 'id',
+                        'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_critypes_id',
+                    ],
+                ],
+                'glpi_documents' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_cridetails' => 'documents_id',
+                        'glpi_documents'                        => 'id',
+                    ],
+                ],
+                'glpi_tickets' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+                        'glpi_tickets'                          => 'id',
+                    ],
+                ],
+                'glpi_tickettasks' => [
+                    'ON' => [
+                        'glpi_tickettasks' => 'tickets_id',
+                        'glpi_tickets'     => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'     => $criDetailWhere,
+            'GROUPBY'   => 'glpi_plugin_manageentities_cridetails.id',
+            'ORDER'     => isset($options['sorting_date'])
+                ? 'tickets_date DESC'
+                : 'glpi_plugin_manageentities_cridetails.date ASC',
+        ]);
+        $numberCriDetail = count($iteratorCriDetail);
 
         $restrict        = ["`glpi_plugin_manageentities_contracts`.`entities_id`"  => $contractDayValues["entities_id"],
             "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"]];
@@ -1324,7 +1376,7 @@ class CriDetail extends CommonDBTM
         if ($numberCriDetail != 0) {
             $taskCount++;
 
-            while ($dataCriDetail = $DB->fetchArray($resultCriDetail)) {
+            foreach ($iteratorCriDetail as $dataCriDetail) {
                 // Get cridetail Cri Price if exists
                 $price         = 0;
                 $critypes_name = '';
@@ -1342,40 +1394,49 @@ class CriDetail extends CommonDBTM
                 $critypes_name = empty($critypes_name) ? $default_critypes_name : $critypes_name;
                 $critypes_id   = empty($critypes_id) ? $default_critypes_id : $critypes_id;
 
-                $join = "";
-                $and  = "";
+                $taskWhere = [
+                    'glpi_tickettasks.tickets_id'              => (int) $dataCriDetail['tickets_id'],
+                    'glpi_tickettasks.is_private'              => 0,
+                    'glpi_plugin_manageentities_cridetails.id' => (int) $dataCriDetail['cridetails_id'],
+                ];
+                $taskJoin = [
+                    'glpi_plugin_manageentities_cridetails' => [
+                        'ON' => [
+                            'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+                            'glpi_tickettasks'                      => 'tickets_id',
+                        ],
+                    ],
+                ];
                 if ($config->fields['hourorday'] == Config::HOUR) {
-                    $join = " LEFT JOIN `glpi_plugin_manageentities_taskcategories`
-                     ON (`glpi_plugin_manageentities_taskcategories`.`taskcategories_id` =
-                     glpi_tickettasks.taskcategories_id)";
-                    $and  = " AND `glpi_plugin_manageentities_taskcategories`.`is_usedforcount` = 1";
+                    $taskJoin['glpi_plugin_manageentities_taskcategories'] = [
+                        'ON' => [
+                            'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                            'glpi_tickettasks'                          => 'taskcategories_id',
+                        ],
+                    ];
+                    $taskWhere['glpi_plugin_manageentities_taskcategories.is_usedforcount'] = 1;
+                }
+                if ($begin_filter !== null) {
+                    $taskWhere[] = ['OR' => [
+                        ['glpi_tickettasks.begin' => ['>=', $begin_filter]],
+                        ['glpi_tickettasks.begin' => null],
+                    ]];
+                }
+                if ($end_filter !== null) {
+                    $taskWhere[] = ['OR' => [
+                        ['glpi_tickettasks.end' => ['<=', $end_filter]],
+                        ['glpi_tickettasks.end' => null],
+                    ]];
                 }
 
-                $queryTask = "SELECT `actiontime`,
-                                 `users_id_tech`,
-                                 `is_private`
-                           FROM `glpi_tickettasks` $join
-                           LEFT JOIN `glpi_plugin_manageentities_cridetails`
-                              ON (`glpi_plugin_manageentities_cridetails`.`tickets_id` = `glpi_tickettasks`.`tickets_id`)
-                           WHERE `glpi_tickettasks`.`tickets_id` = '" . $dataCriDetail['tickets_id'] . "'
-                           AND `glpi_tickettasks`.`is_private` = 0 $and
-                           AND `glpi_plugin_manageentities_cridetails`.`id` = '" . $dataCriDetail['cridetails_id'] . "'";
-                //            if($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR){
-                //               $queryTask .= " AND `begin` NOT LIKE 'null' AND `end` NOT LIKE 'null' ";
-                //            }
-                if (isset($options['begin_date'])) {
-                    $queryTask .= " AND (`glpi_tickettasks`.`begin` >= '" . $options['begin_date'] . "'
-                                        OR `glpi_tickettasks`.`begin` IS NULL)";
-                }
-                if (isset($options['end_date'])) {
-                    $queryTask .= " AND (`glpi_tickettasks`.`end` <= '" . $options['end_date'] . "'
-                                        OR `glpi_tickettasks`.`end` IS NULL)";
-                }
-
-                $queryTask .= " ORDER BY `glpi_tickettasks`.`begin`";
-
-                $resultTask     = $DB->doquery($queryTask);
-                $numberTask     = $DB->numrows($resultTask);
+                $iteratorTask = $DB->request([
+                    'SELECT'    => ['actiontime', 'users_id_tech', 'is_private'],
+                    'FROM'      => 'glpi_tickettasks',
+                    'LEFT JOIN' => $taskJoin,
+                    'WHERE'     => $taskWhere,
+                    'ORDER'     => 'glpi_tickettasks.begin',
+                ]);
+                $numberTask     = count($iteratorTask);
                 $tech           = '';
                 $conso          = 0;
                 $conso_per_tech = [];
@@ -1383,7 +1444,7 @@ class CriDetail extends CommonDBTM
                 if ($numberTask != 0) {
                     $left = $contractDayValues["nbday"];
                     $tech = implode('<br/>', $critechnicians->getTechnicians($dataCriDetail['tickets_id']));
-                    while ($dataTask = $DB->fetchArray($resultTask)) {
+                    foreach ($iteratorTask as $dataTask) {
                         // Init depass
                         if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'])) {
                             $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] = 0;
@@ -2047,6 +2108,11 @@ class CriDetail extends CommonDBTM
         $who_group = (int)$options['whogroup'];
         $begin = $options['begin'];
         $end = $options['end'];
+
+        // Reject malformed date bounds before they are concatenated into the SQL below.
+        if (!self::isValidSqlDate((string) $begin) || !self::isValidSqlDate((string) $end)) {
+            return $interv;
+        }
 
         $ASSIGN = "";
 

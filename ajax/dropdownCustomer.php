@@ -32,6 +32,10 @@ use GlpiPlugin\Manageentities\GenerateCRI;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
+// Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
+if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
+    Html::displayRightError();
+}
 
 if (isset($_POST["entities_id"])) {
    GenerateCRI::showContractLinkDropdown($_POST["entities_id"]);

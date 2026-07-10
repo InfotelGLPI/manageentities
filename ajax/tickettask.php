@@ -36,6 +36,16 @@ header("Content-Type: text/html; charset=UTF-8");
 $tickettask = new TicketTask();
 
 if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettask->getFromDB($_POST['tickettasks_id'])) {
+
+   // Access control: require the task right and edit access to the parent ticket,
+   // and make sure the source task actually belongs to the posted ticket.
+   Session::checkRight('task', CREATE);
+   $ticket = new Ticket();
+   if (!$ticket->can((int) $_POST['tickets_id'], READ)
+       || (int) $tickettask->fields['tickets_id'] !== (int) $_POST['tickets_id']) {
+      Html::displayRightError();
+   }
+
    switch ($_POST ['action']) {
 //      case "showCloneTicketTask" :
 //         $rand = mt_rand();

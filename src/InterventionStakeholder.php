@@ -255,11 +255,15 @@ class InterventionStakeholder extends CommonDBTM
                 continue;
             }
             $user_link = "<a href='" . $user->getLinkURL() . "' target='_blank'>"
-                . $dbu->formatUserName(
-                    $user->fields['id'],
-                    $user->fields['name'],
-                    $user->fields['realname'],
-                    $user->fields['firstname']
+                . htmlspecialchars(
+                    $dbu->formatUserName(
+                        $user->fields['id'],
+                        $user->fields['name'],
+                        $user->fields['realname'],
+                        $user->fields['firstname']
+                    ),
+                    ENT_QUOTES,
+                    'UTF-8'
                 ) . "</a>";
 
             $delete_btn = '';

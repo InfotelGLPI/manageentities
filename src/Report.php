@@ -67,30 +67,61 @@ class Report extends CommonDBTM
         $resultat = [];
         $dbu = new DbUtils();
 
+        $documentcategories_id = (int) $config->fields["documentcategories_id"];
+
         foreach ($entities_id as $entity_id) {
-            $query = "SELECT `glpi_tickets`.`id` as tickets_id, `glpi_plugin_manageentities_cridetails`.`number_moving`, `glpi_plugin_manageentities_contracts`.`duration_moving` "
-                . " FROM `glpi_documents` "
-                . " LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id` = `glpi_entities`.`id`)"
-                . " LEFT JOIN `glpi_tickets` ON (`glpi_documents`.`tickets_id` = `glpi_tickets`.`id`)"
-                . " LEFT JOIN `glpi_plugin_manageentities_cridetails` ON (`glpi_documents`.`id` = `glpi_plugin_manageentities_cridetails`.`documents_id`) "
-                . " LEFT JOIN `glpi_plugin_manageentities_contracts` ON (`glpi_plugin_manageentities_contracts`.`contracts_id` = `glpi_plugin_manageentities_cridetails`.`contracts_id`) "
-                . " WHERE `documentcategories_id` = '" . $config->fields["documentcategories_id"] . "' "
-                . " AND `glpi_plugin_manageentities_cridetails`.`date` >= '" . $date1 . "' "
-                . " AND `glpi_plugin_manageentities_cridetails`.`date` <= '" . $date2 . "' "
-                . " AND `glpi_tickets`.`is_deleted` = 0 "
-                . " AND `glpi_plugin_manageentities_contracts`.`moving_management` = 1 "
-
-                . " AND `glpi_tickets`.`entities_id` = " . $entity_id;
-            $query .= $dbu->getEntitiesRestrictRequest(" AND", "glpi_documents", '', $entity_id, true);
-
-            $query .= " GROUP BY `glpi_documents`.`tickets_id` ";
-            $query .= "ORDER BY `glpi_plugin_manageentities_cridetails`.`date` ASC";
-
-            $result = $DB->doQuery($query);
+            $entity_id = (int) $entity_id;
+            $iterator = $DB->request([
+                'SELECT'    => [
+                    'glpi_tickets.id AS tickets_id',
+                    'glpi_plugin_manageentities_cridetails.number_moving',
+                    'glpi_plugin_manageentities_contracts.duration_moving',
+                ],
+                'FROM'      => 'glpi_documents',
+                'LEFT JOIN' => [
+                    'glpi_entities' => [
+                        'ON' => [
+                            'glpi_documents' => 'entities_id',
+                            'glpi_entities'  => 'id',
+                        ],
+                    ],
+                    'glpi_tickets' => [
+                        'ON' => [
+                            'glpi_documents' => 'tickets_id',
+                            'glpi_tickets'   => 'id',
+                        ],
+                    ],
+                    'glpi_plugin_manageentities_cridetails' => [
+                        'ON' => [
+                            'glpi_documents'                        => 'id',
+                            'glpi_plugin_manageentities_cridetails' => 'documents_id',
+                        ],
+                    ],
+                    'glpi_plugin_manageentities_contracts' => [
+                        'ON' => [
+                            'glpi_plugin_manageentities_contracts'  => 'contracts_id',
+                            'glpi_plugin_manageentities_cridetails' => 'contracts_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => array_merge(
+                    [
+                        'glpi_documents.documentcategories_id'                  => $documentcategories_id,
+                        'glpi_tickets.is_deleted'                               => 0,
+                        'glpi_plugin_manageentities_contracts.moving_management' => 1,
+                        'glpi_tickets.entities_id'                              => $entity_id,
+                        ['glpi_plugin_manageentities_cridetails.date' => ['>=', $date1]],
+                        ['glpi_plugin_manageentities_cridetails.date' => ['<=', $date2]],
+                    ],
+                    $dbu->getEntitiesRestrictCriteria('glpi_documents', '', $entity_id, true)
+                ),
+                'GROUPBY'   => 'glpi_documents.tickets_id',
+                'ORDER'     => 'glpi_plugin_manageentities_cridetails.date ASC',
+            ]);
 
             $total_depl = 0;
             $tickets_ids = [];
-            while ($data = $DB->fetchArray($result)) {
+            foreach ($iterator as $data) {
                 //time moving
                 $total_depl += ($data['duration_moving'] * $data['number_moving']) / HOUR_TIMESTAMP;
                 $tickets_ids[$data['tickets_id']] = $data['tickets_id'];

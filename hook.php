@@ -62,12 +62,16 @@ function plugin_manageentities_install()
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty.sql");
 
 
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
-        $DB->doQuery($query);
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __('Scheduled intervention', 'manageentities') . "');";
-        $DB->doQuery($query);
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __('Study and advice', 'manageentities') . "');";
-        $DB->doQuery($query);
+        foreach ([
+            1 => __('Urgent intervention', 'manageentities'),
+            2 => __('Scheduled intervention', 'manageentities'),
+            3 => __('Study and advice', 'manageentities'),
+        ] as $critype_id => $critype_name) {
+            $DB->insert('glpi_plugin_manageentities_critypes', [
+                'id'   => $critype_id,
+                'name' => $critype_name,
+            ]);
+        }
     } elseif ($DB->tableExists("glpi_plugin_manageentity_profiles") && !$DB->tableExists("glpi_plugin_manageentity_preference")) {
         $update = true;
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.4.sql");
@@ -78,12 +82,16 @@ function plugin_manageentities_install()
         $update190 = true;
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
-        $DB->doQuery($query);
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __('Scheduled intervention', 'manageentities') . "');";
-        $DB->doQuery($query);
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __('Study and advice', 'manageentities') . "');";
-        $DB->doQuery($query);
+        foreach ([
+            1 => __('Urgent intervention', 'manageentities'),
+            2 => __('Scheduled intervention', 'manageentities'),
+            3 => __('Study and advice', 'manageentities'),
+        ] as $critype_id => $critype_name) {
+            $DB->insert('glpi_plugin_manageentities_critypes', [
+                'id'   => $critype_id,
+                'name' => $critype_name,
+            ]);
+        }
     } elseif ($DB->tableExists("glpi_plugin_manageentity_profiles") && $DB->fieldExists("glpi_plugin_manageentity_profiles", "interface")) {
         $update = true;
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.5.0.sql");
@@ -93,12 +101,16 @@ function plugin_manageentities_install()
         $update190 = true;
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.9.1.sql");
 
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
-        $DB->doQuery($query);
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('2', '" . __('Scheduled intervention', 'manageentities') . "');";
-        $DB->doQuery($query);
-        $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('3', '" . __('Study and advice', 'manageentities') . "');";
-        $DB->doQuery($query);
+        foreach ([
+            1 => __('Urgent intervention', 'manageentities'),
+            2 => __('Scheduled intervention', 'manageentities'),
+            3 => __('Study and advice', 'manageentities'),
+        ] as $critype_id => $critype_name) {
+            $DB->insert('glpi_plugin_manageentities_critypes', [
+                'id'   => $critype_id,
+                'name' => $critype_name,
+            ]);
+        }
     } elseif ($DB->tableExists("glpi_plugin_manageentity_config") && !$DB->fieldExists("glpi_plugin_manageentity_config", "hourbyday")) {
         $update = true;
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-1.5.1.sql");
@@ -181,16 +193,12 @@ function plugin_manageentities_install()
             }
         }
 
-        $query_  = "SELECT *
-            FROM `glpi_plugin_manageentities_profiles` ";
-        $result_ = $DB->doQuery($query_);
-        if ($DB->numrows($result_) > 0) {
-            while ($data = $DB->fetchArray($result_)) {
-                $query = "UPDATE `glpi_plugin_manageentities_profiles`
-                  SET `profiles_id` = '" . $data["id"] . "'
-                  WHERE `id` = '" . $data["id"] . "';";
-                $DB->doQuery($query);
-            }
+        foreach ($DB->request(['FROM' => 'glpi_plugin_manageentities_profiles']) as $data) {
+            $DB->update(
+                'glpi_plugin_manageentities_profiles',
+                ['profiles_id' => (int) $data["id"]],
+                ['id' => (int) $data["id"]]
+            );
         }
 
         $query = "ALTER TABLE `glpi_plugin_manageentities_profiles`

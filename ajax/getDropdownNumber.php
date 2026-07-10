@@ -35,6 +35,10 @@ if (!defined('GLPI_ROOT')) {
 }
 
 Session::checkLoginUser();
+// Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
+if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
+    Html::displayRightError();
+}
 
 global $CFG_GLPI;
 

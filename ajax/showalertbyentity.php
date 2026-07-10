@@ -33,9 +33,14 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
+Session::checkRight('plugin_manageentities', READ);
 
 if (isset($_POST["entities_id"])) {
+    $entities_id = (int) $_POST['entities_id'];
+    if (!Session::haveAccessToEntity($entities_id)) {
+        Html::displayRightError();
+    }
     $contract = new Contract();
-    echo $alert = $contract->displayAlertforEntity($_POST['entities_id']);
+    echo $alert = $contract->displayAlertforEntity($entities_id);
 }
 

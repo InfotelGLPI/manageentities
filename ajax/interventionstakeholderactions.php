@@ -33,11 +33,29 @@ use GlpiPlugin\Manageentities\InterventionStakeholder;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
+Session::checkRight('plugin_manageentities', UPDATE);
 $interventionStakeholder = new InterventionStakeholder();
+
+/**
+ * Ensure the current user may write on the parent contract-day entity.
+ * Returns false (and shows an error) when access is denied.
+ */
+$checkContractDayAccess = static function (): bool {
+   $contractDay = new ContractDay();
+   if (!$contractDay->getFromDB((int) ($_POST['contractdays_id'] ?? 0))
+       || !Session::haveAccessToEntity($contractDay->fields['entities_id'])) {
+      Html::displayRightError();
+      return false;
+   }
+   return true;
+};
 
 if (isset($_POST['action']) && $_POST['action'] != "") {
    switch ($_POST['action']) {
       case "add_user_datas":
+         if (!$checkContractDayAccess()) {
+            break;
+         }
          if ((isset($_POST["users_id_tech"]) && $_POST['users_id_tech'] > 0) &&
              (isset($_POST["contractdays_id"]) && $_POST['contractdays_id'] > 0) &&
              (isset($_POST["nb_days"]) && $_POST['nb_days'] > 0)) {
@@ -89,6 +107,9 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
          break;
 
       case "delete_user_datas":
+         if (!$checkContractDayAccess()) {
+            break;
+         }
          if (isset($_POST['stakeholder_id']) && $_POST['stakeholder_id'] > 0) {
             $interventionStakeholder = new InterventionStakeholder();
             $interventionStakeholder->getFromDB($_POST['stakeholder_id']);

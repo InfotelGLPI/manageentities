@@ -27,14 +27,29 @@
  --------------------------------------------------------------------------
  */
 
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+use GlpiPlugin\Manageentities\EntityLogo;
+
 Session::checkLoginUser();
-// Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
-if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
-    Html::displayRightError();
+
+$docid = (int) ($_GET['docid'] ?? 0);
+
+$entity_logo = new EntityLogo();
+if (!$entity_logo->getFromDBByCrit(['logos_id' => $docid])) {
+    throw new NotFoundHttpException();
 }
 
-if (isset($_POST['user_id_tech']) && $_POST['user_id_tech'] > 0) {
-   echo  json_encode(getUserName($_POST['user_id_tech']));
+// Entity logos are meant to be visible to any user with access to the entity,
+// regardless of the generic Document/Entity rights (self-service profiles
+// usually have neither).
+if (!Session::haveAccessToEntity($entity_logo->fields['entities_id'])) {
+    throw new AccessDeniedHttpException();
 }
+
+$doc = new Document();
+if (!$doc->getFromDB($docid) || !file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
+    throw new NotFoundHttpException();
+}
+
+return $doc->getAsResponse();
