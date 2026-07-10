@@ -931,6 +931,9 @@ function plugin_manageentities_redefine_menus($menu)
 function plugin_manageentities_pre_item_form($params)
 {
     $item = $params['item'];
+    if (!$item instanceof CommonDBTM) {
+        return;
+    }
     switch ($item->getType()) {
         case 'Contract':
             Contract::preItemForm($params);
@@ -944,6 +947,9 @@ function plugin_manageentities_pre_item_form($params)
 function plugin_manageentities_post_item_form($params)
 {
     $item = $params['item'];
+    if (!$item instanceof CommonDBTM) {
+        return;
+    }
     switch ($item->getType()) {
         case 'TicketTask':
             TicketTask::postForm($params);
