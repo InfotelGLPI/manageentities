@@ -71,6 +71,7 @@ Accès : **Gestion › Clients management › Configuration**
 | **Seules les tâches publiques sont visibles** | Filtre les tâches des tickets dans les CRI pour n'afficher que les tâches publiques |
 | **Autoriser les périodes sur le même intervalle** | Autorise la création de périodes de contrat aux dates identiques |
 | **Vue client (interface simplifiée)** | Définit ce que voit le client dans l'onglet interventions : `Rapports d'intervention` ou `Périodes de contrat` |
+| **Utiliser les souscriptions éditeur** | Active la gestion des souscriptions éditeur (valeur par défaut : Oui). Sur `Non`, masque l'onglet « Souscriptions éditeurs » et l'onglet « État des lieux » de la fiche entité, les blocs et alertes de souscription des onglets ticket et contrat, la carte « Nouvelle souscription » du portail assistant, ainsi que l'étape « Souscription » de l'assistant de création de client (interdit également l'accès direct au formulaire de souscription) |
 | **Statuts de contrat affichés dans le suivi général** | Sélection multiple des statuts inclus dans la vue suivi général |
 | **Business list par défaut (suivi général)** | Contacts business affichés par défaut dans la vue suivi général |
 | **Afficher les commentaires société dans le CRI** | Inclut le commentaire de la société dans le PDF du CRI |

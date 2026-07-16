@@ -99,21 +99,27 @@ function wizardSaveStep(step, url) {
     clearStepErrors(step);
     var card = document.querySelector('#wizard-step-content .card');
 
-    var actionMap = (typeof WIZARD_MODE !== 'undefined' && WIZARD_MODE === 'existing_entity')
-        ? {
+    var useSubscriptions = (typeof WIZARD_USE_SUBSCRIPTIONS === 'undefined') || WIZARD_USE_SUBSCRIPTIONS;
+    var actionMap;
+    if (typeof WIZARD_MODE !== 'undefined' && WIZARD_MODE === 'existing_entity') {
+        actionMap = {
             1: 'save_entity',
-            4: 'save_contract',
-            5: 'save_management_type',
-            6: 'save_interventions',
-        }
-        : {
-            1: 'save_entity',
-            2: 'save_contacts',
-            3: 'save_subscription',
             4: 'save_contract',
             5: 'save_management_type',
             6: 'save_interventions',
         };
+    } else {
+        actionMap = {
+            1: 'save_entity',
+            2: 'save_contacts',
+            4: 'save_contract',
+            5: 'save_management_type',
+            6: 'save_interventions',
+        };
+        if (useSubscriptions) {
+            actionMap[3] = 'save_subscription';
+        }
+    }
 
     var action = actionMap[step];
     if (!action) return;
@@ -247,9 +253,13 @@ function wizardPromptUnarchiveEntity(entitiesId, entityName, url) {
 
 function wizardBack(step, url) {
     if (step <= 1) return;
-    var sequence = (typeof WIZARD_MODE !== 'undefined' && WIZARD_MODE === 'existing_entity')
-        ? [1, 4, 5, 6]
-        : [1, 2, 3, 4, 5, 6];
+    var useSubscriptions = (typeof WIZARD_USE_SUBSCRIPTIONS === 'undefined') || WIZARD_USE_SUBSCRIPTIONS;
+    var sequence;
+    if (typeof WIZARD_MODE !== 'undefined' && WIZARD_MODE === 'existing_entity') {
+        sequence = [1, 4, 5, 6];
+    } else {
+        sequence = useSubscriptions ? [1, 2, 3, 4, 5, 6] : [1, 2, 4, 5, 6];
+    }
     var idx = sequence.indexOf(step);
     var prevStep = idx > 0 ? sequence[idx - 1] : sequence[0];
     reloadStep(prevStep, url);

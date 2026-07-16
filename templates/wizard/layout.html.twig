@@ -172,4 +172,5 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
     var WIZARD_I18N = {{ wizard_i18n|json_encode|raw }};
     var WIZARD_MODE = {{ wizard_mode|json_encode|raw }};
     var WIZARD_ID   = {{ wizard_id|default('')|json_encode|raw }};
+    var WIZARD_USE_SUBSCRIPTIONS = {{ (use_subscriptions ?? true)|json_encode|raw }};
 </script>

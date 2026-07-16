@@ -63,6 +63,7 @@
         </div>
 
         {# Row 0b — publisher subscription #}
+        {% if use_subscriptions %}
         <div class="row mb-3 align-items-start">
             <label class="col-sm-3 col-form-label fw-bold text-muted">
                 <i class="ti ti-certificate me-1"></i>{{ __('Publisher subscription', 'manageentities') }}
@@ -102,6 +103,7 @@
                 {% endif %}
             </div>
         </div>
+        {% endif %}
 
         {# Row 1 — with/without contract #}
         <div class="row mb-3 align-items-center">

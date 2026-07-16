@@ -231,6 +231,7 @@ class Config extends CommonDBTM
         ob_start(); \Dropdown::showYesNo('useprice', $this->fields['useprice']); $useprice_html = ob_get_clean();
         ob_start(); \Dropdown::showYesNo('use_publictask', $this->fields['use_publictask']); $use_publictask_html = ob_get_clean();
         ob_start(); \Dropdown::showYesNo('allow_same_periods', $this->fields['allow_same_periods']); $allow_same_periods_html = ob_get_clean();
+        ob_start(); \Dropdown::showYesNo('use_editorsubscriptions', $this->fields['use_editorsubscriptions'] ?? 1); $use_editorsubscriptions_html = ob_get_clean();
         ob_start(); \Dropdown::showYesNo('comment', $this->fields['comment']); $comment_html = ob_get_clean();
 
         ob_start();
@@ -294,6 +295,7 @@ class Config extends CommonDBTM
                 'useprice_html'                 => $useprice_html,
                 'use_publictask_html'           => $use_publictask_html,
                 'allow_same_periods_html'       => $allow_same_periods_html,
+                'use_editorsubscriptions_html'  => $use_editorsubscriptions_html,
                 'comment_html'                  => $comment_html,
                 'closed_contractstate_html'     => $closed_contractstate_html,
                 'closed_glpi_state_html'        => $closed_glpi_state_html,
@@ -601,6 +603,15 @@ class Config extends CommonDBTM
         return self::$instance;
     }
 
+    /**
+     * Whether publisher (editor) subscriptions are enabled in the plugin configuration.
+     * Defaults to true when the field is missing (e.g. before the upgrade migration ran).
+     */
+    public static function useEditorSubscriptions(): bool
+    {
+        return (bool)(self::getInstance()->fields['use_editorsubscriptions'] ?? 1);
+    }
+
     public static function install(Migration $migration)
     {
         global $DB;
@@ -621,6 +632,7 @@ class Config extends CommonDBTM
                             `needvalidationforcri` tinyint NOT NULL DEFAULT '0' COMMENT 'only CRI with validated ticket are taking into account for consumption calculation',
                             `use_publictask` tinyint NOT NULL DEFAULT '0' COMMENT 'DEFAULT for no',
                             `allow_same_periods` tinyint NOT NULL DEFAULT '0' COMMENT 'allow interventions on the same interval of dates',
+                            `use_editorsubscriptions` tinyint NOT NULL DEFAULT '1' COMMENT 'display and manage publisher (editor) subscriptions',
                             `contract_states` text DEFAULT NULL,
                             `business_id` text DEFAULT NULL,
                             `choice_intervention` int {$default_key_sign} DEFAULT NULL,
@@ -656,6 +668,17 @@ class Config extends CommonDBTM
                     'hourbyday' => 8,
                     'needvalidationforcri' => 0]
             );
+        }
+
+        // Upgrade: add publisher subscriptions toggle on existing installations
+        if (!$DB->fieldExists($table, 'use_editorsubscriptions')) {
+            $migration->addField(
+                $table,
+                'use_editorsubscriptions',
+                'bool',
+                ['value' => 1, 'after' => 'allow_same_periods']
+            );
+            $migration->migrationOneTable($table);
         }
     }
 

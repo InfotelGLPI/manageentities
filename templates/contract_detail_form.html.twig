@@ -30,6 +30,7 @@
 {# ------------------------------------------------------------------ #}
 {# Publisher subscription — read-only summary                          #}
 {# ------------------------------------------------------------------ #}
+{% if use_subscriptions %}
 {% if has_subscription %}
 <div class="card mt-3">
     <div class="card-header d-flex align-items-center gap-2">
@@ -106,6 +107,7 @@
     <i class="ti ti-alert-triangle me-2 fs-3"></i>
     <div>{{ __('No active publisher subscription for this client', 'manageentities') }}</div>
 </div>
+{% endif %}
 {% endif %}
 
 {% if can_edit %}

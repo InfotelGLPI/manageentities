@@ -118,6 +118,18 @@ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
 
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">
+                    {{ __('Use editor subscriptions', 'manageentities') }}
+                </label>
+                <div class="col-sm-8">
+                    {{ use_editorsubscriptions_html|raw }}
+                    <div class="form-text text-muted">
+                        {{ __('When disabled, publisher subscription tabs, blocks, alerts and the wizard subscription step are hidden.', 'manageentities') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">
                     {{ __('List of default statuses for general monitoring', 'manageentities') }}
                 </label>
                 <div class="col-sm-8">

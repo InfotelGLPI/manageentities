@@ -343,6 +343,7 @@ class Contract extends CommonDBTM
         TemplateRenderer::getInstance()->display('@manageentities/contract_detail_form.html.twig', [
             'rand'                       => $rand,
             'can_edit'                   => $canEdit,
+            'use_subscriptions'          => Config::useEditorSubscriptions(),
             'form_url'                   => \Toolbox::getItemTypeFormURL(Contract::class),
             'contracts_id'               => $contract->fields['id'],
             'entities_id'                => $contract->fields['entities_id'],

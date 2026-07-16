@@ -113,14 +113,16 @@ class Entity extends CommonGLPI
                 $tabs[5] = Contract::createTabEntry(_n('Contract', 'Contracts', 2));
             }
 
-            $tabs[6] = EditorSubscription::createTabEntry(
-                _n('Publisher subscription', 'Publisher subscriptions', 2, 'manageentities'),
-                0,
-                self::class,
-                EditorSubscription::getIcon()
-            );
+            if (Config::useEditorSubscriptions()) {
+                $tabs[6] = EditorSubscription::createTabEntry(
+                    _n('Publisher subscription', 'Publisher subscriptions', 2, 'manageentities'),
+                    0,
+                    self::class,
+                    EditorSubscription::getIcon()
+                );
+            }
 
-            if (Session::getCurrentInterface() == 'central') {
+            if (Session::getCurrentInterface() == 'central' && Config::useEditorSubscriptions()) {
                 $tabs[7] = self::createTabEntry(
                     __('Status overview', 'manageentities'),
                     0,
@@ -230,10 +232,14 @@ class Entity extends CommonGLPI
                     $Contract->showContracts($entities);
                     break;
                 case 6:
-                    EditorSubscription::showForEntity($entities);
+                    if (Config::useEditorSubscriptions()) {
+                        EditorSubscription::showForEntity($entities);
+                    }
                     break;
                 case 7:
-                    EditorSubscription::showStatusTab();
+                    if (Config::useEditorSubscriptions()) {
+                        EditorSubscription::showStatusTab();
+                    }
                     break;
                 case 8:
                     $config = Config::getInstance();

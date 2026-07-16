@@ -299,9 +299,10 @@ class WizardController
         $wizard_url        = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid;
         $subscription_url  = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
         TemplateRenderer::getInstance()->display('@manageentities/wizard/mode_choice.html.twig', [
-            'wizard_url'       => $wizard_url,
-            'wizard_id'        => $wid,
-            'subscription_url' => $subscription_url,
+            'wizard_url'        => $wizard_url,
+            'wizard_id'         => $wid,
+            'subscription_url'  => $subscription_url,
+            'use_subscriptions' => Config::useEditorSubscriptions(),
         ]);
     }
 
@@ -506,8 +507,10 @@ class WizardController
             ];
         }
 
+        // Next is step 3 (subscription) when enabled, otherwise skip straight to step 4 (contract)
+        $next_step = Config::useEditorSubscriptions() ? 3 : 4;
         $session['contacts_data'] = $savedData;
-        $session['step']          = max($session['step'], 3); // next is step 3 = subscription
+        $session['step']          = max($session['step'], $next_step);
         self::saveSession($session);
 
         return ['success' => true, 'step' => $session['step']];
@@ -1607,12 +1610,17 @@ class WizardController
             return;
         }
 
-        $step = (int)($_GET['step'] ?? $session['step']);
-        $step = max(1, min(6, $step));
-
         $config  = Config::getInstance();
         $is_day  = ($config->fields['hourorday'] == Config::DAY);
         $is_hour = ($config->fields['hourorday'] == Config::HOUR);
+        $use_subscriptions = Config::useEditorSubscriptions();
+
+        $step = (int)($_GET['step'] ?? $session['step']);
+        $step = max(1, min(6, $step));
+        // Subscription step (3) only exists in new_entity mode and when subscriptions are enabled
+        if (!$use_subscriptions && $step === 3) {
+            $step = 4;
+        }
 
         $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid;
 
@@ -1627,11 +1635,13 @@ class WizardController
             $steps = [
                 1 => _n('Entity', 'Entities', 1),
                 2 => __('Contacts', 'manageentities'),
-                3 => __('Subscription', 'manageentities'),
-                4 => __('Contract', 'manageentities'),
-                5 => __('Management type', 'manageentities'),
-                6 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
             ];
+            if ($use_subscriptions) {
+                $steps[3] = __('Subscription', 'manageentities');
+            }
+            $steps[4] = __('Contract', 'manageentities');
+            $steps[5] = __('Management type', 'manageentities');
+            $steps[6] = _n('Period of contract', 'Periods of contract', 2, 'manageentities');
         }
 
         $step_template = '@manageentities/wizard/step' . $step . '_' . self::stepSlug($step, $session['wizard_mode']) . '.html.twig';
@@ -1648,6 +1658,7 @@ class WizardController
             'rand'        => $rand,
             'is_day'      => $is_day,
             'is_hour'     => $is_hour,
+            'use_subscriptions' => $use_subscriptions,
         ];
 
         $vars += self::buildStepVars($step, $session, $rand, $is_day, $is_hour);

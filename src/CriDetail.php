@@ -1820,6 +1820,7 @@ class CriDetail extends CommonDBTM
         TemplateRenderer::getInstance()->display('@manageentities/cridetail_for_ticket.html.twig', [
             'rand'                      => $rand,
             'can_edit'                  => $canEdit,
+            'use_subscriptions'         => Config::useEditorSubscriptions(),
             'form_url'                  => Toolbox::getItemTypeFormURL(Cri::class),
             'tickets_id'                => $ticket->fields['id'],
             'entities_id'               => $ticket->fields['entities_id'],

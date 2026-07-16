@@ -71,6 +71,7 @@ Access: **Management › Clients management › Configuration**
 | **Only public tasks visible in reports** | Filters ticket tasks in CRIs to show only public tasks |
 | **Allow periods on the same date range** | Allows creating contract periods with identical date ranges |
 | **Client-side view (simplified interface)** | Defines what the client sees in the interventions tab: `Intervention reports` or `Contract periods` |
+| **Use editor subscriptions** | Enables publisher (editor) subscription management (default: Yes). When set to `No`, hides the "Publisher subscriptions" and "Status overview" tabs on the entity, the subscription blocks and alerts on the ticket and contract tabs, the "New subscription" card in the wizard portal, and the "Subscription" step of the new-client wizard (also blocks direct access to the subscription form) |
 | **Contract statuses shown in general follow-up** | Multi-select of statuses included in the general follow-up view |
 | **Default business list (general follow-up)** | Business contacts shown by default in the general follow-up view |
 | **Show company comments in CRI** | Includes the company comment in the CRI PDF |
