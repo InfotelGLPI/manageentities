@@ -18,6 +18,8 @@
    - [GANTT](#gantt)
    - [Données administratives](#données-administratives)
    - [Contrats et périodes](#contrats-et-périodes)
+   - [Souscriptions éditeurs](#souscriptions-éditeurs)
+   - [État des lieux](#état-des-lieux)
    - [Rapports d'intervention (CRI)](#rapports-dintervention-cri)
    - [Interventions non facturées (Direct Helpdesk)](#interventions-non-facturées-direct-helpdesk)
    - [Documents et comptes](#documents-et-comptes)
@@ -156,6 +158,54 @@ Gestion des contrats de service associés à l'entité. Chaque contrat comporte 
 - **Tarifs** (`CriPrice`) : tarifs par type d'intervention pour la période
 
 Le solde est automatiquement décrémenté à chaque CRI validé.
+
+---
+
+### Souscriptions éditeurs
+
+**Onglet 6 — Souscriptions éditeurs**
+
+> Affiché uniquement lorsque l'option **Utiliser les souscriptions éditeur** est activée (voir Configuration globale).
+
+Liste les souscriptions éditeur enregistrées pour l'entité. Chaque souscription décrit une licence logicielle ou un contrat SaaS souscrit auprès d'un éditeur, indépendamment des contrats de service GLPI.
+
+| Champ | Description |
+|-------|-------------|
+| **Entité** | Entité GLPI à laquelle la souscription est rattachée |
+| **Identifiant compte client éditeur** | Référence du compte client chez l'éditeur |
+| **Nom référencé chez l'éditeur** | Nom sous lequel le client est enregistré chez l'éditeur |
+| **Type** | `Cloud` (SaaS/hébergé) ou `Éditeur` (on-premise) |
+| **Niveau de souscription** | Niveau issu de la liste déroulante `SubscriptionLevel` |
+| **Date de début** | Date de démarrage de la souscription |
+| **Date de fin** | Date d'échéance de la souscription (affichée en rouge si dépassée) |
+
+Le tableau propose :
+- Une **recherche textuelle** sur toutes les colonnes
+- Un filtre **Expirées uniquement** pour n'afficher que les souscriptions dont la date de fin est dépassée
+- Un **export CSV** (respecte le filtre expirées actif)
+- Un bouton **Créer une souscription** (nécessite `CREATE`/`UPDATE` et l'interface centrale), ainsi qu'une action **Modifier** par ligne
+
+Les souscriptions sont triées avec celles sans date de fin en premier, puis par date de fin la plus ancienne.
+
+---
+
+### État des lieux
+
+**Onglet 7 — État des lieux** *(interface centrale uniquement)*
+
+> Affiché uniquement lorsque l'option **Utiliser les souscriptions éditeur** est activée (voir Configuration globale).
+
+Tableau de bord consolidé croisant les souscriptions éditeur avec l'activité contractuelle, sur le périmètre des entités clientes concernées (le sous-arbre de l'entité d'archivage est exclu des alertes). Il fait ressortir trois alertes de cohérence et deux répartitions chiffrées :
+
+| Élément | Description |
+|---------|-------------|
+| **Contrat actif mais pas de souscription** | Entités disposant d'un contrat actif (selon les statuts de contrat configurés) mais sans souscription éditeur — affiché en rouge, ou confirmation verte si aucune |
+| **Souscriptions expirées** | Entités dont la souscription a expiré, réparties en `Cloud` et `On-premise` |
+| **Souscription mais pas de contrat actif** | Entités possédant une souscription sans contrat actif, réparties en *avait un contrat auparavant* / *n'a jamais eu de contrat* |
+| **Souscriptions par type** | Compteurs `Cloud` et `On-premise` |
+| **Souscriptions par niveau** | Compteurs par niveau de souscription |
+
+Le périmètre des entités dépend de l'entité parent de l'assistant (`wizard_default_entities_id`) et de l'entité d'archivage (`wizard_archive_entities_id`) définies dans la configuration.
 
 ---
 

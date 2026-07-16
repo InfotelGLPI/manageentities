@@ -18,6 +18,8 @@
    - [GANTT](#gantt)
    - [Administrative data](#administrative-data)
    - [Contracts and periods](#contracts-and-periods)
+   - [Publisher subscriptions](#publisher-subscriptions)
+   - [Status overview](#status-overview)
    - [Intervention reports (CRI)](#intervention-reports-cri)
    - [Not billed interventions (Direct Helpdesk)](#not-billed-interventions-direct-helpdesk)
    - [Documents and accounts](#documents-and-accounts)
@@ -156,6 +158,54 @@ Management of service contracts associated with the entity. Each contract includ
 - **Rates** (`CriPrice`): rates per intervention type for the period
 
 The balance is automatically decremented each time a CRI is validated.
+
+---
+
+### Publisher subscriptions
+
+**Tab 6 — Publisher subscriptions**
+
+> Displayed only when the **Use editor subscriptions** option is enabled (see Global Configuration).
+
+Lists the publisher (editor) subscriptions recorded for the entity. Each subscription describes a software licence or SaaS contract taken out with a publisher, independently of the GLPI service contracts.
+
+| Field | Description |
+|-------|-------------|
+| **Entity** | GLPI entity the subscription belongs to |
+| **Publisher customer account ID** | Customer account reference at the publisher |
+| **Referenced name at the publisher** | Name under which the client is registered with the publisher |
+| **Type** | `Cloud` (SaaS/hosted) or `Editor` (on-premise) |
+| **Subscription level** | Level from the `SubscriptionLevel` dropdown |
+| **Start date** | Subscription start date |
+| **End date** | Subscription expiry date (highlighted in red when past) |
+
+The table provides:
+- A **text search** over all columns
+- An **Expired only** filter to show subscriptions whose end date has passed
+- A **CSV export** (respects the active expired filter)
+- A **Create subscription** button (requires `CREATE`/`UPDATE` and the central interface), and an **Edit** action per row
+
+Subscriptions are sorted with open-ended ones first, then by oldest end date.
+
+---
+
+### Status overview
+
+**Tab 7 — Status overview** *(central interface only)*
+
+> Displayed only when the **Use editor subscriptions** option is enabled (see Global Configuration).
+
+Consolidated dashboard cross-referencing publisher subscriptions with contract activity, over the client entities in scope (the archive entity subtree is excluded from alerts). It surfaces three consistency alerts and two count breakdowns:
+
+| Element | Description |
+|---------|-------------|
+| **Active contract but no subscription** | Entities with an active contract (matching the configured contract statuses) but no publisher subscription — shown in red, or a green confirmation when none |
+| **Expired subscriptions** | Entities whose subscription has expired, split into `Cloud` and `On-premise` |
+| **Subscription but no active contract** | Entities holding a subscription without an active contract, split into *previously had a contract* / *never had a contract* |
+| **Subscriptions by type** | Counters for `Cloud` and `On-premise` subscriptions |
+| **Subscriptions by level** | Counters per subscription level |
+
+The scoped entities depend on the wizard parent entity (`wizard_default_entities_id`) and archive entity (`wizard_archive_entities_id`) set in the configuration.
 
 ---
 
