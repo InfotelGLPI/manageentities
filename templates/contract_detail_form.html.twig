@@ -101,6 +101,11 @@
         </div>
     </div>
 </div>
+{% else %}
+<div class="alert alert-danger d-flex align-items-center mt-3" role="alert">
+    <i class="ti ti-alert-triangle me-2 fs-3"></i>
+    <div>{{ __('No active publisher subscription for this client', 'manageentities') }}</div>
+</div>
 {% endif %}
 
 {% if can_edit %}
