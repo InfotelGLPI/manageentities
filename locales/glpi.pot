@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 14:55+0000\n"
+"POT-Creation-Date: 2026-07-16 09:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,7 +66,7 @@ msgstr ""
 
 #: templates/interventionstakeholder_form.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:250
-#: templates/contract_detail_form.html.twig:203
+#: templates/contract_detail_form.html.twig:208
 #: templates/editorsubscription_wizard.html.twig:92
 #: templates/entity/contacts_card.html.twig:107
 #: templates/entity/contacts_card.html.twig:111
@@ -428,7 +428,7 @@ msgstr ""
 msgid "Contract detail"
 msgstr ""
 
-#: templates/contract_detail_form.html.twig:170
+#: templates/contract_detail_form.html.twig:175
 #: templates/wizard/step5_management.html.twig:90
 #: templates/wizard/step4_management.html.twig:90
 msgid "Contract is imported in GLPI"
@@ -557,14 +557,14 @@ msgid "Date of"
 msgstr ""
 
 #: src/Gantt.php:352 src/Followup.php:1038
-#: templates/contract_detail_form.html.twig:132
+#: templates/contract_detail_form.html.twig:137
 #: templates/wizard/step5_management.html.twig:54
 #: templates/wizard/step4_management.html.twig:54
 msgid "Date of renewal"
 msgstr ""
 
 #: src/Entity.php:568 src/Gantt.php:348 src/Followup.php:1023
-#: templates/contract_detail_form.html.twig:128
+#: templates/contract_detail_form.html.twig:133
 #: templates/wizard/step5_management.html.twig:50
 #: templates/wizard/step4_management.html.twig:50
 msgid "Date of signature"
@@ -647,7 +647,7 @@ msgid "Delete and reinitialize"
 msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:257
-#: templates/contract_detail_form.html.twig:210
+#: templates/contract_detail_form.html.twig:215
 #: templates/editorsubscription_wizard.html.twig:88
 #: templates/entity/contacts_card.html.twig:86
 #: templates/entity/business_card.html.twig:66
@@ -696,7 +696,7 @@ msgstr ""
 msgid "Duration is required"
 msgstr ""
 
-#: templates/contract_detail_form.html.twig:191
+#: templates/contract_detail_form.html.twig:196
 #: templates/wizard/step5_management.html.twig:113
 #: templates/wizard/step4_management.html.twig:113
 msgid "Duration of moving"
@@ -1115,7 +1115,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/Contract.php:68 src/WizardController.php:1623
-#: src/WizardController.php:1632 templates/contract_detail_form.html.twig:120
+#: src/WizardController.php:1632 templates/contract_detail_form.html.twig:125
 #: templates/wizard/step5_management.html.twig:39
 #: templates/wizard/step4_management.html.twig:39
 msgid "Management type"
@@ -1150,7 +1150,7 @@ msgid "Mobile phone"
 msgstr ""
 
 #: src/Monthly.php:701 src/Monthly.php:733 src/Followup.php:1054
-#: templates/contract_detail_form.html.twig:139
+#: templates/contract_detail_form.html.twig:144
 #: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step5_management.html.twig:60
 #: templates/wizard/step4_management.html.twig:60
@@ -1162,7 +1162,7 @@ msgstr ""
 msgid "Monthly follow-up"
 msgstr ""
 
-#: src/Contract.php:971 templates/contract_detail_form.html.twig:181
+#: src/Contract.php:971 templates/contract_detail_form.html.twig:186
 #: templates/wizard/step5_management.html.twig:101
 #: templates/wizard/step4_management.html.twig:101
 msgid "Movement management"
@@ -1228,6 +1228,10 @@ msgstr ""
 
 #: src/GenerateCRI.php:1324 src/CriDetail.php:1937
 msgid "No active contracts"
+msgstr ""
+
+#: templates/contract_detail_form.html.twig:107
+msgid "No active publisher subscription for this client"
 msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:76
@@ -1657,7 +1661,7 @@ msgstr ""
 msgid "Rates"
 msgstr ""
 
-#: src/Contract.php:972 templates/contract_detail_form.html.twig:161
+#: src/Contract.php:972 templates/contract_detail_form.html.twig:166
 #: templates/wizard/step5_management.html.twig:81
 #: templates/wizard/step4_management.html.twig:81
 msgid "Refacturable costs"
@@ -1808,7 +1812,7 @@ msgstr ""
 msgid "Show expired subscriptions only"
 msgstr ""
 
-#: src/Contract.php:970 templates/contract_detail_form.html.twig:153
+#: src/Contract.php:970 templates/contract_detail_form.html.twig:158
 #: templates/wizard/step5_management.html.twig:73
 #: templates/wizard/step4_management.html.twig:73
 msgid "Show on GANTT"
@@ -2108,7 +2112,7 @@ msgid "Type of contract"
 msgstr ""
 
 #: src/ContractDay.php:170 src/ContractDay.php:893 src/Followup.php:1062
-#: templates/contract_detail_form.html.twig:143
+#: templates/contract_detail_form.html.twig:148
 #: templates/contractday_form.html.twig:58
 #: templates/wizard/step5_management.html.twig:64
 #: templates/wizard/step4_management.html.twig:64
@@ -2124,7 +2128,7 @@ msgid "Unarchive and continue"
 msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:254
-#: templates/contract_detail_form.html.twig:207
+#: templates/contract_detail_form.html.twig:212
 #: templates/editorsubscription_wizard.html.twig:92
 #: templates/editorsubscription_fields_js.html.twig:69
 msgid "Update"
