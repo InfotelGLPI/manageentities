@@ -335,16 +335,15 @@ function plugin_manageentities_install()
                         ]);
                         if (count($iterator2) > 0) {
                             foreach ($iterator2 as $dataid) {
-                                $query = $DB->buildDelete(
+                                $DB->delete(
                                     'glpi_displaypreferences',
                                     [
                                         'id' => $dataid['id'],
                                     ]
                                 );
-                                $DB->doQuery($query);
                             }
                         } else {
-                            $query = $DB->buildUpdate(
+                            $DB->update(
                                 'glpi_displaypreferences',
                                 [
                                     'itemtype' => $new,
@@ -353,7 +352,6 @@ function plugin_manageentities_install()
                                     'id' => $data['id'],
                                 ]
                             );
-                            $DB->doQuery($query);
                         }
                     }
                 }
@@ -393,7 +391,7 @@ function plugin_manageentities_install()
 
     Profile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
     Profile::initProfile();
-    $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_manageentities_profiles`;");
+    $DB->dropTable('glpi_plugin_manageentities_profiles', true);
 
     $pref_ID = Preference::checkIfPreferenceExists(Session::getLoginUserID());
     if ($pref_ID) {
@@ -429,7 +427,7 @@ function plugin_manageentities_uninstall()
         "glpi_plugin_manageentities_directhelpdesks_tickets"];
 
     foreach ($tables as $table) {
-        $DB->doQuery("DROP TABLE IF EXISTS `$table`;");
+        $DB->dropTable($table, true);
     }
 
     //old versions
@@ -446,7 +444,7 @@ function plugin_manageentities_uninstall()
         "glpi_plugin_manageentity_cridetails"];
 
     foreach ($tables as $table) {
-        $DB->doQuery("DROP TABLE IF EXISTS `$table`;");
+        $DB->dropTable($table, true);
     }
 
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
