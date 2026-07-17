@@ -384,10 +384,6 @@ function plugin_manageentities_install()
         addRemainingDaysColumn();
     }
 
-    //version 4.2.4
-    if($DB->tableExists("glpi_plugin_manageentities_interventionstakeholders")) {
-        $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_manageentities_interventionstakeholders`;");
-    }
 
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
     if (!is_dir($rep_files_manageentities)) {
