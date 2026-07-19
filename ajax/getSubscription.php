@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\EditorSubscription;
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -34,7 +35,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 // Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
 if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 $entities_id = (int)($_POST['entities_id'] ?? 0);

@@ -1204,13 +1204,26 @@ class WizardController
         if ($doc_id <= 0) {
             self::jsonOut(['success' => false]);
         }
-        $d  = new Document();
+
+        // Only a document that was uploaded during the current wizard session may
+        // be purged here. ajax/wizard.php gates this action on the GLOBAL
+        // plugin_manageentities UPDATE right, which does not bound WHICH document
+        // is deleted: delete() enforces no right by itself, so without this check a
+        // right holder could permanently purge any core Document across entities by
+        // iterating ids. can($doc_id, PURGE) adds the core document right, entity
+        // access and existence checks on top of the session-ownership guard.
+        $session = self::getSession();
+        $owned   = array_map('intval', $session['documents_ids'] ?? []);
+        $d       = new Document();
+        if (!in_array($doc_id, $owned, true) || !$d->can($doc_id, PURGE)) {
+            self::jsonOut(['success' => false]);
+        }
+
         $ok = $d->delete(['id' => $doc_id], true);
         if ($ok) {
-            $session = self::getSession();
             $session['documents_ids'] = array_values(array_filter(
-                $session['documents_ids'] ?? [],
-                fn($id) => (int)$id !== $doc_id
+                $owned,
+                fn($id) => $id !== $doc_id
             ));
             self::saveSession($session);
         }

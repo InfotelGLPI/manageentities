@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Contract;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -38,7 +39,7 @@ Session::checkRight('plugin_manageentities', READ);
 if (isset($_POST["entities_id"])) {
     $entities_id = (int) $_POST['entities_id'];
     if (!Session::haveAccessToEntity($entities_id)) {
-        Html::displayRightError();
+        throw new AccessDeniedHttpException();
     }
     $contract = new Contract();
     echo $alert = $contract->displayAlertforEntity($entities_id);

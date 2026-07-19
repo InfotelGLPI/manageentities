@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use GlpiPlugin\Manageentities\Contract as PluginContract;
 use GlpiPlugin\Manageentities\ContractDay;
@@ -38,7 +39,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 // Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
 if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 if (!isset($_POST["contracts_id"])) {

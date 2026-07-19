@@ -29,7 +29,7 @@
 
 namespace GlpiPlugin\Manageentities;
 
-use Fpdf\Fpdf;
+use FPDF;
 use Glpi\RichText\RichText;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contact;
@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-class CriPDF extends Fpdf
+class CriPDF extends FPDF
 {
 
     /* Attributs d'un rapport envoyés par l'utilisateur avant la génération. */

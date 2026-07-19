@@ -35,6 +35,7 @@ use DBConnection;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Migration;
 use Session;
 
@@ -110,7 +111,7 @@ class EditorSubscription extends CommonDBTM
 
         Session::checkLoginUser();
         if (!self::canView()) {
-            \Html::displayRightError();
+            throw new AccessDeniedHttpException();
             exit;
         }
 

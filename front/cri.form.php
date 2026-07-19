@@ -67,10 +67,18 @@ if (isset($_POST["addcridetail"])) {
    Html::back();
 
 } else if (isset($_POST["purgedoc"])) {
-   $doc         = new Document();
-   $input['id'] = $_POST['documents_id'];
-   if ($doc->delete($input, 1)) {
-      Event::log($input['id'], "documents", 4, "document", $_SESSION["glpiname"] . " " . __('Delete permanently'));
+   $doc            = new Document();
+   $documents_id   = (int) $_POST['documents_id'];
+   // This branch permanently purges a core Document. checkLoginUser() is not
+   // authorization on GLPI 11 and delete() enforces no right by itself, so gate on
+   // the object: can(PURGE) checks the core document right, entity access and
+   // existence before destroying anything. Without it any logged-in user could
+   // wipe arbitrary documents by iterating ids.
+   if ($doc->can($documents_id, PURGE)) {
+      $input['id'] = $documents_id;
+      if ($doc->delete($input, 1)) {
+         Event::log($input['id'], "documents", 4, "document", $_SESSION["glpiname"] . " " . __('Delete permanently'));
+      }
    }
    Html::back();
 

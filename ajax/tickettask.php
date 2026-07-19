@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Ramsey\Uuid\Uuid;
 
 Html::header_nocache();
@@ -43,7 +44,7 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
    $ticket = new Ticket();
    if (!$ticket->can((int) $_POST['tickets_id'], READ)
        || (int) $tickettask->fields['tickets_id'] !== (int) $_POST['tickets_id']) {
-      Html::displayRightError();
+       throw new AccessDeniedHttpException();
    }
 
    switch ($_POST ['action']) {

@@ -35,6 +35,7 @@ use Document;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\RichText\RichText;
 use Html;
 use Session;
@@ -65,10 +66,20 @@ class Cri extends CommonDBTM
     {
         global $DB, $CFG_GLPI;
 
+        $ID = (int) $ID;
+        // Broken access control (IDOR): showForm() is reachable from front/cri.form.php
+        // and the ajax/cri.php "showCriForm" case behind only Session::checkLoginUser(),
+        // which is NOT authorization on GLPI 11. Without an object-level check any logged
+        // in user could read another entity's ticket data (contract, technicians, time
+        // spent) by iterating the "job" id. can($ID, READ) enforces the ticket existence,
+        // the global right AND entity access before anything is displayed.
+        $job = new Ticket();
+        if (!$job->can($ID, READ)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $config = Config::getInstance();
         $width = 200;
-        $job = new Ticket();
-        $job->getfromDB($ID);
 
         $params = [
             'job' => $ID,

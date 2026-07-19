@@ -8,6 +8,6 @@
         "glpi-project/tools": "^0.8"
     },
     "require": {
-        "fpdf/fpdf": "^1.86"
+        "setasign/fpdf": "^1.9"
     }
 }

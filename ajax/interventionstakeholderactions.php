@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
 
@@ -44,7 +45,7 @@ $checkContractDayAccess = static function (): bool {
    $contractDay = new ContractDay();
    if (!$contractDay->getFromDB((int) ($_POST['contractdays_id'] ?? 0))
        || !Session::haveAccessToEntity($contractDay->fields['entities_id'])) {
-      Html::displayRightError();
+       throw new AccessDeniedHttpException();
       return false;
    }
    return true;
