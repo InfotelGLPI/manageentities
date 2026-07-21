@@ -29,7 +29,6 @@
 
 namespace GlpiPlugin\Manageentities;
 
-use FPDF;
 use Glpi\RichText\RichText;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contact;
@@ -39,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-class CriPDF extends FPDF
+class CriPDF extends \TCPDF
 {
 
     /* Attributs d'un rapport envoyés par l'utilisateur avant la génération. */
@@ -62,7 +61,7 @@ class CriPDF extends FPDF
 
     /* Constantes pour paramétrer certaines données. */
     var $line_height = 5;         // Hauteur d'une ligne simple.
-    var $pol_def = 'Arial';       // Police par défaut;
+    var $pol_def = 'Helvetica';   // Police par défaut (TCPDF core font; FPDF already aliased Arial to it).
     var $tail_pol_def = 10;       // Taille par défaut de la police.
     var $tail_titre = 22;         // Taille du titre.
     var $marge_haut = 5;          // Marge du haut.
@@ -74,6 +73,33 @@ class CriPDF extends FPDF
     /* Constantes pour les régles de calcul d'un arrondi de temps avec définition d'un seuil supplémentaire. */
     var $tranches_seuil = 0.001;
     var $tranches_arrondi = [0, 0.25, 0.5, 0.75, 1];
+
+    /**
+     * CriPDF constructor.
+     *
+     * Called as `new CriPDF('P', 'mm', 'A4')` (legacy FPDF positional args). TCPDF's own
+     * constructor takes the same first three parameters, so we simply forward them and enable
+     * UTF-8 (TCPDF is unicode-native — that is why every Toolbox::decodeFromUtf8() latin1 wrapper
+     * was removed from this class).
+     *
+     * @param string $orientation Page orientation ('P' or 'L').
+     * @param string $unit        Measurement unit.
+     * @param string $size        Page format.
+     */
+    public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
+    {
+        parent::__construct($orientation, $unit, $size, true, 'UTF-8');
+
+        // This report is hand-positioned for FPDF geometry: 15 mm side margins, a 1 mm cell
+        // margin, and manual page breaks (the TestBasDePage* helpers). Restore that layout so
+        // TCPDF's defaults (15 mm margins but ~1.5 mm padding + auto page break) don't shift it:
+        //  - left/right margins at $marge_gauche, top margin at $marge_haut;
+        //  - auto page break OFF (page breaks are handled explicitly via GetSeuilSaut);
+        //  - 1 mm horizontal cell padding ≈ FPDF's default cell margin so text keeps its inset.
+        $this->SetMargins($this->marge_gauche, $this->marge_haut, $this->marge_gauche);
+        $this->SetAutoPageBreak(false);
+        $this->setCellPaddings(1, 0, 1, 0);
+    }
 
     /* ************************************* */
     /* Methodes génériques de mise en forme. */
@@ -145,7 +171,7 @@ class CriPDF extends FPDF
     {
         $this->SetFondClair();
         $this->SetFontLabel($italic);
-        $this->Cell($w, $this->line_height * $multH, $label, $bordure, 0, $align, 1);
+        $this->Cell($w, $this->line_height * $multH, $label, $bordure, 0, $align, true);
     }
 
     /**
@@ -173,7 +199,7 @@ class CriPDF extends FPDF
     function CellVideFoncee($w)
     {
         $this->SetFondFonce();
-        $this->Cell($w, $this->line_height, '', 1, 0, '', 1);
+        $this->Cell($w, $this->line_height, '', 1, 0, '', true);
     }
 
     /* **************************************** */
@@ -186,6 +212,11 @@ class CriPDF extends FPDF
     function Header()
     {
         global $CFG_GLPI;
+
+        // TCPDF::setHeader() forces setCellPadding(0) right before calling Header(), so the header
+        // cells would lose the 1 mm horizontal inset the body keeps (constructor setCellPaddings).
+        // Re-assert it here so header and body text align identically (left-aligned values).
+        $this->setCellPaddings(1, 0, 1, 0);
 
         /* Constantes pour les largeurs de cellules de l'entéte (doivent étre = $largeur_grande_cell). */
         $largeur_logo = 50;
@@ -210,23 +241,25 @@ class CriPDF extends FPDF
         $this->Cell(
             $largeur_titre,
             $this->line_height * 2,
-            Toolbox::decodeFromUtf8(_n('Report', 'Reports', 1)),
+            _n('Report', 'Reports', 1),
             'LTR',
             0,
             'C'
         );
         $this->SetY($this->GetY() + $this->line_height * 2);
-        $this->SetX($largeur_logo + 10);
+        // Align the title's bottom half on the same X as its top half (logo width + left margin),
+        // otherwise the two halves are 5 mm apart and draw a doubled/staggered vertical border.
+        $this->SetX($largeur_logo + $this->marge_gauche);
         $this->Cell(
             $largeur_titre,
             $this->line_height * 2,
-            Toolbox::decodeFromUtf8(__('of this intervention', 'manageentities')),
+            __('of this intervention', 'manageentities'),
             'LRB',
             0,
             'C'
         );
         $this->SetY($this->GetY() - $this->line_height * 2);
-        $this->SetX($largeur_titre + $largeur_logo + 10);
+        $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
 
         $client = new EntityLogo();
         $client_logo = $client->getLogo($this->entite[0]->fields["id"]);
@@ -264,12 +297,12 @@ class CriPDF extends FPDF
             /* Date et heure. */
             $this->CellValeur(
                 $this->largeur_grande_cell,
-                Toolbox::decodeFromUtf8(
+                
                     __('Created by', 'manageentities') . ' : ' . $this->GetDateFormatee($aujour_hui) . " " . __(
                         'in',
                         'manageentities'
                     ) . " " . $this->GetHeureFormatee($aujour_hui)
-                ),
+                ,
                 'C',
                 1,
                 'LTRB',
@@ -282,40 +315,40 @@ class CriPDF extends FPDF
                 /* Date et heure. */
                 $this->CellValeur(
                     $largeur_date,
-                    Toolbox::decodeFromUtf8(__('Created by', 'manageentities')) . ' :',
+                    __('Created by', 'manageentities') . ' :',
                     'C',
                     1,
                     'LTR',
                     true
                 ); // Libellé pour la date.
                 $this->SetY($this->GetY() + $this->line_height);
-                $this->SetX($largeur_titre + $largeur_logo + 10);
+                $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
                 $this->CellValeur($largeur_date, $this->GetDateFormatee($aujour_hui), 'C', 1, 'LR'); // Date.
                 $this->SetY($this->GetY() + $this->line_height);
-                $this->SetX($largeur_titre + $largeur_logo + 10);
+                $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
                 $this->CellValeur(
                     $largeur_date,
-                    Toolbox::decodeFromUtf8(__('in', 'manageentities')) . ' :',
+                    __('in', 'manageentities') . ' :',
                     'C',
                     1,
                     'LR',
                     true
                 ); // Libellé pour l'heure.
                 $this->SetY($this->GetY() + $this->line_height);
-                $this->SetX($largeur_titre + $largeur_logo + 10);
+                $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
                 $this->CellValeur($largeur_date, $this->GetHeureFormatee($aujour_hui), 'C', 1, 'LRB'); // Heure.
                 $this->SetY($this->GetY() + $this->line_height);
             } else {
                 /* Empty */
                 $this->CellValeur($largeur_date, "", 'C', 1, 'LTR', true); // Libellé pour la date.
                 $this->SetY($this->GetY() + $this->line_height);
-                $this->SetX($largeur_titre + $largeur_logo + 10);
+                $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
                 $this->CellValeur($largeur_date, "", 'C', 1, 'LR'); // Date.
                 $this->SetY($this->GetY() + $this->line_height);
-                $this->SetX($largeur_titre + $largeur_logo + 10);
+                $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
                 $this->CellValeur($largeur_date, "", 'C', 1, 'LR', true); // Libellé pour l'heure.
                 $this->SetY($this->GetY() + $this->line_height);
-                $this->SetX($largeur_titre + $largeur_logo + 10);
+                $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
                 $this->CellValeur($largeur_date, "", 'C', 1, 'LRB'); // Heure.
                 $this->SetY($this->GetY() + $this->line_height);
             }
@@ -326,12 +359,19 @@ class CriPDF extends FPDF
         $this->Cell(
             $this->largeur_grande_cell,
             $this->line_height,
-            Toolbox::decodeFromUtf8("N°") . $this->GetNoCri($aujour_hui),
+            "N°" . $this->GetNoCri($aujour_hui),
             1,
             0,
             'C'
         );
         $this->SetY($this->GetY() + $this->line_height);
+
+        // FPDF let the page body continue right below wherever Header() left the cursor. TCPDF
+        // instead re-homes the cursor to (lMargin, tMargin) after Header() returns (see
+        // TCPDF::setHeader). The header height here is dynamic (client logo / date block vary),
+        // so pin the top margin to the header's actual end: TCPDF then drops the body exactly
+        // where FPDF did. Header() runs on every page, so this stays correct after page breaks.
+        $this->SetTopMargin($this->GetY());
     }
 
     /**
@@ -345,7 +385,7 @@ class CriPDF extends FPDF
         $this->CellLabel(
             false,
             $this->largeur_grande_cell / 2,
-            Toolbox::decodeFromUtf8(__('Request number of associated help', 'manageentities'))
+            __('Request number of associated help', 'manageentities')
         );
         $this->SetTextColor(0, 0, 0);
         $this->CellValeur($this->largeur_grande_cell / 2, $this->demande_associee);
@@ -365,7 +405,7 @@ class CriPDF extends FPDF
         $this->CellLabel(
             false,
             $this->largeur_grande_cell,
-            Toolbox::decodeFromUtf8(_n('Technician', 'Technicians', $plural, 'manageentities')),
+            _n('Technician', 'Technicians', $plural, 'manageentities'),
             1,
             'C'
         );
@@ -375,35 +415,38 @@ class CriPDF extends FPDF
         foreach ($intervenants as $une_ligne) {
             $this->TestBasDePageDetailTravaux($une_ligne);
 
-            $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR');
+            // Force left align: TCPDF's MultiCell defaults to 'J' (justify) and justifies even a
+        // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
+        // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
+        $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
         }
         $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
         $this->SetY($this->GetY() + $this->line_height);
         $this->SetTextColor(255, 255, 255);
 
         /* Date d'intervention. */
-        $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(__('Intervention date', 'manageentities')), 2);
+        $this->CellLabel(false, 40, __('Intervention date', 'manageentities'), 2);
 
         /* Année et mois... */
-        $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('Year', 'manageentities')));
+        $this->CellLabel(true, 20, __('Year', 'manageentities'));
         $this->SetTextColor(0, 0, 0);
-        $this->CellValeur(35, Toolbox::decodeFromUtf8($this->date_intervention[0]["year"]));
+        $this->CellValeur(35, $this->date_intervention[0]["year"]);
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('month')));
+        $this->CellLabel(true, 20, __('month'));
         $monthsarray = Toolbox::getMonthsOfYearArray();
         $this->SetTextColor(0, 0, 0);
-        $this->CellValeur(35, Toolbox::decodeFromUtf8($monthsarray[$this->date_intervention[0]["mon"]]));
+        $this->CellValeur(35, $monthsarray[$this->date_intervention[0]["mon"]]);
         $this->CellVideFoncee(40);
         $this->Ln();
 
         /* Du, Au... */
         $this->SetX($this->GetX() + 40);
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('From', 'manageentities')));
+        $this->CellLabel(true, 20, __('From', 'manageentities'));
         $this->SetTextColor(0, 0, 0);
         $this->CellValeur(35, $this->date_intervention[1]);
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(true, 20, Toolbox::decodeFromUtf8(__('To', 'manageentities')));
+        $this->CellLabel(true, 20, __('To', 'manageentities'));
         $this->SetTextColor(0, 0, 0);
         $this->CellValeur(35, $this->date_intervention[2]);
         $this->CellVideFoncee(40);
@@ -438,27 +481,27 @@ class CriPDF extends FPDF
 
         /* Nom de l'entité. */
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(__('Society name', 'manageentities')));
+        $this->CellLabel(false, 40, __('Society name', 'manageentities'));
         $this->SetTextColor(0, 0, 0);
-        $this->CellValeur(150, Toolbox::decodeFromUtf8($this->entite[0]->fields["name"]));
+        $this->CellValeur(150, $this->entite[0]->fields["name"]);
         $this->SetY($this->GetY() + $this->line_height);
         /* Ville. */
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(__('City')));
+        $this->CellLabel(false, 40, __('City'));
         $this->SetTextColor(0, 0, 0);
         if (!isset($this->entite[0]->fields["town"])) {
             $this->entite[0]->fields["town"] = "";
         }
-        $this->CellValeur(150, Toolbox::decodeFromUtf8($this->entite[0]->fields["town"]));
+        $this->CellValeur(150, $this->entite[0]->fields["town"]);
         $this->SetY($this->GetY() + $this->line_height);
         /* Responsable. */
         if (!isset($manager)) {
             $manager = "";
         }
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(__('Person in charge', 'manageentities')));
+        $this->CellLabel(false, 40, __('Person in charge', 'manageentities'));
         $this->SetTextColor(0, 0, 0);
-        $this->CellValeur(150, Toolbox::decodeFromUtf8($manager));
+        $this->CellValeur(150, $manager);
         $this->SetY($this->GetY() + $this->line_height);
     }
 
@@ -477,14 +520,14 @@ class CriPDF extends FPDF
         $this->SetFondClair();
         $this->SetFontLabel(true);
         if ($cochee) {
-            $this->SetFont('Zapfdingbats', '', 6);
-            $this->Cell($largeur_symbol, $this->line_height, chr(110), 'LTB', 0, '', 1);
+            $this->SetFont('zapfdingbats', '', 6);
+            $this->Cell($largeur_symbol, $this->line_height, chr(110), 'LTB', 0, '', true);
         } else {
-            $this->SetFont('Zapfdingbats', '', 6);
-            $this->Cell($largeur_symbol, $this->line_height, chr(111), 'LTB', 0, '', 1);
+            $this->SetFont('zapfdingbats', '', 6);
+            $this->Cell($largeur_symbol, $this->line_height, chr(111), 'LTB', 0, '', true);
         }
         $this->SetFontLabel(true);
-        $this->Cell($w - $largeur_symbol, $this->line_height, $label, 'TRB', 0, '', 1);
+        $this->Cell($w - $largeur_symbol, $this->line_height, $label, 'TRB', 0, '', true);
     }
 
     /**
@@ -495,13 +538,13 @@ class CriPDF extends FPDF
     {
         $this->SetTextColor(255, 255, 255);
         /* Type de contrat. */
-        $this->CellLabel(false, 40, Toolbox::decodeFromUtf8(_n('Contract type', 'Contract types', 1)), 2);
+        $this->CellLabel(false, 40, _n('Contract type', 'Contract types', 1), 2);
         /* Sous contrat. */
 
-        $this->CellContrat($this->sous_contrat, 50, Toolbox::decodeFromUtf8(__('Help on contract', 'manageentities')));
+        $this->CellContrat($this->sous_contrat, 50, __('Help on contract', 'manageentities'));
 
         if ($this->sous_contrat) {
-            $this->CellLabel(true, 35, Toolbox::decodeFromUtf8(__('Contract number', 'manageentities')));
+            $this->CellLabel(true, 35, __('Contract number', 'manageentities'));
             $this->SetTextColor(0, 0, 0);
             $this->CellValeur(65, $this->entite[1]);
         } else {
@@ -512,7 +555,7 @@ class CriPDF extends FPDF
         /* Hors contrat. */
         $this->SetX($this->GetX() + 40);
         $this->SetTextColor(255, 255, 255);
-        $this->CellContrat(!$this->sous_contrat, 50, Toolbox::decodeFromUtf8(__('Out of contract', 'manageentities')));
+        $this->CellContrat(!$this->sous_contrat, 50, __('Out of contract', 'manageentities'));
         $this->CellVideFoncee(100);
         $this->SetTextColor(0, 0, 0);
         $this->SetY($this->GetY() + $this->line_height);
@@ -531,55 +574,55 @@ class CriPDF extends FPDF
         $this->CellLabel(
             false,
             $this->largeur_grande_cell,
-            Toolbox::decodeFromUtf8(__('Crossed time (itinerary including)', 'manageentities')),
+            __('Crossed time (itinerary including)', 'manageentities'),
             1,
             'C'
         );
         $this->SetTextColor(0, 0, 0);
         $this->Ln();
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(true, 95, Toolbox::decodeFromUtf8(__('Wording of the activities', 'manageentities')), 2, 'C');
+        $this->CellLabel(true, 95, __('Wording of the activities', 'manageentities'), 2, 'C');
 
-        $this->CellLabel(true, 20 + $width, Toolbox::decodeFromUtf8(__('Date of', 'manageentities')), 1, 'C', 'LTR');
+        $this->CellLabel(true, 20 + $width, __('Date of', 'manageentities'), 1, 'C', 'LTR');
         if (!$this->forfait) {
-            $this->CellLabel(true, 15, Toolbox::decodeFromUtf8(__('Hour of', 'manageentities')), 1, 'C', 'LTR');
+            $this->CellLabel(true, 15, __('Hour of', 'manageentities'), 1, 'C', 'LTR');
         }
-        $this->CellLabel(true, 20 + $width, Toolbox::decodeFromUtf8(__('Date of', 'manageentities')), 1, 'C', 'LTR');
+        $this->CellLabel(true, 20 + $width, __('Date of', 'manageentities'), 1, 'C', 'LTR');
         if (!$this->forfait) {
-            $this->CellLabel(true, 15, Toolbox::decodeFromUtf8(__('Hour of', 'manageentities')), 1, 'C', 'LTR');
+            $this->CellLabel(true, 15, __('Hour of', 'manageentities'), 1, 'C', 'LTR');
         }
         if ($this->intervention) {
-            $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(_x('Quantity', 'Number')), 1, 'C', 'LTR');
+            $this->CellLabel(true, 25, _x('Quantity', 'Number'), 1, 'C', 'LTR');
         } else {
-            $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(__('Crossed time', 'manageentities')), 1, 'C', 'LTR');
+            $this->CellLabel(true, 25, __('Crossed time', 'manageentities'), 1, 'C', 'LTR');
         }
         $this->SetTextColor(0, 0, 0);
 
         $this->Ln();
         $this->SetX($this->GetX() + 95);
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(true, 20 + $width, Toolbox::decodeFromUtf8(__('Begin')), 1, 'C', 'LBR');
+        $this->CellLabel(true, 20 + $width, __('Begin'), 1, 'C', 'LBR');
         if (!$this->forfait) {
-            $this->CellLabel(true, 15, Toolbox::decodeFromUtf8(__('Begin')), 1, 'C', 'LBR');
+            $this->CellLabel(true, 15, __('Begin'), 1, 'C', 'LBR');
         }
-        $this->CellLabel(true, 20 + $width, Toolbox::decodeFromUtf8(__('End')), 1, 'C', 'LBR');
+        $this->CellLabel(true, 20 + $width, __('End'), 1, 'C', 'LBR');
         if (!$this->forfait) {
-            $this->CellLabel(true, 15, Toolbox::decodeFromUtf8(__('End')), 1, 'C', 'LBR');
+            $this->CellLabel(true, 15, __('End'), 1, 'C', 'LBR');
         }
         if ($this->intervention) {
             $this->CellLabel(
                 true,
                 25,
-                Toolbox::decodeFromUtf8(__('of this intervention', 'manageentities')),
+                __('of this intervention', 'manageentities'),
                 1,
                 'C',
                 'LBR'
             );
         } else {
             if ($config->fields['hourorday'] == Config::DAY) {
-                $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(__('(in days)', 'manageentities')), 1, 'C', 'LBR');
+                $this->CellLabel(true, 25, __('(in days)', 'manageentities'), 1, 'C', 'LBR');
             } else {
-                $this->CellLabel(true, 25, Toolbox::decodeFromUtf8(__('(in hours)', 'manageentities')), 1, 'C', 'LBR');
+                $this->CellLabel(true, 25, __('(in hours)', 'manageentities'), 1, 'C', 'LBR');
             }
         }
         $this->SetTextColor(0, 0, 0);
@@ -599,9 +642,9 @@ class CriPDF extends FPDF
         for ($l = 0; $l < count($this->temps_passes); $l++) {
             $this->TestBasDePageTpsPasses(); // Test pour un éventuel saut de page.
             if ($config->fields['useprice'] == Config::NOPRICE) {
-                $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
+                $this->CellValeur(95, $this->libelle_activite[$l]);
             } elseif ($config->fields['hourorday'] == Config::HOUR) {
-                $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
+                $this->CellValeur(95, $this->libelle_activite[$l]);
             } else {
                 $this->CellValeur(95, $this->libelle_activite);
             }
@@ -629,9 +672,9 @@ class CriPDF extends FPDF
             $this->Cell(115, $this->line_height, '', 0, 0, '');
             $this->SetTextColor(255, 255, 255);
             if ($config->fields['hourorday'] == Config::DAY) {
-                $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Travel (in days)', 'manageentities')));
+                $this->CellLabel(true, 40, __('Travel (in days)', 'manageentities'));
             } else {
-                $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Travel', 'manageentities')));
+                $this->CellLabel(true, 40, __('Travel', 'manageentities'));
             }
             $this->SetTextColor(0, 0, 0);
             $this->CellValeur(35, $this->nombredeplacement, 'C');
@@ -644,12 +687,12 @@ class CriPDF extends FPDF
         $this->Cell(115, $this->line_height, '', 0, 0, '');
         $this->SetTextColor(255, 255, 255);
         if ($this->intervention) {
-            $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Total')));
+            $this->CellLabel(true, 40, __('Total'));
         } else {
             if ($config->fields['hourorday'] == Config::DAY) {
-                $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Total (in days)', 'manageentities')));
+                $this->CellLabel(true, 40, __('Total (in days)', 'manageentities'));
             } else {
-                $this->CellLabel(true, 40, Toolbox::decodeFromUtf8(__('Total (in hours)', 'manageentities')));
+                $this->CellLabel(true, 40, __('Total (in hours)', 'manageentities'));
             }
         }
         $this->SetTextColor(0, 0, 0);
@@ -713,7 +756,7 @@ class CriPDF extends FPDF
         $this->CellLabel(
             false,
             $this->largeur_grande_cell,
-            Toolbox::decodeFromUtf8(__('Detail of work done', 'manageentities')),
+            __('Detail of work done', 'manageentities'),
             1,
             'C'
         );
@@ -741,7 +784,10 @@ class CriPDF extends FPDF
         $this->description_cri = $decoupage1;
         foreach ($this->description_cri as $une_ligne) {
             $this->TestBasDePageDetailTravaux($une_ligne);
-            $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR');
+            // Force left align: TCPDF's MultiCell defaults to 'J' (justify) and justifies even a
+        // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
+        // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
+        $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
         }
         $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
     }
@@ -783,7 +829,7 @@ class CriPDF extends FPDF
         $this->CellLabel(
             false,
             $this->largeur_grande_cell,
-            Toolbox::decodeFromUtf8(__('Customer comments', 'manageentities')),
+            __('Customer comments', 'manageentities'),
             1,
             'C'
         );
@@ -828,7 +874,7 @@ class CriPDF extends FPDF
     function DetailCommentaires()
     {
         $this->SetTextColor(255, 255, 255);
-        $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Comments')), 1, 'C');
+        $this->CellLabel(false, $this->largeur_grande_cell, __('Comments'), 1, 'C');
         $this->SetY($this->GetY() + $this->line_height);
         $this->SetFontNormale(false); // Repositionnement de la fonte normale.
         $this->SetTextColor(0, 0, 0);
@@ -856,8 +902,11 @@ class CriPDF extends FPDF
         }
         $comment = $decoupage1;
         foreach ($comment as $une_ligne) {
-            $this->TestBasDePageCommentaires(Toolbox::decodeFromUtf8($une_ligne));
-            $this->MultiCell($this->largeur_grande_cell, $this->line_height, Toolbox::decodeFromUtf8($une_ligne), 'LR');
+            $this->TestBasDePageCommentaires($une_ligne);
+            // Force left align: TCPDF's MultiCell defaults to 'J' (justify) and justifies even a
+        // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
+        // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
+        $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
         }
         $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
     }
@@ -898,14 +947,14 @@ class CriPDF extends FPDF
         $this->CellLabel(
             false,
             $this->largeur_grande_cell / 2,
-            Toolbox::decodeFromUtf8(__('Customer stamp', 'manageentities')),
+            __('Customer stamp', 'manageentities'),
             1,
             'C'
         );
         $this->CellLabel(
             false,
             $this->largeur_grande_cell / 2,
-            Toolbox::decodeFromUtf8(__('Customer Visa', 'manageentities')),
+            __('Customer Visa', 'manageentities'),
             1,
             'C'
         );
@@ -938,11 +987,14 @@ class CriPDF extends FPDF
         $this->SetY(-$this->tail_bas_page);
         /* Numéro de page. */
         $this->SetFont($this->pol_def, '', 9);
+        // TCPDF does not use FPDF's literal "{nb}" alias: the current page and total page count
+        // must be requested via getAliasNumPage()/getAliasNbPages() (which also add the extra
+        // curly braces required by our unicode/UTF-8 font). TCPDF substitutes them at Output().
         $this->Cell(
             0,
             $this->tail_bas_page / 2,
-            Toolbox::decodeFromUtf8(__('Page', 'manageentities')) . ' ' . $this->PageNo(
-            ) . ' ' . Toolbox::decodeFromUtf8(__('on', 'manageentities')) . ' {nb}',
+            __('Page', 'manageentities') . ' ' . $this->getAliasNumPage()
+            . ' ' . __('on', 'manageentities') . ' ' . $this->getAliasNbPages(),
             0,
             0,
             'C'
@@ -960,11 +1012,11 @@ class CriPDF extends FPDF
             $listLines = explode("<br />", $strAddress);
             if (sizeof($listLines) > 1) {
                 foreach ($listLines as $line) {
-                    $this->Cell(0, $this->tail_bas_page / 4, Toolbox::decodeFromUtf8($line), 0, 0, 'C');
+                    $this->Cell(0, $this->tail_bas_page / 4, $line, 0, 0, 'C');
                     $this->Ln();
                 }
             } else {
-                $this->Cell(0, $this->tail_bas_page / 4, Toolbox::decodeFromUtf8($strAddress), 0, 0, 'C');
+                $this->Cell(0, $this->tail_bas_page / 4, $strAddress, 0, 0, 'C');
             }
         } else {
             $this->Cell(0, $this->tail_bas_page / 4, "", 0, 0, 'C');
@@ -976,7 +1028,7 @@ class CriPDF extends FPDF
     /** Fonction permettant de dessiner le rapport partie par partie. */
     function DrawCri()
     {
-        $this->AliasNbPages(); // Pour initialiser le nombre de page.
+        // No AliasNbPages() call: TCPDF resolves the {nb} total-pages placeholder automatically.
         $this->AddPage(); // La premiére page.
 
         $this->InfosGenerales();
@@ -1090,14 +1142,14 @@ class CriPDF extends FPDF
         if (is_array($libelle_activite)) {
             $this->libelle_activite = $libelle_activite;
         } elseif ($config->fields['hourorday'] == Config::DAY && is_integer($libelle_activite)) {
-            $this->libelle_activite = Toolbox::decodeFromUtf8(
+            $this->libelle_activite = 
                 \Dropdown::getDropdownName(
                     "glpi_plugin_manageentities_critypes",
                     $libelle_activite
                 )
-            );
+            ;
         } else {
-            $this->libelle_activite = Toolbox::decodeFromUtf8($libelle_activite);
+            $this->libelle_activite = $libelle_activite;
         }
     }
 
@@ -1110,12 +1162,12 @@ class CriPDF extends FPDF
         $this->description_cri = str_replace("\\\\", "\\", $this->description_cri);
         $this->description_cri = str_replace("\\'", "'", $this->description_cri);
         $this->description_cri = str_replace("<br>", " ", $this->description_cri);
-        $this->description_cri = Toolbox::decodeFromUtf8($this->description_cri);
+        $this->description_cri = $this->description_cri;
     }
 
     function SetIntervenant($intervenant)
     {
-        $this->intervenant = Toolbox::decodeFromUtf8($intervenant);
+        $this->intervenant = $intervenant;
     }
 
     function SetDemandeAssociee($demande_associee)

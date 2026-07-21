@@ -1016,16 +1016,11 @@ class Cri extends CommonDBTM
                 $p['REPORT_DESCRIPTION'] = str_replace("<br>", " ", $p['REPORT_DESCRIPTION']);
                 $p['REPORT_DESCRIPTION'] = str_replace("’", "'", $p['REPORT_DESCRIPTION']);
 
-                Html::textarea([
-                    'name' => 'REPORT_DESCRIPTION',
-                    'value' => $p['REPORT_DESCRIPTION'],
-                    'display' => 'none',
-                    'cols' => 100,
-                    'rows' => 8,
-                    'enable_richtext' => true,
-                    'enable_fileupload' => false,
-                    'enable_images' => false,
-                ]);
+                // Carry the description to the saveCri POST without a second, visible rich-text
+                // editor: this preview step only needs to forward the value already entered in the
+                // first modal, so a plain hidden field is enough (the PDF is regenerated from it on
+                // save). A richtext textarea here rendered a useless empty TinyMCE editor.
+                echo Html::hidden('REPORT_DESCRIPTION', ['value' => $p['REPORT_DESCRIPTION']]);
                 echo Html::hidden('INTERVENANTS', ['value' => $intervenants]);
                 echo Html::hidden('documents_id', ['value' => $p['documents_id']]);
                 echo Html::hidden('CONTRAT', ['value' => $p['CONTRAT']]);

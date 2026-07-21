@@ -269,6 +269,17 @@ function manageentities_loadPrice(value) {
 function manageentities_loadCriForm(action, modal, params) {
     var formInput;
 
+    // TinyMCE keeps the rich-text content inside its own iframe and only writes it back to the
+    // underlying <textarea> on save. Force that sync (same idiom as GLPI core RendererController)
+    // so form.serialize() below picks up the user's live edits (e.g. the "Detail of the realized
+    // works" field) instead of the prefilled value.
+    var manageentitiesTinyMce = window.tinymce || window.tinyMCE;
+    if (manageentitiesTinyMce !== undefined) {
+        manageentitiesTinyMce.get().forEach(function (editor) {
+            editor.save();
+        });
+    }
+
     if (params.form != undefined) {
         formInput = getManageentitiesFormData($('form[name="' + params.form + '"]'));
     }

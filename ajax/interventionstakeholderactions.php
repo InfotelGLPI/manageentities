@@ -46,7 +46,6 @@ $checkContractDayAccess = static function (): bool {
    if (!$contractDay->getFromDB((int) ($_POST['contractdays_id'] ?? 0))
        || !Session::haveAccessToEntity($contractDay->fields['entities_id'])) {
        throw new AccessDeniedHttpException();
-      return false;
    }
    return true;
 };

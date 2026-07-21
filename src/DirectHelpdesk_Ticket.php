@@ -159,10 +159,15 @@ class DirectHelpdesk_Ticket extends CommonDBTM
                 ];
             }
 
+            // Callers may pass either a single entity id (ajax) or an array of active
+            // entities (helpdesk tab). The hidden form field must be a scalar, so
+            // normalize it here while find() above still accepts both forms.
+            $form_entities_id = is_array($entities_id) ? (int) reset($entities_id) : (int) $entities_id;
+
             TemplateRenderer::getInstance()->display('@manageentities/entity/directhelpdesk_ticket_select.html.twig', [
                 'rows'        => $rows,
                 'is_central'  => (Session::getCurrentInterface() == 'central'),
-                'entities_id' => $entities_id,
+                'entities_id' => $form_entities_id,
                 'form_url'    => $direct->getFormURL(),
             ]);
         }

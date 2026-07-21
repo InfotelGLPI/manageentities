@@ -195,3 +195,18 @@ a.manageentities_href {
 
 }
 
+/*
+ * Intervention-report generation dialog (opened by manageentities_loadCriForm("showCriForm", ...)
+ * through glpi_html_dialog, whose modal receives id="showCriForm"). glpi_html_dialog ignores the
+ * width/height params, so size it here: ~2x the Bootstrap default width (500px -> 1000px) and a
+ * taller body (~1.5x). The #id selector out-specifies Bootstrap's .modal-dialog rules, and
+ * max-width keeps it responsive (it still shrinks below 1000px viewports).
+ */
+#showCriForm .modal-dialog {
+   max-width: 1000px;
+}
+
+#showCriForm .modal-content {
+   min-height: 600px;
+}
+
