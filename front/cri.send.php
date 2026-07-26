@@ -36,19 +36,36 @@ if (isset($_GET["file"])) { // for other file
    $splitter = explode("/", $_GET["file"]);
 
    if (count($splitter) == 3) {
-      $send = false;
+      $send     = false;
+      $filename = $splitter[2];
+      // Path traversal hardening: on Windows "\" is also a directory separator, so a
+      // segment such as "..\..\..\config\config_db.php" survives the "/" split as a single
+      // segment and the raw value used to be concatenated straight into readfile(). Rebuild
+      // the path from a sanitized basename, confined under GLPI_DOC_DIR/_plugins/manageentities,
+      // and verify it with realpath() before serving.
       if (
-         ($splitter[1] == "manageentities")
+         ($splitter[0] === "_plugins")
+         && ($splitter[1] === "manageentities")
+         && $filename === basename($filename)
+         && strpbrk($filename, "/\\") === false
+         && strpos($filename, "..") === false
          && Session::haveRight("plugin_manageentities_cri_create", READ)
       ) {
-         $send = GLPI_DOC_DIR . "/" . $_GET["file"];
+         $base      = GLPI_DOC_DIR . "/_plugins/manageentities";
+         $candidate = $base . "/" . $filename;
+         $realBase  = realpath($base);
+         $real      = realpath($candidate);
+         if ($real !== false && $realBase !== false
+             && str_starts_with($real, $realBase . DIRECTORY_SEPARATOR)) {
+            $send = $candidate;
+         }
       }
       $cri = new Cri();
       if ($send && file_exists($send)) {
          $doc                     = new Document();
-         $doc->fields['filepath'] = $_GET["file"];
+         $doc->fields['filepath'] = "_plugins/manageentities/" . $filename;
          $doc->fields['mime']     = 'application/pdf';
-         $doc->fields['filename'] = $splitter[2];
+         $doc->fields['filename'] = $filename;
          $cri->send($doc);
       } else {
           throw new BadRequestHttpException(__('Unauthorized access to this file'), true);

@@ -27,8 +27,6 @@
  --------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 use GlpiPlugin\Manageentities\WizardController;
 
 Session::checkLoginUser();

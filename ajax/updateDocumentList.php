@@ -44,7 +44,7 @@ $contracts_id = (int)($session['contracts_id'] ?? 0);
 $root_manage  = PLUGIN_MANAGEENTITIES_WEBDIR;
 
 $val  = "<tr class='tab_bg_1' id='tr_add_contract' style='display:table-row;'>";
-$val .= "<td>" . __("Add a document") . "</td>";
+$val .= "<td>" . __("Add a document", "manageentities") . "</td>";
 $val .= "<td colspan='5'>";
 $val .= "<a onclick=\"showFormAddPDFContract('{$root_manage}', '"
     . __("Add a document", "manageentities") . "','"

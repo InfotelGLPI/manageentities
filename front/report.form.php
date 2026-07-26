@@ -31,6 +31,13 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\Entity;
 
+// Enforce the access control BEFORE rendering anything: Html::header()/Report::title()
+// used to be emitted first, leaking the page chrome to users without the right.
+$Entity = new \Entity();
+if (!$Entity->canView() && !Session::haveRight("config", UPDATE)) {
+    throw new AccessDeniedHttpException();
+}
+
 Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
 
 if (isset($_GET)) $tab = $_GET;
@@ -58,10 +65,7 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
 
 Report::title();
 
-$Entity = new \Entity();
-if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
-
-   if (isset($_POST["choice_tech"])) {
+if (isset($_POST["choice_tech"])) {
 
       echo "<div class='center'><form action=\"report.form.php\" method=\"post\">";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
@@ -110,10 +114,6 @@ if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
       Html::closeForm();
       echo "</div>";
 
-   }
-
-} else {
-    throw new AccessDeniedHttpException();
 }
 
 Html::footer();

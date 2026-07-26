@@ -48,8 +48,14 @@ if (!isset($_POST["contracts_id"])) {
 
 if (isset($_POST["contracts_id"])) {
    $contract = new Contract();
-   $contract->getEmpty();
-   $contract->getFromDB($_POST["contracts_id"]);
+   if (
+      !$contract->getFromDB((int) $_POST["contracts_id"])
+      || !Session::haveAccessToEntity($contract->fields['entities_id'])
+   ) {
+      // The contract id comes from $_POST: enforce entity access before disclosing its
+      // comment, end date, status and subscription flags (cross-entity IDOR).
+      throw new AccessDeniedHttpException();
+   }
 
    $contractdays_id = 0;
    if ($_POST["current_contracts_id"] == $_POST["contracts_id"]) {

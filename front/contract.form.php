@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\Entity;
@@ -51,6 +52,17 @@ if (isset($_POST["addcontract"])) {
 
 } else if (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
    Session::checkRight("contract", UPDATE);
+   // addNbDay() writes contracts_id/entities_id straight from the POST body: enforce access
+   // to the target entity and that the contract really belongs to it before inserting (IDOR).
+   $entities_id  = (int) ($_POST['entities_id'] ?? -1);
+   $coreContract = new \Contract();
+   if (
+      !Session::haveAccessToEntity($entities_id)
+      || !$coreContract->getFromDB((int) ($_POST['contracts_id'] ?? 0))
+      || (int) $coreContract->fields['entities_id'] !== $entities_id
+   ) {
+      throw new AccessDeniedHttpException();
+   }
    $contractday->addNbDay($_POST);
    Html::back();
 
@@ -58,7 +70,10 @@ if (isset($_POST["addcontract"])) {
    Session::checkRight("contract", UPDATE);
    foreach ($_POST["item_nbday"] as $key => $val) {
       if ($val == 1) {
-         $contractday->delete(['id' => $key]);
+         // Per-item check like the twin controller: the global "contract UPDATE" right does
+         // not scope the deletion to the user's entity perimeter on each row.
+         $contractday->check((int) $key, UPDATE);
+         $contractday->delete(['id' => (int) $key]);
       }
    }
    Html::back();

@@ -52,6 +52,12 @@ if (!$contractDay->getFromDB($contractdays_id)) {
     exit;
 }
 
+// The contract day id comes from $_POST: enforce entity access before disclosing its
+// dates, comment and remaining days (cross-entity IDOR).
+if (!Session::haveAccessToEntity($contractDay->fields['entities_id'])) {
+    throw new AccessDeniedHttpException();
+}
+
 $contractDay->fields['contractdays_id'] = $contractDay->fields['id'];
 $result = CriDetail::getCriDetailData($contractDay->fields);
 $remaining = $result['resultOther']['reste'];

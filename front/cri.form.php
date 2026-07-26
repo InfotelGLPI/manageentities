@@ -28,6 +28,7 @@
  */
 
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Cri;
 use GlpiPlugin\Manageentities\CriDetail;
 
@@ -42,7 +43,13 @@ $criDetail                         = new CriDetail();
 
 if (isset($_POST["addcridetail"])) {
    if ($Cri->canCreate()) {
-      $criDetail->add($_POST);
+      // IDOR: bind the new report line to a ticket the user may actually read, so a forged
+      // tickets_id cannot attach a cridetail to another entity's ticket. canCreate() only
+      // checks the global cri-create right, not the targeted ticket/entity.
+      $ticket = new Ticket();
+      if ($ticket->can((int) ($_POST['tickets_id'] ?? 0), READ)) {
+         $criDetail->add($_POST);
+      }
    }
    if(strpos($_SERVER['HTTP_REFERER'] ?? '', "generatecri.form.php") > 0){
       Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR."/front/generatecri.form.php?download=1&tickets_id=".(int)$_POST['tickets_id']);
@@ -52,6 +59,12 @@ if (isset($_POST["addcridetail"])) {
 
 } else if (isset($_POST["updatecridetail"])) {
    if ($Cri->canCreate()) {
+      // IDOR: canCreate() is a global cri-create right. Reload the targeted row and enforce
+      // access to its entity before updating, so a forged id cannot edit another entity's line.
+      if (!$criDetail->getFromDB((int) $_POST['id'])
+          || !Session::haveAccessToEntity($criDetail->fields['entities_id'])) {
+          throw new AccessDeniedHttpException();
+      }
       if (isset($_POST['withcontract']) && !$_POST['withcontract']) {
          $_POST['contracts_id']                          = 0;
          $_POST['plugin_manageentities_contractdays_id'] = 0;
@@ -62,6 +75,11 @@ if (isset($_POST["addcridetail"])) {
 
 } else if (isset($_POST["delcridetail"])) {
    if ($Cri->canCreate()) {
+      // Same IDOR guard as updatecridetail: enforce entity access on the targeted row.
+      if (!$criDetail->getFromDB((int) $_POST['id'])
+          || !Session::haveAccessToEntity($criDetail->fields['entities_id'])) {
+          throw new AccessDeniedHttpException();
+      }
       $criDetail->delete($_POST);
    }
    Html::back();

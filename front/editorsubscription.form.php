@@ -27,26 +27,19 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\EditorSubscriptionWizard;
 use GlpiPlugin\Manageentities\Entity;
 
 if (!Plugin::isPluginActive('manageentities')
     || !Session::haveRightsOr('plugin_manageentities', [CREATE, UPDATE])) {
-    Html::header(__('Setup'), '', 'config', 'plugin');
-    echo "<div class='alert alert-warning d-flex'>";
-    echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
-    Html::footer();
-    exit;
+    throw new AccessDeniedHttpException();
 }
 
 // Publisher subscriptions can be disabled in the plugin configuration
 if (!Config::useEditorSubscriptions()) {
-    Html::header(__('Publisher subscription', 'manageentities'), '', 'management', Entity::class);
-    echo "<div class='alert alert-warning d-flex'>";
-    echo "<b>" . __('Publisher subscriptions are disabled in the plugin configuration.', 'manageentities') . "</b></div>";
-    Html::footer();
-    exit;
+    throw new AccessDeniedHttpException();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -75,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!Session::haveRight('plugin_manageentities', DELETE)) {
             Session::addMessageAfterRedirect(__("You don't have permission to perform this action."), true, ERROR);
             Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php');
-            exit;
         }
         $result = EditorSubscriptionWizard::deleteAndReturn($_POST);
         if ($result['success']) {

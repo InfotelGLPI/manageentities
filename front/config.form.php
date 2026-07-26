@@ -27,6 +27,8 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Entity;
 
@@ -45,14 +47,12 @@ if (Plugin::isPluginActive("manageentities")) {
             Html::footer();
         }
     } else {
-        Html::header(__('Setup'), '', "config", "plugin");
-        echo "<div class='alert alert-warning d-flex'>";
-        echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
-        Html::footer();
+        throw new AccessDeniedHttpException();
     }
 } else {
-    Html::header(__('Setup'), '', "config", "plugin");
-    echo "<div class='alert alert-warning d-flex'>";
-    echo "<b>" . __('Please activate the plugin', 'manageentities') . "</b></div>";
+    Html::header(__s('Setup'), '', "config", "plugin");
+    TemplateRenderer::getInstance()->display('@manageentities/plugin_inactive.html.twig', [
+        'message' => __('Please activate the plugin', 'manageentities'),
+    ]);
     Html::footer();
 }

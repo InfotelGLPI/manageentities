@@ -113,6 +113,13 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
          if (isset($_POST['stakeholder_id']) && $_POST['stakeholder_id'] > 0) {
             $interventionStakeholder = new InterventionStakeholder();
             $interventionStakeholder->getFromDB($_POST['stakeholder_id']);
+            // $checkContractDayAccess() only validated the entity of $_POST['contractdays_id'].
+            // Bind the deletion to that contract-day: the stakeholder row must belong to it,
+            // otherwise a forged stakeholder_id could delete a row from another (unchecked) entity.
+            if ((int) ($interventionStakeholder->fields['plugin_manageentities_contractdays_id'] ?? -1)
+                !== (int) $_POST['contractdays_id']) {
+                throw new AccessDeniedHttpException();
+            }
             $intervention = new ContractDay();
             $intervention->getFromDB($_POST['contractdays_id']);
 

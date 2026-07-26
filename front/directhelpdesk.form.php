@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Servicecatalog\Main;
 
@@ -34,14 +35,28 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
     $direct = new DirectHelpdesk();
 
     if (isset($_POST["create_ticket"])) {
+        // The target entity comes straight from the POST body: enforce that the user
+        // actually has access to it before creating a ticket scoped to that entity.
+        $entities_id = (int) ($_POST["entities_id"] ?? -1);
+        if (!Session::haveAccessToEntity($entities_id)) {
+            throw new AccessDeniedHttpException();
+        }
         $ticket = new Ticket();
         $items = $_POST["select"];
         $sum = 0;
         $input['content'] = '';
+        // Only the target entity was validated above. The selected lines come from
+        // $_POST['select'] by id: skip any line whose entity the user cannot access before
+        // disclosing its data into the ticket content or flagging it as billed (IDOR).
+        $selected = [];
         foreach ($items as $item => $check) {
             if ($check == "on") {
                 $direct = new DirectHelpdesk();
-                $direct->getFromDB($item);
+                if (!$direct->getFromDB((int) $item)
+                    || !Session::haveAccessToEntity($direct->fields['entities_id'])) {
+                    continue;
+                }
+                $selected[] = (int) $item;
 
                 $actiontime = $direct->fields['actiontime'];
                 $sum += $actiontime;
@@ -61,14 +76,12 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 
         $newID = $ticket->add($input);
 
-        foreach ($items as $item => $check) {
-            if ($check == "on") {
-                if ($newID > 0) {
-                    $inputd['id'] = $item;
-                    $inputd['is_billed'] = 1;
-                    $inputd['tickets_id'] = $newID;
-                    $direct->update($inputd);
-                }
+        foreach ($selected as $item) {
+            if ($newID > 0) {
+                $inputd['id'] = $item;
+                $inputd['is_billed'] = 1;
+                $inputd['tickets_id'] = $newID;
+                $direct->update($inputd);
             }
         }
 
@@ -84,6 +97,10 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 //        $ticket->showForm(0, $options);
 //        Html::footer();
     } elseif (isset($_POST["add"])) {
+        // Per-object check like the update branch: the global plugin UPDATE right is
+        // not scoped by entity, so enforce CREATE (with the posted entities_id) before
+        // inserting the row.
+        $direct->check(-1, CREATE, $_POST);
         $inter = $direct->add($_POST);
 
         Html::back();
@@ -93,6 +110,9 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 
         Html::back();
     } elseif (isset($_POST["delete"])) {
+        // Forced purge below: enforce the per-row PURGE right (existence + entity access)
+        // instead of relying only on the file-wide global UPDATE right.
+        $direct->check((int) $_POST["id"], PURGE);
         $direct->delete($_POST, 1);
         Html::back();
     } else {
@@ -116,8 +136,5 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
         }
     }
 } else {
-    Html::header(__('Setup'), '', "config", "plugin");
-    echo "<div class='alert alert-warning d-flex'>";
-    echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
-    Html::footer();
+    throw new AccessDeniedHttpException();
 }

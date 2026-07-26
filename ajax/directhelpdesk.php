@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 
@@ -34,9 +35,16 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_GET['action']) && $_GET['action'] == 'createticket') {
+    // Enforce entity scope: without this, a helpdesk user could iterate entities_id
+    // and read another entity's direct-helpdesk entries (names, technicians, comments).
+    $entities_id = (int) ($_GET['entities_id'] ?? -1);
+    if (!Session::haveAccessToEntity($entities_id)) {
+        throw new AccessDeniedHttpException();
+    }
+
     Html::popHeader(__('Create a ticket'), $_SERVER['PHP_SELF']);
 
-    DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($_GET['entities_id']);
+    DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($entities_id);
 
     Html::popFooter();
 } else {

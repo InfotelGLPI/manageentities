@@ -483,11 +483,9 @@ function plugin_manageentities_addLeftJoin($type, $ref_table, $new_table, $linkf
 function plugin_manageentities_forceGroupBy($type)
 {
 
-    return true;
     switch ($type) {
         case CriType::class:
             return true;
-            break;
     }
     return false;
 }
@@ -927,7 +925,7 @@ function plugin_manageentities_displayConfigItem($type, $ID, $data, $num)
 
 function plugin_manageentities_redefine_menus($menu)
 {
-    if (!Session::getCurrentInterface() == "helpdesk") {
+    if (Session::getCurrentInterface() != "helpdesk") {
         return $menu;
     }
 

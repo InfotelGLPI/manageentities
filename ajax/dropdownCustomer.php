@@ -39,5 +39,10 @@ if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('t
 }
 
 if (isset($_POST["entities_id"])) {
+   // The entity id comes from $_POST: enforce entity access before listing its contracts
+   // (cross-entity IDOR), consistently with the other dropdown endpoints.
+   if (!Session::haveAccessToEntity((int) $_POST["entities_id"])) {
+      throw new AccessDeniedHttpException();
+   }
    GenerateCRI::showContractLinkDropdown($_POST["entities_id"]);
 }

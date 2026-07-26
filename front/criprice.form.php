@@ -27,13 +27,16 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\CriPrice;
 
 if (Session::haveRight("plugin_manageentities", UPDATE)) {
    $criprice = new CriPrice();
 
    if (isset($_POST["add"])) {
-      Session::checkRight("contract", CREATE);
+      // Object-level check like the update branch: the global "contract CREATE" right is
+      // not scoped by entity, so enforce CREATE with the posted entities_id before insert.
+      $criprice->check(-1, CREATE, $_POST);
       $criprice->add($_POST);
 
       Html::back();
@@ -45,15 +48,14 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
       Html::back();
 
    } elseif (isset($_POST["delete"])) {
-      Session::checkRight("contract", DELETE);
+      // Forced purge below: enforce the per-row PURGE right (existence + entity access)
+      // instead of the global "contract DELETE" right, mirroring the update branch.
+      $criprice->check((int) $_POST["id"], PURGE);
       $criprice->delete($_POST, 1);
 
       Html::back();
    }
 
 } else {
-   Html::header(__('Setup'), '', "config", "plugin");
-   echo "<div class='alert alert-warning d-flex'>";
-   echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
-   Html::footer();
+    throw new AccessDeniedHttpException();
 }

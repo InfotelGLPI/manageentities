@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\WizardController;
 
@@ -38,9 +39,5 @@ if (Plugin::isPluginActive("manageentities")
     Html::footer();
 
 } else {
-
-    Html::header(__('Setup'), '', "config", "plugin");
-    echo "<div class='alert alert-warning d-flex'>";
-    echo "<b>" . __("You don't have permission to perform this action.") . "</b></div>";
-    Html::footer();
+    throw new AccessDeniedHttpException();
 }

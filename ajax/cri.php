@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Cri;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriTechnician;
@@ -34,11 +35,30 @@ use GlpiPlugin\Manageentities\CriTechnician;
 Html::header_nocache();
 Session::checkLoginUser();
 
+// canCreate() only checks the global plugin_manageentities_cri_create right, never the
+// entity of the targeted ticket. The write actions below read/write ticket data from a
+// client-controlled id (params["job"] / input->REPORT_ID), so each must additionally
+// enforce READ access to that ticket (right + entity), as showCriForm already does.
+$assertTicketReadable = static function (int $tickets_id): void {
+    $ticket = new Ticket();
+    if (!$ticket->can($tickets_id, READ)) {
+        throw new AccessDeniedHttpException();
+    }
+};
 
 switch ($_POST['action']) {
    case 'showCriForm' :
       $Cri = new Cri();
       $params                  = $_POST["params"];
+
+      // Authorization: unlike the other actions (guarded by canCreate()), this one had
+      // no check. Require the CRI-create right (same gate as the sibling actions) AND
+      // read access to the underlying ticket before rendering its report (CRI) form.
+      $ticket = new Ticket();
+      if (!$Cri->canCreate()
+          || !$ticket->can((int) $params["job"], READ)) {
+          throw new AccessDeniedHttpException();
+      }
 
        $Cri->showForm($params["job"], ['action'   => $params["pdf_action"],
                                                           'modal'    => $_POST["modal"],
@@ -50,6 +70,7 @@ switch ($_POST['action']) {
       if ($Cri->canCreate()) {
          $input  = json_decode(stripslashes($_POST["formInput"]));
          $params = $_POST["params"];
+         $assertTicketReadable((int) $params["job"]);
 
          $toadd["users_id"]                 = $input->users_id;
          $toadd["tickets_id"]               = $params["job"];
@@ -67,8 +88,14 @@ switch ($_POST['action']) {
       if ($Cri->canCreate()) {
          $input                             = json_decode(stripslashes($_POST["formInput"]));
          $params                            = $_POST["params"];
+         $assertTicketReadable((int) $params["job"]);
          $CriTechnician = new CriTechnician();
-          $CriTechnician->deleteByCriteria(['users_id' => $params['tech_id']]);
+          // Scope the deletion to the current ticket: without tickets_id, this would
+          // wipe the technician's CriTechnician rows across every ticket (data loss).
+          $CriTechnician->deleteByCriteria([
+              'users_id'   => (int) $params['tech_id'],
+              'tickets_id' => (int) $params['job'],
+          ]);
 
           $Cri->showForm($params["job"], ['action'   => $params["pdf_action"],
                                                              'modal'    => $_POST["modal"],
@@ -83,6 +110,8 @@ switch ($_POST['action']) {
          $input                     = json_decode(stripslashes($_POST["formInput"]));
          $input->REPORT_DESCRIPTION = urldecode($input->REPORT_DESCRIPTION);
          $params                    = $_POST["params"];
+         $assertTicketReadable((int) $params["job"]);
+         $assertTicketReadable((int) ($input->REPORT_ID ?? 0));
          $input->enregistrement     = false;
          if (isset($input->REPORT_ACTIVITE) && $input->REPORT_ACTIVITE) {
             $input->REPORT_ACTIVITE_ID = $input->REPORT_ACTIVITE;
@@ -108,6 +137,8 @@ switch ($_POST['action']) {
       if ($Cri->canCreate()) {
          $input  = json_decode(stripslashes($_POST["formInput"]));
          $params = $_POST["params"];
+         $assertTicketReadable((int) $params["job"]);
+         $assertTicketReadable((int) ($input->REPORT_ID ?? 0));
 
          $input->enregistrement = false;
          if (isset($input->REPORT_ACTIVITE)) {
@@ -141,6 +172,8 @@ switch ($_POST['action']) {
       if ($Cri->canCreate()) {
          $input                 = json_decode(stripslashes($_POST["formInput"]));
          $params                = $_POST["params"];
+         $assertTicketReadable((int) $params["job"]);
+         $assertTicketReadable((int) ($input->REPORT_ID ?? 0));
          $input->enregistrement = true;
          if ($input->REPORT_ACTIVITE) {
              $Cri->generatePdf($input,

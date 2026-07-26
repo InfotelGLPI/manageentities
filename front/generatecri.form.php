@@ -89,14 +89,24 @@ if (isset($_POST['generatecri'])) {
    }
 
 } else if (isset($_GET['download'])) {
-   $ticket_id = $_GET['tickets_id'];
+   $ticket_id = (int) ($_GET['tickets_id'] ?? 0);
+   // IDOR: this branch had no authorization (unlike the generatecri POST branch above).
+   // can() enforces the ticket READ right AND entity access before generating/exposing
+   // its intervention report (task descriptions, times, technicians).
+   if (!$ticket->can($ticket_id, READ)) {
+       throw new AccessDeniedHttpException();
+   }
     $GenerateCri->generateCri($_POST, $ticket_id, $Cri);
 } else {
    Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", GenerateCri::class);
    $ticket->fields['itilcategories_id'] = $_POST['itilcategories_id'] ?? 0;
    $ticket->fields['type']              = $_POST['type'] ?? '';
-   $_SESSION['glpiactive_entity']       = $_POST['entities_id'] ?? 0;
-   $_SESSION['glpiactive_entity']       = $_POST['entities_id'] ?? 0;
+   // Only switch the display entity when the user actually has access to it, instead of
+   // writing $_POST straight into the session and desyncing the scope of later screens.
+   $posted_entity = (int) ($_POST['entities_id'] ?? 0);
+   if (Session::haveAccessToEntity($posted_entity)) {
+       $_SESSION['glpiactive_entity'] = $posted_entity;
+   }
 
     $GenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity']);
    Html::footer();

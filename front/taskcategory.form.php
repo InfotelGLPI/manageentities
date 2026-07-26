@@ -29,12 +29,15 @@
 
 use GlpiPlugin\Manageentities\TaskCategory;
 
-Session::checkRight("dropdown", READ);
+// This is a write endpoint: require the UPDATE right, not READ. update() itself enforces
+// no right, so a read-only "dropdown" right would otherwise be enough to write.
+Session::checkRight("dropdown", UPDATE);
 
 $taskCategory = new TaskCategory();
 
 //Save profile
 if (isset ($_POST['update'])) {
+   $taskCategory->check((int) $_POST['id'], UPDATE);
    $taskCategory->update($_POST);
    Html::back();
 }

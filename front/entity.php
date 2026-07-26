@@ -63,43 +63,61 @@ if ($ManageentitiesEntity->canView()
     || Session::haveRight("config", UPDATE)) {
 
    if (isset($_POST["addcontracts"])) {
-      if ($ManageentitiesEntity->canCreate())
+      // can(-1, CREATE, $input) enforces the CREATE right AND the target entity from
+      // the posted input, instead of the entity-agnostic global canCreate().
+      if ($Contract->can(-1, CREATE, $_POST))
           $Contract->add($_POST);
       Html::back();
 
    } else if (isset($_POST["deletecontracts"])) {
-      if ($ManageentitiesEntity->canCreate())
-          $Contract->delete(['id' => $_POST["id"]]);
+      // can($id, DELETE) reloads the row and enforces the DELETE right AND entity
+      // access on it, preventing a cross-entity IDOR delete via a forged id.
+      if ($Contract->can((int) $_POST["id"], DELETE))
+          $Contract->delete(['id' => (int) $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["contractbydefault"])) {
-      if ($ManageentitiesEntity->canCreate())
-          $Contract->addContractByDefault($_POST["myid"], $_POST["entities_id"]);
+      // Align with the sibling branches: canCreate() is entity-agnostic. Enforce access to
+      // the posted entity AND reload the target row via can($id, UPDATE) before flipping the
+      // default flag, preventing a cross-entity IDOR.
+      if (
+         Session::haveAccessToEntity((int) $_POST["entities_id"])
+         && $Contract->can((int) $_POST["myid"], UPDATE)
+      ) {
+          $Contract->addContractByDefault((int) $_POST["myid"], (int) $_POST["entities_id"]);
+      }
       Html::back();
 
    } else if (isset($_POST["addcontacts"])) {
-      if ($ManageentitiesEntity->canCreate())
+      if ($Contact->can(-1, CREATE, $_POST))
           $Contact->add($_POST);
       Html::back();
 
    } else if (isset($_POST["deletecontacts"])) {
-      if ($ManageentitiesEntity->canCreate())
-          $Contact->delete(['id' => $_POST["id"]]);
+      if ($Contact->can((int) $_POST["id"], DELETE))
+          $Contact->delete(['id' => (int) $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["addbusiness"])) {
-      if ($ManageentitiesEntity->canCreate())
+      if ($BusinessContact->can(-1, CREATE, $_POST))
           $BusinessContact->add($_POST);
       Html::back();
 
    } else if (isset($_POST["deletebusiness"])) {
-      if ($ManageentitiesEntity->canCreate())
-          $BusinessContact->delete(['id' => $_POST["id"]]);
+      if ($BusinessContact->can((int) $_POST["id"], DELETE))
+          $BusinessContact->delete(['id' => (int) $_POST["id"]]);
       Html::back();
 
    } else if (isset($_POST["contactbydefault"])) {
-      if ($ManageentitiesEntity->canCreate())
-          $Contact->addContactByDefault($_POST["contacts_id"], $_POST["entities_id"]);
+      // Align with the sibling branches: canCreate() is entity-agnostic. Enforce access to
+      // the posted entity AND reload the target row via can($id, UPDATE) before flipping the
+      // default flag, preventing a cross-entity IDOR.
+      if (
+         Session::haveAccessToEntity((int) $_POST["entities_id"])
+         && $Contact->can((int) $_POST["contacts_id"], UPDATE)
+      ) {
+          $Contact->addContactByDefault((int) $_POST["contacts_id"], (int) $_POST["entities_id"]);
+      }
       Html::back();
 
    } else {

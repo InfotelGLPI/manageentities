@@ -272,6 +272,12 @@ class WizardController
         if (!$entity->getFromDB($entities_id)) {
             return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
         }
+        // The entity id is client-submitted and this method reparents a core Entity: the
+        // global plugin UPDATE right does not scope entity access, so deny any id outside
+        // the user's perimeter (same generic message to avoid entity enumeration).
+        if (!Session::haveAccessToEntity($entities_id)) {
+            return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
+        }
         $config = Config::getInstance();
         $target_entities_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
         if ($target_entities_id <= 0) {
@@ -353,6 +359,12 @@ class WizardController
         }
         $entity = new \Entity();
         if (!$entity->getFromDB($entities_id)) {
+            return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
+        }
+        // The entity id is client-submitted: bind the wizard to an entity the user may
+        // actually access (the child-of-configured-parent check below is not a per-user
+        // perimeter check).
+        if (!Session::haveAccessToEntity($entities_id)) {
             return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
         }
         // If the entity is in the archive, propose unarchiving

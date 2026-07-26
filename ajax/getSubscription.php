@@ -45,6 +45,13 @@ if ($entities_id <= 0) {
     exit;
 }
 
+// getForEntity() filters only on entities_id, with no perimeter check: enforce that the
+// caller may actually access this entity before disclosing its subscription data
+// (customer account id, level, dates), like ajax/showalertbyentity.php does.
+if (!Session::haveAccessToEntity($entities_id)) {
+    throw new AccessDeniedHttpException();
+}
+
 $sub = EditorSubscription::getForEntity($entities_id);
 
 if (empty($sub)) {

@@ -85,15 +85,29 @@ if ($_POST['page'] == 1) {
    }
 }
 
+// Validate/bound the numeric range: attacker-supplied min/max/step could otherwise
+// spin a near-infinite loop (e.g. min=0, max=999999999, step=0.0001) and exhaust
+// CPU/memory. Force numeric bounds, a positive step, and cap the iteration count.
+$min  = (float) ($_POST['min'] ?? 0);
+$max  = (float) ($_POST['max'] ?? 0);
+$step = (float) ($_POST['step'] ?? 1);
+if ($step <= 0) {
+   $step = 1;
+}
+$max_iterations = 10000;
+if ($max >= $min && (($max - $min) / $step) > $max_iterations) {
+   $max = $min + ($max_iterations * $step);
+}
+
 $values = [];
 if (!empty($_POST['searchText'])) {
-   for ($i = $_POST['min']; $i <= $_POST['max']; $i += $_POST['step']) {
+   for ($i = $min; $i <= $max; $i += $step) {
       if (strstr($i, $_POST['searchText'])) {
          $values[$i] = $i;
       }
    }
 } else {
-   for ($i = $_POST['min']; $i <= $_POST['max']; $i += $_POST['step']) {
+   for ($i = $min; $i <= $max; $i += $step) {
       $values[] = $i;
    }
 }
@@ -112,6 +126,7 @@ if ($one_item < 0 && count($values)) {
 
 } else {
    if (!isset($toadd[$one_item])) {
+      $txt = $one_item;
       if (isset($_POST['unit'])) {
          $txt = Dropdown::getValueWithUnit($one_item, $_POST['unit']);
       }

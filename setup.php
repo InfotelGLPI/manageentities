@@ -52,7 +52,7 @@ use GlpiPlugin\Manageentities\TicketTask;
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
     define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));
-    $root = $CFG_GLPI['root_doc'] . Plugin::getPhpDir('manageentities', false);
+    $root = $CFG_GLPI['root_doc'] . '/plugins/manageentities';
     define("PLUGIN_MANAGEENTITIES_WEBDIR", $root);
 }
 
@@ -181,15 +181,6 @@ function plugin_init_manageentities()
                 = 'plugin_datainjection_populate_manageentities';
         }
 
-        // Ticket task duplication
-//      if (Session::haveRight("task", CommonITILTask::UPDATEALL)
-//          && Session::haveRight("task", CommonITILTask::ADDALLITEM)
-//          && strpos($_SERVER['REQUEST_URI'], "ticket.form.php") !== false
-//          && strpos($_SERVER['REQUEST_URI'], 'id=') !== false
-//          && Session::haveRight("plugin_manageentities", READ)) {
-//
-//         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/manageentities_load_scripts.js';
-//      }
         $PLUGIN_HOOKS[Hooks::USE_MASSIVE_ACTION]['manageentities'] = true;
         $PLUGIN_HOOKS[Hooks::POST_INIT]['manageentities'] = 'plugin_manageentities_postinit';
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])

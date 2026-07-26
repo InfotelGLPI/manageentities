@@ -185,19 +185,30 @@ class EditorSubscription extends CommonDBTM
             __('Comments'),
         ], ';');
 
+        // Neutralize CSV formula injection: a spreadsheet interprets a cell starting with
+        // =, +, -, @, TAB or CR as a formula. Prefix such user-controlled values with an
+        // apostrophe so they are treated as text (OWASP CSV injection).
+        $csvSafe = static function ($value): string {
+            $value = (string) $value;
+            if ($value !== '' && strpbrk($value[0], "=+-@\t\r") !== false) {
+                return "'" . $value;
+            }
+            return $value;
+        };
+
         foreach ($rows as $row) {
             fputcsv($out, [
-                $row['entity_completename'] ?? '',
-                $row['customer_account_id'] ?? '',
-                $row['name'] ?? '',
+                $csvSafe($row['entity_completename'] ?? ''),
+                $csvSafe($row['customer_account_id'] ?? ''),
+                $csvSafe($row['name'] ?? ''),
                 $row['type_label'],
-                $row['level_name'],
+                $csvSafe($row['level_name']),
                 $row['active_editor_suscription'] ? '1' : '0',
                 $row['cloud_client'] ? '1' : '0',
                 $row['internet_publication'] ? '1' : '0',
                 !empty($row['begin_date']) ? substr($row['begin_date'], 0, 10) : '',
                 !empty($row['end_date'])   ? substr($row['end_date'],   0, 10) : '',
-                $row['comment'] ?? '',
+                $csvSafe($row['comment'] ?? ''),
             ], ';');
         }
 

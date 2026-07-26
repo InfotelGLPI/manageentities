@@ -42,6 +42,15 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownGenerateCriCategories.php")) {
    die("Sorry. You can't access this file directly");
 }
 
+// The entity restriction comes from $_POST: enforce access to every requested entity
+// before listing its ITIL categories (cross-entity IDOR), consistently with the other
+// dropdown endpoints.
+foreach ((array) $_POST["entity_restrict"] as $entity_restrict_id) {
+   if (!Session::haveAccessToEntity((int) $entity_restrict_id)) {
+      throw new AccessDeniedHttpException();
+   }
+}
+
 $opt = ['entity' => $_POST["entity_restrict"]];
 $condition  =[];
 

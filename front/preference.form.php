@@ -34,6 +34,13 @@ Session::checkLoginUser();
 //Save user preferences
 if (isset ($_POST['update_user_preferences_manageentities'])) {
    $pref = new Preference();
-   $pref->update($_POST);
+   // IDOR guard: only allow updating the current user's own preference row. Reload the
+   // targeted row and reject any posted id that does not belong to the logged-in user,
+   // instead of trusting $_POST['id'].
+   if (isset($_POST['id'])
+       && $pref->getFromDB((int) $_POST['id'])
+       && (int) $pref->fields['users_id'] === (int) Session::getLoginUserID()) {
+       $pref->update($_POST);
+   }
    Html::back();
 }
