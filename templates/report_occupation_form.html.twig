@@ -1,0 +1,58 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<form name="form" method="post" action="{{ form_url }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    <div class="card mb-3 mx-auto" style="max-width: 700px;">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-calendar-stats"></i>
+            <strong>{{ __('Occupation report', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="date1">{{ __('Start date') }}</label>
+                <div class="col-sm-8">{{ date1_field|raw }}</div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="date2">{{ __('End date') }}</label>
+                <div class="col-sm-8">{{ date2_field|raw }}</div>
+            </div>
+
+            <hr>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">{{ __('Technician') }}</label>
+                <div class="col-sm-8">{{ techs_dropdown|raw }}</div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" name="send" class="btn btn-primary">
+                <i class="ti ti-search me-1"></i>{{ _x('button', 'Post') }}
+            </button>
+        </div>
+    </div>
+</form>

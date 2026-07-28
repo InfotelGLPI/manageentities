@@ -81,27 +81,25 @@ class Company extends CommonDBTM
 
     public static function showList(): void
     {
-        ob_start();
-        self::addNewCompany(['title' => __('Add a company', 'manageentities')]);
-        Html::closeForm();
-        $add_company_html = ob_get_clean();
-
         $plugin_company = new self();
         $result = $plugin_company->find();
         $companies = [];
-        $link_period = Toolbox::getItemTypeFormURL(self::class);
+        $link = Toolbox::getItemTypeFormURL(self::class);
         foreach ($result as $data) {
             $plugin_company->getFromDB($data['id']);
             $companies[] = [
-                'name' => '<a href="' . $link_period . '?id=' . $data['id'] . '">' . $plugin_company->getNameID() . '</a>',
+                'url'  => $link . '?id=' . (int) $data['id'],
+                'name' => $plugin_company->getNameID(),
             ];
         }
 
         TemplateRenderer::getInstance()->display(
             '@manageentities/company_list.html.twig',
             [
-                'add_company_html' => $add_company_html,
-                'companies'        => $companies,
+                'companies' => $companies,
+                'can_add'   => Session::haveRight('plugin_manageentities', UPDATE),
+                'add_title' => __('Add a company', 'manageentities'),
+                'form_url'  => $link,
             ]
         );
     }
@@ -142,7 +140,7 @@ class Company extends CommonDBTM
      * */
     function showForm($ID, $options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI;
 
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -155,110 +153,27 @@ class Company extends CommonDBTM
         $this->setSessionValues();
 
         $this->initForm($ID, $options);
-        $this->showFormHeader($options);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . Company::getTypeName(1) . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name'], 'size' => 40]);
-        echo "</td>";
-        echo "<td></td><td></td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Address') . "</td>";
-        echo "<td>";
-        Html::textarea([
-            'name' => 'address',
-            'value' => $this->fields["address"],
-            'cols' => 40,
-            'rows' => 5,
-            'enable_richtext' => false
-        ]);
-        echo "</td>";
-        echo "<td></td><td></td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Comments') . "</td>";
-        echo "<td>";
-        Html::textarea([
-            'name' => 'comment',
-            'value' => $this->fields["comment"],
-            'cols' => 40,
-            'rows' => 5,
-            'enable_richtext' => false
-        ]);
-        echo "</td>";
-        echo "<td></td><td></td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Logo (format JPG or JPEG)', 'manageentities') . "</td>";
-        if ($this->fields["logo_id"] != 0 && !empty($this->fields["logo_id"])) {
-            echo "<td>";
-            echo "<div  id='picture'>";
-            echo "<img height='50px' alt=\"" . __s(
-                    'Picture'
-                ) . "\" src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $this->fields["logo_id"] . "'>";
-            echo "</div></td>";
+        // Build the logo cell HTML (preview when a logo is set + the file uploader).
+        $logo_html = '';
+        if (!empty($this->fields["logo_id"])) {
+            $logo_html .= "<div id='picture' class='mb-2'>";
+            $logo_html .= "<img height='50px' alt=\"" . __s('Picture') . "\" src='"
+                . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid="
+                . (int) $this->fields["logo_id"] . "'>";
+            $logo_html .= "</div>";
         }
-        echo "<td>";
-        echo Html::file(['multiple' => false, 'onlyimages' => true]);
-        echo "</td>";
-        if ($this->fields["logo_id"] == 0) {
-            echo "<td></td>";
-        }
-        echo "<td></td></tr>";
+        ob_start();
+        Html::file(['multiple' => false, 'onlyimages' => true]);
+        $logo_html .= ob_get_clean();
 
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Entity', 'Entities', 1) . "</td>";
-        echo "<td>";
-
-
-        \Entity::dropdown(['name' => 'entity_id', 'value' => $this->fields['entity_id'], 'right' => 'all']);
-        echo "&nbsp;" . __('Recursive') . "&nbsp";
-        \Dropdown::showYesNo("recursive", $this->fields["recursive"]);
-        echo "</td>";
-        echo "<td></td><td></td></tr>";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('@manageentities/company_form.html.twig', [
+            'item'      => $this,
+            'params'    => $options,
+            'logo_html' => $logo_html,
+        ]);
 
         return true;
-    }
-
-    /**
-     * Menu with button add new company
-     *
-     * @param type $options
-     */
-    static function addNewCompany($options = [])
-    {
-        $addButton = "";
-
-        if (Session::haveRight('plugin_manageentities', UPDATE)) {
-            $rand = mt_rand();
-
-            $addButton = "<form method='post' name='company_form'.$rand.'' id='company_form" . $rand . "'
-               action='" . Toolbox::getItemTypeFormURL(Company::class) . "'>";
-            $addButton .= Html::hidden('company_id', ['value' => 'company']);
-            $addButton .= Html::hidden('id', ['value' => '']);
-            $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'add_company', 'class' => 'btn btn-primary']);
-        }
-
-        if (isset($options['title'])) {
-            echo '<table class="tab_cadre_fixe">';
-            echo '<tr><th>' . $options['title'] . '</th></tr>';
-            echo '<tr class="tab_bg_1">
-               <td class="center">';
-            echo $addButton;
-            Html::closeForm();
-            echo '</td></tr></table>';
-        } else {
-            echo '<tr class="tab_bg_1">
-               <td class="center" colspan="' . $options['colspan'] . '">';
-            echo $addButton;
-            Html::closeForm();
-            echo '</td></tr>';
-        }
     }
 
     function setSessionValues()
@@ -337,10 +252,10 @@ class Company extends CommonDBTM
     /**
      *
      * @param int $donotif
-     * @param type $disablenotif
+     * @param  $disablenotif
      *
-     * @return int
-     * @global type $CFG_GLPI
+     * @return array|mixed[]
+     * @global  $CFG_GLPI
      *
      */
     function addFiles(array $input, $options = [])
@@ -458,7 +373,7 @@ class Company extends CommonDBTM
     /**
      * Returns the company's address
      *
-     * @param type $obj
+     * @param $obj
      *
      * @return string address
      */
@@ -488,9 +403,9 @@ class Company extends CommonDBTM
     /**
      * Returns the company logo
      *
-     * @param type $obj
+     * @param $obj
      *
-     * @return type
+     * @return array|mixed[]
      */
     static function getLogo($obj)
     {
@@ -525,9 +440,9 @@ class Company extends CommonDBTM
     /**
      * Returns company comments
      *
-     * @param type $obj
+     * @param  $obj
      *
-     * @return type
+     * @return array|mixed[]
      */
     static function getComment($obj)
     {

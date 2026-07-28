@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonGLPI;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use ProfileRight;
 use Session;
@@ -65,54 +66,36 @@ class Profile extends \Profile
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-    {
-        if ($item->getType() == 'Profile') {
-            $ID = $item->getID();
-            $prof = new self();
-
-            self::addDefaultProfileInfos(
-                $ID,
-                [
-                    'plugin_manageentities' => ALLSTANDARDRIGHT,
-                    'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT
-                ]
-            );
-            $prof->showForm($ID);
-        }
-
-        return true;
-    }
-
-    public function showForm($profiles_id = 0, $openform = true, $closeform = true)
-    {
-        echo "<div class='firstbloc'>";
-        if (($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
-            && $openform) {
-            $profile = new \Profile();
-            echo "<form method='post' action='" . $profile->getFormURL() . "'>";
+    /**
+     * @param CommonGLPI $item
+     * @param int $tabnum
+     * @param int $withtemplate
+     *
+     * @return bool
+     */
+    public static function displayTabContentForItem(
+        CommonGLPI $item,
+        $tabnum = 1,
+        $withtemplate = 0
+    ) {
+        if (!$item instanceof \Profile || !self::canView()) {
+            return false;
         }
 
         $profile = new \Profile();
-        $profile->getFromDB($profiles_id);
+        $profile->getFromDB($item->getID());
 
-        $rights = $this->getAllRights();
-        $profile->displayRightsChoiceMatrix($rights, [
-            'canedit' => $canedit,
-            'default_class' => 'tab_bg_2',
-            'title' => __('General')
+        $rights = self::getAllRights(true);
+
+        $twig = TemplateRenderer::getInstance();
+        $twig->display('@manageentities/profile.html.twig', [
+            'id' => $item->getID(),
+            'profile' => $profile,
+            'title' => self::getTypeName(Session::getPluralNumber()),
+            'rights' => $rights,
         ]);
-        if ($canedit
-            && $closeform) {
-            echo "<div class='center'>";
-            echo Html::hidden('id', ['value' => $profiles_id]);
-            echo Html::submit(_sx('button', 'Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
-            echo "</div>\n";
-            Html::closeForm();
-        }
-        echo "</div>";
 
-        $this->showLegend();
+        return true;
     }
 
     public static function getAllRights($all = false)
@@ -157,7 +140,7 @@ class Profile extends \Profile
     }
 
     /**
-     * @param $profiles_id the profile ID
+     * @param $profiles_id profile ID
      *
      * @since 0.85
      * Migration rights from old system to the new one for one profile

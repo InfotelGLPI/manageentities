@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Report;
@@ -60,83 +61,49 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
 $Entity = new Entity();
 if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
 
+   // Build the entity list restricted to the caller's active entities.
+   $entity    = new \Entity();
+   $condition = ['id' => $_SESSION["glpiactiveentities"]];
+   $data      = $entity->find($condition);
+   $elements  = [];
+   foreach ($data as $val) {
+      $elements[$val['entities_id']] = Dropdown::getDropdownName("glpi_entities", $val['entities_id']);
+   }
+
+   // Capture the GLPI form widgets as HTML fragments for the Twig template.
+   // Their user-facing values are escaped by the GLPI helpers themselves.
+   ob_start();
+   Html::showDateField("date1", ['value' => $_POST["date1"]]);
+   $date1_field = ob_get_clean();
+
+   ob_start();
+   Html::showDateField("date2", ['value' => $_POST["date2"]]);
+   $date2_field = ob_get_clean();
+
+   ob_start();
+   Dropdown::showFromArray('entities_id', $elements,
+                           ['values'   => $_POST['entities_id'] ?? [],
+                            'multiple'  => true,
+                            'entity'    => $_SESSION['glpiactiveentities']]);
+   $entities_dropdown = ob_get_clean();
+
+   ob_start();
+   TaskCategory::dropdown(['name' => 'category_id', 'value' => $_POST['category_id'] ?? 0]);
+   $category_dropdown = ob_get_clean();
+
+   echo "<div class='center'>";
+   TemplateRenderer::getInstance()->display('@manageentities/report_moving_form.html.twig', [
+      'form_url'          => $_SERVER['REQUEST_URI'],
+      'date1_field'       => $date1_field,
+      'date2_field'       => $date2_field,
+      'entities_dropdown' => $entities_dropdown,
+      'category_dropdown' => $category_dropdown,
+   ]);
+   echo "</div>";
+
    if (isset($_POST["send"])) {
-
-      echo "<div class='center'><form action=\"report_moving.form.php\" method=\"post\">";
-      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
-      echo __('Start date') . " :</td><td>";
-      Html::showDateField("date1", ['value' => $_POST["date1"]]);
-      echo "<td class='right'>" . __('End date') . " :</td><td>";
-      Html::showDateField("date2", ['value' => $_POST["date2"]]);
-      echo "</td></tr>";
-      //stats Entity
-      echo "<tr class='tab_bg_2'><td class='right'>";
-      echo _n('Entity', 'Entities', 1) . " :</td><td>";
-
-      $entity    = new \Entity();
-//      $data      = [Dropdown::EMPTY_VALUE];
-      $condition = ['id' => $_SESSION["glpiactiveentities"]];
-      $data      = $entity->find($condition);
-
-
-      foreach ($data as $val) {
-         $elements[$val['entities_id']] = Dropdown::getDropdownName("glpi_entities", $val['entities_id']);
-      }
-
-      Dropdown::showFromArray('entities_id', $elements,
-                              ['values' => $_POST['entities_id'] ?? [],
-                               'multiple' => true,
-                               'entity' => $_SESSION['glpiactiveentities']]);
-
-      echo "<td class='right'>" . __('Task category') . " :</td><td>";
-      TaskCategory::dropdown(['name' => 'category_id', 'value' => $_POST['category_id'] ?? 0]);
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'>";
-      echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
-      echo "</td></tr>";
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
       $report = new Report();
       $report->showMovingReports($_POST["entities_id"], $_POST['category_id'], $_POST["date1"], $_POST["date2"]);
-
-   } else {
-
-      echo "<div class='center'><form action=\"report_moving.form.php\" method=\"post\">";
-      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
-      echo __('Start date') . " :</td><td>";
-      Html::showDateField("date1", ['value' => $_POST["date1"]]);
-      echo "<td class='right'>" . __('End date') . " :</td><td>";
-      Html::showDateField("date2", ['value' => $_POST["date2"]]);
-      echo "</td></tr>";
-      //stats Entity
-      echo "<tr class='tab_bg_2'><td class='right'>";
-      echo _n('Entity', 'Entities', 1) . " :</td><td>";
-
-      $entity    = new \Entity();
-//      $data      = [Dropdown::EMPTY_VALUE];
-      $condition = ['id' => $_SESSION["glpiactiveentities"]];
-      $data      = $entity->find($condition);
-
-
-      foreach ($data as $val) {
-         $elements[$val['entities_id']] = Dropdown::getDropdownName("glpi_entities", $val['entities_id']);
-      }
-      Dropdown::showFromArray('entities_id', $elements,
-                              ['multiple' => true,
-                               'entity' => $_SESSION['glpiactiveentities']
-                              ]);
-
-      echo "<td class='right'>" . __('Task category') . " :</td><td>";
-      TaskCategory::dropdown(['name' => 'category_id', 'value' => isset($_POST['category_id']) ? $_POST['category_id'] : 0]);
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'>";
-      echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
-      echo "</td></tr>";
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
-
    }
 
 } else {

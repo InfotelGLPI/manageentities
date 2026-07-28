@@ -45,10 +45,10 @@ class Report extends CommonDBTM
     /**
      * Report on the movement of technicians
      *
-     * @param type $entities_id
-     * @param type $category_id
-     * @param type $date1
-     * @param type $date2
+     * @param $entities_id
+     * @param $category_id
+     * @param $date1
+     * @param $date2
      *
      * @global type $DB
      * @global type $CFG_GLPI
@@ -176,9 +176,9 @@ class Report extends CommonDBTM
     /**
      * Report concerning the occupation of the technicians
      *
-     * @param type $techs
-     * @param type $date1
-     * @param type $date2
+     * @param $techs
+     * @param $date1
+     * @param $date2
      *
      * @global type $CFG_GLPI
      *
@@ -311,8 +311,8 @@ class Report extends CommonDBTM
     /**
      * List of dates between two dates
      *
-     * @param type $startTime
-     * @param type $endTime
+     * @param $startTime
+     * @param $endTime
      *
      * @return array
      */

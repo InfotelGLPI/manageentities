@@ -367,7 +367,10 @@ class GenerateCRI extends CommonGLPI
                 }
                 echo Html::input('name', $opt);
             } else {
-                echo $options['name'];
+                // Ticket name may be requester-controlled and is stored raw; escape it
+                // when the template hides the "name" field (Html::input already escapes
+                // the visible branch, Html::hidden escapes on its own).
+                echo htmlspecialchars((string) $options['name'], ENT_QUOTES);
                 echo Html::hidden('name', ['value' => $options['name']]);
             }
             echo "</tr>";
@@ -485,14 +488,16 @@ class GenerateCRI extends CommonGLPI
             echo "<div style='margin: 10px; padding:10px; width:400px; border:dashed;'>";
             echo "<span style='font-weight:bold; font-size: 15px;'>" . _n('Task', 'Tasks', 1) . " : </span><br>";
             echo "<span style='font-weight:bold;'>" . __('Description') . " : </span>";
-            echo "<span>" . RichText::getTextFromHtml($tasktemplate->getField('content')) . "</span><br>";
+            // Task template content is stored raw; escape the plain-text extraction before echo.
+            echo "<span>" . htmlspecialchars((string) RichText::getTextFromHtml($tasktemplate->getField('content')), ENT_QUOTES) . "</span><br>";
             echo "<span style='font-weight:bold;'>" . __('Duration') . " : </span>";
             echo "<span>" . self::formatDuration($tasktemplate->getField('actiontime')) . "</span><br>";
             if ($tasktemplate->getField('groups_id_tech') > 0) {
                 $group = new Group();
                 $group->getFromDB($tasktemplate->getField('groups_id_tech'));
                 echo "<span style='font-weight:bold;'>" . __('Technician group') . ": </span>";
-                echo "<span>" . $group->getField('name') . "</span><br>";
+                // Group name is stored raw; escape before echo.
+                echo "<span>" . htmlspecialchars((string) $group->getField('name'), ENT_QUOTES) . "</span><br>";
             }
             echo Html::hidden('predefined-task', ['value' => $tasktemplate->fields['id']]);
             echo "</div>";

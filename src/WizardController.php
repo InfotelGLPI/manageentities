@@ -767,9 +767,20 @@ class WizardController
         $errors    = [];
         $newDocIds = [];
         foreach ($list as $entry) {
-            $destName = basename($entry['name']);
+            // Only accept a genuine HTTP upload and stage it under a unique name so two
+            // uploads sharing the same basename cannot overwrite each other in
+            // GLPI_UPLOAD_DIR before Document::add() consumes them. The random prefix is
+            // stripped back off via _prefix_filename so the stored document keeps its
+            // original name; Document::moveUploadedDocument() still validates the
+            // extension (isValidDoc) and rejects path separators.
+            if (!is_uploaded_file($entry['tmp_name'])) {
+                $errors[] = $entry['name'];
+                continue;
+            }
+            $prefix   = uniqid('', true) . '_';
+            $destName = $prefix . basename($entry['name']);
             $destPath = GLPI_UPLOAD_DIR . '/' . $destName;
-            if (!copy($entry['tmp_name'], $destPath)) {
+            if (!move_uploaded_file($entry['tmp_name'], $destPath)) {
                 $errors[] = $entry['name'];
                 continue;
             }
@@ -781,6 +792,7 @@ class WizardController
                 'is_recursive'          => 0,
                 '_no_message'           => true,
                 'upload_file'           => $destName,
+                '_prefix_filename'      => [$prefix],
                 'name'                  => $entry['name'],
             ];
             $doc->check(-1, CREATE, $docInput);

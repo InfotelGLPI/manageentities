@@ -7539,8 +7539,8 @@
       return exp;
     }
     /**
-     * find a “nice” number approximately equal to x. Round the number if round = true,
-     * take ceiling if round = false. The primary observation is that the “nicest”
+     * find a ï¿½niceï¿½ number approximately equal to x. Round the number if round = true,
+     * take ceiling if round = false. The primary observation is that the ï¿½nicestï¿½
      * numbers in decimal are 1, 2, and 5, and all power-of-ten multiples of these numbers.
      *
      * See "Nice Numbers for Graph Labels" of Graphic Gems.
@@ -15043,7 +15043,7 @@
       var my = a2y - a1y;
       var nx = b2x - b1x;
       var ny = b2y - b1y; // `vec_m` and `vec_n` are parallel iff
-      //     exising `k` such that `vec_m = k · vec_n`, equivalent to `vec_m X vec_n = 0`.
+      //     exising `k` such that `vec_m = k ï¿½ vec_n`, equivalent to `vec_m X vec_n = 0`.
 
       var nmCrossProduct = crossProduct2d(nx, ny, mx, my);
 
@@ -16412,7 +16412,7 @@
       },
       aria: {
         general: {
-          withTitle: '??????“{title}”????',
+          withTitle: '??????ï¿½{title}ï¿½????',
           withoutTitle: '??????,'
         },
         series: {
@@ -16432,8 +16432,8 @@
           }
         },
         data: {
-          allData: '????——',
-          partialData: '??,?{displayCnt}??——',
+          allData: '????ï¿½ï¿½',
+          partialData: '??,?{displayCnt}??ï¿½ï¿½',
           withName: '{name}????{value}',
           withoutName: '{value}',
           separator: {
@@ -18353,7 +18353,7 @@
         this._resetOption(null, innerOpt);
       };
       /**
-       * @param type null/undefined: reset all.
+       * @param null/undefined: reset all.
        *        'recreate': force recreate all.
        *        'timeline': only reset timeline option
        *        'media': only reset media query option
@@ -54340,7 +54340,7 @@
       return children.length && node.isExpand ? children[0] : node.hierNode.thread;
     }
     /**
-     * If nodeInLeft’s ancestor is a sibling of node, returns nodeInLeft’s ancestor.
+     * If nodeInLeftï¿½s ancestor is a sibling of node, returns nodeInLeftï¿½s ancestor.
      * Otherwise, returns the specified ancestor.
      */
 
@@ -67442,7 +67442,7 @@
               x: pmin[0],
               y: pmin[1],
               width:  candleWidth ,
-              height:  pmax[1] - pmin[1] 
+              height:  pmax[1] - pmin[1]
             };
           }
 
@@ -83755,7 +83755,7 @@
          * Logic for each series: (If the logic has to be modified one day, do it carefully!)
          *
          * ( brushed - && -hasBrushExist - && linkOthers  ) => StepA: -record, - StepB: -visualByRecord.
-         *   !brushed+    +hasBrushExist ¦                            +nothing,+        +visualByRecord.
+         *   !brushed+    +hasBrushExist ï¿½                            +nothing,+        +visualByRecord.
          *                +!hasBrushExist+                                              +nothing.
          * ( !brushed  && -hasBrushExist - && linkOthers  ) => StepA:  nothing,  StepB: -visualByRecord.
          *                +!hasBrushExist+                                              +nothing.
@@ -91323,7 +91323,7 @@
           } else if (valueRange[1] === Infinity) {
             this._showIndicator(cursorValue, valueRange[0], '> ', halfHoverLinkSize);
           } else {
-            this._showIndicator(cursorValue, cursorValue, '˜ ', halfHoverLinkSize);
+            this._showIndicator(cursorValue, cursorValue, 'ï¿½ ', halfHoverLinkSize);
           }
         } // When realtime is set as false, handles, which are in barGroup,
         // also trigger hoverLink, which help user to realize where they

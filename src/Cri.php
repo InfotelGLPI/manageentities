@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use CommonDBTM;
 use DbUtils;
 use Document;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
@@ -64,7 +65,7 @@ class Cri extends CommonDBTM
 
     public function showForm($ID, $options = [])
     {
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $ID = (int) $ID;
         // Broken access control (IDOR): showForm() is reachable from front/cri.form.php
@@ -91,24 +92,9 @@ class Cri extends CommonDBTM
             'height' => 550,
         ];
 
-        //      Entity::showManageentitiesHeader(__('Interventions reports', 'manageentities'));
+        $modal = $options['modal'];
 
-        echo "<div class='red styleContractTitle' style='display:none' id='manageentities_cri_error'></div>";
-
-        echo "<form action=\"" . PLUGIN_MANAGEENTITIES_WEBDIR
-            . "/front/cri.form.php\" method=\"post\" name=\"formReport\">";
-
-        // Champ caché pour l'identifiant du ticket.
-        echo Html::hidden('REPORT_ID', ['value' => $ID]);
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        /* Information complémentaire déterminant si sous contrat ou non. */
-        echo "<tr class='tab_bg_1'>";
-        echo "<th>";
-        echo _n('Contract', 'Contracts', 1);
-        echo "</th>";
-        echo "<td colspan='2'>";
+        // Contract block: capture the GLPI-generated dropdown while keeping its return value.
         $restrict = [
             "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'],
             "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id'],
@@ -117,67 +103,61 @@ class Cri extends CommonDBTM
         $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
         $cridetail = reset($cridetails);
         if (isset($cridetail['withcontract'])) {
+            ob_start();
             $contractSelected = CriDetail::showContractLinkDropdown(
                 $cridetail,
                 $job->fields['entities_id'],
                 'cri'
             );
+            $contract_html = ob_get_clean();
         } else {
-            echo "<table class='tab_cadre' style='margin:0px'>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<th>" . __('Out of contract', 'manageentities') . "</th>";
-            echo "</tr></table>";
+            $contract_html = "<table class='tab_cadre' style='margin:0px'>"
+                . "<tr class='tab_bg_1'>"
+                . "<th>" . __('Out of contract', 'manageentities') . "</th>"
+                . "</tr></table>";
             $contractSelected = [
                 'contractSelected' => 0,
                 'contractdaySelected' => 0,
                 'is_contract' => 0,
             ];
         }
-        echo "</td>";
-        echo "</tr>";
 
-        /* Information complémentaire déterminant les intervenants si plusieurs. */
+        // Technicians already assigned to the ticket tasks.
         $CriTechnician = new CriTechnician();
         $technicians_id = $CriTechnician->getTechnicians($ID, true);
+        $is_task = self::isTask($ID);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<th>";
-        echo __('Technicians', 'manageentities');
-        echo "</th>";
-
-        echo "<td>";
-
-        if (self::isTask($ID)) {
+        $technicians_html = '';
+        if ($is_task) {
             if (!empty($technicians_id)) {
                 $techs = [];
                 foreach ($technicians_id as $remove => $data) {
                     foreach ($data as $users_id => $users_name) {
                         $rand = mt_rand();
                         if ($remove == 'remove') {
-                            $params['tech_id'] = $users_id;
+                            $tech_params = $params;
+                            $tech_params['tech_id'] = $users_id;
                             $techs[] = $users_name . "&nbsp;"
-                                . "<a class='pointer' name='deleteTech$rand'
-                                          onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $options['modal'] . "\", " . json_encode(
-                                    $params
-                                ) . ");'>
-                  <i class=\"ti ti-trash\" title=\"" . _sx('button', 'Delete permanently') . "\"></i>
-                  </a>";
+                                . "<a class='pointer' name='deleteTech$rand' onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $modal . "\", " . json_encode(
+                                    $tech_params
+                                ) . ");'>"
+                                . "<i class=\"ti ti-trash\" title=\"" . _x('button', 'Delete permanently') . "\"></i>"
+                                . "</a>";
                         } else {
                             $techs[] = $users_name;
                         }
                     }
                 }
-                echo implode('<br>', $techs);
+                $technicians_html = implode('<br>', $techs);
             } else {
-                echo "<span style=\"font-weight:bold; color:red\">" . __(
+                $technicians_html = "<span style=\"font-weight:bold; color:red\">" . __(
                     'Please assign a technician to your tasks',
                     'manageentities'
                 ) . "</span>";
             }
         }
 
-        echo "</td>";
-        echo "<td>";
+        // Add-technician control (user dropdown + link) — always displayed.
         $used = [];
         if (!empty($technicians_id)) {
             foreach ($technicians_id as $data) {
@@ -187,34 +167,31 @@ class Cri extends CommonDBTM
             }
         }
         $rand = mt_rand();
-        $idUser = User::dropdown([
+        ob_start();
+        User::dropdown([
             'name' => "users_id",
             'entity' => $job->fields["entities_id"],
             'used' => $used,
             'right' => 'all',
             'width' => $width,
         ]);
-        echo "&nbsp;<a class='pointer' name='add_tech$rand'
-                                          onclick='manageentities_loadCriForm(\"addTech\", \"" . $options['modal'] . "\", " . json_encode(
+        $add_tech_html = ob_get_clean();
+        $add_tech_html .= "&nbsp;<a class='pointer' name='add_tech$rand' onclick='manageentities_loadCriForm(\"addTech\", \"" . $modal . "\", " . json_encode(
             $params
-        ) . ");'>
-                  <i class=\"ti ti-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i>";
+        ) . ");'>"
+            . "<i class=\"ti ti-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i></a>";
 
-        echo "</td>";
-        echo "</tr>";
+        // Hidden contract fields + optional CRI-type / moving-number dropdowns.
+        $hidden_fields = '';
+        $critype_html = null;
+        $critype_label = CriType::getTypeName(1);
+        $number_moving_html = null;
 
         if ($contractSelected['contractSelected'] && $contractSelected['contractdaySelected']) {
-            echo Html::hidden('CONTRAT', ['value' => $contractSelected['contractSelected']]);
-            echo Html::hidden('CONTRACTDAY', ['value' => $contractSelected['contractdaySelected']]);
+            $hidden_fields .= Html::hidden('CONTRAT', ['value' => $contractSelected['contractSelected']]);
+            $hidden_fields .= Html::hidden('CONTRACTDAY', ['value' => $contractSelected['contractdaySelected']]);
 
             if ($config->fields['useprice'] == Config::PRICE) {
-                /* Information complémentaire pour le libellés des activités. */
-                echo "<tr class='tab_bg_1'>";
-                echo "<th>";
-                echo CriType::getTypeName(1);
-                echo "</th>";
-
-                echo "<td colspan='2'>";
                 $CriPrice = new CriPrice();
                 $critypes = $CriPrice->getItems($contractSelected['contractdaySelected']);
                 $critypes_data = [\Dropdown::EMPTY_VALUE];
@@ -226,15 +203,15 @@ class Cri extends CommonDBTM
                     }
                 }
 
+                ob_start();
                 \Dropdown::showFromArray('REPORT_ACTIVITE', $critypes_data, [
                     'value' => $critypes_default,
                     'width' => $width,
                 ]);
-                echo "</td>";
-                echo "</tr>";
+                $critype_html = ob_get_clean();
                 //configuration do not use price
             } else {
-                echo Html::hidden('REPORT_ACTIVITE', ['value' => 'noprice']);
+                $hidden_fields .= Html::hidden('REPORT_ACTIVITE', ['value' => 'noprice']);
             }
 
             $contract = new Contract();
@@ -243,27 +220,27 @@ class Cri extends CommonDBTM
                 'entities_id' => $job->fields["entities_id"],
             ])) {
                 if ($contract->fields['moving_management']) {
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<th>";
-                    echo __('Number of moving', 'manageentities');
-                    echo "</th>";
-                    echo "<td colspan='2'>";
+                    ob_start();
                     \Dropdown::showNumber('number_moving', [
                         'value' => $cridetail['number_moving'],
                         'width' => $width,
                     ]);
-                    echo "</td>";
-                    echo "</tr>";
+                    $number_moving_html = ob_get_clean();
                 }
             }
         } elseif (!isset($cridetail['withcontract']) || $cridetail['withcontract'] == false) {
-            echo Html::hidden('WITHOUTCONTRACT', ['value' => 1]);
+            $hidden_fields .= Html::hidden('WITHOUTCONTRACT', ['value' => 1]);
         }
 
-        if (self::isTask($ID)) {
+        $has_tasks = false;
+        $description_html = '';
+        $generate_button_html = '';
+        $no_tasks_message = '';
+        $not_task_message = '';
+
+        if ($is_task) {
             /*
-             * Information complémentaire pour la description globale du CRI.
-             * Préremplissage avec les informations des suivis non privés.
+             * Global CRI description, pre-filled with the non-private ticket tasks content.
              */
             $desc = "";
             $criteria = [
@@ -301,21 +278,14 @@ class Cri extends CommonDBTM
             $iterator = $DB->request($criteria);
 
             if (count($iterator) > 0) {
+                $has_tasks = true;
                 foreach ($iterator as $data) {
                     $desc .= $data["content"] . "\n\n";
                 }
-                $desc = substr($desc, 0, strlen($desc) - 2); // Suppression des retours chariot pour le dernier suivi...
-                echo "<tr class='tab_bg_1'>";
-                echo "<th>";
-                echo __('Detail of the realized works', 'manageentities');
-                echo "</th>";
+                $desc = substr($desc, 0, strlen($desc) - 2); // Drop the trailing carriage returns of the last task.
 
-                echo "<td colspan='2'>";
-                //echo "<textarea name=\"REPORT_DESCRIPTION\" cols='120' rows='22'>$desc</textarea>";
                 $rand_text = mt_rand();
-                $cols = 120;
-                $rows = 22;
-
+                ob_start();
                 echo Html::script("lib/tinymce.js");
                 Html::textarea([
                     'name' => 'REPORT_DESCRIPTION',
@@ -326,54 +296,53 @@ class Cri extends CommonDBTM
                     'rand' => $rand_text,
                     'editor_id' => 'comment' . $rand_text,
                 ]);
-                echo "</td>";
-                echo "</tr>";
+                $description_html = ob_get_clean();
 
-                /* Bouton de génération du rapport. */
-                echo "<tr class='tab_bg_2'>";
-                echo "<td class='center' colspan='3'>";
                 // action empty : add cri
                 if (empty($options['action'])) {
                     if (!empty($technicians_id)) {
-                        //                  Html::requireJs('glpi_dialog');
-                        //                  $modal = $options['modal'];
-
-                        echo "<input type='button' name='add_cri' value=\""
-                            . __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
-                  onClick='manageentities_loadCriForm(\"addCri\", \"" . $options['modal'] . "\", " . json_encode(
+                        $generate_button_html = "<input type='button' name='add_cri' value=\""
+                            . __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button' onClick='manageentities_loadCriForm(\"addCri\", \"" . $modal . "\", " . json_encode(
                                 $params
                             ) . ");'>";
                     }
                     // action not empty : update cri
                 } elseif ($options['action'] == 'update_cri') {
                     if (!empty($technicians_id)) {
-                        echo "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\""
-                            . __('Regenerate the intervention report', 'manageentities') . "\"
-                  onClick='manageentities_loadCriForm(\"updateCri\", \"" . $options['modal'] . "\", " . json_encode(
+                        $generate_button_html = "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\""
+                            . __('Regenerate the intervention report', 'manageentities') . "\" onClick='manageentities_loadCriForm(\"updateCri\", \"" . $modal . "\", " . json_encode(
                                 $params
                             ) . ");'>";
                     }
                 }
             } else {
-                echo "<tr class='tab_bg_1'>";
-                echo "<td class='center red'>";
                 if ($config->fields['hourorday'] != Config::HOUR) {
-                    echo __("Impossible generation, you didn't create a scheduled task", 'manageentities');
+                    $no_tasks_message = __("Impossible generation, you didn't create a scheduled task", 'manageentities');
                 } else {
-                    echo __('No tasks whose category can be used', 'manageentities');
+                    $no_tasks_message = __('No tasks whose category can be used', 'manageentities');
                 }
-                echo "</td>";
-                echo "</tr>";
             }
         } else {
-            echo "<div class='alert alert-warning d-flex' >";
-            echo __("Impossible generation, you didn't create a scheduled task", 'manageentities');
-            echo "</div>";
+            $not_task_message = __("Impossible generation, you didn't create a scheduled task", 'manageentities');
         }
-        echo "</td>";
-        echo "</tr>";
-        echo "</table></div>";
-        Html::closeForm();
+
+        TemplateRenderer::getInstance()->display('@manageentities/cri_form.html.twig', [
+            'form_action'          => PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.form.php",
+            'report_id'            => $ID,
+            'hidden_fields'        => $hidden_fields,
+            'contract_html'        => $contract_html,
+            'technicians_html'     => $technicians_html,
+            'add_tech_html'        => $add_tech_html,
+            'critype_html'         => $critype_html,
+            'critype_label'        => $critype_label,
+            'number_moving_html'   => $number_moving_html,
+            'is_task'              => $is_task,
+            'has_tasks'            => $has_tasks,
+            'description_html'     => $description_html,
+            'generate_button_html' => $generate_button_html,
+            'no_tasks_message'     => $no_tasks_message,
+            'not_task_message'     => $not_task_message,
+        ]);
     }
 
     public function isTask($tickets_id)
@@ -391,8 +360,8 @@ class Cri extends CommonDBTM
      * Récupération des données et génération du document. Il sera enregistré suivant le paramétre
      * enregistrement.
      *
-     * @param type $params
-     * @param type $options
+     * @param $params
+     * @param $options
      *
      * @return boolean
      * @global CriPDF $PDF
@@ -1057,10 +1026,10 @@ class Cri extends CommonDBTM
     /**
      * Request: task with time spent
      *
-     * @param type $join
-     * @param type $where
-     * @param type $p
-     * @param type $config
+     * @param $join
+     * @param $where
+     * @param $p
+     * @param $config
      *
      * @global type $DB
      *

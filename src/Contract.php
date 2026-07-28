@@ -637,9 +637,9 @@ class Contract extends CommonDBTM
     /**
      * Dropdown list contract management
      *
-     * @param type $name
-     * @param type $value
-     * @param type $rand
+     * @param  $name
+     * @param  $value
+     * @param  $rand
      *
      * @return boolean
      */
@@ -665,7 +665,7 @@ class Contract extends CommonDBTM
     /**
      * Return the name of contract management
      *
-     * @param type $value
+     * @param $value
      *
      * @return string
      */
@@ -686,10 +686,10 @@ class Contract extends CommonDBTM
     /**
      * dropdown list of the types of contract
      *
-     * @param type $name
-     * @param type $value
-     * @param type $rand
-     * @param type $on_change
+     * @param $name
+     * @param $value
+     * @param $rand
+     * @param $on_change
      *
      * @return boolean
      */
@@ -726,7 +726,7 @@ class Contract extends CommonDBTM
     /**
      * Returns the name of the type of contract
      *
-     * @param type $value
+     * @param  $value
      *
      * @return string
      */
@@ -753,10 +753,10 @@ class Contract extends CommonDBTM
     /**
      * Return the unit
      *
-     * @param type $config
-     * @param type $value
+     * @param  $config
+     * @param  $value
      *
-     * @return type
+     * @return
      */
     static function getUnitContractType($config, $value)
     {

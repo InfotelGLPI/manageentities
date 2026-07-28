@@ -37,6 +37,19 @@ if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('t
     throw new AccessDeniedHttpException();
 }
 
-if (isset($_POST['user_id_tech']) && $_POST['user_id_tech'] > 0) {
-   echo  json_encode(getUserName($_POST['user_id_tech']));
+if (isset($_POST['user_id_tech']) && (int) $_POST['user_id_tech'] > 0) {
+   $user_id = (int) $_POST['user_id_tech'];
+   // Only disclose the name of a user who has a profile assignment in one of the
+   // caller's active entities (same scoping as the technician User::dropdown).
+   // Without this, an arbitrary id could be resolved to a real name, letting a
+   // caller enumerate the whole user directory across entities.
+   $visible = countElementsInTable(
+       'glpi_profiles_users',
+       ['users_id' => $user_id] + getEntitiesRestrictCriteria('glpi_profiles_users')
+   );
+   if ($visible > 0) {
+      echo json_encode(getUserName($user_id));
+   } else {
+      echo json_encode('');
+   }
 }

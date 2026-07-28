@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Report;
@@ -59,81 +60,46 @@ $dbu = new DbUtils();
 $Entity = new Entity();
 if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
 
-   if (isset($_POST["send"])) {
-      echo "<div class='center'><form action=\"report_occupation.form.php\" method=\"post\">";
-      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
-      echo __('Start date') . " :</td><td>";
-      Html::showDateField("date1", ['value' => $_POST["date1"]]);
-      echo "<td class='right'>" . __('End date') . " :</td><td>";
-      Html::showDateField("date2", ['value' => $_POST["date2"]]);
-      echo "</td></tr>";
+   // Technician list restricted to users of the caller's active entities.
+   $user      = new User();
+   $condition = ['is_deleted'  => 0,
+                 'entities_id' => $_SESSION["glpiactiveentities"]];
+   $users     = $user->find($condition);
+   $techs     = [];
+   foreach ($users as $data) {
+      $techs[$data['id']] = $dbu->getUserName($data['id']);
+   }
 
-      $user      = new User();
-      $condition = ['is_deleted'  => 0,
-                    'entities_id' => $_SESSION["glpiactiveentities"]];
-      $users     = $user->find($condition);
-      $techs     = [];
-      foreach ($users as $data) {
-         $techs[$data['id']] = $dbu->getUserName($data['id']);
-      }
+   // Capture the GLPI form widgets as HTML fragments for the Twig template.
+   // Their user-facing values are escaped by the GLPI helpers themselves.
+   ob_start();
+   Html::showDateField("date1", ['value' => $_POST["date1"]]);
+   $date1_field = ob_get_clean();
 
-      echo "<tr><td class='tab_bg_2 center'>";
-      echo __('Technician') . " :</td><td class='tab_bg_2 center' colspan='3' >";
-      if (isset($_POST['techs'])) {
-         Dropdown::showFromArray('techs', $techs, ['multiple' => true, 'values' => $_POST['techs']]);
-      } else {
-         Dropdown::showFromArray('techs', $techs, ['multiple' => true]);
-      }
+   ob_start();
+   Html::showDateField("date2", ['value' => $_POST["date2"]]);
+   $date2_field = ob_get_clean();
 
-      echo "</td></tr>";
-      if (isset($_POST['techs'])) {
-         echo "<tr class='tab_bg_2'><td colspan='4'></td></tr>";
-      }
-      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
-      echo "</td></tr>";
+   ob_start();
+   $tech_params = ['multiple' => true];
+   if (isset($_POST['techs'])) {
+      $tech_params['values'] = $_POST['techs'];
+   }
+   Dropdown::showFromArray('techs', $techs, $tech_params);
+   $techs_dropdown = ob_get_clean();
 
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
+   echo "<div class='center'>";
+   TemplateRenderer::getInstance()->display('@manageentities/report_occupation_form.html.twig', [
+      'form_url'       => $_SERVER['REQUEST_URI'],
+      'date1_field'    => $date1_field,
+      'date2_field'    => $date2_field,
+      'techs_dropdown' => $techs_dropdown,
+   ]);
+   echo "</div>";
 
-      if (isset($_POST['techs'])) {
-         $report = new Report();
-         $report->showOccupationReports($_POST['techs'], $_POST["date1"], $_POST["date2"]);
-      }
-
-   } else {
-
-      echo "<div class='center'><form action=\"report_occupation.form.php\" method=\"post\">";
-      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
-      echo __('Start date') . " :</td><td>";
-      Html::showDateField("date1", ['value' => $_POST["date1"]]);
-      echo "<td class='right'>" . __('End date') . " :</td><td>";
-      Html::showDateField("date2", ['value' => $_POST["date2"]]);
-      echo "</td></tr>";
-      //stats Users
-      $dbu       = new DbUtils();
-      $user      = new User();
-      $condition = ['is_deleted'  => 0,
-                    'entities_id' => $_SESSION["glpiactiveentities"]];
-      $users     = $user->find($condition);
-      $techs     = [];
-      foreach ($users as $data) {
-         $techs[$data['id']] = $dbu->getUserName($data['id']);
-      }
-
-      echo "<tr><td class='tab_bg_2 center'>";
-      echo __('Technician') . " :</td><td class='tab_bg_2 center' colspan='3' >";
-      Dropdown::showFromArray('techs', $techs, ['multiple' => true]);
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_2'></td><td colspan='4' class='center'>";
-      echo Html::submit(_sx('button', 'Post'), ['name' => 'send', 'class' => 'btn btn-primary']);
-      echo "</td></tr>";
-
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
-
+   if (isset($_POST["send"]) && isset($_POST['techs'])) {
+      $report = new Report();
+      $report->showOccupationReports($_POST['techs'], $_POST["date1"], $_POST["date2"]);
    }
 
 } else {

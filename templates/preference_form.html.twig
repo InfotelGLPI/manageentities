@@ -1,0 +1,72 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+<form name="form" method="post" action="{{ form_url }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="id" value="{{ id }}">
+    <div class="card mb-3 mx-auto" style="max-width: 800px;">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-adjustments"></i>
+            <strong>{{ plugin_title }}</strong>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {{ fields.htmlField(
+                    'show_on_load',
+                    show_on_load_html,
+                    __('Launch the plugin Entities portal with GLPI launching', 'manageentities')
+                ) }}
+                {{ fields.htmlField(
+                    'contract_states',
+                    contract_states_html,
+                    __('Status list contract for the general monitoring', 'manageentities')
+                ) }}
+                {{ fields.htmlField(
+                    'business_id',
+                    business_html,
+                    __('Default list of Business for the general monitoring', 'manageentities')
+                ) }}
+                {{ fields.htmlField(
+                    'companies_id',
+                    companies_html,
+                    __('Default list of companies for the general monitoring', 'manageentities')
+                ) }}
+            </div>
+            <div class="alert alert-warning d-flex align-items-center gap-2 mt-2 mb-0">
+                <i class="ti ti-alert-triangle"></i>
+                {{ __('Warning : If there are more than one plugin which be loaded at startup, then only the first will be used', 'manageentities') }}
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" name="update_user_preferences_manageentities" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>{{ _x('button', 'Post') }}
+            </button>
+        </div>
+    </div>
+</form>

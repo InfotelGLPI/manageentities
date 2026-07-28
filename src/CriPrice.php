@@ -212,7 +212,7 @@ class CriPrice extends CommonDBTM
     /**
      * Show price selection for critype and entity
      *
-     * @param type $item
+     * @param $item
      *
      * @return boolean
      */
@@ -237,7 +237,7 @@ class CriPrice extends CommonDBTM
     /**
      * Show price for cri type
      *
-     * @param type $item
+     * @param $item
      *
      * @return boolean
      */
@@ -279,7 +279,7 @@ class CriPrice extends CommonDBTM
     /**
      * Show price for contract days
      *
-     * @param type $item
+     * @param $item
      *
      * @return boolean
      */
@@ -501,7 +501,7 @@ class CriPrice extends CommonDBTM
     /**
      * Add cri price
      *
-     * @param type $values
+     * @param $values
      */
     function addCriPrice($values)
     {
@@ -524,7 +524,7 @@ class CriPrice extends CommonDBTM
     /**
      * Set default price for contract days
      *
-     * @param type $input
+     * @param $input
      *
      * @return type
      * @global type $DB
@@ -555,19 +555,18 @@ class CriPrice extends CommonDBTM
     /**
      * Manage AJAX showForm display
      *
-     * @param type $toupdate
-     * @param type $function_name
-     * @param type $itemtype
-     * @param type $items_id
-     * @param type $parenttype
-     * @param type $parents_id
+     * @param $toupdate
+     * @param $function_name
+     * @param $itemtype
+     * @param $items_id
+     * @param $parenttype
+     * @param $parents_id
      *
      * @global type $CFG_GLPI
      *
      */
     static function getJSEdition($toupdate, $function_name, $itemtype, $items_id, $parenttype, $parents_id)
     {
-        global $CFG_GLPI;
 
         $dbu = new DbUtils();
         $parent = $dbu->getItemForItemtype($parenttype);
@@ -616,7 +615,7 @@ class CriPrice extends CommonDBTM
     /**
      * Check mandatory field for showForm
      *
-     * @param type $input
+     * @param $input
      *
      * @return boolean
      */

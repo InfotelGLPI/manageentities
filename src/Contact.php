@@ -58,10 +58,10 @@ class Contact extends CommonDBTM
     /**
      * Add a contact ba default
      *
-     * @param type $contacts_id
-     * @param type $entities_id
+     * @param  $contacts_id
+     * @param  $entities_id
      *
-     * @global type $DB
+     * @global  $DB
      *
      */
     function addContactByDefault($contacts_id, $entities_id)
@@ -78,11 +78,9 @@ class Contact extends CommonDBTM
 
     /**
      *
-     * @param type $instID
+     * @param  $instID
      *
-     * @global type $CFG_GLPI
-     *
-     * @global type $DB
+     * @global  $DB
      */
     function buildContactsForTemplate(array $instID, string $root_doc): array
     {

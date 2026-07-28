@@ -27,6 +27,7 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\Entity;
@@ -65,55 +66,33 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
 
 Report::title();
 
+// The submitted usertype (POST) wins; otherwise fall back to the GET/default value.
+$usertype = $_POST["usertype"] ?? ($_GET["usertype"] ?? "user");
+
+// Capture GLPI's own field/dropdown HTML so the Twig template can inject it (|raw).
+$date1_field = Html::showDateField("date1", ['value' => $_POST["date1"], 'display' => false]);
+$date2_field = Html::showDateField("date2", ['value' => $_POST["date2"], 'display' => false]);
+
+ob_start();
+User::dropdown([
+    'name'   => "tech_num",
+    'value'  => $owner,
+    'entity' => $_SESSION["glpiactive_entity"],
+    'right'  => 'all',
+]);
+$tech_dropdown = ob_get_clean();
+
+TemplateRenderer::getInstance()->display('@manageentities/report_search_form.html.twig', [
+    'form_url'      => $_SERVER['REQUEST_URI'],
+    'date1_field'   => $date1_field,
+    'date2_field'   => $date2_field,
+    'tech_dropdown' => $tech_dropdown,
+    'usertype'      => $usertype,
+]);
+
 if (isset($_POST["choice_tech"])) {
-
-      echo "<div class='center'><form action=\"report.form.php\" method=\"post\">";
-      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
-      echo __('Start date') . " :</td><td>";
-      Html::showDateField("date1", ['value' => $_POST["date1"]]);
-      echo "</td><td rowspan='2' class='center'>";
-      echo Html::submit(_sx('button', 'Post'), ['name' => 'choice_tech', 'class' => 'btn btn-primary']);
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_2'><td class='right'>" . __('End date') . " :</td><td>";
-      Html::showDateField("date2", ['value' => $_POST["date2"]]);
-      echo "</td></tr>";
-      ////stats Users
-      echo "<tr><td class='tab_bg_2 center' colspan='3'>";
-      echo "<input type='radio' id='radio_group' name='usertype' value='group' " . ($_POST["usertype"] == "group" ? "checked" : "") . ">Tous";
-      echo "<hr>";
-      echo "<input type='radio' id='radio_alluser' name='usertype' value='user' " . ($_POST["usertype"] == "user" ? "checked" : "") . ">";
-      User::dropdown(['name' => "tech_num", 'value' => $owner, 'entity' => $_SESSION["glpiactive_entity"], 'right' => 'all']);
-      echo "</td></tr>";
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
-      $CriDetail = new CriDetail();
-       $CriDetail->showHelpdeskReports($_POST["usertype"], $owner, $_POST["date1"], $_POST["date2"]);
-
-   } else {
-
-      echo "<div class='center'><form action=\"report.form.php\" method=\"post\">";
-      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td class='right'>";
-      echo __('Start date') . " :</td><td>";
-      Html::showDateField("date1", ['value' => $_POST["date1"]]);
-      echo "</td><td rowspan='2' class='center'>";
-      echo Html::submit(_sx('button', 'Post'), ['name' => 'choice_tech', 'class' => 'btn btn-primary']);
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_2'><td class='right'>" . __('End date') . " :</td><td>";
-      Html::showDateField("date2", ['value' => $_POST["date2"]]);
-      echo "</td></tr>";
-      //stats Users
-      echo "<tr><td class='tab_bg_2 center' colspan='3'>";
-      echo "<input type='radio' id='radio_group' name='usertype' value='group' " . ($_GET["usertype"] == "group" ? "checked" : "") . ">" . __('All');
-      echo "<hr>";
-      echo "<input type='radio' id='radio_alluser' name='usertype' value='user' " . ($_GET["usertype"] == "user" ? "checked" : "") . ">";
-      User::dropdown(['name' => "tech_num", 'value' => $owner, 'entity' => $_SESSION["glpiactive_entity"], 'right' => 'all']);
-
-      echo "</td></tr>";
-      echo "</table>";
-      Html::closeForm();
-      echo "</div>";
-
+    $CriDetail = new CriDetail();
+    $CriDetail->showHelpdeskReports($_POST["usertype"], $owner, $_POST["date1"], $_POST["date2"]);
 }
 
 Html::footer();

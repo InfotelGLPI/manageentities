@@ -383,13 +383,14 @@ class CriDetail extends CommonDBTM
                 'glpi_tickets_users.type' => Ticket::ASSIGNED,
                 'glpi_tickets' . '.is_deleted' => 0,
                 'glpi_documents' . '.documentcategories_id' => $config->fields["documentcategories_id"],
-                $this->getTable() . '.date' => ['>=', $date1],
-                $this->getTable() . '.date' => ['<=', $date2],
 
             ],
             'GROUPBY' => ['glpi_documents.tickets_id'],
             'ORDERBY' => [$this->getTable() . '.date ASC'],
         ];
+
+        $criteria['WHERE'][] = [$this->getTable().'.date' => ['>=', $date1]];
+        $criteria['WHERE'][] = [$this->getTable().'.date' => ['<=', $date2]];
 
         if ($usertype != "group") {
             $criteria['WHERE'] = $criteria['WHERE'] + [
@@ -405,84 +406,89 @@ class CriDetail extends CommonDBTM
 
         $iterator = $DB->request($criteria);
 
-        if (Session::isMultiEntitiesMode()) {
-            $colsup = 1;
-        } else {
-            $colsup = 0;
+        $use_price = $config->fields['useprice'] == Config::PRICE;
+        $is_tree   = Session::isMultiEntitiesMode();
+
+        $columns    = [];
+        $formatters = [];
+        $entries    = [];
+
+        if ($is_tree) {
+            $columns['entity'] = _n('Entity', 'Entities', 1);
+        }
+        $columns['date']        = __('Date');
+        $columns['technicians'] = __('Technicians', 'manageentities');
+        if ($use_price) {
+            $columns['critype'] = CriType::getTypeName(1);
+        }
+        $columns['realtime']     = __('Crossed time (itinerary including)', 'manageentities');
+        $columns['withcontract'] = __('Intervention with contract', 'manageentities');
+        $columns['contract_num'] = __('Contract number');
+        $columns['ticket']       = __('Associated ticket', 'manageentities');
+        $columns['name']         = __('Name');
+        $columns['file']         = __('File');
+
+        // Columns holding pre-built HTML links must not be re-escaped by the datatable.
+        $formatters['ticket'] = 'raw_html';
+        $formatters['name']   = 'raw_html';
+        $formatters['file']   = 'raw_html';
+
+        foreach ($iterator as $data) {
+            $num_contract = '';
+            if ($data["withcontract"]) {
+                $contract = new \Contract();
+                $contract->getFromDB($data["contracts_id"]);
+                $num_contract = $contract->fields["num"] ?? '';
+            }
+
+            $ticket_html = '';
+            if ($data["tickets_id"] > 0) {
+                $ticket_html = "<a href='" . $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" . (int) $data["tickets_id"] . "'>"
+                    . (int) $data["tickets_id"] . "</a>";
+            }
+
+            $name_html = "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.form.php?id=" . (int) $data["id"] . "'>"
+                . "<strong>" . htmlspecialchars((string) $data["name"], ENT_QUOTES)
+                . ($_SESSION["glpiis_ids_visible"] ? " (" . (int) $data["id"] . ")" : "")
+                . "</strong></a>";
+
+            $doc = new Document();
+            $doc->getFromDB($data["id"]);
+
+            $entry = [
+                'date'         => Html::convdate($data["date"]),
+                'technicians'  => $data["technicians"] ?? '',
+                'realtime'     => $data["realtime"],
+                'withcontract' => \Dropdown::getYesNo($data["withcontract"]),
+                'contract_num' => $num_contract,
+                'ticket'       => $ticket_html,
+                'name'         => $name_html,
+                'file'         => $doc->getDownloadLink(),
+            ];
+            if ($is_tree) {
+                $entry['entity'] = \Dropdown::getDropdownName("glpi_entities", $data['entity']);
+            }
+            if ($use_price) {
+                $entry['critype'] = \Dropdown::getDropdownName(
+                    "glpi_plugin_manageentities_critypes",
+                    $data['plugin_manageentities_critypes_id']
+                );
+            }
+            $entries[] = $entry;
         }
 
-        if (count($iterator) > 0) {
-            echo "<form method='post' action=\"./front/entity.php\">";
-            echo "<div class='center'><table class='tab_cadre center' width='95%'>";
-            echo "<tr><th colspan='" . (12 + $colsup) . "'>" . Cri::getTypeName(2) . "&nbsp;";
-            if ($usertype != "group") {
-                echo " -" . $dbu->getusername($technum) . "&nbsp;";
-            }
-            printf(__('From %1$s to %2$s :'), Html::convdate($date1), Html::convdate($date2)) . "</th></tr>";
-            echo "<tr>";
-            if (Session::isMultiEntitiesMode()) {
-                echo "<th>" . _n('Entity', 'Entities', 1) . "</th>";
-            }
-            echo "<th>" . __('Date') . "</th>";
-            echo "<th>" . __('Technicians', 'manageentities') . "</th>";
-            if ($config->fields['useprice'] == Config::PRICE) {
-                echo "<th>" . CriType::getTypeName(1) . "</th>";
-            }
-            echo "<th>" . __('Crossed time (itinerary including)', 'manageentities') . "</th>";
-            echo "<th>" . __('Intervention with contract', 'manageentities') . "</th>";
-            echo "<th>" . __('Contract number') . "</th>";
-            echo "<th>" . __('Associated ticket', 'manageentities') . "</th>";
-            echo "<th>" . __('Name') . "</th>";
-            echo "<th width='100px'>" . __('File') . "</th>";
-            echo "</tr>";
-            $i = 0;
-            foreach ($iterator as $data) {
-                $i++;
-                $class = " class='tab_bg_2 ";
-                if ($i % 2) {
-                    $class = " class='tab_bg_1 ";
-                }
-                echo "<tr $class" . ($data["is_deleted"] == '1' ? "_2" : "") . "'>";
-
-                if (Session::isMultiEntitiesMode()) {
-                    echo "<td class='center'>" . \Dropdown::getDropdownName("glpi_entities", $data['entity']) . "</td>";
-                }
-                echo "<td class='center'>" . Html::convdate($data["date"]) . "</td>";
-                echo "<td class='center'>" . $data["technicians"] . "</td>";
-                if ($config->fields['useprice'] == Config::PRICE) {
-                    echo "<td class='center'>" . \Dropdown::getDropdownName(
-                        "glpi_plugin_manageentities_critypes",
-                        $data['plugin_manageentities_critypes_id']
-                    ) . "</td>";
-                }
-                echo "<td class='center'>" . $data["realtime"] . "</td>";
-                echo "<td class='center'>" . \Dropdown::getYesNo($data["withcontract"]) . "</td>";
-                $num_contract = "";
-                if ($data["withcontract"]) {
-                    $contract = new \Contract();
-                    $contract->getFromDB($data["contracts_id"]);
-                    $num_contract = $contract->fields["num"];
-                }
-                echo "<td class='center'>" . $num_contract . "</td>";
-                echo "<td class='center'>";
-                if ($data["tickets_id"] > 0) {
-                    echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id=" . $data["tickets_id"] . "\">" . $data["tickets_id"] . "</a>";
-                }
-                echo "</td>";
-                echo "<td class='left'><a href='" . $CFG_GLPI["root_doc"] . "/front/document.form.php?id=" . $data["id"] . "'><b>" . $data["name"];
-                if ($_SESSION["glpiis_ids_visible"]) {
-                    echo " (" . $data["id"] . ")";
-                }
-                echo "</b></a></td>";
-                $doc = new Document();
-                $doc->getFromDB($data["id"]);
-                echo "<td class='center'  width='100px'>" . $doc->getDownloadLink() . "</td>";
-
-                echo "</tr>";
-            }
-            echo "</table></div>";
-            Html::closeForm();
+        $title = Cri::getTypeName(2);
+        if ($usertype != "group") {
+            $title .= ' - ' . $dbu->getusername($technum);
         }
+        $title .= ' ' . sprintf(__('From %1$s to %2$s :'), Html::convdate($date1), Html::convdate($date2));
+
+        TemplateRenderer::getInstance()->display('@manageentities/helpdesk_reports.html.twig', [
+            'title'      => $title,
+            'columns'    => $columns,
+            'formatters' => $formatters,
+            'entries'    => $entries,
+        ]);
     }
 
     /**
@@ -491,7 +497,6 @@ class CriDetail extends CommonDBTM
      */
     public static function addReports(Ticket $ticket, $options = [])
     {
-        global $CFG_GLPI;
 
         $rand = mt_rand();
         $toupdate = 'showCriDetail' . $rand;
@@ -541,72 +546,45 @@ class CriDetail extends CommonDBTM
             $regeneration_ok = true;
         }
 
-        if ($generation_ok) {
-            if (isset($options['toupdate'])) {
-                echo "<div id='" . $options['toupdate'] . "'>";
-            } else {
-                echo "<div id='showCriDetail$rand'>";
-            }
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th>";
-            echo _n('Intervention report', 'Intervention reports', 1, 'manageentities');
-            echo "</th></tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center'>";
-        }
-
-        // GENERATE
-        $pdf_action = '';
-        $title = '';
+        // GENERATE / REGENERATE labels
+        $pdf_action  = '';
+        $title       = '';
+        $show_action = $generation_ok || $regeneration_ok;
         if ($generation_ok) {
             $title = __('Generation of the intervention report', 'manageentities');
-            // REGENERATE
         } elseif ($regeneration_ok) {
-            $title = __('Regenerate the intervention report', 'manageentities');
+            $title      = __('Regenerate the intervention report', 'manageentities');
             $pdf_action = 'update_cri';
         }
 
-        if ($generation_ok || $regeneration_ok) {
+        $params = [];
+        if ($show_action) {
             Html::requireJs('glpi_dialog');
             $params = [
                 'pdf_action' => $pdf_action,
-                'job' => $ticket->fields['id'],
-                'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
-                'toupdate' => "showCriDetail$rand",
-                'width' => 1000,
-                'height' => 550,
+                'job'        => $ticket->fields['id'],
+                'root_doc'   => PLUGIN_MANAGEENTITIES_WEBDIR,
+                'toupdate'   => "showCriDetail$rand",
+                'width'      => 1000,
+                'height'     => 550,
             ];
-
-            echo Html::submit($title, [
-                'name' => 'showCriForm',
-                'class' => 'btn btn-primary',
-                'onclick' => "manageentities_loadCriForm(\"showCriForm\", \"$modal\", " . json_encode($params) . ");",
-            ]);
-
-            //         if (!isset($options['modal'])) {
-            //            echo "<div id=\"$modal\" title=\"" . $title . "\" style=\"display:none;text-align:center\"></div>";
-            //         }
-        }
-        echo "&nbsp;";
-        // DELETE
-        if (Session::haveRight("plugin_manageentities_cri_create", UPDATE)
-            && ($cridetail['documents_id'] ?? 0) != 0) {
-            echo "<form method='post' name='cridetail_form$rand' id='cridetail_form$rand'
-               action='" . Toolbox::getItemTypeFormURL(Cri::class) . "' style='display:inline'>";
-            echo Html::submit(
-                _sx('button', 'Delete permanently'),
-                ['name' => 'purgedoc', 'class' => 'btn btn-danger']
-            );
-            echo Html::hidden('documents_id', ['value' => $cridetail['documents_id']]);
-            Html::closeForm();
         }
 
-        if ($generation_ok) {
-            echo "</td>";
-            echo "</tr>";
-            echo "</table>";
-            echo "</div>";
-        }
+        $show_delete = Session::haveRight("plugin_manageentities_cri_create", UPDATE)
+                       && ($cridetail['documents_id'] ?? 0) != 0;
+
+        TemplateRenderer::getInstance()->display('@manageentities/cridetail_add_reports.html.twig', [
+            'wrapper_id'   => $options['toupdate'] ?? "showCriDetail$rand",
+            'show_wrapper' => $generation_ok,
+            'show_action'  => $show_action,
+            'title'        => $title,
+            'modal'        => $modal,
+            'params'       => $params,
+            'rand'         => $rand,
+            'show_delete'  => $show_delete,
+            'delete_url'   => Toolbox::getItemTypeFormURL(Cri::class),
+            'documents_id' => $cridetail['documents_id'] ?? 0,
+        ]);
     }
 
     //shows CRI from ticket or from entity portal
@@ -832,21 +810,21 @@ class CriDetail extends CommonDBTM
                         echo "<tr  class='tab_bg_2'><td class='center' colspan='" . $colspan . "'>" . __(
                             'Periods of contract',
                             'manageentities'
-                        ) . " :  " . $data['name'] . "</td></tr>";
+                        ) . " :  " . htmlspecialchars((string) $data['name'], ENT_QUOTES) . "</td></tr>";
                         foreach ($resultCriDetail['result'] as $dataCriDetail) {
                             echo "<tr class='tab_bg_1" . ($dataCriDetail["is_deleted"] == '1' ? "_2" : "") . "'>";
                             echo "<td>" . Html::convdate($dataCriDetail['tickets_date']) . "</td>";
-                            echo "<td>" . $dataCriDetail['tickets_name'] . "</td>";
+                            echo "<td>" . htmlspecialchars((string) $dataCriDetail['tickets_name'], ENT_QUOTES) . "</td>";
 
                             // If a cri as been generated we get its data
                             if (isset($dataCriDetail["documents_id"]) && $dataCriDetail["documents_id"] != 0) {
-                                echo "<td>" . $dataCriDetail['plugin_manageentities_critypes_name'] . "</td>";
+                                echo "<td>" . htmlspecialchars((string) $dataCriDetail['plugin_manageentities_critypes_name'], ENT_QUOTES) . "</td>";
                                 $doc = new Document();
                                 $doc->getFromDB($dataCriDetail["documents_id"]);
                                 if (Session::getCurrentInterface() == 'central') {
                                     echo "<td class='center'  width='100px'>" . $doc->getDownloadLink() . "</td>";
                                 } else {
-                                    echo "<td class='center'  width='100px'>" . $doc->getName() . "</td>";
+                                    echo "<td class='center'  width='100px'>" . htmlspecialchars((string) $doc->getName(), ENT_QUOTES) . "</td>";
                                 }
                                 if ($config->fields['hourorday'] == Config::HOUR
                                     || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
@@ -855,13 +833,13 @@ class CriDetail extends CommonDBTM
                                     echo "<td></td>";
                                 }
 
-                                echo "<td>" . $dataCriDetail['tech'] . "</td>";
+                                echo "<td>" . htmlspecialchars((string) $dataCriDetail['tech'], ENT_QUOTES) . "</td>";
                                 // Else no cri generated
                             } else {
-                                echo "<td>" . \Dropdown::getDropdownName(
+                                echo "<td>" . htmlspecialchars((string) \Dropdown::getDropdownName(
                                     'glpi_plugin_manageentities_critypes',
                                     $dataCriDetail['plugin_manageentities_critypes_id']
-                                ) . "</td>";
+                                ), ENT_QUOTES) . "</td>";
                                 echo "<td class='center'  width='100px'></td>";
                                 if ($config->fields['hourorday'] == Config::HOUR
                                     || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
@@ -869,7 +847,7 @@ class CriDetail extends CommonDBTM
                                 } else {
                                     echo "<td>" . \Dropdown::EMPTY_VALUE . "</td>";
                                 }
-                                echo "<td>" . $dataCriDetail['tech'] . "</td>";
+                                echo "<td>" . htmlspecialchars((string) $dataCriDetail['tech'], ENT_QUOTES) . "</td>";
                             }
 
                             if ($dataCriDetail['pricecri']) {

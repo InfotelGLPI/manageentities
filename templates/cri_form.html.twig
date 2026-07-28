@@ -1,0 +1,87 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<div class="red styleContractTitle" style="display:none" id="manageentities_cri_error"></div>
+
+<form action="{{ form_action }}" method="post" name="formReport">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="REPORT_ID" value="{{ report_id }}">
+    {{ hidden_fields|raw }}
+
+    <div class="center">
+        <table class="tab_cadre_fixe">
+            <tr class="tab_bg_1">
+                <th>{{ _n('Contract', 'Contracts', 1) }}</th>
+                <td colspan="2">{{ contract_html|raw }}</td>
+            </tr>
+
+            <tr class="tab_bg_1">
+                <th>{{ __('Technicians', 'manageentities') }}</th>
+                <td>{{ technicians_html|raw }}</td>
+                <td>{{ add_tech_html|raw }}</td>
+            </tr>
+
+            {% if critype_html is not null %}
+                <tr class="tab_bg_1">
+                    <th>{{ critype_label }}</th>
+                    <td colspan="2">{{ critype_html|raw }}</td>
+                </tr>
+            {% endif %}
+
+            {% if number_moving_html is not null %}
+                <tr class="tab_bg_1">
+                    <th>{{ __('Number of moving', 'manageentities') }}</th>
+                    <td colspan="2">{{ number_moving_html|raw }}</td>
+                </tr>
+            {% endif %}
+
+            {% if is_task %}
+                {% if has_tasks %}
+                    <tr class="tab_bg_1">
+                        <th>{{ __('Detail of the realized works', 'manageentities') }}</th>
+                        <td colspan="2">{{ description_html|raw }}</td>
+                    </tr>
+                    {% if generate_button_html is not empty %}
+                        <tr class="tab_bg_2">
+                            <td class="center" colspan="3">{{ generate_button_html|raw }}</td>
+                        </tr>
+                    {% endif %}
+                {% else %}
+                    <tr class="tab_bg_1">
+                        <td class="center red" colspan="3">{{ no_tasks_message }}</td>
+                    </tr>
+                {% endif %}
+            {% else %}
+                <tr class="tab_bg_1">
+                    <td colspan="3">
+                        <div class="alert alert-warning d-flex">{{ not_task_message }}</div>
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+</form>

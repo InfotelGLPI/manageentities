@@ -1,0 +1,87 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+<form action="{{ form_url }}" method="post">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    <div class="modal" tabindex="-1" id="directhelpdesk-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="ti ti-file-euro me-2"></i>
+                        {{ __('Add an unbilled intervention', 'manageentities') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="{{ __('Close') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="tab_cadre">
+                        <tr class="tab_bg_1">
+                            <td>{{ entity_type }} <span class="red">*</span></td>
+                            <td>
+                                {{ entity_dropdown|raw }}
+                                {{ js_block|raw }}
+                            </td>
+                        </tr>
+                        <span id="entity_alert">{{ alert|raw }}</span>
+                        <tr class="tab_bg_1">
+                            <td>{{ __('Title') }} <span class="red">*</span></td>
+                            <td>{{ category_dropdown|raw }}</td>
+                        </tr>
+                        <tr class="tab_bg_1">
+                            <td>{{ __('Description') }} </td>
+                            <td colspan="4">{{ comment_textarea|raw }}</td>
+                        </tr>
+                        <tr class="tab_bg_1">
+                            <td>{{ __('Date') }} <span class="red">*</span></td>
+                            <td>{{ date_field|raw }}</td>
+                        </tr>
+                        <tr class="tab_bg_1">
+                            <td>
+                                <i class="ti ti-clock-stop me-1" title="{{ __('Duration') }}"> </i>
+                                <span class="red">*</span>
+                            </td>
+                            <td>{{ time_field|raw }}</td>
+                        </tr>
+                        <tr class="tab_bg_1">
+                            <td><i class="ti ti-ticket me-1" title="{{ __('Linked ticket') }}"></i></td>
+                            <td>{{ ticket_dropdown|raw }}</td>
+                        </tr>
+                        <tr class="tab_bg_1 center">
+                            <td>
+                                {{ users_hidden|raw }}
+                                <button type="submit" name="add" class="btn btn-primary">
+                                    {{ _x('button', 'Post') }}
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

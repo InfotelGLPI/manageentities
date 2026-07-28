@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use CommonDBTM;
 use CommonGLPI;
 use DBConnection;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Migration;
 use Session;
@@ -138,45 +139,14 @@ class Preference extends CommonDBTM
         $data = plugin_version_manageentities();
         $self = new self();
         $self->getFromDB($ID);
-        echo "<form action='" . $target . "' method='post'>";
-        echo "<div class='center'>";
-
-        echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-        echo "<tr><th colspan='2'>" . $data['name'] . " - " . $data['version'] . "</th></tr>";
-
-        echo "<tr class='tab_bg_1 center'><td>" . __(
-                'Launch the plugin Entities portal with GLPI launching',
-                'manageentities'
-            ) . "</td>";
-        echo "<td>";
-        \Dropdown::showYesNo("show_on_load", $self->fields["show_on_load"]);
-        echo "</td></tr>";
 
         $contractstate = new ContractState();
-        $contractstates = $contractstate->find();
         $states = [];
-        foreach ($contractstates as $key => $val) {
+        foreach ($contractstate->find() as $key => $val) {
             $states[$key] = $val['name'];
         }
-        echo "<tr class='tab_bg_1 center'><td>" . __(
-                'Status list contract for the general monitoring',
-                'manageentities'
-            ) . "</td>";
-        echo "<td>";
-        if ($self->fields["contract_states"] == null) {
-            \Dropdown::showFromArray("contract_states", $states, [
-                'multiple' => true,
-                'width' => 200,
-                'value' => $self->fields["contract_states"]
-            ]);
-        } else {
-            \Dropdown::showFromArray("contract_states", $states, [
-                'multiple' => true,
-                'width' => 200,
-                'values' => json_decode($self->fields["contract_states"], true)
-            ]);
-        }
-        echo "</td></tr>";
+        $states_decoded  = json_decode($self->fields["contract_states"] ?? '', true);
+        $states_selected = is_array($states_decoded) ? $states_decoded : [];
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -196,75 +166,59 @@ class Preference extends CommonDBTM
             ],
             'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
         ]);
-
         $users = [];
-        foreach ($iterator as $data) {
-            $users[$data['id']] = $data['realname'] . " " . $data['firstname'];
+        foreach ($iterator as $row) {
+            $users[$row['id']] = $row['realname'] . " " . $row['firstname'];
         }
-        echo "<tr class='tab_bg_1 center'><td>" . __(
-                'Default list of Business for the general monitoring',
-                'manageentities'
-            ) . "</td>";
-        echo "<td>";
-        if ($self->fields["business_id"] == null) {
-            \Dropdown::showFromArray("business_id", $users, [
-                'multiple' => true,
-                'width' => 200,
-                'value' => $self->fields["business_id"]
-            ]);
-        } else {
-            \Dropdown::showFromArray("business_id", $users, [
-                'multiple' => true,
-                'width' => 200,
-                'values' => json_decode($self->fields["business_id"], true)
-            ]);
-        }
-        echo "</td></tr>";
-        echo "<tr class='tab_bg_1 center'><td>" . __(
-                'Default list of companies for the general monitoring',
-                'manageentities'
-            ) . "</td>";
-        echo "<td>";
+        $business_decoded  = json_decode($self->fields["business_id"] ?? '', true);
+        $business_selected = is_array($business_decoded) ? $business_decoded : [];
+
         $plugin_company = new Company();
-        $result = $plugin_company->find();
-
         $company = [];
-        foreach ($result as $data) {
-            $company[$data['id']] = $data['name'];
+        foreach ($plugin_company->find() as $row) {
+            $company[$row['id']] = $row['name'];
         }
-        if ($self->fields['companies_id'] == null) {
-            \Dropdown::showFromArray("companies_id", $company, [
-                'multiple' => true,
-                'width' => 200,
-                'value' => $self->fields["companies_id"]
-            ]);
-        } else {
-            \Dropdown::showFromArray("companies_id", $company, [
-                'multiple' => true,
-                'width' => 200,
-                'values' => json_decode($self->fields["companies_id"], true)
-            ]);
-        }
-        echo "</td></tr>";
+        $companies_decoded  = json_decode($self->fields['companies_id'] ?? '', true);
+        $companies_selected = is_array($companies_decoded) ? $companies_decoded : [];
 
+        // Capture GLPI's own dropdowns so the Twig template can inject them (|raw).
+        ob_start();
+        \Dropdown::showYesNo("show_on_load", $self->fields["show_on_load"]);
+        $show_on_load_html = ob_get_clean();
 
-        echo "<tr class='tab_bg_1 center'><td colspan='2'>";
-        echo Html::submit(
-            _sx('button', 'Post'),
-            ['name' => 'update_user_preferences_manageentities', 'class' => 'btn btn-primary']
-        );
-        echo Html::hidden('id', ['value' => $ID]);
-        echo "</td></tr>";
-        echo "<tr class='tab_bg_1 center'><td colspan='2'>";
-        echo __(
-            'Warning : If there are more than one plugin which be loaded at startup, then only the first will be used',
-            'manageentities'
-        );
-        echo "</td></tr>";
-        echo "</table>";
+        ob_start();
+        \Dropdown::showFromArray("contract_states", $states, [
+            'multiple' => true,
+            'width'    => 200,
+            'values'   => $states_selected,
+        ]);
+        $contract_states_html = ob_get_clean();
 
-        echo "</div>";
-        Html::closeForm();
+        ob_start();
+        \Dropdown::showFromArray("business_id", $users, [
+            'multiple' => true,
+            'width'    => 200,
+            'values'   => $business_selected,
+        ]);
+        $business_html = ob_get_clean();
+
+        ob_start();
+        \Dropdown::showFromArray("companies_id", $company, [
+            'multiple' => true,
+            'width'    => 200,
+            'values'   => $companies_selected,
+        ]);
+        $companies_html = ob_get_clean();
+
+        TemplateRenderer::getInstance()->display('@manageentities/preference_form.html.twig', [
+            'form_url'             => $target,
+            'plugin_title'         => $data['name'] . " - " . $data['version'],
+            'id'                   => $ID,
+            'show_on_load_html'    => $show_on_load_html,
+            'contract_states_html' => $contract_states_html,
+            'business_html'        => $business_html,
+            'companies_html'       => $companies_html,
+        ]);
     }
 
     function prepareInputForUpdate($input)

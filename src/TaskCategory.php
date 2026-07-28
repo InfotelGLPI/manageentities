@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use CommonDBTM;
 use CommonGLPI;
 use DBConnection;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Migration;
 use Session;
@@ -112,42 +113,22 @@ class TaskCategory extends CommonDBTM
         }
 
         $taskCategory = new \TaskCategory();
+        $canUpdate = false;
         if ($ID) {
             $this->getFromDBByCrit(['taskcategories_id' => $ID]);
             $taskCategory->getFromDB($ID);
             $canUpdate = $taskCategory->can($ID, UPDATE);
         }
 
-        $rand = mt_rand();
+        TemplateRenderer::getInstance()->display('@manageentities/taskcategory_form.html.twig', [
+            'form_url'        => $options['target'],
+            'item_id'         => $this->fields["id"] ?? 0,
+            'title'           => self::getTypeName(1) . " - " . ($taskCategory->fields["name"] ?? ''),
+            'is_usedforcount' => $this->fields["is_usedforcount"] ?? 0,
+            'can_update'      => $canUpdate,
+        ]);
 
-        echo "<form name='taskCategory_form$rand' id='taskCategory_form$rand' method='post'
-            action='" . $options['target'] . "'>";
-
-        echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-
-        echo "<tr><th colspan='2'>";
-
-        echo self::getTypeName(1) . " - " . $taskCategory->fields["name"];
-
-        echo "</th></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-
-        echo "<td>" . __('Use for calculation of intervention report', 'manageentities') . "</td><td>";
-        \Dropdown::showYesNo("is_usedforcount", $this->fields["is_usedforcount"]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo Html::hidden('id', ['value' => $this->fields["id"]]);
-
-        $options['canedit'] = false;
-
-        if ($canUpdate) {
-            $options['canedit'] = true;
-        }
-        $options['candel'] = false;
-        $options['colspan'] = '1';
-        $this->showFormButtons($options);
+        return true;
     }
 
     public static function install(Migration $migration)

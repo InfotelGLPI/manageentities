@@ -27,10 +27,16 @@
  --------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Servicecatalog\Main;
 
 Session::checkLoginUser();
+// The dashboard below (aggregated intervention time / billing data) is emitted before
+// Search::show() runs its own right check, so enforce the read right up-front — otherwise
+// an authenticated user without plugin_manageentities could read the dashboard before the
+// later 403 (same guard as front/company.php).
+Session::checkRight('plugin_manageentities', READ);
 
 if (Session::getCurrentInterface() == 'central') {
     Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", DirectHelpdesk::class);
@@ -54,26 +60,13 @@ if (!isset($_GET['checkbox3'])) {
     $_GET['checkbox3'] = 1;
 }
 
-$checkbox2State = isset($_GET['checkbox2']) ? $_GET['checkbox2'] : '0';
-$checkbox3State = isset($_GET['checkbox3']) ? $_GET['checkbox3'] : '0';
+$checkbox2State = $_GET['checkbox2'] ?? '0';
+$checkbox3State = $_GET['checkbox3'] ?? '0';
 
-echo "<div class='center' style='margin-top: 10px;margin-bottom: 20px;'>";
-echo "<form>";
-
-echo "<label>";
-$checked2 = $checkbox2State === '1' ? 'checked' : '';
-echo "<input type='checkbox' id='checkbox2' onclick='reloadPageWithParam(\"checkbox2\")' $checked2 >";
-echo __("2 hours minimum", "manageentities");
-echo "</label>";
-
-
-echo " <label>";
-$checked3 = $checkbox3State === '1' ? 'checked' : '';
-echo "<input type='checkbox' id='checkbox3' onclick='reloadPageWithParam(\"checkbox3\")' $checked3 >";
-echo __("3 hours minimum", "manageentities");
-echo "</label>";
-echo "</form>";
-echo "</div>";
+TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_dashboard_filter.html.twig', [
+    'checkbox2' => $checkbox2State === '1',
+    'checkbox3' => $checkbox3State === '1',
+]);
 
 if ($checkbox3State === '1') {
     $min = DirectHelpdesk::THREE_HOUR;

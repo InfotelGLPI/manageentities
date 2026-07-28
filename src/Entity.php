@@ -578,7 +578,8 @@ class Entity extends CommonGLPI
             if (count($debug) > 0) {
                 foreach ($debug as $client) {
                     echo "<tr class='tab_bg_1'>";
-                    echo "<td>" . $client['name'] . "</td>";
+                    // Entity name is stored raw; escape it before echo (debug view).
+                    echo "<td>" . htmlspecialchars((string) $client['name'], ENT_QUOTES) . "</td>";
 
                     echo "<td>" . Html::convDate($client['signature']) . "</td>";
                     echo "</tr>";

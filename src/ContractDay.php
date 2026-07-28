@@ -244,7 +244,7 @@ class ContractDay extends CommonDBTM
     /**
      * Add number day in contractday
      *
-     * @param type $values
+     * @param $values
      */
     public function addNbDay($values)
     {
@@ -409,7 +409,7 @@ class ContractDay extends CommonDBTM
      * Add a new contract day
      *
      * @param Contract $contract
-     * @param type $options
+     * @param $options
      */
     public static function addNewContractDay(\Contract $contract, $options = [])
     {
@@ -793,10 +793,10 @@ class ContractDay extends CommonDBTM
     /**
      * checkPeriod : Check if a period allready exists, to avoid 2 same periods on a contract
      *
-     * @param type $input
+     * @param  $input
      *
      * @return boolean
-     * @global type $DB
+     * @global  $DB
      *
      */
     public function checkPeriod($input)
@@ -873,7 +873,7 @@ class ContractDay extends CommonDBTM
     /**
      * checkMandatoryFields
      *
-     * @param type $input
+     * @param $input
      *
      * @return boolean
      */

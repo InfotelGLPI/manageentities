@@ -49,7 +49,7 @@ class EntityLogo extends CommonDBTM
     /**
      * Add a logo for entity
      *
-     * @param type $values
+     * @param $values
      *
      * @return boolean
      */
@@ -204,7 +204,7 @@ class EntityLogo extends CommonDBTM
     /**
      * Return logo
      *
-     * @param type $entities_id
+     * @param $entities_id
      *
      * @return boolean
      */

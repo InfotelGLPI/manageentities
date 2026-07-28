@@ -1616,8 +1616,12 @@ class Followup extends CommonDBTM
             if ($i == 10) {
                 echo "</tr><tr>";
             }
-            echo "<td width=10px style='background-color:" . $contract['color'] . "'> </td>";
-            echo "<td> " . $contract['name'] . "</td>";
+            // ContractState color/name are stored raw (GLPI 10+ dropdowns); escape both
+            // before writing them into the style attribute and the cell, otherwise a
+            // crafted color like "red' onmouseover='..." breaks out and injects markup
+            // (same escaping the DirectHelpdesk_Ticket neighbour already applies).
+            echo "<td width=10px style='background-color:" . htmlspecialchars((string) $contract['color'], ENT_QUOTES) . "'> </td>";
+            echo "<td> " . htmlspecialchars((string) $contract['name'], ENT_QUOTES) . "</td>";
             $i = $i + 1;
         }
         echo "</tr></table></br>";

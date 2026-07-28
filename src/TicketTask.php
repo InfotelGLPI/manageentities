@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Session;
 
@@ -117,43 +118,41 @@ class TicketTask extends CommonDBTM
         $item->input = [];
     }
 
-    static public function postForm($params)
+    static public function postForm($params): void
     {
         global $CFG_GLPI;
 
         $tickettask = $params['item'];
-        switch ($tickettask->getType()) {
-            case 'TicketTask':
-
-                $rand = mt_rand();
-                echo '<tr class="tab_bg_1"><td colspan="3"></td>';
-                echo '<td>';
-                echo "<div class='label right' style='width:300px;margin-right: 0;margin-left: auto;'>";
-                $value = $tickettask->fields['date'];
-                if (!empty($tickettask->fields['begin'])) {
-                    $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
-                }
-                $randDate = Html::showDateTimeField('new_date', [
-                    'value' => $value,
-                    'rand' => $rand,
-                    'mintime' => $CFG_GLPI["planning_begin"],
-                    'maxtime' => $CFG_GLPI["planning_end"]
-                ]);
-                $params = json_encode([
-                    'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
-                    //                                       'new_date_id'    => 'showdate' . $randDate,
-                    'tickets_id' => $tickettask->fields['tickets_id'],
-                    'tickettasks_id' => $tickettask->fields['id']
-                ]);
-                $tickettask_id = $tickettask->fields['id'];
-                echo "<span name=\"duplicate_$tickettask_id\" onclick='cloneTicketTask($params);'>";
-                echo "<i class='ti ti-copy pointer'
-            title='" . _sx('button', 'Duplicate') . "'></i>";
-
-                echo "</span>";
-                echo '</div>';
-                echo '</td></tr>';
-                break;
+        if ($tickettask->getType() !== 'TicketTask') {
+            return;
         }
+
+        $rand  = mt_rand();
+        $value = $tickettask->fields['date'];
+        if (!empty($tickettask->fields['begin'])) {
+            $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
+        }
+
+        // Capture GLPI's datetime field so the Twig template can inject it (|raw).
+        ob_start();
+        Html::showDateTimeField('new_date', [
+            'value'   => $value,
+            'rand'    => $rand,
+            'mintime' => $CFG_GLPI["planning_begin"],
+            'maxtime' => $CFG_GLPI["planning_end"],
+        ]);
+        $date_field = ob_get_clean();
+
+        $params_json = json_encode([
+            'root_doc'       => PLUGIN_MANAGEENTITIES_WEBDIR,
+            'tickets_id'     => $tickettask->fields['tickets_id'],
+            'tickettasks_id' => $tickettask->fields['id'],
+        ]);
+
+        TemplateRenderer::getInstance()->display('@manageentities/tickettask_duplicate_row.html.twig', [
+            'date_field'    => $date_field,
+            'params_json'   => $params_json,
+            'tickettask_id' => (int) $tickettask->fields['id'],
+        ]);
     }
 }

@@ -27,9 +27,6 @@
  --------------------------------------------------------------------------
  */
 
-use Glpi\Event;
-
-include('../../../../inc/includes.php');
 header('Content-Type: text/javascript');
 $add_text = __('Add');
 $add_text_collapsed = __('A');

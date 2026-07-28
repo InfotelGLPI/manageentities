@@ -1,0 +1,40 @@
+{#
+ -------------------------------------------------------------------------
+ manageentities plugin for GLPI
+ Copyright (C) 2017-2026 by the manageentities Development Team.
+
+ https://github.com/InfotelGLPI/manageentities
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of manageentities.
+
+ manageentities is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ manageentities is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ #}
+
+{# Read-only display filter: the checkboxes reload the page via GET (JS), no form submit. #}
+<div class="center d-flex justify-content-center gap-3" style="margin-top: 10px; margin-bottom: 20px;">
+    <label class="form-check-label d-inline-flex align-items-center gap-1">
+        <input type="checkbox" class="form-check-input mt-0" id="checkbox2"
+               onclick="reloadPageWithParam('checkbox2')"{{ checkbox2 ? ' checked' : '' }}>
+        {{ __('2 hours minimum', 'manageentities') }}
+    </label>
+    <label class="form-check-label d-inline-flex align-items-center gap-1">
+        <input type="checkbox" class="form-check-input mt-0" id="checkbox3"
+               onclick="reloadPageWithParam('checkbox3')"{{ checkbox3 ? ' checked' : '' }}>
+        {{ __('3 hours minimum', 'manageentities') }}
+    </label>
+</div>
