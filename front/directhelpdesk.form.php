@@ -42,7 +42,7 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
             throw new AccessDeniedHttpException();
         }
         $ticket = new Ticket();
-        $items = $_POST["select"];
+        $items = $_POST["select"] ?? [];
         $sum = 0;
         $input['content'] = '';
         // Only the target entity was validated above. The selected lines come from
@@ -72,6 +72,18 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 
                 $input['_users_id_assign'][] = $direct->fields['users_id'];
             }
+        }
+
+        // No valid line selected: $input['name']/$input['entities_id'] were never set
+        // (they are only populated per selected row), so adding the ticket here would
+        // create an empty "N/A" ticket with no intervention. Bail out with a message.
+        if (empty($selected)) {
+            Session::addMessageAfterRedirect(
+                __('Please select at least one intervention', 'manageentities'),
+                false,
+                ERROR
+            );
+            Html::back();
         }
 
         $newID = $ticket->add($input);
