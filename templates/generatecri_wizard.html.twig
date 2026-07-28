@@ -1,0 +1,141 @@
+{#
+ # Generate Intervention report (CRI) wizard form (manageentities plugin).
+ #
+ # All GLPI widgets (dropdowns, rich-text areas, date/duration pickers, AJAX
+ # reload scripts) are pre-rendered by PHP and injected here with |raw. The task
+ # management logic lives in a large <script> block (tasks_script) also injected
+ # with |raw — it carries PHP-interpolated values (webdir, config flags, stored
+ # tasks) that cannot be rebuilt from Twig alone. Plain text is auto-escaped by
+ # Twig; the <form> carries the GLPI CSRF token.
+ #}
+<form name="generate" method="post" action="{{ form_action }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    {{ hidden_fields|raw }}
+    <table class="tab_cadre" width="60%">
+        <tr class="tab_bg_1">
+            <th colspan="4" style="padding-top:16px; font-weight: bold;">{{ label_ticket_info }}</th>
+        </tr>
+
+        <tr class="tab_bg_1">
+            <td>{{ label_client }}</td>
+            <td colspan="3">{{ entity_dropdown|raw }}</td>
+        </tr>
+
+        <tr class="tab_bg_1">
+            <td>{{ label_type }}</td>
+            <td colspan="3">{{ type_dropdown|raw }}</td>
+        </tr>
+
+        <tr class="tab_bg_1">
+            {# label_* below embed GLPI's trusted mandatory-mark HTML (getMandatoryMark) #}
+            <td>{{ label_category|raw }}</td>
+            <td colspan="3">{{ category_dropdown|raw }}</td>
+        </tr>
+
+        {% if show_contract %}
+            {{ contract_rows|raw }}
+        {% endif %}
+
+        {% if show_title %}
+            <tr class="tab_bg_1">
+                <td>{{ title_label|raw }}</td>
+                <td colspan="3">{{ title_field|raw }}</td>
+            </tr>
+        {% endif %}
+
+        <tr class="tab_bg_1">
+            <td>{{ label_content|raw }}</td>
+            <td colspan="3">
+                <div id="{{ content_wrapper_id }}">{{ content_textarea|raw }}</div>
+            </td>
+        </tr>
+
+        {% if show_urgency %}
+            <tr class="tab_bg_1">
+                <td>{{ label_urgency|raw }}</td>
+                <td colspan="3">{{ urgency_dropdown|raw }}</td>
+            </tr>
+        {% endif %}
+
+        {% if show_impact %}
+            <tr class="tab_bg_1">
+                <td>{{ label_impact|raw }}</td>
+                <td colspan="3">{{ impact_dropdown|raw }}</td>
+            </tr>
+        {% endif %}
+
+        {% if show_priority %}
+            <tr class="tab_bg_1">
+                <td>{{ label_priority|raw }}</td>
+                <td colspan="3">{{ priority_dropdown|raw }}</td>
+            </tr>
+        {% endif %}
+
+        <tr class="tab_bg_1">
+            <td>{{ label_technician }}</td>
+            <td colspan="3">{{ technician_dropdown|raw }}</td>
+        </tr>
+
+        {% if tasktemplate_block %}
+            <tr class="tab_bg_1">
+                <th colspan="4">{{ label_tasktemplate }}</th>
+            </tr>
+            <tr class="tab_bg_1">
+                <td colspan="4">{{ tasktemplate_block|raw }}</td>
+            </tr>
+        {% endif %}
+
+        <tr class="tab_bg_1">
+            <th colspan="4">
+                {{ label_accomplished }}&nbsp;&nbsp;<a onclick="addTaskOnView(false);" style="cursor:pointer;" id="img_add_cci" title="{{ label_add_task }}"><i class="ti ti-circle-plus"></i></a>
+            </th>
+        </tr>
+
+        <tr class="tab_bg_1">
+            <td>{{ label_description }}</td>
+            <td>
+                <div id="{{ task_desc_wrapper_id }}">{{ task_description_textarea|raw }}</div>
+            </td>
+            <td>
+                {{ label_start_date }}
+                <br><br><span>{{ label_duration }}</span>
+                <br><br><br><i class="ti ti-user" title="{{ label_user }}"></i>{{ label_technician_single }}
+                <br><br><span>{{ label_task_category }}</span>
+            </td>
+            <td>
+                {{ task_datetime_field|raw }}
+                <br><div>{{ task_duration_field|raw }}</div><br>
+                <div id="users_id_tech">{{ task_user_dropdown|raw }}</div><br>
+                <div id="taskcategories_id">{{ task_taskcategory_dropdown|raw }}</div>
+            </td>
+        </tr>
+
+        {{ tasks_script|raw }}
+
+        <tr class="tab_bg_1" id="tab-tasks" style="display: none">
+            <td colspan="4">
+                <div style="width: 400px;" id="tasks"></div>
+            </td>
+        </tr>
+
+        {% if show_undone %}
+            <tr class="tab_bg_1">
+                <th colspan="4">{{ label_undone }}</th>
+            </tr>
+            <tr class="tab_bg_1">
+                <td>{{ label_description }}</td>
+                <td colspan="3">
+                    <div id="{{ undone_wrapper_id }}">{{ undone_textarea|raw }}</div>
+                </td>
+            </tr>
+        {% endif %}
+
+        <tr class="tab_bg_2">
+            <td class="center" colspan="4">
+                <button type="submit" name="generatecri" class="btn btn-primary">
+                    {{ _x('button', 'Generate', 'manageentities') }}
+                </button>
+            </td>
+        </tr>
+    </table>
+</form>

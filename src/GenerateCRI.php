@@ -33,6 +33,7 @@ use Ajax;
 use CommonGLPI;
 use CommonITILObject;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contract;
@@ -107,7 +108,6 @@ class GenerateCRI extends CommonGLPI
      * @param $ticket
      * @param $entities
      *
-     * @throws \GlpitestSQLError
      */
     function showWizard($ticket, $entities)
     {
@@ -208,14 +208,16 @@ class GenerateCRI extends CommonGLPI
         }
 
         Entity::showManageentitiesHeader(__('Generate Intervention report', 'manageentities'));
-        echo "<form name='generate' method='post' action='" . self::getFormUrl() . "'>";
-        echo "<table class='tab_cadre' width='60%'>";
-        echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='4' style='padding-top:16px; font-weight: bold;'>";
-        echo __('Ticket informations', 'manageentities');
-        echo "</th>";
-        echo "</tr>";
 
+        // Small helper: capture the HTML echoed by a GLPI widget as a string fragment.
+        $capture = static function (callable $renderer): string {
+            ob_start();
+            $renderer();
+            return (string) ob_get_clean();
+        };
+
+        // Predefined + hidden template fields collected as hidden inputs for the form.
+        $hidden_fields    = '';
         $predefined_fields = [];
         $tpl_key = Ticket::getTemplateFormFieldName();
         // override default ticket by predefined fields into ticket & task template
@@ -243,7 +245,7 @@ class GenerateCRI extends CommonGLPI
                         $predefined_fields[$predeffield] = $predefvalue;
                     }
                 } else {
-                    echo Html::hidden($predeffield, ['value' => $predefvalue]);
+                    $hidden_fields .= Html::hidden($predeffield, ['value' => $predefvalue]);
                 }
             }
         }
@@ -252,39 +254,24 @@ class GenerateCRI extends CommonGLPI
         if (isset($tt->hidden) && count($tt->hidden) > 0) {
             foreach ($tt->hidden as $key_hidden => $value_hidden) {
                 if (!array_key_exists($key_hidden, $options)) {
-                    echo Html::hidden($key_hidden, ['value' => $value_hidden]);
+                    $hidden_fields .= Html::hidden($key_hidden, ['value' => $value_hidden]);
                 }
             }
         }
 
+        // Client (entity) dropdown
         $opt = [
             'name' => 'entities_id',
             'rand' => $rand,
             'on_change' => 'this.form.submit()',
             'value' => $options['entities_id']
         ];
+        $entity_dropdown = $capture(fn() => \Entity::dropdown($opt));
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo _n('Client', 'Clients', 2, 'manageentities');
-        echo "</td>";
-        echo "<td colspan='3'>";
-        \Entity::dropdown($opt);
-        echo "</td>";
-        echo "</tr>";
-
-        //      $params = ['entities_id' => '__VALUE__', 'fieldname' => 'entities_id'];
-        //      Ajax::updateItemOnSelectEvent("dropdown_entities_id$rand", "contract$rand", "../ajax/dropdownCustomer.php", $params);
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo __('Type');
-        echo "</td>";
-        echo "<td colspan='3'>";
-        /// Auto submit to load template
+        // Type dropdown + AJAX category reload (keep the rand echoed by dropdownType)
         $opt['on_change'] = 'this.form.submit()';
         $opt['value'] = $options['type'];
-
+        ob_start();
         $rand = $ticket::dropdownType('type', $opt);
         $params = [
             'type' => '__VALUE__',
@@ -292,30 +279,22 @@ class GenerateCRI extends CommonGLPI
             'value' => $options['itilcategories_id'],
             'currenttype' => $options['type']
         ];
-
         Ajax::updateItemOnSelectEvent(
             "dropdown_type$rand",
             "show_category_by_type",
             "../ajax/dropdownGenerateCriCategories.php",
             $params
         );
-
-        echo "</td>";
-        echo "</tr>";
-
+        $type_dropdown = ob_get_clean();
 
         $conditions = [];
-
-
         switch ($options['type']) {
             case Ticket::INCIDENT_TYPE :
                 $conditions['is_incident'] = 1;
                 break;
-
             case Ticket::DEMAND_TYPE :
                 $conditions['is_request'] = 1;
                 break;
-
             default :
                 break;
         }
@@ -324,80 +303,61 @@ class GenerateCRI extends CommonGLPI
             && ($options["itilcategories_id"] > 0)) {
             $opt_categories['display_emptychoice'] = false;
         }
-
         $opt_categories['condition'] = $conditions;
         $opt_categories['on_change'] = 'this.form.submit()';
         $opt_categories['value'] = $options['itilcategories_id'];
         $opt_categories['entity'] = $options["entities_id"];
 
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo sprintf(
+        $label_category = sprintf(
             __('%1$s%2$s'),
             __('Category'),
             $tt->getMandatoryMark('itilcategories_id')
         );
-        echo "</td>";
-        echo "<td colspan='3'>";
+        ob_start();
         echo "<span id='show_category_by_type'>";
         ITILCategory::dropdown($opt_categories);
         echo "</span>";
-        echo "</td>";
-        echo "</tr>";
+        $category_dropdown = ob_get_clean();
 
-        if ($entities && !$config->getField('get_pdf_cri')) {
-            self::showContractLinkDropdown($entities);
+        // Contract link rows (only when the CRI PDF is generated by GLPI itself)
+        $show_contract = ($entities && !$config->getField('get_pdf_cri'));
+        $contract_rows = '';
+        if ($show_contract) {
+            $contract_rows = $capture(fn() => self::showContractLinkDropdown($entities));
         }
 
-        if (!$tt->isHiddenField('name')
-            || $tt->isPredefinedField('name')) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name')) . "</td>";
-            echo "<td colspan='3'>";
+        // Title
+        $show_title  = (!$tt->isHiddenField('name') || $tt->isPredefinedField('name'));
+        $title_label = '';
+        $title_field = '';
+        if ($show_title) {
+            $title_label = sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
             if (!$tt->isHiddenField('name')) {
                 $opt = [
                     'value' => $options['name'],
                     'maxlength' => 250,
                     'size' => 80,
                 ];
-
                 if ($tt->isMandatoryField('name')) {
                     $opt['required'] = 'required';
                 }
-                echo Html::input('name', $opt);
+                $title_field = Html::input('name', $opt);
             } else {
                 // Ticket name may be requester-controlled and is stored raw; escape it
-                // when the template hides the "name" field (Html::input already escapes
-                // the visible branch, Html::hidden escapes on its own).
-                echo htmlspecialchars((string) $options['name'], ENT_QUOTES);
-                echo Html::hidden('name', ['value' => $options['name']]);
+                // when the template hides the "name" field (Html::hidden escapes on its own).
+                $title_field = htmlspecialchars((string) $options['name'], ENT_QUOTES)
+                    . Html::hidden('name', ['value' => $options['name']]);
             }
-            echo "</tr>";
         }
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-//      echo $tt->getEndHiddenFieldText('content');
-        echo "</td>";
-
-        echo "<td colspan='3'>";
-//      echo $tt->getBeginHiddenFieldValue('content');
-        $rand_text = mt_rand();
-        $rows = 5;
-        $content_id = "content$rand";
-
-        $content = $options['content'];
-
-//      $content = Html::setRichTextContent(
-//         $content_id,
-//         $content,
-//         $rand
-//      );
-
-        echo "<div id='content$rand_text'>";
-        Html::textarea([
+        // Description (rich text)
+        $label_content     = sprintf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
+        $rand_text         = mt_rand();
+        $rows              = 5;
+        $content_id        = "content$rand";
+        $content           = $options['content'];
+        $content_wrapper_id = "content$rand_text";
+        $content_textarea  = $capture(fn() => Html::textarea([
             'name' => 'content',
             'filecontainer' => 'content_info',
             'editor_id' => $content_id,
@@ -407,84 +367,55 @@ class GenerateCRI extends CommonGLPI
             'enable_fileupload' => false,
             'enable_images' => false,
             'value' => RichText::getSafeHtml($content, true),
-        ]);
-        echo "</div>";
-        echo "</td>";
+        ]));
 
-        if ($tt->isMandatoryField('urgency') || $tt->isPredefinedField('urgency')
-            && $tt->isHiddenField('urgency')) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            printf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
-//         echo $tt->getEndHiddenFieldText('urgency');
-            echo "</td>";
-            echo "<td colspan='3'>";
-//         echo $tt->getBeginHiddenFieldValue('urgency');
-            Ticket::dropdownUrgency(['value' => $options['urgency']]);
-//         echo $tt->getEndHiddenFieldValue('urgency', $ticket);
-            echo "</td>";
+        // Urgency / Impact / Priority (shown depending on template flags)
+        $show_urgency = ($tt->isMandatoryField('urgency') || $tt->isPredefinedField('urgency')
+            && $tt->isHiddenField('urgency'));
+        $label_urgency    = '';
+        $urgency_dropdown = '';
+        if ($show_urgency) {
+            $label_urgency    = sprintf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency'));
+            $urgency_dropdown = $capture(fn() => Ticket::dropdownUrgency(['value' => $options['urgency']]));
         }
 
-        if ($tt->isMandatoryField('impact') || $tt->isPredefinedField('impact')
-            && !$tt->isHiddenField('impact')) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            printf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
-//         echo $tt->getEndHiddenFieldText('impact');
-            echo "</td>";
-            echo "<td colspan='3'>";
-//         echo $tt->getBeginHiddenFieldValue('impact');
-            Ticket::dropdownImpact(['value' => $options['impact']]);
-            echo "</td>";
-            echo "</tr>";
+        $show_impact = ($tt->isMandatoryField('impact') || $tt->isPredefinedField('impact')
+            && !$tt->isHiddenField('impact'));
+        $label_impact    = '';
+        $impact_dropdown = '';
+        if ($show_impact) {
+            $label_impact    = sprintf(__('%1$s%2$s'), __('Impact'), $tt->getMandatoryMark('impact'));
+            $impact_dropdown = $capture(fn() => Ticket::dropdownImpact(['value' => $options['impact']]));
         }
 
-
-        if ($tt->isMandatoryField('priority') || $tt->isPredefinedField('priority')
-            && !$tt->isHiddenField('priority')) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
-//         echo $tt->getEndHiddenFieldText('priority');
-            echo "</td>";
-            echo "<td colspan='3'>";
-//         echo $tt->getBeginHiddenFieldValue('priority');
-            Ticket::dropdownImpact(['value' => $options['priority']]);
-            echo "</td>";
-            echo "</tr>";
+        $show_priority = ($tt->isMandatoryField('priority') || $tt->isPredefinedField('priority')
+            && !$tt->isHiddenField('priority'));
+        $label_priority    = '';
+        $priority_dropdown = '';
+        if ($show_priority) {
+            $label_priority    = sprintf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
+            $priority_dropdown = $capture(fn() => Ticket::dropdownImpact(['value' => $options['priority']]));
         }
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo __('Technician');
-        echo "</td>";
-        echo "<td colspan='3'>";
-
+        // Technician (multiple)
         $user = new User();
-        $dbu = new DbUtils();
+        $dbu  = new DbUtils();
         $condition = ['is_deleted' => 0];
         $users = $user->find($condition);
         $techs = [];
         foreach ($users as $data) {
             $techs[$data['id']] = $dbu->getUserName($data['id']);
         }
-
-        \Dropdown::showFromArray('users_intervenor', $techs, [
+        $technician_dropdown = $capture(fn() => \Dropdown::showFromArray('users_intervenor', $techs, [
             'values' => $options["users_intervenor"],
             'multiple' => true,
             'entity' => $entities
-        ]);
-        echo "</td>";
-        echo "</tr>";
+        ]));
 
+        // Predefined task info block
+        $tasktemplate_block = '';
         if ($tasktemplate) {
-            echo "<tr class='tab_bg_1' >";
-            echo "<th colspan='4'>";
-            echo __('Predefined task informations', 'manageentities');
-            echo "</th>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='4'>";
+            ob_start();
             echo "<div style='margin: 10px; padding:10px; width:400px; border:dashed;'>";
             echo "<span style='font-weight:bold; font-size: 15px;'>" . _n('Task', 'Tasks', 1) . " : </span><br>";
             echo "<span style='font-weight:bold;'>" . __('Description') . " : </span>";
@@ -501,38 +432,17 @@ class GenerateCRI extends CommonGLPI
             }
             echo Html::hidden('predefined-task', ['value' => $tasktemplate->fields['id']]);
             echo "</div>";
-            echo "</td>";
-            echo "</tr>";
+            $tasktemplate_block = ob_get_clean();
         }
 
-        echo "<tr class='tab_bg_1' >";
-        echo "<th colspan='4'>";
-        echo __('Accomplished tasks informations', 'manageentities');
-        echo "&nbsp&nbsp<a onclick='addTaskOnView(false);' style='cursor:pointer;' id='img_add_cci' name='' ";
-        echo "title='" . __('Add this Task', 'manageentities') . "'><i class='ti ti-circle-plus'></i></a>";
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Description') . "</td>";
-
-        echo "<td>";
-//      echo $tt->getBeginHiddenFieldValue('content');
+        // Accomplished task input row (description rich text)
         $rand_text = mt_rand();
-        $rand = mt_rand();
-        $rows = 5;
+        $rand      = mt_rand();
+        $rows      = 5;
         $content_id = "content$rand";
-
-        $content = isset($options['description']) ? $options['description'] : "";
-
-//      $content = Html::setRichTextContent(
-//         $content_id,
-//         $content,
-//         $rand
-//      );
-
-        echo "<div id='content$rand_text'>";
-        Html::textarea([
+        $content    = isset($options['description']) ? $options['description'] : "";
+        $task_desc_wrapper_id      = "content$rand_text";
+        $task_description_textarea = $capture(fn() => Html::textarea([
             'name' => 'description',
             'filecontainer' => 'content_info',
             'id' => 'description',
@@ -543,26 +453,17 @@ class GenerateCRI extends CommonGLPI
             'enable_fileupload' => false,
             'enable_images' => false,
             'value' => RichText::getSafeHtml($content, true),
-        ]);
-        echo "</div>";
-        echo "</td>";
+        ]));
 
-        echo "<td>" . __('Start date');
-        echo "<br><br><span>" . __('Duration') . "</span>";
-        echo "<br><br><br><i class='ti ti-user' title='" . _n('User', 'Users', 1) . "'></i>";
-        echo _n("Technician", "Technicians", 1, "manageentities");
-        echo "<br><br><span>" . __('Category') . "</span>";
-        echo "</td>";
-
+        // Date / duration / technician / category widgets for the task
         $heure = intval(date('H'));
         if ($heure < 12) {
             $date = strtotime(date('Y-m-d') . '+' . $config->getField("default_time_am") . ' sec');
         } else {
             $date = strtotime(date('Y-m-d') . '+' . $config->getField("default_time_pm") . ' sec');
         }
-        echo "<td>";
         $date = date('Y-m-d H:i:s', $date);
-        Html::showDateTimeField(
+        $task_datetime_field = $capture(fn() => Html::showDateTimeField(
             "plan[begin]",
             [
                 'value' => $date,
@@ -572,10 +473,9 @@ class GenerateCRI extends CommonGLPI
                 'mindate' => '',
                 'maxdate' => ''
             ]
-        );
+        ));
 
-        echo "<br><div>";
-
+        ob_start();
         $rand = \Dropdown::showTimeStamp("plan[_duration]", [
             'value' => $config->getField("default_duration"),
             'min' => 0,
@@ -583,16 +483,15 @@ class GenerateCRI extends CommonGLPI
             'emptylabel' => __('Specify an end date')
         ]);
         echo "<br><div id='date_end$rand'></div>";
-
         $event_options = ['duration' => '__VALUE__', 'name' => "plan[end]"];
-
         Ajax::updateItemOnSelectEvent(
             "dropdown_plan[_duration]$rand",
             "date_end$rand",
             "../ajax/taskend.php",
             $event_options
         );
-        echo "</div><br>";
+        $task_duration_field = ob_get_clean();
+
         $params = [
             'name' => "users_id_tech",
             'right' => "own_ticket",
@@ -601,32 +500,22 @@ class GenerateCRI extends CommonGLPI
             'entity' => $options["entities_id"],
             'width' => '80%'
         ];
-
-        echo "<div id='users_id_tech'>";
-        User::dropdown($params);
-        echo "</div><br>";
-
+        $task_user_dropdown = $capture(fn() => User::dropdown($params));
 
         $params = [
             'name' => "taskcategories_id",
             'entity' => $options["entities_id"],
             'value' => isset($options['taskcategories_id']) ? $options['taskcategories_id'] : 0
         ];
-        echo "<div id='taskcategories_id'>";
-        TaskCategory::dropdown($params);
-        echo "</div>";
+        $task_taskcategory_dropdown = $capture(fn() => TaskCategory::dropdown($params));
 
-        echo "</td>";
-        echo "</tr>";
-
+        // Task list restore (from session or reloaded POST values)
         $task_stored = json_encode([]);
-
         foreach ($options as $key => $value) {
             if (strpos($key, "description") !== false) {
                 $options[$key] = str_replace('\r\n', '', nl2br($value));
             }
         }
-
         if (count($saved) > 0) {
             foreach ($saved as $key => $value) {
                 if (strpos($key, 'begin') !== false && substr($key, strrpos($key, 'n') + 1) !== '') {
@@ -648,12 +537,13 @@ class GenerateCRI extends CommonGLPI
         }
 
         if (count($countTasks) > 0) {
-            echo Html::hidden('has_task', ['value' => true]);
+            $hidden_fields .= Html::hidden('has_task', ['value' => true]);
         } else {
-            echo Html::hidden('has_task', ['value' => false]);
+            $hidden_fields .= Html::hidden('has_task', ['value' => false]);
         }
+
         $root_manageentities_doc = PLUGIN_MANAGEENTITIES_WEBDIR;
-        echo "<script>
+        $tasks_script = "<script>
          var root_manageentities_doc = '$root_manageentities_doc';
            $(document).ready(function() {
            let storedTasks = $task_stored;
@@ -807,38 +697,18 @@ class GenerateCRI extends CommonGLPI
 
            </script>";
 
-        echo "<tr class='tab_bg_1' id='tab-tasks' style='display: none'>";
-        echo "<td colspan='4'>";
-        echo "<div style='width: 400px;' id='tasks'></div>";
-        echo "</td>";
-        echo "</tr>";
-
-        if ($config->getField("non_accomplished_tasks")) {
-            echo "<tr class='tab_bg_1' >";
-            echo "<th colspan='4'>";
-            echo __('Non-accomplished tasks informations', 'manageentities');
-            echo "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Description') . "</td>";
-            echo "<td colspan='3'>";
-//         echo $tt->getBeginHiddenFieldValue('content');
+        // Non-accomplished tasks (optional, rich text)
+        $show_undone       = (bool) $config->getField("non_accomplished_tasks");
+        $undone_wrapper_id = '';
+        $undone_textarea   = '';
+        if ($show_undone) {
             $rand_text = mt_rand();
-            $rand = mt_rand();
-            $rows = 5;
+            $rand      = mt_rand();
+            $rows      = 5;
             $content_id = "content$rand";
-
-            $content = isset($options['description-undone']) ? $options['description-undone'] : "";
-
-//         $content = Html::setRichTextContent(
-//            $content_id,
-//            $content,
-//            $rand
-//         );
-
-            echo "<div id='content$rand_text'>";
-            Html::textarea([
+            $content    = isset($options['description-undone']) ? $options['description-undone'] : "";
+            $undone_wrapper_id = "content$rand_text";
+            $undone_textarea   = $capture(fn() => Html::textarea([
                 'name' => 'description-undone',
                 'filecontainer' => 'content_info',
                 'id' => 'description-undone',
@@ -849,23 +719,60 @@ class GenerateCRI extends CommonGLPI
                 'enable_fileupload' => false,
                 'enable_images' => false,
                 'value' => RichText::getSafeHtml($content, true),
-            ]);
-            echo "</div>";
-            echo "</td>";
-            echo "</tr>";
+            ]));
         }
 
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td class='center' colspan='4'>";
-        echo Html::submit(
-            _sx('button', 'Generate', 'manageentities'),
-            ['name' => 'generatecri', 'class' => 'btn btn-primary']
-        );
-        echo "</td></tr>";
-        echo "</table></div>";
-
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('@manageentities/generatecri_wizard.html.twig', [
+            'form_action'                => self::getFormUrl(),
+            'hidden_fields'              => $hidden_fields,
+            'label_ticket_info'          => __('Ticket informations', 'manageentities'),
+            'label_client'               => _n('Client', 'Clients', 2, 'manageentities'),
+            'entity_dropdown'            => $entity_dropdown,
+            'label_type'                 => __('Type'),
+            'type_dropdown'              => $type_dropdown,
+            'label_category'             => $label_category,
+            'category_dropdown'          => $category_dropdown,
+            'show_contract'              => $show_contract,
+            'contract_rows'              => $contract_rows,
+            'show_title'                 => $show_title,
+            'title_label'                => $title_label,
+            'title_field'                => $title_field,
+            'label_content'              => $label_content,
+            'content_wrapper_id'         => $content_wrapper_id,
+            'content_textarea'           => $content_textarea,
+            'show_urgency'               => $show_urgency,
+            'label_urgency'              => $label_urgency,
+            'urgency_dropdown'           => $urgency_dropdown,
+            'show_impact'                => $show_impact,
+            'label_impact'               => $label_impact,
+            'impact_dropdown'            => $impact_dropdown,
+            'show_priority'              => $show_priority,
+            'label_priority'             => $label_priority,
+            'priority_dropdown'          => $priority_dropdown,
+            'label_technician'           => __('Technician'),
+            'technician_dropdown'        => $technician_dropdown,
+            'tasktemplate_block'         => $tasktemplate_block,
+            'label_tasktemplate'         => __('Predefined task informations', 'manageentities'),
+            'label_accomplished'         => __('Accomplished tasks informations', 'manageentities'),
+            'label_add_task'             => __('Add this Task', 'manageentities'),
+            'label_description'          => __('Description'),
+            'task_desc_wrapper_id'       => $task_desc_wrapper_id,
+            'task_description_textarea'  => $task_description_textarea,
+            'label_start_date'           => __('Start date'),
+            'label_duration'             => __('Duration'),
+            'label_user'                 => _n('User', 'Users', 1),
+            'label_technician_single'    => _n("Technician", "Technicians", 1, "manageentities"),
+            'label_task_category'        => __('Category'),
+            'task_datetime_field'        => $task_datetime_field,
+            'task_duration_field'        => $task_duration_field,
+            'task_user_dropdown'         => $task_user_dropdown,
+            'task_taskcategory_dropdown' => $task_taskcategory_dropdown,
+            'tasks_script'               => $tasks_script,
+            'show_undone'                => $show_undone,
+            'label_undone'               => __('Non-accomplished tasks informations', 'manageentities'),
+            'undone_wrapper_id'          => $undone_wrapper_id,
+            'undone_textarea'            => $undone_textarea,
+        ]);
     }
 
     /**
@@ -1284,7 +1191,7 @@ class GenerateCRI extends CommonGLPI
             ],
             'WHERE' => [
                 'glpi_contracts.is_deleted' => 0,
-                'glpi_plugin_manageentities_contracts' . '.entities_id' => $entities_id
+                'glpi_plugin_manageentities_contracts.entities_id' => $entities_id
             ],
             'ORDERBY' => ['glpi_contracts.name'],
         ]);
