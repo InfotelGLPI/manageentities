@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 16:40+0000\n"
+"POT-Creation-Date: 2026-07-28 17:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -178,7 +178,7 @@ msgstr ""
 msgid "Allow periods on the same interval of dates"
 msgstr ""
 
-#: src/Monthly.php:511 src/Monthly.php:521 src/Monthly.php:524
+#: src/Monthly.php:517 src/Monthly.php:527 src/Monthly.php:530
 #: templates/contractday_form.html.twig:106
 #: templates/wizard/step5_intervention_block.html.twig:106
 #: templates/wizard/step6_intervention_block.html.twig:106
@@ -301,8 +301,8 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/GenerateCRI.php:269 src/Followup.php:913 src/Monthly.php:697
-#: src/Monthly.php:728 src/Dashboard.php:231 src/Dashboard.php:295
+#: src/GenerateCRI.php:269 src/Followup.php:913 src/Monthly.php:703
+#: src/Monthly.php:734 src/Dashboard.php:231 src/Dashboard.php:295
 #: src/Dashboard.php:347
 msgid "Client"
 msgid_plural "Clients"
@@ -487,8 +487,8 @@ msgid ""
 "Create a new entity, contacts, subscription, contract and service periods."
 msgstr ""
 
-#: templates/directhelpdesk_dashboard.html.twig:43
-#: templates/directhelpdesk_dashboard.html.twig:46
+#: templates/directhelpdesk_dashboard.html.twig:44
+#: templates/directhelpdesk_dashboard.html.twig:47
 msgid "Create a ticket"
 msgstr ""
 
@@ -522,11 +522,11 @@ msgstr ""
 msgid "Crossed time (itinerary including)"
 msgstr ""
 
-#: src/Entity.php:192
+#: src/Entity.php:200
 msgid "Current contracts"
 msgstr ""
 
-#: src/Monthly.php:715 src/Monthly.php:753
+#: src/Monthly.php:721 src/Monthly.php:759
 #: templates/interventionstakeholder_list.html.twig:32
 msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
@@ -553,9 +553,9 @@ msgstr ""
 msgid "Customer stamp"
 msgstr ""
 
-#: src/Monthly.php:709 src/Monthly.php:745 src/CriPrice.php:61
+#: src/Monthly.php:715 src/Monthly.php:751 src/CriPrice.php:61
 #: src/CriPrice.php:98 src/CriPrice.php:205 src/CriPrice.php:358
-#: src/CriType.php:95 templates/wizard/step5_criprices_section.html.twig:32
+#: src/CriType.php:98 templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Daily rate"
 msgstr ""
@@ -585,7 +585,7 @@ msgstr ""
 msgid "Date of renewal"
 msgstr ""
 
-#: src/Followup.php:1023 src/Entity.php:574 src/Gantt.php:348
+#: src/Followup.php:1023 src/Entity.php:580 src/Gantt.php:348
 #: templates/wizard/step5_management.html.twig:51
 #: templates/wizard/step4_management.html.twig:51
 #: templates/contract_detail_form.html.twig:135
@@ -803,7 +803,7 @@ msgstr ""
 #: front/directhelpdesk.php:45 front/directhelpdesk.php:47
 #: front/report_moving.form.php:35 src/TaskCategory.php:71 src/Profile.php:55
 #: src/Profile.php:106 src/GenerateCRI.php:1245 src/Preference.php:114
-#: src/Followup.php:1506 src/Monthly.php:1091 setup.php:199
+#: src/Followup.php:1506 src/Monthly.php:1097 setup.php:199
 #: templates/wizard/mode_choice.html.twig:35
 msgid "Entities portal"
 msgstr ""
@@ -878,7 +878,7 @@ msgstr ""
 msgid "Estimated number of remaining days"
 msgstr ""
 
-#: src/Monthly.php:719 src/Monthly.php:760 src/Monthly.php:1171
+#: src/Monthly.php:725 src/Monthly.php:766 src/Monthly.php:1177
 msgid "Exceeding"
 msgstr ""
 
@@ -980,7 +980,7 @@ msgstr ""
 msgid "Hourly"
 msgstr ""
 
-#: src/Monthly.php:711 src/Monthly.php:747 src/CriPrice.php:63
+#: src/Monthly.php:717 src/Monthly.php:753 src/CriPrice.php:63
 #: src/CriPrice.php:100 src/CriPrice.php:205 src/CriPrice.php:358
 #: templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
@@ -995,7 +995,7 @@ msgstr ""
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr ""
 
-#: src/Monthly.php:529
+#: src/Monthly.php:535
 msgid "In progress"
 msgstr ""
 
@@ -1007,8 +1007,8 @@ msgstr ""
 msgid "Informations successfully deleted."
 msgstr ""
 
-#: src/Followup.php:850 src/Followup.php:1136 src/Monthly.php:705
-#: src/Monthly.php:737 src/Gantt.php:411 src/ContractDay.php:123
+#: src/Followup.php:850 src/Followup.php:1136 src/Monthly.php:711
+#: src/Monthly.php:743 src/Gantt.php:411 src/ContractDay.php:123
 #: src/ContractDay.php:535 templates/contractday_form.html.twig:94
 #: templates/wizard/step5_intervention_block.html.twig:69
 #: templates/wizard/step6_intervention_block.html.twig:69
@@ -1199,7 +1199,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/Followup.php:1054 src/Monthly.php:701 src/Monthly.php:733
+#: src/Followup.php:1054 src/Monthly.php:707 src/Monthly.php:739
 #: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step5_management.html.twig:61
 #: templates/wizard/step4_management.html.twig:61
@@ -1207,7 +1207,7 @@ msgstr ""
 msgid "Mode of management"
 msgstr ""
 
-#: src/Monthly.php:59 src/Monthly.php:1091 src/Monthly.php:1191
+#: src/Monthly.php:59 src/Monthly.php:1097 src/Monthly.php:1197
 #: src/Entity.php:103
 msgid "Monthly follow-up"
 msgstr ""
@@ -1595,7 +1595,7 @@ msgstr ""
 msgid "Plugin is not activated"
 msgstr ""
 
-#: src/Entity.php:335
+#: src/Entity.php:341
 msgid "Portal"
 msgstr ""
 
@@ -1684,7 +1684,7 @@ msgstr ""
 msgid "Price must be greater than 0"
 msgstr ""
 
-#: src/Monthly.php:714 src/Monthly.php:751
+#: src/Monthly.php:720 src/Monthly.php:757
 msgid "Production"
 msgstr ""
 
@@ -1745,7 +1745,7 @@ msgstr ""
 msgid "Referenced name at the publisher"
 msgstr ""
 
-#: src/Entity.php:162 src/Entity.php:489
+#: src/Entity.php:162 src/Entity.php:495
 msgid "References"
 msgstr ""
 
@@ -1779,7 +1779,7 @@ msgstr ""
 msgid "Remaining days number by opened client contracts"
 msgstr ""
 
-#: src/Monthly.php:706 src/Monthly.php:739
+#: src/Monthly.php:712 src/Monthly.php:745
 msgid "Remaining on "
 msgstr ""
 
@@ -1841,7 +1841,7 @@ msgstr ""
 msgid "Save this period"
 msgstr ""
 
-#: src/CriType.php:156 hook.php:102 hook.php:121
+#: src/CriType.php:159 hook.php:102 hook.php:121
 msgid "Scheduled intervention"
 msgstr ""
 
@@ -1936,7 +1936,7 @@ msgid_plural "States of contracts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Monthly.php:724 src/Monthly.php:765
+#: src/Monthly.php:730 src/Monthly.php:771
 msgid "State of intervention"
 msgstr ""
 
@@ -1964,7 +1964,7 @@ msgstr ""
 msgid "Status overview"
 msgstr ""
 
-#: src/CriType.php:157 hook.php:103 hook.php:122
+#: src/CriType.php:160 hook.php:103 hook.php:122
 msgid "Study and advice"
 msgstr ""
 
@@ -2127,8 +2127,8 @@ msgstr ""
 msgid "To compute"
 msgstr ""
 
-#: src/Monthly.php:509 src/Monthly.php:516 src/Monthly.php:526
-#: src/Monthly.php:1173
+#: src/Monthly.php:515 src/Monthly.php:522 src/Monthly.php:532
+#: src/Monthly.php:1179
 msgid "To present an invoice"
 msgstr ""
 
@@ -2145,8 +2145,8 @@ msgstr ""
 msgid "Total consummated"
 msgstr ""
 
-#: src/Followup.php:860 src/Followup.php:1184 src/Monthly.php:722
-#: src/Monthly.php:763 src/ContractDay.php:544
+#: src/Followup.php:860 src/Followup.php:1184 src/Monthly.php:728
+#: src/Monthly.php:769 src/ContractDay.php:544
 #: templates/contractday_form.html.twig:123
 msgid "Total exceeding"
 msgstr ""
@@ -2155,7 +2155,7 @@ msgstr ""
 msgid "Total moving package"
 msgstr ""
 
-#: src/Monthly.php:717 src/Monthly.php:758
+#: src/Monthly.php:723 src/Monthly.php:764
 msgid "Total production"
 msgstr ""
 
@@ -2189,8 +2189,8 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/Followup.php:842 src/Followup.php:1113 src/Monthly.php:703
-#: src/Monthly.php:735
+#: src/Followup.php:842 src/Followup.php:1113 src/Monthly.php:709
+#: src/Monthly.php:741
 msgid "Type of contract"
 msgstr ""
 
@@ -2238,7 +2238,7 @@ msgstr ""
 msgid "Update subscription fields"
 msgstr ""
 
-#: src/CriType.php:155 hook.php:101 hook.php:120
+#: src/CriType.php:158 hook.php:101 hook.php:120
 msgid "Urgent intervention"
 msgstr ""
 
@@ -2288,7 +2288,7 @@ msgid ""
 "only the first will be used"
 msgstr ""
 
-#: src/Monthly.php:630
+#: src/Monthly.php:636
 msgid ""
 "Warning : There are supplementary interventions which depends on a "
 "prestation with a earlier end date"
