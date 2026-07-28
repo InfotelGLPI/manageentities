@@ -34,21 +34,33 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
+// Align this endpoint on its AJAX peers: require the plugin READ right so a
+// minimal self-service account cannot reach it (it is only used by the CRI wizard).
+Session::checkRight('plugin_manageentities', READ);
 
 if (isset($_POST['duration']) && ($_POST['duration'] == 0)
    && isset($_POST['name'])) {
-   if (!isset($_POST['global_begin'])) {
-      $_POST['global_begin'] = '';
+   // The field name is reflected into the rendered component. The CRI wizard is the
+   // only caller and always requests "plan[end]" (the wizard JS depends on that exact
+   // name), so pin it to that whitelisted value rather than echoing arbitrary input.
+   $name = 'plan[end]';
+
+   // Time bounds are reflected too: only accept an empty value or a strict HH:MM.
+   $global_begin = $_POST['global_begin'] ?? '';
+   $global_end   = $_POST['global_end'] ?? '';
+   if ($global_begin !== '' && !preg_match('/^\d{2}:\d{2}$/', (string) $global_begin)) {
+      $global_begin = '';
    }
-   if (!isset($_POST['global_end'])) {
-      $_POST['global_end'] = '';
+   if ($global_end !== '' && !preg_match('/^\d{2}:\d{2}$/', (string) $global_end)) {
+      $global_end = '';
    }
-   Html::showDateTimeField($_POST['name'], [
+
+   Html::showDateTimeField($name, [
       'timestep'   => -1,
       'maybeempty' => false,
       'canedit'    => true,
       'mindate'    => '',
       'maxdate'    => '',
-      'mintime'    => $_POST['global_begin'],
-      'maxtime'    => $_POST['global_end']]);
+      'mintime'    => $global_begin,
+      'maxtime'    => $global_end]);
 }

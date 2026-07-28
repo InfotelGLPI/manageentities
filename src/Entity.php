@@ -187,35 +187,41 @@ class Entity extends CommonGLPI
                 case 1:
                     $followUp->showCriteriasForm($_GET);
                     if (Session::getCurrentInterface() == 'helpdesk') {
-                        echo "<div class='card'>";
-                        echo "<div class='card-header'>";
+                        $direct = new DirectHelpdesk();
+                        $items  = $direct->find(['is_billed' => 0, 'entities_id' => $entities], ['date']);
+
+                        // Display the two panels side by side: current contracts on the
+                        // left, unbilled interventions (gauge above the table) on the right.
+                        echo "<div class='row g-3'>";
+
+                        echo "<div class='col-12 " . ($items ? "col-md-6" : "") . "'>";
+                        echo "<div class='card h-100'>";
+                        echo "<div class='card-header' style='background-color: var(--tblr-primary-fg);'>";
                         echo "<h4 class='mb-3'>" . htmlspecialchars(__('Current contracts', 'manageentities')) . "</h4>";
                         echo "</div>";
                         echo "<div class='card-body'>";
                         Followup::showFollowUp($_GET);
                         echo "</div>";
                         echo "</div>";
-                    } else {
-                        Followup::showFollowUp($_GET);
-                    }
+                        echo "</div>";
 
-                    $direct = new DirectHelpdesk();
-                    if (Session::getCurrentInterface() == 'helpdesk') {
-                        if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities], ['date'])) {
-                            echo "<br><div class='card'>";
-                            echo "<div class='card-header'>";
+                        if ($items) {
+                            echo "<div class='col-12 col-md-6'>";
+                            echo "<div class='card h-100'>";
+                            echo "<div class='card-header' style='background-color: var(--tblr-primary-fg);'>";
                             echo "<h4 class='mb-3'>" . htmlspecialchars(DirectHelpdesk::getTypeName(2)) . "</h4>";
                             echo "</div>";
-                            echo "<div class='card-body row g-3 mt-2'>";
-                            echo "<div class='col-12 col-md-6'>";
+                            echo "<div class='card-body'>";
                             DirectHelpdesk::showDashboard();
-                            echo "</div>";
-                            echo "<div class='col-12 col-md-6'>";
                             DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($entities);
                             echo "</div>";
                             echo "</div>";
                             echo "</div>";
                         }
+
+                        echo "</div>";
+                    } else {
+                        Followup::showFollowUp($_GET);
                     }
                     break;
                 case 2:

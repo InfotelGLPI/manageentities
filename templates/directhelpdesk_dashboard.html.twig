@@ -29,12 +29,13 @@
 <div class="container-fluid d-flex flex-column"
      data-me-gauges="1" data-me-hour="{{ hour }}" data-me-hours="{{ hours }}">
     {% for row in rows %}
-        <div class="mb-3 row" style="margin-top: -10px;">
+        <div class="mb-3 d-flex justify-content-center" style="margin-top: -10px;">
             {% for card in row %}
-                <div class="form-group col-sm center"
-                     style="margin-right:5px;margin-bottom: 5px;min-width:400px;max-width:400px;border: #e9e9e9 5px solid;background: white;">
+                {# overflow:hidden contains the float:right tech tag so it stays inside the card #}
+                <div class="form-group center"
+                     style="margin-right:5px;margin-bottom: 5px;min-width:400px;max-width:400px;border: #e9e9e9 5px solid;background: white;overflow:hidden;">
                     <div style="margin-bottom: -50px;margin-top: 10px;">{{ card.name }}</div>
-                    <div id="container{{ card.entities_id }}" style="min-height: 250px;width: 400px;"
+                    <div id="container{{ card.entities_id }}" style="min-height: 250px;width: 100%;"
                          data-me-gauge="{{ card.gauge|json_encode }}"></div>
                     {% if card.show_create %}
                         <div style="margin-bottom: 10px;margin-left:10px;">

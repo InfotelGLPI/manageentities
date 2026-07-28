@@ -180,7 +180,10 @@ class Monthly extends CommonDBTM
                         ['glpi_tickettasks.begin' => null],
                         ['glpi_tickettasks.begin' => [
                             '<=',
-                            new QueryExpression("ADDDATE('" . $DB->escape($values['end_date']) . "', INTERVAL 1 DAY)"),
+                            // Compute end_date + 1 day in PHP and pass it as a bound value
+                            // instead of interpolating it into a raw SQL expression with the
+                            // deprecated $DB->escape().
+                            date('Y-m-d', strtotime($values['end_date'] . ' +1 day')),
                         ]],
                     ],
                 ],
@@ -398,7 +401,10 @@ class Monthly extends CommonDBTM
                                 ['glpi_tickettasks.begin' => null],
                                 ['glpi_tickettasks.begin' => [
                                     '<=',
-                                    new QueryExpression("ADDDATE('" . $DB->escape($values['end_date']) . "', INTERVAL 1 DAY)"),
+                                    // Compute end_date + 1 day in PHP and pass it as a bound value
+                                    // instead of interpolating it into a raw SQL expression with the
+                                    // deprecated $DB->escape().
+                                    date('Y-m-d', strtotime($values['end_date'] . ' +1 day')),
                                 ]],
                             ],
                         ],

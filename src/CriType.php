@@ -76,8 +76,11 @@ class CriType extends CommonDropdown
             'name' => ContractDay::getTypeName(),
             'datatype' => 'itemlink',
             'joinparams' => [
+                // Cast active entity ids to int before building the raw IN(...) fragment
+                // (search-option conditions are plain SQL strings): defence in depth against
+                // any non-integer value ever reaching $_SESSION['glpiactiveentities'].
                 'condition' =>
-                    "AND REFTABLE.`entities_id` IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')",
+                    "AND REFTABLE.`entities_id` IN (" . implode(",", array_map('intval', $_SESSION["glpiactiveentities"])) . ")",
                 'beforejoin' =>
                     [
                         'table' => 'glpi_plugin_manageentities_criprices',
