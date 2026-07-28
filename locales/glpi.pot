@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 17:03+0000\n"
+"POT-Creation-Date: 2026-07-28 17:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -803,7 +803,7 @@ msgstr ""
 #: front/directhelpdesk.php:45 front/directhelpdesk.php:47
 #: front/report_moving.form.php:35 src/TaskCategory.php:71 src/Profile.php:55
 #: src/Profile.php:106 src/GenerateCRI.php:1245 src/Preference.php:114
-#: src/Followup.php:1506 src/Monthly.php:1097 setup.php:199
+#: src/Followup.php:1506 src/Monthly.php:1097 setup.php:203
 #: templates/wizard/mode_choice.html.twig:35
 msgid "Entities portal"
 msgstr ""
