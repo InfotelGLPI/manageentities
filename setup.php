@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.4');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.5');
 
 global $CFG_GLPI;
 
@@ -160,6 +160,10 @@ function plugin_init_manageentities()
         // echarts must be in the page <head> — it cannot be loaded via AJAX tab responses
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'lib/echarts/echarts.js';
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'lib/echarts/theme/azul.js';
+        // DirectHelpdesk dashboard gauges (data-driven; harmless when no gauge is present).
+        // Registered unconditionally like echarts so the dashboard also renders in the
+        // helpdesk interface, where the central-only scripts below are not loaded.
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/directhelpdesk-gauges.js';
 
         if (isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
