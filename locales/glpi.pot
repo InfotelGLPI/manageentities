@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 20:48+0000\n"
+"POT-Creation-Date: 2026-07-29 15:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -701,6 +701,10 @@ msgstr ""
 msgid "Detail of work done"
 msgstr ""
 
+#: src/Profile.php:119
+msgid "Direct helpdesk"
+msgstr ""
+
 #: templates/config_cri_form.html.twig:91
 msgid "Disable creation date in header of PDF"
 msgstr ""
@@ -798,8 +802,8 @@ msgstr ""
 #: front/cridetail.form.php:47 front/cridetail.form.php:50
 #: front/cridetail.form.php:52 front/entity.php:53 front/entity.php:56
 #: front/entity.php:58 front/report_occupation.form.php:35
-#: front/directhelpdesk.form.php:134 front/directhelpdesk.form.php:137
-#: front/directhelpdesk.form.php:139 front/directhelpdesk.php:42
+#: front/directhelpdesk.form.php:139 front/directhelpdesk.form.php:142
+#: front/directhelpdesk.form.php:144 front/directhelpdesk.php:42
 #: front/directhelpdesk.php:45 front/directhelpdesk.php:47
 #: front/report_moving.form.php:35 src/TaskCategory.php:71 src/Profile.php:55
 #: src/Profile.php:106 src/GenerateCRI.php:1152 src/Preference.php:114
