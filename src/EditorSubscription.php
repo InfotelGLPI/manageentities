@@ -31,12 +31,18 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use CommonGLPI;
+use CronTask;
 use DBConnection;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Migration;
+use Notification;
+use Notification_NotificationTemplate;
+use NotificationEvent;
+use NotificationTemplate;
+use NotificationTemplateTranslation;
 use Session;
 
 if (!defined('GLPI_ROOT')) {
@@ -716,6 +722,112 @@ class EditorSubscription extends CommonDBTM
 
             $DB->doQuery($query);
         }
+
+        self::installNotification($migration);
+    }
+
+    /**
+     * Seed the "Alert Expired Subscriptions" notification (template header, default
+     * translation, notification and its mailing link) and register the weekly
+     * automatic action. Fully idempotent: each row is inserted only when missing and
+     * CronTask::register() skips an already-registered task, so it is safe to call on
+     * every install and upgrade.
+     */
+    public static function installNotification(Migration $migration): void
+    {
+        global $DB;
+
+        // Template header (idempotent guard inside).
+        NotificationTargetEditorSubscription::install($migration);
+
+        $template = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_notificationtemplates',
+            'WHERE'  => ['itemtype' => self::class],
+        ])->current();
+        $templates_id = $template['id'] ?? 0;
+        if (!$templates_id) {
+            return;
+        }
+
+        // Default translation (only if this template has none yet).
+        $has_translation = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => 'glpi_notificationtemplatetranslations',
+            'WHERE' => ['notificationtemplates_id' => $templates_id],
+        ])->current();
+
+        if ((int) ($has_translation['cpt'] ?? 0) === 0) {
+            $content_text = '##subscription.action##
+
+##lang.subscription.entity## | ##lang.subscription.customeraccountid## | ##lang.subscription.name## | ##lang.subscription.type## | ##lang.subscription.level## | ##lang.subscription.begindate## | ##lang.subscription.enddate##
+##FOREACHsubscriptions##
+##subscription.entity## | ##subscription.customeraccountid## | ##subscription.name## | ##subscription.type## | ##subscription.level## | ##subscription.begindate## | ##subscription.enddate##
+##ENDFOREACHsubscriptions##';
+
+            $content_html = '&lt;strong&gt;##subscription.action##&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;'
+                . '&lt;table border="1" cellpadding="5" cellspacing="0"&gt;'
+                . '&lt;thead&gt;&lt;tr&gt;'
+                . '&lt;th&gt;##lang.subscription.entity##&lt;/th&gt;'
+                . '&lt;th&gt;##lang.subscription.customeraccountid##&lt;/th&gt;'
+                . '&lt;th&gt;##lang.subscription.name##&lt;/th&gt;'
+                . '&lt;th&gt;##lang.subscription.type##&lt;/th&gt;'
+                . '&lt;th&gt;##lang.subscription.level##&lt;/th&gt;'
+                . '&lt;th&gt;##lang.subscription.begindate##&lt;/th&gt;'
+                . '&lt;th&gt;##lang.subscription.enddate##&lt;/th&gt;'
+                . '&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;'
+                . '##FOREACHsubscriptions##'
+                . '&lt;tr&gt;'
+                . '&lt;td&gt;##subscription.entity##&lt;/td&gt;'
+                . '&lt;td&gt;##subscription.customeraccountid##&lt;/td&gt;'
+                . '&lt;td&gt;##subscription.name##&lt;/td&gt;'
+                . '&lt;td&gt;##subscription.type##&lt;/td&gt;'
+                . '&lt;td&gt;##subscription.level##&lt;/td&gt;'
+                . '&lt;td&gt;##subscription.begindate##&lt;/td&gt;'
+                . '&lt;td&gt;##subscription.enddate##&lt;/td&gt;'
+                . '&lt;/tr&gt;'
+                . '##ENDFOREACHsubscriptions##'
+                . '&lt;/tbody&gt;&lt;/table&gt;';
+
+            $DB->insert('glpi_notificationtemplatetranslations', [
+                'notificationtemplates_id' => $templates_id,
+                'language'                 => '',
+                'subject'                  => 'Expired publisher subscriptions',
+                'content_text'             => $content_text,
+                'content_html'             => $content_html,
+            ]);
+        }
+
+        // Notification (only if not already present for this itemtype/event).
+        $has_notification = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => 'glpi_notifications',
+            'WHERE' => [
+                'itemtype' => self::class,
+                'event'    => NotificationTargetEditorSubscription::ExpiredSubscriptions,
+            ],
+        ])->current();
+
+        if ((int) ($has_notification['cpt'] ?? 0) === 0) {
+            $DB->insert('glpi_notifications', [
+                'name'         => 'Alert Expired Subscriptions',
+                'entities_id'  => 0,
+                'itemtype'     => self::class,
+                'event'        => NotificationTargetEditorSubscription::ExpiredSubscriptions,
+                'is_recursive' => 1,
+                'is_active'    => 1,
+            ]);
+            $notifications_id = $DB->insertId();
+
+            $DB->insert('glpi_notifications_notificationtemplates', [
+                'notifications_id'         => $notifications_id,
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => $templates_id,
+            ]);
+        }
+
+        // Weekly automatic action (register() is idempotent).
+        CronTask::register(self::class, 'ExpiredSubscriptions', WEEK_TIMESTAMP);
     }
 
 
@@ -723,6 +835,141 @@ class EditorSubscription extends CommonDBTM
     {
         global $DB;
 
+        // Remove the expired subscriptions notification, its template, translations
+        // and mailing links, then the weekly automatic action.
+        $notif = new Notification();
+        foreach (
+            $DB->request([
+                'FROM'  => 'glpi_notifications',
+                'WHERE' => ['itemtype' => self::class],
+            ]) as $data
+        ) {
+            $notif->delete($data);
+        }
+
+        $template       = new NotificationTemplate();
+        $translation    = new NotificationTemplateTranslation();
+        $notif_template = new Notification_NotificationTemplate();
+        foreach (
+            $DB->request([
+                'FROM'  => 'glpi_notificationtemplates',
+                'WHERE' => ['itemtype' => self::class],
+            ]) as $data
+        ) {
+            foreach (
+                $DB->request([
+                    'FROM'  => 'glpi_notificationtemplatetranslations',
+                    'WHERE' => ['notificationtemplates_id' => $data['id']],
+                ]) as $data_translation
+            ) {
+                $translation->delete($data_translation);
+            }
+            foreach (
+                $DB->request([
+                    'FROM'  => 'glpi_notifications_notificationtemplates',
+                    'WHERE' => ['notificationtemplates_id' => $data['id']],
+                ]) as $data_link
+            ) {
+                $notif_template->delete($data_link);
+            }
+            $template->delete($data);
+        }
+
+        CronTask::unregister('manageentities');
+
         $DB->dropTable(self::getTable(), true);
+    }
+
+    // -----------------------------------------------------------------------
+    // Automatic action (cron) : expired subscriptions alert
+    // -----------------------------------------------------------------------
+
+    /**
+     * Give localized information about the automatic action.
+     *
+     * @param string $name Cron task name
+     *
+     * @return array
+     */
+    public static function cronInfo($name)
+    {
+        switch ($name) {
+            case 'ExpiredSubscriptions':
+                return ['description' => __('Send the list of expired publisher subscriptions', 'manageentities')];
+        }
+        return [];
+    }
+
+    /**
+     * Weekly automatic action: send a single global email listing every expired
+     * publisher subscription. The cron runs without a session, so the entity scope
+     * (archive subtree exclusion) is read from the plugin Config, never $_SESSION.
+     *
+     * @param CronTask|null $task
+     *
+     * @return int 0 = nothing done, 1 = done
+     */
+    public static function cronExpiredSubscriptions($task = null)
+    {
+        global $DB, $CFG_GLPI;
+
+        if (!$CFG_GLPI['notifications_mailing']) {
+            return 0;
+        }
+
+        $now   = date('Y-m-d');
+        $where = [
+            ['NOT' => ['s.end_date' => null]],
+            ['s.end_date' => ['<', $now . ' 00:00:00']],
+        ];
+
+        // Exclude the archive entity subtree, mirroring showStatusTab()/exportCsv().
+        $config              = Config::getInstance();
+        $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive_entities_id > 0) {
+            $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
+            unset($archive_sons[$archive_entities_id]);
+            if (!empty($archive_sons)) {
+                $where[] = ['NOT' => ['s.entities_id' => array_keys($archive_sons)]];
+            }
+        }
+
+        $iterator = $DB->request([
+            'SELECT'    => ['s.*', 'e.completename AS entity_completename'],
+            'FROM'      => self::getTable() . ' AS s',
+            'LEFT JOIN' => [
+                'glpi_entities AS e' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
+            ],
+            'WHERE' => $where,
+            'ORDER' => ['e.completename ASC'],
+        ]);
+
+        $subscriptions = [];
+        foreach ($iterator as $row) {
+            $row['level_name'] = !empty($row['plugin_manageentities_subscriptionlevels_id'])
+                ? Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int) $row['plugin_manageentities_subscriptionlevels_id'])
+                : '';
+            $subscriptions[] = $row;
+        }
+
+        if (empty($subscriptions)) {
+            return 0;
+        }
+
+        NotificationEvent::raiseEvent(
+            NotificationTargetEditorSubscription::ExpiredSubscriptions,
+            new self(),
+            [
+                'entities_id'   => 0,
+                'subscriptions' => $subscriptions,
+            ]
+        );
+
+        if ($task instanceof CronTask) {
+            $task->addVolume(count($subscriptions));
+            $task->log(sprintf(__('%d expired publisher subscriptions notified', 'manageentities'), count($subscriptions)));
+        }
+
+        return 1;
     }
 }

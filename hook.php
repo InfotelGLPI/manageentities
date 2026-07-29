@@ -401,6 +401,12 @@ function plugin_manageentities_install()
         }
     }
 
+    // Expired publisher subscriptions notification + weekly automatic action.
+    // EditorSubscription::install() is idempotent, so calling it unconditionally
+    // here also seeds the notification/cron on upgrades (the fresh-install batch
+    // above only runs on a brand new install).
+    EditorSubscription::install(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
+
     return true;
 }
 
@@ -408,27 +414,28 @@ function plugin_manageentities_uninstall()
 {
     global $DB;
 
-    $tables = ["glpi_plugin_manageentities_contracts",
-        "glpi_plugin_manageentities_contacts",
-        "glpi_plugin_manageentities_preferences",
-        "glpi_plugin_manageentities_configs",
-        "glpi_plugin_manageentities_critypes",
-        "glpi_plugin_manageentities_criprices",
-        "glpi_plugin_manageentities_contractdays",
-        "glpi_plugin_manageentities_critechnicians",
-        "glpi_plugin_manageentities_cridetails",
-        "glpi_plugin_manageentities_contractstates",
-        "glpi_plugin_manageentities_taskcategories",
-        "glpi_plugin_manageentities_businesscontacts",
-        "glpi_plugin_manageentities_companies",
-        "glpi_plugin_manageentities_entitylogos",
-        "glpi_plugin_manageentities_interventionstakeholders",
-        "glpi_plugin_manageentities_directhelpdesks",
-        "glpi_plugin_manageentities_directhelpdesks_tickets"];
-
-    foreach ($tables as $table) {
-        $DB->dropTable($table, true);
-    }
+    // Drop current-version tables through each class' uninstall() (each one drops
+    // its own table; EditorSubscription::uninstall() also removes its notification
+    // and weekly automatic action).
+    Contract::uninstall();
+    Contact::uninstall();
+    BusinessContact::uninstall();
+    Preference::uninstall();
+    Config::uninstall();
+    CriType::uninstall();
+    CriPrice::uninstall();
+    ContractDay::uninstall();
+    CriTechnician::uninstall();
+    InterventionStakeholder::uninstall();
+    CriDetail::uninstall();
+    ContractState::uninstall();
+    TaskCategory::uninstall();
+    Company::uninstall();
+    EntityLogo::uninstall();
+    DirectHelpdesk::uninstall();
+    DirectHelpdesk_Ticket::uninstall();
+    SubscriptionLevel::uninstall();
+    EditorSubscription::uninstall();
 
     //old versions
     $tables = ["glpi_plugin_manageentity_contracts",

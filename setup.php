@@ -87,7 +87,10 @@ function plugin_init_manageentities()
     $PLUGIN_HOOKS[Hooks::ITEM_TRANSFER]['manageentities'] = 'plugin_item_transfer_manageentities';
 
     if (Session::getLoginUserID()) {
-        Plugin::registerClass(EditorSubscription::class, ['addtabon' => Entity::class]);
+        Plugin::registerClass(EditorSubscription::class, [
+            'addtabon'                  => Entity::class,
+            'notificationtemplates_types' => true,
+        ]);
         Plugin::registerClass(SubscriptionLevel::class);
         Plugin::registerClass(Profile::class, ['addtabon' => 'Profile']);
         Plugin::registerClass(Contract::class, ['addtabon' => 'Contract']);
