@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 17:05+0000\n"
+"POT-Creation-Date: 2026-07-29 15:43+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -59,7 +59,7 @@ msgstr "3 heures minimum"
 msgid "A contract with this number already exists"
 msgstr "Un contrat avec ce numéro existe déjà"
 
-#: src/GenerateCRI.php:510
+#: src/GenerateCRI.php:756
 msgid "Accomplished tasks informations"
 msgstr "Informations sur les tâches accomplies"
 
@@ -139,7 +139,7 @@ msgstr "Ajouter un tarif"
 msgid "Add stakeholders"
 msgstr "Ajout d'intervenants"
 
-#: src/GenerateCRI.php:512
+#: src/GenerateCRI.php:757
 msgid "Add this Task"
 msgstr "Ajouter cette tâche"
 
@@ -313,7 +313,7 @@ msgstr ""
 msgid "City"
 msgstr "Ville"
 
-#: src/GenerateCRI.php:269 src/Followup.php:913 src/Monthly.php:703
+#: src/GenerateCRI.php:729 src/Followup.php:913 src/Monthly.php:703
 #: src/Monthly.php:734 src/Dashboard.php:231 src/Dashboard.php:295
 #: src/Dashboard.php:347
 msgid "Client"
@@ -430,7 +430,7 @@ msgstr[2] "Contacts"
 msgid "Contacts"
 msgstr "Contacts"
 
-#: src/GenerateCRI.php:720
+#: src/GenerateCRI.php:610
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 "Le contenu, la date de fin et de début sont obligatoires pour une tâche!"
@@ -710,7 +710,7 @@ msgstr "Supprimer définitivement"
 msgid "Deleting…"
 msgstr "Suppression..."
 
-#: src/GenerateCRI.php:757
+#: src/GenerateCRI.php:647
 #: templates/entity/directhelpdesk_ticket_select.html.twig:44
 #: templates/directhelpdesk_modal.html.twig:56
 msgid "Description"
@@ -723,6 +723,10 @@ msgstr "Détail des travaux réalisés"
 #: src/CriPDF.php:759
 msgid "Detail of work done"
 msgstr "Détail des travaux réalisés"
+
+#: src/Profile.php:119
+msgid "Direct helpdesk"
+msgstr "Interventions non facturées"
 
 #: templates/config_cri_form.html.twig:91
 msgid "Disable creation date in header of PDF"
@@ -811,7 +815,7 @@ msgstr "La date de début ne peut pas être inférieure à la date de fin"
 msgid "End date is required"
 msgstr "La date de fin est obligatoire"
 
-#: src/GenerateCRI.php:724
+#: src/GenerateCRI.php:614
 msgid "End date must be after the begin date !"
 msgstr "La date de fin doit être postérieure à la date de début!"
 
@@ -821,11 +825,11 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/cridetail.form.php:47 front/cridetail.form.php:50
 #: front/cridetail.form.php:52 front/entity.php:53 front/entity.php:56
 #: front/entity.php:58 front/report_occupation.form.php:35
-#: front/directhelpdesk.form.php:134 front/directhelpdesk.form.php:137
-#: front/directhelpdesk.form.php:139 front/directhelpdesk.php:42
+#: front/directhelpdesk.form.php:139 front/directhelpdesk.form.php:142
+#: front/directhelpdesk.form.php:144 front/directhelpdesk.php:42
 #: front/directhelpdesk.php:45 front/directhelpdesk.php:47
 #: front/report_moving.form.php:35 src/TaskCategory.php:71 src/Profile.php:55
-#: src/Profile.php:106 src/GenerateCRI.php:1245 src/Preference.php:114
+#: src/Profile.php:106 src/GenerateCRI.php:1152 src/Preference.php:114
 #: src/Followup.php:1506 src/Monthly.php:1097 setup.php:203
 #: templates/wizard/mode_choice.html.twig:35
 msgid "Entities portal"
@@ -969,7 +973,7 @@ msgstr ""
 msgid "General follow-up"
 msgstr "Suivi général"
 
-#: src/GenerateCRI.php:862
+#: templates/generatecri_wizard.html.twig:136
 msgctxt "button"
 msgid "Generate"
 msgstr "Générer"
@@ -978,7 +982,7 @@ msgstr "Générer"
 msgid "Generate Intervention report"
 msgstr "Générer le rapport d'intervention"
 
-#: src/GenerateCRI.php:80
+#: src/GenerateCRI.php:81
 msgid "Generate report intervention"
 msgstr "Générer le rapport d'intervention"
 
@@ -1101,7 +1105,7 @@ msgstr[0] "Type d'intervention"
 msgstr[1] "Types d'intervention"
 msgstr[2] "Types d'intervention"
 
-#: src/GenerateCRI.php:1298 src/CriDetail.php:425 src/CriDetail.php:677
+#: src/GenerateCRI.php:1205 src/CriDetail.php:425 src/CriDetail.php:677
 #: src/CriDetail.php:1878
 msgid "Intervention with contract"
 msgstr "Intervention sous contrat"
@@ -1316,7 +1320,7 @@ msgstr "Suivant"
 msgid "No"
 msgstr "Non"
 
-#: src/GenerateCRI.php:1329 src/CriDetail.php:1916
+#: src/GenerateCRI.php:1236 src/CriDetail.php:1916
 msgid "No active contracts"
 msgstr "Aucun contrats en cours"
 
@@ -1419,7 +1423,7 @@ msgstr "Pas de souscription enregistrée."
 msgid "No tasks whose category can be used"
 msgstr "Merci de configurer une catégorie de tâche de ticket avec le plugin"
 
-#: src/GenerateCRI.php:819
+#: src/GenerateCRI.php:772
 msgid "Non-accomplished tasks informations"
 msgstr "Informations sur les tâches non accomplies"
 
@@ -1552,7 +1556,7 @@ msgstr[2] "Prestations de contrat"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 
-#: src/GenerateCRI.php:1365 src/CriDetail.php:811 src/CriDetail.php:1976
+#: src/GenerateCRI.php:1272 src/CriDetail.php:811 src/CriDetail.php:1976
 #: src/CriDetail.php:2013 hook.php:805 templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr "Prestations du contrat"
@@ -1705,7 +1709,7 @@ msgid "Pre-selected state when creating a service period in the wizard."
 msgstr ""
 "Statut présélectionné lors de la création d'une prestation dans le wizard."
 
-#: src/GenerateCRI.php:483
+#: src/GenerateCRI.php:755
 msgid "Predefined task informations"
 msgstr "Informations de tâches prédéfinies"
 
@@ -2085,7 +2089,7 @@ msgstr "L'ajout de tâches est bloqué"
 msgid "Task category"
 msgstr "Catégorie de tâche"
 
-#: src/GenerateCRI.php:722
+#: src/GenerateCRI.php:612
 msgid "Task category must be defined"
 msgstr "La catégorie de tâche doit être définie"
 
@@ -2097,7 +2101,7 @@ msgstr "Equipe"
 msgid "Technical Assistance"
 msgstr "Assistance Technique"
 
-#: src/CriPDF.php:408 src/GenerateCRI.php:553
+#: src/CriPDF.php:408 src/GenerateCRI.php:764
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
 #: templates/report_occupation_form.html.twig:48
 msgid "Technician"
@@ -2106,7 +2110,7 @@ msgstr[0] "Intervenant"
 msgstr[1] "Intervenants"
 msgstr[2] "Intervenants"
 
-#: src/GenerateCRI.php:758
+#: src/GenerateCRI.php:648
 msgid "Technician as assigned"
 msgstr "Technicien assigné"
 
@@ -2166,7 +2170,7 @@ msgstr "Le schéma du plugin est bon"
 msgid "This action is irreversible. Continue ?"
 msgstr "Cette action est irréversible, Continuer ?"
 
-#: src/GenerateCRI.php:215
+#: src/GenerateCRI.php:728
 msgid "Ticket informations"
 msgstr "Informations du ticket"
 
