@@ -34,9 +34,9 @@ use GlpiPlugin\Servicecatalog\Main;
 Session::checkLoginUser();
 // The dashboard below (aggregated intervention time / billing data) is emitted before
 // Search::show() runs its own right check, so enforce the read right up-front — otherwise
-// an authenticated user without plugin_manageentities could read the dashboard before the
-// later 403 (same guard as front/company.php).
-Session::checkRight('plugin_manageentities', READ);
+// an authenticated user without plugin_manageentities_directhelpdesk could read the
+// dashboard before the later 403 (same guard as front/company.php).
+Session::checkRight('plugin_manageentities_directhelpdesk', READ);
 
 if (Session::getCurrentInterface() == 'central') {
     Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", DirectHelpdesk::class);

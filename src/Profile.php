@@ -110,6 +110,14 @@ class Profile extends \Profile
                 'itemtype' => CriDetail::class,
                 'label' => _n('Intervention report', 'Intervention reports', 1, 'manageentities'),
                 'field' => 'plugin_manageentities_cri_create'
+            ],
+            [
+                // Dedicated right for the direct helpdesk feature. DirectHelpdesk extends
+                // CommonDBTM, so the rights-choice matrix exposes the standard
+                // CREATE/READ/UPDATE/PURGE bits from CommonDBTM::getRights().
+                'itemtype' => DirectHelpdesk::class,
+                'label' => __('Direct helpdesk', 'manageentities'),
+                'field' => 'plugin_manageentities_directhelpdesk'
             ]
         ];
 
@@ -204,6 +212,29 @@ class Profile extends \Profile
                     ["name" => $data['field']]
                 ) == 0) {
                 ProfileRight::addProfileRights([$data['field']]);
+
+                // First registration of the dedicated direct-helpdesk right: the direct
+                // helpdesk feature was previously gated on the generic
+                // 'plugin_manageentities' right. Seed the new right from each profile's
+                // existing generic value (masked to the four exposed bits) so profiles
+                // that could already use the feature keep their access after the split
+                // instead of silently losing it on update.
+                if ($data['field'] === 'plugin_manageentities_directhelpdesk') {
+                    $seed_mask = CREATE | READ | UPDATE | PURGE;
+                    foreach ($DB->request([
+                        'FROM'  => 'glpi_profilerights',
+                        'WHERE' => ['name' => 'plugin_manageentities'],
+                    ]) as $row) {
+                        $DB->update(
+                            'glpi_profilerights',
+                            ['rights' => ((int) $row['rights']) & $seed_mask],
+                            [
+                                'name'        => 'plugin_manageentities_directhelpdesk',
+                                'profiles_id' => $row['profiles_id'],
+                            ]
+                        );
+                    }
+                }
             }
         }
 
@@ -230,7 +261,8 @@ class Profile extends \Profile
             $profiles_id,
             [
                 'plugin_manageentities' => ALLSTANDARDRIGHT,
-                'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT
+                'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT,
+                'plugin_manageentities_directhelpdesk' => CREATE | READ | UPDATE | PURGE
             ],
             true
         );

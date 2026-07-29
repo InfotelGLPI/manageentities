@@ -31,7 +31,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Servicecatalog\Main;
 
-if (Session::haveRight("plugin_manageentities", UPDATE)) {
+if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
     $direct = new DirectHelpdesk();
 
     if (isset($_POST["create_ticket"])) {
@@ -128,7 +128,12 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
         $direct->delete($_POST, 1);
         Html::back();
     } else {
-        $direct->checkGlobal(READ);
+        // The whole controller is already gated on the plugin UPDATE right (see the
+        // top-level condition). READ and UPDATE are independent right bits, so a profile
+        // granted UPDATE without READ would pass the outer gate yet be rejected here by
+        // checkGlobal(READ), and the form would never render. Align the display gate with
+        // the file-wide UPDATE requirement so any authorized profile sees the form.
+        $direct->checkGlobal(UPDATE);
 
         if (Session::getCurrentInterface() == 'central') {
             Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", DirectHelpdesk::class);

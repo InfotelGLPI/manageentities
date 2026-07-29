@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 class DirectHelpdesk extends CommonDBTM
 {
 
-    static $rightname = 'plugin_manageentities';
+    static $rightname = 'plugin_manageentities_directhelpdesk';
 
     public $dohistory = true;
 

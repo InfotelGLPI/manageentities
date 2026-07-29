@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 class DirectHelpdesk_Ticket extends CommonDBTM
 {
 
-    static $rightname = 'plugin_manageentities';
+    static $rightname = 'plugin_manageentities_directhelpdesk';
 
     public static function getTypeName($nb = 0)
     {
