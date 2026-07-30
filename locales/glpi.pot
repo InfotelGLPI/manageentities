@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-29 15:43+0000\n"
+"POT-Creation-Date: 2026-07-29 17:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,6 +21,11 @@ msgstr ""
 #: src/Report.php:286
 #, php-format
 msgid "% of time justified"
+msgstr ""
+
+#: src/EditorSubscription.php:970
+#, php-format
+msgid "%d expired publisher subscriptions notified"
 msgstr ""
 
 #: src/CriPDF.php:623
@@ -59,7 +64,7 @@ msgstr ""
 msgid "Accomplished tasks informations"
 msgstr ""
 
-#: src/EditorSubscription.php:180 hook.php:841
+#: src/EditorSubscription.php:186 hook.php:848
 #: templates/wizard/step4_management.html.twig:121
 msgid "Active editor subscription"
 msgstr ""
@@ -338,8 +343,9 @@ msgstr ""
 msgid "Cloud"
 msgstr ""
 
-#: src/EditorSubscription.php:158 src/EditorSubscription.php:181
-#: src/EditorSubscription.php:645 hook.php:854
+#: src/EditorSubscription.php:164 src/EditorSubscription.php:187
+#: src/EditorSubscription.php:651
+#: src/NotificationTargetEditorSubscription.php:91 hook.php:861
 #: templates/cridetail_for_ticket.html.twig:79
 #: templates/editorsubscription_fields.html.twig:67
 #: templates/wizard/step4_management.html.twig:130
@@ -749,7 +755,8 @@ msgstr ""
 msgid "Editor"
 msgstr ""
 
-#: src/EditorSubscription.php:159 src/EditorSubscription.php:637
+#: src/EditorSubscription.php:165 src/EditorSubscription.php:643
+#: src/NotificationTargetEditorSubscription.php:92
 #: templates/cridetail_for_ticket.html.twig:81
 #: templates/editorsubscription_fields.html.twig:59
 #: templates/contract_detail_form.html.twig:57
@@ -769,7 +776,9 @@ msgstr ""
 msgid "Email address"
 msgstr ""
 
-#: src/EditorSubscription.php:184
+#: src/EditorSubscription.php:190
+#: src/NotificationTargetEditorSubscription.php:81
+#: src/NotificationTargetEditorSubscription.php:118
 #: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/report_occupation_form.html.twig:41
 #: templates/contractday_form.html.twig:69
@@ -807,7 +816,7 @@ msgstr ""
 #: front/directhelpdesk.php:45 front/directhelpdesk.php:47
 #: front/report_moving.form.php:35 src/TaskCategory.php:71 src/Profile.php:55
 #: src/Profile.php:106 src/GenerateCRI.php:1152 src/Preference.php:114
-#: src/Followup.php:1506 src/Monthly.php:1097 setup.php:203
+#: src/Followup.php:1506 src/Monthly.php:1097 setup.php:206
 #: templates/wizard/mode_choice.html.twig:35
 msgid "Entities portal"
 msgstr ""
@@ -824,7 +833,9 @@ msgstr ""
 msgid "Entities with an expired publisher subscription:"
 msgstr ""
 
-#: src/EditorSubscription.php:175
+#: src/EditorSubscription.php:181
+#: src/NotificationTargetEditorSubscription.php:75
+#: src/NotificationTargetEditorSubscription.php:112
 #: templates/entity/editorsubscription_tab.html.twig:70
 #: templates/entity/contracts_tab.html.twig:51
 #: templates/directhelpdesk_form.html.twig:58
@@ -892,6 +903,12 @@ msgstr ""
 
 #: templates/entity/editorsubscription_tab.html.twig:51
 msgid "Expired only"
+msgstr ""
+
+#: src/NotificationTargetEditorSubscription.php:62
+#: src/NotificationTargetEditorSubscription.php:72
+#: src/NotificationTargetEditorSubscription.php:131
+msgid "Expired publisher subscriptions"
 msgstr ""
 
 #: templates/entity/editorsubscription_tab.html.twig:39
@@ -1023,7 +1040,7 @@ msgstr ""
 msgid "Initial credit is required"
 msgstr ""
 
-#: src/EditorSubscription.php:182 src/EditorSubscription.php:653 hook.php:867
+#: src/EditorSubscription.php:188 src/EditorSubscription.php:659 hook.php:874
 #: templates/cridetail_for_ticket.html.twig:422
 #: templates/editorsubscription_fields.html.twig:75
 #: templates/contract_detail_form.html.twig:80
@@ -1053,7 +1070,7 @@ msgstr ""
 msgid "Intervention periods of contract"
 msgstr ""
 
-#: src/Cri.php:58 src/Config.php:346 src/Profile.php:111 setup.php:129
+#: src/Cri.php:58 src/Config.php:346 src/Profile.php:111 setup.php:132
 #: templates/cridetail_add_reports.html.twig:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -1154,7 +1171,7 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:937
+#: src/Servicecatalog.php:80 src/Servicecatalog.php:86 hook.php:944
 msgid "Manage your contracts"
 msgstr ""
 
@@ -1327,7 +1344,7 @@ msgstr ""
 msgid "No expired publisher subscription."
 msgstr ""
 
-#: src/EditorSubscription.php:410
+#: src/EditorSubscription.php:416
 msgid "No level"
 msgstr ""
 
@@ -1515,7 +1532,7 @@ msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
 #: src/GenerateCRI.php:1272 src/CriDetail.php:811 src/CriDetail.php:1976
-#: src/CriDetail.php:2013 hook.php:805 templates/contractday_list.html.twig:33
+#: src/CriDetail.php:2013 hook.php:812 templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr ""
 
@@ -1692,14 +1709,16 @@ msgstr ""
 msgid "Production"
 msgstr ""
 
-#: src/EditorSubscription.php:176 src/EditorSubscription.php:621
+#: src/EditorSubscription.php:182 src/EditorSubscription.php:627
+#: src/NotificationTargetEditorSubscription.php:76
+#: src/NotificationTargetEditorSubscription.php:113
 #: templates/entity/editorsubscription_tab.html.twig:71
 #: templates/editorsubscription_fields.html.twig:38
 #: templates/contract_detail_form.html.twig:63
 msgid "Publisher customer account ID"
 msgstr ""
 
-#: front/editorsubscription.form.php:91 src/EditorSubscription.php:53
+#: front/editorsubscription.form.php:91 src/EditorSubscription.php:59
 #: src/Entity.php:118 templates/cridetail_for_ticket.html.twig:69
 #: templates/wizard/step3_subscription.html.twig:39
 #: templates/contract_detail_form.html.twig:39
@@ -1720,7 +1739,7 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:502
+#: src/EditorSubscription.php:508
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
@@ -1742,7 +1761,9 @@ msgstr ""
 msgid "Refacturable costs"
 msgstr ""
 
-#: src/EditorSubscription.php:177
+#: src/EditorSubscription.php:183
+#: src/NotificationTargetEditorSubscription.php:77
+#: src/NotificationTargetEditorSubscription.php:114
 #: templates/entity/editorsubscription_tab.html.twig:72
 #: templates/editorsubscription_fields.html.twig:31
 #: templates/contract_detail_form.html.twig:69
@@ -1792,11 +1813,11 @@ msgstr ""
 msgid "Remaining total (amount)"
 msgstr ""
 
-#: src/Report.php:271 setup.php:132
+#: src/Report.php:271 setup.php:135
 msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
-#: src/Report.php:147 setup.php:130
+#: src/Report.php:147 setup.php:133
 msgid "Report on the movement of technicians"
 msgstr ""
 
@@ -1873,6 +1894,10 @@ msgstr ""
 msgid "Select an existing price"
 msgstr ""
 
+#: src/EditorSubscription.php:898
+msgid "Send the list of expired publisher subscriptions"
+msgstr ""
+
 #: templates/wizard/step1_entity.html.twig:61
 msgid "Set in configuration"
 msgstr ""
@@ -1913,7 +1938,9 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: src/EditorSubscription.php:183
+#: src/EditorSubscription.php:189
+#: src/NotificationTargetEditorSubscription.php:80
+#: src/NotificationTargetEditorSubscription.php:117
 #: templates/entity/editorsubscription_tab.html.twig:75
 #: templates/report_occupation_form.html.twig:37
 #: templates/report_moving_form.html.twig:37
@@ -1976,8 +2003,11 @@ msgstr ""
 msgid "Subscription"
 msgstr ""
 
-#: src/EditorSubscription.php:179 src/EditorSubscription.php:629
-#: src/EditorSubscription.php:684 src/SubscriptionLevel.php:52
+#: src/EditorSubscription.php:185 src/EditorSubscription.php:635
+#: src/EditorSubscription.php:690
+#: src/NotificationTargetEditorSubscription.php:79
+#: src/NotificationTargetEditorSubscription.php:116
+#: src/SubscriptionLevel.php:52
 #: templates/entity/editorsubscription_tab.html.twig:74
 #: templates/editorsubscription_fields.html.twig:87
 #: templates/contract_detail_form.html.twig:75
@@ -2164,7 +2194,7 @@ msgid "Total production"
 msgstr ""
 
 #: src/Followup.php:858 src/Followup.php:1174 src/Dashboard.php:167
-#: src/Dashboard.php:439 src/ContractDay.php:543 hook.php:827
+#: src/Dashboard.php:439 src/ContractDay.php:543 hook.php:834
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr ""
@@ -2185,7 +2215,10 @@ msgstr ""
 msgid "Travel (in days)"
 msgstr ""
 
-#: src/EditorSubscription.php:178 templates/entity/contacts_card.html.twig:45
+#: src/EditorSubscription.php:184
+#: src/NotificationTargetEditorSubscription.php:78
+#: src/NotificationTargetEditorSubscription.php:115
+#: templates/entity/contacts_card.html.twig:45
 #: templates/entity/editorsubscription_tab.html.twig:73
 #: templates/entity/description.html.twig:185
 #: templates/wizard/step2_contact_block.html.twig:84
@@ -2238,7 +2271,7 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1016
+#: hook.php:1023
 msgid "Update subscription fields"
 msgstr ""
 
