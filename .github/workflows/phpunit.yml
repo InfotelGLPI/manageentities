@@ -17,14 +17,14 @@ jobs:
 
     steps:
       - name: Checkout GLPI
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: glpi-project/glpi
           ref: 11.0/bugfixes
           path: glpi
 
       - name: Checkout plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: glpi/plugins/manageentities
 
@@ -72,14 +72,14 @@ jobs:
 
     steps:
       - name: Checkout GLPI
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: glpi-project/glpi
           ref: 11.0/bugfixes
           path: glpi
 
       - name: Checkout plugin
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: glpi/plugins/manageentities
 
