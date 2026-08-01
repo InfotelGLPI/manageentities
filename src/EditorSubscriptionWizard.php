@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Session;
 
 if (!defined('GLPI_ROOT')) {
@@ -131,6 +132,15 @@ class EditorSubscriptionWizard
             return ['success' => false, 'message' => __('No entity selected.', 'manageentities')];
         }
 
+        // Entity scope (anti-IDOR): the controller only checked the global CREATE/UPDATE
+        // right. entities_id comes from the POST and drives add()/update() (via
+        // getForEntity), so require access to that entity - otherwise a user could
+        // create or overwrite another entity's subscription. Same guard the rest of the
+        // plugin applies on its write/disclosure paths.
+        if (!Session::haveAccessToEntity($entities_id)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $begin = trim($input['begin_date'] ?? '');
         $end   = trim($input['end_date'] ?? '');
 
@@ -192,6 +202,14 @@ class EditorSubscriptionWizard
         $sub = new EditorSubscription();
         if (!$sub->getFromDB($sub_id)) {
             return ['success' => false, 'message' => __('No subscription found.', 'manageentities')];
+        }
+
+        // Entity scope (anti-IDOR): the sub_id is attacker-supplied and getForEntity is
+        // not involved on delete, so re-check access to the subscription's own entity
+        // before purging - a user with the global DELETE right must not be able to
+        // iterate sub_id and wipe another entity's subscription.
+        if (!Session::haveAccessToEntity((int) $sub->fields['entities_id'])) {
+            throw new AccessDeniedHttpException();
         }
 
         $result = $sub->delete(['id' => $sub_id], true);

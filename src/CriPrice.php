@@ -263,10 +263,13 @@ class CriPrice extends CommonDBTM
             echo "</tr>";
             foreach ($data as $value) {
                 echo "<tr class='tab_bg_2'>";
+                // Stored XSS: entity/contract-day names are stored raw in GLPI 10+, so
+                // escape them (and the id in the URL) before echoing into HTML.
                 echo "<td><a href='" . Toolbox::getItemTypeFormURL(
                         Contractday::class
-                    ) . "?id=" . $value['plugin_manageentities_contractdays_id'] . "'>" . $value['contractdays_name'] . "</a></td>";
-                echo "<td>" . $value['entities_name'] . "</td>";
+                    ) . "?id=" . (int) $value['plugin_manageentities_contractdays_id'] . "'>"
+                    . htmlspecialchars((string) $value['contractdays_name'], ENT_QUOTES) . "</a></td>";
+                echo "<td>" . htmlspecialchars((string) $value['entities_name'], ENT_QUOTES) . "</td>";
                 echo "<td>" . Html::formatNumber($value["price"], true) . "</td>";
                 echo "</tr>";
             }

@@ -750,52 +750,77 @@ class EditorSubscription extends CommonDBTM
             return;
         }
 
-        // Default translation (only if this template has none yet).
-        $has_translation = $DB->request([
-            'COUNT' => 'cpt',
-            'FROM'  => 'glpi_notificationtemplatetranslations',
-            'WHERE' => ['notificationtemplates_id' => $templates_id],
-        ])->current();
+        // Canonical default translation.
+        //
+        // The FOREACH block MUST contain inline elements only (<strong>, <br />) and
+        // never a block-level element such as <table>/<tr>/<td>. When the notification
+        // template is opened and saved in the GLPI rich-text (TinyMCE) editor, the DOM
+        // normalizer hoists a block-level <table> out of its surrounding node; that
+        // orphans the ##FOREACHsubscriptions## / ##ENDFOREACHsubscriptions## text
+        // markers (they collapse into an empty adjacent pair) and pushes the template
+        // row -- with its ##subscription.*## tags -- outside any FOREACH block, so the
+        // row tags are never substituted and reach the recipient as raw text. Mirror
+        // the core "Alert Reservation" template, whose FOREACH body is inline-only and
+        // therefore survives an editor round-trip.
+        $content_text = '##subscription.action##
 
-        if ((int) ($has_translation['cpt'] ?? 0) === 0) {
-            $content_text = '##subscription.action##
+##FOREACHsubscriptions####lang.subscription.entity##: ##subscription.entity##
+##lang.subscription.customeraccountid##: ##subscription.customeraccountid##
+##lang.subscription.name##: ##subscription.name##
+##lang.subscription.type##: ##subscription.type##
+##lang.subscription.level##: ##subscription.level##
+##lang.subscription.begindate##: ##subscription.begindate##
+##lang.subscription.enddate##: ##subscription.enddate##
 
-##lang.subscription.entity## | ##lang.subscription.customeraccountid## | ##lang.subscription.name## | ##lang.subscription.type## | ##lang.subscription.level## | ##lang.subscription.begindate## | ##lang.subscription.enddate##
-##FOREACHsubscriptions##
-##subscription.entity## | ##subscription.customeraccountid## | ##subscription.name## | ##subscription.type## | ##subscription.level## | ##subscription.begindate## | ##subscription.enddate##
 ##ENDFOREACHsubscriptions##';
 
-            $content_html = '&lt;strong&gt;##subscription.action##&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;'
-                . '&lt;table border="1" cellpadding="5" cellspacing="0"&gt;'
-                . '&lt;thead&gt;&lt;tr&gt;'
-                . '&lt;th&gt;##lang.subscription.entity##&lt;/th&gt;'
-                . '&lt;th&gt;##lang.subscription.customeraccountid##&lt;/th&gt;'
-                . '&lt;th&gt;##lang.subscription.name##&lt;/th&gt;'
-                . '&lt;th&gt;##lang.subscription.type##&lt;/th&gt;'
-                . '&lt;th&gt;##lang.subscription.level##&lt;/th&gt;'
-                . '&lt;th&gt;##lang.subscription.begindate##&lt;/th&gt;'
-                . '&lt;th&gt;##lang.subscription.enddate##&lt;/th&gt;'
-                . '&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;'
-                . '##FOREACHsubscriptions##'
-                . '&lt;tr&gt;'
-                . '&lt;td&gt;##subscription.entity##&lt;/td&gt;'
-                . '&lt;td&gt;##subscription.customeraccountid##&lt;/td&gt;'
-                . '&lt;td&gt;##subscription.name##&lt;/td&gt;'
-                . '&lt;td&gt;##subscription.type##&lt;/td&gt;'
-                . '&lt;td&gt;##subscription.level##&lt;/td&gt;'
-                . '&lt;td&gt;##subscription.begindate##&lt;/td&gt;'
-                . '&lt;td&gt;##subscription.enddate##&lt;/td&gt;'
-                . '&lt;/tr&gt;'
-                . '##ENDFOREACHsubscriptions##'
-                . '&lt;/tbody&gt;&lt;/table&gt;';
+        $content_html = '&lt;p&gt;&lt;strong&gt;##subscription.action##&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;'
+            . '##FOREACHsubscriptions##'
+            . '&lt;strong&gt;##lang.subscription.entity##:&lt;/strong&gt; ##subscription.entity##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.subscription.customeraccountid##:&lt;/strong&gt; ##subscription.customeraccountid##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.subscription.name##:&lt;/strong&gt; ##subscription.name##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.subscription.type##:&lt;/strong&gt; ##subscription.type##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.subscription.level##:&lt;/strong&gt; ##subscription.level##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.subscription.begindate##:&lt;/strong&gt; ##subscription.begindate##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.subscription.enddate##:&lt;/strong&gt; ##subscription.enddate##&lt;br /&gt;&lt;br /&gt;'
+            . '##ENDFOREACHsubscriptions##'
+            . '&lt;/p&gt;';
 
+        // Insert when missing; otherwise repair a translation whose FOREACH block has
+        // been broken by an editor round-trip (empty ##FOREACH...####ENDFOREACH...## with
+        // the row tags stranded outside). Detection: no ##subscription. tag survives
+        // between the two markers. A healthy, admin-customized translation keeps at
+        // least one row tag inside the block and is left untouched.
+        $existing = $DB->request([
+            'FROM'  => 'glpi_notificationtemplatetranslations',
+            'WHERE' => ['notificationtemplates_id' => $templates_id],
+        ]);
+
+        if (count($existing) === 0) {
             $DB->insert('glpi_notificationtemplatetranslations', [
                 'notificationtemplates_id' => $templates_id,
                 'language'                 => '',
-                'subject'                  => 'Expired publisher subscriptions',
+                'subject'                  => '##subscription.action##',
                 'content_text'             => $content_text,
                 'content_html'             => $content_html,
             ]);
+        } else {
+            foreach ($existing as $translation) {
+                $html = (string) ($translation['content_html'] ?? '');
+                if (
+                    preg_match('/##FOREACHsubscriptions##(.*?)##ENDFOREACHsubscriptions##/is', $html, $m) !== 1
+                    || strpos($m[1], '##subscription.') === false
+                ) {
+                    $DB->update(
+                        'glpi_notificationtemplatetranslations',
+                        [
+                            'content_text' => $content_text,
+                            'content_html' => $content_html,
+                        ],
+                        ['id' => $translation['id']]
+                    );
+                }
+            }
         }
 
         // Notification (only if not already present for this itemtype/event).
@@ -941,7 +966,7 @@ class EditorSubscription extends CommonDBTM
                 'glpi_entities AS e' => ['FKEY' => ['s' => 'entities_id', 'e' => 'id']],
             ],
             'WHERE' => $where,
-            'ORDER' => ['e.completename ASC'],
+            'ORDER' => ['s.end_date ASC'],
         ]);
 
         $subscriptions = [];

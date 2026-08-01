@@ -55,16 +55,43 @@ class EntityLogo extends CommonDBTM
      */
     function addLogo($values)
     {
-        if (isset($values["_filename"])) {
-            $tmp = explode(".", $values["_filename"][0]);
-            $extension = array_pop($tmp);
-            if (!in_array($extension, ['jpg', 'jpeg'])) {
-                Session::addMessageAfterRedirect(
-                    __('The format of the image must be in JPG or JPEG', 'manageentities'),
-                    false,
-                    ERROR
-                );
-                return false;
+        // Entity scope (anti-IDOR): writing a logo targets $values['entities_id'] and
+        // deletes the previously stored logo Document. The global CREATE right is not
+        // enough - require access to the targeted entity so a user cannot tamper with
+        // another entity's logo.
+        if (!Session::haveAccessToEntity((int) ($values["entities_id"] ?? 0))) {
+            return false;
+        }
+
+        if (isset($values["_filename"]) && is_array($values["_filename"])) {
+            foreach ($values["_filename"] as $file) {
+                // Path traversal: _filename is client-supplied and is later joined onto
+                // GLPI_TMP_DIR in addFilesCRI(); reject any path separator so it cannot
+                // escape the temp directory.
+                if (!is_string($file) || $file === ''
+                    || basename($file) !== $file
+                    || strpbrk($file, "/\\") !== false) {
+                    Session::addMessageAfterRedirect(
+                        __('The format of the image must be in JPG or JPEG', 'manageentities'),
+                        false,
+                        ERROR
+                    );
+                    return false;
+                }
+
+                // Validate the REAL MIME type of the uploaded temp file (fail-closed:
+                // reject when the file is absent) rather than trusting the client-
+                // declared extension.
+                $tmpfile = GLPI_TMP_DIR . "/" . $file;
+                $mime    = is_file($tmpfile) ? mime_content_type($tmpfile) : false;
+                if ($mime !== 'image/jpeg') {
+                    Session::addMessageAfterRedirect(
+                        __('The format of the image must be in JPG or JPEG', 'manageentities'),
+                        false,
+                        ERROR
+                    );
+                    return false;
+                }
             }
         }
 

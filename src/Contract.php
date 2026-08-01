@@ -1018,6 +1018,17 @@ class Contract extends CommonDBTM
             }
 
             foreach ($ids as $id) {
+                // Re-verify per-item right AND entity access on the core Contract before
+                // touching anything. The MassiveAction framework does not filter target
+                // ids for a custom action, so a user with the global Contract/CREATE right
+                // in one entity could forge a POST targeting contracts outside their
+                // entity scope. can($id, UPDATE) enforces both the UPDATE right and
+                // Session::haveAccessToEntity() on the target's entity.
+                if (!$item->can($id, UPDATE)) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                    continue;
+                }
+
                 // $id is a core glpi_contracts.id; find the plugin row by contracts_id
                 $row = $DB->request([
                     'SELECT' => 'id',

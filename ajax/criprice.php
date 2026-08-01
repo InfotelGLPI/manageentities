@@ -39,7 +39,14 @@ if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('t
 
 switch ($_POST['action']) {
    case 'loadPrice' :
+      // Entity scope (anti-IDOR): showSelectPriceDropdown() discloses the CRI pricing
+      // grid of the requested entity. Enforce the caller may access that entity, the
+      // same guard the sibling dropdown endpoints already apply.
+      $entities_id = (int) ($_POST['entities_id'] ?? 0);
+      if (!Session::haveAccessToEntity($entities_id)) {
+          throw new AccessDeniedHttpException();
+      }
       $criprice = new CriPrice();
-      $criprice->showSelectPriceDropdown($_POST['critypes_id'], $_POST['entities_id']);
+      $criprice->showSelectPriceDropdown((int) ($_POST['critypes_id'] ?? 0), $entities_id);
       break;
 }
