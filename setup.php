@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.6');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.7');
 
 global $CFG_GLPI;
 
