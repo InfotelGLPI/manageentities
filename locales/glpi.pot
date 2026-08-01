@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-30 05:56+0000\n"
+"POT-Creation-Date: 2026-08-01 08:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "% of time justified"
 msgstr ""
 
-#: src/EditorSubscription.php:970
+#: src/EditorSubscription.php:995
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
@@ -113,7 +113,7 @@ msgstr ""
 msgid "Add a new contract and service periods to an existing client."
 msgstr ""
 
-#: src/CriPrice.php:313
+#: src/CriPrice.php:316
 msgid "Add a new price"
 msgstr ""
 
@@ -199,11 +199,11 @@ msgstr ""
 msgid "An error happened while saving the data."
 msgstr ""
 
-#: front/editorsubscription.form.php:81 src/EditorSubscriptionWizard.php:201
+#: front/editorsubscription.form.php:81 src/EditorSubscriptionWizard.php:219
 msgid "An error occurred while deleting."
 msgstr ""
 
-#: front/editorsubscription.form.php:58 src/EditorSubscriptionWizard.php:178
+#: front/editorsubscription.form.php:58 src/EditorSubscriptionWizard.php:188
 msgid "An error occurred while saving."
 msgstr ""
 
@@ -277,7 +277,7 @@ msgstr ""
 msgid "Begin date"
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:146 src/WizardController.php:193
+#: src/EditorSubscriptionWizard.php:156 src/WizardController.php:193
 #: src/WizardController.php:226
 msgid "Begin date is required"
 msgstr ""
@@ -560,7 +560,7 @@ msgid "Customer stamp"
 msgstr ""
 
 #: src/Monthly.php:715 src/Monthly.php:751 src/CriPrice.php:61
-#: src/CriPrice.php:98 src/CriPrice.php:205 src/CriPrice.php:358
+#: src/CriPrice.php:98 src/CriPrice.php:205 src/CriPrice.php:361
 #: src/CriType.php:98 templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Daily rate"
@@ -797,7 +797,7 @@ msgstr ""
 msgid "End date cannot be less than begin date"
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:149 src/WizardController.php:229
+#: src/EditorSubscriptionWizard.php:159 src/WizardController.php:229
 msgid "End date is required"
 msgstr ""
 
@@ -1002,7 +1002,7 @@ msgid "Hourly"
 msgstr ""
 
 #: src/Monthly.php:717 src/Monthly.php:753 src/CriPrice.php:63
-#: src/CriPrice.php:100 src/CriPrice.php:205 src/CriPrice.php:358
+#: src/CriPrice.php:100 src/CriPrice.php:205 src/CriPrice.php:361
 #: templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Hourly rate"
@@ -1112,7 +1112,7 @@ msgstr ""
 msgid "Is billed"
 msgstr ""
 
-#: src/CriPrice.php:359 src/CriPrice.php:675
+#: src/CriPrice.php:362 src/CriPrice.php:678
 #: templates/criprice_form.html.twig:52
 msgid "Is default"
 msgstr ""
@@ -1157,7 +1157,7 @@ msgstr ""
 msgid "Load"
 msgstr ""
 
-#: src/EntityLogo.php:163 templates/entity/description.html.twig:49
+#: src/EntityLogo.php:190 templates/entity/description.html.twig:49
 msgid "Logo"
 msgstr ""
 
@@ -1336,7 +1336,7 @@ msgstr ""
 msgid "No days remaining on this contract period. Task addition is blocked."
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:131
+#: src/EditorSubscriptionWizard.php:132
 msgid "No entity selected."
 msgstr ""
 
@@ -1390,7 +1390,7 @@ msgstr ""
 msgid "No stakeholders have been affected yet."
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:189 src/EditorSubscriptionWizard.php:194
+#: src/EditorSubscriptionWizard.php:199 src/EditorSubscriptionWizard.php:204
 msgid "No subscription found."
 msgstr ""
 
@@ -1894,7 +1894,7 @@ msgstr ""
 msgid "Select an existing price"
 msgstr ""
 
-#: src/EditorSubscription.php:898
+#: src/EditorSubscription.php:923
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -2016,7 +2016,7 @@ msgid_plural "Subscription levels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/EditorSubscriptionWizard.php:143
+#: src/EditorSubscriptionWizard.php:153
 msgid "Subscription level is required"
 msgstr ""
 
@@ -2029,7 +2029,7 @@ msgstr ""
 msgid "Subscription type"
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:140
+#: src/EditorSubscriptionWizard.php:150
 msgid "Subscription type is required"
 msgstr ""
 
@@ -2118,7 +2118,8 @@ msgstr ""
 msgid "The following unsaved data from this wizard will be lost:"
 msgstr ""
 
-#: src/Company.php:200 src/Company.php:222 src/EntityLogo.php:63
+#: src/Company.php:200 src/Company.php:222 src/EntityLogo.php:75
+#: src/EntityLogo.php:89
 msgid "The format of the image must be in JPG or JPEG"
 msgstr ""
 
