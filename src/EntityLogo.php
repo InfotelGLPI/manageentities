@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -43,8 +43,7 @@ if (!defined('GLPI_ROOT')) {
 
 class EntityLogo extends CommonDBTM
 {
-
-    static $rightname = 'plugin_manageentities';
+    public static $rightname = 'plugin_manageentities';
 
     /**
      * Add a logo for entity
@@ -53,7 +52,7 @@ class EntityLogo extends CommonDBTM
      *
      * @return boolean
      */
-    function addLogo($values)
+    public function addLogo($values)
     {
         // Entity scope (anti-IDOR): writing a logo targets $values['entities_id'] and
         // deletes the previously stored logo Document. The global CREATE right is not
@@ -74,7 +73,7 @@ class EntityLogo extends CommonDBTM
                     Session::addMessageAfterRedirect(
                         __('The format of the image must be in JPG or JPEG', 'manageentities'),
                         false,
-                        ERROR
+                        ERROR,
                     );
                     return false;
                 }
@@ -88,7 +87,7 @@ class EntityLogo extends CommonDBTM
                     Session::addMessageAfterRedirect(
                         __('The format of the image must be in JPG or JPEG', 'manageentities'),
                         false,
-                        ERROR
+                        ERROR,
                     );
                     return false;
                 }
@@ -105,7 +104,7 @@ class EntityLogo extends CommonDBTM
                 foreach ($logo as $key => $name) {
                     $this->add([
                         'entities_id' => $values["entities_id"],
-                        'logos_id' => $key
+                        'logos_id' => $key,
                     ]);
                 }
             } else {
@@ -114,22 +113,22 @@ class EntityLogo extends CommonDBTM
                 foreach ($logo as $key => $name) {
                     $this->add([
                         'entities_id' => $values["entities_id"],
-                        'logos_id' => $key
+                        'logos_id' => $key,
                     ]);
                 }
             }
         }
     }
 
-    static function cleanForItem(CommonDBTM $item)
+    public static function cleanForItem(CommonDBTM $item)
     {
         $temp = new self();
         $temp->deleteByCriteria(
-            ['logos_id' => $item->getField('id')]
+            ['logos_id' => $item->getField('id')],
         );
     }
 
-    function addFilesCRI($values, $donotif = 0, $disablenotif = 1)
+    public function addFilesCRI($values, $donotif = 0, $disablenotif = 1)
     {
         global $CFG_GLPI;
 
@@ -137,7 +136,6 @@ class EntityLogo extends CommonDBTM
             return [];
         }
         $docadded = [];
-
 
         foreach ($values['_filename'] as $key => $file) {
             $doc = new Document();
@@ -159,7 +157,7 @@ class EntityLogo extends CommonDBTM
                     $image_coordinates['img_x'],
                     $image_coordinates['img_w'],
                     $image_coordinates['img_h'],
-                    0
+                    0,
                 );
             } else {
                 Toolbox::resizePicture($filename, $filename);
@@ -180,7 +178,7 @@ class EntityLogo extends CommonDBTM
                     $values['content'] = preg_replace(
                         '/' . Document::getImageTag($values['_tag'][$key]) . '/',
                         Document::getImageTag($doc->fields["tag"]),
-                        $values['content']
+                        $values['content'],
                     );
                     $docadded[$docID]['tag'] = $doc->fields["tag"];
                 }
@@ -204,12 +202,12 @@ class EntityLogo extends CommonDBTM
                     '_do_notif' => $donotif,
                     '_disablenotif' => $disablenotif,
                     'itemtype' => 'Entity',
-                    'items_id' => $values['entities_id']
+                    'items_id' => $values['entities_id'],
                 ])) {
                     $docadded[$docID]['data'] = sprintf(
                         __('%1$s - %2$s'),
                         stripslashes($doc->fields["name"]),
-                        stripslashes($doc->fields["filename"])
+                        stripslashes($doc->fields["filename"]),
                     );
 
                     if (isset($input2["tag"])) {
@@ -235,7 +233,7 @@ class EntityLogo extends CommonDBTM
      *
      * @return boolean
      */
-    function getLogo($entities_id)
+    public function getLogo($entities_id)
     {
         $logo = $this->find(['entities_id' => $entities_id]);
         $logo = reset($logo);
@@ -268,7 +266,6 @@ class EntityLogo extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {

@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -42,20 +42,19 @@ if (!defined('GLPI_ROOT')) {
 
 class CriType extends CommonDropdown
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Intervention type', 'Intervention types', $nb, 'manageentities');
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         $config = Config::getInstance();
         if ($config->fields['useprice'] == Config::PRICE) {
@@ -64,7 +63,7 @@ class CriType extends CommonDropdown
         return false;
     }
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -84,9 +83,9 @@ class CriType extends CommonDropdown
                 'beforejoin' =>
                     [
                         'table' => 'glpi_plugin_manageentities_criprices',
-                        'joinparams' => ['jointype' => "child"]
-                    ]
-            ]
+                        'joinparams' => ['jointype' => "child"],
+                    ],
+            ],
         ];
 
         $tab[] = [
@@ -113,19 +112,18 @@ class CriType extends CommonDropdown
         return $tab;
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item->getType()) {
-                case CriType::class :
+                case CriType::class:
                     return self::createTabEntry(CriType::getTypeName(1));
             }
         }
         return '';
     }
 
-
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $criprice = new CriPrice();
         if ($item->getType() == CriType::class) {
@@ -155,10 +153,10 @@ class CriType extends CommonDropdown
             $DB->doQuery($query);
 
             foreach ([
-                         1 => __('Urgent intervention', 'manageentities'),
-                         2 => __('Scheduled intervention', 'manageentities'),
-                         3 => __('Study and advice', 'manageentities'),
-                     ] as $critype_id => $critype_name) {
+                1 => __('Urgent intervention', 'manageentities'),
+                2 => __('Scheduled intervention', 'manageentities'),
+                3 => __('Study and advice', 'manageentities'),
+            ] as $critype_id => $critype_name) {
                 $DB->insert('glpi_plugin_manageentities_critypes', [
                     'id'   => $critype_id,
                     'name' => $critype_name,
@@ -166,7 +164,6 @@ class CriType extends CommonDropdown
             }
         }
     }
-
 
     public static function uninstall()
     {

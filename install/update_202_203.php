@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 /**
@@ -32,23 +32,24 @@
  *
  * @return bool for success (will die for most error)
  * */
-function update202to203() {
-   global $DB;
+function update202to203()
+{
+    global $DB;
 
-   $migration = new Migration(203);
+    $migration = new Migration(203);
 
-   $migration->addField('glpi_plugin_manageentities_configs', 'allow_same_periods', 'bool');
-   $migration->addField('glpi_plugin_manageentities_criprices', 'plugin_manageentities_contractdays_id', 'integer');
-   $migration->addField('glpi_plugin_manageentities_criprices', 'is_default', 'bool');
+    $migration->addField('glpi_plugin_manageentities_configs', 'allow_same_periods', 'bool');
+    $migration->addField('glpi_plugin_manageentities_criprices', 'plugin_manageentities_contractdays_id', 'integer');
+    $migration->addField('glpi_plugin_manageentities_criprices', 'is_default', 'bool');
 
-   $migration->executeMigration();
+    $migration->executeMigration();
 
-   // UPDATE glpi_plugin_manageentities_criprices
+    // UPDATE glpi_plugin_manageentities_criprices
 
-   $check = [];
+    $check = [];
 
-   // Default Cri type
-   $query = "SELECT DISTINCT `glpi_plugin_manageentities_criprices`.`id` as criprices_id, 
+    // Default Cri type
+    $query = "SELECT DISTINCT `glpi_plugin_manageentities_criprices`.`id` as criprices_id, 
                     `glpi_plugin_manageentities_criprices`.`price`, 
                     `glpi_plugin_manageentities_contractdays`.`id` as contractdays_id,
                     `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_critypes_id` as critypes_id,
@@ -59,25 +60,25 @@ function update202to203() {
                   AND `glpi_plugin_manageentities_contractdays`.`entities_id` = `glpi_plugin_manageentities_criprices`.`entities_id`
                   AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_critypes_id` != 0)";
 
-   if ($result = $DB->doQuery($query)) {
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetchAssoc($result)) {
-            if (isset($check[$data['contractdays_id']]) && in_array($data['critypes_id'], $check[$data['contractdays_id']])) {
-               continue;
-            }
-            $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
+    if ($result = $DB->doQuery($query)) {
+        if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetchAssoc($result)) {
+                if (isset($check[$data['contractdays_id']]) && in_array($data['critypes_id'], $check[$data['contractdays_id']])) {
+                    continue;
+                }
+                $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
                             (`entities_id` ,`plugin_manageentities_critypes_id` ,`price` ,`plugin_manageentities_contractdays_id`, `is_default`)
                             VALUES ('" . $data['entities_id'] . "', '" . $data['critypes_id'] . "', '" . $data['price'] . "', '" . $data['contractdays_id'] . "', '1')";
-            $DB->doQuery($query);
-            $check[$data['contractdays_id']][] = $data['critypes_id'];
-         }
-      }
-   }
+                $DB->doQuery($query);
+                $check[$data['contractdays_id']][] = $data['critypes_id'];
+            }
+        }
+    }
 
-   $check2 = [];
+    $check2 = [];
 
-   // Cridetail cri type
-   $query = "SELECT DISTINCT `glpi_plugin_manageentities_criprices`.`id` as criprices_id, 
+    // Cridetail cri type
+    $query = "SELECT DISTINCT `glpi_plugin_manageentities_criprices`.`id` as criprices_id, 
                     `glpi_plugin_manageentities_criprices`.`price`, 
                     `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id` as contractdays_id,
                     `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_critypes_id` as critypes_id,
@@ -88,27 +89,27 @@ function update202to203() {
                   AND `glpi_plugin_manageentities_cridetails`.`entities_id` = `glpi_plugin_manageentities_criprices`.`entities_id`
                   AND `glpi_plugin_manageentities_cridetails`.`plugin_manageentities_contractdays_id` != 0)";
 
-   if ($result = $DB->doQuery($query)) {
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetchAssoc($result)) {
-            if (isset($check[$data['contractdays_id']]) && in_array($data['critypes_id'], $check[$data['contractdays_id']])) {
-               continue;
-            }
-            if (isset($check2[$data['contractdays_id']]) && in_array($data['critypes_id'], $check2[$data['contractdays_id']])) {
-               continue;
-            }
-            $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
+    if ($result = $DB->doQuery($query)) {
+        if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetchAssoc($result)) {
+                if (isset($check[$data['contractdays_id']]) && in_array($data['critypes_id'], $check[$data['contractdays_id']])) {
+                    continue;
+                }
+                if (isset($check2[$data['contractdays_id']]) && in_array($data['critypes_id'], $check2[$data['contractdays_id']])) {
+                    continue;
+                }
+                $query = "INSERT INTO `glpi_plugin_manageentities_criprices`
                       (`entities_id` ,`plugin_manageentities_critypes_id` ,`price` ,`plugin_manageentities_contractdays_id`, `is_default`)
                       VALUES ('" . $data['entities_id'] . "', '" . $data['critypes_id'] . "', '" . $data['price'] . "', '" . $data['contractdays_id'] . "', '0')";
-            $DB->doQuery($query);
-            $check2[$data['contractdays_id']][] = $data['critypes_id'];
-         }
-      }
-   }
+                $DB->doQuery($query);
+                $check2[$data['contractdays_id']][] = $data['critypes_id'];
+            }
+        }
+    }
 
-   // CLEAN glpi_plugin_manageentities_criprices
-   $query = "DELETE FROM `glpi_plugin_manageentities_criprices` WHERE `plugin_manageentities_contractdays_id` = 0;";
-   $DB->doQuery($query);
+    // CLEAN glpi_plugin_manageentities_criprices
+    $query = "DELETE FROM `glpi_plugin_manageentities_criprices` WHERE `plugin_manageentities_contractdays_id` = 0;";
+    $DB->doQuery($query);
 
-   return true;
+    return true;
 }

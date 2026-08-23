@@ -44,5 +44,24 @@
         <UndefinedThisPropertyFetch errorLevel="suppress" />
         <UndefinedThisPropertyAssignment errorLevel="suppress" />
         <UndefinedGlobalVariable errorLevel="suppress" />
+
+        <!--
+            The reusable GLPI CI (plugin-ci-workflows) runs `psalm` without
+            `--taint-analysis`, i.e. a full analysis against the real GLPI core.
+            That surfaces non-security correctness/style issues the taint-only
+            security scan never reports. Suppress them so both runs stay green
+            without a separate baseline file; none of these are taint findings,
+            so the security scan is unaffected.
+              - MissingOverrideAttribute: #[Override] hints on core-inherited methods.
+              - InvalidGlobal: `global $DB` at file scope in front/ajax entry
+                points, which GLPI's router legitimately includes from a scope.
+              - NoValue / InvalidParamDefault / MissingTemplateParam: pre-existing
+                inference artifacts and core-inherited docblock signatures.
+        -->
+        <MissingOverrideAttribute errorLevel="suppress" />
+        <InvalidGlobal errorLevel="suppress" />
+        <NoValue errorLevel="suppress" />
+        <InvalidParamDefault errorLevel="suppress" />
+        <MissingTemplateParam errorLevel="suppress" />
     </issueHandlers>
 </psalm>

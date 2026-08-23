@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -41,49 +41,46 @@ use Glpi\Search\SearchEngine;
 use Html;
 use Search;
 use Session;
-
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\Entity;
-
 use Ticket;
 use Toolbox;
 
 class Monthly extends CommonDBTM
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return __('Monthly follow-up', 'manageentities');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-calculator";
     }
 
     // Css styles/class
-    static $style = [
+    public static $style = [
         'background-color: #FEC95C;color:#000',
         'text-align:center',
         'background-color: #FA6B6B;',
-        'background-color:#FFBA3B'
+        'background-color:#FFBA3B',
     ];
-    static $class = ['styleItemTitle', 'styleContractTitle'];
+    public static $class = ['styleItemTitle', 'styleContractTitle'];
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    static function queryMonthly($values = [])
+    public static function queryMonthly($values = [])
     {
         global $DB;
 
@@ -98,61 +95,61 @@ class Monthly extends CommonDBTM
         // We configure the type of contract Hourly or Dayly
         $config = Config::getInstance();
 
-//        $criteria = [
-//            'SELECT' => [
-//                'glpi_entities.id AS entities_id',
-//                'glpi_entities.name AS entities_name',
-//            ],
-//            'DISTINCT' => true,
-//            'FROM' => 'glpi_tickets',
-//            'LEFT JOIN' => [
-//                'glpi_entities' => [
-//                    'ON' => [
-//                        'glpi_tickets' => 'entities_id',
-//                        'glpi_entities' => 'id'
-//                    ]
-//                ],
-//                'glpi_tickettasks' => [
-//                    'ON' => [
-//                        'glpi_tickettasks' => 'tickets_id',
-//                        'glpi_tickets' => 'id'
-//                    ]
-//                ]
-//            ],
-//            'WHERE' => [
-//                [
-//                    'OR' => [
-//                        ['glpi_tickettasks.end' => 'NULL'],
-//                        ['glpi_tickettasks.end' => ['>=', $values['begin_date']]]
-//                    ],
-//                ],
-//                [
-//                    'OR' => [
-//                        ['glpi_tickettasks.begin' => 'NULL'],
-//                        [
-//                            'glpi_tickettasks.begin' => [
-//                                '<=',
-//                                new QueryExpression("ADDDATE('" . $values['end_date'] . "', INTERVAL 1 DAY)")
-//                            ]
-//                        ]
-//                    ],
-//                ],
-//            ],
-//            'ORDERBY' => [
-//                'glpi_entities.name',
-//                'glpi_tickettasks.end ASC'
-//            ],
-//        ];
-//        $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-//                'glpi_entities'
-//            );
-//
-//        $iterator = $DB->request($criteria);
-//
-//        $nbTotEntity = (count($iterator) > 0 ? count($iterator) : 0);
-//
-//        if ($nbTotEntity > 0) {
-//            foreach ($iterator as $dataEntity) {
+        //        $criteria = [
+        //            'SELECT' => [
+        //                'glpi_entities.id AS entities_id',
+        //                'glpi_entities.name AS entities_name',
+        //            ],
+        //            'DISTINCT' => true,
+        //            'FROM' => 'glpi_tickets',
+        //            'LEFT JOIN' => [
+        //                'glpi_entities' => [
+        //                    'ON' => [
+        //                        'glpi_tickets' => 'entities_id',
+        //                        'glpi_entities' => 'id'
+        //                    ]
+        //                ],
+        //                'glpi_tickettasks' => [
+        //                    'ON' => [
+        //                        'glpi_tickettasks' => 'tickets_id',
+        //                        'glpi_tickets' => 'id'
+        //                    ]
+        //                ]
+        //            ],
+        //            'WHERE' => [
+        //                [
+        //                    'OR' => [
+        //                        ['glpi_tickettasks.end' => 'NULL'],
+        //                        ['glpi_tickettasks.end' => ['>=', $values['begin_date']]]
+        //                    ],
+        //                ],
+        //                [
+        //                    'OR' => [
+        //                        ['glpi_tickettasks.begin' => 'NULL'],
+        //                        [
+        //                            'glpi_tickettasks.begin' => [
+        //                                '<=',
+        //                                new QueryExpression("ADDDATE('" . $values['end_date'] . "', INTERVAL 1 DAY)")
+        //                            ]
+        //                        ]
+        //                    ],
+        //                ],
+        //            ],
+        //            'ORDERBY' => [
+        //                'glpi_entities.name',
+        //                'glpi_tickettasks.end ASC'
+        //            ],
+        //        ];
+        //        $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+        //                'glpi_entities'
+        //            );
+        //
+        //        $iterator = $DB->request($criteria);
+        //
+        //        $nbTotEntity = (count($iterator) > 0 ? count($iterator) : 0);
+        //
+        //        if ($nbTotEntity > 0) {
+        //            foreach ($iterator as $dataEntity) {
         $criteriaEntity = [
             'SELECT' => [
                 'glpi_entities.id AS entities_id',
@@ -201,347 +198,346 @@ class Monthly extends CommonDBTM
         $iteratorEntity = $DB->request($criteriaEntity);
 
         foreach ($iteratorEntity as $dataEntity) {
-                $tabResults[$dataEntity['entities_id']]['entities_name'] = $dataEntity['entities_name'];
-                $tabResults[$dataEntity['entities_id']]['entities_id'] = $dataEntity['entities_id'];
+            $tabResults[$dataEntity['entities_id']]['entities_name'] = $dataEntity['entities_name'];
+            $tabResults[$dataEntity['entities_id']]['entities_id'] = $dataEntity['entities_id'];
 
-//                $criteriad = [
-//                    'SELECT' => [
-//                        'glpi_plugin_manageentities_contractdays.name AS name_contractdays',
-//                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id AS contractstates_id',
-//                        'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
-//                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
-//                        'glpi_plugin_manageentities_contractdays.report AS report',
-//                        'glpi_plugin_manageentities_contractdays.nbday AS nbday',
-//                        'glpi_plugin_manageentities_contractdays.charged AS charged',
-//                        'glpi_plugin_manageentities_contractdays.begin_date AS begin_date',
-//                        'glpi_plugin_manageentities_contractdays.end_date AS end_date',
-//                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
-//                        'glpi_contracts.name AS name',
-//                        'glpi_contracts.id AS contracts_id',
-//                        'glpi_contracts.num AS num',
-//                        'glpi_contracts.entities_id AS entities_id',
-//                        'glpi_plugin_manageentities_contractstates.is_closed AS is_closed',
-//                        'glpi_plugin_manageentities_contractstates.color',
-//                    ],
-//                    'FROM' => 'glpi_plugin_manageentities_contractdays',
-//                    'LEFT JOIN' => [
-//                        'glpi_contracts' => [
-//                            'ON' => [
-//                                'glpi_contracts' => 'id',
-//                                'glpi_plugin_manageentities_contractdays' => 'contracts_id'
-//                            ]
-//                        ],
-//                        'glpi_plugin_manageentities_contracts' => [
-//                            'ON' => [
-//                                'glpi_plugin_manageentities_contracts' => 'contracts_id',
-//                                'glpi_contracts' => 'id'
-//                            ]
-//                        ],
-//                        'glpi_plugin_manageentities_contractstates' => [
-//                            'ON' => [
-//                                'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-//                                'glpi_plugin_manageentities_contractstates' => 'id'
-//                            ]
-//                        ],
-//                        'glpi_plugin_manageentities_cridetails' => [
-//                            'ON' => [
-//                                'glpi_plugin_manageentities_contractdays' => 'id',
-//                                'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id'
-//                            ]
-//                        ],
-//                        'glpi_tickets' => [
-//                            'ON' => [
-//                                'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-//                                'glpi_tickets' => 'id'
-//                            ]
-//                        ],
-//                        'glpi_tickettasks' => [
-//                            'ON' => [
-//                                'glpi_tickettasks' => 'tickets_id',
-//                                'glpi_tickets' => 'id'
-//                            ]
-//                        ]
-//                    ],
-//                    'WHERE' => [
-//                        'glpi_contracts.is_deleted' => 0,
-//                        'glpi_plugin_manageentities_contractdays.entities_id' => $dataEntity["entities_id"],
-//                        [
-//                            'OR' => [
-//                                ['glpi_tickettasks.begin' => 'NULL'],
-//                                ['glpi_tickettasks.begin' => ['>=', $values['begin_date'] . " 00:00:00"]]
-//                            ],
-//                        ],
-//                        [
-//                            'OR' => [
-//                                ['glpi_tickettasks.end' => 'NULL'],
-//                                ['glpi_tickettasks.end' => ['<=', $values['end_date'] . " 23:59:59"]]
-//                            ],
-//                        ],
-//
-//                    ],
-//                    'GROUPBY' => 'glpi_plugin_manageentities_contractdays.id',
-//                    'ORDERBY' => ['glpi_contracts.name,glpi_plugin_manageentities_contractdays.end_date ASC'],
-//                ];
-//
-//
-//                if ($config->fields['hourorday'] == Config::HOUR) {// Hourly
-//                    $types_contracts = [
-//                        Contract::CONTRACT_TYPE_NULL,
-//                        Contract::CONTRACT_TYPE_HOUR,
-//                        Contract::CONTRACT_TYPE_INTERVENTION,
-//                        Contract::CONTRACT_TYPE_UNLIMITED
-//                    ];
-//                    $criteriad['SELECT'] = array_merge(
-//                        $criteriad['SELECT'],
-//                        ['glpi_plugin_manageentities_contracts.contract_type AS contract_type']
-//                    );
-//                    $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contracts.contract_type' => $types_contracts];
-//                } else {
-//                    $types_contracts = [
-//                        Contract::CONTRACT_TYPE_NULL,
-//                        Contract::CONTRACT_TYPE_AT,
-//                        Contract::CONTRACT_TYPE_FORFAIT
-//                    ];
-//                    $criteriad['SELECT'] = array_merge(
-//                        $criteriad['SELECT'],
-//                        ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']
-//                    );
-//                    $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.contract_type' => $types_contracts];
-//                }
-//
-//                $iteratord = $DB->request($criteriad);
-//
-//                $nbContractDay = count($iteratord);
-//
-////             We get contract days datas
-//                if ($nbContractDay > 0) {
-//                    foreach ($iteratord as $dataContractDay) {
+            //                $criteriad = [
+            //                    'SELECT' => [
+            //                        'glpi_plugin_manageentities_contractdays.name AS name_contractdays',
+            //                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id AS contractstates_id',
+            //                        'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
+            //                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
+            //                        'glpi_plugin_manageentities_contractdays.report AS report',
+            //                        'glpi_plugin_manageentities_contractdays.nbday AS nbday',
+            //                        'glpi_plugin_manageentities_contractdays.charged AS charged',
+            //                        'glpi_plugin_manageentities_contractdays.begin_date AS begin_date',
+            //                        'glpi_plugin_manageentities_contractdays.end_date AS end_date',
+            //                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
+            //                        'glpi_contracts.name AS name',
+            //                        'glpi_contracts.id AS contracts_id',
+            //                        'glpi_contracts.num AS num',
+            //                        'glpi_contracts.entities_id AS entities_id',
+            //                        'glpi_plugin_manageentities_contractstates.is_closed AS is_closed',
+            //                        'glpi_plugin_manageentities_contractstates.color',
+            //                    ],
+            //                    'FROM' => 'glpi_plugin_manageentities_contractdays',
+            //                    'LEFT JOIN' => [
+            //                        'glpi_contracts' => [
+            //                            'ON' => [
+            //                                'glpi_contracts' => 'id',
+            //                                'glpi_plugin_manageentities_contractdays' => 'contracts_id'
+            //                            ]
+            //                        ],
+            //                        'glpi_plugin_manageentities_contracts' => [
+            //                            'ON' => [
+            //                                'glpi_plugin_manageentities_contracts' => 'contracts_id',
+            //                                'glpi_contracts' => 'id'
+            //                            ]
+            //                        ],
+            //                        'glpi_plugin_manageentities_contractstates' => [
+            //                            'ON' => [
+            //                                'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+            //                                'glpi_plugin_manageentities_contractstates' => 'id'
+            //                            ]
+            //                        ],
+            //                        'glpi_plugin_manageentities_cridetails' => [
+            //                            'ON' => [
+            //                                'glpi_plugin_manageentities_contractdays' => 'id',
+            //                                'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id'
+            //                            ]
+            //                        ],
+            //                        'glpi_tickets' => [
+            //                            'ON' => [
+            //                                'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+            //                                'glpi_tickets' => 'id'
+            //                            ]
+            //                        ],
+            //                        'glpi_tickettasks' => [
+            //                            'ON' => [
+            //                                'glpi_tickettasks' => 'tickets_id',
+            //                                'glpi_tickets' => 'id'
+            //                            ]
+            //                        ]
+            //                    ],
+            //                    'WHERE' => [
+            //                        'glpi_contracts.is_deleted' => 0,
+            //                        'glpi_plugin_manageentities_contractdays.entities_id' => $dataEntity["entities_id"],
+            //                        [
+            //                            'OR' => [
+            //                                ['glpi_tickettasks.begin' => 'NULL'],
+            //                                ['glpi_tickettasks.begin' => ['>=', $values['begin_date'] . " 00:00:00"]]
+            //                            ],
+            //                        ],
+            //                        [
+            //                            'OR' => [
+            //                                ['glpi_tickettasks.end' => 'NULL'],
+            //                                ['glpi_tickettasks.end' => ['<=', $values['end_date'] . " 23:59:59"]]
+            //                            ],
+            //                        ],
+            //
+            //                    ],
+            //                    'GROUPBY' => 'glpi_plugin_manageentities_contractdays.id',
+            //                    'ORDERBY' => ['glpi_contracts.name,glpi_plugin_manageentities_contractdays.end_date ASC'],
+            //                ];
+            //
+            //
+            //                if ($config->fields['hourorday'] == Config::HOUR) {// Hourly
+            //                    $types_contracts = [
+            //                        Contract::CONTRACT_TYPE_NULL,
+            //                        Contract::CONTRACT_TYPE_HOUR,
+            //                        Contract::CONTRACT_TYPE_INTERVENTION,
+            //                        Contract::CONTRACT_TYPE_UNLIMITED
+            //                    ];
+            //                    $criteriad['SELECT'] = array_merge(
+            //                        $criteriad['SELECT'],
+            //                        ['glpi_plugin_manageentities_contracts.contract_type AS contract_type']
+            //                    );
+            //                    $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contracts.contract_type' => $types_contracts];
+            //                } else {
+            //                    $types_contracts = [
+            //                        Contract::CONTRACT_TYPE_NULL,
+            //                        Contract::CONTRACT_TYPE_AT,
+            //                        Contract::CONTRACT_TYPE_FORFAIT
+            //                    ];
+            //                    $criteriad['SELECT'] = array_merge(
+            //                        $criteriad['SELECT'],
+            //                        ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']
+            //                    );
+            //                    $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.contract_type' => $types_contracts];
+            //                }
+            //
+            //                $iteratord = $DB->request($criteriad);
+            //
+            //                $nbContractDay = count($iteratord);
+            //
+            ////             We get contract days datas
+            //                if ($nbContractDay > 0) {
+            //                    foreach ($iteratord as $dataContractDay) {
 
-                if ($config->fields['hourorday'] == Config::HOUR) {
-                    $types_contracts = [
-                        Contract::CONTRACT_TYPE_NULL,
-                        Contract::CONTRACT_TYPE_HOUR,
-                        Contract::CONTRACT_TYPE_INTERVENTION,
-                        Contract::CONTRACT_TYPE_UNLIMITED,
-                    ];
-                    $contract_type_field = 'glpi_plugin_manageentities_contracts.contract_type';
-                } else {
-                    $types_contracts = [
-                        Contract::CONTRACT_TYPE_NULL,
-                        Contract::CONTRACT_TYPE_AT,
-                        Contract::CONTRACT_TYPE_FORFAIT,
-                    ];
-                    $contract_type_field = 'glpi_plugin_manageentities_contractdays.contract_type';
-                }
-
-                $criteriaContractDay = [
-                    'SELECT' => [
-                        'glpi_plugin_manageentities_contractdays.name AS name_contractdays',
-                        'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
-                        'glpi_plugin_manageentities_contractdays.report AS report',
-                        'glpi_plugin_manageentities_contractdays.nbday AS nbday',
-                        'glpi_plugin_manageentities_contractdays.begin_date AS begin_date',
-                        'glpi_plugin_manageentities_contractdays.end_date AS end_date',
-                        'glpi_plugin_manageentities_contractdays.charged AS charged',
-                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id AS contractstates_id',
-                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
-                        $contract_type_field . ' AS contract_type',
-                        'glpi_contracts.name AS name',
-                        'glpi_contracts.num AS num',
-                        'glpi_contracts.id AS contracts_id',
-                        'glpi_contracts.entities_id AS entities_id',
-                        'glpi_plugin_manageentities_contractstates.is_closed AS is_closed',
-                        'glpi_plugin_manageentities_contractstates.color',
-                    ],
-                    'FROM' => 'glpi_plugin_manageentities_contractdays',
-                    'LEFT JOIN' => [
-                        'glpi_contracts' => [
-                            'ON' => [
-                                'glpi_contracts' => 'id',
-                                'glpi_plugin_manageentities_contractdays' => 'contracts_id',
-                            ],
-                        ],
-                        'glpi_plugin_manageentities_contracts' => [
-                            'ON' => [
-                                'glpi_plugin_manageentities_contracts' => 'contracts_id',
-                                'glpi_contracts' => 'id',
-                            ],
-                        ],
-                        'glpi_plugin_manageentities_contractstates' => [
-                            'ON' => [
-                                'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-                                'glpi_plugin_manageentities_contractstates' => 'id',
-                            ],
-                        ],
-                        'glpi_plugin_manageentities_cridetails' => [
-                            'ON' => [
-                                'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id',
-                                'glpi_plugin_manageentities_contractdays' => 'id',
-                            ],
-                        ],
-                        'glpi_tickets' => [
-                            'ON' => [
-                                'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-                                'glpi_tickets' => 'id',
-                            ],
-                        ],
-                        'glpi_tickettasks' => [
-                            'ON' => [
-                                'glpi_tickettasks' => 'tickets_id',
-                                'glpi_tickets' => 'id',
-                            ],
-                        ],
-                    ],
-                    'WHERE' => [
-                        'glpi_plugin_manageentities_contractdays.entities_id' => $dataEntity['entities_id'],
-                        'glpi_contracts.is_deleted' => 0,
-                        $contract_type_field => $types_contracts,
-                        [
-                            'OR' => [
-                                ['glpi_tickettasks.begin' => null],
-                                ['glpi_tickettasks.begin' => [
-                                    '<=',
-                                    // Compute end_date + 1 day in PHP and pass it as a bound value
-                                    // instead of interpolating it into a raw SQL expression with the
-                                    // deprecated $DB->escape().
-                                    date('Y-m-d', strtotime($values['end_date'] . ' +1 day')),
-                                ]],
-                            ],
-                        ],
-                        [
-                            'OR' => [
-                                ['glpi_tickettasks.end' => null],
-                                ['glpi_tickettasks.end' => ['>=', $values['begin_date']]],
-                            ],
-                        ],
-                    ],
-                    'GROUPBY' => 'glpi_plugin_manageentities_contractdays.id',
-                    'ORDERBY' => ['glpi_contracts.name ASC', 'glpi_plugin_manageentities_contractdays.end_date ASC'],
+            if ($config->fields['hourorday'] == Config::HOUR) {
+                $types_contracts = [
+                    Contract::CONTRACT_TYPE_NULL,
+                    Contract::CONTRACT_TYPE_HOUR,
+                    Contract::CONTRACT_TYPE_INTERVENTION,
+                    Contract::CONTRACT_TYPE_UNLIMITED,
                 ];
+                $contract_type_field = 'glpi_plugin_manageentities_contracts.contract_type';
+            } else {
+                $types_contracts = [
+                    Contract::CONTRACT_TYPE_NULL,
+                    Contract::CONTRACT_TYPE_AT,
+                    Contract::CONTRACT_TYPE_FORFAIT,
+                ];
+                $contract_type_field = 'glpi_plugin_manageentities_contractdays.contract_type';
+            }
 
-                $iteratorContractDay = $DB->request($criteriaContractDay);
+            $criteriaContractDay = [
+                'SELECT' => [
+                    'glpi_plugin_manageentities_contractdays.name AS name_contractdays',
+                    'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
+                    'glpi_plugin_manageentities_contractdays.report AS report',
+                    'glpi_plugin_manageentities_contractdays.nbday AS nbday',
+                    'glpi_plugin_manageentities_contractdays.begin_date AS begin_date',
+                    'glpi_plugin_manageentities_contractdays.end_date AS end_date',
+                    'glpi_plugin_manageentities_contractdays.charged AS charged',
+                    'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id AS contractstates_id',
+                    'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
+                    $contract_type_field . ' AS contract_type',
+                    'glpi_contracts.name AS name',
+                    'glpi_contracts.num AS num',
+                    'glpi_contracts.id AS contracts_id',
+                    'glpi_contracts.entities_id AS entities_id',
+                    'glpi_plugin_manageentities_contractstates.is_closed AS is_closed',
+                    'glpi_plugin_manageentities_contractstates.color',
+                ],
+                'FROM' => 'glpi_plugin_manageentities_contractdays',
+                'LEFT JOIN' => [
+                    'glpi_contracts' => [
+                        'ON' => [
+                            'glpi_contracts' => 'id',
+                            'glpi_plugin_manageentities_contractdays' => 'contracts_id',
+                        ],
+                    ],
+                    'glpi_plugin_manageentities_contracts' => [
+                        'ON' => [
+                            'glpi_plugin_manageentities_contracts' => 'contracts_id',
+                            'glpi_contracts' => 'id',
+                        ],
+                    ],
+                    'glpi_plugin_manageentities_contractstates' => [
+                        'ON' => [
+                            'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
+                            'glpi_plugin_manageentities_contractstates' => 'id',
+                        ],
+                    ],
+                    'glpi_plugin_manageentities_cridetails' => [
+                        'ON' => [
+                            'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id',
+                            'glpi_plugin_manageentities_contractdays' => 'id',
+                        ],
+                    ],
+                    'glpi_tickets' => [
+                        'ON' => [
+                            'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+                            'glpi_tickets' => 'id',
+                        ],
+                    ],
+                    'glpi_tickettasks' => [
+                        'ON' => [
+                            'glpi_tickettasks' => 'tickets_id',
+                            'glpi_tickets' => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    'glpi_plugin_manageentities_contractdays.entities_id' => $dataEntity['entities_id'],
+                    'glpi_contracts.is_deleted' => 0,
+                    $contract_type_field => $types_contracts,
+                    [
+                        'OR' => [
+                            ['glpi_tickettasks.begin' => null],
+                            ['glpi_tickettasks.begin' => [
+                                '<=',
+                                // Compute end_date + 1 day in PHP and pass it as a bound value
+                                // instead of interpolating it into a raw SQL expression with the
+                                // deprecated $DB->escape().
+                                date('Y-m-d', strtotime($values['end_date'] . ' +1 day')),
+                            ]],
+                        ],
+                    ],
+                    [
+                        'OR' => [
+                            ['glpi_tickettasks.end' => null],
+                            ['glpi_tickettasks.end' => ['>=', $values['begin_date']]],
+                        ],
+                    ],
+                ],
+                'GROUPBY' => 'glpi_plugin_manageentities_contractdays.id',
+                'ORDERBY' => ['glpi_contracts.name ASC', 'glpi_plugin_manageentities_contractdays.end_date ASC'],
+            ];
 
-                foreach ($iteratorContractDay as $dataContractDay) {
-                        $contract_credit = 0;
+            $iteratorContractDay = $DB->request($criteriaContractDay);
 
-                        // We get all cri details
-                        $resultCriDetail = CriDetail::getCriDetailData(
-                            $dataContractDay,
-                            [
-                                'contract_type_id' => $dataContractDay['contract_type'],
-                                'begin_date' => $values['begin_date'],
-                                'end_date' => $values['end_date']
-                            ]
-                        );
+            foreach ($iteratorContractDay as $dataContractDay) {
+                $contract_credit = 0;
 
-                        $resultCriDetail_beforeMonth = CriDetail::getCriDetailData(
-                            $dataContractDay,
-                            [
-                                'contract_type_id' => $dataContractDay['contract_type'],
-                                'end_date' => date('Y-m-d', strtotime($values['begin_date'] . ' - 1 DAY'))
-                            ]
-                        );
+                // We get all cri details
+                $resultCriDetail = CriDetail::getCriDetailData(
+                    $dataContractDay,
+                    [
+                        'contract_type_id' => $dataContractDay['contract_type'],
+                        'begin_date' => $values['begin_date'],
+                        'end_date' => $values['end_date'],
+                    ],
+                );
 
-                        $remaining = $lastMonthRemaining = $resultCriDetail_beforeMonth['resultOther']['reste'];
+                $resultCriDetail_beforeMonth = CriDetail::getCriDetailData(
+                    $dataContractDay,
+                    [
+                        'contract_type_id' => $dataContractDay['contract_type'],
+                        'end_date' => date('Y-m-d', strtotime($values['begin_date'] . ' - 1 DAY')),
+                    ],
+                );
 
-                        if (count($resultCriDetail['result']) > 0) {
-                            // Credit
-                            $credit = $dataContractDay['nbday'] + $dataContractDay['report'];
-                            $contract_credit += $credit;
-                            $tot_credit += $credit;
+                $remaining = $lastMonthRemaining = $resultCriDetail_beforeMonth['resultOther']['reste'];
 
-                            // link of contract
-                            $link_contract = Toolbox::getItemTypeFormURL("Contract");
-                            $name_contract = "<a href='" . $link_contract . "?id=" . $dataContractDay["contracts_id"] . "' target='_blank'>";
-                            if ($dataContractDay["num"] == null) {
-                                $name_contract .= "(" . $dataContractDay["contracts_id"] . ")";
-                            } else {
-                                $name_contract .= $dataContractDay["num"];
-                            }
-                            $name_contract .= "</a>";
+                if (count($resultCriDetail['result']) > 0) {
+                    // Credit
+                    $credit = $dataContractDay['nbday'] + $dataContractDay['report'];
+                    $contract_credit += $credit;
+                    $tot_credit += $credit;
 
-                            // Contract day informations
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['name_contract'] = $name_contract;
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['name_contractdays'] = $dataContractDay["name_contractdays"];
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contracts_id'] = $dataContractDay["contracts_id"];
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['is_closed'] = $dataContractDay["is_closed"];
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['num'] = $dataContractDay["num"];
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contract_type'] = Contract::getContractType(
-                                $dataContractDay["contract_type"]
-                            );
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['credit'] = $credit;
+                    // link of contract
+                    $link_contract = Toolbox::getItemTypeFormURL("Contract");
+                    $name_contract = "<a href='" . $link_contract . "?id=" . $dataContractDay["contracts_id"] . "' target='_blank'>";
+                    if ($dataContractDay["num"] == null) {
+                        $name_contract .= "(" . $dataContractDay["contracts_id"] . ")";
+                    } else {
+                        $name_contract .= $dataContractDay["num"];
+                    }
+                    $name_contract .= "</a>";
 
-                            $contract_conso = 0;
-                            foreach ($resultCriDetail['result'] as $cridetails_id => $dataCriDetail) {
-                                $taskCount++;
+                    // Contract day informations
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['name_contract'] = $name_contract;
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['name_contractdays'] = $dataContractDay["name_contractdays"];
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contracts_id'] = $dataContractDay["contracts_id"];
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['is_closed'] = $dataContractDay["is_closed"];
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['num'] = $dataContractDay["num"];
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contract_type'] = Contract::getContractType(
+                        $dataContractDay["contract_type"],
+                    );
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['credit'] = $credit;
 
-                                // Conso per tech
-                                $conso_per_tech = [];
-                                foreach ($dataCriDetail['conso_per_tech'] as $tickets) {
-                                    foreach ($tickets as $users_id => $time) {
-                                        $remaining -= $time['conso'];
-                                        $depass = 0;
+                    $contract_conso = 0;
+                    foreach ($resultCriDetail['result'] as $cridetails_id => $dataCriDetail) {
+                        $taskCount++;
 
+                        // Conso per tech
+                        $conso_per_tech = [];
+                        foreach ($dataCriDetail['conso_per_tech'] as $tickets) {
+                            foreach ($tickets as $users_id => $time) {
+                                $remaining -= $time['conso'];
+                                $depass = 0;
 
-                                        if ($remaining < 0) {
-                                            $depass = abs($remaining);
-                                            $remaining = 0;
-                                        }
-
-                                        $contract_conso += $time['conso'];
-                                        $tot_conso += $time['conso'];
-                                        $tot_depass += $depass;
-                                        $conso_per_tech[$users_id]['conso'] = $time['conso'];
-                                        $conso_per_tech[$users_id]['depass'] = $depass;
-                                        $conso_per_tech[$users_id]['depass_amount'] = $conso_per_tech[$users_id]['depass'] * $dataCriDetail['pricecri'];
-                                        $conso_per_tech[$users_id]['conso_amount'] = $time['conso'] * $dataCriDetail['pricecri'];
-                                        $tot_conso_amount += $conso_per_tech[$users_id]['conso_amount'];
-                                        $tot_depass_amount += $conso_per_tech[$users_id]['depass_amount'];
-                                    }
+                                if ($remaining < 0) {
+                                    $depass = abs($remaining);
+                                    $remaining = 0;
                                 }
 
-                                // Task informations
-                                $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']][$cridetails_id]['conso_per_tech'] = $conso_per_tech;
-                                $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']][$cridetails_id]['tech'] = $dataCriDetail['tech'];
-                                $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']][$cridetails_id]['documents_id'] = $dataCriDetail['documents_id'];
-                                $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']][$cridetails_id]['pricecri'] = $dataCriDetail['pricecri'];
+                                $contract_conso += $time['conso'];
+                                $tot_conso += $time['conso'];
+                                $tot_depass += $depass;
+                                $conso_per_tech[$users_id]['conso'] = $time['conso'];
+                                $conso_per_tech[$users_id]['depass'] = $depass;
+                                $conso_per_tech[$users_id]['depass_amount'] = $conso_per_tech[$users_id]['depass'] * $dataCriDetail['pricecri'];
+                                $conso_per_tech[$users_id]['conso_amount'] = $time['conso'] * $dataCriDetail['pricecri'];
+                                $tot_conso_amount += $conso_per_tech[$users_id]['conso_amount'];
+                                $tot_depass_amount += $conso_per_tech[$users_id]['depass_amount'];
                             }
-
-                            // Contract informations
-                            $contractdays_state = '';
-                            $color = $dataContractDay["color"];
-                            if ($dataContractDay['contract_type'] == Contract::CONTRACT_TYPE_AT) {
-                                if ($dataContractDay['charged'] == 0) {
-                                    $contractdays_state = __('To present an invoice', 'manageentities');
-                                } else {
-                                    $contractdays_state = __('Already charged', 'manageentities');
-                                }
-                            } elseif ($dataContractDay['contract_type'] == Contract::CONTRACT_TYPE_FORFAIT) {
-                                if ($contract_credit - $contract_conso <= 0) {
-                                    if ($dataContractDay['charged'] == 0) {
-                                        $contractdays_state = __('To present an invoice', 'manageentities');
-                                        if ($dataContractDay["is_closed"]) {
-                                            $color = self::$style[3];
-                                        }
-                                    } else {
-                                        $contractdays_state = __('Already charged', 'manageentities');
-                                    }
-                                } elseif ($dataContractDay["contract_type"] == Contract::CONTRACT_TYPE_FORFAIT && $dataContractDay['charged']) {
-                                    $contractdays_state = __('Already charged', 'manageentities');
-                                } elseif ($dataContractDay["contract_type"] == Contract::CONTRACT_TYPE_FORFAIT && $dataContractDay["is_closed"]) {
-                                    $contractdays_state = __('To present an invoice', 'manageentities');
-                                    $color = self::$style[3];
-                                } else {
-                                    $contractdays_state = __('In progress', 'manageentities');
-                                }
-                            }
-
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contractstates_color'] = $color;
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contract_credit'] = $contract_credit;
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contract_remaining'] = $lastMonthRemaining;
-                            $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contractdays_state'] = $contractdays_state;
                         }
+
+                        // Task informations
+                        $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']][$cridetails_id]['conso_per_tech'] = $conso_per_tech;
+                        $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']][$cridetails_id]['tech'] = $dataCriDetail['tech'];
+                        $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']][$cridetails_id]['documents_id'] = $dataCriDetail['documents_id'];
+                        $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']][$cridetails_id]['pricecri'] = $dataCriDetail['pricecri'];
+                    }
+
+                    // Contract informations
+                    $contractdays_state = '';
+                    $color = $dataContractDay["color"];
+                    if ($dataContractDay['contract_type'] == Contract::CONTRACT_TYPE_AT) {
+                        if ($dataContractDay['charged'] == 0) {
+                            $contractdays_state = __('To present an invoice', 'manageentities');
+                        } else {
+                            $contractdays_state = __('Already charged', 'manageentities');
+                        }
+                    } elseif ($dataContractDay['contract_type'] == Contract::CONTRACT_TYPE_FORFAIT) {
+                        if ($contract_credit - $contract_conso <= 0) {
+                            if ($dataContractDay['charged'] == 0) {
+                                $contractdays_state = __('To present an invoice', 'manageentities');
+                                if ($dataContractDay["is_closed"]) {
+                                    $color = self::$style[3];
+                                }
+                            } else {
+                                $contractdays_state = __('Already charged', 'manageentities');
+                            }
+                        } elseif ($dataContractDay["contract_type"] == Contract::CONTRACT_TYPE_FORFAIT && $dataContractDay['charged']) {
+                            $contractdays_state = __('Already charged', 'manageentities');
+                        } elseif ($dataContractDay["contract_type"] == Contract::CONTRACT_TYPE_FORFAIT && $dataContractDay["is_closed"]) {
+                            $contractdays_state = __('To present an invoice', 'manageentities');
+                            $color = self::$style[3];
+                        } else {
+                            $contractdays_state = __('In progress', 'manageentities');
+                        }
+                    }
+
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contractstates_color'] = $color;
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contract_credit'] = $contract_credit;
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contract_remaining'] = $lastMonthRemaining;
+                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contractdays_state'] = $contractdays_state;
                 }
+            }
         }
 
         // Total of all
@@ -566,12 +562,12 @@ class Monthly extends CommonDBTM
      *
      * @return string to display
      **/
-    static function showNewLine($type, $odd = false, $is_deleted = false, $color = "")
+    public static function showNewLine($type, $odd = false, $is_deleted = false, $color = "")
     {
         $out = "";
         switch ($type) {
-            case Search::PDF_OUTPUT_LANDSCAPE : //pdf
-            case Search::PDF_OUTPUT_PORTRAIT :
+            case Search::PDF_OUTPUT_LANDSCAPE: //pdf
+            case Search::PDF_OUTPUT_PORTRAIT:
                 global $PDF_TABLE;
                 $style = "";
                 if ($odd) {
@@ -580,10 +576,10 @@ class Monthly extends CommonDBTM
                 $PDF_TABLE .= "<tr $style nobr=\"true\">";
                 break;
 
-            case Search::CSV_OUTPUT : //csv
+            case Search::CSV_OUTPUT: //csv
                 break;
 
-            default :
+            default:
                 $class = " class='tab_bg_1' ";
                 if ($odd) {
                     $class = " class='tab_bg_2' ";
@@ -593,7 +589,7 @@ class Monthly extends CommonDBTM
         return $out;
     }
 
-    static function showMonthly($values = [])
+    public static function showMonthly($values = [])
     {
         global $PDF, $DB;
 
@@ -633,9 +629,9 @@ class Monthly extends CommonDBTM
         $iterator = $DB->request($query);
         if (count($iterator) > 0 && $output_type == search::HTML_OUTPUT) {
             echo "<div class = 'alert alert-warning d-flex'>" . __(
-                    'Warning : There are supplementary interventions which depends on a prestation with a earlier end date',
-                    'manageentities'
-                ) . "</div>";
+                'Warning : There are supplementary interventions which depends on a prestation with a earlier end date',
+                'manageentities',
+            ) . "</div>";
             echo _n('Ticket', 'Tickets', count($iterator));
             echo " : ";
             foreach ($iterator as $data) {
@@ -683,17 +679,16 @@ class Monthly extends CommonDBTM
         $row_num = 0;
         $numrows = count($list);
 
-//        $end_display = $start + $_SESSION['glpilist_limit'];
-//        if (isset($_GET['export_all'])) {
-            $start = 0;
-            $end_display = $numrows;
-//        }
+        //        $end_display = $start + $_SESSION['glpilist_limit'];
+        //        if (isset($_GET['export_all'])) {
+        $start = 0;
+        $end_display = $numrows;
+        //        }
 
         $nbcols = 4;
         if (!$is_html_output) {
             $nbcols--;
         }
-
 
         // Show headers
         if ($is_html_output) {
@@ -743,7 +738,7 @@ class Monthly extends CommonDBTM
             $html_output .= $output::showHeaderItem(__('Initial credit', 'manageentities'), $header_num);
             $html_output .= $output::showHeaderItem(
                 __('Remaining on ', 'manageentities') . ' ' . Html::convDate($values['begin_date']),
-                $header_num
+                $header_num,
             );
 
             if ($config->fields['useprice'] == Config::PRICE) {
@@ -757,7 +752,7 @@ class Monthly extends CommonDBTM
             $html_output .= $output::showHeaderItem(__('Production', 'manageentities'), $header_num);
             $html_output .= $output::showHeaderItem(
                 _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities'),
-                $header_num
+                $header_num,
             );
 
             if ($config->fields['useprice'] == Config::PRICE) {
@@ -771,7 +766,6 @@ class Monthly extends CommonDBTM
             $html_output .= $output::showHeaderItem(__('State of intervention', 'manageentities'), $header_num);
             $html_output .= $output::showEndLine();
         }
-
 
         if (!empty($list)) {
             for ($i = $start; ($i < $numrows) && ($i < $end_display); $i++) {
@@ -796,7 +790,7 @@ class Monthly extends CommonDBTM
                         $output_type,
                         ($i % 2 === 1),
                         $list[$i]['is_closed'],
-                        $list[$i]['contractstates_color']
+                        $list[$i]['contractstates_color'],
                     );
                 }
                 // Client
@@ -805,7 +799,7 @@ class Monthly extends CommonDBTM
                         $list[$i]['entities_name'],
                         $item_num,
                         $row_num,
-                        $depassClass
+                        $depassClass,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['entities_name']];
@@ -816,7 +810,7 @@ class Monthly extends CommonDBTM
                         $list[$i]['name_contract'],
                         $item_num,
                         $row_num,
-                        $depassClass
+                        $depassClass,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['name_contract']];
@@ -827,7 +821,7 @@ class Monthly extends CommonDBTM
                         $list[$i]['name_contractdays'],
                         $item_num,
                         $row_num,
-                        $depassClass
+                        $depassClass,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['name_contractdays']];
@@ -838,7 +832,7 @@ class Monthly extends CommonDBTM
                         $list[$i]['contract_type'],
                         $item_num,
                         $row_num,
-                        $depassClass
+                        $depassClass,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_type']];
@@ -849,15 +843,15 @@ class Monthly extends CommonDBTM
                         Html::formatNumber($list[$i]['contract_credit'], 0, 2),
                         $item_num,
                         $row_num,
-                        $depassClass
+                        $depassClass,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = [
                         'displayname' => Html::formatNumber(
                             $list[$i]['contract_credit'],
                             0,
-                            2
-                        )
+                            2,
+                        ),
                     ];
                 }
                 // Remaining on
@@ -866,15 +860,15 @@ class Monthly extends CommonDBTM
                         Html::formatNumber($list[$i]['contract_remaining'], 0, 2),
                         $item_num,
                         $row_num,
-                        $depassClass
+                        $depassClass,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = [
                         'displayname' => Html::formatNumber(
                             $list[$i]['contract_remaining'],
                             0,
-                            2
-                        )
+                            2,
+                        ),
                     ];
                 }
                 // Price cri
@@ -884,15 +878,15 @@ class Monthly extends CommonDBTM
                             Html::formatNumber($list[$i]['pricecri'], 0, 2),
                             $item_num,
                             $row_num,
-                            $depassClass
+                            $depassClass,
                         );
                     } else {
                         $current_row[$itemtype . '_' . (++$colnum)] = [
                             'displayname' => Html::formatNumber(
                                 $list[$i]['pricecri'],
                                 0,
-                                2
-                            )
+                                2,
+                            ),
                         ];
                     }
                 }
@@ -902,14 +896,14 @@ class Monthly extends CommonDBTM
                         self::checkValue($list[$i]['conso'], $output_type),
                         $item_num,
                         $row_num,
-                        $depassClass
+                        $depassClass,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = [
                         'displayname' => self::checkValue(
                             $list[$i]['conso'],
-                            $output_type
-                        )
+                            $output_type,
+                        ),
                     ];
                 }
                 // Stakeholder
@@ -918,13 +912,13 @@ class Monthly extends CommonDBTM
                         getUserName($list[$i]['users_id']),
                         $item_num,
                         $row_num,
-                        $depassClass
+                        $depassClass,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = [
                         'displayname' => getUserName(
-                            $list[$i]['users_id']
-                        )
+                            $list[$i]['users_id'],
+                        ),
                     ];
                 }
                 // Total conso
@@ -934,15 +928,15 @@ class Monthly extends CommonDBTM
                             Html::formatNumber($list[$i]['conso_amount'], 0, 2),
                             $item_num,
                             $row_num,
-                            $depassClass
+                            $depassClass,
                         );
                     } else {
                         $current_row[$itemtype . '_' . (++$colnum)] = [
                             'displayname' => Html::formatNumber(
                                 $list[$i]['conso_amount'],
                                 0,
-                                2
-                            )
+                                2,
+                            ),
                         ];
                     }
                 }
@@ -953,14 +947,14 @@ class Monthly extends CommonDBTM
                             self::checkValue($list[$i]['depass'], $output_type),
                             $item_num,
                             $row_num,
-                            $depassClass
+                            $depassClass,
                         );
                     } else {
                         $current_row[$itemtype . '_' . (++$colnum)] = [
                             'displayname' => self::checkValue(
                                 $list[$i]['depass'],
-                                $output_type
-                            )
+                                $output_type,
+                            ),
                         ];
                     }
                     // Total depass
@@ -970,15 +964,15 @@ class Monthly extends CommonDBTM
                                 Html::formatNumber($list[$i]['depass_amount'], 0, 2),
                                 $item_num,
                                 $row_num,
-                                $depassClass
+                                $depassClass,
                             );
                         } else {
                             $current_row[$itemtype . '_' . (++$colnum)] = [
                                 'displayname' => Html::formatNumber(
                                     $list[$i]['depass_amount'],
                                     0,
-                                    2
-                                )
+                                    2,
+                                ),
                             ];
                         }
                     }
@@ -1002,7 +996,7 @@ class Monthly extends CommonDBTM
                     $html_output .= $output::showItem(
                         $list[$i]['contractdays_state'],
                         $item_num,
-                        $row_num
+                        $row_num,
                     );
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contractdays_state']];
@@ -1030,7 +1024,7 @@ class Monthly extends CommonDBTM
                     __('Total'),
                     $item_num,
                     $row_num,
-                    "style='" . Monthly::$style[1] . "'"
+                    "style='" . Monthly::$style[1] . "'",
                 );
 
                 for ($i = 0; $i < 6; $i++) {
@@ -1038,7 +1032,7 @@ class Monthly extends CommonDBTM
                         '',
                         $item_num,
                         $row_num,
-                        "style='" . Monthly::$style[1] . "'"
+                        "style='" . Monthly::$style[1] . "'",
                     );
                 }
 
@@ -1047,14 +1041,14 @@ class Monthly extends CommonDBTM
                         Html::formatNumber($results['tot_conso'], 0, 2),
                         $item_num,
                         $row_num,
-                        "style='" . Monthly::$style[1] . "'"
+                        "style='" . Monthly::$style[1] . "'",
                     );
 
                     $html_output .= $output::showItem(
                         '',
                         $item_num,
                         $row_num,
-                        "style='" . Monthly::$style[1] . "'"
+                        "style='" . Monthly::$style[1] . "'",
                     );
 
                     if ($config->fields['useprice'] == Config::PRICE) {
@@ -1062,7 +1056,7 @@ class Monthly extends CommonDBTM
                             Html::formatNumber($results['tot_conso_amount'], 0, 2),
                             $item_num,
                             $row_num,
-                            "style='" . Monthly::$style[1] . "'"
+                            "style='" . Monthly::$style[1] . "'",
                         );
                     }
 
@@ -1070,16 +1064,15 @@ class Monthly extends CommonDBTM
                         Html::formatNumber($results['tot_depass'], 0, 2),
                         $item_num,
                         $row_num,
-                        "style='" . Monthly::$style[1] . "'"
+                        "style='" . Monthly::$style[1] . "'",
                     );
-
 
                     if ($config->fields['useprice'] == Config::PRICE) {
                         $html_output .= $output::showItem(
                             Html::formatNumber($results['tot_depass_amount'], 0, 2),
                             $item_num,
                             $row_num,
-                            "style='" . Monthly::$style[1] . "'"
+                            "style='" . Monthly::$style[1] . "'",
                         );
                     }
 
@@ -1087,15 +1080,14 @@ class Monthly extends CommonDBTM
                         '',
                         $item_num,
                         $row_num,
-                        "style='" . Monthly::$style[1] . "'"
+                        "style='" . Monthly::$style[1] . "'",
                     );
-
 
                     if ($is_html_output) {
                         Html::closeForm();
                         $output::showFooter(
                             __('Entities portal', 'manageentities') . " - " . __('Monthly follow-up', 'manageentities'),
-                            $numrows
+                            $numrows,
                         );
                     }
                 }
@@ -1106,7 +1098,7 @@ class Monthly extends CommonDBTM
                     $numrows,
                     $_SERVER['PHP_SELF'],
                     $parameters,
-                    Monthly::class
+                    Monthly::class,
                 );
             }
 
@@ -1156,7 +1148,7 @@ class Monthly extends CommonDBTM
         }
     }
 
-    static function showLegendary()
+    public static function showLegendary()
     {
         $contractstate = new ContractState();
         $contracts = $contractstate->find();
@@ -1181,7 +1173,7 @@ class Monthly extends CommonDBTM
         echo "</div>";
     }
 
-    static function checkValue($value, $output_type)
+    public static function checkValue($value, $output_type)
     {
         if (!empty($value)) {
             list($integer, $decimal) = explode('.', number_format($value, 2));
@@ -1192,7 +1184,7 @@ class Monthly extends CommonDBTM
         return html::formatNumber($value, 0, 2);
     }
 
-    function showHeader($options = [])
+    public function showHeader($options = [])
     {
         Entity::showManageentitiesHeader(__('Monthly follow-up', 'manageentities'));
 
@@ -1214,14 +1206,14 @@ class Monthly extends CommonDBTM
         echo "var yearIdElm = $('[name=\"year\"]');";
         echo "yearIdElm.html($year);";
         echo "lastYearManagesEntities('criterias_form$rand', '#last_year', $year, " . json_encode(
-                Toolbox::getMonthsOfYearArray()
-            ) . ");";
+            Toolbox::getMonthsOfYearArray(),
+        ) . ");";
         echo "manageentitiesShowMonth('criterias_form$rand', '#manageentities-months-list', " . json_encode(
-                Toolbox::getMonthsOfYearArray()
-            ) . ", $year,  $month) ;";
+            Toolbox::getMonthsOfYearArray(),
+        ) . ", $year,  $month) ;";
         echo "nextYearManagesEntities('criterias_form$rand', '#next_year', $year, " . json_encode(
-                Toolbox::getMonthsOfYearArray()
-            ) . ");";
+            Toolbox::getMonthsOfYearArray(),
+        ) . ");";
 
         echo "</script>";
 

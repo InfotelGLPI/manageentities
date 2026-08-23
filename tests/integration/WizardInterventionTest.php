@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities\Tests\Integration;
@@ -220,7 +220,7 @@ class WizardInterventionTest extends DbTestCase
             'number_affected_days' => 5,
         ]);
         $this->assertTrue($r1['success'], json_encode($r1));
-        $this->assertEquals(0.0, (float)$r1['remaining_days']);
+        $this->assertEquals(0.0, (float) $r1['remaining_days']);
 
         $user2 = new \User();
         $user2_id = $user2->add(['name' => 'sh2-' . $this->getUniqueString(), 'password' => 'tp', 'password2' => 'tp']);
@@ -230,7 +230,7 @@ class WizardInterventionTest extends DbTestCase
             'number_affected_days' => 1,
         ]);
         $this->assertFalse($r2['success'], 'Should reject assignment exceeding credit');
-        $this->assertEquals(0.0, (float)$r2['remaining_days']);
+        $this->assertEquals(0.0, (float) $r2['remaining_days']);
     }
 
     public function testStakeholderAllowedWhenNbdayIsZero(): void
@@ -302,11 +302,11 @@ class WizardInterventionTest extends DbTestCase
 
         $this->assertEquals(1, countElementsInTable('glpi_plugin_manageentities_contractdays', ['name' => "Period-{$uid}"]));
         $row = (new \GlpiPlugin\Manageentities\ContractDay())->find(['name' => "Period-{$uid}"]);
-        $contractday_id = (int)array_key_first($row);
+        $contractday_id = (int) array_key_first($row);
         $this->assertGreaterThan(0, $contractday_id);
         $this->assertEquals(
             1,
-            countElementsInTable('glpi_plugin_manageentities_criprices', ['plugin_manageentities_contractdays_id' => $contractday_id])
+            countElementsInTable('glpi_plugin_manageentities_criprices', ['plugin_manageentities_contractdays_id' => $contractday_id]),
         );
     }
 }

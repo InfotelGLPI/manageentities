@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities\Tests\Integration;
@@ -70,7 +70,7 @@ class WizardDocumentTest extends DbTestCase
         unlink($tmp);
 
         $doc    = new Document();
-        $doc_id = (int)$doc->add([
+        $doc_id = (int) $doc->add([
             'documentcategories_id' => 0,
             'entities_id'           => 0,
             'is_recursive'          => 0,
@@ -113,13 +113,13 @@ class WizardDocumentTest extends DbTestCase
         // Delete from DB
         $d = new Document();
         $ok = $d->delete(['id' => $doc_id], true);
-        $this->assertTrue((bool)$ok);
+        $this->assertTrue((bool) $ok);
 
         // Update session as deleteDocument() would
         $session = WizardController::getSession();
         $session['documents_ids'] = array_values(array_filter(
             $session['documents_ids'],
-            fn($id) => (int)$id !== $doc_id
+            fn($id) => (int) $id !== $doc_id,
         ));
         $_SESSION['manageentities_wizard'] = ['default' => $session];
 
@@ -194,7 +194,7 @@ class WizardDocumentTest extends DbTestCase
                 'documents_id' => $doc_id,
                 'itemtype'     => \Contract::class,
             ]),
-            'Document should be linked to the contract in glpi_documents_items'
+            'Document should be linked to the contract in glpi_documents_items',
         );
     }
 }

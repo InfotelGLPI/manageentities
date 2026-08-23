@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -62,13 +62,13 @@ if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
                 $sum += $actiontime;
                 $input['entities_id'] = $_POST["entities_id"];
                 $input['name'] = __('New intervention', 'manageentities') . " : " . CommonITILObject::getActionTime(
-                        $sum
-                    );
+                    $sum,
+                );
                 $input['content'] .= Html::convDate(
-                        $direct->fields['date']
-                    ) . " : " . $direct->fields['name'] . " - " . getUserName(
-                        $direct->fields['users_id']
-                    ) . " (" . CommonITILObject::getActionTime($actiontime) . ")<br>";
+                    $direct->fields['date'],
+                ) . " : " . $direct->fields['name'] . " - " . getUserName(
+                    $direct->fields['users_id'],
+                ) . " (" . CommonITILObject::getActionTime($actiontime) . ")<br>";
 
                 $input['_users_id_assign'][] = $direct->fields['users_id'];
             }
@@ -81,7 +81,7 @@ if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
             Session::addMessageAfterRedirect(
                 __('Please select at least one intervention', 'manageentities'),
                 false,
-                ERROR
+                ERROR,
             );
             Html::back();
         }
@@ -99,15 +99,15 @@ if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
 
         Html::redirect($ticket->getLinkURL());
 
-//        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "DirectHelpdesk::class);
-//        $options['entities_id'] = $_POST['entities_id'];
-//        $direct = new DirectHelpdesk();
-//        $options['content'] = "";
-//        $options['_created_from_directhelpdesk'] = true;
+        //        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "DirectHelpdesk::class);
+        //        $options['entities_id'] = $_POST['entities_id'];
+        //        $direct = new DirectHelpdesk();
+        //        $options['content'] = "";
+        //        $options['_created_from_directhelpdesk'] = true;
 
-//        $ticket = new Ticket();
-//        $ticket->showForm(0, $options);
-//        Html::footer();
+        //        $ticket = new Ticket();
+        //        $ticket->showForm(0, $options);
+        //        Html::footer();
     } elseif (isset($_POST["add"])) {
         // Per-object check like the update branch: the global plugin UPDATE right is
         // not scoped by entity, so enforce CREATE (with the posted entities_id) before

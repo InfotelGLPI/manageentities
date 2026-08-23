@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -42,15 +42,14 @@ if (!defined('GLPI_ROOT')) {
 
 class Contact extends CommonDBTM
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
@@ -64,7 +63,7 @@ class Contact extends CommonDBTM
      * @global  $DB
      *
      */
-    function addContactByDefault($contacts_id, $entities_id)
+    public function addContactByDefault($contacts_id, $entities_id)
     {
         $contacts = $this->find(['entities_id' => $entities_id]);
 
@@ -82,7 +81,7 @@ class Contact extends CommonDBTM
      *
      * @global  $DB
      */
-    function buildContactsForTemplate(array $instID, string $root_doc): array
+    public function buildContactsForTemplate(array $instID, string $root_doc): array
     {
         global $DB;
 
@@ -119,13 +118,13 @@ class Contact extends CommonDBTM
                 'mobile'       => $data['mobile'] ?? '',
                 'email'        => $data['email'] ?? '',
                 'contact_type' => \Dropdown::getDropdownName('glpi_contacttypes', $data['contacttypes_id']),
-                'is_default'   => (bool)$data['is_default'],
+                'is_default'   => (bool) $data['is_default'],
             ];
         }
         return $contacts;
     }
 
-    function showContacts($instID)
+    public function showContacts($instID)
     {
         global $CFG_GLPI;
 
@@ -154,8 +153,8 @@ class Contact extends CommonDBTM
                 'can_edit_contacts'    => $can_edit,
                 'is_single'            => $is_single,
                 'interface'            => $interface,
-                'contact_dropdown_html'=> $contact_dropdown_html,
-            ]
+                'contact_dropdown_html' => $contact_dropdown_html,
+            ],
         );
     }
 
@@ -182,7 +181,6 @@ class Contact extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {

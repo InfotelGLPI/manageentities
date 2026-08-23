@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -40,10 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Class EditorSubscriptionInjection
  */
-class EditorSubscriptionInjection extends EditorSubscription
-    implements PluginDatainjectionInjectionInterface
+class EditorSubscriptionInjection extends EditorSubscription implements PluginDatainjectionInjectionInterface
 {
-
     public static function getTable($classname = null)
     {
         return EditorSubscription::getTable();
@@ -52,7 +50,7 @@ class EditorSubscriptionInjection extends EditorSubscription
     /**
      * @return bool
      */
-    function isPrimaryType()
+    public function isPrimaryType()
     {
         return true;
     }
@@ -60,7 +58,7 @@ class EditorSubscriptionInjection extends EditorSubscription
     /**
      * @return array
      */
-    function connectedTo()
+    public function connectedTo()
     {
         return [];
     }
@@ -70,7 +68,7 @@ class EditorSubscriptionInjection extends EditorSubscription
      *
      * @return array
      */
-    function getOptions($primary_type = '')
+    public function getOptions($primary_type = '')
     {
         $tab = Search::getOptions(get_parent_class($this));
 
@@ -83,11 +81,11 @@ class EditorSubscriptionInjection extends EditorSubscription
         $options['ignore_fields'] = $notimportable;
         $options['displaytype'] = [
             "dropdown" => [10],
-//            "user" => [4, 10, 14, 27],
+            //            "user" => [4, 10, 14, 27],
             "multiline_text" => [8],
-//            "date" => [4, 5],
+            //            "date" => [4, 5],
             "bool" => [11, 12],
-//            "decimal" => [20]
+            //            "decimal" => [20]
         ];
 
         $tab = PluginDatainjectionCommonInjectionLib::addToSearchOptions($tab, $options, $this);
@@ -103,7 +101,7 @@ class EditorSubscriptionInjection extends EditorSubscription
      * @param options options used during creation
      * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
      */
-    function addOrUpdateObject($values = [], $options = [])
+    public function addOrUpdateObject($values = [], $options = [])
     {
         $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
         $lib->processAddOrUpdate();
@@ -111,4 +109,3 @@ class EditorSubscriptionInjection extends EditorSubscription
     }
 
 }
-

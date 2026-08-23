@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -51,25 +51,24 @@ if (!defined('GLPI_ROOT')) {
 
 class EditorSubscription extends CommonDBTM
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Publisher subscription', 'Publisher subscriptions', $nb, 'manageentities');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return 'ti ti-certificate';
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
@@ -78,14 +77,14 @@ class EditorSubscription extends CommonDBTM
     // Tab on plugin Entity
     // -----------------------------------------------------------------------
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         // Tab is registered directly in Entity::getTabNameForItem() as tab 6
         // to ensure correct ordering before Interventions reports (tab 7).
         return '';
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         return true;
     }
@@ -97,7 +96,7 @@ class EditorSubscription extends CommonDBTM
     /**
      * Return the subscription row for a given entity, or [].
      */
-    static function getForEntity(int $entities_id): array
+    public static function getForEntity(int $entities_id): array
     {
         if ($entities_id <= 0) {
             return [];
@@ -111,11 +110,10 @@ class EditorSubscription extends CommonDBTM
     // CSV export
     // -----------------------------------------------------------------------
 
-    static function exportCsv(): void
+    public static function exportCsv(): void
     {
         global $DB;
 
-        Session::checkLoginUser();
         if (!self::canView()) {
             throw new AccessDeniedHttpException();
             exit;
@@ -128,7 +126,7 @@ class EditorSubscription extends CommonDBTM
         }
 
         $config              = Config::getInstance();
-        $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+        $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
         if ($archive_entities_id > 0) {
             $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
             unset($archive_sons[$archive_entities_id]);
@@ -158,7 +156,7 @@ class EditorSubscription extends CommonDBTM
 
             foreach ($iterator as $row) {
                 $row['level_name'] = !empty($row['plugin_manageentities_subscriptionlevels_id'])
-                    ? Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$row['plugin_manageentities_subscriptionlevels_id'])
+                    ? Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int) $row['plugin_manageentities_subscriptionlevels_id'])
                     : '';
                 $row['type_label'] = $row['cloud_client']
                     ? __('Cloud client', 'manageentities')
@@ -213,7 +211,7 @@ class EditorSubscription extends CommonDBTM
                 $row['cloud_client'] ? '1' : '0',
                 $row['internet_publication'] ? '1' : '0',
                 !empty($row['begin_date']) ? substr($row['begin_date'], 0, 10) : '',
-                !empty($row['end_date'])   ? substr($row['end_date'],   0, 10) : '',
+                !empty($row['end_date']) ? substr($row['end_date'], 0, 10) : '',
                 $csvSafe($row['comment'] ?? ''),
             ], ';');
         }
@@ -226,15 +224,15 @@ class EditorSubscription extends CommonDBTM
     // Status overview tab
     // -----------------------------------------------------------------------
 
-    static function showStatusTab(): void
+    public static function showStatusTab(): void
     {
         global $DB;
 
         $entity_ids = $_SESSION['glpiactiveentities'];
         $config     = Config::getInstance();
 
-        $parent_id           = (int)($config->fields['wizard_default_entities_id'] ?? 0);
-        $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+        $parent_id           = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
+        $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
 
         // concerned_ids: customer entities (non-archived) — used for alerts
         $concerned_ids = [];
@@ -260,15 +258,15 @@ class EditorSubscription extends CommonDBTM
             $concerned_ids = array_values(
                 array_diff(
                     array_intersect($entity_ids, array_keys($customer_sons)),
-                    $excluded_ids
-                )
+                    $excluded_ids,
+                ),
             );
 
             $archive_son_ids_in_session = array_values(
-                array_intersect($archive_son_ids, $entity_ids)
+                array_intersect($archive_son_ids, $entity_ids),
             );
             $all_scoped_ids = array_values(
-                array_unique(array_merge($concerned_ids, $archive_son_ids_in_session))
+                array_unique(array_merge($concerned_ids, $archive_son_ids_in_session)),
             );
         }
 
@@ -414,7 +412,7 @@ class EditorSubscription extends CommonDBTM
             foreach ($iter as $row) {
                 $level_counts[] = [
                     'name'  => $row['level_name'] ?: __('No level', 'manageentities'),
-                    'count' => (int)$row['cnt'],
+                    'count' => (int) $row['cnt'],
                 ];
             }
         }
@@ -444,7 +442,7 @@ class EditorSubscription extends CommonDBTM
                 'expired_subscription' => $expired_subscription,
                 'level_counts'         => $level_counts,
                 'type_counts'          => $type_counts,
-            ]
+            ],
         );
     }
 
@@ -452,7 +450,7 @@ class EditorSubscription extends CommonDBTM
     // Display
     // -----------------------------------------------------------------------
 
-    static function showForEntity(array $instID): void
+    public static function showForEntity(array $instID): void
     {
         global $DB;
 
@@ -477,7 +475,7 @@ class EditorSubscription extends CommonDBTM
 
         foreach ($iterator as $row) {
             $row['level_name']       = !empty($row['plugin_manageentities_subscriptionlevels_id'])
-                ? Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$row['plugin_manageentities_subscriptionlevels_id'])
+                ? Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int) $row['plugin_manageentities_subscriptionlevels_id'])
                 : '';
             $row['end_date_expired'] = !empty($row['end_date']) && substr($row['end_date'], 0, 10) < $now;
             $rows[]                  = $row;
@@ -493,7 +491,7 @@ class EditorSubscription extends CommonDBTM
                 'can_edit'   => $can_edit,
                 'wizard_url' => $wizard_url,
                 'export_url' => $export_url,
-            ]
+            ],
         );
     }
 
@@ -503,11 +501,11 @@ class EditorSubscription extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        if ((int)($input['entities_id'] ?? 0) === 0) {
+        if ((int) ($input['entities_id'] ?? 0) === 0) {
             Session::addMessageAfterRedirect(
                 __('Publisher subscriptions cannot be created for the root entity.', 'manageentities'),
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         }
@@ -556,9 +554,9 @@ class EditorSubscription extends CommonDBTM
     {
         global $DB;
 
-        $entities_id               = (int)($fields['entities_id'] ?? 0);
-        $active_editor_suscription = (int)($fields['active_editor_suscription'] ?? 0);
-        $cloud_client              = (int)($fields['cloud_client'] ?? 0);
+        $entities_id               = (int) ($fields['entities_id'] ?? 0);
+        $active_editor_suscription = (int) ($fields['active_editor_suscription'] ?? 0);
+        $cloud_client              = (int) ($fields['cloud_client'] ?? 0);
 
         if ($entities_id <= 0) {
             return;
@@ -570,20 +568,20 @@ class EditorSubscription extends CommonDBTM
                 'active_editor_suscription' => $active_editor_suscription,
                 'cloud_client'              => $cloud_client,
             ],
-            ['entities_id' => $entities_id]
+            ['entities_id' => $entities_id],
         );
     }
 
     /**
      * @return array
      */
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = [];
 
         $tab[] = [
             'id' => 'common',
-            'name' => self::getTypeName(2)
+            'name' => self::getTypeName(2),
         ];
 
         $tab[] = [
@@ -625,7 +623,7 @@ class EditorSubscription extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'customer_account_id',
             'name' => __('Publisher customer account ID', 'manageentities'),
-//            'datatype' => 'text'
+            //            'datatype' => 'text'
         ];
 
         $tab[] = [
@@ -817,7 +815,7 @@ class EditorSubscription extends CommonDBTM
                             'content_text' => $content_text,
                             'content_html' => $content_html,
                         ],
-                        ['id' => $translation['id']]
+                        ['id' => $translation['id']],
                     );
                 }
             }
@@ -987,7 +985,7 @@ class EditorSubscription extends CommonDBTM
             [
                 'entities_id'   => 0,
                 'subscriptions' => $subscriptions,
-            ]
+            ],
         );
 
         if ($task instanceof CronTask) {

@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.7');
@@ -70,14 +70,14 @@ function plugin_init_manageentities()
         'Ticket' => 'plugin_pre_item_purge_manageentities',
         'Contract' => 'plugin_pre_item_purge_manageentities',
         'Contact' => 'plugin_pre_item_purge_manageentities',
-        'TaskCategory' => 'plugin_pre_item_purge_manageentities'
+        'TaskCategory' => 'plugin_pre_item_purge_manageentities',
     ];
 
     $PLUGIN_HOOKS[Hooks::PRE_ITEM_UPDATE]['manageentities'] = [
         'Document' => [
             Entity::class,
-            'preUpdateDocument'
-        ]
+            'preUpdateDocument',
+        ],
     ];
     $PLUGIN_HOOKS[Hooks::ITEM_UPDATE]['manageentities'] = [
         'Document' => [Entity::class, 'UpdateDocument'],
@@ -96,14 +96,14 @@ function plugin_init_manageentities()
         Plugin::registerClass(Contract::class, ['addtabon' => 'Contract']);
         Plugin::registerClass(CriDetail::class, [
             'addtabon' => 'Ticket',
-            'planning_types' => true
+            'planning_types' => true,
         ]);
         Plugin::registerClass(DirectHelpdesk_Ticket::class, ['addtabon' => 'Ticket']);
 
         Plugin::registerClass(TaskCategory::class, ['addtabon' => 'TaskCategory']);
         Plugin::registerClass(
             InterventionStakeholder::class,
-            ['addtabon' => ContractDay::class]
+            ['addtabon' => ContractDay::class],
         );
         Plugin::registerClass(CriPrice::class, ['addtabon' =>  ContractDay::class]);
 
@@ -115,7 +115,7 @@ function plugin_init_manageentities()
                 'helpdesk' => [
                     GenerateCRI::class,
                     DirectHelpdesk::class,
-                ]
+                ],
             ];
         }
         if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
@@ -133,10 +133,9 @@ function plugin_init_manageentities()
                 'front/report_moving.form.php' => __('Report on the movement of technicians', 'manageentities'),
                 'front/report_occupation.form.php' => __(
                     'Report concerning the occupation of the technicians',
-                    'manageentities'
-                )
+                    'manageentities',
+                ),
             ];
-
 
             if (isset($_SESSION["glpi_plugin_manageentities_loaded"])
                 && $_SESSION["glpi_plugin_manageentities_loaded"] == 0
@@ -176,7 +175,7 @@ function plugin_init_manageentities()
                     'scripts/scripts-manageentities.js',
                     'scripts/jquery.form.js',
                     'scripts/wizard.js',
-                ]
+                ],
             );
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js.php';
@@ -213,9 +212,9 @@ function plugin_version_manageentities()
             'glpi' => [
                 'min' => '11.0',
                 'max' => '12.0',
-                'dev' => false
-            ]
-        ]
+                'dev' => false,
+            ],
+        ],
     ];
 }
 

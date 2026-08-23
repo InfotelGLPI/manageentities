@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -338,7 +338,7 @@ class ContractDay extends CommonDBTM
         $show_credit = $is_day || ($is_hour && !$unlimited);
         $use_price   = ($config->fields['useprice'] == Config::PRICE);
 
-        $contract_link = Toolbox::getItemTypeFormURL('Contract') . '?id=' . (int)$contract->fields['id'];
+        $contract_link = Toolbox::getItemTypeFormURL('Contract') . '?id=' . (int) $contract->fields['id'];
 
         ob_start();
         if ($is_day) {
@@ -383,7 +383,7 @@ class ContractDay extends CommonDBTM
             'entities_id'          => $contract->fields['entities_id'],
             'name'                 => $this->fields['name'] ?? '',
             'comment'              => $this->fields['comment'] ?? '',
-            'charged'              => (int)($this->fields['charged'] ?? 0),
+            'charged'              => (int) ($this->fields['charged'] ?? 0),
             'nbday'                => Html::formatNumber($this->fields['nbday']),
             'report'               => Html::formatNumber($this->fields['report']),
             'is_day'               => $is_day,
@@ -422,7 +422,7 @@ class ContractDay extends CommonDBTM
 
             $addButton = "<form method='post' name='contractDays_form'.$rand.'' id='contractDays_form" . $rand . "'
                action='" . Toolbox::getItemTypeFormURL(
-                ContractDay::class
+                ContractDay::class,
             ) . "?contract_id=" . $contract->fields['id'] . "'>";
             $addButton .= Html::hidden('contract_id', ['value' => $contract_id]);
             $addButton .= Html::hidden('id', ['value' => '']);
@@ -461,7 +461,7 @@ class ContractDay extends CommonDBTM
         $add_button_html = '';
         if ($canCreate && Session::haveRight('plugin_manageentities', UPDATE)) {
             $add_rand       = mt_rand();
-            $add_action_url = Toolbox::getItemTypeFormURL(ContractDay::class) . '?contract_id=' . (int)$contract->fields['id'];
+            $add_action_url = Toolbox::getItemTypeFormURL(ContractDay::class) . '?contract_id=' . (int) $contract->fields['id'];
             $add_button_html  = "<form method='post' name='contractDays_form{$add_rand}' id='contractDays_form{$add_rand}' action='" . htmlspecialchars($add_action_url, ENT_QUOTES) . "'>";
             $add_button_html .= Html::hidden('_glpi_csrf_token', ['value' => \Session::getNewCSRFToken()]);
             $add_button_html .= Html::hidden('contract_id', ['value' => $contract->fields['id']]);
@@ -563,7 +563,7 @@ class ContractDay extends CommonDBTM
             $cp_rows   = $criprice->find(
                 ['plugin_manageentities_contractdays_id' => $contractDay->fields['id'], 'is_default' => 1],
                 [],
-                1
+                1,
             );
             if (!empty($cp_rows)) {
                 $criprice->fields = reset($cp_rows);
@@ -576,7 +576,7 @@ class ContractDay extends CommonDBTM
                 'end_date'   => Html::convDate($pluginContractDay['end_date']),
                 'state'      => \Dropdown::getDropdownName(
                     'glpi_plugin_manageentities_contractstates',
-                    $pluginContractDay['plugin_manageentities_contractstates_id']
+                    $pluginContractDay['plugin_manageentities_contractstates_id'],
                 ),
                 'conso'      => Html::formatNumber($conso),
                 'price'      => $price_val,
@@ -631,7 +631,7 @@ class ContractDay extends CommonDBTM
             'can_edit'              => $canEdit,
             'massive_form_open'     => $massive_form_open,
             'massive_actions_top'   => $massive_actions_top,
-            'massive_actions_bottom'=> $massive_actions_bottom,
+            'massive_actions_bottom' => $massive_actions_bottom,
             'massive_form_close'    => $massive_form_close,
             'add_button_html'       => $add_button_html,
         ]);
@@ -695,17 +695,17 @@ class ContractDay extends CommonDBTM
 
     public function post_addItem()
     {
-        Contract::updateRemainingDays((int)($this->input['contracts_id'] ?? $this->fields['contracts_id'] ?? 0));
+        Contract::updateRemainingDays((int) ($this->input['contracts_id'] ?? $this->fields['contracts_id'] ?? 0));
     }
 
     public function post_deleteItem()
     {
-        Contract::updateRemainingDays((int)($this->fields['contracts_id'] ?? 0));
+        Contract::updateRemainingDays((int) ($this->fields['contracts_id'] ?? 0));
     }
 
     public function post_updateItem($history = true)
     {
-        Contract::updateRemainingDays((int)($this->fields['contracts_id'] ?? 0));
+        Contract::updateRemainingDays((int) ($this->fields['contracts_id'] ?? 0));
 
         // When a period's state changes, check if all periods of the parent GLPI contract are now closed.
         // If so, set the GLPI contract state to the configured closed GLPI state.
@@ -714,14 +714,14 @@ class ContractDay extends CommonDBTM
         }
 
         $config = Config::getInstance();
-        $closed_glpi_state_id    = (int)($config->fields['closed_glpi_state_id'] ?? 0);
-        $closed_contractstate_id = (int)($config->fields['closed_contractstate_id'] ?? 0);
+        $closed_glpi_state_id    = (int) ($config->fields['closed_glpi_state_id'] ?? 0);
+        $closed_contractstate_id = (int) ($config->fields['closed_contractstate_id'] ?? 0);
 
         if ($closed_glpi_state_id === 0 || $closed_contractstate_id === 0) {
             return;
         }
 
-        $contracts_id = (int)$this->fields['contracts_id'];
+        $contracts_id = (int) $this->fields['contracts_id'];
         if ($contracts_id === 0) {
             return;
         }
@@ -746,11 +746,11 @@ class ContractDay extends CommonDBTM
         ]);
 
         $row = $iterator->current();
-        if ($row && (int)$row['cnt'] === 0) {
+        if ($row && (int) $row['cnt'] === 0) {
             // All periods are closed — set the GLPI contract to the configured closed state
             $glpi_contract = new \Contract();
             if ($glpi_contract->getFromDB($contracts_id)
-                && (int)$glpi_contract->fields['states_id'] !== $closed_glpi_state_id) {
+                && (int) $glpi_contract->fields['states_id'] !== $closed_glpi_state_id) {
                 $glpi_contract->update([
                     'id'        => $contracts_id,
                     'states_id' => $closed_glpi_state_id,
@@ -814,7 +814,7 @@ class ContractDay extends CommonDBTM
                 Session::addMessageAfterRedirect(
                     __('End date cannot be less than begin date', 'manageentities'),
                     true,
-                    ERROR
+                    ERROR,
                 );
                 return false;
             }
@@ -857,10 +857,10 @@ class ContractDay extends CommonDBTM
                     Session::addMessageAfterRedirect(
                         sprintf(
                             __('The contract period %s already exists', 'manageentities'),
-                            Html::convDate($input['begin_date']) . ' - ' . Html::convDate($input['end_date'])
+                            Html::convDate($input['begin_date']) . ' - ' . Html::convDate($input['end_date']),
                         ),
                         true,
-                        ERROR
+                        ERROR,
                     );
                     return false;
                 }
@@ -906,7 +906,7 @@ class ContractDay extends CommonDBTM
             Session::addMessageAfterRedirect(
                 sprintf(__("Mandatory fields are not filled. Please correct: %s"), implode(', ', $msg)),
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         }

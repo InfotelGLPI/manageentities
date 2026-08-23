@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -41,10 +41,9 @@ if (!defined('GLPI_ROOT')) {
 
 class TicketTask extends CommonDBTM
 {
+    public $dohistory = false;
 
-    var $dohistory = false;
-
-    static $rightname = "plugin_manageentities";
+    public static $rightname = "plugin_manageentities";
 
     public static function preItemForm(array $params): void
     {
@@ -80,7 +79,7 @@ class TicketTask extends CommonDBTM
             [
                 'tickets_id' => $tickets_id,
                 ['NOT' => ['plugin_manageentities_contractdays_id' => 0]],
-            ]
+            ],
         );
         $cridetail = reset($cridetails);
 
@@ -113,12 +112,12 @@ class TicketTask extends CommonDBTM
         Session::addMessageAfterRedirect(
             __('No days remaining on this contract period. Task addition is blocked.', 'manageentities'),
             false,
-            ERROR
+            ERROR,
         );
         $item->input = [];
     }
 
-    static public function postForm($params): void
+    public static function postForm($params): void
     {
         global $CFG_GLPI;
 

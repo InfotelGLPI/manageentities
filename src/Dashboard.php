@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -59,9 +59,7 @@ class Dashboard extends CommonGLPI
         $this->options = $options;
     }
 
-    public function init() {
-
-    }
+    public function init() {}
 
 
     /**
@@ -136,7 +134,7 @@ class Dashboard extends CommonGLPI
                                             $entity->getFromDB($contract_data['entities_id']);
                                             $data["parent"] = $dbu->getTreeLeafValueName(
                                                 "glpi_entities",
-                                                $entity->fields['entities_id']
+                                                $entity->fields['entities_id'],
                                             );
 
                                             $data["entities_id"] = $contract_data['entities_name'];
@@ -223,7 +221,7 @@ class Dashboard extends CommonGLPI
                     ];
 
                     $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-                        'glpi_contacts'
+                        'glpi_contacts',
                     );
 
                     $widget = Helper::getWidgetsFromDBQuery('table', $criteria);
@@ -409,7 +407,7 @@ class Dashboard extends CommonGLPI
                                             $entity->getFromDB($contract_data['entities_id']);
                                             $data["parent"] = $dbu->getTreeLeafValueName(
                                                 "glpi_entities",
-                                                $entity->fields['entities_id']
+                                                $entity->fields['entities_id'],
                                             );
 
                                             $data["entities_id"] = $contract_data['entities_name'];
@@ -511,12 +509,12 @@ class Dashboard extends CommonGLPI
             'ORDERBY' => 'glpi_entities.name',
         ];
         $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-            'glpi_entities'
+            'glpi_entities',
         );
 
         if (Session::getCurrentInterface() == 'central') {
             $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-                'glpi_contracts'
+                'glpi_contracts',
             );
         } else {
             $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_contracts.entities_id' => $instID];
@@ -557,7 +555,7 @@ class Dashboard extends CommonGLPI
                 if ($config->fields['hourorday'] == Config::HOUR) {// Hourly
                     $criteriac['SELECT'] = array_merge(
                         $criteriac['SELECT'],
-                        ['glpi_plugin_manageentities_contracts.contract_type AS contract_type']
+                        ['glpi_plugin_manageentities_contracts.contract_type AS contract_type'],
                     );
                     $criteriac['WHERE'] = $criteriac['WHERE'] + ['glpi_plugin_manageentities_contracts.contract_type' => $types_contracts];
                 }
@@ -601,7 +599,7 @@ class Dashboard extends CommonGLPI
                     if ($config->fields['hourorday'] == Config::DAY) {// Hourly
                         $criteriad['SELECT'] = array_merge(
                             $criteriad['SELECT'],
-                            ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']
+                            ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type'],
                         );
                         $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.contract_type' => $types_contracts];
                     }
@@ -613,14 +611,14 @@ class Dashboard extends CommonGLPI
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
                             'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                 $preferences['contract_states'],
-                                true
+                                true,
                             ),
                         ];
                     } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
                             'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                 $config_states['contract_states'],
-                                true
+                                true,
                             ),
                         ];
                     }
@@ -675,13 +673,13 @@ class Dashboard extends CommonGLPI
 
                             $resultCriDetail = self::getCriDetailDataSimplified(
                                 $dataContractDay,
-                                ["contract_type_id" => $dataContractDay["contract_type"]]
+                                ["contract_type_id" => $dataContractDay["contract_type"]],
                             );
 
                             if (Session::getCurrentInterface() == 'helpdesk'
                                 && $dataContractDay["contract_type"] == Contract::CONTRACT_TYPE_UNLIMITED) {
                                 $credit = Contract::getContractType(
-                                    $dataContractDay["contract_type"]
+                                    $dataContractDay["contract_type"],
                                 );
                             } else {
                                 $credit = $dataContractDay['nbday'] + $dataContractDay['report'];
@@ -817,7 +815,7 @@ class Dashboard extends CommonGLPI
                             $config,
                             $dataCriDetail,
                             $pluginContract,
-                            1
+                            1,
                         );
 
                         // Set global conso of contractday

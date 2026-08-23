@@ -1,13 +1,30 @@
 {#
- # Generate Intervention report (CRI) wizard form (manageentities plugin).
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
  #
- # All GLPI widgets (dropdowns, rich-text areas, date/duration pickers, AJAX
- # reload scripts) are pre-rendered by PHP and injected here with |raw. The task
- # management logic lives in a large <script> block (tasks_script) also injected
- # with |raw — it carries PHP-interpolated values (webdir, config flags, stored
- # tasks) that cannot be rebuilt from Twig alone. Plain text is auto-escaped by
- # Twig; the <form> carries the GLPI CSRF token.
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
  #}
+
 <form name="generate" method="post" action="{{ form_action }}">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     {{ hidden_fields|raw }}

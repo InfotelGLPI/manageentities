@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -44,25 +44,24 @@ if (!defined('GLPI_ROOT')) {
 
 class TaskCategory extends CommonDBTM
 {
+    public static $rightname = 'dropdown';
 
-    static $rightname = 'dropdown';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Management of task category', 'Management of task categories', $nb, 'manageentities');
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $config = Config::getInstance();
 
@@ -74,13 +73,12 @@ class TaskCategory extends CommonDBTM
         return '';
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-user-pentagon";
     }
 
-
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         global $CFG_GLPI;
 
@@ -93,20 +91,20 @@ class TaskCategory extends CommonDBTM
             }
             $self->showForm($item->getField('id'), [
                 'target' =>
-                    PLUGIN_MANAGEENTITIES_WEBDIR . "/front/taskcategory.form.php"
+                    PLUGIN_MANAGEENTITIES_WEBDIR . "/front/taskcategory.form.php",
             ]);
         }
         return true;
     }
 
-    function createAccess($ID)
+    public function createAccess($ID)
     {
         $this->add([
-            'taskcategories_id' => $ID
+            'taskcategories_id' => $ID,
         ]);
     }
 
-    function showForm($ID, $options = [])
+    public function showForm($ID, $options = [])
     {
         if (!self::canView()) {
             return false;
@@ -152,7 +150,6 @@ class TaskCategory extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {

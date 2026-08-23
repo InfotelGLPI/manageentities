@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -34,9 +34,9 @@ use CommonGLPI;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Plugin;
 
-class CheckSchema extends CommonDBTM {
-
-    static $rightname = 'plugin_manageentities';
+class CheckSchema extends CommonDBTM
+{
+    public static $rightname = 'plugin_manageentities';
     private $table = "";
 
     /**
@@ -47,7 +47,7 @@ class CheckSchema extends CommonDBTM {
      *
      * @return string
      */
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return __('Schema check', 'manageentities');
     }
@@ -57,7 +57,8 @@ class CheckSchema extends CommonDBTM {
         return "ti ti-check";
     }
 
-    public static function getTable($classname = null) {
+    public static function getTable($classname = null)
+    {
         return "glpi_plugin_manageentities_configs";
     }
 
@@ -68,7 +69,7 @@ class CheckSchema extends CommonDBTM {
      * @return string
      * @see CommonGLPI::getTabNameForItem()
      */
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if ($item->getType() == Config::class) {
@@ -85,7 +86,7 @@ class CheckSchema extends CommonDBTM {
      * @return bool
      * @see CommonGLPI::displayTabContentForItem()
      */
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item->getType() == Config::class) {
@@ -100,7 +101,8 @@ class CheckSchema extends CommonDBTM {
      *
      * @return string|null
      */
-    function getSchemaPath(string $version): ?string {
+    public function getSchemaPath(string $version): ?string
+    {
 
         if ($version === null) {
             $version = PLUGIN_MANAGEENTITIES_VERSION;
@@ -133,12 +135,12 @@ class CheckSchema extends CommonDBTM {
             $ignore_timestamps_migration,
             $ignore_utf8mb4_migration,
             $ignore_dynamic_row_format_migration,
-            $ignore_unsigned_keys_migration
+            $ignore_unsigned_keys_migration,
         );
 
         try {
             $differences = $checker->checkCompleteSchema($schemaFile, true, 'plugin:manageentities');
-//            Toolbox::logInfo($differences);
+            //            Toolbox::logInfo($differences);
         } catch (\Throwable $e) {
             $message = __('Failed to check the sanity of the tables!', 'manageentities');
             //            if (isCommandLine()) {
@@ -153,7 +155,7 @@ class CheckSchema extends CommonDBTM {
             echo "<table class='tab_cadre'>";
             foreach ($differences as $difference) {
                 echo "<tr><td>";
-                echo "<pre>".$difference['diff']."</pre>";
+                echo "<pre>" . $difference['diff'] . "</pre>";
                 echo "</td></tr>";
             }
             return false;

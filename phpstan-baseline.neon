@@ -1,20 +1,26 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Parameter \#2 \$options of method GlpiPlugin\\Manageentities\\Cri\:\:generatePdf\(\) expects GlpiPlugin\\Manageentities\\type, array\<string, mixed\> given\.$#'
-			identifier: argument.type
-			count: 6
-			path: ajax/cri.php
-
-		-
 			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
 			identifier: glpi.forbidExit
 			count: 1
 			path: ajax/dropdownGenerateCriCategories.php
 
 		-
-			message: '#^Variable \$txt might not be defined\.$#'
-			identifier: variable.undefined
+			message: '#^Invalid array key type float\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: ajax/getDropdownNumber.php
+
+		-
+			message: '#^Parameter \#1 \$haystack of function strstr expects string, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ajax/getDropdownNumber.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Dropdown\:\:getValueWithUnit\(\) expects int, float given\.$#'
+			identifier: argument.type
 			count: 1
 			path: ajax/getDropdownNumber.php
 
@@ -73,18 +79,6 @@ parameters:
 			path: front/company.form.php
 
 		-
-			message: '#^Parameter \#1 \$values of method GlpiPlugin\\Manageentities\\ContractDay\:\:addNbDay\(\) expects GlpiPlugin\\Manageentities\\type, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: front/contract.form.php
-
-		-
-			message: '#^Parameter \#1 \$values of method GlpiPlugin\\Manageentities\\ContractDay\:\:addNbDay\(\) expects GlpiPlugin\\Manageentities\\type, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: front/contractday.form.php
-
-		-
 			message: '#^Parameter \#2 \$force of method CommonDBTM\:\:delete\(\) expects bool, int given\.$#'
 			identifier: argument.type
 			count: 1
@@ -141,20 +135,8 @@ parameters:
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 3
-			path: front/editorsubscription.form.php
-
-		-
-			message: '#^You should not use the `exit` function\. It prevents the execution of post\-request/post\-command routines\.$#'
-			identifier: glpi.forbidExit
 			count: 2
 			path: front/editorsubscription.form.php
-
-		-
-			message: '#^Parameter \#1 \$values of method GlpiPlugin\\Manageentities\\EntityLogo\:\:addLogo\(\) expects GlpiPlugin\\Manageentities\\type, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: front/entity.form.php
 
 		-
 			message: '#^Call to static method showDefaultHeaderHelpdesk\(\) on an unknown class GlpiPlugin\\Servicecatalog\\Main\.$#'
@@ -292,12 +274,6 @@ parameters:
 			message: '#^Variable \$_POST in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.variable
 			count: 1
-			path: front/report_moving.form.php
-
-		-
-			message: '#^Variable \$elements might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
 			path: front/report_moving.form.php
 
 		-
@@ -357,7 +333,7 @@ parameters:
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
-			count: 2
+			count: 1
 			path: hook.php
 
 		-
@@ -421,50 +397,8 @@ parameters:
 			path: src/CheckSchema.php
 
 		-
-			message: '#^Access to offset ''colspan'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Access to offset ''title'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/Company.php
-
-		-
-			message: '#^Access to property \$entite on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 6
-			path: src/Company.php
-
-		-
-			message: '#^Argument of an invalid type int supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 2
-			path: src/Company.php
-
-		-
 			message: '#^Default value of the parameter \#1 \$history \(int\) of method GlpiPlugin\\Manageentities\\Company\:\:post_updateItem\(\) is incompatible with type bool\.$#'
 			identifier: parameter.defaultValue
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Default value of the parameter \#1 \$options \(array\) of method GlpiPlugin\\Manageentities\\Company\:\:addNewCompany\(\) is incompatible with type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: parameter.defaultValue
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Company\:\:addFiles\(\) should return int but returns array\<array\<string, mixed\>\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Company\:\:addFiles\(\) should return int but returns array\<string, mixed\>\.$#'
-			identifier: return.type
 			count: 1
 			path: src/Company.php
 
@@ -475,25 +409,13 @@ parameters:
 			path: src/Company.php
 
 		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Company\:\:getComment\(\) has invalid return type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Company\:\:getComment\(\) should return GlpiPlugin\\Manageentities\\type but returns null\.$#'
+			message: '#^Method GlpiPlugin\\Manageentities\\Company\:\:getComment\(\) should return array\<mixed\> but returns null\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Company.php
 
 		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Company\:\:getLogo\(\) has invalid return type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Company\:\:getLogo\(\) should return GlpiPlugin\\Manageentities\\type but returns null\.$#'
+			message: '#^Method GlpiPlugin\\Manageentities\\Company\:\:getLogo\(\) should return array\<mixed\> but returns null\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Company.php
@@ -505,56 +427,14 @@ parameters:
 			path: src/Company.php
 
 		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$disablenotif$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/Company.php
-
-		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$donotif$#'
 			identifier: parameter.notFound
 			count: 1
 			path: src/Company.php
 
 		-
-			message: '#^Parameter \#1 \$options of static method GlpiPlugin\\Manageentities\\Company\:\:addNewCompany\(\) expects GlpiPlugin\\Manageentities\\type, array\<string, string\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Company.php
-
-		-
 			message: '#^Parameter \#2 \$force of method CommonDBTM\:\:delete\(\) expects bool, int given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Parameter \$obj of method GlpiPlugin\\Manageentities\\Company\:\:getAddress\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Parameter \$obj of method GlpiPlugin\\Manageentities\\Company\:\:getComment\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Parameter \$obj of method GlpiPlugin\\Manageentities\\Company\:\:getLogo\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Parameter \$options of method GlpiPlugin\\Manageentities\\Company\:\:addNewCompany\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Company.php
-
-		-
-			message: '#^Return type \(int\) of method GlpiPlugin\\Manageentities\\Company\:\:addFiles\(\) should be compatible with return type \(array\<string, mixed\>\) of method CommonDBTM\:\:addFiles\(\)$#'
-			identifier: method.childReturnType
 			count: 1
 			path: src/Company.php
 
@@ -577,18 +457,6 @@ parameters:
 			path: src/Config.php
 
 		-
-			message: '#^Parameter \#1 \$name of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Config.php
-
-		-
-			message: '#^Parameter \#2 \$value of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) expects GlpiPlugin\\Manageentities\\type, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Config.php
-
-		-
 			message: '#^Variable \$configTypes in empty\(\) always exists and is not falsy\.$#'
 			identifier: empty.variable
 			count: 1
@@ -601,30 +469,6 @@ parameters:
 			path: src/Config.php
 
 		-
-			message: '#^PHPDoc tag @param for parameter \$instID with type GlpiPlugin\\Manageentities\\type is incompatible with native type array\.$#'
-			identifier: parameter.phpDocType
-			count: 1
-			path: src/Contact.php
-
-		-
-			message: '#^Parameter \$contacts_id of method GlpiPlugin\\Manageentities\\Contact\:\:addContactByDefault\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contact.php
-
-		-
-			message: '#^Parameter \$entities_id of method GlpiPlugin\\Manageentities\\Contact\:\:addContactByDefault\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contact.php
-
-		-
-			message: '#^Parameter \$instID of method GlpiPlugin\\Manageentities\\Contact\:\:buildContactsForTemplate\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contact.php
-
-		-
 			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
 			identifier: glpi.forbidExit
 			count: 1
@@ -634,24 +478,6 @@ parameters:
 			message: '#^Access to an undefined property CommonGLPI\:\:\$fields\.$#'
 			identifier: property.notFound
 			count: 2
-			path: src/Contract.php
-
-		-
-			message: '#^Access to property \$fields on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Default value of the parameter \#2 \$value \(int\) of method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractManagement\(\) is incompatible with type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: parameter.defaultValue
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Default value of the parameter \#2 \$value \(int\) of method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) is incompatible with type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: parameter.defaultValue
-			count: 1
 			path: src/Contract.php
 
 		-
@@ -667,104 +493,8 @@ parameters:
 			path: src/Contract.php
 
 		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Contract\:\:getUnitContractType\(\) has invalid return type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Contract\:\:getUnitContractType\(\) should return GlpiPlugin\\Manageentities\\type but return statement is missing\.$#'
-			identifier: return.missing
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Contract\:\:getUnitContractType\(\) should return GlpiPlugin\\Manageentities\\type but returns string\.$#'
-			identifier: return.type
-			count: 4
-			path: src/Contract.php
-
-		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$on_change$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \#1 \$name of static method Dropdown\:\:showFromArray\(\) expects string, GlpiPlugin\\Manageentities\\type given\.$#'
-			identifier: argument.type
-			count: 4
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \#1 \$name of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractManagement\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \#1 \$name of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$config of method GlpiPlugin\\Manageentities\\Contract\:\:getUnitContractType\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$name of method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractManagement\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$name of method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$rand of method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractManagement\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$rand of method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$value of method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractManagement\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$value of method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$value of method GlpiPlugin\\Manageentities\\Contract\:\:getContractManagement\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$value of method GlpiPlugin\\Manageentities\\Contract\:\:getContractType\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Contract.php
-
-		-
-			message: '#^Parameter \$value of method GlpiPlugin\\Manageentities\\Contract\:\:getUnitContractType\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
+			message: '#^PHPDoc tag @return has invalid value \(\)\: Unexpected token "\\n     ", expected type at offset 100 on line 7$#'
+			identifier: phpDoc.parseError
 			count: 1
 			path: src/Contract.php
 
@@ -787,122 +517,8 @@ parameters:
 			path: src/Contract.php
 
 		-
-			message: '#^Access to offset ''begin_date'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 5
-			path: src/ContractDay.php
-
-		-
-			message: '#^Access to offset ''colspan'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/ContractDay.php
-
-		-
-			message: '#^Access to offset ''contracts_id'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 4
-			path: src/ContractDay.php
-
-		-
-			message: '#^Access to offset ''end_date'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 8
-			path: src/ContractDay.php
-
-		-
-			message: '#^Access to offset ''entities_id'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 4
-			path: src/ContractDay.php
-
-		-
-			message: '#^Access to offset ''id'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/ContractDay.php
-
-		-
-			message: '#^Access to offset ''nbday'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/ContractDay.php
-
-		-
-			message: '#^Access to offset ''plugin…'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/ContractDay.php
-
-		-
-			message: '#^Access to offset ''title'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/ContractDay.php
-
-		-
-			message: '#^Default value of the parameter \#2 \$options \(array\) of method GlpiPlugin\\Manageentities\\ContractDay\:\:addNewContractDay\(\) is incompatible with type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: parameter.defaultValue
-			count: 1
-			path: src/ContractDay.php
-
-		-
-			message: '#^Iterating over an object of an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/ContractDay.php
-
-		-
 			message: '#^PHPDoc tag @param for parameter \$contract with type GlpiPlugin\\Manageentities\\Contract is incompatible with native type Contract\.$#'
 			identifier: parameter.phpDocType
-			count: 1
-			path: src/ContractDay.php
-
-		-
-			message: '#^Parameter \#1 \$input of method GlpiPlugin\\Manageentities\\ContractDay\:\:checkMandatoryFields\(\) expects GlpiPlugin\\Manageentities\\type, array\<string, mixed\> given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/ContractDay.php
-
-		-
-			message: '#^Parameter \#1 \$input of method GlpiPlugin\\Manageentities\\ContractDay\:\:checkPeriod\(\) expects GlpiPlugin\\Manageentities\\type, array\<string, mixed\> given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/ContractDay.php
-
-		-
-			message: '#^Parameter \#1 \$name of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/ContractDay.php
-
-		-
-			message: '#^Parameter \#2 \$value of static method GlpiPlugin\\Manageentities\\Contract\:\:getUnitContractType\(\) expects GlpiPlugin\\Manageentities\\type, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/ContractDay.php
-
-		-
-			message: '#^Parameter \$input of method GlpiPlugin\\Manageentities\\ContractDay\:\:checkMandatoryFields\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/ContractDay.php
-
-		-
-			message: '#^Parameter \$input of method GlpiPlugin\\Manageentities\\ContractDay\:\:checkPeriod\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/ContractDay.php
-
-		-
-			message: '#^Parameter \$options of method GlpiPlugin\\Manageentities\\ContractDay\:\:addNewContractDay\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/ContractDay.php
-
-		-
-			message: '#^Parameter \$values of method GlpiPlugin\\Manageentities\\ContractDay\:\:addNbDay\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
 			count: 1
 			path: src/ContractDay.php
 
@@ -919,33 +535,9 @@ parameters:
 			path: src/ContractState.php
 
 		-
-			message: '#^Access to offset ''REPORT_ID'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/Cri.php
-
-		-
-			message: '#^Access to offset ''modal'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Cri.php
-
-		-
-			message: '#^Access to offset ''toupdate'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Cri.php
-
-		-
-			message: '#^Default value of the parameter \#2 \$options \(array\) of method GlpiPlugin\\Manageentities\\Cri\:\:generatePdf\(\) is incompatible with type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: parameter.defaultValue
-			count: 1
-			path: src/Cri.php
-
-		-
 			message: '#^Iterating over an object of an unknown class GlpiPlugin\\Manageentities\\type\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 1
 			path: src/Cri.php
 
 		-
@@ -969,48 +561,6 @@ parameters:
 		-
 			message: '#^Offset ''LEFT JOIN'' does not exist on array\{SELECT\: array\{''begin'', ''content'', ''end''\}, FROM\: ''glpi_tickettasks'', WHERE\: array\{is_private\?\: 0, tickets_id\: int\}\}\.$#'
 			identifier: offsetAccess.notFound
-			count: 1
-			path: src/Cri.php
-
-		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$config$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/Cri.php
-
-		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$join$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/Cri.php
-
-		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$where$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/Cri.php
-
-		-
-			message: '#^Parameter \#1 \$p of method GlpiPlugin\\Manageentities\\Cri\:\:getTempsPasses\(\) expects GlpiPlugin\\Manageentities\\type, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Cri.php
-
-		-
-			message: '#^Parameter \$options of method GlpiPlugin\\Manageentities\\Cri\:\:generatePdf\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Cri.php
-
-		-
-			message: '#^Parameter \$p of method GlpiPlugin\\Manageentities\\Cri\:\:getTempsPasses\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Cri.php
-
-		-
-			message: '#^Parameter \$params of method GlpiPlugin\\Manageentities\\Cri\:\:generatePdf\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
 			count: 1
 			path: src/Cri.php
 
@@ -1135,6 +685,12 @@ parameters:
 			path: src/CriDetail.php
 
 		-
+			message: '#^Binary operation "\." between ''C\:\\\\wamp\\\\www…'' and non\-empty\-array\<mixed\> results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: src/CriPDF.php
+
+		-
 			message: '#^Method GlpiPlugin\\Manageentities\\CriPDF\:\:CompleterAvec0\(\) has invalid return type GlpiPlugin\\Manageentities\\La\.$#'
 			identifier: class.notFound
 			count: 1
@@ -1165,37 +721,19 @@ parameters:
 			path: src/CriPDF.php
 
 		-
-			message: '#^PHPDoc tag @param has invalid value \(int Total à arrondir\.\)\: Unexpected token "Total", expected variable at offset 251 on line 6$#'
+			message: '#^PHPDoc tag @param has invalid value \(int Total à arrondir\.\)\: Unexpected token "Total", expected variable at offset 246 on line 6$#'
 			identifier: phpDoc.parseError
 			count: 1
 			path: src/CriPDF.php
 
 		-
-			message: '#^PHPDoc tag @return has invalid value \(L''heure donnée au format hh\:mm\.\)\: Unexpected token "''heure", expected TOKEN_HORIZONTAL_WS at offset 132 on line 6$#'
+			message: '#^PHPDoc tag @return has invalid value \(L''heure donnée au format hh\:mm\.\)\: Unexpected token "''heure", expected TOKEN_HORIZONTAL_WS at offset 127 on line 6$#'
 			identifier: phpDoc.parseError
 			count: 1
 			path: src/CriPDF.php
 
 		-
-			message: '#^Parameter \#1 \$obj of method GlpiPlugin\\Manageentities\\Company\:\:getAddress\(\) expects GlpiPlugin\\Manageentities\\type, \$this\(GlpiPlugin\\Manageentities\\CriPDF\) given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/CriPDF.php
-
-		-
-			message: '#^Parameter \#1 \$obj of method GlpiPlugin\\Manageentities\\Company\:\:getComment\(\) expects GlpiPlugin\\Manageentities\\type, \$this\(GlpiPlugin\\Manageentities\\CriPDF\) given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/CriPDF.php
-
-		-
-			message: '#^Parameter \#1 \$obj of method GlpiPlugin\\Manageentities\\Company\:\:getLogo\(\) expects GlpiPlugin\\Manageentities\\type, \$this\(GlpiPlugin\\Manageentities\\CriPDF\) given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/CriPDF.php
-
-		-
-			message: '#^Parameter \#1 \$str of function strtok expects string, GlpiPlugin\\Manageentities\\type given\.$#'
+			message: '#^Parameter \#1 \$str of function strtok expects string, array\<mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/CriPDF.php
@@ -1225,42 +763,6 @@ parameters:
 			path: src/CriPDF.php
 
 		-
-			message: '#^Access to offset ''entities_id'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Access to offset ''id'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Access to offset ''is_default'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Access to offset ''plugin…'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 3
-			path: src/CriPrice.php
-
-		-
-			message: '#^Access to offset ''price'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Access to property \$fields on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 8
-			path: src/CriPrice.php
-
-		-
 			message: '#^Binary operation "\+" between array\<non\-falsy\-string, int\<1, max\>\> and string results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -1269,24 +771,6 @@ parameters:
 		-
 			message: '#^Call to an undefined method CommonGLPI\:\:getID\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Call to method can\(\) on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Call to method getField\(\) on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Cannot call method getForeignKeyField\(\) on false\.$#'
-			identifier: method.nonObject
 			count: 1
 			path: src/CriPrice.php
 
@@ -1305,7 +789,7 @@ parameters:
 		-
 			message: '#^Iterating over an object of an unknown class GlpiPlugin\\Manageentities\\type\.$#'
 			identifier: class.notFound
-			count: 3
+			count: 2
 			path: src/CriPrice.php
 
 		-
@@ -1345,12 +829,6 @@ parameters:
 			path: src/CriPrice.php
 
 		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$item$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
 			message: '#^Parameter \#1 \$array of function array_column expects array, GlpiPlugin\\Manageentities\\type given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1363,140 +841,14 @@ parameters:
 			path: src/CriPrice.php
 
 		-
-			message: '#^Parameter \#1 \$input of method GlpiPlugin\\Manageentities\\CriPrice\:\:checkMandatoryFields\(\) expects GlpiPlugin\\Manageentities\\type, array\<string, mixed\> given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \#1 \$input of method GlpiPlugin\\Manageentities\\CriPrice\:\:setDefault\(\) expects GlpiPlugin\\Manageentities\\type, array\<string, mixed\> given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \#1 \$item of method GlpiPlugin\\Manageentities\\CriPrice\:\:showForContractDay\(\) expects GlpiPlugin\\Manageentities\\type, CommonGLPI given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \#1 \$itemtype of method DbUtils\:\:getItemForItemtype\(\) expects string, GlpiPlugin\\Manageentities\\type given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \#1 \$toupdate of static method Ajax\:\:updateItemJsCode\(\) expects string, GlpiPlugin\\Manageentities\\type given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \#1 \$toupdate of static method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/CriPrice.php
-
-		-
 			message: '#^Parameter \#1 \$value of function count expects array\|Countable, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/CriPrice.php
 
 		-
-			message: '#^Parameter \#2 \$function_name of static method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/CriPrice.php
-
-		-
 			message: '#^Parameter \#3 \$condition of method GlpiPlugin\\Manageentities\\CriPrice\:\:getItems\(\) expects string, array\<string, mixed\> given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \#3 \$itemtype of static method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \#4 \$items_id of static method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) expects GlpiPlugin\\Manageentities\\type, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \#5 \$parenttype of static method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$function_name of method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$input of method GlpiPlugin\\Manageentities\\CriPrice\:\:checkMandatoryFields\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$input of method GlpiPlugin\\Manageentities\\CriPrice\:\:setDefault\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$item of method GlpiPlugin\\Manageentities\\CriPrice\:\:showForContractDay\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$item of method GlpiPlugin\\Manageentities\\CriPrice\:\:showForCriType\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$items_id of method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$itemtype of method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$parents_id of method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$parenttype of method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$toupdate of method GlpiPlugin\\Manageentities\\CriPrice\:\:getJSEdition\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPrice.php
-
-		-
-			message: '#^Parameter \$values of method GlpiPlugin\\Manageentities\\CriPrice\:\:addCriPrice\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
 			count: 1
 			path: src/CriPrice.php
 
@@ -1523,12 +875,6 @@ parameters:
 			identifier: glpi.forbidExit
 			count: 1
 			path: src/CriTechnician.php
-
-		-
-			message: '#^Parameter \#1 \$item of method GlpiPlugin\\Manageentities\\CriPrice\:\:showForCriType\(\) expects GlpiPlugin\\Manageentities\\type, CommonGLPI given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/CriType.php
 
 		-
 			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
@@ -1651,26 +997,8 @@ parameters:
 			path: src/DirectHelpdesk.php
 
 		-
-			message: '#^Iterating over an object of an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/DirectHelpdesk.php
-
-		-
 			message: '#^Method GlpiPlugin\\Manageentities\\DirectHelpdesk\:\:loadModal\(\) should return string but return statement is missing\.$#'
 			identifier: return.missing
-			count: 1
-			path: src/DirectHelpdesk.php
-
-		-
-			message: '#^Parameter \#1 \$input of method GlpiPlugin\\Manageentities\\DirectHelpdesk\:\:checkMandatoryFields\(\) expects GlpiPlugin\\Manageentities\\type, array\<string, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/DirectHelpdesk.php
-
-		-
-			message: '#^Parameter \$input of method GlpiPlugin\\Manageentities\\DirectHelpdesk\:\:checkMandatoryFields\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
 			count: 1
 			path: src/DirectHelpdesk.php
 
@@ -1777,13 +1105,13 @@ parameters:
 			path: src/EditorSubscriptionInjection.php
 
 		-
-			message: '#^PHPDoc tag @param has invalid value \(options options used during creation\)\: Unexpected token "options", expected variable at offset 173 on line 5$#'
+			message: '#^PHPDoc tag @param has invalid value \(options options used during creation\)\: Unexpected token "options", expected variable at offset 169 on line 5$#'
 			identifier: phpDoc.parseError
 			count: 1
 			path: src/EditorSubscriptionInjection.php
 
 		-
-			message: '#^PHPDoc tag @param has invalid value \(values fields to add into glpi\)\: Unexpected token "fields", expected variable at offset 126 on line 4$#'
+			message: '#^PHPDoc tag @param has invalid value \(values fields to add into glpi\)\: Unexpected token "fields", expected variable at offset 123 on line 4$#'
 			identifier: phpDoc.parseError
 			count: 1
 			path: src/EditorSubscriptionInjection.php
@@ -1825,24 +1153,6 @@ parameters:
 			path: src/Entity.php
 
 		-
-			message: '#^Access to offset ''_filename'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/EntityLogo.php
-
-		-
-			message: '#^Access to offset ''entities_id'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 4
-			path: src/EntityLogo.php
-
-		-
-			message: '#^Access to offset ''id'' on an unknown class GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/EntityLogo.php
-
-		-
 			message: '#^Method GlpiPlugin\\Manageentities\\EntityLogo\:\:addLogo\(\) should return bool but return statement is missing\.$#'
 			identifier: return.missing
 			count: 2
@@ -1857,18 +1167,6 @@ parameters:
 		-
 			message: '#^Parameter \#2 \$force of method CommonDBTM\:\:delete\(\) expects bool, int given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/EntityLogo.php
-
-		-
-			message: '#^Parameter \$entities_id of method GlpiPlugin\\Manageentities\\EntityLogo\:\:getLogo\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/EntityLogo.php
-
-		-
-			message: '#^Parameter \$values of method GlpiPlugin\\Manageentities\\EntityLogo\:\:addLogo\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
 			count: 1
 			path: src/EntityLogo.php
 
@@ -2013,7 +1311,7 @@ parameters:
 		-
 			message: '#^PHPDoc tag @throws with type GlpitestSQLError is not subtype of Throwable$#'
 			identifier: throws.notThrowable
-			count: 3
+			count: 2
 			path: src/GenerateCRI.php
 
 		-
@@ -2164,29 +1462,17 @@ parameters:
 			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
 			identifier: glpi.forbidExit
 			count: 1
-			path: src/Preference.php
+			path: src/NotificationTargetEditorSubscription.php
 
 		-
-			message: '#^Call to an undefined method CommonGLPI\:\:getID\(\)\.$#'
-			identifier: method.notFound
+			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
+			identifier: glpi.forbidExit
 			count: 1
-			path: src/Profile.php
+			path: src/Preference.php
 
 		-
 			message: '#^Call to an undefined method DBmysql\:\:add\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: src/Profile.php
-
-		-
-			message: '#^Default value of the parameter \#2 \$openform \(true\) of method GlpiPlugin\\Manageentities\\Profile\:\:showForm\(\) is incompatible with type array\<string, mixed\>\.$#'
-			identifier: parameter.defaultValue
-			count: 1
-			path: src/Profile.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Profile\:\:showForm\(\) should return bool but return statement is missing\.$#'
-			identifier: return.missing
 			count: 1
 			path: src/Profile.php
 
@@ -2197,7 +1483,7 @@ parameters:
 			path: src/Profile.php
 
 		-
-			message: '#^Iterating over an object of an unknown class GlpiPlugin\\Manageentities\\type\.$#'
+			message: '#^Call to static method haveAccessToEntity\(\) on an unknown class GlpiPlugin\\Manageentities\\Session\.$#'
 			identifier: class.notFound
 			count: 1
 			path: src/Report.php
@@ -2206,12 +1492,6 @@ parameters:
 			message: '#^Method GlpiPlugin\\Manageentities\\Report\:\:getDatesBetween\(\) should return bool but returns array\<string, array\<string, list\<string\>\>\>\.$#'
 			identifier: return.type
 			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \#1 \$datetime of function strtotime expects string, GlpiPlugin\\Manageentities\\type given\.$#'
-			identifier: argument.type
-			count: 2
 			path: src/Report.php
 
 		-
@@ -2227,69 +1507,9 @@ parameters:
 			path: src/Report.php
 
 		-
-			message: '#^Parameter \#2 \$subject of function preg_match expects string, GlpiPlugin\\Manageentities\\type given\.$#'
-			identifier: argument.type
-			count: 4
-			path: src/Report.php
-
-		-
 			message: '#^Parameter \#3 \$year of function checkdate expects int, string given\.$#'
 			identifier: argument.type
 			count: 2
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$category_id of method GlpiPlugin\\Manageentities\\Report\:\:showMovingReports\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$date1 of method GlpiPlugin\\Manageentities\\Report\:\:showMovingReports\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$date1 of method GlpiPlugin\\Manageentities\\Report\:\:showOccupationReports\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$date2 of method GlpiPlugin\\Manageentities\\Report\:\:showMovingReports\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$date2 of method GlpiPlugin\\Manageentities\\Report\:\:showOccupationReports\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$endTime of method GlpiPlugin\\Manageentities\\Report\:\:getDatesBetween2Dates\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$entities_id of method GlpiPlugin\\Manageentities\\Report\:\:showMovingReports\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$startTime of method GlpiPlugin\\Manageentities\\Report\:\:getDatesBetween2Dates\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Parameter \$techs of method GlpiPlugin\\Manageentities\\Report\:\:showOccupationReports\(\) has invalid type GlpiPlugin\\Manageentities\\type\.$#'
-			identifier: class.notFound
-			count: 1
 			path: src/Report.php
 
 		-
@@ -2323,18 +1543,6 @@ parameters:
 			path: src/TaskCategory.php
 
 		-
-			message: '#^Method GlpiPlugin\\Manageentities\\TaskCategory\:\:showForm\(\) should return bool but return statement is missing\.$#'
-			identifier: return.missing
-			count: 1
-			path: src/TaskCategory.php
-
-		-
-			message: '#^Variable \$canUpdate might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: src/TaskCategory.php
-
-		-
 			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
 			identifier: glpi.forbidExit
 			count: 1
@@ -2349,42 +1557,6 @@ parameters:
 		-
 			message: '#^Constant GlpiPlugin\\Manageentities\\WizardController\:\:SESSION_KEY_MAP is unused\.$#'
 			identifier: classConstant.unused
-			count: 1
-			path: src/WizardController.php
-
-		-
-			message: '#^Parameter \#1 \$name of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractManagement\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/WizardController.php
-
-		-
-			message: '#^Parameter \#1 \$name of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) expects GlpiPlugin\\Manageentities\\type, string given\.$#'
-			identifier: argument.type
-			count: 4
-			path: src/WizardController.php
-
-		-
-			message: '#^Parameter \#2 \$value of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) expects GlpiPlugin\\Manageentities\\type, int given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/WizardController.php
-
-		-
-			message: '#^Parameter \#3 \$rand of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractManagement\(\) expects GlpiPlugin\\Manageentities\\type\|null, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/WizardController.php
-
-		-
-			message: '#^Parameter \#3 \$rand of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) expects GlpiPlugin\\Manageentities\\type\|null, int given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/WizardController.php
-
-		-
-			message: '#^Parameter \#3 \$rand of static method GlpiPlugin\\Manageentities\\Contract\:\:dropdownContractType\(\) expects GlpiPlugin\\Manageentities\\type\|null, int\<0, max\> given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/WizardController.php
 

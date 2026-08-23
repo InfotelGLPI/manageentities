@@ -1,29 +1,34 @@
 <?php
 
 /**
- * Minimal stubs for GLPI core base classes.
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
  *
- * GLPI core is not a Composer package, so the psalm-github-security-scan
- * container (which only runs `composer install`) has no class storage for the
- * classes the plugin extends. When Psalm scans a plugin class such as CriType
- * (extends CommonDropdown) and analyses a dynamic `->fields` access, it walks
- * the parent chain looking for #[AllowDynamicProperties]; reaching the unknown
- * parent throws "Could not get class storage for commondropdown" and Psalm
- * crashes.
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
  *
- * These empty stubs give Psalm the storage it needs to resolve every plugin
- * parent chain. #[AllowDynamicProperties] + a public $fields property keep the
- * dynamic property access (`$obj->fields[...]`) clean instead of erroring.
+ * LICENSE
  *
- * Only classes that plugin classes directly extend are declared here — that is
- * enough to stop the crash. Other GLPI classes referenced from method bodies
- * remain unknown (UndefinedClass, suppressed in psalm.xml) but never crash.
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 #[\AllowDynamicProperties]
-class CommonGLPI
-{
-}
+class CommonGLPI {}
 
 #[\AllowDynamicProperties]
 class CommonDBTM extends CommonGLPI
@@ -33,41 +38,25 @@ class CommonDBTM extends CommonGLPI
 }
 
 #[\AllowDynamicProperties]
-class CommonDropdown extends CommonDBTM
-{
-}
+class CommonDropdown extends CommonDBTM {}
 
 #[\AllowDynamicProperties]
-class CommonDBChild extends CommonDBTM
-{
-}
+class CommonDBChild extends CommonDBTM {}
 
 #[\AllowDynamicProperties]
-class CommonDBRelation extends CommonDBTM
-{
-}
+class CommonDBRelation extends CommonDBTM {}
 
 #[\AllowDynamicProperties]
-class NotificationTarget extends CommonDBChild
-{
-}
+class NotificationTarget extends CommonDBChild {}
 
 #[\AllowDynamicProperties]
-class Dropdown extends CommonDBTM
-{
-}
+class Dropdown extends CommonDBTM {}
 
 #[\AllowDynamicProperties]
-class Profile extends CommonDBTM
-{
-}
+class Profile extends CommonDBTM {}
 
 #[\AllowDynamicProperties]
-class TCPDF
-{
-}
+class TCPDF {}
 
 // Provided by the optional "datainjection" plugin, absent from the scan container.
-interface PluginDatainjectionInjectionInterface
-{
-}
+interface PluginDatainjectionInjectionInterface {}

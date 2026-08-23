@@ -1,37 +1,36 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 use Glpi\Application\View\TemplateRenderer;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Servicecatalog\Main;
 
-Session::checkLoginUser();
 // The dashboard below (aggregated intervention time / billing data) is emitted before
 // Search::show() runs its own right check, so enforce the read right up-front — otherwise
 // an authenticated user without plugin_manageentities_directhelpdesk could read the
@@ -70,7 +69,7 @@ TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_dashboa
 
 if ($checkbox3State === '1') {
     $min = DirectHelpdesk::THREE_HOUR;
-} else if ($checkbox2State === '1') {
+} elseif ($checkbox2State === '1') {
     $min = DirectHelpdesk::TWO_HOUR;
 } else {
     $min = 0;

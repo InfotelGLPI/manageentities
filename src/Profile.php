@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -35,7 +35,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Html;
 use ProfileRight;
 use Session;
-
 use GlpiPlugin\Manageentities\Entity;
 
 if (!defined('GLPI_ROOT')) {
@@ -104,12 +103,12 @@ class Profile extends \Profile
             [
                 'itemtype' => Entity::class,
                 'label' => __('Entities portal', 'manageentities'),
-                'field' => 'plugin_manageentities'
+                'field' => 'plugin_manageentities',
             ],
             [
                 'itemtype' => CriDetail::class,
                 'label' => _n('Intervention report', 'Intervention reports', 1, 'manageentities'),
-                'field' => 'plugin_manageentities_cri_create'
+                'field' => 'plugin_manageentities_cri_create',
             ],
             [
                 // Dedicated right for the direct helpdesk feature. DirectHelpdesk extends
@@ -117,8 +116,8 @@ class Profile extends \Profile
                 // CREATE/READ/UPDATE/PURGE bits from CommonDBTM::getRights().
                 'itemtype' => DirectHelpdesk::class,
                 'label' => __('Direct helpdesk', 'manageentities'),
-                'field' => 'plugin_manageentities_directhelpdesk'
-            ]
+                'field' => 'plugin_manageentities_directhelpdesk',
+            ],
         ];
 
         return $rights;
@@ -167,13 +166,13 @@ class Profile extends \Profile
         foreach ($datas as $profile_data) {
             $matching = [
                 'manageentities' => 'plugin_manageentities',
-                'cri_create' => 'plugin_manageentities_cri_create'
+                'cri_create' => 'plugin_manageentities_cri_create',
             ];
             // Search existing rights
             $used = [];
             $existingRights = $dbu->getAllDataFromTable(
                 'glpi_profilerights',
-                ["`profiles_id`" => $profile_data['profiles_id']]
+                ["`profiles_id`" => $profile_data['profiles_id']],
             );
             foreach ($existingRights as $right) {
                 $used[$right['profiles_id']][$right['name']] = $right['rights'];
@@ -184,12 +183,12 @@ class Profile extends \Profile
                 if (isset($used[$profile_data['profiles_id']][$new])) {
                     $DB->update('glpi_profilerights', ['rights' => self::translateARight($profile_data[$old])], [
                         'name' => $new,
-                        'profiles_id' => $profile_data['profiles_id']
+                        'profiles_id' => $profile_data['profiles_id'],
                     ]);
                 } else {
                     $DB->add('glpi_profilerights', ['rights' => self::translateARight($profile_data[$old])], [
                         'name' => $new,
-                        'profiles_id' => $profile_data['profiles_id']
+                        'profiles_id' => $profile_data['profiles_id'],
                     ]);
                 }
             }
@@ -208,9 +207,9 @@ class Profile extends \Profile
         //Add new rights in glpi_profilerights table
         foreach ($profile->getAllRights(true) as $data) {
             if ($dbu->countElementsInTable(
-                    "glpi_profilerights",
-                    ["name" => $data['field']]
-                ) == 0) {
+                "glpi_profilerights",
+                ["name" => $data['field']],
+            ) == 0) {
                 ProfileRight::addProfileRights([$data['field']]);
 
                 // First registration of the dedicated direct-helpdesk right: the direct
@@ -231,7 +230,7 @@ class Profile extends \Profile
                             [
                                 'name'        => 'plugin_manageentities_directhelpdesk',
                                 'profiles_id' => $row['profiles_id'],
-                            ]
+                            ],
                         );
                     }
                 }
@@ -245,8 +244,8 @@ class Profile extends \Profile
             'FROM' => 'glpi_profilerights',
             'WHERE' => [
                 'profiles_id' => $_SESSION['glpiactiveprofile']['id'],
-                'name' => ['LIKE', '%plugin_manageentities%']
-            ]
+                'name' => ['LIKE', '%plugin_manageentities%'],
+            ],
         ]);
         foreach ($it as $prof) {
             if (isset($_SESSION['glpiactiveprofile'])) {
@@ -262,9 +261,9 @@ class Profile extends \Profile
             [
                 'plugin_manageentities' => ALLSTANDARDRIGHT,
                 'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT,
-                'plugin_manageentities_directhelpdesk' => CREATE | READ | UPDATE | PURGE
+                'plugin_manageentities_directhelpdesk' => CREATE | READ | UPDATE | PURGE,
             ],
-            true
+            true,
         );
     }
 
@@ -295,20 +294,20 @@ class Profile extends \Profile
 
         foreach ($rights as $right => $value) {
             if ($dbu->countElementsInTable(
-                    'glpi_profilerights',
-                    [
-                        "profiles_id" => $profiles_id,
-                        "name" => $right
-                    ]
-                ) && $drop_existing) {
+                'glpi_profilerights',
+                [
+                    "profiles_id" => $profiles_id,
+                    "name" => $right,
+                ],
+            ) && $drop_existing) {
                 $profileRight->deleteByCriteria(['profiles_id' => $profiles_id, 'name' => $right]);
             }
             if (!$dbu->countElementsInTable(
                 'glpi_profilerights',
                 [
                     "profiles_id" => $profiles_id,
-                    "name" => $right
-                ]
+                    "name" => $right,
+                ],
             )) {
                 $myright['profiles_id'] = $profiles_id;
                 $myright['name'] = $right;

@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -44,30 +44,29 @@ if (!defined('GLPI_ROOT')) {
 
 class Gantt extends CommonDBTM
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return __('GANTT');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-align-box-left-stretch";
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    static function datediffInWeeks($date1, $date2)
+    public static function datediffInWeeks($date1, $date2)
     {
         $first = DateTime::createFromFormat('m/d/Y', $date1);
         $second = DateTime::createFromFormat('m/d/Y', $date2);
@@ -81,7 +80,7 @@ class Gantt extends CommonDBTM
      *
      * @param $ID ID of the project or -1 for all projects
      */
-    static function showGantt($values = [])
+    public static function showGantt($values = [])
     {
         echo Html::css(PLUGIN_MANAGEENTITIES_WEBDIR . '/lib/jquery-gantt.css');
         echo Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . "/lib/jquery-gantt.js");
@@ -110,9 +109,9 @@ class Gantt extends CommonDBTM
                 $nbDays = abs(floor($datediff / (60 * 60 * 24)));
 
                 $nbMonth = ((date('Y', $endDate) - date('Y', $beginDate)) * 12) + (date('m', $endDate) - date(
-                            'm',
-                            $beginDate
-                        )) + 1;
+                    'm',
+                    $beginDate,
+                )) + 1;
                 $nbWeeks = self::datediffInWeeks(date('m/d/Y', $beginDate), date('m/d/Y', $endDate));
                 $nbHours = $nbDays * 24;
 
@@ -126,7 +125,7 @@ class Gantt extends CommonDBTM
                 $bsize[$color]['percent'] = $val['percent'];
 
                 switch ($val['type']) {
-                    case 'contract' :
+                    case 'contract':
                         $color = 'ganttBlue';
                         $temp = [
                             'name' => $val['name'],
@@ -143,13 +142,13 @@ class Gantt extends CommonDBTM
                                     'label'
                                     => $val['label'],//$val['link']
                                     'customClass'
-                                    => $color
-                                ]
-                            ]
+                                    => $color,
+                                ],
+                            ],
                         ];
                         break;
 
-                    case 'contractday' :
+                    case 'contractday':
 
                         /*$color = 'ganttBegin';
                         //$color = 'ganttGreen';
@@ -188,9 +187,9 @@ class Gantt extends CommonDBTM
                                     => $val['label'],//$val['link']
                                     'dep' => $val['dep'],
                                     'customClass'
-                                    => $color
-                                ]
-                            ]
+                                    => $color,
+                                ],
+                            ],
                         ];
                         break;
                 }
@@ -210,7 +209,7 @@ class Gantt extends CommonDBTM
                 __('September'),
                 __('October'),
                 __('November'),
-                __('December')
+                __('December'),
             ];
             $dow = [
                 substr(__('Sunday'), 0, 1),
@@ -219,7 +218,7 @@ class Gantt extends CommonDBTM
                 substr(__('Wednesday'), 0, 1),
                 substr(__('Thursday'), 0, 1),
                 substr(__('Friday'), 0, 1),
-                substr(__('Saturday'), 0, 1)
+                substr(__('Saturday'), 0, 1),
             ];
             $langwait = __('Please wait', 'manageentities');
             echo "<div class='gantt'></div>";
@@ -300,7 +299,7 @@ class Gantt extends CommonDBTM
      * @param $ID        integer   ID of the contract
      * @param $showall   boolean   show all sub items (contracts / contractdays) (true by default)
      */
-    static function getDataToDisplayOnGantt($entity, $showall = true)
+    public static function getDataToDisplayOnGantt($entity, $showall = true)
     {
         $contracts = Followup::queryFollowUp($entity, []);
         $todisplay = [];
@@ -325,7 +324,7 @@ class Gantt extends CommonDBTM
                                 $contract_data['contract_begin_date'],
                                 $contract_data["duration"],
                                 0,
-                                false
+                                false,
                             );
 
                             $real_end = date('Y/n/j', strtotime($tmp) + 86400);
@@ -337,37 +336,37 @@ class Gantt extends CommonDBTM
 
                             $desc = __('Name') . ' : ' . $name;
                             $desc .= !empty($contract_data['contract_num']) ? '<br/>' . _x(
-                                    'phone',
-                                    'Number'
-                                ) . ' : ' . $contract_data['contract_num'] : '';
+                                'phone',
+                                'Number',
+                            ) . ' : ' . $contract_data['contract_num'] : '';
                             $desc .= !empty($contract_data['contract_added']) ? '<br/>' . __(
-                                    'Contract present',
-                                    'manageentities'
-                                ) . ' : ' . $contract_data['contract_added'] : '';
+                                'Contract present',
+                                'manageentities',
+                            ) . ' : ' . $contract_data['contract_added'] : '';
                             $desc .= !empty($contract_data['date_signature']) ? '<br/>' . __(
-                                    'Date of signature',
-                                    'manageentities'
-                                ) . ' : ' . $contract_data['date_signature'] : '';
+                                'Date of signature',
+                                'manageentities',
+                            ) . ' : ' . $contract_data['date_signature'] : '';
                             $desc .= !empty($contract_data['date_renewal']) ? '<br/>' . __(
-                                    'Date of renewal',
-                                    'manageentities'
-                                ) . ' : ' . $contract_data['date_renewal'] : '';
+                                'Date of renewal',
+                                'manageentities',
+                            ) . ' : ' . $contract_data['date_renewal'] : '';
 
                             //Add current contract
                             //print_r($real_end);
                             $todisplay[$real_begin . '#' . $real_end . '#task' . $contract_data['contracts_id']]
                                 = [
-                                'name' => $contract_data['entities_name'],
-                                'id' => $contract_data['contracts_id'],
-                                'link' => $name,//name_contract
-                                'label' => $contract_data['entities_name'],
-                                'desc' => $contract_data['name'],
-                                'percent' => 0,
-                                'type' => 'contract',
-                                'from' => $real_begin . ' 00:00:00',
-                                'to' => $real_end . ' 00:00:00',
-                                'dep' => $dep
-                            ];
+                                    'name' => $contract_data['entities_name'],
+                                    'id' => $contract_data['contracts_id'],
+                                    'link' => $name,//name_contract
+                                    'label' => $contract_data['entities_name'],
+                                    'desc' => $contract_data['name'],
+                                    'percent' => 0,
+                                    'type' => 'contract',
+                                    'from' => $real_begin . ' 00:00:00',
+                                    'to' => $real_end . ' 00:00:00',
+                                    'dep' => $dep,
+                                ];
 
                             if ($showall) {
                                 //Add current tasks
@@ -386,7 +385,7 @@ class Gantt extends CommonDBTM
      *
      * @param $ID ID of the project task
      */
-    static function getDataToDisplayOnGanttForContract($days)
+    public static function getDataToDisplayOnGanttForContract($days)
     {
         $todisplay = [];
 
@@ -420,18 +419,18 @@ class Gantt extends CommonDBTM
                 // Add current task
                 $todisplay[$real_begin . '#' . $real_end . '#task' . $day_data['contractdays_id']]
                     = [
-                    'name' => $day_data['contractdayname'],
-                    'id' => $day_data['contractdays_id'],
-                    'label' => $percentview,
-                    'desc' => $desc,
-                    'dep' => $day_data['contracts_id'],
-                    'link' => $day_data['contractday_name'],
-                    'type' => 'contractday',
-                    'percent' => $percent,
-                    'from' => $real_begin,
-                    'to' => $real_end,
-                    'contractdaycolor' => $day_data['contract_is_closed']
-                ];
+                        'name' => $day_data['contractdayname'],
+                        'id' => $day_data['contractdays_id'],
+                        'label' => $percentview,
+                        'desc' => $desc,
+                        'dep' => $day_data['contracts_id'],
+                        'link' => $day_data['contractday_name'],
+                        'type' => 'contractday',
+                        'percent' => $percent,
+                        'from' => $real_begin,
+                        'to' => $real_end,
+                        'contractdaycolor' => $day_data['contract_is_closed'],
+                    ];
                 //}
             }
         }

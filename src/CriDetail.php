@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -67,10 +67,10 @@ class CriDetail extends CommonDBTM
         if ($item->getType() == 'Ticket'
             && Session::haveRight("plugin_manageentities_cri_create", READ)) {
             $config    = Config::getInstance();
-            $parent_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+            $parent_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
             if ($parent_id > 0) {
                 $sons = getSonsOf('glpi_entities', $parent_id);
-                if (!in_array((int)$item->fields['entities_id'], $sons)) {
+                if (!in_array((int) $item->fields['entities_id'], $sons)) {
                     return '';
                 }
             }
@@ -88,7 +88,7 @@ class CriDetail extends CommonDBTM
         $dbu = new DbUtils();
         return $dbu->countElementsInTable(
             'glpi_plugin_manageentities_cridetails',
-            ["`plugin_manageentities_contractdays_id`" => $item->getID()]
+            ["`plugin_manageentities_contractdays_id`" => $item->getID()],
         );
     }
 
@@ -147,9 +147,15 @@ class CriDetail extends CommonDBTM
         echo "<br><div id='date_end$rand_pm'></div>";
         $default_time_pm_html = ob_get_clean();
 
-        ob_start(); \Dropdown::showYesNo('non_accomplished_tasks', $config->fields['non_accomplished_tasks']); $non_accomplished_tasks_html = ob_get_clean();
-        ob_start(); \Dropdown::showYesNo('get_pdf_cri', $config->fields['get_pdf_cri']); $get_pdf_cri_html = ob_get_clean();
-        ob_start(); \Dropdown::showYesNo('disable_date_header', $config->fields['disable_date_header']); $disable_date_header_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('non_accomplished_tasks', $config->fields['non_accomplished_tasks']);
+        $non_accomplished_tasks_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('get_pdf_cri', $config->fields['get_pdf_cri']);
+        $get_pdf_cri_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('disable_date_header', $config->fields['disable_date_header']);
+        $disable_date_header_html = ob_get_clean();
 
         TemplateRenderer::getInstance()->display(
             '@manageentities/config_cri_form.html.twig',
@@ -162,7 +168,7 @@ class CriDetail extends CommonDBTM
                 'non_accomplished_tasks_html' => $non_accomplished_tasks_html,
                 'get_pdf_cri_html'            => $get_pdf_cri_html,
                 'disable_date_header_html'    => $disable_date_header_html,
-            ]
+            ],
         );
     }
 
@@ -176,7 +182,7 @@ class CriDetail extends CommonDBTM
                 Session::addMessageAfterRedirect(
                     __('Impossible action as an intervention report exists', 'manageentities'),
                     ERROR,
-                    true
+                    true,
                 );
                 return false;
             }
@@ -200,8 +206,8 @@ class CriDetail extends CommonDBTM
 
     public function post_addItem()
     {
-        $tickets_id   = (int)($this->input['tickets_id']   ?? $this->fields['tickets_id']   ?? 0);
-        $contracts_id = (int)($this->input['contracts_id'] ?? $this->fields['contracts_id'] ?? 0);
+        $tickets_id   = (int) ($this->input['tickets_id']   ?? $this->fields['tickets_id']   ?? 0);
+        $contracts_id = (int) ($this->input['contracts_id'] ?? $this->fields['contracts_id'] ?? 0);
 
         $this->linkContractToTicket($tickets_id, $contracts_id);
         Contract::updateRemainingDays($contracts_id);
@@ -209,8 +215,8 @@ class CriDetail extends CommonDBTM
 
     public function post_updateItem($history = true)
     {
-        $tickets_id   = (int)($this->fields['tickets_id']   ?? 0);
-        $contracts_id = (int)($this->fields['contracts_id'] ?? 0);
+        $tickets_id   = (int) ($this->fields['tickets_id']   ?? 0);
+        $contracts_id = (int) ($this->fields['contracts_id'] ?? 0);
 
         $this->linkContractToTicket($tickets_id, $contracts_id);
         Contract::updateRemainingDays($contracts_id);
@@ -218,7 +224,7 @@ class CriDetail extends CommonDBTM
 
     public function post_deleteItem()
     {
-        Contract::updateRemainingDays((int)($this->fields['contracts_id'] ?? 0));
+        Contract::updateRemainingDays((int) ($this->fields['contracts_id'] ?? 0));
     }
 
     private function linkContractToTicket(int $tickets_id, int $contracts_id): void
@@ -250,8 +256,8 @@ class CriDetail extends CommonDBTM
     {
         global $DB;
 
-        $tickets_id   = (int)($item->fields['tickets_id']   ?? 0);
-        $contracts_id = (int)($item->fields['contracts_id'] ?? 0);
+        $tickets_id   = (int) ($item->fields['tickets_id']   ?? 0);
+        $contracts_id = (int) ($item->fields['contracts_id'] ?? 0);
 
         if ($tickets_id <= 0 || $contracts_id <= 0) {
             return;
@@ -291,7 +297,7 @@ class CriDetail extends CommonDBTM
             return;
         }
 
-        $contractday_id = (int)$iterator->current()['id'];
+        $contractday_id = (int) $iterator->current()['id'];
 
         $ticket = new \Ticket();
         if (!$ticket->getFromDB($tickets_id)) {
@@ -316,7 +322,7 @@ class CriDetail extends CommonDBTM
                 Session::addMessageAfterRedirect(
                     __('Impossible action as an intervention report exists', 'manageentities'),
                     ERROR,
-                    true
+                    true,
                 );
                 return false;
             }
@@ -389,8 +395,8 @@ class CriDetail extends CommonDBTM
             'ORDERBY' => [$this->getTable() . '.date ASC'],
         ];
 
-        $criteria['WHERE'][] = [$this->getTable().'.date' => ['>=', $date1]];
-        $criteria['WHERE'][] = [$this->getTable().'.date' => ['<=', $date2]];
+        $criteria['WHERE'][] = [$this->getTable() . '.date' => ['>=', $date1]];
+        $criteria['WHERE'][] = [$this->getTable() . '.date' => ['<=', $date2]];
 
         if ($usertype != "group") {
             $criteria['WHERE'] = $criteria['WHERE'] + [
@@ -401,7 +407,7 @@ class CriDetail extends CommonDBTM
             ];
         }
         $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-            'glpi_documents'
+            'glpi_documents',
         );
 
         $iterator = $DB->request($criteria);
@@ -471,7 +477,7 @@ class CriDetail extends CommonDBTM
             if ($use_price) {
                 $entry['critype'] = \Dropdown::getDropdownName(
                     "glpi_plugin_manageentities_critypes",
-                    $data['plugin_manageentities_critypes_id']
+                    $data['plugin_manageentities_critypes_id'],
                 );
             }
             $entries[] = $entry;
@@ -519,14 +525,14 @@ class CriDetail extends CommonDBTM
         $generation_ok = false;
         if (Session::haveRight(
             "plugin_manageentities_cri_create",
-            UPDATE
+            UPDATE,
         ) && (empty($cridetail) || ($cridetail['documents_id'] ?? 0) == 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
             $generation_ok = true;
         }
         //switch withoutcontract
         if (Session::haveRight(
             "plugin_manageentities_cri_create",
-            UPDATE
+            UPDATE,
         ) && (empty($cridetail) || ($cridetail['documents_id'] ?? 0) == 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
             $generation_ok = true;
         }
@@ -534,14 +540,14 @@ class CriDetail extends CommonDBTM
         $regeneration_ok = false;
         if (Session::haveRight(
             "plugin_manageentities_cri_create",
-            UPDATE
+            UPDATE,
         ) && (!empty($cridetail) || ($cridetail['documents_id'] ?? 0) != 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
             $regeneration_ok = true;
         }
         //switch withoutcontract
         if (Session::haveRight(
             "plugin_manageentities_cri_create",
-            UPDATE
+            UPDATE,
         ) && (!empty($cridetail) || ($cridetail['documents_id'] ?? 0) != 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
             $regeneration_ok = true;
         }
@@ -686,9 +692,9 @@ class CriDetail extends CommonDBTM
 
             foreach ($iterator as $data) {
                 $name_html = $can_read_doc
-                    ? "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.form.php?id=" . (int)$data["id"] . "'>"
+                    ? "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.form.php?id=" . (int) $data["id"] . "'>"
                       . "<strong>" . htmlspecialchars($data["name"], ENT_QUOTES)
-                      . ($_SESSION["glpiis_ids_visible"] ? " (" . (int)$data["id"] . ")" : "")
+                      . ($_SESSION["glpiis_ids_visible"] ? " (" . (int) $data["id"] . ")" : "")
                       . "</strong></a>"
                     : "<strong>" . htmlspecialchars($data["name"], ENT_QUOTES) . "</strong>";
 
@@ -715,7 +721,7 @@ class CriDetail extends CommonDBTM
                 if ($use_price) {
                     $entry['critype'] = \Dropdown::getDropdownName(
                         "glpi_plugin_manageentities_critypes",
-                        $data['plugin_manageentities_critypes_id']
+                        $data['plugin_manageentities_critypes_id'],
                     );
                 }
                 $entries[] = $entry;
@@ -785,7 +791,7 @@ class CriDetail extends CommonDBTM
                 echo "<tr>";
                 echo "<tr><th colspan='" . $colspan . "'>" . __(
                     'Intervention of contract',
-                    'manageentities'
+                    'manageentities',
                 ) . " : " . $data_contract["name"] . "</th></tr>";
                 echo "<tr>";
                 echo "<th>" . __('Date') . "</th>";
@@ -809,7 +815,7 @@ class CriDetail extends CommonDBTM
                     if (sizeof($resultCriDetail['result']) > 0) {
                         echo "<tr  class='tab_bg_2'><td class='center' colspan='" . $colspan . "'>" . __(
                             'Periods of contract',
-                            'manageentities'
+                            'manageentities',
                         ) . " :  " . htmlspecialchars((string) $data['name'], ENT_QUOTES) . "</td></tr>";
                         foreach ($resultCriDetail['result'] as $dataCriDetail) {
                             echo "<tr class='tab_bg_1" . ($dataCriDetail["is_deleted"] == '1' ? "_2" : "") . "'>";
@@ -838,7 +844,7 @@ class CriDetail extends CommonDBTM
                             } else {
                                 echo "<td>" . htmlspecialchars((string) \Dropdown::getDropdownName(
                                     'glpi_plugin_manageentities_critypes',
-                                    $dataCriDetail['plugin_manageentities_critypes_id']
+                                    $dataCriDetail['plugin_manageentities_critypes_id'],
                                 ), ENT_QUOTES) . "</td>";
                                 echo "<td class='center'  width='100px'></td>";
                                 if ($config->fields['hourorday'] == Config::HOUR
@@ -865,7 +871,7 @@ class CriDetail extends CommonDBTM
                                     echo "<td>" . Html::formatNumber(
                                         $dataCriDetail['pricecri'] * $dataCriDetail['conso'],
                                         0,
-                                        2
+                                        2,
                                     ) . "</td>";
                                 } else {
                                     echo "<td>" . \Dropdown::EMPTY_VALUE . "</td>";
@@ -884,323 +890,323 @@ class CriDetail extends CommonDBTM
         }
     }
 
-//    public static function getCriDetailData($contractDayValues = [], $options = [])
-//    {
-//        global $DB;
-//        $params['condition'] = '1';
-//
-//        foreach ($options as $key => $value) {
-//            $params[$key] = $value;
-//        }
-//
-//        $tabResults = [];
-//        $taskCount = 0; // Count the number of tasks for all entities
-//        $conso = 0;
-//        $tot_amount = 0;
-//        $tot_conso = 0;
-//        $price = 0;
-//
-//        $config = Config::getInstance();
-//        $critechnicians = new CriTechnician();
-//
-//        $PDF = new CriPDF('P', 'mm', 'A4');
-//
-//        $tabOther = [
-//            'tot_amount' => 0,
-//            'reste_montant' => 0,
-//            'depass' => 0,
-//            'reste' => 0,
-//            'forfait' => 0,
-//        ];
-//
-//        $criteria = [
-//            'SELECT' => [
-//                'glpi_plugin_manageentities_cridetails.realtime as actiontime',
-//                'glpi_plugin_manageentities_cridetails.documents_id',
-//                'glpi_documents.is_deleted',
-//                'glpi_plugin_manageentities_cridetails.tickets_id',
-//                'glpi_plugin_manageentities_cridetails.id as cridetails_id',
-//                'glpi_plugin_manageentities_cridetails.technicians as technicians',
-//                'glpi_plugin_manageentities_cridetails.plugin_manageentities_critypes_id',
-//                'glpi_plugin_manageentities_cridetails.date as cridetails_date',
-//                'glpi_tickets.name as tickets_name',
-//                'glpi_tickets.date as tickets_date',
-//                'glpi_plugin_manageentities_critypes.name as plugin_manageentities_critypes_name',
-//                'glpi_tickets.global_validation',
-//            ],
-//            'FROM' => 'glpi_plugin_manageentities_cridetails',
-//            'LEFT JOIN' => [
-//                'glpi_plugin_manageentities_critypes' => [
-//                    'ON' => [
-//                        'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_critypes_id',
-//                        'glpi_plugin_manageentities_critypes' => 'id',
-//                    ],
-//                ],
-//                'glpi_documents' => [
-//                    'ON' => [
-//                        'glpi_plugin_manageentities_cridetails' => 'documents_id',
-//                        'glpi_documents' => 'id',
-//                    ],
-//                ],
-//                'glpi_tickets' => [
-//                    'ON' => [
-//                        'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-//                        'glpi_tickets' => 'id',
-//                    ],
-//                ],
-//                'glpi_tickettasks' => [
-//                    'ON' => [
-//                        'glpi_tickets' => 'id',
-//                        'glpi_tickettasks' => 'tickets_id',
-//                    ],
-//                ],
-//            ],
-//            'WHERE' => [
-//                'glpi_plugin_manageentities_cridetails.contracts_id' => $contractDayValues["contracts_id"],
-//                'glpi_plugin_manageentities_cridetails.entities_id' => $contractDayValues["entities_id"],
-//                'glpi_plugin_manageentities_cridetails.plugin_manageentities_contractdays_id' => $contractDayValues["contractdays_id"],
-//                'glpi_tickets.is_deleted' => 0,
-//                'glpi_tickets.actiontime' => ['>', 0],
-//
-//            ],
-//            'GROUPBY' => ['glpi_plugin_manageentities_cridetails.id'],
-////            'ORDERBY' => [],
-//        ];
-//
-//        if (isset($options['begin_date'])) {
-//            $options['begin_date'] .= ' 00:00:00';
-//            $criteria['WHERE'] = $criteria['WHERE'] + [
-//                    'OR' => [
-//                        ['glpi_tickettasks.begin' => ['>=', $options['begin_date']]],
-//                        ['glpi_tickettasks.begin' => 'NULL'],
-//                    ],
-//            ];
-//        }
-//
-//        if (isset($options['end_date'])) {
-//            $options['end_date'] .= ' 23:59:59';
-//            $criteria['WHERE'] = $criteria['WHERE'] + [
-//                    'OR' => [
-//                        ['glpi_tickettasks.end' => ['<=', $options['end_date']]],
-//                        ['glpi_tickettasks.end' => 'NULL'],
-//                    ],
-//            ];
-//        }
-//
-//        if (isset($options['sorting_date'])) {
-//            $criteria['ORDERBY'] = $criteria['GROUPBY'] + ['tickets_date DESC'];
-//        } else {
-//            $criteria['ORDERBY'] = $criteria['GROUPBY'] + ['glpi_plugin_manageentities_cridetails ASC'];
-//        }
-//
-//        $iterator = $DB->request($criteria);
-//
-//        $restrict = [
-//            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contractDayValues["entities_id"],
-//            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"],
-//        ];
-//        $dbu = new DbUtils();
-//        $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
-//        $pluginContract = reset($pluginContracts);
-//
-//        // Default Cri price
-//        $default_price = 0;
-//        $default_critypes_name = '';
-//        $default_critypes_id = 0;
-//        $cri_price = new CriPrice();
-//        $condition = ['glpi_plugin_manageentities_criprices.is_default' => 1];
-//        $price_data = $cri_price->getItems($contractDayValues["contractdays_id"], 0, $condition);
-//        if (!empty($price_data)) {
-//            $price_data = reset($price_data);
-//            $price = $price_data["price"];
-//            $default_price = $price_data["price"];
-//            $default_critypes_name = $price_data["critypes_name"];
-//            $default_critypes_id = $price_data["plugin_manageentities_critypes_id"];
-//        }
-//
-//        if (count($iterator) > 0) {
-//
-//            $taskCount++;
-//            foreach ($iterator as $dataCriDetail) {
-//                // Get cridetail Cri Price if exists
-//                $price = 0;
-//                $critypes_name = '';
-//                $critypes_id = 0;
-//                if ($dataCriDetail['plugin_manageentities_critypes_id'] != 0) {
-//                    $price_data = $cri_price->getItems(
-//                        $contractDayValues["contractdays_id"],
-//                        $dataCriDetail['plugin_manageentities_critypes_id']
-//                    );
-//                    if (!empty($price_data)) {
-//                        $price_data = reset($price_data);
-//                        $price = $price_data["price"];
-//                        $critypes_name = $price_data["critypes_name"];
-//                        $critypes_id = $price_data["plugin_manageentities_critypes_id"];
-//                    }
-//                }
-//                $price = empty($price) ? $default_price : $price;
-//                $critypes_name = empty($critypes_name) ? $default_critypes_name : $critypes_name;
-//                $critypes_id = empty($critypes_id) ? $default_critypes_id : $critypes_id;
-//
-//                $criteria = [
-//                    'SELECT' => [
-//                        'actiontime',
-//                        'users_id_tech',
-//                        'is_private',
-//                    ],
-//                    'FROM' => 'glpi_tickettasks',
-//                    'LEFT JOIN' => [
-//                        'glpi_plugin_manageentities_cridetails' => [
-//                            'ON' => [
-//                                'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-//                                'glpi_tickettasks' => 'tickets_id',
-//                            ],
-//                        ],
-//                    ],
-//                    'WHERE' => [
-//                        'glpi_tickettasks.tickets_id' => $dataCriDetail['tickets_id'],
-//                        'glpi_tickettasks.is_private' => 0,
-//                        'glpi_plugin_manageentities_cridetails.id' => $dataCriDetail['cridetails_id'],
-//                    ],
-//                    'ORDERBY' => ['glpi_tickettasks.begin'],
-//                ];
-//
-//                if (isset($options['begin_date'])) {
-//                    $criteria['WHERE'] = $criteria['WHERE'] + [
-//                        'OR' => [
-//                            ['glpi_tickettasks.begin' => ['>=', $options['begin_date']]],
-//                            ['glpi_tickettasks.begin' => 'NULL'],
-//                        ],
-//                    ];
-//                }
-//
-//                if (isset($options['end_date'])) {
-//                    $criteria['WHERE'] = $criteria['WHERE'] + [
-//                        'OR' => [
-//                            ['glpi_tickettasks.end' => ['<=', $options['end_date']]],
-//                            ['glpi_tickettasks.end' => 'NULL'],
-//                        ],
-//                    ];
-//                }
-//
-//                if ($config->fields['hourorday'] == Config::HOUR) {
-//                    $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + [
-//                        'glpi_plugin_manageentities_taskcategories' => [
-//                            'ON' => [
-//                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-//                                'glpi_tickettasks' => 'taskcategories_id',
-//                            ],
-//                        ],
-//                    ];
-//                    $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
-//                }
-//                $iterator = $DB->request($criteria);
-//
-//                $tech = '';
-//                $conso = 0;
-//                $conso_per_tech = [];
-//
-//                if (count($iterator) > 0) {
-//                    $left = $contractDayValues["nbday"];
-//                    $tech = implode('<br/>', $critechnicians->getTechnicians($dataCriDetail['tickets_id']));
-//
-//                    foreach ($iterator as $dataTask) {
-//                        // Init depass
-//                        if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'])) {
-//                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] = 0;
-//                        }
-//
-//                        //Init conso per techs
-//                        if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'])) {
-//                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] = 0;
-//                        }
-//                        // Set conso per techs
-//                        $tmp = self::setConso($dataTask['actiontime'], 0, $config, $dataCriDetail, $pluginContract, 1);
-//
-//                        $round = round($tmp, 2,PHP_ROUND_HALF_UP);
-//
-//                        $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += $PDF->TotalTpsPassesArrondis(
-//                            $round
-//                        );
-//
-//                        // Set global conso of contractday
-//                        $tempasse = $PDF->TotalTpsPassesArrondis($round);
-//                        $conso += $tempasse;
-//
-//                        // Set depass per techs
-//                        $left -= self::computeInDays(
-//                            $dataTask['actiontime'],
-//                            $config,
-//                            $dataCriDetail,
-//                            $pluginContract,
-//                            1
-//                        );
-//                        if ($left <= 0) {
-//                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] += abs(
-//                                $PDF->TotalTpsPassesArrondis($left)
-//                            );
-//                            $left = 0;
-//                        }
-//                    }
-//                }
-//
-//                // Ticket name
-//                $ticket = new Ticket();
-//                $ticket->getFromDB($dataCriDetail["tickets_id"]);
-//                $ticket_name = $ticket->getName();
-//
-//
-//                $tot_amount += $conso * $price;
-//                $tot_conso += $conso;
-//
-//                //Task informations
-//                $tabResults[$dataCriDetail['cridetails_id']]['tickets_id'] = $dataCriDetail['tickets_id'];
-//                $tabResults[$dataCriDetail['cridetails_id']]['tickets_name'] = $ticket_name;
-//                $tabResults[$dataCriDetail['cridetails_id']]['is_deleted'] = $dataCriDetail['is_deleted'];
-//                $tabResults[$dataCriDetail['cridetails_id']]['tickets_date'] = $dataCriDetail['tickets_date'];
-//                $tabResults[$dataCriDetail['cridetails_id']]['conso'] = $conso;
-//                $tabResults[$dataCriDetail['cridetails_id']]['conso_per_tech'] = $conso_per_tech;
-//                $tabResults[$dataCriDetail['cridetails_id']]['tech'] = $tech;
-//                $tabResults[$dataCriDetail['cridetails_id']]['conso_amount'] = $conso * $price;
-//                $tabResults[$dataCriDetail['cridetails_id']]['pricecri'] = $price;
-//                $tabResults[$dataCriDetail['cridetails_id']]['documents_id'] = $dataCriDetail['documents_id'];
-//                $tabResults[$dataCriDetail['cridetails_id']]['plugin_manageentities_critypes_name'] = $critypes_name;
-//                $tabResults[$dataCriDetail['cridetails_id']]['plugin_manageentities_critypes_id'] = $critypes_id;
-//            }
-//        }
-//
-//        //Rest number / depass
-//        $tabOther['reste'] = (number_format($contractDayValues["nbday"], 0) + number_format($contractDayValues["report"], 0)) - $tot_conso;
-//        if ($tabOther['reste'] < 0) {
-//            $tabOther['depass'] = abs($tabOther['reste']);
-//            $tabOther['reste'] = 0;
-//        }
-//
-//        // If depass on contract day set depass on last tech of last ticket of last intervention
-//        if ($tabOther['depass'] > 0) {
-//            $lastIntervention = end($tabResults);
-//            if (count($lastIntervention['conso_per_tech']) > 0) {
-//                $lastTicket = end($lastIntervention['conso_per_tech']);
-//                end($lastTicket);
-//                $tabResults[key($tabResults)]['conso_per_tech'][key($lastIntervention['conso_per_tech'])][key(
-//                    $lastTicket
-//                )]['depass'] = $tabOther['depass'];
-//            }
-//            reset($tabResults);
-//        }
-//
-//        //Forfait
-//        $tabOther['forfait'] = ($contractDayValues["nbday"] + $contractDayValues["report"]) * $default_price;
-//
-//        // Default criprice
-//        $tabOther['default_criprice'] = $default_price;
-//
-//        //Rest amount
-//        $tabOther['reste_montant'] = $tabOther['forfait'] - $tot_amount;
-//        $tabOther['tot_amount'] = $tot_amount;
-//
-//        return ['result' => $tabResults, 'resultOther' => $tabOther];
-//    }
+    //    public static function getCriDetailData($contractDayValues = [], $options = [])
+    //    {
+    //        global $DB;
+    //        $params['condition'] = '1';
+    //
+    //        foreach ($options as $key => $value) {
+    //            $params[$key] = $value;
+    //        }
+    //
+    //        $tabResults = [];
+    //        $taskCount = 0; // Count the number of tasks for all entities
+    //        $conso = 0;
+    //        $tot_amount = 0;
+    //        $tot_conso = 0;
+    //        $price = 0;
+    //
+    //        $config = Config::getInstance();
+    //        $critechnicians = new CriTechnician();
+    //
+    //        $PDF = new CriPDF('P', 'mm', 'A4');
+    //
+    //        $tabOther = [
+    //            'tot_amount' => 0,
+    //            'reste_montant' => 0,
+    //            'depass' => 0,
+    //            'reste' => 0,
+    //            'forfait' => 0,
+    //        ];
+    //
+    //        $criteria = [
+    //            'SELECT' => [
+    //                'glpi_plugin_manageentities_cridetails.realtime as actiontime',
+    //                'glpi_plugin_manageentities_cridetails.documents_id',
+    //                'glpi_documents.is_deleted',
+    //                'glpi_plugin_manageentities_cridetails.tickets_id',
+    //                'glpi_plugin_manageentities_cridetails.id as cridetails_id',
+    //                'glpi_plugin_manageentities_cridetails.technicians as technicians',
+    //                'glpi_plugin_manageentities_cridetails.plugin_manageentities_critypes_id',
+    //                'glpi_plugin_manageentities_cridetails.date as cridetails_date',
+    //                'glpi_tickets.name as tickets_name',
+    //                'glpi_tickets.date as tickets_date',
+    //                'glpi_plugin_manageentities_critypes.name as plugin_manageentities_critypes_name',
+    //                'glpi_tickets.global_validation',
+    //            ],
+    //            'FROM' => 'glpi_plugin_manageentities_cridetails',
+    //            'LEFT JOIN' => [
+    //                'glpi_plugin_manageentities_critypes' => [
+    //                    'ON' => [
+    //                        'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_critypes_id',
+    //                        'glpi_plugin_manageentities_critypes' => 'id',
+    //                    ],
+    //                ],
+    //                'glpi_documents' => [
+    //                    'ON' => [
+    //                        'glpi_plugin_manageentities_cridetails' => 'documents_id',
+    //                        'glpi_documents' => 'id',
+    //                    ],
+    //                ],
+    //                'glpi_tickets' => [
+    //                    'ON' => [
+    //                        'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+    //                        'glpi_tickets' => 'id',
+    //                    ],
+    //                ],
+    //                'glpi_tickettasks' => [
+    //                    'ON' => [
+    //                        'glpi_tickets' => 'id',
+    //                        'glpi_tickettasks' => 'tickets_id',
+    //                    ],
+    //                ],
+    //            ],
+    //            'WHERE' => [
+    //                'glpi_plugin_manageentities_cridetails.contracts_id' => $contractDayValues["contracts_id"],
+    //                'glpi_plugin_manageentities_cridetails.entities_id' => $contractDayValues["entities_id"],
+    //                'glpi_plugin_manageentities_cridetails.plugin_manageentities_contractdays_id' => $contractDayValues["contractdays_id"],
+    //                'glpi_tickets.is_deleted' => 0,
+    //                'glpi_tickets.actiontime' => ['>', 0],
+    //
+    //            ],
+    //            'GROUPBY' => ['glpi_plugin_manageentities_cridetails.id'],
+    ////            'ORDERBY' => [],
+    //        ];
+    //
+    //        if (isset($options['begin_date'])) {
+    //            $options['begin_date'] .= ' 00:00:00';
+    //            $criteria['WHERE'] = $criteria['WHERE'] + [
+    //                    'OR' => [
+    //                        ['glpi_tickettasks.begin' => ['>=', $options['begin_date']]],
+    //                        ['glpi_tickettasks.begin' => 'NULL'],
+    //                    ],
+    //            ];
+    //        }
+    //
+    //        if (isset($options['end_date'])) {
+    //            $options['end_date'] .= ' 23:59:59';
+    //            $criteria['WHERE'] = $criteria['WHERE'] + [
+    //                    'OR' => [
+    //                        ['glpi_tickettasks.end' => ['<=', $options['end_date']]],
+    //                        ['glpi_tickettasks.end' => 'NULL'],
+    //                    ],
+    //            ];
+    //        }
+    //
+    //        if (isset($options['sorting_date'])) {
+    //            $criteria['ORDERBY'] = $criteria['GROUPBY'] + ['tickets_date DESC'];
+    //        } else {
+    //            $criteria['ORDERBY'] = $criteria['GROUPBY'] + ['glpi_plugin_manageentities_cridetails ASC'];
+    //        }
+    //
+    //        $iterator = $DB->request($criteria);
+    //
+    //        $restrict = [
+    //            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contractDayValues["entities_id"],
+    //            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"],
+    //        ];
+    //        $dbu = new DbUtils();
+    //        $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
+    //        $pluginContract = reset($pluginContracts);
+    //
+    //        // Default Cri price
+    //        $default_price = 0;
+    //        $default_critypes_name = '';
+    //        $default_critypes_id = 0;
+    //        $cri_price = new CriPrice();
+    //        $condition = ['glpi_plugin_manageentities_criprices.is_default' => 1];
+    //        $price_data = $cri_price->getItems($contractDayValues["contractdays_id"], 0, $condition);
+    //        if (!empty($price_data)) {
+    //            $price_data = reset($price_data);
+    //            $price = $price_data["price"];
+    //            $default_price = $price_data["price"];
+    //            $default_critypes_name = $price_data["critypes_name"];
+    //            $default_critypes_id = $price_data["plugin_manageentities_critypes_id"];
+    //        }
+    //
+    //        if (count($iterator) > 0) {
+    //
+    //            $taskCount++;
+    //            foreach ($iterator as $dataCriDetail) {
+    //                // Get cridetail Cri Price if exists
+    //                $price = 0;
+    //                $critypes_name = '';
+    //                $critypes_id = 0;
+    //                if ($dataCriDetail['plugin_manageentities_critypes_id'] != 0) {
+    //                    $price_data = $cri_price->getItems(
+    //                        $contractDayValues["contractdays_id"],
+    //                        $dataCriDetail['plugin_manageentities_critypes_id']
+    //                    );
+    //                    if (!empty($price_data)) {
+    //                        $price_data = reset($price_data);
+    //                        $price = $price_data["price"];
+    //                        $critypes_name = $price_data["critypes_name"];
+    //                        $critypes_id = $price_data["plugin_manageentities_critypes_id"];
+    //                    }
+    //                }
+    //                $price = empty($price) ? $default_price : $price;
+    //                $critypes_name = empty($critypes_name) ? $default_critypes_name : $critypes_name;
+    //                $critypes_id = empty($critypes_id) ? $default_critypes_id : $critypes_id;
+    //
+    //                $criteria = [
+    //                    'SELECT' => [
+    //                        'actiontime',
+    //                        'users_id_tech',
+    //                        'is_private',
+    //                    ],
+    //                    'FROM' => 'glpi_tickettasks',
+    //                    'LEFT JOIN' => [
+    //                        'glpi_plugin_manageentities_cridetails' => [
+    //                            'ON' => [
+    //                                'glpi_plugin_manageentities_cridetails' => 'tickets_id',
+    //                                'glpi_tickettasks' => 'tickets_id',
+    //                            ],
+    //                        ],
+    //                    ],
+    //                    'WHERE' => [
+    //                        'glpi_tickettasks.tickets_id' => $dataCriDetail['tickets_id'],
+    //                        'glpi_tickettasks.is_private' => 0,
+    //                        'glpi_plugin_manageentities_cridetails.id' => $dataCriDetail['cridetails_id'],
+    //                    ],
+    //                    'ORDERBY' => ['glpi_tickettasks.begin'],
+    //                ];
+    //
+    //                if (isset($options['begin_date'])) {
+    //                    $criteria['WHERE'] = $criteria['WHERE'] + [
+    //                        'OR' => [
+    //                            ['glpi_tickettasks.begin' => ['>=', $options['begin_date']]],
+    //                            ['glpi_tickettasks.begin' => 'NULL'],
+    //                        ],
+    //                    ];
+    //                }
+    //
+    //                if (isset($options['end_date'])) {
+    //                    $criteria['WHERE'] = $criteria['WHERE'] + [
+    //                        'OR' => [
+    //                            ['glpi_tickettasks.end' => ['<=', $options['end_date']]],
+    //                            ['glpi_tickettasks.end' => 'NULL'],
+    //                        ],
+    //                    ];
+    //                }
+    //
+    //                if ($config->fields['hourorday'] == Config::HOUR) {
+    //                    $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + [
+    //                        'glpi_plugin_manageentities_taskcategories' => [
+    //                            'ON' => [
+    //                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+    //                                'glpi_tickettasks' => 'taskcategories_id',
+    //                            ],
+    //                        ],
+    //                    ];
+    //                    $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
+    //                }
+    //                $iterator = $DB->request($criteria);
+    //
+    //                $tech = '';
+    //                $conso = 0;
+    //                $conso_per_tech = [];
+    //
+    //                if (count($iterator) > 0) {
+    //                    $left = $contractDayValues["nbday"];
+    //                    $tech = implode('<br/>', $critechnicians->getTechnicians($dataCriDetail['tickets_id']));
+    //
+    //                    foreach ($iterator as $dataTask) {
+    //                        // Init depass
+    //                        if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'])) {
+    //                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] = 0;
+    //                        }
+    //
+    //                        //Init conso per techs
+    //                        if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'])) {
+    //                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] = 0;
+    //                        }
+    //                        // Set conso per techs
+    //                        $tmp = self::setConso($dataTask['actiontime'], 0, $config, $dataCriDetail, $pluginContract, 1);
+    //
+    //                        $round = round($tmp, 2,PHP_ROUND_HALF_UP);
+    //
+    //                        $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += $PDF->TotalTpsPassesArrondis(
+    //                            $round
+    //                        );
+    //
+    //                        // Set global conso of contractday
+    //                        $tempasse = $PDF->TotalTpsPassesArrondis($round);
+    //                        $conso += $tempasse;
+    //
+    //                        // Set depass per techs
+    //                        $left -= self::computeInDays(
+    //                            $dataTask['actiontime'],
+    //                            $config,
+    //                            $dataCriDetail,
+    //                            $pluginContract,
+    //                            1
+    //                        );
+    //                        if ($left <= 0) {
+    //                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] += abs(
+    //                                $PDF->TotalTpsPassesArrondis($left)
+    //                            );
+    //                            $left = 0;
+    //                        }
+    //                    }
+    //                }
+    //
+    //                // Ticket name
+    //                $ticket = new Ticket();
+    //                $ticket->getFromDB($dataCriDetail["tickets_id"]);
+    //                $ticket_name = $ticket->getName();
+    //
+    //
+    //                $tot_amount += $conso * $price;
+    //                $tot_conso += $conso;
+    //
+    //                //Task informations
+    //                $tabResults[$dataCriDetail['cridetails_id']]['tickets_id'] = $dataCriDetail['tickets_id'];
+    //                $tabResults[$dataCriDetail['cridetails_id']]['tickets_name'] = $ticket_name;
+    //                $tabResults[$dataCriDetail['cridetails_id']]['is_deleted'] = $dataCriDetail['is_deleted'];
+    //                $tabResults[$dataCriDetail['cridetails_id']]['tickets_date'] = $dataCriDetail['tickets_date'];
+    //                $tabResults[$dataCriDetail['cridetails_id']]['conso'] = $conso;
+    //                $tabResults[$dataCriDetail['cridetails_id']]['conso_per_tech'] = $conso_per_tech;
+    //                $tabResults[$dataCriDetail['cridetails_id']]['tech'] = $tech;
+    //                $tabResults[$dataCriDetail['cridetails_id']]['conso_amount'] = $conso * $price;
+    //                $tabResults[$dataCriDetail['cridetails_id']]['pricecri'] = $price;
+    //                $tabResults[$dataCriDetail['cridetails_id']]['documents_id'] = $dataCriDetail['documents_id'];
+    //                $tabResults[$dataCriDetail['cridetails_id']]['plugin_manageentities_critypes_name'] = $critypes_name;
+    //                $tabResults[$dataCriDetail['cridetails_id']]['plugin_manageentities_critypes_id'] = $critypes_id;
+    //            }
+    //        }
+    //
+    //        //Rest number / depass
+    //        $tabOther['reste'] = (number_format($contractDayValues["nbday"], 0) + number_format($contractDayValues["report"], 0)) - $tot_conso;
+    //        if ($tabOther['reste'] < 0) {
+    //            $tabOther['depass'] = abs($tabOther['reste']);
+    //            $tabOther['reste'] = 0;
+    //        }
+    //
+    //        // If depass on contract day set depass on last tech of last ticket of last intervention
+    //        if ($tabOther['depass'] > 0) {
+    //            $lastIntervention = end($tabResults);
+    //            if (count($lastIntervention['conso_per_tech']) > 0) {
+    //                $lastTicket = end($lastIntervention['conso_per_tech']);
+    //                end($lastTicket);
+    //                $tabResults[key($tabResults)]['conso_per_tech'][key($lastIntervention['conso_per_tech'])][key(
+    //                    $lastTicket
+    //                )]['depass'] = $tabOther['depass'];
+    //            }
+    //            reset($tabResults);
+    //        }
+    //
+    //        //Forfait
+    //        $tabOther['forfait'] = ($contractDayValues["nbday"] + $contractDayValues["report"]) * $default_price;
+    //
+    //        // Default criprice
+    //        $tabOther['default_criprice'] = $default_price;
+    //
+    //        //Rest amount
+    //        $tabOther['reste_montant'] = $tabOther['forfait'] - $tot_amount;
+    //        $tabOther['tot_amount'] = $tot_amount;
+    //
+    //        return ['result' => $tabResults, 'resultOther' => $tabOther];
+    //    }
 
     /**
      * Validate that a string is a safe SQL date or datetime (Y-m-d or Y-m-d H:i:s).
@@ -1224,7 +1230,8 @@ class CriDetail extends CommonDBTM
         return $dt !== false && $dt->format('Y-m-d H:i:s') === $date;
     }
 
-    static function getCriDetailData($contractDayValues = [], $options = []) {
+    public static function getCriDetailData($contractDayValues = [], $options = [])
+    {
         global $DB;
         $params['condition'] = '1';
 
@@ -1344,7 +1351,7 @@ class CriDetail extends CommonDBTM
         $cri_price             = new CriPrice();
         $condition = ['glpi_plugin_manageentities_criprices.is_default' => 1];
         $price_data = $cri_price->getItems($contractDayValues["contractdays_id"], 0, $condition);
-//        $price_data            = $cri_price->getItems($contractDayValues["contractdays_id"], 0, "`glpi_plugin_manageentities_criprices`.`is_default`='1'");
+        //        $price_data            = $cri_price->getItems($contractDayValues["contractdays_id"], 0, "`glpi_plugin_manageentities_criprices`.`is_default`='1'");
         if (!empty($price_data)) {
             $price_data            = reset($price_data);
             $price                 = $price_data["price"];
@@ -1459,7 +1466,6 @@ class CriDetail extends CommonDBTM
                 $ticket->getFromDB($dataCriDetail["tickets_id"]);
                 $ticket_name = $ticket->getName();
 
-
                 $tot_amount += $conso * $price;
                 $tot_conso  += $conso;
 
@@ -1533,7 +1539,7 @@ class CriDetail extends CommonDBTM
             } else {
                 $conso = "<div style='color:red;'>" . __(
                     'Type of service contract missing',
-                    'manageentities'
+                    'manageentities',
                 ) . "</div>";
             }
         }
@@ -1602,7 +1608,7 @@ class CriDetail extends CommonDBTM
             } else {
                 $critypes_name = \Dropdown::getDropdownName(
                     'glpi_plugin_manageentities_critypes',
-                    $dataCriDetail['plugin_manageentities_critypes_id']
+                    $dataCriDetail['plugin_manageentities_critypes_id'],
                 );
             }
 
@@ -1640,7 +1646,7 @@ class CriDetail extends CommonDBTM
         if ($resultCriDetail['resultOther']['default_criprice'] > 0) {
             $nb_theoretical_days = Html::formatNumber(
                 $resultCriDetail['resultOther']['reste_montant'] / $resultCriDetail['resultOther']['default_criprice'],
-                false
+                false,
             );
         }
 
@@ -1654,7 +1660,7 @@ class CriDetail extends CommonDBTM
                 'tot_amount'          => Html::formatNumber($resultCriDetail['resultOther']['tot_amount'], false),
                 'nb_theoretical_days' => $nb_theoretical_days,
                 'default_criprice'    => $resultCriDetail['resultOther']['default_criprice'],
-            ]
+            ],
         );
     }
 
@@ -1729,7 +1735,7 @@ class CriDetail extends CommonDBTM
         $rand = \Dropdown::showFromArray(
             'withcontract',
             [0 => __('Out of contract', 'manageentities'), 1 => __('With contrat', 'manageentities')],
-            ['value' => ($cridetail) ? $cridetail['withcontract'] : 1, 'on_change' => 'changecontract();']
+            ['value' => ($cridetail) ? $cridetail['withcontract'] : 1, 'on_change' => 'changecontract();'],
         );
         $contract_type_dropdown = ob_get_clean();
 
@@ -1766,13 +1772,13 @@ class CriDetail extends CommonDBTM
             if ($contract_obj->getFromDB($contract_selected_id)) {
                 $contract_comment  = $contract_obj->fields['comment'] ?? '';
                 $contract_end_date = $contract_obj->fields['end_date'] ?? '';
-                $contract_states_id = (int)($contract_obj->fields['states_id'] ?? 0);
+                $contract_states_id = (int) ($contract_obj->fields['states_id'] ?? 0);
             }
         }
 
         // Closed GLPI state configured in plugin settings
         $me_config = Config::getInstance();
-        $closed_glpi_state_id = (int)($me_config->fields['closed_glpi_state_id'] ?? 0);
+        $closed_glpi_state_id = (int) ($me_config->fields['closed_glpi_state_id'] ?? 0);
 
         // Build the JS block to show/hide the contract section
         $change_contract_script = Html::scriptBlock("
@@ -1787,11 +1793,11 @@ class CriDetail extends CommonDBTM
         ");
 
         // Publisher subscription for the ticket's entity
-        $sub              = EditorSubscription::getForEntity((int)$ticket->fields['entities_id']);
+        $sub              = EditorSubscription::getForEntity((int) $ticket->fields['entities_id']);
         $now              = date('Y-m-d');
         $sub_end_expired  = !empty($sub['end_date']) && substr($sub['end_date'], 0, 10) < $now;
         $sub_level_name   = !empty($sub['plugin_manageentities_subscriptionlevels_id'])
-            ? \Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$sub['plugin_manageentities_subscriptionlevels_id'])
+            ? \Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int) $sub['plugin_manageentities_subscriptionlevels_id'])
             : '';
         $sub_no_active    = !empty($sub) && !($sub['active_editor_suscription'] ?? 0) && !($sub['cloud_client'] ?? 0);
 
@@ -1823,8 +1829,8 @@ class CriDetail extends CommonDBTM
             'has_subscription'          => !empty($sub),
             'sub_customer_account_id'   => $sub['customer_account_id'] ?? '',
             'sub_name'                  => $sub['name'] ?? '',
-            'sub_active'                => (int)($sub['active_editor_suscription'] ?? 0),
-            'sub_cloud'                 => (int)($sub['cloud_client'] ?? 0),
+            'sub_active'                => (int) ($sub['active_editor_suscription'] ?? 0),
+            'sub_cloud'                 => (int) ($sub['cloud_client'] ?? 0),
             'sub_begin_date'            => $sub['begin_date'] ?? '',
             'sub_end_date'              => $sub['end_date'] ?? '',
             'sub_end_expired'           => $sub_end_expired,
@@ -1929,7 +1935,7 @@ class CriDetail extends CommonDBTM
                     . htmlspecialchars(\Dropdown::getDropdownName('glpi_states', $contract->fields['states_id']), ENT_QUOTES)
                     . "</span>";
                 echo "<span class='me-contract-states-id-data' style='display:none'>"
-                    . (int)$contract->fields['states_id']
+                    . (int) $contract->fields['states_id']
                     . "</span>";
             }
             echo "<span class='me-contract-comment-data' style='display:none'>"
@@ -1939,15 +1945,15 @@ class CriDetail extends CommonDBTM
                 . htmlspecialchars($contract->fields['end_date'] ?? '', ENT_QUOTES)
                 . "</span>";
             // Subscription flags read from EditorSubscription (internet_publication now lives there)
-            $subData = EditorSubscription::getForEntity((int)$contract->fields['entities_id']);
+            $subData = EditorSubscription::getForEntity((int) $contract->fields['entities_id']);
             echo "<span class='me-contract-editor-sub-data' style='display:none'>"
-                . (int)($subData['active_editor_suscription'] ?? 0)
+                . (int) ($subData['active_editor_suscription'] ?? 0)
                 . "</span>";
             echo "<span class='me-contract-cloud-data' style='display:none'>"
-                . (int)($subData['cloud_client'] ?? 0)
+                . (int) ($subData['cloud_client'] ?? 0)
                 . "</span>";
             echo "<span class='me-contract-inet-data' style='display:none'>"
-                . (int)($subData['internet_publication'] ?? 0)
+                . (int) ($subData['internet_publication'] ?? 0)
                 . "</span>";
         }
 
@@ -1962,13 +1968,13 @@ class CriDetail extends CommonDBTM
             "dropdown_contracts_id$rand",
             "show_contractdays",
             PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php",
-            $params
+            $params,
         );
         Ajax::updateItem(
             "show_contractdays",
             PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php",
             $params,
-            "dropdown_contracts_id$rand"
+            "dropdown_contracts_id$rand",
         );
         echo "</td>";
 
@@ -2026,7 +2032,7 @@ class CriDetail extends CommonDBTM
                 Session::addMessageAfterRedirect(
                     sprintf(__("Mandatory fields are not filled. Please correct: %s"), implode(', ', $msg)),
                     false,
-                    ERROR
+                    ERROR,
                 );
                 return false;
             }
@@ -2085,8 +2091,8 @@ class CriDetail extends CommonDBTM
             return $interv;
         }
 
-        $who = (int)$options['who'];
-        $who_group = (int)$options['whogroup'];
+        $who = (int) $options['who'];
+        $who_group = (int) $options['whogroup'];
         $begin = $options['begin'];
         $end = $options['end'];
 
@@ -2127,7 +2133,6 @@ class CriDetail extends CommonDBTM
                                  FROM `glpi_groups_users`
                                  WHERE `groups_id` = " . $who_group . ")";
         }
-
 
         // The WHERE clause relies on IN (SELECT ...) sub-queries (group membership) and on
         // getEntitiesRestrictRequest(), which do not map cleanly to the query builder criteria.
@@ -2214,11 +2219,11 @@ class CriDetail extends CommonDBTM
                 }
                 $interv[$key]["name"] = Html::resume_text(
                     $data["ticket_name"],
-                    $CFG_GLPI["cut"]
+                    $CFG_GLPI["cut"],
                 ); // name is re-encoded on JS side
                 $interv[$key]["content"] = Html::resume_text(
                     RichText::getTextFromHtml($data["content"], false, true),
-                    $CFG_GLPI["cut"]
+                    $CFG_GLPI["cut"],
                 );
                 $interv[$key]["actiontime"] = $data["actiontime"];
                 $interv[$key]["url"] = $CFG_GLPI["root_doc"] . "/front/ticket.form.php?id="
@@ -2266,7 +2271,7 @@ class CriDetail extends CommonDBTM
             if ($val["actiontime"]) {
                 $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(
                     $val['actiontime'],
-                    false
+                    false,
                 ) . "<br>";
             }
 
@@ -2278,7 +2283,7 @@ class CriDetail extends CommonDBTM
             if ($val["actiontime"]) {
                 $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(
                     $val['actiontime'],
-                    false
+                    false,
                 ) . "<br>";
             }
 
@@ -2289,10 +2294,9 @@ class CriDetail extends CommonDBTM
                 [
                     'applyto' => "cri_" . $val["id"] . $rand,
                     'display' => false,
-                ]
+                ],
             );
         }
-
 
         return $html;
     }
@@ -2332,7 +2336,6 @@ class CriDetail extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {

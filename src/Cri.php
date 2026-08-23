@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -68,12 +68,6 @@ class Cri extends CommonDBTM
         global $DB;
 
         $ID = (int) $ID;
-        // Broken access control (IDOR): showForm() is reachable from front/cri.form.php
-        // and the ajax/cri.php "showCriForm" case behind only Session::checkLoginUser(),
-        // which is NOT authorization on GLPI 11. Without an object-level check any logged
-        // in user could read another entity's ticket data (contract, technicians, time
-        // spent) by iterating the "job" id. can($ID, READ) enforces the ticket existence,
-        // the global right AND entity access before anything is displayed.
         $job = new Ticket();
         if (!$job->can($ID, READ)) {
             throw new AccessDeniedHttpException();
@@ -107,7 +101,7 @@ class Cri extends CommonDBTM
             $contractSelected = CriDetail::showContractLinkDropdown(
                 $cridetail,
                 $job->fields['entities_id'],
-                'cri'
+                'cri',
             );
             $contract_html = ob_get_clean();
         } else {
@@ -139,7 +133,7 @@ class Cri extends CommonDBTM
                             $tech_params['tech_id'] = $users_id;
                             $techs[] = $users_name . "&nbsp;"
                                 . "<a class='pointer' name='deleteTech$rand' onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $modal . "\", " . json_encode(
-                                    $tech_params
+                                    $tech_params,
                                 ) . ");'>"
                                 . "<i class=\"ti ti-trash\" title=\"" . _x('button', 'Delete permanently') . "\"></i>"
                                 . "</a>";
@@ -152,7 +146,7 @@ class Cri extends CommonDBTM
             } else {
                 $technicians_html = "<span style=\"font-weight:bold; color:red\">" . __(
                     'Please assign a technician to your tasks',
-                    'manageentities'
+                    'manageentities',
                 ) . "</span>";
             }
         }
@@ -177,7 +171,7 @@ class Cri extends CommonDBTM
         ]);
         $add_tech_html = ob_get_clean();
         $add_tech_html .= "&nbsp;<a class='pointer' name='add_tech$rand' onclick='manageentities_loadCriForm(\"addTech\", \"" . $modal . "\", " . json_encode(
-            $params
+            $params,
         ) . ");'>"
             . "<i class=\"ti ti-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i></a>";
 
@@ -303,7 +297,7 @@ class Cri extends CommonDBTM
                     if (!empty($technicians_id)) {
                         $generate_button_html = "<input type='button' name='add_cri' value=\""
                             . __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button' onClick='manageentities_loadCriForm(\"addCri\", \"" . $modal . "\", " . json_encode(
-                                $params
+                                $params,
                             ) . ");'>";
                     }
                     // action not empty : update cri
@@ -311,7 +305,7 @@ class Cri extends CommonDBTM
                     if (!empty($technicians_id)) {
                         $generate_button_html = "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\""
                             . __('Regenerate the intervention report', 'manageentities') . "\" onClick='manageentities_loadCriForm(\"updateCri\", \"" . $modal . "\", " . json_encode(
-                                $params
+                                $params,
                             ) . ");'>";
                     }
                 }
@@ -518,67 +512,67 @@ class Cri extends CommonDBTM
                         if ($data["is_usedforcount"] == 0 && $config->fields['hourorday'] == Config::HOUR) {
                             $un_temps_passe[4] = 0;
                         } else {
-                            $un_temps_passe[4] = round($data["tps_passes"], 2,PHP_ROUND_HALF_UP);
+                            $un_temps_passe[4] = round($data["tps_passes"], 2, PHP_ROUND_HALF_UP);
                         }
                     } else {
                         // If the category of the task is not used and is hourly for count we set value to 0
                         if ($data["is_usedforcount"] == 0 && $config->fields['hourorday'] == Config::HOUR) {
                             $un_temps_passe[4] = 0;
                         } else {
-                            $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($data["tps_passes"], 2,PHP_ROUND_HALF_UP));
+                            $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($data["tps_passes"], 2, PHP_ROUND_HALF_UP));
                         } //arrondir au quart
                     }
                     if ($data["date_debut"] == null && $data["date_fin"] == null) {
                         $un_temps_passe[0] = substr($data["date"], 8, 2) . "/" . substr(
                             $data["date"],
                             5,
-                            2
+                            2,
                         ) . "/" . substr($data["date"], 0, 4);
                         $un_temps_passe[1] = ($data["date"] == "-") ? "-" : substr($data["date"], 11, 2) . ":" . substr(
                             $data["date"],
                             14,
-                            2
+                            2,
                         );
                         //calculating the end date
                         if ($config->fields['hourorday'] == Config::HOUR) {
                             $date = date(
                                 'Y-m-d H:i:s',
-                                strtotime($data["date"] . " + " . (($un_temps_passe[4]) * 3600) . " seconds")
+                                strtotime($data["date"] . " + " . (($un_temps_passe[4]) * 3600) . " seconds"),
                             );
                         } else {
                             //daily
                             $date = date(
                                 'Y-m-d H:i:s',
-                                strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] . " hours")
+                                strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] . " hours"),
                             );
                         }
 
                         $un_temps_passe[2] = substr($date, 8, 2) . "/" . substr($date, 5, 2) . "/" . substr(
                             $date,
                             0,
-                            4
+                            4,
                         );
                         $un_temps_passe[3] = ($date == "-") ? "-" : substr($date, 11, 2) . ":" . substr($date, 14, 2);
                     } else {
                         $un_temps_passe[0] = substr($data["date_debut"], 8, 2) . "/" . substr(
                             $data["date_debut"],
                             5,
-                            2
+                            2,
                         ) . "/" . substr($data["date_debut"], 0, 4);
                         $un_temps_passe[1] = ($data["heure_debut"] == "-") ? "-" : substr(
                             $data["heure_debut"],
                             11,
-                            2
+                            2,
                         ) . ":" . substr($data["heure_debut"], 14, 2);
                         $un_temps_passe[2] = substr($data["date_fin"], 8, 2) . "/" . substr(
                             $data["date_fin"],
                             5,
-                            2
+                            2,
                         ) . "/" . substr($data["date_fin"], 0, 4);
                         $un_temps_passe[3] = ($data["heure_fin"] == "-") ? "-" : substr(
                             $data["heure_fin"],
                             11,
-                            2
+                            2,
                         ) . ":" . substr($data["heure_fin"], 14, 2);
                     }
 
@@ -588,7 +582,7 @@ class Cri extends CommonDBTM
                     if ($config->fields['useprice'] == Config::NOPRICE && $config->fields['hourorday'] == Config::HOUR) {
                         $p['REPORT_ACTIVITE'][$cpt_tps] = \Dropdown::getDropdownName(
                             'glpi_taskcategories',
-                            $data['taskcat']
+                            $data['taskcat'],
                         );
                     }
 
@@ -608,7 +602,7 @@ class Cri extends CommonDBTM
                     Session::addMessageAfterRedirect(
                         __('Please fill the contract period begin and end dates.', 'manageentities'),
                         true,
-                        ERROR
+                        ERROR,
                     );
                     Html::back();
                     return false;
@@ -616,7 +610,7 @@ class Cri extends CommonDBTM
                     Session::addMessageAfterRedirect(
                         __('Please fill the contract period end date.', 'manageentities'),
                         true,
-                        ERROR
+                        ERROR,
                     );
                     Html::back();
                     return false;
@@ -624,7 +618,7 @@ class Cri extends CommonDBTM
                     Session::addMessageAfterRedirect(
                         __('Please fill the contract period begin date.', 'manageentities'),
                         true,
-                        ERROR
+                        ERROR,
                     );
                     Html::back();
                     return false;
@@ -754,14 +748,14 @@ class Cri extends CommonDBTM
                                     && $config->fields['hourorday'] == Config::HOUR) {
                                     $un_temps_passe[4] = 0;
                                 } else {
-                                    $un_temps_passe[4] = round($data["tps_passes"], 2,PHP_ROUND_HALF_UP);
+                                    $un_temps_passe[4] = round($data["tps_passes"], 2, PHP_ROUND_HALF_UP);
                                 }
                             } else {
                                 // If the category of the task is not used and is hourly for count we set value to 0
                                 if ($data["is_usedforcount"] == 0 && $config->fields['hourorday'] == Config::HOUR) {
                                     $un_temps_passe[4] = 0;
                                 } else {
-                                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($data["tps_passes"], 2,PHP_ROUND_HALF_UP));
+                                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($data["tps_passes"], 2, PHP_ROUND_HALF_UP));
                                 } //arrondir au quart
                             }
                         }
@@ -769,57 +763,57 @@ class Cri extends CommonDBTM
                             $un_temps_passe[0] = substr($data["date"], 8, 2) . "/" . substr(
                                 $data["date"],
                                 5,
-                                2
+                                2,
                             ) . "/" . substr($data["date"], 0, 4);
                             $un_temps_passe[1] = ($data["date"] == "-") ? "-" : substr(
                                 $data["date"],
                                 11,
-                                2
+                                2,
                             ) . ":" . substr($data["date"], 14, 2);
                             //calculating the end date
                             if ($config->fields['hourorday'] == Config::HOUR) {
                                 $date = date(
                                     'Y-m-d H:i:s',
-                                    strtotime($data["date"] . " + " . (($un_temps_passe[4]) * 3600) . " seconds")
+                                    strtotime($data["date"] . " + " . (($un_temps_passe[4]) * 3600) . " seconds"),
                                 );
                             } else {
                                 //daily
                                 $date = date(
                                     'Y-m-d H:i:s',
-                                    strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] . " hours")
+                                    strtotime($data["date"] . " + " . $un_temps_passe[4] * $config->fields['hourbyday'] . " hours"),
                                 );
                             }
 
                             $un_temps_passe[2] = substr($date, 8, 2) . "/" . substr($date, 5, 2) . "/" . substr(
                                 $date,
                                 0,
-                                4
+                                4,
                             );
                             $un_temps_passe[3] = ($date == "-") ? "-" : substr($date, 11, 2) . ":" . substr(
                                 $date,
                                 14,
-                                2
+                                2,
                             );
                         } else {
                             $un_temps_passe[0] = substr($data["date_debut"], 8, 2) . "/" . substr(
                                 $data["date_debut"],
                                 5,
-                                2
+                                2,
                             ) . "/" . substr($data["date_debut"], 0, 4);
                             $un_temps_passe[1] = ($data["heure_debut"] == "-") ? "-" : substr(
                                 $data["heure_debut"],
                                 11,
-                                2
+                                2,
                             ) . ":" . substr($data["heure_debut"], 14, 2);
                             $un_temps_passe[2] = substr($data["date_fin"], 8, 2) . "/" . substr(
                                 $data["date_fin"],
                                 5,
-                                2
+                                2,
                             ) . "/" . substr($data["date_fin"], 0, 4);
                             $un_temps_passe[3] = ($data["heure_fin"] == "-") ? "-" : substr(
                                 $data["heure_fin"],
                                 11,
-                                2
+                                2,
                             ) . ":" . substr($data["heure_fin"], 14, 2);
                         }
 
@@ -829,7 +823,7 @@ class Cri extends CommonDBTM
                         if ($config->fields['useprice'] == Config::NOPRICE || $config->fields['hourorday'] == Config::HOUR) {
                             $p['REPORT_ACTIVITE'][$cpt_tps] = \Dropdown::getDropdownName(
                                 'glpi_taskcategories',
-                                $data['taskcat']
+                                $data['taskcat'],
                             );
                         }
 
@@ -845,7 +839,7 @@ class Cri extends CommonDBTM
                     $un_temps_passe[1] = '';
                     $un_temps_passe[2] = Html::convDate($contract_days->fields['end_date']);
                     $un_temps_passe[3] = '';
-                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($contract_days->fields['nbday'], 2,PHP_ROUND_HALF_UP));
+                    $un_temps_passe[4] = $PDF->TotalTpsPassesArrondis(round($contract_days->fields['nbday'], 2, PHP_ROUND_HALF_UP));
                     $temps_passes[] = $un_temps_passe;
 
                     if ($config->fields['useprice'] == Config::NOPRICE) {
@@ -854,7 +848,7 @@ class Cri extends CommonDBTM
                         $tasks_data = array_shift($tasks_data);
                         $p['REPORT_ACTIVITE'][] = \Dropdown::getDropdownName(
                             'glpi_taskcategories',
-                            $tasks_data['taskcategories_id']
+                            $tasks_data['taskcategories_id'],
                         );
                     }
                     $PDF->SetLibelleActivite($p['REPORT_ACTIVITE']);
@@ -1007,7 +1001,7 @@ class Cri extends CommonDBTM
                 echo "<p><input type='button' name='save_cri' value=\""
                     . __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
                  onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode(
-                        $params
+                        $params,
                     ) . ");'></p>";
 
                 echo "<IFRAME style='width:500px;height:700px' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/$filename' scrolling=none frameborder=1></IFRAME>";
@@ -1061,8 +1055,8 @@ class Cri extends CommonDBTM
                 'glpi_tickettasks.actiontime as actiontime',
                 new QueryExpression(
                     "(glpi_tickettasks.actiontime/3600)/" . $DB->quoteValue($nbhour) . " AS " . $DB->quoteName(
-                        'tps_passes'
-                    )
+                        'tps_passes',
+                    ),
                 ),
                 'glpi_plugin_manageentities_taskcategories.is_usedforcount as is_usedforcount',
             ],
@@ -1101,8 +1095,8 @@ class Cri extends CommonDBTM
                 'glpi_tickettasks.actiontime as actiontime',
                 new QueryExpression(
                     "(glpi_tickettasks.actiontime/3600)/" . $DB->quoteValue($nbhour) . " AS " . $DB->quoteName(
-                        'tps_passes'
-                    )
+                        'tps_passes',
+                    ),
                 ),
                 'glpi_plugin_manageentities_taskcategories.is_usedforcount as is_usedforcount',
             ],

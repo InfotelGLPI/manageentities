@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -147,8 +147,8 @@ class Followup extends CommonDBTM
             'ORDERBY' => 'glpi_entities.name',
         ];
         $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-                'glpi_entities'
-            );
+            'glpi_entities',
+        );
 
         if (isset($options['entities_id']) && $options['entities_id'] != '-1') {
             $sons = $dbu->getSonsOf('glpi_entities', $options['entities_id']);
@@ -156,8 +156,8 @@ class Followup extends CommonDBTM
         } else {
             if (Session::getCurrentInterface() == 'central') {
                 $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-                        'glpi_contracts'
-                    );
+                    'glpi_contracts',
+                );
             } else {
                 $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_contracts.entities_id' => $instID];
             }
@@ -202,7 +202,7 @@ class Followup extends CommonDBTM
                 if ($config->fields['hourorday'] == Config::HOUR) {// Hourly
                     $criteriac['SELECT'] = array_merge(
                         $criteriac['SELECT'],
-                        ['glpi_plugin_manageentities_contracts.contract_type AS contract_type']
+                        ['glpi_plugin_manageentities_contracts.contract_type AS contract_type'],
                     );
                     $criteriac['WHERE'] = $criteriac['WHERE'] + ['glpi_plugin_manageentities_contracts.contract_type' => $types_contracts];
                 }
@@ -261,7 +261,7 @@ class Followup extends CommonDBTM
                     if ($config->fields['hourorday'] == Config::DAY) {// Daily
                         $criteriad['SELECT'] = array_merge(
                             $criteriad['SELECT'],
-                            ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']
+                            ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type'],
                         );
                         $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.contract_type' => $types_contracts];
                     }
@@ -277,7 +277,7 @@ class Followup extends CommonDBTM
                             $criteriad['WHERE'] = $criteriad['WHERE'] + [
                                 'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                     $config_states['contract_states'],
-                                    true
+                                    true,
                                 ),
                             ];
                         }
@@ -287,14 +287,14 @@ class Followup extends CommonDBTM
                             $criteriad['WHERE'] = $criteriad['WHERE'] + [
                                 'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                     $preferences['contract_states'],
-                                    true
+                                    true,
                                 ),
                             ];
                         } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
                             $criteriad['WHERE'] = $criteriad['WHERE'] + [
                                 'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
                                     $config_states['contract_states'],
-                                    true
+                                    true,
                                 ),
                             ];
                         }
@@ -343,8 +343,8 @@ class Followup extends CommonDBTM
                             }
                         }
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_entities.id' => $sons,
-                            ];
+                            'glpi_entities.id' => $sons,
+                        ];
                     } elseif (isset($preferences['companies_id'])
                         && $preferences['companies_id'] != null) {
                         foreach (json_decode($preferences['companies_id'], true) as $id) {
@@ -359,52 +359,52 @@ class Followup extends CommonDBTM
                             }
                         }
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_entities.id' => $sons,
-                            ];
+                            'glpi_entities.id' => $sons,
+                        ];
                     }
 
                     //$beginDateAfter $beginDateBefore $endDateAfter $endDateBefore
                     if (isset($options['begin_date_after']) && $options['begin_date_after'] != '') {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.begin_date' => [
-                                    '>=',
-                                    $options['begin_date_after'],
-                                ],
-                            ];
+                            'glpi_plugin_manageentities_contractdays.begin_date' => [
+                                '>=',
+                                $options['begin_date_after'],
+                            ],
+                        ];
                         $beginDate = $options['begin_date_after'];
                     }
 
                     if (isset($options['begin_date_before']) && $options['begin_date_before'] != '') {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.begin_date'
-                                => [
-                                    '<=',
-                                    new QueryExpression(
-                                        "ADDDATE('" . $options['begin_date_before'] . "' , INTERVAL 1 DAY)"
-                                    ),
-                                ],
-                            ];
+                            'glpi_plugin_manageentities_contractdays.begin_date'
+                            => [
+                                '<=',
+                                new QueryExpression(
+                                    "ADDDATE('" . $options['begin_date_before'] . "' , INTERVAL 1 DAY)",
+                                ),
+                            ],
+                        ];
                     }
 
                     if (isset($options['end_date_after']) && $options['end_date_after'] != '') {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.end_date' => [
-                                    '>=',
-                                    $options['end_date_after']
-                                ],
-                            ];
+                            'glpi_plugin_manageentities_contractdays.end_date' => [
+                                '>=',
+                                $options['end_date_after'],
+                            ],
+                        ];
                     }
 
                     if (isset($options['end_date_before']) && $options['end_date_before'] != '') {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.end_date'
-                                => [
-                                    '<=',
-                                    new QueryExpression(
-                                        "ADDDATE('" . $options['end_date_before'] . "' , INTERVAL 1 DAY)"
-                                    ),
-                                ],
-                            ];
+                            'glpi_plugin_manageentities_contractdays.end_date'
+                            => [
+                                '<=',
+                                new QueryExpression(
+                                    "ADDDATE('" . $options['end_date_before'] . "' , INTERVAL 1 DAY)",
+                                ),
+                            ],
+                        ];
                         $endDate = $options['end_date_before'];
                     }
 
@@ -435,7 +435,7 @@ class Followup extends CommonDBTM
                         $list[$num]['name'] = $name;
                         $list[$num]['contract_num'] = $dataContract['num'];
                         $list[$num]['management'] = Contract::getContractManagement(
-                            $dataContract['management']
+                            $dataContract['management'],
                         );
                         $list[$num]['contract_type'] = $dataContract['contract_type'];
                         $list[$num]['contract_added'] = \Dropdown::getYesNo($dataContract['contract_added']);
@@ -476,7 +476,7 @@ class Followup extends CommonDBTM
 
                             $resultCriDetail = CriDetail::getCriDetailData(
                                 $dataContractDay,
-                                ["contract_type_id" => $dataContractDay["contract_type"]]
+                                ["contract_type_id" => $dataContractDay["contract_type"]],
                             );
 
                             $tot_amount = 0;
@@ -504,7 +504,7 @@ class Followup extends CommonDBTM
                             if (Session::getCurrentInterface() == 'helpdesk'
                                 && $dataContractDay["contract_type"] == Contract::CONTRACT_TYPE_UNLIMITED) {
                                 $credit = Contract::getContractType(
-                                    $dataContractDay["contract_type"]
+                                    $dataContractDay["contract_type"],
                                 );
                             } else {
                                 $credit = $dataContractDay['nbday'] + $dataContractDay['report'];
@@ -536,20 +536,20 @@ class Followup extends CommonDBTM
 
                                 if (!empty($dataContractDay['begin_date'])) {
                                     $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
-                                            'date' => [
-                                                '>=',
-                                                $dataContractDay['begin_date'],
-                                            ],
-                                        ];
+                                        'date' => [
+                                            '>=',
+                                            $dataContractDay['begin_date'],
+                                        ],
+                                    ];
                                 }
 
                                 if (!empty($dataContractDay['end_date'])) {
                                     $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
-                                            'date' => [
-                                                '<=',
-                                                $dataContractDay['end_date'],
-                                            ],
-                                        ];
+                                        'date' => [
+                                            '<=',
+                                            $dataContractDay['end_date'],
+                                        ],
+                                    ];
                                 }
                             } else {
                                 $criteria_tik = [
@@ -575,20 +575,20 @@ class Followup extends CommonDBTM
 
                                 if (!empty($dataContractDay['begin_date'])) {
                                     $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
-                                            'glpi_plugin_manageentities_cridetails.date' => [
-                                                '>=',
-                                                $dataContractDay['begin_date'],
-                                            ],
-                                        ];
+                                        'glpi_plugin_manageentities_cridetails.date' => [
+                                            '>=',
+                                            $dataContractDay['begin_date'],
+                                        ],
+                                    ];
                                 }
 
                                 if (!empty($dataContractDay['end_date'])) {
                                     $criteria_tik['WHERE'] = $criteria_tik['WHERE'] + [
-                                            'glpi_plugin_manageentities_cridetails.date' => [
-                                                '<=',
-                                                $dataContractDay['end_date'],
-                                            ],
-                                        ];
+                                        'glpi_plugin_manageentities_cridetails.date' => [
+                                            '<=',
+                                            $dataContractDay['end_date'],
+                                        ],
+                                    ];
                                 }
                             }
 
@@ -621,7 +621,7 @@ class Followup extends CommonDBTM
                             $list[$num]['days'][$i]['contractdayname'] = $nameperiod;
                             $list[$num]['days'][$i]['contractstates'] = \Dropdown::getDropdownName(
                                 'glpi_plugin_manageentities_contractstates',
-                                $dataContractDay['contractstates_id']
+                                $dataContractDay['contractstates_id'],
                             );
                             if (isset($color)) {
                                 $list[$num]['days'][$i]['contractstates_color'] = $color;
@@ -635,7 +635,7 @@ class Followup extends CommonDBTM
                             $list[$num]['days'][$i]['price'] = $pricecri;
                             $list[$num]['days'][$i]['forfait'] = Html::formatNumber($forfait);
                             $list[$num]['days'][$i]['reste_montant'] = Html::formatNumber(
-                                $resultCriDetail['resultOther']['reste_montant']
+                                $resultCriDetail['resultOther']['reste_montant'],
                             );
                             $list[$num]['days'][$i]['last_visit'] = $date;
                             $list[$num]['days'][$i]['contractdays_id'] = $dataContractDay["contractdays_id"];
@@ -769,7 +769,7 @@ class Followup extends CommonDBTM
                 self::printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters, Followup::class);
             }
 
-//            headers 1ere ligne
+            //            headers 1ere ligne
             if (1 == 1) {
                 if ($is_html_output) {
                     $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
@@ -913,13 +913,13 @@ class Followup extends CommonDBTM
                                     'Client',
                                     'Clients',
                                     1,
-                                    'manageentities'
+                                    'manageentities',
                                 ) . ' : </b>' . $list[$i]['entities_name'],
                                 $item_num,
                                 '',
                                 0,
                                 '',
-                                $colspanContract . " style='" . Monthly::$style[0] . "' "
+                                $colspanContract . " style='" . Monthly::$style[0] . "' ",
                             );
                             if ($is_html_output) {
                                 $html_output .= $output::showEndLine();
@@ -962,7 +962,7 @@ class Followup extends CommonDBTM
                                 '<b>' . __('Contract') . ' : </b>' . $list[$i]['contract_name'],
                                 $item_num,
                                 $row_num,
-                                $colspanContractName
+                                $colspanContractName,
                             );
                         } else {
                             $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_name']];
@@ -979,7 +979,7 @@ class Followup extends CommonDBTM
                                 '<b>' . _x('phone', 'Number') . ' : </b>' . $list[$i]['contract_num'],
                                 $item_num,
                                 $row_num,
-                                "colspan='" . $colspan . "'"
+                                "colspan='" . $colspan . "'",
                             );
                         } else {
                             $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_num']];
@@ -993,11 +993,11 @@ class Followup extends CommonDBTM
                                     $html_output .= $output::showItem(
                                         '<b>' . __(
                                             'Contract present',
-                                            'manageentities'
+                                            'manageentities',
                                         ) . ' : </b>' . $list[$i]['contract_added'],
                                         $item_num,
                                         $row_num,
-                                        "colspan='2'"
+                                        "colspan='2'",
                                     );
                                 }
                             } else {
@@ -1021,11 +1021,11 @@ class Followup extends CommonDBTM
                                 $html_output .= $output::showItem(
                                     '<b>' . __(
                                         'Date of signature',
-                                        'manageentities'
+                                        'manageentities',
                                     ) . ' : </b>' . $list[$i]['date_signature'],
                                     $item_num,
                                     $row_num,
-                                    "colspan='2'"
+                                    "colspan='2'",
                                 );
                             } else {
                                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['date_signature']];
@@ -1036,11 +1036,11 @@ class Followup extends CommonDBTM
                                 $html_output .= $output::showItem(
                                     '<b>' . __(
                                         'Date of renewal',
-                                        'manageentities'
+                                        'manageentities',
                                     ) . ' : </b>' . $list[$i]['date_renewal'],
                                     $item_num,
                                     $row_num,
-                                    "colspan='2'"
+                                    "colspan='2'",
                                 );
                             } else {
                                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['date_renewal']];
@@ -1052,26 +1052,26 @@ class Followup extends CommonDBTM
                                     $html_output .= $output::showItem(
                                         '<b>' . __(
                                             'Mode of management',
-                                            'manageentities'
+                                            'manageentities',
                                         ) . ' : </b>' . $list[$i]['management'],
                                         $item_num,
-                                        $row_num
+                                        $row_num,
                                     );
                                     $html_output .= $output::showItem(
                                         '<b>' . __(
                                             'Type of service contract',
-                                            'manageentities'
+                                            'manageentities',
                                         ) . ' : </b>' . Contract::getContractType(
-                                            $list[$i]['contract_type']
+                                            $list[$i]['contract_type'],
                                         ),
                                         $item_num,
-                                        $row_num
+                                        $row_num,
                                     );
                                 } else {
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['management']];
                                     $current_row[$itemtype . '_' . (++$colnum)] = [
                                         'displayname' => Contract::getContractType(
-                                            $list[$i]['contract_type']
+                                            $list[$i]['contract_type'],
                                         ),
                                     ];
                                 }
@@ -1089,7 +1089,7 @@ class Followup extends CommonDBTM
                         $row_num++;
                         $item_num = 0;
 
-//                    2eme ligne header only html
+                        //                    2eme ligne header only html
                         if ($is_html_output) {
                             $html_output .= $output::showNewLine();
                             $html_output .= $output::showHeaderItem(
@@ -1098,7 +1098,7 @@ class Followup extends CommonDBTM
                                 '',
                                 0,
                                 '',
-                                " $colspanNoprice style='" . Monthly::$style[1] . "'"
+                                " $colspanNoprice style='" . Monthly::$style[1] . "'",
                             );
                             $html_output .= $output::showHeaderItem(
                                 ContractState::getTypeName(1),
@@ -1106,7 +1106,7 @@ class Followup extends CommonDBTM
                                 '',
                                 0,
                                 '',
-                                "colspan='2' style='" . Monthly::$style[1] . "'"
+                                "colspan='2' style='" . Monthly::$style[1] . "'",
                             );
                             if ($config->fields['hourorday'] == Config::DAY) {
                                 $html_output .= $output::showHeaderItem(
@@ -1115,19 +1115,18 @@ class Followup extends CommonDBTM
                                     '',
                                     0,
                                     '',
-                                    "colspan='2' style='" . Monthly::$style[1] . "'"
+                                    "colspan='2' style='" . Monthly::$style[1] . "'",
                                 );
                             }
 
-                            if ($config->fields['hourorday'] == Config::HOUR)// Coslpan if type = Hourly
-                            {
+                            if ($config->fields['hourorday'] == Config::HOUR) {// Coslpan if type = Hourly
                                 $html_output .= $output::showHeaderItem(
                                     __('End date'),
                                     $item_num,
                                     '',
                                     0,
                                     '',
-                                    "colspan='2'"
+                                    "colspan='2'",
                                 );
                             } else {
                                 $html_output .= $output::showHeaderItem(__('End date'), $item_num, '');
@@ -1138,7 +1137,7 @@ class Followup extends CommonDBTM
                                 '',
                                 0,
                                 '',
-                                "$colspanNoprice style='" . Monthly::$style[1] . "'"
+                                "$colspanNoprice style='" . Monthly::$style[1] . "'",
                             );
                             $html_output .= $output::showHeaderItem(
                                 __('Total consummated', 'manageentities'),
@@ -1146,7 +1145,7 @@ class Followup extends CommonDBTM
                                 '',
                                 0,
                                 '',
-                                "style='" . Monthly::$style[1] . "'"
+                                "style='" . Monthly::$style[1] . "'",
                             );
                             if (Session::getCurrentInterface() == 'helpdesk'
                                 && ($config->fields['hourorday'] == Config::HOUR
@@ -1157,74 +1156,67 @@ class Followup extends CommonDBTM
                                     '',
                                     0,
                                     '',
-                                    "style='" . Monthly::$style[1] . "'"
+                                    "style='" . Monthly::$style[1] . "'",
                                 );
                                 $html_output .= $output::showHeaderItem(
-
                                     '',
                                     $item_num,
                                     '',
                                     0,
                                     '',
-                                    "style='" . Monthly::$style[1] . "'"
+                                    "style='" . Monthly::$style[1] . "'",
                                 );
                             } else {
                                 $html_output .= $output::showHeaderItem(
-
                                     __('Total remaining', 'manageentities'),
                                     $item_num,
                                     '',
                                     0,
                                     '',
-                                    "style='" . Monthly::$style[1] . "'"
+                                    "style='" . Monthly::$style[1] . "'",
                                 );
                                 if (Session::getCurrentInterface() == 'central') {
                                     $html_output .= $output::showHeaderItem(
-
                                         __('Total exceeding', 'manageentities'),
                                         $item_num,
                                         '',
                                         0,
                                         '',
-                                        "style='" . Monthly::$style[1] . "'"
+                                        "style='" . Monthly::$style[1] . "'",
                                     );
                                     if ($config->fields['useprice'] == Config::PRICE) {
                                         $html_output .= $output::showHeaderItem(
-
                                             __('Last visit', 'manageentities'),
                                             $item_num,
                                             '',
                                             0,
                                             '',
-                                            "style='" . Monthly::$style[1] . "'"
+                                            "style='" . Monthly::$style[1] . "'",
                                         );
                                         $html_output .= $output::showHeaderItem(
-
                                             __('Guaranteed package', 'manageentities'),
                                             $item_num,
                                             '',
                                             0,
                                             '',
-                                            "style='" . Monthly::$style[1] . "'"
+                                            "style='" . Monthly::$style[1] . "'",
                                         );
                                         $html_output .= $output::showHeaderItem(
-
                                             __('Remaining total (amount)', 'manageentities'),
                                             $item_num,
                                             '',
                                             0,
                                             '',
-                                            "style='" . Monthly::$style[1] . "'"
+                                            "style='" . Monthly::$style[1] . "'",
                                         );
                                     } else {
                                         $html_output .= $output::showHeaderItem(
-
                                             __('Last visit', 'manageentities'),
                                             $item_num,
                                             '',
                                             0,
                                             '',
-                                            " colspan='2' style='" . Monthly::$style[1] . "'"
+                                            " colspan='2' style='" . Monthly::$style[1] . "'",
                                         );
                                     }
                                 }
@@ -1241,20 +1233,19 @@ class Followup extends CommonDBTM
                                 $html_output .= self::showNewLine(
                                     false,
                                     $day['contract_is_closed'],
-                                    $day['contractstates_color']
+                                    $day['contractstates_color'],
                                 );
                             }
-//                            if (Session::getCurrentInterface() == 'central' && $output_type != Search::HTML_OUTPUT) {
-//                                //                            $html_output .= $output::showItem( '', $item_num, $row_num);
-//                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-//                            }
+                            //                            if (Session::getCurrentInterface() == 'central' && $output_type != Search::HTML_OUTPUT) {
+                            //                                //                            $html_output .= $output::showItem( '', $item_num, $row_num);
+                            //                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
+                            //                            }
                             if ($is_html_output) {
                                 $html_output .= $output::showItem(
-
                                     $day['contractday_name'],
                                     $item_num,
                                     $row_num,
-                                    " $colspanNoprice "
+                                    " $colspanNoprice ",
                                 );
                             } else {
                                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['contractday_name']];
@@ -1262,11 +1253,10 @@ class Followup extends CommonDBTM
 
                             if ($is_html_output) {
                                 $html_output .= $output::showItem(
-
                                     $day['contractstates'],
                                     $item_num,
                                     $row_num,
-                                    "colspan='2' "
+                                    "colspan='2' ",
                                 );
                             } else {
                                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['contractstates']];
@@ -1278,25 +1268,24 @@ class Followup extends CommonDBTM
                                         Contract::getContractType($day['contract_type']),
                                         $item_num,
                                         $row_num,
-                                        "colspan='2' "
+                                        "colspan='2' ",
                                     );
                                 } else {
                                     $current_row[$itemtype . '_' . (++$colnum)] = [
                                         'displayname' => Contract::getContractType(
-                                            $day['contract_type']
-                                        )
+                                            $day['contract_type'],
+                                        ),
                                     ];
                                 }
                             }
 
-                            if ($config->fields['hourorday'] == Config::HOUR)// Coslpan if type = Hourly
-                            {
+                            if ($config->fields['hourorday'] == Config::HOUR) {// Coslpan if type = Hourly
                                 if ($is_html_output) {
                                     $html_output .= $output::showItem(
                                         $day['end_date'] ?? '',
                                         $item_num,
                                         $row_num,
-                                        "colspan='2' "
+                                        "colspan='2' ",
                                     );
                                 } else {
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['end_date']];
@@ -1317,7 +1306,7 @@ class Followup extends CommonDBTM
                                         \Dropdown::EMPTY_VALUE,
                                         $item_num,
                                         $row_num,
-                                        "$colspanNoprice "
+                                        "$colspanNoprice ",
                                     );
                                 } else {
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
@@ -1328,15 +1317,15 @@ class Followup extends CommonDBTM
                                         Html::formatNumber($day['credit'], 0, 2),
                                         $item_num,
                                         $row_num,
-                                        "$colspanNoprice "
+                                        "$colspanNoprice ",
                                     );
                                 } else {
                                     $current_row[$itemtype . '_' . (++$colnum)] = [
                                         'displayname' => Html::formatNumber(
                                             $day['credit'],
                                             0,
-                                            2
-                                        )
+                                            2,
+                                        ),
                                     ];
                                 }
                             }
@@ -1351,15 +1340,15 @@ class Followup extends CommonDBTM
                                             Html::formatNumber($day['credit'], 0, 2),
                                             $item_num,
                                             $row_num,
-                                            ""
+                                            "",
                                         );
                                     } else {
                                         $current_row[$itemtype . '_' . (++$colnum)] = [
                                             'displayname' => Html::formatNumber(
                                                 $day['credit'],
                                                 0,
-                                                2
-                                            )
+                                                2,
+                                            ),
                                         ];
                                     }
                                 } else {
@@ -1368,15 +1357,15 @@ class Followup extends CommonDBTM
                                             Html::formatNumber($day['conso'], 0, 2),
                                             $item_num,
                                             $row_num,
-                                            ""
+                                            "",
                                         );
                                     } else {
                                         $current_row[$itemtype . '_' . (++$colnum)] = [
                                             'displayname' => Html::formatNumber(
                                                 $day['conso'],
                                                 0,
-                                                2
-                                            )
+                                                2,
+                                            ),
                                         ];
                                     }
                                 }
@@ -1398,21 +1387,21 @@ class Followup extends CommonDBTM
                                 }
                             } else {
                                 if (Session::getCurrentInterface(
-                                    ) == 'central' || $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT) {
+                                ) == 'central' || $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT) {
                                     if ($is_html_output) {
                                         $html_output .= $output::showItem(
                                             Html::formatNumber($day['reste'], 0, 2),
                                             $item_num,
                                             $row_num,
-                                            ""
+                                            "",
                                         );
                                     } else {
                                         $current_row[$itemtype . '_' . (++$colnum)] = [
                                             'displayname' => Html::formatNumber(
                                                 $day['reste'],
                                                 0,
-                                                2
-                                            )
+                                                2,
+                                            ),
                                         ];
                                     }
                                 } else {
@@ -1421,7 +1410,7 @@ class Followup extends CommonDBTM
                                             \Dropdown::EMPTY_VALUE,
                                             $item_num,
                                             $row_num,
-                                            ""
+                                            "",
                                         );
                                     } else {
                                         $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
@@ -1433,15 +1422,15 @@ class Followup extends CommonDBTM
                                             Html::formatNumber($day['depass'], 0, 2),
                                             $item_num,
                                             $row_num,
-                                            ""
+                                            "",
                                         );
                                     } else {
                                         $current_row[$itemtype . '_' . (++$colnum)] = [
                                             'displayname' => Html::formatNumber(
                                                 $day['depass'],
                                                 0,
-                                                2
-                                            )
+                                                2,
+                                            ),
                                         ];
                                     }
                                 }
@@ -1456,7 +1445,7 @@ class Followup extends CommonDBTM
                                             $day['reste_montant'],
                                             $item_num,
                                             $row_num,
-                                            ""
+                                            "",
                                         );
                                     } else {
                                         $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
@@ -1469,7 +1458,7 @@ class Followup extends CommonDBTM
                                             $day['last_visit'],
                                             $item_num,
                                             $row_num,
-                                            "colspan='2' "
+                                            "colspan='2' ",
                                         );
                                     } else {
                                         $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
@@ -1504,7 +1493,7 @@ class Followup extends CommonDBTM
                     }
                     $html_output .= $output::showFooter(
                         __('Entities portal', 'manageentities') . " - " . __('General follow-up', 'manageentities'),
-                        $numrows
+                        $numrows,
                     );
                 }
                 //                if ($is_html_output) {
@@ -1572,12 +1561,12 @@ class Followup extends CommonDBTM
      *
      * @return string to display
      **/
-    static function showNewLine($type, $odd = false, $is_deleted = false, $color = "")
+    public static function showNewLine($type, $odd = false, $is_deleted = false, $color = "")
     {
         $out = "";
         switch ($type) {
-            case Search::PDF_OUTPUT_LANDSCAPE : //pdf
-            case Search::PDF_OUTPUT_PORTRAIT :
+            case Search::PDF_OUTPUT_LANDSCAPE: //pdf
+            case Search::PDF_OUTPUT_PORTRAIT:
                 global $PDF_TABLE;
                 $style = "";
                 if ($odd) {
@@ -1586,10 +1575,10 @@ class Followup extends CommonDBTM
                 $PDF_TABLE .= "<tr $style nobr=\"true\">";
                 break;
 
-            case Search::CSV_OUTPUT : //csv
+            case Search::CSV_OUTPUT: //csv
                 break;
 
-            default :
+            default:
 
                 if ($color != "") {
                     $class = " style='background-color:" . $color . "' ";
@@ -1880,11 +1869,11 @@ class Followup extends CommonDBTM
             }
             echo "<select class='form-select' name='display_type'>";
             echo "<option value='" . Search::PDF_OUTPUT_LANDSCAPE . "'>" . __(
-                    'Current page in landscape PDF'
-                ) . "</option>";
+                'Current page in landscape PDF',
+            ) . "</option>";
             echo "<option value='" . Search::PDF_OUTPUT_PORTRAIT . "'>" . __(
-                    'Current page in portrait PDF'
-                ) . "</option>";
+                'Current page in portrait PDF',
+            ) . "</option>";
             echo "<option value='" . Search::CSV_OUTPUT . "'>" . __('Current page in CSV') . "</option>";
             echo "</select>&nbsp;";
             echo Html::submit(_sx('button', 'Export'), ['name' => 'export', 'class' => 'btn btn-primary']);

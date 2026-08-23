@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -46,128 +46,135 @@ $Contact         = new Contact();
 $ManageentitiesEntity          = new Entity();
 $BusinessContact = new BusinessContact();
 
-if (!isset($_POST["entities_id"]))
-   $_POST["entities_id"] = "";
+if (!isset($_POST["entities_id"])) {
+    $_POST["entities_id"] = "";
+}
 
 if (Session::getCurrentInterface() == 'central') {
-   Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
+    Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
 } else {
-   if (Plugin::isPluginActive('servicecatalog')) {
-      Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
-   } else {
-      Html::helpHeader(__('Entities portal', 'manageentities'));
-   }
+    if (Plugin::isPluginActive('servicecatalog')) {
+        Main::showDefaultHeaderHelpdesk(__('Entities portal', 'manageentities'));
+    } else {
+        Html::helpHeader(__('Entities portal', 'manageentities'));
+    }
 }
 
 if ($ManageentitiesEntity->canView()
     || Session::haveRight("config", UPDATE)) {
 
-   if (isset($_POST["addcontracts"])) {
-      // can(-1, CREATE, $input) enforces the CREATE right AND the target entity from
-      // the posted input, instead of the entity-agnostic global canCreate().
-      if ($Contract->can(-1, CREATE, $_POST))
-          $Contract->add($_POST);
-      Html::back();
+    if (isset($_POST["addcontracts"])) {
+        // can(-1, CREATE, $input) enforces the CREATE right AND the target entity from
+        // the posted input, instead of the entity-agnostic global canCreate().
+        if ($Contract->can(-1, CREATE, $_POST)) {
+            $Contract->add($_POST);
+        }
+        Html::back();
 
-   } else if (isset($_POST["deletecontracts"])) {
-      // can($id, DELETE) reloads the row and enforces the DELETE right AND entity
-      // access on it, preventing a cross-entity IDOR delete via a forged id.
-      if ($Contract->can((int) $_POST["id"], DELETE))
-          $Contract->delete(['id' => (int) $_POST["id"]]);
-      Html::back();
+    } elseif (isset($_POST["deletecontracts"])) {
+        // can($id, DELETE) reloads the row and enforces the DELETE right AND entity
+        // access on it, preventing a cross-entity IDOR delete via a forged id.
+        if ($Contract->can((int) $_POST["id"], DELETE)) {
+            $Contract->delete(['id' => (int) $_POST["id"]]);
+        }
+        Html::back();
 
-   } else if (isset($_POST["contractbydefault"])) {
-      // Align with the sibling branches: canCreate() is entity-agnostic. Enforce access to
-      // the posted entity AND reload the target row via can($id, UPDATE) before flipping the
-      // default flag, preventing a cross-entity IDOR.
-      if (
-         Session::haveAccessToEntity((int) $_POST["entities_id"])
-         && $Contract->can((int) $_POST["myid"], UPDATE)
-      ) {
-          $Contract->addContractByDefault((int) $_POST["myid"], (int) $_POST["entities_id"]);
-      }
-      Html::back();
+    } elseif (isset($_POST["contractbydefault"])) {
+        // Align with the sibling branches: canCreate() is entity-agnostic. Enforce access to
+        // the posted entity AND reload the target row via can($id, UPDATE) before flipping the
+        // default flag, preventing a cross-entity IDOR.
+        if (
+            Session::haveAccessToEntity((int) $_POST["entities_id"])
+            && $Contract->can((int) $_POST["myid"], UPDATE)
+        ) {
+            $Contract->addContractByDefault((int) $_POST["myid"], (int) $_POST["entities_id"]);
+        }
+        Html::back();
 
-   } else if (isset($_POST["addcontacts"])) {
-      if ($Contact->can(-1, CREATE, $_POST))
-          $Contact->add($_POST);
-      Html::back();
+    } elseif (isset($_POST["addcontacts"])) {
+        if ($Contact->can(-1, CREATE, $_POST)) {
+            $Contact->add($_POST);
+        }
+        Html::back();
 
-   } else if (isset($_POST["deletecontacts"])) {
-      if ($Contact->can((int) $_POST["id"], DELETE))
-          $Contact->delete(['id' => (int) $_POST["id"]]);
-      Html::back();
+    } elseif (isset($_POST["deletecontacts"])) {
+        if ($Contact->can((int) $_POST["id"], DELETE)) {
+            $Contact->delete(['id' => (int) $_POST["id"]]);
+        }
+        Html::back();
 
-   } else if (isset($_POST["addbusiness"])) {
-      if ($BusinessContact->can(-1, CREATE, $_POST))
-          $BusinessContact->add($_POST);
-      Html::back();
+    } elseif (isset($_POST["addbusiness"])) {
+        if ($BusinessContact->can(-1, CREATE, $_POST)) {
+            $BusinessContact->add($_POST);
+        }
+        Html::back();
 
-   } else if (isset($_POST["deletebusiness"])) {
-      if ($BusinessContact->can((int) $_POST["id"], DELETE))
-          $BusinessContact->delete(['id' => (int) $_POST["id"]]);
-      Html::back();
+    } elseif (isset($_POST["deletebusiness"])) {
+        if ($BusinessContact->can((int) $_POST["id"], DELETE)) {
+            $BusinessContact->delete(['id' => (int) $_POST["id"]]);
+        }
+        Html::back();
 
-   } else if (isset($_POST["contactbydefault"])) {
-      // Align with the sibling branches: canCreate() is entity-agnostic. Enforce access to
-      // the posted entity AND reload the target row via can($id, UPDATE) before flipping the
-      // default flag, preventing a cross-entity IDOR.
-      if (
-         Session::haveAccessToEntity((int) $_POST["entities_id"])
-         && $Contact->can((int) $_POST["contacts_id"], UPDATE)
-      ) {
-          $Contact->addContactByDefault((int) $_POST["contacts_id"], (int) $_POST["entities_id"]);
-      }
-      Html::back();
+    } elseif (isset($_POST["contactbydefault"])) {
+        // Align with the sibling branches: canCreate() is entity-agnostic. Enforce access to
+        // the posted entity AND reload the target row via can($id, UPDATE) before flipping the
+        // default flag, preventing a cross-entity IDOR.
+        if (
+            Session::haveAccessToEntity((int) $_POST["entities_id"])
+            && $Contact->can((int) $_POST["contacts_id"], UPDATE)
+        ) {
+            $Contact->addContactByDefault((int) $_POST["contacts_id"], (int) $_POST["entities_id"]);
+        }
+        Html::back();
 
-   } else {
-      // Manage entity change
-      if (isset($_GET["active_entity"])) {
-         if (!isset($_GET["is_recursive"])) {
-            $_GET["is_recursive"] = 0;
-         }
-         Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"]);
-         if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-            Html::redirect(preg_replace("/entities_id.*/", "", PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php"));
-         }
+    } else {
+        // Manage entity change
+        if (isset($_GET["active_entity"])) {
+            if (!isset($_GET["is_recursive"])) {
+                $_GET["is_recursive"] = 0;
+            }
+            Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"]);
+            if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
+                Html::redirect(preg_replace("/entities_id.*/", "", PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php"));
+            }
 
-      } else if (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
-         Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php?active_entity=" . $_POST["entities_id"] . "");
+        } elseif (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
+            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php?active_entity=" . $_POST["entities_id"] . "");
 
-      } else {
-         if (Session::getCurrentInterface() == 'central') {
-            $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 1));
-         } else {
-            $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 10));
-         }
-         $lastday = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+        } else {
+            if (Session::getCurrentInterface() == 'central') {
+                $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 1));
+            } else {
+                $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 10));
+            }
+            $lastday = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
 
-         if (date("d") == $lastday) {
-            $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
-            $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y")));
-         } else {
-            $month   = date("m");
-            $lastday = $month == 1 ? 31 : cal_days_in_month(CAL_GREGORIAN, $month - 1, date("Y"));
-            //$lastday = cal_days_in_month(CAL_GREGORIAN, date("m") - 1, date("Y"));
-            $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
-            $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
-         }
-         $options = ["begin_date_after"  => isset($_POST['begin_date_after']) ? $_POST['begin_date_after'] : $dateYear,
-                     "begin_date_before" => isset($_POST['begin_date_before']) ? $_POST['begin_date_before'] : "",
-                     "begin_date"        => isset($_POST['begin_date']) ? $_POST['begin_date'] : $dateMonthbegin,
-                     "end_date"          => isset($_POST['end_date']) ? $_POST['end_date'] : $dateMonthend,
-                     "end_date_after"    => isset($_POST['end_date_after']) ? $_POST['end_date_after'] : "",
-                     "end_date_before"   => isset($_POST['end_date_before']) ? $_POST['end_date_before'] : "",
-                     "contract_states"   => isset($_POST['contract_states']) ? $_POST['contract_states'] : -1,
-                     "entities_id"       => (isset($_POST['entities_id']) && (!empty($_POST['entities_id']))) ? $_POST['entities_id'] : -1,
-                     "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : -1,
-                     "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
-                     "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0];
+            if (date("d") == $lastday) {
+                $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+                $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y")));
+            } else {
+                $month   = date("m");
+                $lastday = $month == 1 ? 31 : cal_days_in_month(CAL_GREGORIAN, $month - 1, date("Y"));
+                //$lastday = cal_days_in_month(CAL_GREGORIAN, date("m") - 1, date("Y"));
+                $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
+                $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
+            }
+            $options = ["begin_date_after"  => isset($_POST['begin_date_after']) ? $_POST['begin_date_after'] : $dateYear,
+                "begin_date_before" => isset($_POST['begin_date_before']) ? $_POST['begin_date_before'] : "",
+                "begin_date"        => isset($_POST['begin_date']) ? $_POST['begin_date'] : $dateMonthbegin,
+                "end_date"          => isset($_POST['end_date']) ? $_POST['end_date'] : $dateMonthend,
+                "end_date_after"    => isset($_POST['end_date_after']) ? $_POST['end_date_after'] : "",
+                "end_date_before"   => isset($_POST['end_date_before']) ? $_POST['end_date_before'] : "",
+                "contract_states"   => isset($_POST['contract_states']) ? $_POST['contract_states'] : -1,
+                "entities_id"       => (isset($_POST['entities_id']) && (!empty($_POST['entities_id']))) ? $_POST['entities_id'] : -1,
+                "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : -1,
+                "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
+                "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0];
 
-         $entity = new Entity();
-         $entity->display($options);
-      }
-   }
+            $entity = new Entity();
+            $entity->display($options);
+        }
+    }
 
 } else {
     throw new AccessDeniedHttpException();
@@ -176,11 +183,11 @@ if ($ManageentitiesEntity->canView()
 if (Session::getCurrentInterface() != 'central'
     && Plugin::isPluginActive('servicecatalog')) {
 
-   Main::showNavBarFooter('manageentities');
+    Main::showNavBarFooter('manageentities');
 }
 
 if (Session::getCurrentInterface() == 'central') {
-   Html::footer();
+    Html::footer();
 } else {
-   Html::helpFooter();
+    Html::helpFooter();
 }

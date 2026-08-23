@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -39,12 +39,11 @@ if (!defined('GLPI_ROOT')) {
 
 class Servicecatalog extends CommonGLPI
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
+    public $dohistory = false;
 
-    var $dohistory = false;
-
-    static function canUse()
+    public static function canUse()
     {
         $Entity = new Entity();
         return $Entity->canView();
@@ -53,7 +52,7 @@ class Servicecatalog extends CommonGLPI
     /**
      * @return string
      */
-    static function getMenuLink()
+    public static function getMenuLink()
     {
         global $CFG_GLPI;
 
@@ -63,35 +62,35 @@ class Servicecatalog extends CommonGLPI
     /**
      * @return string
      */
-    static function getNavBarLink()
+    public static function getNavBarLink()
     {
         global $CFG_GLPI;
 
         return PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
     }
 
-    static function getMenuLogo()
+    public static function getMenuLogo()
     {
         return Entity::getIcon();
     }
 
-    static function getMenuTitle()
+    public static function getMenuTitle()
     {
         return __('Manage your contracts', 'manageentities');
     }
 
 
-    static function getMenuComment()
+    public static function getMenuComment()
     {
         return __('Manage your contracts', 'manageentities');
     }
 
-    static function getLinkList()
+    public static function getLinkList()
     {
         return "";
     }
 
-    static function getList()
+    public static function getList()
     {
         return "";
     }

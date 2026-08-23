@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -45,14 +45,13 @@ if (!defined('GLPI_ROOT')) {
 
 class DirectHelpdesk extends CommonDBTM
 {
-
-    static $rightname = 'plugin_manageentities_directhelpdesk';
+    public static $rightname = 'plugin_manageentities_directhelpdesk';
 
     public $dohistory = true;
 
-    const ONE_HOUR = 3600;
-    const TWO_HOUR = 7200;
-    const THREE_HOUR = 10800;
+    public const ONE_HOUR = 3600;
+    public const TWO_HOUR = 7200;
+    public const THREE_HOUR = 10800;
 
     public static function getTypeName($nb = 0)
     {
@@ -64,7 +63,7 @@ class DirectHelpdesk extends CommonDBTM
      *
      * @return array
      */
-    function defineTabs($options = [])
+    public function defineTabs($options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -76,7 +75,7 @@ class DirectHelpdesk extends CommonDBTM
     /**
      * @return array
      */
-    static function getMenuContent()
+    public static function getMenuContent()
     {
         $menu = [];
 
@@ -91,7 +90,7 @@ class DirectHelpdesk extends CommonDBTM
     /**
      * @return string
      */
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-file-euro";
     }
@@ -99,7 +98,7 @@ class DirectHelpdesk extends CommonDBTM
     /**
      * @return string form HTML
      */
-    static function loadModal()
+    public static function loadModal()
     {
         // Entity selector: capture its markup while keeping the rand for the AJAX callback.
         ob_start();
@@ -116,7 +115,7 @@ class DirectHelpdesk extends CommonDBTM
             PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/showalertbyentity.php",
             ['entities_id' => '__VALUE__'],
             'dropdown_entities_id' . $rand,
-            false
+            false,
         );
         $JS .= "}";
         $js_block = Html::scriptBlock($JS);
@@ -190,17 +189,17 @@ class DirectHelpdesk extends CommonDBTM
                 0 => [
                     'field' => 11,
                     'searchtype' => 'equals',
-                    'value' => '0'
-                ]
+                    'value' => '0',
+                ],
             ],
             'sort' => 4,
-            'order' => 'ASC'
+            'order' => 'ASC',
         ];
 
         return $search;
     }
 
-    function prepareInputForAdd($input)
+    public function prepareInputForAdd($input)
     {
         if (!$this->checkMandatoryFields($input)) {
             return false;
@@ -215,7 +214,7 @@ class DirectHelpdesk extends CommonDBTM
         return $input;
     }
 
-    function post_addItem()
+    public function post_addItem()
     {
         if (isset($this->input["tickets_id"])) {
             $ticket = new DirectHelpdesk_Ticket();
@@ -225,7 +224,7 @@ class DirectHelpdesk extends CommonDBTM
         }
     }
 
-    function post_updateItem($history = true)
+    public function post_updateItem($history = true)
     {
         if (isset($this->input["tickets_id"])) {
             $ticket = new DirectHelpdesk_Ticket();
@@ -251,7 +250,7 @@ class DirectHelpdesk extends CommonDBTM
      *
      * @return boolean
      */
-    function checkMandatoryFields($input)
+    public function checkMandatoryFields($input)
     {
         $msg = [];
         $checkKo = false;
@@ -259,7 +258,7 @@ class DirectHelpdesk extends CommonDBTM
         $mandatory_fields = [
             'name' => __('Title'),
             'date' => __('Date'),
-            'actiontime' => __('Duration')
+            'actiontime' => __('Duration'),
         ];
 
         foreach ($input as $key => $value) {
@@ -275,7 +274,7 @@ class DirectHelpdesk extends CommonDBTM
             Session::addMessageAfterRedirect(
                 sprintf(__("Mandatory fields are not filled. Please correct: %s"), implode(', ', $msg)),
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         }
@@ -284,7 +283,7 @@ class DirectHelpdesk extends CommonDBTM
             Session::addMessageAfterRedirect(
                 __('You cannot add an intervention on this entity', 'manageentities'),
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         }
@@ -292,7 +291,7 @@ class DirectHelpdesk extends CommonDBTM
         return true;
     }
 
-    function showForm($ID, $options = [])
+    public function showForm($ID, $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_form.html.twig', [
@@ -303,7 +302,7 @@ class DirectHelpdesk extends CommonDBTM
         return true;
     }
 
-    static function showDashboard($min_sum = 0)
+    public static function showDashboard($min_sum = 0)
     {
         global $CFG_GLPI;
 
@@ -377,7 +376,7 @@ class DirectHelpdesk extends CommonDBTM
                     [
                         'title'   => __('Create a ticket'),
                         'display' => false,
-                    ]
+                    ],
                 );
             }
 
@@ -415,13 +414,13 @@ class DirectHelpdesk extends CommonDBTM
     /**
      * @return array
      */
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = [];
 
         $tab[] = [
             'id' => 'common',
-            'name' => self::getTypeName(2)
+            'name' => self::getTypeName(2),
         ];
 
         $tab[] = [
@@ -455,7 +454,7 @@ class DirectHelpdesk extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'actiontime',
             'name' => __('Duration'),
-            'datatype' => 'timestamp'
+            'datatype' => 'timestamp',
         ];
 
         $tab[] = [
@@ -511,7 +510,7 @@ class DirectHelpdesk extends CommonDBTM
         return $tab;
     }
 
-    function displayAlertforEntity($instID)
+    public function displayAlertforEntity($instID)
     {
         global $DB;
 
@@ -523,16 +522,16 @@ class DirectHelpdesk extends CommonDBTM
             'FROM' => $this->getTable(),
             'WHERE' => [
                 $this->getTable() . '.is_billed' => 0,
-                $this->getTable() . '.entities_id' => $instID
+                $this->getTable() . '.entities_id' => $instID,
             ],
         ]);
 
         if (count($iterator) > 0) {
             $alert .= "<div class='alert alert-danger d-flex'>";
             $alert .= "<b>" . __(
-                    "Please note that there are unbilled interventions for this customer.",
-                    "manageentities"
-                ) . "</b></div>";
+                "Please note that there are unbilled interventions for this customer.",
+                "manageentities",
+            ) . "</b></div>";
         }
         return $alert;
     }

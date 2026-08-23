@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 class Report extends CommonDBTM
 {
-    static $rightname = 'plugin_manageentities';
+    public static $rightname = 'plugin_manageentities';
 
     /**
      * Report on the movement of technicians
@@ -54,7 +54,7 @@ class Report extends CommonDBTM
      * @global type $CFG_GLPI
      *
      */
-    function showMovingReports($entities_id, $category_id, $date1, $date2)
+    public function showMovingReports($entities_id, $category_id, $date1, $date2)
     {
         global $DB, $CFG_GLPI;
 
@@ -71,6 +71,13 @@ class Report extends CommonDBTM
 
         foreach ($entities_id as $entity_id) {
             $entity_id = (int) $entity_id;
+            // Entity scope: the entities_id list is posted by the caller. Skip
+            // any entity outside its active scope, otherwise this aggregate
+            // report leaks intervention totals of entities the user cannot
+            // access (cross-entity IDOR).
+            if (!Session::haveAccessToEntity($entity_id)) {
+                continue;
+            }
             $iterator = $DB->request([
                 'SELECT'    => [
                     'glpi_tickets.id AS tickets_id',
@@ -113,7 +120,7 @@ class Report extends CommonDBTM
                         ['glpi_plugin_manageentities_cridetails.date' => ['>=', $date1]],
                         ['glpi_plugin_manageentities_cridetails.date' => ['<=', $date2]],
                     ],
-                    $dbu->getEntitiesRestrictCriteria('glpi_documents', '', $entity_id, true)
+                    $dbu->getEntitiesRestrictCriteria('glpi_documents', '', $entity_id, true),
                 ),
                 'GROUPBY'   => 'glpi_documents.tickets_id',
                 'ORDER'     => 'glpi_plugin_manageentities_cridetails.date ASC',
@@ -147,12 +154,11 @@ class Report extends CommonDBTM
             echo "<tr><th colspan='4'>" . __('Report on the movement of technicians', 'manageentities') . "</th></tr>";
             echo "<tr>";
 
-            echo "<th>" . _n('Entity', 'Entities', 1). "</th>";
+            echo "<th>" . _n('Entity', 'Entities', 1) . "</th>";
             echo "<th>" . __('Total moving package', 'manageentities') . "</th>";
             echo "<th>" . __('Total time of the tasks of a category', 'manageentities') . "</th>";
             echo "<th>" . __('Total') . "</th>";
             echo "</tr>";
-
 
             $i = 0;
             foreach ($resultat as $key => $row) {
@@ -184,14 +190,14 @@ class Report extends CommonDBTM
      *
      * @global type $DB
      */
-    function showOccupationReports($techs, $date1, $date2)
+    public function showOccupationReports($techs, $date1, $date2)
     {
         global $DB, $CFG_GLPI;
 
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date1) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date2)) {
             return;
         }
-        $techs = array_map('intval', (array)$techs);
+        $techs = array_map('intval', (array) $techs);
 
         $days = self::getDatesBetween2Dates($date1, $date2);
         $dbu = new DbUtils();
@@ -202,17 +208,17 @@ class Report extends CommonDBTM
 
             $hour = 0;
             switch ($day['day']) {
-                case "Mon" :
-                case "Tue" :
-                case "Wed" :
+                case "Mon":
+                case "Tue":
+                case "Wed":
                 case "Thu":
                     $hour = 8;
                     break;
-                case "Fri" :
+                case "Fri":
                     $hour = 7;
                     break;
-                case "Sat" :
-                case "Sun" :
+                case "Sat":
+                case "Sun":
                     $hour = 0;
                     break;
             }
@@ -239,13 +245,21 @@ class Report extends CommonDBTM
                                 ],
                             ],
                         ],
-                        'WHERE'     => [
-                            'glpi_tickettasks.begin'         => ['>=', $date_begin],
-                            'glpi_tickettasks.end'           => ['<=', $date_end],
-                            'glpi_tickets.is_deleted'        => 0,
-                            'glpi_tickettasks.users_id_tech' => (int) $tech,
-                            'glpi_tickettasks.actiontime'    => ['<>', 0],
-                        ],
+                        'WHERE'     => array_merge(
+                            [
+                                'glpi_tickettasks.begin'         => ['>=', $date_begin],
+                                'glpi_tickettasks.end'           => ['<=', $date_end],
+                                'glpi_tickets.is_deleted'        => 0,
+                                'glpi_tickettasks.users_id_tech' => (int) $tech,
+                                'glpi_tickettasks.actiontime'    => ['<>', 0],
+                            ],
+                            // Entity scope: the tech ids are posted by the caller
+                            // and the query filters only on users_id_tech. Restrict
+                            // the tickets to the caller's active entities so the
+                            // report cannot enumerate a technician's occupation on
+                            // tickets outside its scope (cross-entity IDOR).
+                            $dbu->getEntitiesRestrictCriteria('glpi_tickets', '', '', true),
+                        ),
                     ]);
 
                     foreach ($iterator as $task) {
@@ -259,8 +273,8 @@ class Report extends CommonDBTM
 
                 $resultat[$day['date']]['total'] = $total_actiontime / HOUR_TIMESTAMP;
                 $resultat[$day['date']]['total_justified'] = (($total_actiontime / HOUR_TIMESTAMP) / (count(
-                                $techs
-                            ) * $hour)) * 100;
+                    $techs,
+                ) * $hour)) * 100;
             }
         }
 
@@ -268,9 +282,9 @@ class Report extends CommonDBTM
             echo "<form method='post' action=\"./front/entity.php\">";
             echo "<div class='center'><table class='tab_cadre center' width='95%'>";
             echo "<tr><th colspan='" . (count($techs) + 3) . "'>" . __(
-                    'Report concerning the occupation of the technicians',
-                    'manageentities'
-                ) . "</th></tr>";
+                'Report concerning the occupation of the technicians',
+                'manageentities',
+            ) . "</th></tr>";
             echo "<tr>";
             echo "<th>" . __('Daily schedule', 'manageentities') . "</th>";
             echo "<th colspan='" . (count($techs) + 1) . "'>" . __('Technicians', 'manageentities') . "</th>";
@@ -285,7 +299,6 @@ class Report extends CommonDBTM
             echo "<th>" . __('Total') . "</th>";
             echo "<th>" . __('% of time justified', 'manageentities') . "</th>";
             echo "</tr>";
-
 
             $i = 0;
             foreach ($resultat as $key => $data) {
@@ -316,14 +329,13 @@ class Report extends CommonDBTM
      *
      * @return array
      */
-    function getDatesBetween2Dates($startTime, $endTime)
+    public function getDatesBetween2Dates($startTime, $endTime)
     {
         $day = 86400;
         $startTime = strtotime($startTime);
         $endTime = strtotime($endTime);
         $numDays = round(($endTime - $startTime) / $day) + 1;
         $days = [];
-
 
         for ($i = 0; $i < $numDays; $i++) {
             $days[date('ymd', ($startTime + ($i * $day)))]['date'] = date('Y-m-d', ($startTime + ($i * $day)));
@@ -344,7 +356,7 @@ class Report extends CommonDBTM
      * @return (array) aDates : tableau des dates si succès
      * @return (bool) false : si échec
      */
-    function getDatesBetween($dStart, $dEnd)
+    public function getDatesBetween($dStart, $dEnd)
     {
         $iStart = strtotime($dStart);
         $iEnd = strtotime($dEnd);
@@ -357,10 +369,10 @@ class Report extends CommonDBTM
             return false;
         }
         if (false === checkdate($aStart[1], $aStart[2], $aStart[0]) || false === checkdate(
-                $aEnd[1],
-                $aEnd[2],
-                $aEnd[0]
-            ) || $iEnd <= $iStart) {
+            $aEnd[1],
+            $aEnd[2],
+            $aEnd[0],
+        ) || $iEnd <= $iStart) {
             return false;
         }
         for ($i = $iStart; $i < $iEnd + 86400; $i = strtotime('+1 day', $i)) {
@@ -369,7 +381,7 @@ class Report extends CommonDBTM
             $sMonth = substr($sDateToArr, 5, 2);
             $aDates[$sYear][$sMonth][] = $sDateToArr;
         }
-        if (isset ($aDates) && !empty ($aDates)) {
+        if (isset($aDates) && !empty($aDates)) {
             return $aDates;
         } else {
             return false;

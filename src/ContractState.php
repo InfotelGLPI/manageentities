@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -32,7 +32,6 @@ namespace GlpiPlugin\Manageentities;
 use CommonDropdown;
 use DBConnection;
 use DbUtils;
-
 use Migration;
 use Session;
 
@@ -42,46 +41,45 @@ if (!defined('GLPI_ROOT')) {
 
 class ContractState extends CommonDropdown
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('State of contract', 'States of contracts', $nb, 'manageentities');
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    function getAdditionalFields()
+    public function getAdditionalFields()
     {
         return [
             [
                 'name' => 'is_active',
                 'label' => __('Active'),
-                'type' => 'bool'
+                'type' => 'bool',
             ],
             [
                 'name' => 'is_closed',
                 'label' => __('Closed'),
-                'type' => 'bool'
+                'type' => 'bool',
             ],
             [
                 'name' => 'color',
                 'label' => __('Color', 'manageentities'),
-                'type' => 'text'
+                'type' => 'text',
             ],
         ];
     }
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -90,7 +88,7 @@ class ContractState extends CommonDropdown
             'table' => $this->getTable(),
             'field' => 'is_active',
             'name' => __('Active'),
-            'datatype' => 'bool'
+            'datatype' => 'bool',
         ];
 
         $tab[] = [
@@ -98,7 +96,7 @@ class ContractState extends CommonDropdown
             'table' => $this->getTable(),
             'field' => 'is_closed',
             'name' => __('Closed'),
-            'datatype' => 'bool'
+            'datatype' => 'bool',
         ];
 
         $tab[] = [
@@ -106,7 +104,7 @@ class ContractState extends CommonDropdown
             'table' => $this->getTable(),
             'field' => 'color',
             'name' => __('Color', 'manageentities'),
-            'datatype' => 'bool'
+            'datatype' => 'bool',
         ];
 
         return $tab;
@@ -122,7 +120,7 @@ class ContractState extends CommonDropdown
         return $this->checkColor($input);
     }
 
-    function checkColor($input)
+    public function checkColor($input)
     {
         $color = $input['color'] ?? null;
         if ($color === null || $color === '') {
@@ -135,7 +133,7 @@ class ContractState extends CommonDropdown
         return $input;
     }
 
-    static function getOpenedStates()
+    public static function getOpenedStates()
     {
         $out = [];
         $dbu = new DbUtils();

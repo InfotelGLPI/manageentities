@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -47,20 +47,19 @@ if (!defined('GLPI_ROOT')) {
 
 class InterventionStakeholder extends CommonDBTM
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('User affected', 'Users affected', $nb, 'manageentities');
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
@@ -70,16 +69,16 @@ class InterventionStakeholder extends CommonDBTM
         return "ti ti-user-pentagon";
     }
 
-    static function countForItem(CommonDBTM $item)
+    public static function countForItem(CommonDBTM $item)
     {
         $dbu = new DbUtils();
         return $dbu->countElementsInTable(
             'glpi_plugin_manageentities_interventionstakeholders',
-            ["plugin_manageentities_contractdays_id" => $item->fields['id']]
+            ["plugin_manageentities_contractdays_id" => $item->fields['id']],
         );
     }
 
-    function defineTabs($options = [])
+    public function defineTabs($options = [])
     {
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
@@ -87,7 +86,7 @@ class InterventionStakeholder extends CommonDBTM
         return $ong;
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item->getType()) {
@@ -95,7 +94,7 @@ class InterventionStakeholder extends CommonDBTM
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         return self::createTabEntry(
                             InterventionStakeholder::getTypeName(self::countForItem($item)),
-                            self::countForItem($item)
+                            self::countForItem($item),
                         );
                     } else {
                         return self::createTabEntry(InterventionStakeholder::getTypeName($item));
@@ -106,7 +105,7 @@ class InterventionStakeholder extends CommonDBTM
     }
 
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $interventionStakeholder = new InterventionStakeholder();
         if ($item->getType() == ContractDay::class) {
@@ -189,11 +188,11 @@ class InterventionStakeholder extends CommonDBTM
             echo "var tmpCell=row.insertCell(0);\n";
             echo "tmpCell.innerHTML=\"";
             echo "<a href='" . $link . "' target='_blank'>" . $dbu->formatUserName(
-                    $user->fields['id'],
-                    $user->fields['name'],
-                    $user->fields['realname'],
-                    $user->fields['firstname']
-                ) . "</a>";
+                $user->fields['id'],
+                $user->fields['name'],
+                $user->fields['realname'],
+                $user->fields['firstname'],
+            ) . "</a>";
             echo "\";";
 
             echo "tmpCell=row.insertCell(1);";
@@ -262,10 +261,10 @@ class InterventionStakeholder extends CommonDBTM
                         $user->fields['id'],
                         $user->fields['name'],
                         $user->fields['realname'],
-                        $user->fields['firstname']
+                        $user->fields['firstname'],
                     ),
                     ENT_QUOTES,
-                    'UTF-8'
+                    'UTF-8',
                 ) . "</a>";
 
             $delete_btn = '';

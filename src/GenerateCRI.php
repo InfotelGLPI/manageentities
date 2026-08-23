@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -60,14 +60,13 @@ if (!defined('GLPI_ROOT')) {
  */
 class GenerateCRI extends CommonGLPI
 {
+    public static $rightname = "ticket";
 
-    static $rightname = "ticket";
-
-    const TASK_TO_DO = 1;
-    const TASK_DONE = 2;
-    const MINUTE = 60;
-    const HOUR = 3600;
-    const DAY = 86400;
+    public const TASK_TO_DO = 1;
+    public const TASK_DONE = 2;
+    public const MINUTE = 60;
+    public const HOUR = 3600;
+    public const DAY = 86400;
 
     /**
      * @param int $nb
@@ -76,7 +75,7 @@ class GenerateCRI extends CommonGLPI
      * @see CommonDBTM::getTypeName($nb)
      *
      */
-    static function getMenuName($nb = 0)
+    public static function getMenuName($nb = 0)
     {
         return __('Generate report intervention', 'manageentities');
     }
@@ -84,7 +83,7 @@ class GenerateCRI extends CommonGLPI
     /**
      * @return array
      */
-    static function getMenuContent()
+    public static function getMenuContent()
     {
         $menu = [];
 
@@ -99,7 +98,7 @@ class GenerateCRI extends CommonGLPI
     /**
      * @return string
      */
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-clipboard-text";
     }
@@ -109,7 +108,7 @@ class GenerateCRI extends CommonGLPI
      * @param $entities
      *
      */
-    function showWizard($ticket, $entities)
+    public function showWizard($ticket, $entities)
     {
         $rand = mt_rand();
         $rand_user = mt_rand();
@@ -123,7 +122,7 @@ class GenerateCRI extends CommonGLPI
                 'tickettype',
                 $_SESSION['glpiactive_entity'],
                 '',
-                Ticket::INCIDENT_TYPE
+                Ticket::INCIDENT_TYPE,
             ),
             'content' => '',
             'name' => '',
@@ -131,17 +130,15 @@ class GenerateCRI extends CommonGLPI
             'status' => CommonITILObject::PLANNED,
             'urgency' => 3,
             'impact' => 3,
-            'priority' => (int)Ticket::computePriority(3, 3),
+            'priority' => (int) Ticket::computePriority(3, 3),
             '_tasktemplates_id' => [],
-            'users_intervenor' => [Session::getLoginUserID()]
+            'users_intervenor' => [Session::getLoginUserID()],
         ];
-
 
         // Get default values from posted values on reload form
         if (isset($_POST)) {
             $options = $_POST;
         }
-
 
         if (isset($options['name'])) {
             $order = ["\\'", '\\"', "\\\\"];
@@ -172,31 +169,30 @@ class GenerateCRI extends CommonGLPI
             $cat = new ITILCategory();
             if ($cat->getFromDB($options['itilcategories_id'])) {
                 switch ($options['type']) {
-                    case Ticket::INCIDENT_TYPE :
+                    case Ticket::INCIDENT_TYPE:
                         if (!$cat->getField('is_incident')) {
                             $options['itilcategories_id'] = 0;
                         }
                         break;
 
-                    case Ticket::DEMAND_TYPE :
+                    case Ticket::DEMAND_TYPE:
                         if (!$cat->getField('is_request')) {
                             $options['itilcategories_id'] = 0;
                         }
                         break;
 
-                    default :
+                    default:
                         break;
                 }
             }
         }
-
 
         // Load ticket template if available :
         $tt = $ticket->getITILTemplateToUse(
             false,
             $options['type'],
             $options['itilcategories_id'],
-            $_SESSION["glpiactive_entity"]
+            $_SESSION["glpiactive_entity"],
         );
 
         // Predefined fields from template : reset them
@@ -264,7 +260,7 @@ class GenerateCRI extends CommonGLPI
             'name' => 'entities_id',
             'rand' => $rand,
             'on_change' => 'this.form.submit()',
-            'value' => $options['entities_id']
+            'value' => $options['entities_id'],
         ];
         $entity_dropdown = $capture(fn() => \Entity::dropdown($opt));
 
@@ -277,25 +273,25 @@ class GenerateCRI extends CommonGLPI
             'type' => '__VALUE__',
             'entity_restrict' => $entities,
             'value' => $options['itilcategories_id'],
-            'currenttype' => $options['type']
+            'currenttype' => $options['type'],
         ];
         Ajax::updateItemOnSelectEvent(
             "dropdown_type$rand",
             "show_category_by_type",
             "../ajax/dropdownGenerateCriCategories.php",
-            $params
+            $params,
         );
         $type_dropdown = ob_get_clean();
 
         $conditions = [];
         switch ($options['type']) {
-            case Ticket::INCIDENT_TYPE :
+            case Ticket::INCIDENT_TYPE:
                 $conditions['is_incident'] = 1;
                 break;
-            case Ticket::DEMAND_TYPE :
+            case Ticket::DEMAND_TYPE:
                 $conditions['is_request'] = 1;
                 break;
-            default :
+            default:
                 break;
         }
 
@@ -311,7 +307,7 @@ class GenerateCRI extends CommonGLPI
         $label_category = sprintf(
             __('%1$s%2$s'),
             __('Category'),
-            $tt->getMandatoryMark('itilcategories_id')
+            $tt->getMandatoryMark('itilcategories_id'),
         );
         ob_start();
         echo "<span id='show_category_by_type'>";
@@ -409,7 +405,7 @@ class GenerateCRI extends CommonGLPI
         $technician_dropdown = $capture(fn() => \Dropdown::showFromArray('users_intervenor', $techs, [
             'values' => $options["users_intervenor"],
             'multiple' => true,
-            'entity' => $entities
+            'entity' => $entities,
         ]));
 
         // Predefined task info block
@@ -471,8 +467,8 @@ class GenerateCRI extends CommonGLPI
                 'maybeempty' => false,
                 'canedit' => true,
                 'mindate' => '',
-                'maxdate' => ''
-            ]
+                'maxdate' => '',
+            ],
         ));
 
         ob_start();
@@ -480,7 +476,7 @@ class GenerateCRI extends CommonGLPI
             'value' => $config->getField("default_duration"),
             'min' => 0,
             'max' => 50 * HOUR_TIMESTAMP,
-            'emptylabel' => __('Specify an end date')
+            'emptylabel' => __('Specify an end date'),
         ]);
         echo "<br><div id='date_end$rand'></div>";
         $event_options = ['duration' => '__VALUE__', 'name' => "plan[end]"];
@@ -488,7 +484,7 @@ class GenerateCRI extends CommonGLPI
             "dropdown_plan[_duration]$rand",
             "date_end$rand",
             "../ajax/taskend.php",
-            $event_options
+            $event_options,
         );
         $task_duration_field = ob_get_clean();
 
@@ -498,14 +494,14 @@ class GenerateCRI extends CommonGLPI
             'rand' => $rand_user,
             'value' => Session::getLoginUserID(),
             'entity' => $options["entities_id"],
-            'width' => '80%'
+            'width' => '80%',
         ];
         $task_user_dropdown = $capture(fn() => User::dropdown($params));
 
         $params = [
             'name' => "taskcategories_id",
             'entity' => $options["entities_id"],
-            'value' => isset($options['taskcategories_id']) ? $options['taskcategories_id'] : 0
+            'value' => isset($options['taskcategories_id']) ? $options['taskcategories_id'] : 0,
         ];
         $task_taskcategory_dropdown = $capture(fn() => TaskCategory::dropdown($params));
 
@@ -569,7 +565,6 @@ class GenerateCRI extends CommonGLPI
               let userIdTech  = '';
               let tasksCategory  = '';
 
-
               if (Object.keys(storedTasks).length) {
                $('#tab-tasks').show();
                   $.each(storedTasks, function(taskcount, value) {
@@ -579,7 +574,6 @@ class GenerateCRI extends CommonGLPI
                        end         = value['end'];
                        userIdTech  = value['users_id_tech'];
                        tasksCategory  = value['taskcategories_id'];
-
 
               let durationDisplay = secondsToHm(duration);
 
@@ -780,7 +774,7 @@ class GenerateCRI extends CommonGLPI
      *
      * @return bool|int
      */
-    static function createTicketAndAssociateContract($input)
+    public static function createTicketAndAssociateContract($input)
     {
         $ticket = new Ticket();
         $allowed_fields = [
@@ -816,7 +810,7 @@ class GenerateCRI extends CommonGLPI
                     //               case 'name':
                     //                  $inputs[$key] = addslashes($value);
                     //                  break;
-                    default :
+                    default:
                         $inputs[$key] = $value;
                         break;
                 }
@@ -832,12 +826,12 @@ class GenerateCRI extends CommonGLPI
                 if (!$user_ticket->getFromDBByCrit([
                     'tickets_id' => $ticketId,
                     'users_id' => $user_assign,
-                    'type' => Ticket_User::ASSIGN
+                    'type' => Ticket_User::ASSIGN,
                 ])) {
                     $user_ticket->add([
                         'tickets_id' => $ticketId,
                         'users_id' => $user_assign,
-                        'type' => Ticket_User::ASSIGN
+                        'type' => Ticket_User::ASSIGN,
                     ]);
                 }
             }
@@ -845,7 +839,7 @@ class GenerateCRI extends CommonGLPI
         }
     }
 
-    static function createTicketTaskUndone($input, $tickets_id)
+    public static function createTicketTaskUndone($input, $tickets_id)
     {
         $ticket = new Ticket();
         $ticket_ticket = new Ticket_Ticket();
@@ -879,7 +873,7 @@ class GenerateCRI extends CommonGLPI
         foreach ($input as $key => $value) {
             if (in_array($key, $allowed_fields)) {
                 switch ($key) {
-                    default :
+                    default:
                         $inputs[$key] = $value;
                         break;
                 }
@@ -896,12 +890,12 @@ class GenerateCRI extends CommonGLPI
                 if (!$user_ticket->getFromDBByCrit([
                     'tickets_id' => $ticketId,
                     'users_id' => $user_assign,
-                    'type' => Ticket_User::ASSIGN
+                    'type' => Ticket_User::ASSIGN,
                 ])) {
                     $user_ticket->add([
                         'tickets_id' => $ticketId,
                         'users_id' => $user_assign,
-                        'type' => Ticket_User::ASSIGN
+                        'type' => Ticket_User::ASSIGN,
                     ]);
                 }
             }
@@ -909,14 +903,13 @@ class GenerateCRI extends CommonGLPI
         }
     }
 
-
     /**
      * @param $inputs
      * @param $ticket_id
      *
      * @return bool
      */
-    static function createTasks($inputs, $ticket_id)
+    public static function createTasks($inputs, $ticket_id)
     {
         if (isset($inputs['predefined-task'])) {
             $task_template = new TaskTemplate();
@@ -937,14 +930,14 @@ class GenerateCRI extends CommonGLPI
                 'state' => $task_template->getField('state'),
                 'groups_id_tech' => $task_template->getField('groups_id_tech'),
                 'actiontime' => $task_template->getField('actiontime'),
-                'is_private' => $task_template->getField('is_private')
+                'is_private' => $task_template->getField('is_private'),
             ];
 
             $ticket_task->add($input);
         }
 
         $inputs['_plan'] = [];
-//      $inputs['plan']  = [];
+        //      $inputs['plan']  = [];
         $hasDuration = false;
         $hasBegin = false;
         $hasEnd = false;
@@ -1033,7 +1026,7 @@ class GenerateCRI extends CommonGLPI
                         '_plan' => $inputs['_plan'],
                         'plan' => $inputs['plan'],
                         'content' => $inputs['description'],
-                        'state' => self::TASK_DONE
+                        'state' => self::TASK_DONE,
                     ]);
                     $hasDuration = false;
                     $hasDescription = false;
@@ -1055,7 +1048,6 @@ class GenerateCRI extends CommonGLPI
     public static function getDescriptionFromTasks($ticket_id)
     {
         global $DB, $CFG_GLPI;
-
 
         $config = Config::getInstance();
 
@@ -1083,18 +1075,17 @@ class GenerateCRI extends CommonGLPI
 
         if ($config->fields['hourorday'] == Config::HOUR) {
             $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + [
-                    'LEFT JOIN' => [
-                        'glpi_plugin_manageentities_taskcategories' => [
-                            'ON' => [
-                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                                'glpi_tickettasks' => 'taskcategories_id'
-                            ],
-                        ]
-                    ]
-                ];
+                'LEFT JOIN' => [
+                    'glpi_plugin_manageentities_taskcategories' => [
+                        'ON' => [
+                            'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                            'glpi_tickettasks' => 'taskcategories_id',
+                        ],
+                    ],
+                ],
+            ];
             $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
         }
-
 
         $iterator = $DB->request($criteria);
         if (count($iterator) > 0) {
@@ -1111,7 +1102,7 @@ class GenerateCRI extends CommonGLPI
      * @param $ticket_id
      * @param $Cri
      */
-    static function generateCri($inputs, $ticket_id, $Cri)
+    public static function generateCri($inputs, $ticket_id, $Cri)
     {
         global $DB, $CFG_GLPI;
 
@@ -1143,7 +1134,7 @@ class GenerateCRI extends CommonGLPI
             $input['REPORT_DESCRIPTION'] = $desc;
             $input['entities_id'] = $inputs['entities_id'];
             $input['enregistrement'] = true;
-//      $input['download']           = isset($inputs['download']) ? $inputs['download'] : 0;
+            //      $input['download']           = isset($inputs['download']) ? $inputs['download'] : 0;
             $Cri->generatePdf($input);
         } else {
             $ticket = new Ticket();
@@ -1161,7 +1152,7 @@ class GenerateCRI extends CommonGLPI
      * @return array
      * @throws \GlpitestSQLError
      */
-    static function showContractLinkDropdown($entities_id, $type = 'ticket')
+    public static function showContractLinkDropdown($entities_id, $type = 'ticket')
     {
         global $DB;
 
@@ -1185,13 +1176,13 @@ class GenerateCRI extends CommonGLPI
                 'glpi_plugin_manageentities_contracts' => [
                     'ON' => [
                         'glpi_plugin_manageentities_contracts' => 'contracts_id',
-                        'glpi_contracts' => 'id'
-                    ]
-                ]
+                        'glpi_contracts' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_contracts.is_deleted' => 0,
-                'glpi_plugin_manageentities_contracts.entities_id' => $entities_id
+                'glpi_plugin_manageentities_contracts.entities_id' => $entities_id,
             ],
             'ORDERBY' => ['glpi_contracts.name'],
         ]);
@@ -1243,7 +1234,7 @@ class GenerateCRI extends CommonGLPI
                 $contract->getFromDB($contractSelected);
                 Html::showToolTip($contract->fields['comment'], [
                     'link' => $contract->getLinkURL(),
-                    'linktarget' => '_blank'
+                    'linktarget' => '_blank',
                 ]);
             }
 
@@ -1252,19 +1243,19 @@ class GenerateCRI extends CommonGLPI
                 'contracts_id' => '__VALUE__',
                 'contractdays_id' => $contractdaySelected,
                 'current_contracts_id' => $contractSelected,
-                'width' => $width
+                'width' => $width,
             ];
             Ajax::updateItemOnSelectEvent(
                 "dropdown_contracts_id$rand",
                 "show_contractdays",
                 PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php",
-                $params
+                $params,
             );
             Ajax::updateItem(
                 "show_contractdays",
                 PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php",
                 $params,
-                "dropdown_contracts_id$rand"
+                "dropdown_contracts_id$rand",
             );
             echo "</td>";
 
@@ -1273,7 +1264,7 @@ class GenerateCRI extends CommonGLPI
             echo "<td>";
             $restrict = [
                 'entities_id' => $contract->fields['entities_id'],
-                'contracts_id' => $contractSelected
+                'contracts_id' => $contractSelected,
             ];
             $restrict += ['NOT' => ['plugin_manageentities_contractstates_id' => 2]]; //Closed contract was 8, is now 2
             if ($type == 'ticket') {
@@ -1282,7 +1273,7 @@ class GenerateCRI extends CommonGLPI
                     'name' => 'plugin_manageentities_contractdays_id',
                     'value' => $contractdaySelected,
                     'condition' => $restrict,
-                    'width' => $width
+                    'width' => $width,
                 ]);
                 echo "</span>";
             } else {
@@ -1294,7 +1285,7 @@ class GenerateCRI extends CommonGLPI
             return [
                 'contractSelected' => $contractSelected,
                 'contractdaySelected' => $contractdaySelected,
-                'is_contract' => count($iterator)
+                'is_contract' => count($iterator),
             ];
         }
     }
@@ -1328,7 +1319,7 @@ class GenerateCRI extends CommonGLPI
      *
      * @return bool
      */
-    function checkMandatoryFields($input)
+    public function checkMandatoryFields($input)
     {
         $msg = [];
         $checkKo = false;
@@ -1340,15 +1331,15 @@ class GenerateCRI extends CommonGLPI
             'itilcategories_id' => __('Category'),
             'users_intervenor' => __('Technician as assigned'),
             'description' => __('Description'),
-            'has_task' => __('Task')
+            'has_task' => __('Task'),
         ];
 
         foreach ($input as $key => $value) {
             if (array_key_exists($key, $mandatory_fields)) {
                 if ($key == 'has_task' && !array_key_exists('predefined-task', $input) && !array_key_exists(
-                        'description',
-                        $input
-                    )) {
+                    'description',
+                    $input,
+                )) {
                     if ($value == 'false') {
                         $msg[] = $mandatory_fields[$key];
                         $checkKo = true;
@@ -1377,10 +1368,10 @@ class GenerateCRI extends CommonGLPI
             Session::addMessageAfterRedirect(
                 sprintf(
                     __("Mandatory fields are not filled. Please correct: %s"),
-                    implode(', ', $msg)
+                    implode(', ', $msg),
                 ),
                 false,
-                ERROR
+                ERROR,
             );
             return true;
         }
@@ -1409,7 +1400,7 @@ class GenerateCRI extends CommonGLPI
         if ($duration > self::MINUTE) {
             return gmdate("i:s", $duration);
         }
-        return round($duration, 3,PHP_ROUND_HALF_UP) . 's';
+        return round($duration, 3, PHP_ROUND_HALF_UP) . 's';
     }
 
     /**

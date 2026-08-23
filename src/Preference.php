@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -47,18 +47,17 @@ if (!defined('GLPI_ROOT')) {
  */
 class Preference extends CommonDBTM
 {
-
-    static function checkIfPreferenceExists($users_id)
+    public static function checkIfPreferenceExists($users_id)
     {
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => [
-                'id'
+                'id',
             ],
             'FROM' => 'glpi_plugin_manageentities_preferences',
             'WHERE' => [
-                'users_id' => $users_id
+                'users_id' => $users_id,
             ],
         ]);
 
@@ -70,7 +69,7 @@ class Preference extends CommonDBTM
         return 0;
     }
 
-    static function addDefaultPreference($users_id)
+    public static function addDefaultPreference($users_id)
     {
         $self = new self();
         $input["users_id"] = $users_id;
@@ -79,17 +78,17 @@ class Preference extends CommonDBTM
         return $self->add($input);
     }
 
-    static function checkPreferenceValue($users_id)
+    public static function checkPreferenceValue($users_id)
     {
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => [
-                'show_on_load'
+                'show_on_load',
             ],
             'FROM' => 'glpi_plugin_manageentities_preferences',
             'WHERE' => [
-                'users_id' => $users_id
+                'users_id' => $users_id,
             ],
         ]);
 
@@ -101,12 +100,12 @@ class Preference extends CommonDBTM
         return 0;
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-user-pentagon";
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == 'Preference'
             && isset($_SESSION["glpiactiveprofile"]["interface"])
@@ -116,8 +115,7 @@ class Preference extends CommonDBTM
         return '';
     }
 
-
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         global $CFG_GLPI;
 
@@ -132,7 +130,7 @@ class Preference extends CommonDBTM
         return true;
     }
 
-    static function showPreferencesForm($target, $ID)
+    public static function showPreferencesForm($target, $ID)
     {
         global $DB;
 
@@ -160,9 +158,9 @@ class Preference extends CommonDBTM
                 'glpi_users' => [
                     'ON' => [
                         'glpi_plugin_manageentities_businesscontacts' => 'users_id',
-                        'glpi_users' => 'id'
-                    ]
-                ]
+                        'glpi_users' => 'id',
+                    ],
+                ],
             ],
             'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
         ]);
@@ -221,7 +219,7 @@ class Preference extends CommonDBTM
         ]);
     }
 
-    function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input)
     {
         if (isset($input['contract_states'])) {
             $input['contract_states'] = json_encode($input['contract_states']);
@@ -265,7 +263,6 @@ class Preference extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {

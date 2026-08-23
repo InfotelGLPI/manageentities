@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -47,14 +47,13 @@ if (!defined('GLPI_ROOT')) {
 
 class CriPrice extends CommonDBTM
 {
-
-    static $rightname = 'plugin_manageentities';
+    public static $rightname = 'plugin_manageentities';
 
     /**
      * functions mandatory
      * getTypeName(), canCreate(), canView()
      * */
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         $config = Config::getInstance();
         if ($config->fields['hourorday'] == Config::DAY) {
@@ -65,17 +64,17 @@ class CriPrice extends CommonDBTM
         return $name;
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-user-pentagon";
     }
@@ -88,11 +87,11 @@ class CriPrice extends CommonDBTM
      *
      * @return array|string
      */
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item->getType()) {
-                case ContractDay::class :
+                case ContractDay::class:
                     $config = Config::getInstance();
                     if ($config->fields['hourorday'] == Config::DAY) {
                         $name = __('Daily rate', 'manageentities');
@@ -106,8 +105,8 @@ class CriPrice extends CommonDBTM
                             $name,
                             $dbu->countElementsInTable(
                                 $this->getTable(),
-                                ["`plugin_manageentities_contractdays_id`" => $item->getID()]
-                            )
+                                ["`plugin_manageentities_contractdays_id`" => $item->getID()],
+                            ),
                         );
                     }
 
@@ -129,12 +128,12 @@ class CriPrice extends CommonDBTM
      *
      * @return bool|true
      */
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $criprice = new self();
 
         switch ($item->getType()) {
-            case ContractDay::class :
+            case ContractDay::class:
                 $criprice->showForContractDay($item);
                 break;
         }
@@ -147,7 +146,7 @@ class CriPrice extends CommonDBTM
      * @param $ID        integer  ID of the item
      * @param $options   array    options used
      * */
-    function showForm($ID, $options = [])
+    public function showForm($ID, $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -171,7 +170,7 @@ class CriPrice extends CommonDBTM
             'value'     => $this->fields['plugin_manageentities_critypes_id'],
             'entity'    => $options['parent']->getField('entities_id'),
             'used'      => $used_critypes,
-            'on_change' => 'manageentities_loadSelectPrice();'
+            'on_change' => 'manageentities_loadSelectPrice();',
         ]);
         $critype_html = ob_get_clean();
 
@@ -184,7 +183,7 @@ class CriPrice extends CommonDBTM
         ob_start();
         $this->showSelectPriceDropdown(
             $this->fields['plugin_manageentities_critypes_id'],
-            $options['parent']->getField('entities_id')
+            $options['parent']->getField('entities_id'),
         );
         $select_price_html = ob_get_clean();
 
@@ -208,7 +207,6 @@ class CriPrice extends CommonDBTM
         return true;
     }
 
-
     /**
      * Show price selection for critype and entity
      *
@@ -216,7 +214,7 @@ class CriPrice extends CommonDBTM
      *
      * @return boolean
      */
-    function showSelectPriceDropdown($critypes_id, $entities_id)
+    public function showSelectPriceDropdown($critypes_id, $entities_id)
     {
         $data = [\Dropdown::EMPTY_VALUE];
         if (!empty($critypes_id)) {
@@ -241,7 +239,7 @@ class CriPrice extends CommonDBTM
      *
      * @return boolean
      */
-    function showForCriType($item)
+    public function showForCriType($item)
     {
         if (!$this->canView()) {
             return false;
@@ -266,8 +264,8 @@ class CriPrice extends CommonDBTM
                 // Stored XSS: entity/contract-day names are stored raw in GLPI 10+, so
                 // escape them (and the id in the URL) before echoing into HTML.
                 echo "<td><a href='" . Toolbox::getItemTypeFormURL(
-                        Contractday::class
-                    ) . "?id=" . (int) $value['plugin_manageentities_contractdays_id'] . "'>"
+                    Contractday::class,
+                ) . "?id=" . (int) $value['plugin_manageentities_contractdays_id'] . "'>"
                     . htmlspecialchars((string) $value['contractdays_name'], ENT_QUOTES) . "</a></td>";
                 echo "<td>" . htmlspecialchars((string) $value['entities_name'], ENT_QUOTES) . "</td>";
                 echo "<td>" . Html::formatNumber($value["price"], true) . "</td>";
@@ -278,7 +276,6 @@ class CriPrice extends CommonDBTM
         }
     }
 
-
     /**
      * Show price for contract days
      *
@@ -286,7 +283,7 @@ class CriPrice extends CommonDBTM
      *
      * @return boolean
      */
-    function showForContractDay($item)
+    public function showForContractDay($item)
     {
         if (!$this->canView()) {
             return false;
@@ -310,7 +307,7 @@ class CriPrice extends CommonDBTM
                 $this->getType(),
                 -1,
                 ContractDay::class,
-                $item->fields['id']
+                $item->fields['id'],
             );
             echo "<a class='btn btn-primary' href='javascript:viewAddCriprice" . $item->fields['id'] . "_$rand();'>";
             echo __('Add a new price', 'manageentities') . "</a>\n";
@@ -319,7 +316,6 @@ class CriPrice extends CommonDBTM
 
         $this->listItems($item->fields['id'], $data, $canedit, $rand, $add_button_html);
     }
-
 
     /**
      * List items for contract days (Twig datatable)
@@ -380,7 +376,7 @@ class CriPrice extends CommonDBTM
                     $this->getType(),
                     $field['id'],
                     ContractDay::class,
-                    $field['plugin_manageentities_contractdays_id']
+                    $field['plugin_manageentities_contractdays_id'],
                 );
                 $checkbox_html = ob_get_clean();
             }
@@ -430,7 +426,7 @@ class CriPrice extends CommonDBTM
      * @global type $DB
      *
      */
-    function getItems($contractdays_id = 0, $cri_types_id = 0, $condition = [])
+    public function getItems($contractdays_id = 0, $cri_types_id = 0, $condition = [])
     {
         global $DB;
 
@@ -453,21 +449,21 @@ class CriPrice extends CommonDBTM
                 'glpi_plugin_manageentities_critypes' => [
                     'ON' => [
                         $this->getTable() => 'plugin_manageentities_critypes_id',
-                        'glpi_plugin_manageentities_critypes' => 'id'
-                    ]
+                        'glpi_plugin_manageentities_critypes' => 'id',
+                    ],
                 ],
                 'glpi_plugin_manageentities_contractdays' => [
                     'ON' => [
                         $this->getTable() => 'plugin_manageentities_contractdays_id',
-                        'glpi_plugin_manageentities_contractdays' => 'id'
-                    ]
+                        'glpi_plugin_manageentities_contractdays' => 'id',
+                    ],
                 ],
                 'glpi_entities' => [
                     'ON' => [
                         $this->getTable() => 'entities_id',
-                        'glpi_entities' => 'id'
-                    ]
-                ]
+                        'glpi_entities' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [],
             'ORDERBY' => ['glpi_plugin_manageentities_critypes.name'],
@@ -475,14 +471,14 @@ class CriPrice extends CommonDBTM
 
         if ($contractdays_id > 0) {
             $criteria['WHERE'] = $criteria['WHERE'] + [
-                    $this->getTable() . '.plugin_manageentities_contractdays_id' => $contractdays_id
-                ];
+                $this->getTable() . '.plugin_manageentities_contractdays_id' => $contractdays_id,
+            ];
         }
 
         if ($cri_types_id > 0) {
             $criteria['WHERE'] = $criteria['WHERE'] + [
-                    $this->getTable() . '.plugin_manageentities_critypes_id' => $cri_types_id
-                ];
+                $this->getTable() . '.plugin_manageentities_critypes_id' => $cri_types_id,
+            ];
         }
 
         if (count($condition) > 0) {
@@ -500,26 +496,25 @@ class CriPrice extends CommonDBTM
         return $output;
     }
 
-
     /**
      * Add cri price
      *
      * @param $values
      */
-    function addCriPrice($values)
+    public function addCriPrice($values)
     {
         if ($this->getFromDBByCrit([
             'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
-            'entities_id' => $values["entities_id"]
+            'entities_id' => $values["entities_id"],
         ])) {
             $this->update([
                 'id' => $this->fields['id'],
-                'price' => $values["price"]
+                'price' => $values["price"],
             ]);
         } else {
             $this->add([
                 'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
-                'price' => $values["price"]
+                'price' => $values["price"],
             ]);
         }
     }
@@ -533,7 +528,7 @@ class CriPrice extends CommonDBTM
      * @global type $DB
      *
      */
-    function setDefault($input)
+    public function setDefault($input)
     {
         if (isset($input['is_default']) && $input['is_default']) {
             $data = $this->getItems($input['plugin_manageentities_contractdays_id']);
@@ -568,7 +563,7 @@ class CriPrice extends CommonDBTM
      * @global type $CFG_GLPI
      *
      */
-    static function getJSEdition($toupdate, $function_name, $itemtype, $items_id, $parenttype, $parents_id)
+    public static function getJSEdition($toupdate, $function_name, $itemtype, $items_id, $parenttype, $parents_id)
     {
 
         $dbu = new DbUtils();
@@ -580,18 +575,18 @@ class CriPrice extends CommonDBTM
             'type' => $itemtype,
             'parenttype' => $parenttype,
             $parent->getForeignKeyField() => $parents_id,
-            'id' => $items_id
+            'id' => $items_id,
         ];
         Ajax::updateItemJsCode(
             $toupdate,
             PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/viewsubitem.php",
-            $params
+            $params,
         );
         echo "};";
         echo "</script>\n";
     }
 
-    function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input)
     {//si un document lié ne pas permettre l'update via le form self::showForTicket($item);
         if (!$this->checkMandatoryFields($input)) {
             return false;
@@ -602,8 +597,7 @@ class CriPrice extends CommonDBTM
         return $input;
     }
 
-
-    function prepareInputForAdd($input)
+    public function prepareInputForAdd($input)
     {
         if (!$this->checkMandatoryFields($input)) {
             return false;
@@ -614,7 +608,6 @@ class CriPrice extends CommonDBTM
         return $input;
     }
 
-
     /**
      * Check mandatory field for showForm
      *
@@ -622,14 +615,14 @@ class CriPrice extends CommonDBTM
      *
      * @return boolean
      */
-    function checkMandatoryFields($input)
+    public function checkMandatoryFields($input)
     {
         $msg = [];
         $checkKo = false;
 
         $mandatory_fields = [
             'price' => self::getTypeName(),
-            'plugin_manageentities_critypes_id' => CriType::getTypeName()
+            'plugin_manageentities_critypes_id' => CriType::getTypeName(),
         ];
 
         foreach ($input as $key => $value) {
@@ -645,21 +638,21 @@ class CriPrice extends CommonDBTM
             Session::addMessageAfterRedirect(
                 sprintf(__("Mandatory fields are not filled. Please correct: %s"), implode(', ', $msg)),
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         }
         return true;
     }
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab[] = [
             'id' => '11',
             'table' => $this->getTable(),
             'field' => 'price',
             'name' => self::getTypeName(),
-            'datatype' => 'decimal'
+            'datatype' => 'decimal',
         ];
 
         $tab[] = [
@@ -668,7 +661,7 @@ class CriPrice extends CommonDBTM
             'field' => 'name',
             'name' => CriType::getTypeName(),
             'datatype' => 'dropdown',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $tab[] = [
@@ -677,7 +670,7 @@ class CriPrice extends CommonDBTM
             'field' => 'is_default',
             'name' => __('Is default', 'manageentities'),
             'datatype' => 'bool',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $tab;
@@ -708,7 +701,6 @@ class CriPrice extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {

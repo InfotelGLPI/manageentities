@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -40,24 +40,23 @@ if (!defined('GLPI_ROOT')) {
 
 class SubscriptionLevel extends CommonDropdown
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
+    public const TYPE_ALL         = 0;
+    public const TYPE_ON_PREMISE  = 1;
+    public const TYPE_CLOUD       = 2;
 
-    const TYPE_ALL         = 0;
-    const TYPE_ON_PREMISE  = 1;
-    const TYPE_CLOUD       = 2;
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Subscription level', 'Subscription levels', $nb, 'manageentities');
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::HaveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
@@ -68,7 +67,7 @@ class SubscriptionLevel extends CommonDropdown
         return false;
     }
 
-    static function getTypes(): array
+    public static function getTypes(): array
     {
         return [
             self::TYPE_ALL        => __('All'),
@@ -77,7 +76,7 @@ class SubscriptionLevel extends CommonDropdown
         ];
     }
 
-    function getAdditionalFields(): array
+    public function getAdditionalFields(): array
     {
         return [
             [
@@ -89,10 +88,10 @@ class SubscriptionLevel extends CommonDropdown
         ];
     }
 
-    function displaySpecificTypeField($ID, $field = [], array $options = []): void
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
         if ($field['type'] === 'subscription_type_select') {
-            $current = (int)($this->fields['subscription_type'] ?? self::TYPE_ALL);
+            $current = (int) ($this->fields['subscription_type'] ?? self::TYPE_ALL);
             echo '<select name="subscription_type" class="form-select">';
             foreach (self::getTypes() as $val => $label) {
                 $selected = ($val === $current) ? ' selected' : '';
@@ -102,7 +101,7 @@ class SubscriptionLevel extends CommonDropdown
         }
     }
 
-    function rawSearchOptions(): array
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
         $tab[] = [
@@ -119,16 +118,16 @@ class SubscriptionLevel extends CommonDropdown
      * Return all levels as array indexed by id, with their subscription_type,
      * suitable for JSON output to the subscription wizard JS filter.
      */
-    static function getAllForJS(): array
+    public static function getAllForJS(): array
     {
         global $DB;
         $out = [];
         $iterator = $DB->request(['FROM' => self::getTable(), 'ORDER' => ['name ASC']]);
         foreach ($iterator as $row) {
             $out[] = [
-                'id'   => (int)$row['id'],
+                'id'   => (int) $row['id'],
                 'name' => $row['name'],
-                'type' => (int)$row['subscription_type'],
+                'type' => (int) $row['subscription_type'],
             ];
         }
         return $out;

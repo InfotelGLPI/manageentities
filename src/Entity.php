@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -50,30 +50,29 @@ if (!defined('GLPI_ROOT')) {
 
 class Entity extends CommonGLPI
 {
+    public static $rightname = 'plugin_manageentities';
 
-    static $rightname = 'plugin_manageentities';
-
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Client management', 'Clients management', $nb, 'manageentities');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-user-pentagon";
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    function defineTabs($options = [])
+    public function defineTabs($options = [])
     {
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
@@ -82,7 +81,7 @@ class Entity extends CommonGLPI
     }
 
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
             $followUp = new Followup();
@@ -95,7 +94,7 @@ class Entity extends CommonGLPI
                 $tabs[1] = Followup::createTabEntry(
                     Session::getCurrentInterface() == 'helpdesk'
                         ? __('Contractual follow-up', 'manageentities')
-                        : __('General follow-up', 'manageentities')
+                        : __('General follow-up', 'manageentities'),
                 );
             }
 
@@ -118,7 +117,7 @@ class Entity extends CommonGLPI
                     _n('Publisher subscription', 'Publisher subscriptions', 2, 'manageentities'),
                     0,
                     self::class,
-                    EditorSubscription::getIcon()
+                    EditorSubscription::getIcon(),
                 );
             }
 
@@ -127,7 +126,7 @@ class Entity extends CommonGLPI
                     __('Status overview', 'manageentities'),
                     0,
                     self::class,
-                    'ti ti-clipboard-check'
+                    'ti ti-clipboard-check',
                 );
             }
 
@@ -138,13 +137,13 @@ class Entity extends CommonGLPI
                     && $config->fields['choice_intervention'] == Config::REPORT_INTERVENTION)) {
                 if ($Cri->canView()) {
                     $tabs[8] = CriDetail::createTabEntry(
-                        __("Interventions reports", 'manageentities')
+                        __("Interventions reports", 'manageentities'),
                     );
                 }
             } elseif (Session::getCurrentInterface() == 'helpdesk'
                 && $config->fields['choice_intervention'] == Config::PERIOD_INTERVENTION) {
                 $tabs[8] = CriDetail::createTabEntry(
-                    _n('Period of contract', 'Periods of contract', 2, 'manageentities')
+                    _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
                 );
             }
 
@@ -168,7 +167,7 @@ class Entity extends CommonGLPI
     }
 
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
             $ManageentitiesEntity = new Entity();
@@ -256,7 +255,7 @@ class Entity extends CommonGLPI
                             0,
                             0,
                             $entities,
-                            ['glpi_plugin_manageentities_contractstates.is_closed' => ['<>', 1]]
+                            ['glpi_plugin_manageentities_contractstates.is_closed' => ['<>', 1]],
                         );
                     } elseif (Session::getCurrentInterface() == 'helpdesk'
                         && $config->fields['choice_intervention'] == Config::PERIOD_INTERVENTION) {
@@ -302,7 +301,7 @@ class Entity extends CommonGLPI
     }
 
     // Hook done on before update document - keeps document date if it's a CRI
-    static function preUpdateDocument($item)
+    public static function preUpdateDocument($item)
     {
         // Manipulate data if needed
         $config = new Config();
@@ -318,7 +317,7 @@ class Entity extends CommonGLPI
 
     // Hook done on after update document - change document date if it's not a CRI
 
-    static function UpdateDocument($item)
+    public static function UpdateDocument($item)
     {
         global $DB;
 
@@ -328,14 +327,14 @@ class Entity extends CommonGLPI
             $doc = new Document();
             $doc->update([
                 'id' => $item->getField('id'),
-                'date_mod' => $_SESSION["glpi_plugin_manageentities_date_mod"]
+                'date_mod' => $_SESSION["glpi_plugin_manageentities_date_mod"],
             ]);
         }
 
         return true;
     }
 
-    static function showManageentitiesHeader($subtitle = '')
+    public static function showManageentitiesHeader($subtitle = '')
     {
         echo "<h3><div class='alert alert-secondary' role='alert'>";
         echo __('Portal', 'manageentities') . " " . $_SESSION["glpiactive_entity_name"];
@@ -343,7 +342,7 @@ class Entity extends CommonGLPI
         echo "</div></h3>";
     }
 
-    function showDescription($entities)
+    public function showDescription($entities)
     {
         global $CFG_GLPI;
 
@@ -427,16 +426,16 @@ class Entity extends CommonGLPI
                 'business'             => $business_data,
                 'can_edit_contacts'    => $contact->canCreate(),
                 'can_edit_business'    => $businessContact->canCreate(),
-                'contact_dropdown_html'=> $contact_dropdown_html,
+                'contact_dropdown_html' => $contact_dropdown_html,
                 'user_dropdown_html'   => $user_dropdown_html,
                 // For the add-contact/business form, use the first (or only) entity id
                 'entity_id'            => $entities[array_key_first($entities)] ?? 0,
-            ]
+            ],
         );
     }
 
 
-    static function getMenuContent()
+    public static function getMenuContent()
     {
         $menu = [];
         //Menu entry in tools
@@ -470,7 +469,7 @@ class Entity extends CommonGLPI
     }
 
 
-    function getRights($interface = 'central')
+    public function getRights($interface = 'central')
     {
         $values = [
             CREATE => __('Create'),
@@ -478,14 +477,14 @@ class Entity extends CommonGLPI
             UPDATE => __('Update'),
             PURGE => [
                 'short' => __('Purge'),
-                'long' => _x('button', 'Delete permanently')
-            ]
+                'long' => _x('button', 'Delete permanently'),
+            ],
         ];
 
         return $values;
     }
 
-    function showReferences($instID)
+    public function showReferences($instID)
     {
         global $DB, $CFG_GLPI;
 
@@ -499,17 +498,17 @@ class Entity extends CommonGLPI
         $iterator = $DB->request([
             'SELECT' => [
                 'entities_id',
-//               ['MIN' => 'date_signature AS signature'],
+                //               ['MIN' => 'date_signature AS signature'],
                 QueryFunction::min('date_signature', 'signature'),
-                QueryFunction::year('date_signature', 'year')
+                QueryFunction::year('date_signature', 'year'),
             ],
             'FROM' => 'glpi_plugin_manageentities_contracts',
             'WHERE' => [
                 'NOT' => ['date_signature' => null],
-//               'entities_id'  => $instID
+                //               'entities_id'  => $instID
             ],
             'GROUPBY' => 'entities_id',
-            'ORDERBY' => 'year DESC'
+            'ORDERBY' => 'year DESC',
         ]);
 
         $year = "";
@@ -522,7 +521,7 @@ class Entity extends CommonGLPI
             if ($entity->getFromDB($data['entities_id'])) {
                 $debug[$data['entities_id']] = [
                     'name' => $entity->getName(),
-                    'signature' => $data['signature']
+                    'signature' => $data['signature'],
                 ];
 
                 if (empty($year) || $year != $data['year']) {
@@ -543,7 +542,9 @@ class Entity extends CommonGLPI
                     echo "<tr>";
                 }
 
-                echo "<td>" . $entity->getName() . "</td>";
+                // Escape: getName() returns the raw DB name (GLPI 10+ stores it
+                // unescaped), so echoing it directly would be a stored XSS sink.
+                echo "<td>" . htmlspecialchars((string) $entity->getName()) . "</td>";
 
                 if ($logos = $entity_logo->find(['entities_id' => $data['entities_id']])) {
                     echo "<td>";

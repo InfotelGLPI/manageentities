@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -45,8 +45,7 @@ if (!defined('GLPI_ROOT')) {
 
 class DirectHelpdesk_Ticket extends CommonDBTM
 {
-
-    static $rightname = 'plugin_manageentities_directhelpdesk';
+    public static $rightname = 'plugin_manageentities_directhelpdesk';
 
     public static function getTypeName($nb = 0)
     {
@@ -56,30 +55,30 @@ class DirectHelpdesk_Ticket extends CommonDBTM
     /**
      * @return string
      */
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-file-euro";
     }
 
-    static function countForTicket($item)
+    public static function countForTicket($item)
     {
         $dbu = new DbUtils();
         return $dbu->countElementsInTable(
             'glpi_plugin_manageentities_directhelpdesks_tickets',
-            ["`tickets_id`" => $item->getID()]
+            ["`tickets_id`" => $item->getID()],
         );
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == 'Ticket'
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
             $config    = Config::getInstance();
-            $parent_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+            $parent_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
             if ($parent_id > 0) {
                 $sons = getSonsOf('glpi_entities', $parent_id);
-                if (!in_array((int)$item->fields['entities_id'], $sons)) {
+                if (!in_array((int) $item->fields['entities_id'], $sons)) {
                     return '';
                 }
             }
@@ -90,9 +89,9 @@ class DirectHelpdesk_Ticket extends CommonDBTM
                             'Not billed intervention',
                             'Not billed interventions',
                             self::countForTicket($item),
-                            'manageentities'
+                            'manageentities',
                         ),
-                        self::countForTicket($item)
+                        self::countForTicket($item),
                     );
                 }
                 return self::createTabEntry(self::getTypeName(self::countForTicket($item)));
@@ -103,7 +102,7 @@ class DirectHelpdesk_Ticket extends CommonDBTM
         return '';
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
@@ -143,7 +142,7 @@ class DirectHelpdesk_Ticket extends CommonDBTM
         return true;
     }
 
-    static function selectDirectHeldeskForTicket($entities_id)
+    public static function selectDirectHeldeskForTicket($entities_id)
     {
         $direct = new DirectHelpdesk();
         if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities_id], ['date'])) {
@@ -195,7 +194,6 @@ class DirectHelpdesk_Ticket extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {

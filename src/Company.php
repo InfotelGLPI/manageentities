@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -48,12 +48,11 @@ if (!defined('GLPI_ROOT')) {
 
 class Company extends CommonDBTM
 {
-
-    static $rightname = 'plugin_manageentities';
+    public static $rightname = 'plugin_manageentities';
     // From CommonDBTM
     public $dohistory = true;
 
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Company', 'Companies', $nb, 'manageentities');
     }
@@ -100,11 +99,11 @@ class Company extends CommonDBTM
                 'can_add'   => Session::haveRight('plugin_manageentities', UPDATE),
                 'add_title' => __('Add a company', 'manageentities'),
                 'form_url'  => $link,
-            ]
+            ],
         );
     }
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -113,7 +112,7 @@ class Company extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'id',
             'name' => __('ID'),
-            'datatype' => 'number'
+            'datatype' => 'number',
         ];
 
         $tab[] = [
@@ -122,7 +121,7 @@ class Company extends CommonDBTM
             'field' => 'address',
             'name' => __('Address'),
             'massiveaction' => false,
-            'datatype' => 'text'
+            'datatype' => 'text',
         ];
 
         return $tab;
@@ -138,7 +137,7 @@ class Company extends CommonDBTM
      *
      * @return boolean item found
      * */
-    function showForm($ID, $options = [])
+    public function showForm($ID, $options = [])
     {
         global $CFG_GLPI;
 
@@ -176,7 +175,7 @@ class Company extends CommonDBTM
         return true;
     }
 
-    function setSessionValues()
+    public function setSessionValues()
     {
         if (isset($_SESSION['plugin_manageentities']['company']) && !empty($_SESSION['plugin_manageentities']['company'])) {
             foreach ($_SESSION['plugin_manageentities']['company'] as $key => $val) {
@@ -186,7 +185,7 @@ class Company extends CommonDBTM
         unset($_SESSION['plugin_manageentities']['company']);
     }
 
-    function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input)
     {
         if (isset($input["_filename"])) {
             $plugin_company = new Company();
@@ -199,7 +198,7 @@ class Company extends CommonDBTM
                 Session::addMessageAfterRedirect(
                     __('The format of the image must be in JPG or JPEG', 'manageentities'),
                     false,
-                    ERROR
+                    ERROR,
                 );
                 unset($input);
             } elseif ($company['logo_id'] != 0) {
@@ -212,7 +211,7 @@ class Company extends CommonDBTM
         return $input;
     }
 
-    function prepareInputForAdd($input)
+    public function prepareInputForAdd($input)
     {
         if (isset($input["_filename"])) {
             $tmp = explode(".", $input["_filename"][0]);
@@ -221,7 +220,7 @@ class Company extends CommonDBTM
                 Session::addMessageAfterRedirect(
                     __('The format of the image must be in JPG or JPEG', 'manageentities'),
                     false,
-                    ERROR
+                    ERROR,
                 );
                 return [];
             }
@@ -229,7 +228,7 @@ class Company extends CommonDBTM
         return $input;
     }
 
-    function post_addItem($history = 1)
+    public function post_addItem($history = 1)
     {
         $img = $this->addFiles($this->input);
         foreach ($img as $key => $name) {
@@ -238,7 +237,7 @@ class Company extends CommonDBTM
         }
     }
 
-    function post_updateItem($history = 1)
+    public function post_updateItem($history = 1)
     {
         if ($this->fields['logo_id'] == 0) {
             $img = $this->addFiles($this->input);
@@ -258,7 +257,7 @@ class Company extends CommonDBTM
      * @global  $CFG_GLPI
      *
      */
-    function addFiles(array $input, $options = [])
+    public function addFiles(array $input, $options = [])
     {
         global $CFG_GLPI;
 
@@ -275,7 +274,6 @@ class Company extends CommonDBTM
         $docadded = [];
         $donotif = isset($input['_donotif']) ? $input['_donotif'] : 0;
         $disablenotif = isset($input['_disablenotif']) ? $input['_disablenotif'] : 0;
-
 
         foreach ($this->input['_filename'] as $key => $file) {
             $doc = new Document();
@@ -296,7 +294,7 @@ class Company extends CommonDBTM
                     $image_coordinates['img_x'],
                     $image_coordinates['img_w'],
                     $image_coordinates['img_h'],
-                    0
+                    0,
                 );
             } else {
                 Toolbox::resizePicture($filename, $filename);
@@ -324,10 +322,10 @@ class Company extends CommonDBTM
                     && isset($input[$options['content_field']])) {
                     $input[$options['content_field']]
                         = preg_replace(
-                        '/' . Document::getImageTag($input['_tag'][$key]) . '/',
-                        Document::getImageTag($doc->fields["tag"]),
-                        $input[$options['content_field']]
-                    );
+                            '/' . Document::getImageTag($input['_tag'][$key]) . '/',
+                            Document::getImageTag($doc->fields["tag"]),
+                            $input[$options['content_field']],
+                        );
                     $docadded[$docID]['tag'] = $doc->fields["tag"];
                 }
             } else {
@@ -346,12 +344,12 @@ class Company extends CommonDBTM
                     '_do_notif' => $donotif,
                     '_disablenotif' => $disablenotif,
                     'itemtype' => $this->getType(),
-                    'items_id' => $this->getID()
+                    'items_id' => $this->getID(),
                 ])) {
                     $docadded[$docID]['data'] = sprintf(
                         __('%1$s - %2$s'),
                         stripslashes($doc->fields["name"]),
-                        stripslashes($doc->fields["filename"])
+                        stripslashes($doc->fields["filename"]),
                     );
 
                     if (isset($input2["tag"])) {
@@ -377,7 +375,7 @@ class Company extends CommonDBTM
      *
      * @return string address
      */
-    static function getAddress($obj)
+    public static function getAddress($obj)
     {
         $plugin_company = new Company();
         $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
@@ -407,7 +405,7 @@ class Company extends CommonDBTM
      *
      * @return array|mixed[]
      */
-    static function getLogo($obj)
+    public static function getLogo($obj)
     {
         $plugin_company = new Company();
         $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
@@ -444,7 +442,7 @@ class Company extends CommonDBTM
      *
      * @return array|mixed[]
      */
-    static function getComment($obj)
+    public static function getComment($obj)
     {
         $plugin_company = new Company();
         $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
@@ -467,7 +465,6 @@ class Company extends CommonDBTM
         }
         return null;
     }
-
 
     public static function install(Migration $migration)
     {
@@ -494,7 +491,6 @@ class Company extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {

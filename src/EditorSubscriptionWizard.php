@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -44,18 +44,17 @@ if (!defined('GLPI_ROOT')) {
  */
 class EditorSubscriptionWizard
 {
-
     // -----------------------------------------------------------------------
     // Render
     // -----------------------------------------------------------------------
 
-    static function render(): void
+    public static function render(): void
     {
         $config    = Config::getInstance();
-        $forced_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        $forced_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
 
         // entities_id may come from GET (existing_entity shortcut from tab)
-        $entities_id = (int)($_GET['entities_id'] ?? 0);
+        $entities_id = (int) ($_GET['entities_id'] ?? 0);
         $page_url    = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
         $rand        = mt_rand();
 
@@ -107,17 +106,17 @@ class EditorSubscriptionWizard
                 'is_new_sub'                => empty($sub),
                 'sub_name'                  => $sub_name,
                 'customer_account_id'       => $sub['customer_account_id'] ?? '',
-                'active_editor_suscription' => (int)($sub['active_editor_suscription'] ?? 0),
-                'cloud_client'              => (int)($sub['cloud_client'] ?? 0),
-                'internet_publication'      => (int)($sub['internet_publication'] ?? 0),
-                'plugin_manageentities_subscriptionlevels_id'     => (int)($sub['plugin_manageentities_subscriptionlevels_id'] ?? 0),
+                'active_editor_suscription' => (int) ($sub['active_editor_suscription'] ?? 0),
+                'cloud_client'              => (int) ($sub['cloud_client'] ?? 0),
+                'internet_publication'      => (int) ($sub['internet_publication'] ?? 0),
+                'plugin_manageentities_subscriptionlevels_id'     => (int) ($sub['plugin_manageentities_subscriptionlevels_id'] ?? 0),
                 'begin_date'                => $sub['begin_date'] ?? '',
                 'end_date'                  => $sub['end_date'] ?? '',
                 'end_date_expired'          => $end_date_expired,
                 'comment'                   => $sub['comment'] ?? '',
                 'all_levels'                => $all_levels,
                 'rand'                      => $rand,
-            ]
+            ],
         );
     }
 
@@ -125,9 +124,9 @@ class EditorSubscriptionWizard
     // Save (single POST)
     // -----------------------------------------------------------------------
 
-    static function saveAndReturn(array $input = []): array
+    public static function saveAndReturn(array $input = []): array
     {
-        $entities_id = (int)($input['entities_id'] ?? 0);
+        $entities_id = (int) ($input['entities_id'] ?? 0);
         if ($entities_id <= 0) {
             return ['success' => false, 'message' => __('No entity selected.', 'manageentities')];
         }
@@ -149,7 +148,7 @@ class EditorSubscriptionWizard
         if (!in_array($subscription_type, ['editor', 'cloud'], true)) {
             return ['success' => false, 'message' => __('Subscription type is required', 'manageentities')];
         }
-        if ((int)($input['plugin_manageentities_subscriptionlevels_id'] ?? 0) <= 0) {
+        if ((int) ($input['plugin_manageentities_subscriptionlevels_id'] ?? 0) <= 0) {
             return ['success' => false, 'message' => __('Subscription level is required', 'manageentities')];
         }
         if ($begin === '') {
@@ -167,7 +166,7 @@ class EditorSubscriptionWizard
             'active_editor_suscription'  => empty($input['active_editor_suscription']) ? 0 : 1,
             'cloud_client'               => $cloud_client,
             'internet_publication'       => $cloud_client ? 1 : (empty($input['internet_publication']) ? 0 : 1),
-            'plugin_manageentities_subscriptionlevels_id'      => (int)($input['plugin_manageentities_subscriptionlevels_id'] ?? 0),
+            'plugin_manageentities_subscriptionlevels_id'      => (int) ($input['plugin_manageentities_subscriptionlevels_id'] ?? 0),
             'begin_date'                 => $begin !== '' ? $begin : null,
             'end_date'                   => $end !== '' ? $end : null,
             'comment'                    => trim($input['comment'] ?? ''),
@@ -192,9 +191,9 @@ class EditorSubscriptionWizard
     // Delete
     // -----------------------------------------------------------------------
 
-    static function deleteAndReturn(array $input = []): array
+    public static function deleteAndReturn(array $input = []): array
     {
-        $sub_id = (int)($input['sub_id'] ?? 0);
+        $sub_id = (int) ($input['sub_id'] ?? 0);
         if ($sub_id <= 0) {
             return ['success' => false, 'message' => __('No subscription found.', 'manageentities')];
         }

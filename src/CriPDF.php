@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -40,39 +40,38 @@ if (!defined('GLPI_ROOT')) {
 
 class CriPDF extends \TCPDF
 {
-
     /* Attributs d'un rapport envoyés par l'utilisateur avant la génération. */
 
-    var $sous_contrat = false;    // Détermine si c'est une intervention sous contrat.
-    var $deplacement = false;     // S'il y a la gestion des deplacements dans le contrat
-    var $nombredeplacement = 0;   // Total déplacements
-    var $libelle_activite = "";   // Libellé de l'activité du CRI.
-    var $description_cri = "";    // Description du document (concaténation des suivis non privés).
-    var $no_cri = "";             // Né du document, généré.
+    public $sous_contrat = false;    // Détermine si c'est une intervention sous contrat.
+    public $deplacement = false;     // S'il y a la gestion des deplacements dans le contrat
+    public $nombredeplacement = 0;   // Total déplacements
+    public $libelle_activite = "";   // Libellé de l'activité du CRI.
+    public $description_cri = "";    // Description du document (concaténation des suivis non privés).
+    public $no_cri = "";             // Né du document, généré.
 
     /* Autres attributs, récupérés par exemple en base de donnée. */
-    var $demande_associee = "";   // Identifiant du ticket pour lequel on génére le rapport.
-    var $intervenant = "";        // Intervenant du ticket.
-    var $date_intervention = null;// Tableau de 3 éléments (0 --> année et mois; 1 --> du; 2 --> au).
-    var $entite = null;           // Tableau de 3 élements : entity, entitydata et contrat.
-    var $temps_passes = null;     // Tableau des temps passés sur l'intervention.
-    var $forfait = false;         // Type de contrat forfait
-    var $intervention = false;    //Type de contrat à l'intervention
+    public $demande_associee = "";   // Identifiant du ticket pour lequel on génére le rapport.
+    public $intervenant = "";        // Intervenant du ticket.
+    public $date_intervention = null;// Tableau de 3 éléments (0 --> année et mois; 1 --> du; 2 --> au).
+    public $entite = null;           // Tableau de 3 élements : entity, entitydata et contrat.
+    public $temps_passes = null;     // Tableau des temps passés sur l'intervention.
+    public $forfait = false;         // Type de contrat forfait
+    public $intervention = false;    //Type de contrat à l'intervention
 
     /* Constantes pour paramétrer certaines données. */
-    var $line_height = 5;         // Hauteur d'une ligne simple.
-    var $pol_def = 'Helvetica';   // Police par défaut (TCPDF core font; FPDF already aliased Arial to it).
-    var $tail_pol_def = 10;       // Taille par défaut de la police.
-    var $tail_titre = 22;         // Taille du titre.
-    var $marge_haut = 5;          // Marge du haut.
-    var $marge_gauche = 15;       // Marge de gauche et de droite accessoirement.
-    var $largeur_grande_cell = 190;   // Largeur d'une cellule qui prend toute la page.
-    var $tail_bas_page = 20;      // Hauteur du bas de page.
-    var $nb_carac_ligne = 90;     // Pour le détail des travaux;
+    public $line_height = 5;         // Hauteur d'une ligne simple.
+    public $pol_def = 'Helvetica';   // Police par défaut (TCPDF core font; FPDF already aliased Arial to it).
+    public $tail_pol_def = 10;       // Taille par défaut de la police.
+    public $tail_titre = 22;         // Taille du titre.
+    public $marge_haut = 5;          // Marge du haut.
+    public $marge_gauche = 15;       // Marge de gauche et de droite accessoirement.
+    public $largeur_grande_cell = 190;   // Largeur d'une cellule qui prend toute la page.
+    public $tail_bas_page = 20;      // Hauteur du bas de page.
+    public $nb_carac_ligne = 90;     // Pour le détail des travaux;
 
     /* Constantes pour les régles de calcul d'un arrondi de temps avec définition d'un seuil supplémentaire. */
-    var $tranches_seuil = 0.001;
-    var $tranches_arrondi = [0, 0.25, 0.5, 0.75, 1];
+    public $tranches_seuil = 0.001;
+    public $tranches_arrondi = [0, 0.25, 0.5, 0.75, 1];
 
     /**
      * CriPDF constructor.
@@ -106,14 +105,14 @@ class CriPDF extends \TCPDF
     /* ************************************* */
 
     /** Fonction permettant de dessiner une ligne blanche séparatrice. */
-    function Separateur()
+    public function Separateur()
     {
         $this->Cell($this->largeur_grande_cell, $this->line_height, '', 0, 0, '');
         $this->SetY($this->GetY() + $this->line_height);
     }
 
     /** Positionne la couleur de fond en gris clair. */
-    function SetFondClair()
+    public function SetFondClair()
     {
         //$this->SetFillColor(205, 205, 205);
         //$this->SetFillColor(58, 86, 147);
@@ -121,7 +120,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Positionne la couleur de fond en gris foncé. */
-    function SetFondFonce()
+    public function SetFondFonce()
     {
         //$this->SetFillColor(85, 85, 85);
         $this->SetFillColor(205, 205, 205);
@@ -132,7 +131,7 @@ class CriPDF extends \TCPDF
      *
      * @param $italic Vrai si c'est en italique, faux sinon.
      */
-    function SetFontLabel($italic)
+    public function SetFontLabel($italic)
     {
         if ($italic) {
             $this->SetFont($this->pol_def, 'I', $this->tail_pol_def);
@@ -146,7 +145,7 @@ class CriPDF extends \TCPDF
      *
      * @param $souligne Vrai si le texte sera souligné, faux sinon étant la valeur par défaut.
      */
-    function SetFontNormale($souligne = false)
+    public function SetFontNormale($souligne = false)
     {
         if ($souligne) {
             $this->SetFont($this->pol_def, 'U', $this->tail_pol_def);
@@ -167,7 +166,7 @@ class CriPDF extends \TCPDF
      * @param $align Détermine l'alignement du texte dans la cellule.
      * @param $bordure Détermine les bordures é positionner, par défaut, toutes.
      */
-    function CellLabel($italic, $w, $label, $multH = 1, $align = '', $bordure = 1)
+    public function CellLabel($italic, $w, $label, $multH = 1, $align = '', $bordure = 1)
     {
         $this->SetFondClair();
         $this->SetFontLabel($italic);
@@ -185,7 +184,7 @@ class CriPDF extends \TCPDF
      * @param $bordure Détermine les bordures é positionner, par défaut, toutes.
      * @param $souligne Détermine si le contenu de la cellule est souligné.
      */
-    function CellValeur($w, $valeur, $align = '', $multH = 1, $bordure = 1, $souligne = false)
+    public function CellValeur($w, $valeur, $align = '', $multH = 1, $bordure = 1, $souligne = false)
     {
         $this->SetFontNormale($souligne);
         $this->Cell($w, $this->line_height * $multH, $valeur, $bordure, 0, $align);
@@ -196,7 +195,7 @@ class CriPDF extends \TCPDF
      *
      * @param $w Largeur de la cellule.
      */
-    function CellVideFoncee($w)
+    public function CellVideFoncee($w)
     {
         $this->SetFondFonce();
         $this->Cell($w, $this->line_height, '', 1, 0, '', true);
@@ -209,7 +208,7 @@ class CriPDF extends \TCPDF
     /**
      * Fonction permettant de dessiner l'entéte du rapport.
      */
-    function Header()
+    public function Header()
     {
         global $CFG_GLPI;
 
@@ -244,7 +243,7 @@ class CriPDF extends \TCPDF
             _n('Report', 'Reports', 1),
             'LTR',
             0,
-            'C'
+            'C',
         );
         $this->SetY($this->GetY() + $this->line_height * 2);
         // Align the title's bottom half on the same X as its top half (logo width + left margin),
@@ -256,7 +255,7 @@ class CriPDF extends \TCPDF
             __('of this intervention', 'manageentities'),
             'LRB',
             0,
-            'C'
+            'C',
         );
         $this->SetY($this->GetY() - $this->line_height * 2);
         $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
@@ -272,7 +271,7 @@ class CriPDF extends \TCPDF
                     $largeur_titre + $largeur_logo + 15,
                     $this->line_height * 2,
                     $size[0],
-                    $size[1]
+                    $size[1],
                 );
             } elseif ($size[0] > 20) {
                 $this->Image(
@@ -280,7 +279,7 @@ class CriPDF extends \TCPDF
                     $largeur_titre + $largeur_logo + 15,
                     $this->line_height + 1,
                     $size[0],
-                    $size[1]
+                    $size[1],
                 );
             } else {
                 $this->Image(
@@ -288,7 +287,7 @@ class CriPDF extends \TCPDF
                     $largeur_titre + $largeur_logo + 25,
                     $this->line_height + 1,
                     $size[0],
-                    $size[1]
+                    $size[1],
                 );
             }
             $this->Cell($largeur_logo, 20, '', 1, 0, 'C');
@@ -297,16 +296,14 @@ class CriPDF extends \TCPDF
             /* Date et heure. */
             $this->CellValeur(
                 $this->largeur_grande_cell,
-                
-                    __('Created by', 'manageentities') . ' : ' . $this->GetDateFormatee($aujour_hui) . " " . __(
-                        'in',
-                        'manageentities'
-                    ) . " " . $this->GetHeureFormatee($aujour_hui)
-                ,
+                __('Created by', 'manageentities') . ' : ' . $this->GetDateFormatee($aujour_hui) . " " . __(
+                    'in',
+                    'manageentities',
+                ) . " " . $this->GetHeureFormatee($aujour_hui),
                 'C',
                 1,
                 'LTRB',
-                false
+                false,
             ); // Libellé pour la date.
             $this->SetY($this->GetY() + $this->line_height);
         } else {
@@ -319,7 +316,7 @@ class CriPDF extends \TCPDF
                     'C',
                     1,
                     'LTR',
-                    true
+                    true,
                 ); // Libellé pour la date.
                 $this->SetY($this->GetY() + $this->line_height);
                 $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
@@ -332,7 +329,7 @@ class CriPDF extends \TCPDF
                     'C',
                     1,
                     'LR',
-                    true
+                    true,
                 ); // Libellé pour l'heure.
                 $this->SetY($this->GetY() + $this->line_height);
                 $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
@@ -362,7 +359,7 @@ class CriPDF extends \TCPDF
             "N°" . $this->GetNoCri($aujour_hui),
             1,
             0,
-            'C'
+            'C',
         );
         $this->SetY($this->GetY() + $this->line_height);
 
@@ -377,7 +374,7 @@ class CriPDF extends \TCPDF
     /**
      * Fonction permettant de dessiner le tableau des informations générales.
      */
-    function InfosGenerales()
+    public function InfosGenerales()
     {
         /* Num de demande de support associé. */
         $this->SetTextColor(255, 255, 255);
@@ -385,7 +382,7 @@ class CriPDF extends \TCPDF
         $this->CellLabel(
             false,
             $this->largeur_grande_cell / 2,
-            __('Request number of associated help', 'manageentities')
+            __('Request number of associated help', 'manageentities'),
         );
         $this->SetTextColor(0, 0, 0);
         $this->CellValeur($this->largeur_grande_cell / 2, $this->demande_associee);
@@ -407,7 +404,7 @@ class CriPDF extends \TCPDF
             $this->largeur_grande_cell,
             _n('Technician', 'Technicians', $plural, 'manageentities'),
             1,
-            'C'
+            'C',
         );
         $this->SetY($this->GetY() + $this->line_height);
         $this->SetTextColor(0, 0, 0);
@@ -416,9 +413,9 @@ class CriPDF extends \TCPDF
             $this->TestBasDePageDetailTravaux($une_ligne);
 
             // Force left align: TCPDF's MultiCell defaults to 'J' (justify) and justifies even a
-        // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
-        // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
-        $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
+            // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
+            // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
+            $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
         }
         $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
         $this->SetY($this->GetY() + $this->line_height);
@@ -457,7 +454,7 @@ class CriPDF extends \TCPDF
      * Fonction permettant de dessiner le tableau des informations de l'entité
      * concernée par le rapport.
      */
-    function InfosEntite()
+    public function InfosEntite()
     {
         global $DB;
 
@@ -471,7 +468,7 @@ class CriPDF extends \TCPDF
         $contact = new Contact();
         $contacts = $contact->find([
             'entities_id' => $this->entite[0]->fields["id"],
-            'is_default' => 1
+            'is_default' => 1,
         ]);
         foreach ($contacts as $data) {
             $contact = new \Contact();
@@ -513,7 +510,7 @@ class CriPDF extends \TCPDF
      * @param $w Largeur totale.
      * @param $label Contenu de la seconde sous cellule.
      */
-    function CellContrat($cochee, $w, $label)
+    public function CellContrat($cochee, $w, $label)
     {
         $largeur_symbol = 2.5;
 
@@ -534,7 +531,7 @@ class CriPDF extends \TCPDF
      * Fonction permettant de dessiner les informations du contrat de l'entité
      * concernée par le rapport.
      */
-    function InfosContrats()
+    public function InfosContrats()
     {
         $this->SetTextColor(255, 255, 255);
         /* Type de contrat. */
@@ -562,7 +559,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Fonction permettant de dessiner l'entéte du tableau des temps passés. */
-    function TempsPassesEntete()
+    public function TempsPassesEntete()
     {
         $config = Config::getInstance();
         /* Entéte du tableau des temps passés. */
@@ -576,7 +573,7 @@ class CriPDF extends \TCPDF
             $this->largeur_grande_cell,
             __('Crossed time (itinerary including)', 'manageentities'),
             1,
-            'C'
+            'C',
         );
         $this->SetTextColor(0, 0, 0);
         $this->Ln();
@@ -616,7 +613,7 @@ class CriPDF extends \TCPDF
                 __('of this intervention', 'manageentities'),
                 1,
                 'C',
-                'LBR'
+                'LBR',
             );
         } else {
             if ($config->fields['hourorday'] == Config::DAY) {
@@ -630,7 +627,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Fonction permettant de dessiner la zone des temps passés. */
-    function TempsPasses()
+    public function TempsPasses()
     {
         $config = Config::getInstance();
 
@@ -711,7 +708,7 @@ class CriPDF extends \TCPDF
      *
      * @return int Le total arrondi selon la régle de gestion.
      */
-    function TotalTpsPassesArrondis($a_arrondir)
+    public function TotalTpsPassesArrondis($a_arrondir)
     {
         $result = 0;
 
@@ -739,7 +736,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Fonction permettant de gérer un saut de page pour la zone des temps passés. */
-    function TestBasDePageTpsPasses()
+    public function TestBasDePageTpsPasses()
     {
         if ($this->GetSeuilSaut() < $this->line_height) {
             $this->AddPage();
@@ -750,7 +747,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Fonction permettant de dessiner l'entéte du tableau du détail des travaux réalisés. */
-    function DetailTravauxEntete()
+    public function DetailTravauxEntete()
     {
         $this->SetTextColor(255, 255, 255);
         $this->CellLabel(
@@ -758,7 +755,7 @@ class CriPDF extends \TCPDF
             $this->largeur_grande_cell,
             __('Detail of work done', 'manageentities'),
             1,
-            'C'
+            'C',
         );
         $this->SetY($this->GetY() + $this->line_height);
         $this->SetFontNormale(false); // Repositionnement de la fonte normale.
@@ -770,7 +767,7 @@ class CriPDF extends \TCPDF
      *
      * @param $description Texte é afficher dans la zone de détail.
      */
-    function DetailTravaux()
+    public function DetailTravaux()
     {
         // Entéte du tableau des temps passés.
         $this->DetailTravauxEntete();
@@ -785,9 +782,9 @@ class CriPDF extends \TCPDF
         foreach ($this->description_cri as $une_ligne) {
             $this->TestBasDePageDetailTravaux($une_ligne);
             // Force left align: TCPDF's MultiCell defaults to 'J' (justify) and justifies even a
-        // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
-        // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
-        $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
+            // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
+            // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
+            $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
         }
         $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
     }
@@ -797,18 +794,18 @@ class CriPDF extends \TCPDF
      *
      * @param $une_ligne Ligne é tester.
      */
-    function TestBasDePageDetailTravaux($une_ligne)
+    public function TestBasDePageDetailTravaux($une_ligne)
     {
         $nb_lg_necessaires = 1;
         if (strlen($une_ligne) > $this->nb_carac_ligne) {
-            $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne,0,PHP_ROUND_HALF_UP);
+            $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne, 0, PHP_ROUND_HALF_UP);
         }
         if (($nb_lg_necessaires * $this->line_height) > $this->GetSeuilSaut()) {
             $this->Cell(
                 $this->largeur_grande_cell,
                 0,
                 '',
-                'LRB'
+                'LRB',
             ); // Ligne de fin de cellule pour mettre la bordure du bas.
             $this->AddPage();
             $this->SetY($this->GetY() + $this->line_height);
@@ -818,7 +815,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Fonction permettant de dessiner la zone pour les observations du client. */
-    function Observations()
+    public function Observations()
     {
         $tail_zone = 30;
         $ligne_points = '...........................................';
@@ -831,7 +828,7 @@ class CriPDF extends \TCPDF
             $this->largeur_grande_cell,
             __('Customer comments', 'manageentities'),
             1,
-            'C'
+            'C',
         );
         $this->SetTextColor(0, 0, 0);
         $this->SetY($this->GetY() + $this->line_height);
@@ -842,7 +839,7 @@ class CriPDF extends \TCPDF
             $ligne_points . $ligne_points . $ligne_points . $ligne_points,
             'C',
             0.5,
-            'LR'
+            'LR',
         );
         $this->Ln();
         $this->CellValeur($this->largeur_grande_cell, '', 'C', 1.5, 'LR');
@@ -852,7 +849,7 @@ class CriPDF extends \TCPDF
             $ligne_points . $ligne_points . $ligne_points . $ligne_points,
             'C',
             0.5,
-            'LR'
+            'LR',
         );
         $this->Ln();
         $this->CellValeur($this->largeur_grande_cell, '', 'C', 1.5, 'LR');
@@ -862,7 +859,7 @@ class CriPDF extends \TCPDF
             $ligne_points . $ligne_points . $ligne_points . $ligne_points,
             'C',
             0.5,
-            'LR'
+            'LR',
         );
         $this->Ln();
         $this->CellValeur($this->largeur_grande_cell, '', 'C', 0.5, 'LBR');
@@ -871,7 +868,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Fonction permettant de dessiner l'entéte du tableau des commentaires de la société. */
-    function DetailCommentaires()
+    public function DetailCommentaires()
     {
         $this->SetTextColor(255, 255, 255);
         $this->CellLabel(false, $this->largeur_grande_cell, __('Comments'), 1, 'C');
@@ -886,7 +883,7 @@ class CriPDF extends \TCPDF
      *
      * @param $description Texte é afficher dans la zone de détail.
      */
-    function Commentaires()
+    public function Commentaires()
     {
         $plugin_company = new Company();
         $comment = $plugin_company->getComment($this);
@@ -904,9 +901,9 @@ class CriPDF extends \TCPDF
         foreach ($comment as $une_ligne) {
             $this->TestBasDePageCommentaires($une_ligne);
             // Force left align: TCPDF's MultiCell defaults to 'J' (justify) and justifies even a
-        // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
-        // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
-        $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
+            // single non-wrapping line, spreading words to both edges (e.g. "Xavier      CAILLAUD").
+            // FPDF left-aligned the last/only line, so pass 'L' explicitly to restore that behaviour.
+            $this->MultiCell($this->largeur_grande_cell, $this->line_height, $une_ligne, 'LR', 'L');
         }
         $this->Cell($this->largeur_grande_cell, 0, '', 'LRB'); // Ligne de fin de cellule pour mettre la bordure du bas.
     }
@@ -916,18 +913,18 @@ class CriPDF extends \TCPDF
      *
      * @param $une_ligne Ligne é tester.
      */
-    function TestBasDePageCommentaires($une_ligne)
+    public function TestBasDePageCommentaires($une_ligne)
     {
         $nb_lg_necessaires = 1;
         if (strlen($une_ligne) > $this->nb_carac_ligne) {
-            $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne,0,PHP_ROUND_HALF_UP);
+            $nb_lg_necessaires = round(strlen($une_ligne) / $this->nb_carac_ligne, 0, PHP_ROUND_HALF_UP);
         }
         if (($nb_lg_necessaires * $this->line_height) > $this->GetSeuilSaut()) {
             $this->Cell(
                 $this->largeur_grande_cell,
                 0,
                 '',
-                'LRB'
+                'LRB',
             ); // Ligne de fin de cellule pour mettre la bordure du bas.
             $this->AddPage();
             $this->SetY($this->GetY() + $this->line_height);
@@ -937,7 +934,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Fonction permettant de dessiner la zone du cachet et du visa du client. */
-    function CachetClient()
+    public function CachetClient()
     {
         $tail_zone = 32.5;
 
@@ -949,14 +946,14 @@ class CriPDF extends \TCPDF
             $this->largeur_grande_cell / 2,
             __('Customer stamp', 'manageentities'),
             1,
-            'C'
+            'C',
         );
         $this->CellLabel(
             false,
             $this->largeur_grande_cell / 2,
             __('Customer Visa', 'manageentities'),
             1,
-            'C'
+            'C',
         );
         $this->SetY($this->GetY() + $this->line_height);
         $this->CellValeur($this->largeur_grande_cell / 2, '', '', 5.5); // Cachet client.
@@ -970,7 +967,7 @@ class CriPDF extends \TCPDF
      *
      * @param $tail_zone Taille de la zone pour laquelle on souhaite savoir s'il reste de la place.
      */
-    function TestBasDePageGenerique($tail_zone)
+    public function TestBasDePageGenerique($tail_zone)
     {
         if ($this->GetSeuilSaut() < $tail_zone) {
             $this->AddPage();
@@ -981,7 +978,7 @@ class CriPDF extends \TCPDF
     /**
      * Fonction permettant de dessiner le pied de page du rapport.
      */
-    function Footer()
+    public function Footer()
     {
         // Positionnement par rapport au bas de la page.
         $this->SetY(-$this->tail_bas_page);
@@ -997,7 +994,7 @@ class CriPDF extends \TCPDF
             . ' ' . __('on', 'manageentities') . ' ' . $this->getAliasNbPages(),
             0,
             0,
-            'C'
+            'C',
         );
         $this->Ln(10);
         /* Infos company. */
@@ -1026,7 +1023,7 @@ class CriPDF extends \TCPDF
     }
 
     /** Fonction permettant de dessiner le rapport partie par partie. */
-    function DrawCri()
+    public function DrawCri()
     {
         // No AliasNbPages() call: TCPDF resolves the {nb} total-pages placeholder automatically.
         $this->AddPage(); // La premiére page.
@@ -1062,12 +1059,12 @@ class CriPDF extends \TCPDF
      *
      * @return La date donnée au format dd/mm/yyyy.
      */
-    function GetDateFormatee($une_date)
+    public function GetDateFormatee($une_date)
     {
         return $this->CompleterAvec0($une_date['mday'], 2) . "/" . $this->CompleterAvec0(
-                $une_date['mon'],
-                2
-            ) . "/" . $une_date['year'];
+            $une_date['mon'],
+            2,
+        ) . "/" . $une_date['year'];
     }
 
     /**
@@ -1077,7 +1074,7 @@ class CriPDF extends \TCPDF
      *
      * @return L'heure donnée au format hh:mm.
      */
-    function GetHeureFormatee($une_date)
+    public function GetHeureFormatee($une_date)
     {
         return $this->CompleterAvec0($une_date['hours'], 2) . ":" . $this->CompleterAvec0($une_date['minutes'], 2);
     }
@@ -1089,7 +1086,7 @@ class CriPDF extends \TCPDF
      *
      * @return Le né de CRI généré.
      */
-    function GetNoCri($une_date = "")
+    public function GetNoCri($une_date = "")
     {
         if ($this->no_cri == "" && $une_date != "") {
             $this->no_cri = substr($une_date['year'], 2) . $this->CompleterAvec0($une_date['mon'], 2)
@@ -1107,7 +1104,7 @@ class CriPDF extends \TCPDF
      *
      * @return La chaéne complétée.
      */
-    function CompleterAvec0($une_chaine, $lg)
+    public function CompleterAvec0($une_chaine, $lg)
     {
         while (strlen($une_chaine) != $lg) {
             $une_chaine = "0" . $une_chaine;
@@ -1120,32 +1117,32 @@ class CriPDF extends \TCPDF
     /* Getteurs et setteurs. */
     /* ********************* */
 
-    function SetSousContrat($sous_contrat)
+    public function SetSousContrat($sous_contrat)
     {
         $this->sous_contrat = $sous_contrat;
     }
 
-    function SetDeplacement($deplacement)
+    public function SetDeplacement($deplacement)
     {
         $this->deplacement = $deplacement;
     }
 
-    function SetNombreDeplacement($nombredeplacement)
+    public function SetNombreDeplacement($nombredeplacement)
     {
         $this->nombredeplacement = $nombredeplacement;
     }
 
-    function SetLibelleActivite($libelle_activite)
+    public function SetLibelleActivite($libelle_activite)
     {
         $config = Config::getInstance();
 
         if (is_array($libelle_activite)) {
             $this->libelle_activite = $libelle_activite;
         } elseif ($config->fields['hourorday'] == Config::DAY && is_integer($libelle_activite)) {
-            $this->libelle_activite = 
+            $this->libelle_activite =
                 \Dropdown::getDropdownName(
                     "glpi_plugin_manageentities_critypes",
-                    $libelle_activite
+                    $libelle_activite,
                 )
             ;
         } else {
@@ -1153,7 +1150,7 @@ class CriPDF extends \TCPDF
         }
     }
 
-    function SetDescriptionCri($description_cri)
+    public function SetDescriptionCri($description_cri)
     {
         $this->description_cri = $description_cri;
         $this->description_cri = RichText::getTextFromHtml($this->description_cri);
@@ -1165,17 +1162,17 @@ class CriPDF extends \TCPDF
         $this->description_cri = $this->description_cri;
     }
 
-    function SetIntervenant($intervenant)
+    public function SetIntervenant($intervenant)
     {
         $this->intervenant = $intervenant;
     }
 
-    function SetDemandeAssociee($demande_associee)
+    public function SetDemandeAssociee($demande_associee)
     {
         $this->demande_associee = $demande_associee;
     }
 
-    function SetDateIntervention($date_intervention)
+    public function SetDateIntervention($date_intervention)
     {
         // Les dates sont recues de la base directement et de la forme yyyy-mm-dd hh:mm.
         /* Année et mois de l'intervention. */
@@ -1186,45 +1183,45 @@ class CriPDF extends \TCPDF
                 0,
                 substr($date_intervention[0], 5, 2),
                 substr($date_intervention[0], 8, 2),
-                substr($date_intervention[0], 0, 4)
-            )
+                substr($date_intervention[0], 0, 4),
+            ),
         );
         /* Du et Au. */
         $this->date_intervention[1] = substr($date_intervention[1], 8, 2) . "/" . substr(
-                $date_intervention[1],
-                5,
-                2
-            ) . "/"
+            $date_intervention[1],
+            5,
+            2,
+        ) . "/"
             . substr($date_intervention[1], 0, 4);
         $this->date_intervention[2] = substr($date_intervention[2], 8, 2) . "/" . substr(
-                $date_intervention[2],
-                5,
-                2
-            ) . "/"
+            $date_intervention[2],
+            5,
+            2,
+        ) . "/"
             . substr($date_intervention[2], 0, 4);
     }
 
-    function SetEntite($entite)
+    public function SetEntite($entite)
     {
         $this->entite = $entite;
     }
 
-    function SetTempsPasses($temps_passes)
+    public function SetTempsPasses($temps_passes)
     {
         $this->temps_passes = $temps_passes;
     }
 
-    function GetSeuilSaut()
+    public function GetSeuilSaut()
     {
         return (297 - $this->GetY() - $this->tail_bas_page);
     }
 
-    function setForfait()
+    public function setForfait()
     {
         $this->forfait = true;
     }
 
-    function setIntervention()
+    public function setIntervention()
     {
         $this->intervention = true;
     }
@@ -1241,7 +1238,7 @@ class CriPDF extends \TCPDF
     // return [width, height]
 
     // ---------------------------------------------------
-    function fctaffichimage($img_Src, $W_max, $H_max)
+    public function fctaffichimage($img_Src, $W_max, $H_max)
     {
         if (file_exists($img_Src)) {
             // ---------------------
@@ -1258,8 +1255,8 @@ class CriPDF extends \TCPDF
             }
             // ---------------------
             // Teste les dimensions tenant dans la zone
-            $W_test = round($W_Src * ($H_max / $H_Src),0,PHP_ROUND_HALF_UP);
-            $H_test = round($H_Src * ($W_max / $W_Src),0,PHP_ROUND_HALF_UP);
+            $W_test = round($W_Src * ($H_max / $H_Src), 0, PHP_ROUND_HALF_UP);
+            $H_test = round($H_Src * ($W_max / $W_Src), 0, PHP_ROUND_HALF_UP);
             // ---------------------
             // si l'image est plus petite que la zone
             if ($W_Src < $W_max && $H_Src < $H_max) {

@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 use GlpiPlugin\Manageentities\BusinessContact;
@@ -212,7 +212,7 @@ function plugin_manageentities_install()
             $DB->update(
                 'glpi_plugin_manageentities_profiles',
                 ['profiles_id' => (int) $data["id"]],
-                ['id' => (int) $data["id"]]
+                ['id' => (int) $data["id"]],
             );
         }
 
@@ -339,7 +339,7 @@ function plugin_manageentities_install()
                                     'glpi_displaypreferences',
                                     [
                                         'id' => $dataid['id'],
-                                    ]
+                                    ],
                                 );
                             }
                         } else {
@@ -350,7 +350,7 @@ function plugin_manageentities_install()
                                 ],
                                 [
                                     'id' => $data['id'],
-                                ]
+                                ],
                             );
                         }
                     }
@@ -517,7 +517,7 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num)
                         'FROM'  => $table,
                         'WHERE' => [
                             'id'          => new \Glpi\DBAL\QueryExpression(
-                                $DB->quoteName($table . '.plugin_manageentities_critypes_id')
+                                $DB->quoteName($table . '.plugin_manageentities_critypes_id'),
                             ),
                             'entities_id' => $entities_ids,
                         ],
@@ -601,8 +601,8 @@ function plugin_item_transfer_manageentities($parm)
             $contract = new \GlpiPlugin\Manageentities\Contract();
             $glpiContract = new \Contract();
             $glpiContract->getFromDB($parm['id']);
-            $new_entities_id = (int)$glpiContract->fields['entities_id'];
-            $contracts_id    = (int)$parm['id'];
+            $new_entities_id = (int) $glpiContract->fields['entities_id'];
+            $contracts_id    = (int) $parm['id'];
 
             $old_entity = 0;
 
@@ -613,7 +613,7 @@ function plugin_item_transfer_manageentities($parm)
                 'WHERE'  => ['contracts_id' => $contracts_id],
             ]);
             foreach ($iter as $row) {
-                $old_entity = (int)$row['entities_id'];
+                $old_entity = (int) $row['entities_id'];
                 $contract->update([
                     'id'           => $row['id'],
                     'contracts_id' => $contracts_id,

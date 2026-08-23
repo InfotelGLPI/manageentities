@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -35,11 +35,10 @@ if (!defined('GLPI_ROOT')) {
 
 class Dropdown extends \Dropdown
 {
-
-    static $rightname = 'plugin_manageentities';
+    public static $rightname = 'plugin_manageentities';
 
     //Empty value displayed in a dropdown
-    const EMPTY_VALUE = '-----';
+    public const EMPTY_VALUE = '-----';
 
     /**
      * Dropdown numbers
@@ -60,7 +59,7 @@ class Dropdown extends \Dropdown
      **@since version 0.84
      *
      */
-    static function showNumber($myname, $options = [])
+    public static function showNumber($myname, $options = [])
     {
         global $CFG_GLPI;
 
@@ -101,14 +100,14 @@ class Dropdown extends \Dropdown
             'min' => $p['min'],
             'max' => $p['max'],
             'step' => $p['step'],
-            'toadd' => $p['toadd']
+            'toadd' => $p['toadd'],
         ];
 
         $out = \Html::jsAjaxDropdown(
             $myname,
             $field_id,
             PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/getDropdownNumber.php",
-            $param
+            $param,
         );
 
         if ($p['display']) {

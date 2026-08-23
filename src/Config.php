@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -56,7 +56,7 @@ class Config extends CommonDBTM
     public const REPORT_INTERVENTION = 0;
     public const PERIOD_INTERVENTION = 1;
 
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return __('Setup');
     }
@@ -66,12 +66,12 @@ class Config extends CommonDBTM
         return "ti ti-settings";
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight('plugin_manageentities', READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRight('plugin_manageentities', UPDATE);
     }
@@ -155,31 +155,31 @@ class Config extends CommonDBTM
         $rand_hourorday = \Dropdown::showFromArray(
             'hourorday',
             self::getConfigType(),
-            ['value' => $this->fields['hourorday'], 'display' => true]
+            ['value' => $this->fields['hourorday'], 'display' => true],
         );
         Ajax::updateItem(
             'title_show_hourorday',
             PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
             ['hourorday' => $this->fields['hourorday'], 'action' => 'title_show_hourorday'],
-            "dropdown_hourorday$rand_hourorday"
+            "dropdown_hourorday$rand_hourorday",
         );
         Ajax::updateItem(
             'value_show_hourorday',
             PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
             ['hourorday' => $this->fields['hourorday'], 'action' => 'value_show_hourorday'],
-            "dropdown_hourorday$rand_hourorday"
+            "dropdown_hourorday$rand_hourorday",
         );
         Ajax::updateItemOnSelectEvent(
             "dropdown_hourorday$rand_hourorday",
             'title_show_hourorday',
             PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
-            ['hourorday' => '__VALUE__', 'action' => 'title_show_hourorday']
+            ['hourorday' => '__VALUE__', 'action' => 'title_show_hourorday'],
         );
         Ajax::updateItemOnSelectEvent(
             "dropdown_hourorday$rand_hourorday",
             'value_show_hourorday',
             PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
-            ['hourorday' => '__VALUE__', 'action' => 'value_show_hourorday']
+            ['hourorday' => '__VALUE__', 'action' => 'value_show_hourorday'],
         );
         $hourorday_html = ob_get_clean();
 
@@ -227,12 +227,24 @@ class Config extends CommonDBTM
         ]);
         $closed_glpi_state_html = ob_get_clean();
 
-        ob_start(); \Dropdown::showYesNo('backup', $this->fields['backup']); $backup_html = ob_get_clean();
-        ob_start(); \Dropdown::showYesNo('useprice', $this->fields['useprice']); $useprice_html = ob_get_clean();
-        ob_start(); \Dropdown::showYesNo('use_publictask', $this->fields['use_publictask']); $use_publictask_html = ob_get_clean();
-        ob_start(); \Dropdown::showYesNo('allow_same_periods', $this->fields['allow_same_periods']); $allow_same_periods_html = ob_get_clean();
-        ob_start(); \Dropdown::showYesNo('use_editorsubscriptions', $this->fields['use_editorsubscriptions'] ?? 1); $use_editorsubscriptions_html = ob_get_clean();
-        ob_start(); \Dropdown::showYesNo('comment', $this->fields['comment']); $comment_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('backup', $this->fields['backup']);
+        $backup_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('useprice', $this->fields['useprice']);
+        $useprice_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('use_publictask', $this->fields['use_publictask']);
+        $use_publictask_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('allow_same_periods', $this->fields['allow_same_periods']);
+        $allow_same_periods_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('use_editorsubscriptions', $this->fields['use_editorsubscriptions'] ?? 1);
+        $use_editorsubscriptions_html = ob_get_clean();
+        ob_start();
+        \Dropdown::showYesNo('comment', $this->fields['comment']);
+        $comment_html = ob_get_clean();
 
         ob_start();
         \Dropdown::show(ContractState::class, [
@@ -242,7 +254,7 @@ class Config extends CommonDBTM
         $wizard_contractstate_html = ob_get_clean();
 
         ob_start();
-        Contract::dropdownContractType('wizard_contract_type', (int)($this->fields['wizard_contract_type'] ?? 0));
+        Contract::dropdownContractType('wizard_contract_type', (int) ($this->fields['wizard_contract_type'] ?? 0));
         $wizard_contract_type_html = ob_get_clean();
 
         ob_start();
@@ -266,7 +278,7 @@ class Config extends CommonDBTM
         ]);
         $wizard_contacttype_html = ob_get_clean();
 
-        $wizard_default_entities_id = (int)($this->fields['wizard_default_entities_id'] ?? 0);
+        $wizard_default_entities_id = (int) ($this->fields['wizard_default_entities_id'] ?? 0);
         ob_start();
         \Dropdown::show(\Entity::class, [
             'name'  => 'wizard_default_entities_id',
@@ -274,7 +286,7 @@ class Config extends CommonDBTM
         ]);
         $wizard_default_entity_html = ob_get_clean();
 
-        $wizard_archive_entities_id = (int)($this->fields['wizard_archive_entities_id'] ?? 0);
+        $wizard_archive_entities_id = (int) ($this->fields['wizard_archive_entities_id'] ?? 0);
         ob_start();
         \Dropdown::show(\Entity::class, [
             'name'  => 'wizard_archive_entities_id',
@@ -306,7 +318,7 @@ class Config extends CommonDBTM
                 'wizard_contacttype_html'       => $wizard_contacttype_html,
                 'wizard_default_entity_html'    => $wizard_default_entity_html,
                 'wizard_archive_entity_html'    => $wizard_archive_entity_html,
-            ]
+            ],
         );
     }
 
@@ -371,7 +383,7 @@ class Config extends CommonDBTM
      */
     public static function useEditorSubscriptions(): bool
     {
-        return (bool)(self::getInstance()->fields['use_editorsubscriptions'] ?? 1);
+        return (bool) (self::getInstance()->fields['use_editorsubscriptions'] ?? 1);
     }
 
     public static function install(Migration $migration)
@@ -428,7 +440,7 @@ class Config extends CommonDBTM
                     'documentcategories_id' => 0,
                     'hourorday' => 0,
                     'hourbyday' => 8,
-                    'needvalidationforcri' => 0]
+                    'needvalidationforcri' => 0],
             );
         }
 
@@ -438,7 +450,7 @@ class Config extends CommonDBTM
                 $table,
                 'use_editorsubscriptions',
                 'bool',
-                ['value' => 1, 'after' => 'allow_same_periods']
+                ['value' => 1, 'after' => 'allow_same_periods'],
             );
             $migration->migrationOneTable($table);
         }

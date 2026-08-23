@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -137,7 +137,7 @@ class WizardController
         }
         $_SESSION[self::SESSION_KEY][$wid] = array_merge(
             self::buildDefaultSession(),
-            $_SESSION[self::SESSION_KEY][$wid]
+            $_SESSION[self::SESSION_KEY][$wid],
         );
         return $_SESSION[self::SESSION_KEY][$wid];
     }
@@ -193,15 +193,15 @@ class WizardController
             $errors['begin_date'] = __('Begin date is required', 'manageentities');
         }
 
-        if ((int)($input['duration'] ?? 0) <= 0) {
+        if ((int) ($input['duration'] ?? 0) <= 0) {
             $errors['duration'] = __('Duration is required', 'manageentities');
         }
 
-        if ((int)($input['contracttypes_id'] ?? 0) <= 0) {
+        if ((int) ($input['contracttypes_id'] ?? 0) <= 0) {
             $errors['contracttypes_id'] = __('Contract type is required', 'manageentities');
         }
 
-        if ((int)($input['states_id'] ?? 0) <= 0) {
+        if ((int) ($input['states_id'] ?? 0) <= 0) {
             $errors['states_id'] = __('Status is required', 'manageentities');
         }
 
@@ -231,7 +231,7 @@ class WizardController
         if (empty($input['plugin_manageentities_contractstates_id'] ?? 0)) {
             $errors['plugin_manageentities_contractstates_id'] = __('Status is required', 'manageentities');
         }
-        if (!isset($input['nbday']) || $input['nbday'] === '' || (float)$input['nbday'] < 0) {
+        if (!isset($input['nbday']) || $input['nbday'] === '' || (float) $input['nbday'] < 0) {
             $errors['nbday'] = __('Initial credit is required', 'manageentities');
         }
         return ['valid' => empty($errors), 'errors' => $errors];
@@ -244,7 +244,7 @@ class WizardController
     private static function isArchivedEntity(int $entities_id): bool
     {
         $config = Config::getInstance();
-        $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+        $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
         if ($archive_entities_id <= 0 || $entities_id <= 0) {
             return false;
         }
@@ -264,7 +264,7 @@ class WizardController
         if (empty($input)) {
             $input = $_POST;
         }
-        $entities_id = (int)($input['entities_id'] ?? 0);
+        $entities_id = (int) ($input['entities_id'] ?? 0);
         if ($entities_id <= 0) {
             return ['success' => false, 'errors' => ['entities_id' => __('Please select an entity', 'manageentities')]];
         }
@@ -279,7 +279,7 @@ class WizardController
             return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
         }
         $config = Config::getInstance();
-        $target_entities_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        $target_entities_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
         if ($target_entities_id <= 0) {
             return ['success' => false, 'message' => __('Default parent entity is not configured', 'manageentities')];
         }
@@ -353,7 +353,7 @@ class WizardController
         if (empty($input)) {
             $input = $_POST;
         }
-        $entities_id = (int)($input['entities_id'] ?? 0);
+        $entities_id = (int) ($input['entities_id'] ?? 0);
         if ($entities_id <= 0) {
             return ['success' => false, 'errors' => ['entities_id' => __('Please select an entity', 'manageentities')]];
         }
@@ -378,7 +378,7 @@ class WizardController
         }
 
         $config = Config::getInstance();
-        $forced_entities_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        $forced_entities_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
         if ($forced_entities_id > 0) {
             $sons = getSonsOf('glpi_entities', $forced_entities_id);
             unset($sons[$forced_entities_id]);
@@ -408,8 +408,8 @@ class WizardController
         $session = self::getSession();
 
         $config = Config::getInstance();
-        $forced_entities_id    = (int)($config->fields['wizard_default_entities_id'] ?? 0);
-        $submitted_entities_id = (int)($input['entities_id'] ?? 0);
+        $forced_entities_id    = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
+        $submitted_entities_id = (int) ($input['entities_id'] ?? 0);
         $resolved_entities_id  = ($submitted_entities_id > 0) ? $submitted_entities_id : $forced_entities_id;
 
         $entity_data = [
@@ -435,14 +435,14 @@ class WizardController
             return [
                 'success'       => false,
                 'entity_exists' => true,
-                'entities_id'   => (int)$existing_entity['id'],
+                'entities_id'   => (int) $existing_entity['id'],
                 'entity_name'   => $existing_entity['name'],
             ];
         }
 
         // Check if an entity with the same name exists in the archive
         $config_arc = Config::getInstance();
-        $archive_id = (int)($config_arc->fields['wizard_archive_entities_id'] ?? 0);
+        $archive_id = (int) ($config_arc->fields['wizard_archive_entities_id'] ?? 0);
         if ($archive_id > 0) {
             $archived_sons = getSonsOf('glpi_entities', $archive_id);
             unset($archived_sons[$archive_id]);
@@ -453,7 +453,7 @@ class WizardController
                     return [
                         'success'          => false,
                         'entity_archived'  => true,
-                        'entities_id'      => (int)$archived_row['id'],
+                        'entities_id'      => (int) $archived_row['id'],
                         'entity_name'      => $archived_row['name'],
                     ];
                 }
@@ -512,10 +512,10 @@ class WizardController
                 'state'           => $cInput['state'] ?? '',
                 'country'         => $cInput['country'] ?? '',
                 'comment'         => $cInput['comment'] ?? '',
-                'is_recursive'    => (int)(bool)($cInput['is_recursive'] ?? 0),
-                'contacttypes_id' => (int)($cInput['contacttypes_id'] ?? 0),
-                'usertitles_id'   => (int)($cInput['usertitles_id'] ?? 0),
-                'is_manager'      => (int)(bool)($cInput['is_manager'] ?? 0),
+                'is_recursive'    => (int) (bool) ($cInput['is_recursive'] ?? 0),
+                'contacttypes_id' => (int) ($cInput['contacttypes_id'] ?? 0),
+                'usertitles_id'   => (int) ($cInput['usertitles_id'] ?? 0),
+                'is_manager'      => (int) (bool) ($cInput['is_manager'] ?? 0),
             ];
         }
 
@@ -530,11 +530,11 @@ class WizardController
 
     public static function renderContactBlock(): void
     {
-        $idx  = (int)($_POST['idx'] ?? 1);
+        $idx  = (int) ($_POST['idx'] ?? 1);
         $rand = mt_rand();
         $default_contacttype = 0;
         try {
-            $default_contacttype = (int)(Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
+            $default_contacttype = (int) (Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
         } catch (\Throwable $e) {
         }
         TemplateRenderer::getInstance()->display('@manageentities/wizard/step2_contact_block.html.twig', [
@@ -542,10 +542,10 @@ class WizardController
             'rand'             => $rand,
             'fields'           => [],
             'usertitles_html'  => self::buildDropdownHtml(
-                fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'display' => false])
+                fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'display' => false]),
             ),
             'contacttype_html' => self::buildDropdownHtml(
-                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false])
+                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false]),
             ),
             'entities_html'    => self::buildSessionEntityHtml("contacts[{$idx}][entities_id]", self::getSession()),
         ]);
@@ -559,7 +559,7 @@ class WizardController
     public static function loadContractTemplate(): void
     {
         header('Content-Type: application/json');
-        $contracts_id = (int)($_POST['contracts_id'] ?? 0);
+        $contracts_id = (int) ($_POST['contracts_id'] ?? 0);
         if ($contracts_id <= 0) {
             self::jsonOut(['success' => false]);
         }
@@ -574,9 +574,9 @@ class WizardController
             'name'             => $f['name'] ?? '',
             'num'              => $f['num'] ?? '',
             'begin_date'       => $f['begin_date'] ?? '',
-            'duration'         => (int)($f['duration'] ?? 12),
-            'contracttypes_id' => (int)($f['contracttypes_id'] ?? 0),
-            'states_id'        => (int)($f['states_id'] ?? 0),
+            'duration'         => (int) ($f['duration'] ?? 12),
+            'contracttypes_id' => (int) ($f['contracttypes_id'] ?? 0),
+            'states_id'        => (int) ($f['states_id'] ?? 0),
             'comment'          => $f['comment'] ?? '',
         ];
         self::saveSession($session);
@@ -612,18 +612,18 @@ class WizardController
             'num'                => $input['num'] ?? '',
             'accounting_number'  => $input['accounting_number'] ?? '',
             'comment'            => $input['comment'] ?? '',
-            'is_recursive'       => (int)(bool)($input['is_recursive'] ?? 0),
-            'contracttypes_id'   => (int)($input['contracttypes_id'] ?? 0),
+            'is_recursive'       => (int) (bool) ($input['is_recursive'] ?? 0),
+            'contracttypes_id'   => (int) ($input['contracttypes_id'] ?? 0),
             'begin_date'         => !empty($input['begin_date']) ? $input['begin_date'] : '',
-            'duration'           => (int)($input['duration'] ?? 0),
-            'notice'             => (int)($input['notice'] ?? 0),
-            'periodicity'        => (int)($input['periodicity'] ?? 0),
-            'billing'            => (int)($input['billing'] ?? 0),
-            'renewal'            => (int)($input['renewal'] ?? 0),
-            'max_links_allowed'  => (int)($input['max_links_allowed'] ?? 0),
-            'use_saturday'       => (int)(bool)($input['use_saturday'] ?? 0),
-            'use_sunday'         => (int)(bool)($input['use_sunday'] ?? 0),
-            'states_id'          => (int)($input['states_id'] ?? 0),
+            'duration'           => (int) ($input['duration'] ?? 0),
+            'notice'             => (int) ($input['notice'] ?? 0),
+            'periodicity'        => (int) ($input['periodicity'] ?? 0),
+            'billing'            => (int) ($input['billing'] ?? 0),
+            'renewal'            => (int) ($input['renewal'] ?? 0),
+            'max_links_allowed'  => (int) ($input['max_links_allowed'] ?? 0),
+            'use_saturday'       => (int) (bool) ($input['use_saturday'] ?? 0),
+            'use_sunday'         => (int) (bool) ($input['use_sunday'] ?? 0),
+            'states_id'          => (int) ($input['states_id'] ?? 0),
         ];
 
         foreach (['week_begin_hour', 'week_end_hour', 'saturday_begin_hour', 'saturday_end_hour', 'sunday_begin_hour', 'sunday_end_hour'] as $hourField) {
@@ -657,8 +657,8 @@ class WizardController
 
         $session = self::getSession();
 
-        $cloud_client      = (int)(bool)($input['cloud_client'] ?? 0);
-        $active_sub        = (int)(bool)($input['active_editor_suscription'] ?? 0);
+        $cloud_client      = (int) (bool) ($input['cloud_client'] ?? 0);
+        $active_sub        = (int) (bool) ($input['active_editor_suscription'] ?? 0);
         $name              = trim($input['name'] ?? '');
         $begin_date        = ($input['begin_date'] ?? '') !== '' ? $input['begin_date'] : null;
 
@@ -677,8 +677,8 @@ class WizardController
             'customer_account_id'                         => trim($input['customer_account_id'] ?? ''),
             'active_editor_suscription'                   => $active_sub,
             'cloud_client'                                => $cloud_client,
-            'internet_publication'                        => $cloud_client ? 1 : (int)(bool)($input['internet_publication'] ?? 0),
-            'plugin_manageentities_subscriptionlevels_id' => (int)($input['plugin_manageentities_subscriptionlevels_id'] ?? 0),
+            'internet_publication'                        => $cloud_client ? 1 : (int) (bool) ($input['internet_publication'] ?? 0),
+            'plugin_manageentities_subscriptionlevels_id' => (int) ($input['plugin_manageentities_subscriptionlevels_id'] ?? 0),
             'begin_date'                                  => $begin_date,
             'end_date'                                    => ($input['end_date'] ?? '') !== '' ? $input['end_date'] : null,
             'comment'                                     => trim($input['comment'] ?? ''),
@@ -694,13 +694,13 @@ class WizardController
     public static function renderDocumentBlock(): void
     {
         $rand = mt_rand();
-        $idx  = (int)($_POST['idx'] ?? 1);
+        $idx  = (int) ($_POST['idx'] ?? 1);
 
         $cfg = Config::getInstance();
         $doccat_html = self::buildDocumentCategorySelect(
             "documents[{$idx}][documentcategories_id]",
             $rand,
-            (int)($cfg->fields['wizard_documentcategories_id'] ?? 0)
+            (int) ($cfg->fields['wizard_documentcategories_id'] ?? 0),
         );
 
         TemplateRenderer::getInstance()->display('@manageentities/wizard/step3_document_block.html.twig', [
@@ -718,8 +718,8 @@ class WizardController
         $html = '<select name="' . htmlspecialchars($name) . '" id="' . $id . '" class="form-select">';
         $html .= '<option value="0">---</option>';
         foreach ($cats as $cat) {
-            $selected = ((int)$cat['id'] === $value) ? ' selected' : '';
-            $html .= '<option value="' . (int)$cat['id'] . '"' . $selected . '>'
+            $selected = ((int) $cat['id'] === $value) ? ' selected' : '';
+            $html .= '<option value="' . (int) $cat['id'] . '"' . $selected . '>'
                    . htmlspecialchars($cat['completename'] ?? $cat['name'])
                    . '</option>';
         }
@@ -738,7 +738,7 @@ class WizardController
 
         // We don't have a real entities_id yet in new_entity mode — use 0 (root entity).
         // The document will be re-linked with the correct entity inside finishWizard().
-        $entities_id = (int)($session['entities_id'] ?? 0);
+        $entities_id = (int) ($session['entities_id'] ?? 0);
 
         $fileNames    = $_FILES['documents']['name']     ?? [];
         $fileTmpNames = $_FILES['documents']['tmp_name'] ?? [];
@@ -752,14 +752,14 @@ class WizardController
         foreach ($fileNames as $idx => $subfield) {
             $name     = $subfield['file'] ?? null;
             $tmp_name = $fileTmpNames[$idx]['file'] ?? null;
-            $error    = (int)($fileErrors[$idx]['file'] ?? UPLOAD_ERR_NO_FILE);
+            $error    = (int) ($fileErrors[$idx]['file'] ?? UPLOAD_ERR_NO_FILE);
             if ($error !== UPLOAD_ERR_OK || !$name || !$tmp_name) {
                 continue;
             }
             $list[] = [
                 'tmp_name'              => $tmp_name,
                 'name'                  => $name,
-                'documentcategories_id' => (int)($_POST['documents'][$idx]['documentcategories_id'] ?? 0),
+                'documentcategories_id' => (int) ($_POST['documents'][$idx]['documentcategories_id'] ?? 0),
             ];
         }
 
@@ -800,7 +800,7 @@ class WizardController
 
             if ($doc_id) {
                 $added++;
-                $newDocIds[] = (int)$doc_id;
+                $newDocIds[] = (int) $doc_id;
             } else {
                 @unlink($destPath);
                 $errors[] = $entry['name'];
@@ -845,13 +845,13 @@ class WizardController
         $management_data = [
             'date_signature'       => $input['date_signature'],
             'date_renewal'         => !empty($input['date_renewal']) ? $input['date_renewal'] : '',
-            'management'           => (int)($input['management'] ?? 0),
-            'contract_type'        => (int)($input['contract_type'] ?? 0),
-            'contract_added'       => (int)(bool)($input['contract_added'] ?? 0),
-            'show_on_global_gantt' => (int)(bool)($input['show_on_global_gantt'] ?? 0),
-            'refacturable_costs'   => (int)(bool)($input['refacturable_costs'] ?? 0),
-            'moving_management'    => (int)(bool)($input['moving_management'] ?? 0),
-            'duration_moving'      => (int)($input['duration_moving'] ?? 0),
+            'management'           => (int) ($input['management'] ?? 0),
+            'contract_type'        => (int) ($input['contract_type'] ?? 0),
+            'contract_added'       => (int) (bool) ($input['contract_added'] ?? 0),
+            'show_on_global_gantt' => (int) (bool) ($input['show_on_global_gantt'] ?? 0),
+            'refacturable_costs'   => (int) (bool) ($input['refacturable_costs'] ?? 0),
+            'moving_management'    => (int) (bool) ($input['moving_management'] ?? 0),
+            'duration_moving'      => (int) ($input['duration_moving'] ?? 0),
         ];
 
         $session['management_data'] = $management_data;
@@ -895,15 +895,15 @@ class WizardController
 
             $fields = [
                 'name'                                    => trim($iInput['name']),
-                'plugin_manageentities_contractstates_id' => (int)($iInput['plugin_manageentities_contractstates_id'] ?? 0),
+                'plugin_manageentities_contractstates_id' => (int) ($iInput['plugin_manageentities_contractstates_id'] ?? 0),
                 'begin_date'                              => $iInput['begin_date'],
                 'end_date'                                => $iInput['end_date'],
-                'nbday'                                   => (float)($iInput['nbday'] ?? 0),
-                'report'                                  => (float)($iInput['report'] ?? 0),
-                'charged'                                 => (int)(bool)($iInput['charged'] ?? 0),
+                'nbday'                                   => (float) ($iInput['nbday'] ?? 0),
+                'report'                                  => (float) ($iInput['report'] ?? 0),
+                'charged'                                 => (int) (bool) ($iInput['charged'] ?? 0),
                 'comment'                                 => $iInput['comment'] ?? '',
             ];
-            $contractType = (int)($iInput['contract_type'] ?? 0);
+            $contractType = (int) ($iInput['contract_type'] ?? 0);
             if ($contractType > 0) {
                 $fields['contract_type'] = $contractType;
             }
@@ -928,7 +928,7 @@ class WizardController
     {
         header('Content-Type: application/json');
         $input  = $_POST;
-        $idx    = (int)($input['idx'] ?? 0);
+        $idx    = (int) ($input['idx'] ?? 0);
         $session = self::getSession();
         $iInput  = $input['intervention'] ?? [];
 
@@ -941,15 +941,15 @@ class WizardController
 
         $fields = [
             'name'                                    => trim($iInput['name']),
-            'plugin_manageentities_contractstates_id' => (int)($iInput['plugin_manageentities_contractstates_id'] ?? 0),
+            'plugin_manageentities_contractstates_id' => (int) ($iInput['plugin_manageentities_contractstates_id'] ?? 0),
             'begin_date'                              => $iInput['begin_date'],
             'end_date'                                => $iInput['end_date'],
-            'nbday'                                   => (float)($iInput['nbday'] ?? 0),
-            'report'                                  => (float)($iInput['report'] ?? 0),
-            'charged'                                 => (int)(bool)($iInput['charged'] ?? 0),
+            'nbday'                                   => (float) ($iInput['nbday'] ?? 0),
+            'report'                                  => (float) ($iInput['report'] ?? 0),
+            'charged'                                 => (int) (bool) ($iInput['charged'] ?? 0),
             'comment'                                 => $iInput['comment'] ?? '',
         ];
-        $contractType = (int)($iInput['contract_type'] ?? 0);
+        $contractType = (int) ($iInput['contract_type'] ?? 0);
         if ($contractType > 0) {
             $fields['contract_type'] = $contractType;
         }
@@ -979,7 +979,7 @@ class WizardController
 
     public static function renderInterventionBlock(): void
     {
-        $idx     = (int)($_POST['idx'] ?? 1);
+        $idx     = (int) ($_POST['idx'] ?? 1);
         $rand    = mt_rand();
         $session = self::getSession();
 
@@ -1005,10 +1005,10 @@ class WizardController
             'contractstate_html'   => self::buildContractStateHtml(
                 "interventions[{$idx}][plugin_manageentities_contractstates_id]",
                 $rand,
-                (int)($cfg->fields['wizard_contractstate_id'] ?? 0)
+                (int) ($cfg->fields['wizard_contractstate_id'] ?? 0),
             ),
             'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int)($cfg->fields['wizard_contract_type'] ?? 0), $rand)
+                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int) ($cfg->fields['wizard_contract_type'] ?? 0), $rand),
             ) : '',
             'entities_html'        => self::buildSessionEntityHtml("interventions[{$idx}][entities_id]", $session),
             'contracts_html'       => self::buildSessionContractHtml("interventions[{$idx}][contracts_id]", $session, $rand),
@@ -1036,12 +1036,12 @@ class WizardController
             $input = $_POST;
         }
 
-        $idx = (int)($input['intervention_idx'] ?? -1);
+        $idx = (int) ($input['intervention_idx'] ?? -1);
         if ($idx < 0) {
             return ['success' => false, 'message' => __('Intervention not saved yet', 'manageentities')];
         }
 
-        $price = (float)($input['price'] ?? 0);
+        $price = (float) ($input['price'] ?? 0);
         if ($price <= 0) {
             return ['success' => false, 'message' => __('Price must be greater than 0', 'manageentities')];
         }
@@ -1061,9 +1061,9 @@ class WizardController
 
         $cp_idx = 0;
         $criprices[$cp_idx] = [
-            'plugin_manageentities_critypes_id' => (int)($input['plugin_manageentities_critypes_id'] ?? 0),
+            'plugin_manageentities_critypes_id' => (int) ($input['plugin_manageentities_critypes_id'] ?? 0),
             'price'                             => $price,
-            'is_default'                        => (int)(bool)($input['is_default'] ?? 0),
+            'is_default'                        => (int) (bool) ($input['is_default'] ?? 0),
         ];
 
         $session['interventions_data'][$idx]['criprices'] = $criprices;
@@ -1113,9 +1113,9 @@ class WizardController
         if (empty($input)) {
             $input = $_POST;
         }
-        $idx      = (int)($input['intervention_idx'] ?? -1);
-        $users_id = (int)($input['users_id'] ?? 0);
-        $nb_days  = (float)($input['number_affected_days'] ?? 0);
+        $idx      = (int) ($input['intervention_idx'] ?? -1);
+        $users_id = (int) ($input['users_id'] ?? 0);
+        $nb_days  = (float) ($input['number_affected_days'] ?? 0);
 
         if ($idx < 0 || $users_id <= 0) {
             return ['success' => false, 'message' => __('Missing required fields', 'manageentities')];
@@ -1131,11 +1131,11 @@ class WizardController
         }
 
         $stakeholders = $session['interventions_data'][$idx]['stakeholders'] ?? [];
-        $nbday_credit = (float)($session['interventions_data'][$idx]['fields']['nbday'] ?? 0);
+        $nbday_credit = (float) ($session['interventions_data'][$idx]['fields']['nbday'] ?? 0);
 
         // Check duplicate
         foreach ($stakeholders as $sh) {
-            if ((int)$sh['users_id'] === $users_id) {
+            if ((int) $sh['users_id'] === $users_id) {
                 $already_assigned = array_sum(array_column($stakeholders, 'number_affected_days'));
                 $rem = $nbday_credit > 0 ? $nbday_credit - $already_assigned : null;
                 return ['success' => false, 'message' => __('User already added', 'manageentities'),
@@ -1148,7 +1148,9 @@ class WizardController
             $remaining_real = $nbday_credit - $already_assigned;
             return ['success' => false, 'message' => sprintf(
                 __('Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f', 'manageentities'),
-                $nb_days, $remaining_real, $nbday_credit
+                $nb_days,
+                $remaining_real,
+                $nbday_credit,
             ), 'remaining_days' => $remaining_real, 'credit' => $nbday_credit];
         }
 
@@ -1191,7 +1193,7 @@ class WizardController
             unset($session['interventions_data'][$idx]['stakeholders'][$sh_idx]);
             self::saveSession($session);
 
-            $nbday_credit = (float)($session['interventions_data'][$idx]['fields']['nbday'] ?? 0);
+            $nbday_credit = (float) ($session['interventions_data'][$idx]['fields']['nbday'] ?? 0);
             if ($nbday_credit > 0) {
                 $assigned  = array_sum(array_column($session['interventions_data'][$idx]['stakeholders'], 'number_affected_days'));
                 $credit    = $nbday_credit;
@@ -1214,7 +1216,7 @@ class WizardController
         if (count($parts) !== 2) {
             return [-1, -1];
         }
-        return [(int)$parts[0], (int)$parts[1]];
+        return [(int) $parts[0], (int) $parts[1]];
     }
 
     // -------------------------------------------------------------------------
@@ -1224,7 +1226,7 @@ class WizardController
     public static function deleteDocument(): void
     {
         header('Content-Type: application/json');
-        $doc_id = (int)($_POST['document_id'] ?? 0);
+        $doc_id = (int) ($_POST['document_id'] ?? 0);
         if ($doc_id <= 0) {
             self::jsonOut(['success' => false]);
         }
@@ -1247,11 +1249,11 @@ class WizardController
         if ($ok) {
             $session['documents_ids'] = array_values(array_filter(
                 $owned,
-                fn($id) => $id !== $doc_id
+                fn($id) => $id !== $doc_id,
             ));
             self::saveSession($session);
         }
-        self::jsonOut(['success' => (bool)$ok]);
+        self::jsonOut(['success' => (bool) $ok]);
     }
 
     // -------------------------------------------------------------------------
@@ -1284,7 +1286,7 @@ class WizardController
                 $name = $iv['fields']['name'] ?? ('Period #' . $idx);
                 return ['success' => false, 'errors' => ['global' => sprintf(
                     __('Period of contract "%s" requires at least one rate', 'manageentities'),
-                    $name
+                    $name,
                 )]];
             }
         }
@@ -1307,14 +1309,14 @@ class WizardController
         }
 
         // 1. Entity
-        $entities_id = (int)($session['entities_id'] ?? 0);
+        $entities_id = (int) ($session['entities_id'] ?? 0);
         if ($session['wizard_mode'] !== 'existing_entity') {
             $entity_data = $session['entity_data'] ?? [];
             if (empty($entity_data)) {
                 return ['success' => false, 'errors' => ['global' => __('Entity data is missing', 'manageentities')]];
             }
             $entity = new \Entity();
-            $entities_id = (int)$entity->add($entity_data);
+            $entities_id = (int) $entity->add($entity_data);
             if (!$entities_id) {
                 return ['success' => false, 'errors' => ['global' => __('Error creating entity', 'manageentities')]];
             }
@@ -1342,8 +1344,8 @@ class WizardController
             unset($contactInput['is_manager']);
             $contact_id = $glpiContact->add($contactInput);
             if ($contact_id) {
-                $contact_ids[$idx] = (int)$contact_id;
-                self::linkPluginContact((int)$contact_id, $entities_id, (int)($cData['is_manager'] ?? 0));
+                $contact_ids[$idx] = (int) $contact_id;
+                self::linkPluginContact((int) $contact_id, $entities_id, (int) ($cData['is_manager'] ?? 0));
             }
         }
 
@@ -1360,15 +1362,17 @@ class WizardController
                 $contract_data[$df] = 'NULL';
             }
         }
-        $contracts_id = (int)$glpiContract->add($contract_data);
+        $contracts_id = (int) $glpiContract->add($contract_data);
         if (!$contracts_id) {
             return ['success' => false, 'errors' => ['global' => __('Error creating contract', 'manageentities')]];
         }
 
         // 3b. Link uploaded documents to the contract via Document_Item
         foreach (($session['documents_ids'] ?? []) as $doc_id) {
-            $doc_id = (int)$doc_id;
-            if ($doc_id <= 0) continue;
+            $doc_id = (int) $doc_id;
+            if ($doc_id <= 0) {
+                continue;
+            }
             $di = new \Document_Item();
             $di->add([
                 'documents_id' => $doc_id,
@@ -1391,7 +1395,7 @@ class WizardController
             }
         }
         $pluginContract = new Contract();
-        $plugin_contract_id = (int)$pluginContract->add($management_data);
+        $plugin_contract_id = (int) $pluginContract->add($management_data);
         if (!$plugin_contract_id) {
             return ['success' => false, 'errors' => ['global' => __('Error creating management type', 'manageentities')]];
         }
@@ -1406,8 +1410,10 @@ class WizardController
             }
 
             $contractDay = new ContractDay();
-            $contractday_id = (int)$contractDay->add($fields);
-            if (!$contractday_id) continue;
+            $contractday_id = (int) $contractDay->add($fields);
+            if (!$contractday_id) {
+                continue;
+            }
 
             // CriPrices
             foreach (($iv['criprices'] ?? []) as $cp) {
@@ -1415,9 +1421,9 @@ class WizardController
                 $criPrice->add([
                     'plugin_manageentities_contractdays_id' => $contractday_id,
                     'entities_id'                           => $entities_id,
-                    'plugin_manageentities_critypes_id'     => (int)($cp['plugin_manageentities_critypes_id'] ?? 0),
-                    'price'                                 => (float)($cp['price'] ?? 0),
-                    'is_default'                            => (int)($cp['is_default'] ?? 0),
+                    'plugin_manageentities_critypes_id'     => (int) ($cp['plugin_manageentities_critypes_id'] ?? 0),
+                    'price'                                 => (float) ($cp['price'] ?? 0),
+                    'is_default'                            => (int) ($cp['is_default'] ?? 0),
                 ]);
             }
 
@@ -1426,8 +1432,8 @@ class WizardController
                 $shObj = new InterventionStakeholder();
                 $shObj->add([
                     'plugin_manageentities_contractdays_id' => $contractday_id,
-                    'users_id'                              => (int)$sh['users_id'],
-                    'number_affected_days'                  => (float)$sh['number_affected_days'],
+                    'users_id'                              => (int) $sh['users_id'],
+                    'number_affected_days'                  => (float) $sh['number_affected_days'],
                 ]);
             }
         }
@@ -1491,24 +1497,24 @@ class WizardController
 
         foreach (($session['interventions_data'] ?? []) as $iv) {
             $cdLabel = $iv['fields']['name'] ?? '';
-            if ((float)($iv['fields']['nbday'] ?? 0) > 0) {
-                $cdLabel .= ' — ' . number_format((float)$iv['fields']['nbday'], 2) . ' ' . $unit_label;
+            if ((float) ($iv['fields']['nbday'] ?? 0) > 0) {
+                $cdLabel .= ' — ' . number_format((float) $iv['fields']['nbday'], 2) . ' ' . $unit_label;
             }
             $items[] = ['type' => _n('Period of contract', 'Periods of contract', 1, 'manageentities'), 'label' => $cdLabel];
 
             foreach (($iv['criprices'] ?? []) as $cp) {
                 $criType  = new CriType();
-                $typeName = $criType->getFromDB((int)($cp['plugin_manageentities_critypes_id'] ?? 0))
+                $typeName = $criType->getFromDB((int) ($cp['plugin_manageentities_critypes_id'] ?? 0))
                     ? ($criType->fields['completename'] ?? $criType->fields['name'] ?? '')
                     : '';
                 $items[] = ['type' => CriPrice::getTypeName(1),
-                    'label' => ($typeName ? $typeName . ' — ' : '') . number_format((float)($cp['price'] ?? 0), 2)];
+                    'label' => ($typeName ? $typeName . ' — ' : '') . number_format((float) ($cp['price'] ?? 0), 2)];
             }
 
             foreach (($iv['stakeholders'] ?? []) as $sh) {
                 $u = new User();
-                $label = $u->getFromDB((int)$sh['users_id'])
-                    ? $u->getFriendlyName() . ' (' . number_format((float)$sh['number_affected_days'], 2) . ' ' . $unit_label . ')'
+                $label = $u->getFromDB((int) $sh['users_id'])
+                    ? $u->getFriendlyName() . ' (' . number_format((float) $sh['number_affected_days'], 2) . ' ' . $unit_label . ')'
                     : ('User #' . $sh['users_id']);
                 $items[] = ['type' => _n('User affected', 'Users affected', 1, 'manageentities'), 'label' => $label];
             }
@@ -1594,8 +1600,10 @@ class WizardController
 
         // Delete uploaded documents (they have no itemtype/items_id yet so are true orphans)
         foreach (($session['documents_ids'] ?? []) as $doc_id) {
-            $doc_id = (int)$doc_id;
-            if ($doc_id <= 0) continue;
+            $doc_id = (int) $doc_id;
+            if ($doc_id <= 0) {
+                continue;
+            }
             $d = new Document();
             $d->delete(['id' => $doc_id], true);
         }
@@ -1652,7 +1660,7 @@ class WizardController
         $is_hour = ($config->fields['hourorday'] == Config::HOUR);
         $use_subscriptions = Config::useEditorSubscriptions();
 
-        $step = (int)($_GET['step'] ?? $session['step']);
+        $step = (int) ($_GET['step'] ?? $session['step']);
         $step = max(1, min(6, $step));
         // Subscription step (3) only exists in new_entity mode and when subscriptions are enabled
         if (!$use_subscriptions && $step === 3) {
@@ -1751,8 +1759,8 @@ class WizardController
     {
         if ($session['wizard_mode'] === 'existing_entity') {
             $config = Config::getInstance();
-            $forced_entities_id  = (int)($config->fields['wizard_default_entities_id'] ?? 0);
-            $archive_entities_id = (int)($config->fields['wizard_archive_entities_id'] ?? 0);
+            $forced_entities_id  = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
+            $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
             $allowed_ids = [];
 
             if ($forced_entities_id > 0) {
@@ -1773,10 +1781,10 @@ class WizardController
         }
 
         $config = Config::getInstance();
-        $forced_entities_id = (int)($config->fields['wizard_default_entities_id'] ?? 0);
+        $forced_entities_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
 
         $entity_data        = $session['entity_data'] ?? [];
-        $parent_entities_id = (int)($entity_data['entities_id'] ?? $forced_entities_id);
+        $parent_entities_id = (int) ($entity_data['entities_id'] ?? $forced_entities_id);
 
         // Suggestions datalist
         $entity = new \Entity();
@@ -1799,10 +1807,10 @@ class WizardController
             $contacts[$idx] = [
                 'fields'           => $cData,
                 'usertitles_html'  => self::buildDropdownHtml(
-                    fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'value' => $cData['usertitles_id'] ?? 0, 'display' => false])
+                    fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'value' => $cData['usertitles_id'] ?? 0, 'display' => false]),
                 ),
                 'contacttype_html' => self::buildDropdownHtml(
-                    fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $cData['contacttypes_id'] ?? 0, 'display' => false])
+                    fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $cData['contacttypes_id'] ?? 0, 'display' => false]),
                 ),
                 'entities_html'    => self::buildSessionEntityHtml("contacts[{$idx}][entities_id]", $session),
             ];
@@ -1819,16 +1827,16 @@ class WizardController
     {
         $default_contacttype = 0;
         try {
-            $default_contacttype = (int)(Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
+            $default_contacttype = (int) (Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
         } catch (\Throwable $e) {
         }
         return [
             'fields'           => [],
             'usertitles_html'  => self::buildDropdownHtml(
-                fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'display' => false])
+                fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'display' => false]),
             ),
             'contacttype_html' => self::buildDropdownHtml(
-                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false])
+                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false]),
             ),
             'entities_html'    => self::buildSessionEntityHtml("contacts[{$idx}][entities_id]", $session),
         ];
@@ -1848,10 +1856,10 @@ class WizardController
         return [
             'sub_name'                                    => $sub_name,
             'customer_account_id'                         => $fields['customer_account_id'] ?? '',
-            'active_editor_suscription'                   => (int)($fields['active_editor_suscription'] ?? 0),
-            'cloud_client'                                => (int)($fields['cloud_client'] ?? 0),
-            'internet_publication'                        => (int)($fields['internet_publication'] ?? 0),
-            'plugin_manageentities_subscriptionlevels_id' => (int)($fields['plugin_manageentities_subscriptionlevels_id'] ?? 0),
+            'active_editor_suscription'                   => (int) ($fields['active_editor_suscription'] ?? 0),
+            'cloud_client'                                => (int) ($fields['cloud_client'] ?? 0),
+            'internet_publication'                        => (int) ($fields['internet_publication'] ?? 0),
+            'plugin_manageentities_subscriptionlevels_id' => (int) ($fields['plugin_manageentities_subscriptionlevels_id'] ?? 0),
             'all_levels'                                  => SubscriptionLevel::getAllForJS(),
             'begin_date'                                  => $fields['begin_date'] ?? '',
             'end_date'                                    => $fields['end_date'] ?? '',
@@ -1899,12 +1907,16 @@ class WizardController
         // Pre-render existing document rows (for Back navigation)
         $existing_docs_html = '';
         foreach (($session['documents_ids'] ?? []) as $doc_id) {
-            $doc_id = (int)$doc_id;
-            if ($doc_id <= 0) continue;
+            $doc_id = (int) $doc_id;
+            if ($doc_id <= 0) {
+                continue;
+            }
             $d = new Document();
-            if (!$d->getFromDB($doc_id)) continue;
+            if (!$d->getFromDB($doc_id)) {
+                continue;
+            }
             $docCat   = new DocumentCategory();
-            $docCatId = (int)($d->fields['documentcategories_id'] ?? 0);
+            $docCatId = (int) ($d->fields['documentcategories_id'] ?? 0);
             $catName  = ($docCatId > 0 && $docCat->getFromDB($docCatId)) ? ($docCat->fields['completename'] ?? $docCat->fields['name']) : '';
             $docName  = htmlspecialchars($d->fields['name'] ?? $d->fields['filename'] ?? '');
             $existing_docs_html .= '<div class="document-block d-flex align-items-center gap-2 mb-2 flex-wrap" data-id="' . $doc_id . '">'
@@ -1919,12 +1931,12 @@ class WizardController
         $rand_tpl = mt_rand();
         ob_start();
         $template_condition  = ['is_template' => 1];
-        $config_forced_entity = (int)(Config::getInstance()->fields['wizard_default_entities_id'] ?? 0);
+        $config_forced_entity = (int) (Config::getInstance()->fields['wizard_default_entities_id'] ?? 0);
         if ($config_forced_entity > 0) {
             $dbu = new DbUtils();
             $visible_entities = array_merge(
                 [$config_forced_entity],
-                array_keys($dbu->getAncestorsOf('glpi_entities', $config_forced_entity))
+                array_keys($dbu->getAncestorsOf('glpi_entities', $config_forced_entity)),
             );
             $template_condition['glpi_contracts.entities_id'] = $visible_entities;
         }
@@ -1966,10 +1978,10 @@ class WizardController
         $contract_type_html = '';
         if ($is_hour) {
             $management_html = self::buildDropdownHtml(
-                fn() => Contract::dropdownContractManagement('management', $fields['management'] ?? 0, $rand)
+                fn() => Contract::dropdownContractManagement('management', $fields['management'] ?? 0, $rand),
             );
             $contract_type_html = self::buildDropdownHtml(
-                fn() => Contract::dropdownContractType('contract_type', $fields['contract_type'] ?? 0, $rand)
+                fn() => Contract::dropdownContractType('contract_type', $fields['contract_type'] ?? 0, $rand),
             );
         }
 
@@ -1987,11 +1999,11 @@ class WizardController
             'duration_moving_html'     => $duration_moving_html,
             'is_hour_mode'             => $is_hour,
             'is_day_price'             => $is_day,
-            'show_on_global_gantt' => $is_first ? true : (bool)($fields['show_on_global_gantt'] ?? false),
-            'refacturable_costs'   => (bool)($fields['refacturable_costs'] ?? false),
+            'show_on_global_gantt' => $is_first ? true : (bool) ($fields['show_on_global_gantt'] ?? false),
+            'refacturable_costs'   => (bool) ($fields['refacturable_costs'] ?? false),
             'contract_added'       => !empty($session['documents_ids'])
-                                       || (bool)($fields['contract_added'] ?? false),
-            'moving_management'    => (bool)($fields['moving_management'] ?? false),
+                                       || (bool) ($fields['contract_added'] ?? false),
+            'moving_management'    => (bool) ($fields['moving_management'] ?? false),
         ];
     }
 
@@ -2008,10 +2020,10 @@ class WizardController
                 'contractstate_html'   => self::buildContractStateHtml(
                     "interventions[{$idx}][plugin_manageentities_contractstates_id]",
                     $rand,
-                    (int)($iv['fields']['plugin_manageentities_contractstates_id'] ?? 0)
+                    (int) ($iv['fields']['plugin_manageentities_contractstates_id'] ?? 0),
                 ),
                 'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                    fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int)($iv['fields']['contract_type'] ?? 0), $rand)
+                    fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int) ($iv['fields']['contract_type'] ?? 0), $rand),
                 ) : '',
                 'entities_html'        => self::buildSessionEntityHtml("interventions[{$idx}][entities_id]", $session),
                 'contracts_html'       => self::buildSessionContractHtml("interventions[{$idx}][contracts_id]", $session, $rand),
@@ -2039,10 +2051,10 @@ class WizardController
             'contractstate_html'   => self::buildContractStateHtml(
                 "interventions[{$idx}][plugin_manageentities_contractstates_id]",
                 $rand,
-                (int)($cfg->fields['wizard_contractstate_id'] ?? 0)
+                (int) ($cfg->fields['wizard_contractstate_id'] ?? 0),
             ),
             'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int)($cfg->fields['wizard_contract_type'] ?? 0), $rand)
+                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int) ($cfg->fields['wizard_contract_type'] ?? 0), $rand),
             ) : '',
             'entities_html'        => self::buildSessionEntityHtml("interventions[{$idx}][entities_id]", $session),
             'contracts_html'       => self::buildSessionContractHtml("interventions[{$idx}][contracts_id]", $session, $rand),
@@ -2061,7 +2073,7 @@ class WizardController
         ob_start();
         $returned = $fn();
         $captured = ob_get_clean();
-        return is_string($returned) && $returned !== '' ? $returned : (string)$captured;
+        return is_string($returned) && $returned !== '' ? $returned : (string) $captured;
     }
 
     private static function buildEntityHtml(string $name, int $value = 0, int $rand = 0, array $condition = []): string
@@ -2102,7 +2114,7 @@ class WizardController
      */
     private static function buildSessionEntityHtml(string $name, array $session): string
     {
-        $entities_id = (int)($session['entities_id'] ?? 0);
+        $entities_id = (int) ($session['entities_id'] ?? 0);
         if ($entities_id > 0) {
             $entity = new \Entity();
             $entity->getFromDB($entities_id);
@@ -2168,12 +2180,12 @@ class WizardController
         $enriched    = [];
         foreach ($criprices as $cp_idx => $cp) {
             $criType = new CriType();
-            $typeName = $criType->getFromDB((int)($cp['plugin_manageentities_critypes_id'] ?? 0))
+            $typeName = $criType->getFromDB((int) ($cp['plugin_manageentities_critypes_id'] ?? 0))
                 ? ($criType->fields['completename'] ?? $criType->fields['name'] ?? '')
                 : '';
             $enriched[] = array_merge($cp, [
                 'id'           => $idx . '_' . $cp_idx,
-                'critypes_name'=> $typeName,
+                'critypes_name' => $typeName,
             ]);
         }
 
@@ -2190,9 +2202,9 @@ class WizardController
                 fn() => Dropdown::show(CriType::class, [
                     'name'    => 'new_critype_' . $idx,
                     'rand'    => $rand,
-                    'value'   => (int)(Config::getInstance()->fields['wizard_critype_id'] ?? 0),
+                    'value'   => (int) (Config::getInstance()->fields['wizard_critype_id'] ?? 0),
                     'display' => false,
-                ])
+                ]),
             ),
         ]);
         return ob_get_clean();
@@ -2201,14 +2213,14 @@ class WizardController
     private static function buildStakeholdersSectionHtml(int $idx, array $iv, int $rand, int $entities_id): string
     {
         $stakeholders = $iv['stakeholders'] ?? [];
-        $credit       = (float)($iv['fields']['nbday'] ?? 0);
+        $credit       = (float) ($iv['fields']['nbday'] ?? 0);
         $assigned     = array_sum(array_column($stakeholders, 'number_affected_days'));
         $remaining    = $credit > 0 ? $credit - $assigned : null;
 
         $enriched = [];
         foreach ($stakeholders as $sh_idx => $sh) {
             $user = new User();
-            $user->getFromDB((int)$sh['users_id']);
+            $user->getFromDB((int) $sh['users_id']);
             $enriched[] = array_merge($sh, [
                 'id'        => $idx . '_' . $sh_idx,
                 'user_name' => $user->getFriendlyName(),
@@ -2231,7 +2243,7 @@ class WizardController
                     'entity'  => $entities_id,
                     'display' => false,
                     'right'   => 'all',
-                ])
+                ]),
             ),
         ]);
         return ob_get_clean();
@@ -2244,7 +2256,7 @@ class WizardController
     private static function getContractDatesFromSession(array $session): array
     {
         $begin    = $session['contract_data']['begin_date'] ?? '';
-        $duration = (int)($session['contract_data']['duration'] ?? 0);
+        $duration = (int) ($session['contract_data']['duration'] ?? 0);
         $end      = '';
         if ($begin && $duration > 0) {
             try {

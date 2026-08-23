@@ -1,30 +1,30 @@
 <?php
 
-/*
- -------------------------------------------------------------------------
- manageentities plugin for GLPI
- Copyright (C) 2017-2026 by the manageentities Development Team.
-
- https://github.com/InfotelGLPI/manageentities
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of manageentities.
-
- manageentities is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
- (at your option) any later version.
-
- manageentities is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with manageentities. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * -------------------------------------------------------------------------
+ * manageentities plugin for GLPI
+ * Copyright (C) 2017-2026 by the manageentities Development Team.
+ *
+ * https://github.com/InfotelGLPI/manageentities
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of manageentities.
+ *
+ * manageentities is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * manageentities is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ * --------------------------------------------------------------------------
  */
 
 namespace GlpiPlugin\Manageentities;
@@ -47,43 +47,42 @@ if (!defined('GLPI_ROOT')) {
 
 class Contract extends CommonDBTM
 {
+    public const MANAGEMENT_NONE = 0;
+    public const MANAGEMENT_QUARTERLY = 1;
+    public const MANAGEMENT_ANNUAL = 2;
 
-    const MANAGEMENT_NONE = 0;
-    const MANAGEMENT_QUARTERLY = 1;
-    const MANAGEMENT_ANNUAL = 2;
-
-    const CONTRACT_TYPE_NULL = 0;
+    public const CONTRACT_TYPE_NULL = 0;
     //time mode
-    const CONTRACT_TYPE_HOUR = 1;
-    const CONTRACT_TYPE_INTERVENTION = 2;
-    const CONTRACT_TYPE_UNLIMITED = 3;
+    public const CONTRACT_TYPE_HOUR = 1;
+    public const CONTRACT_TYPE_INTERVENTION = 2;
+    public const CONTRACT_TYPE_UNLIMITED = 3;
     //Daily mode
-    const CONTRACT_TYPE_AT = 4;
-    const CONTRACT_TYPE_FORFAIT = 5;
+    public const CONTRACT_TYPE_AT = 4;
+    public const CONTRACT_TYPE_FORFAIT = 5;
 
-    static $rightname = 'plugin_manageentities';
+    public static $rightname = 'plugin_manageentities';
 
-    static function getTypeName($nb = 1)
+    public static function getTypeName($nb = 1)
     {
         return __('Management type', 'manageentities');
     }
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-contract";
     }
 
-    static function canView(): bool
+    public static function canView(): bool
     {
         return Session::haveRight(self::$rightname, READ);
     }
 
-    static function canCreate(): bool
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
-    function prepareInputForAdd($input)
+    public function prepareInputForAdd($input)
     {
         if (isset($input['date_renewal'])
             && empty($input['date_renewal'])) {
@@ -118,7 +117,7 @@ class Contract extends CommonDBTM
         return $input;
     }
 
-    function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input)
     {
         if (isset($input['date_renewal'])
             && empty($input['date_renewal'])) {
@@ -153,14 +152,14 @@ class Contract extends CommonDBTM
         return $input;
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == 'Contract'
             && !isset($withtemplate) || empty($withtemplate)) {
             $dbu = new DbUtils();
             $restrict = [
                 "`entities_id`" => $item->fields['entities_id'],
-                "`contracts_id`" => $item->fields['id']
+                "`contracts_id`" => $item->fields['id'],
             ];
             $pluginContractDays = $dbu->countElementsInTable("glpi_plugin_manageentities_contractdays", $restrict);
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -181,7 +180,7 @@ class Contract extends CommonDBTM
         $dbu = new DbUtils();
         $count = $dbu->countElementsInTable(
             'glpi_plugin_manageentities_contractdays',
-            ['contracts_id' => $item->fields['id']]
+            ['contracts_id' => $item->fields['id']],
         );
         if ($count === 0) {
             return;
@@ -261,7 +260,7 @@ class Contract extends CommonDBTM
         ");
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (get_class($item) == 'Contract') {
             self::showForContract($item);
@@ -273,7 +272,7 @@ class Contract extends CommonDBTM
         return true;
     }
 
-    function addContractByDefault($id, $entities_id)
+    public function addContractByDefault($id, $entities_id)
     {
         $contracts = $this->find(['entities_id' => $entities_id]);
 
@@ -285,7 +284,7 @@ class Contract extends CommonDBTM
         $this->update(['is_default' => 1, 'id' => $id]);
     }
 
-    static function showForContract(\Contract $contract)
+    public static function showForContract(\Contract $contract)
     {
         $rand    = mt_rand();
         $canView = $contract->can($contract->fields['id'], READ);
@@ -331,14 +330,14 @@ class Contract extends CommonDBTM
         \Dropdown::showTimeStamp('duration_moving', ['value' => $pluginContract['duration_moving'] ?? null, 'addfirstminutes' => true]);
         $duration_moving_html = ob_get_clean();
 
-        $sub              = EditorSubscription::getForEntity((int)$contract->fields['entities_id']);
+        $sub              = EditorSubscription::getForEntity((int) $contract->fields['entities_id']);
         $now              = date('Y-m-d');
-        $sub_end_expired  = !empty($sub['end_date'])   && substr($sub['end_date'],   0, 10) < $now;
+        $sub_end_expired  = !empty($sub['end_date'])   && substr($sub['end_date'], 0, 10) < $now;
         $sub_level_name   = !empty($sub['plugin_manageentities_subscriptionlevels_id'])
-            ? \Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int)$sub['plugin_manageentities_subscriptionlevels_id'])
+            ? \Dropdown::getDropdownName(SubscriptionLevel::getTable(), (int) $sub['plugin_manageentities_subscriptionlevels_id'])
             : '';
         $sub_wizard_url   = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php'
-            . '?entities_id=' . (int)$contract->fields['entities_id'];
+            . '?entities_id=' . (int) $contract->fields['entities_id'];
 
         TemplateRenderer::getInstance()->display('@manageentities/contract_detail_form.html.twig', [
             'rand'                       => $rand,
@@ -355,18 +354,18 @@ class Contract extends CommonDBTM
             'date_renewal_html'          => $date_renewal_html,
             'management_html'            => $management_html,
             'contract_type_html'         => $contract_type_html,
-            'contract_added'             => (int)($pluginContract['contract_added'] ?? 0),
-            'refacturable_costs'         => (int)($pluginContract['refacturable_costs'] ?? 0),
-            'show_on_global_gantt'       => (int)($pluginContract['show_on_global_gantt'] ?? 0),
-            'moving_management'          => (int)($pluginContract['moving_management'] ?? 0),
+            'contract_added'             => (int) ($pluginContract['contract_added'] ?? 0),
+            'refacturable_costs'         => (int) ($pluginContract['refacturable_costs'] ?? 0),
+            'show_on_global_gantt'       => (int) ($pluginContract['show_on_global_gantt'] ?? 0),
+            'moving_management'          => (int) ($pluginContract['moving_management'] ?? 0),
             'duration_moving_html'       => $duration_moving_html,
-            'internet_publication'       => (int)($sub['internet_publication'] ?? 0),
+            'internet_publication'       => (int) ($sub['internet_publication'] ?? 0),
             // Publisher subscription — read-only card
             'has_subscription'           => !empty($sub),
             'sub_customer_account_id'    => $sub['customer_account_id'] ?? '',
             'sub_name'                   => $sub['name'] ?? '',
-            'sub_active'                 => (int)($sub['active_editor_suscription'] ?? 0),
-            'sub_cloud'                  => (int)($sub['cloud_client'] ?? 0),
+            'sub_active'                 => (int) ($sub['active_editor_suscription'] ?? 0),
+            'sub_cloud'                  => (int) ($sub['cloud_client'] ?? 0),
             'sub_begin_date'             => $sub['begin_date'] ?? '',
             'sub_end_date'               => $sub['end_date'] ?? '',
             'sub_end_expired'            => $sub_end_expired,
@@ -375,8 +374,7 @@ class Contract extends CommonDBTM
         ]);
     }
 
-
-    function showContracts($instID)
+    public function showContracts($instID)
     {
         global $DB, $CFG_GLPI;
 
@@ -418,7 +416,7 @@ class Contract extends CommonDBTM
                 . ' WHERE `glpi_plugin_manageentities_contractdays`.`contracts_id` = '
                 . $DB->quoteName($this->getTable() . '.contracts_id')
                 . ' AND `glpi_plugin_manageentities_contractdays`.`plugin_manageentities_contractstates_id`'
-                . ' IN (' . $states_in . '))'
+                . ' IN (' . $states_in . '))',
             );
         }
 
@@ -474,7 +472,7 @@ class Contract extends CommonDBTM
                     PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
                     'contractbydefault',
                     __('No'),
-                    ['myid' => $data['myid'], 'entities_id' => $_SESSION['glpiactive_entity']]
+                    ['myid' => $data['myid'], 'entities_id' => $_SESSION['glpiactive_entity']],
                 );
             }
             $default_form = ob_get_clean();
@@ -485,7 +483,7 @@ class Contract extends CommonDBTM
                     PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
                     'deletecontracts',
                     _x('button', 'Delete permanently'),
-                    ['id' => $data['myid']]
+                    ['id' => $data['myid']],
                 );
             }
             $delete_form = ob_get_clean();
@@ -501,7 +499,7 @@ class Contract extends CommonDBTM
                 'comment'       => nl2br($data['comment'] ?? ''),
                 'management'    => $show_management ? self::getContractManagement($data['management']) : '',
                 'contract_type' => $show_type ? self::getContractType($data['contract_type']) : '',
-                'is_default'    => (bool)$data['is_default'],
+                'is_default'    => (bool) $data['is_default'],
                 'default_label' => $is_single
                     ? ($data['is_default'] ? __('Yes') : '')
                     : \Dropdown::getYesNo($data['is_default']),
@@ -528,14 +526,14 @@ class Contract extends CommonDBTM
             'is_single'        => $is_single,
             'show_management'  => $show_management,
             'show_type'        => $show_type,
-            'add_dropdown_html'=> $add_dropdown_html,
+            'add_dropdown_html' => $add_dropdown_html,
             'entity_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
             'allowed_states'   => $allowed_states,
             'rand'             => mt_rand(),
         ]);
     }
 
-    function displayAlertforEntity($instID)
+    public function displayAlertforEntity($instID)
     {
         global $DB;
 
@@ -554,18 +552,18 @@ class Contract extends CommonDBTM
                 'glpi_contracts' => [
                     'ON' => [
                         $this->getTable() => 'contracts_id',
-                        'glpi_contracts' => 'id'
-                    ]
-                ]
+                        'glpi_contracts' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_contracts.is_deleted' => 0,
                 'NOT'       => [$this->getTable() . '.date_signature' => null],
-                'glpi_contracts.entities_id' => $instID
+                'glpi_contracts.entities_id' => $instID,
             ],
             'ORDERBY' => [
                 'glpi_contracts.begin_date',
-                'glpi_contracts.name'
+                'glpi_contracts.name',
             ],
         ]);
 
@@ -585,24 +583,24 @@ class Contract extends CommonDBTM
                         'glpi_contracts' => [
                             'ON' => [
                                 'glpi_contracts' => 'id',
-                                'glpi_plugin_manageentities_contractdays' => 'contracts_id'
-                            ]
+                                'glpi_plugin_manageentities_contractdays' => 'contracts_id',
+                            ],
                         ],
                         'glpi_plugin_manageentities_contractstates' => [
                             'ON' => [
                                 'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-                                'glpi_plugin_manageentities_contractstates' => 'id'
-                            ]
+                                'glpi_plugin_manageentities_contractstates' => 'id',
+                            ],
                         ],
                     ],
                     'WHERE' => [
                         'glpi_plugin_manageentities_contractstates.is_closed' => 0,
-//                        'glpi_plugin_manageentities_contractdays.end_date' => [
-//                            '>',
-//                            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']))
-//                        ],
+                        //                        'glpi_plugin_manageentities_contractdays.end_date' => [
+                        //                            '>',
+                        //                            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']))
+                        //                        ],
                         'glpi_plugin_manageentities_contractdays.contracts_id' => $data["contracts_id"],
-                    ]
+                    ],
                 ];
                 $iteratord = $DB->request($criteriad);
 
@@ -615,20 +613,19 @@ class Contract extends CommonDBTM
                         $dataContractDay['report'] = $datad['report'];
                         $resultCriDetail = CriDetail::getCriDetailData(
                             $dataContractDay,
-                            ["contract_type_id" => $data["contract_type"]]
+                            ["contract_type_id" => $data["contract_type"]],
                         );
                         $reste += $resultCriDetail['resultOther']['reste'];
                     }
                 }
             }
 
-
             if ($reste == 0) {
                 $alert .= "<div class='alert alert-danger d-flex'>";
                 $alert .= "<b>" . __(
-                        "Please note that there are no more contracts with days available for this customer.",
-                        "manageentities"
-                    ) . "</b></div>";
+                    "Please note that there are no more contracts with days available for this customer.",
+                    "manageentities",
+                ) . "</b></div>";
             }
         }
         return $alert;
@@ -643,12 +640,12 @@ class Contract extends CommonDBTM
      *
      * @return boolean
      */
-    static function dropdownContractManagement($name, $value = 0, $rand = null)
+    public static function dropdownContractManagement($name, $value = 0, $rand = null)
     {
         $contractManagements = [
             self::MANAGEMENT_NONE => \Dropdown::EMPTY_VALUE,
             self::MANAGEMENT_QUARTERLY => __('Quarterly', 'manageentities'),
-            self::MANAGEMENT_ANNUAL => __('Annual', 'manageentities')
+            self::MANAGEMENT_ANNUAL => __('Annual', 'manageentities'),
         ];
 
         if (!empty($contractManagements)) {
@@ -669,16 +666,16 @@ class Contract extends CommonDBTM
      *
      * @return string
      */
-    static function getContractManagement($value)
+    public static function getContractManagement($value)
     {
         switch ($value) {
-            case self::MANAGEMENT_NONE :
+            case self::MANAGEMENT_NONE:
                 return \Dropdown::EMPTY_VALUE;
-            case self::MANAGEMENT_QUARTERLY :
+            case self::MANAGEMENT_QUARTERLY:
                 return __('Quarterly', 'manageentities');
-            case self::MANAGEMENT_ANNUAL :
+            case self::MANAGEMENT_ANNUAL:
                 return __('Annual', 'manageentities');
-            default :
+            default:
                 return "";
         }
     }
@@ -693,7 +690,7 @@ class Contract extends CommonDBTM
      *
      * @return boolean
      */
-    static function dropdownContractType($name, $value = 0, $rand = null)
+    public static function dropdownContractType($name, $value = 0, $rand = null)
     {
         $config = Config::getInstance();
 
@@ -702,13 +699,13 @@ class Contract extends CommonDBTM
                 self::CONTRACT_TYPE_NULL => \Dropdown::EMPTY_VALUE,
                 self::CONTRACT_TYPE_HOUR => __('Hourly', 'manageentities'),
                 self::CONTRACT_TYPE_INTERVENTION => __('By intervention', 'manageentities'),
-                self::CONTRACT_TYPE_UNLIMITED => __('Unlimited')
+                self::CONTRACT_TYPE_UNLIMITED => __('Unlimited'),
             ];
         } elseif ($config->fields['hourorday'] == Config::DAY && $config->fields['useprice'] == Config::PRICE) {
             $contractTypes = [
                 self::CONTRACT_TYPE_NULL => \Dropdown::EMPTY_VALUE,
                 self::CONTRACT_TYPE_AT => __('Technical Assistance', 'manageentities'),
-                self::CONTRACT_TYPE_FORFAIT => __('Package', 'manageentities')
+                self::CONTRACT_TYPE_FORFAIT => __('Package', 'manageentities'),
             ];
         }
 
@@ -730,22 +727,22 @@ class Contract extends CommonDBTM
      *
      * @return string
      */
-    static function getContractType($value)
+    public static function getContractType($value)
     {
         switch ($value) {
-            case self::CONTRACT_TYPE_NULL :
+            case self::CONTRACT_TYPE_NULL:
                 return \Dropdown::EMPTY_VALUE;
-            case self::CONTRACT_TYPE_HOUR :
+            case self::CONTRACT_TYPE_HOUR:
                 return __('Hourly', 'manageentities');
-            case self::CONTRACT_TYPE_INTERVENTION :
+            case self::CONTRACT_TYPE_INTERVENTION:
                 return __('By intervention', 'manageentities');
-            case self::CONTRACT_TYPE_UNLIMITED :
+            case self::CONTRACT_TYPE_UNLIMITED:
                 return __('Unlimited');
-            case self::CONTRACT_TYPE_AT :
+            case self::CONTRACT_TYPE_AT:
                 return __('Technical Assistance', 'manageentities');
-            case self::CONTRACT_TYPE_FORFAIT :
+            case self::CONTRACT_TYPE_FORFAIT:
                 return __('Package', 'manageentities');
-            default :
+            default:
                 return "";
         }
     }
@@ -758,15 +755,15 @@ class Contract extends CommonDBTM
      *
      * @return
      */
-    static function getUnitContractType($config, $value)
+    public static function getUnitContractType($config, $value)
     {
         if ($config->fields['hourorday'] == Config::HOUR) {
             switch ($value) {
-                case self::CONTRACT_TYPE_HOUR :
+                case self::CONTRACT_TYPE_HOUR:
                     return _n('Hour', 'Hours', 2);
-                case self::CONTRACT_TYPE_INTERVENTION :
+                case self::CONTRACT_TYPE_INTERVENTION:
                     return _n('Intervention', 'Interventions', 2, 'manageentities');
-                case self::CONTRACT_TYPE_UNLIMITED :
+                case self::CONTRACT_TYPE_UNLIMITED:
                     return __('Unlimited');
             }
         } else {
@@ -774,26 +771,26 @@ class Contract extends CommonDBTM
         }
     }
 
-    static function checkRemainingOpenContractDays($contracts_id)
+    public static function checkRemainingOpenContractDays($contracts_id)
     {
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => [
-                'COUNT' => 'glpi_plugin_manageentities_contractdays.id AS count'
+                'COUNT' => 'glpi_plugin_manageentities_contractdays.id AS count',
             ],
             'FROM' => 'glpi_plugin_manageentities_contractdays',
             'LEFT JOIN' => [
                 'glpi_plugin_manageentities_contractstates' => [
                     'ON' => [
                         'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-                        'glpi_plugin_manageentities_contractstates' => 'id'
-                    ]
-                ]
+                        'glpi_plugin_manageentities_contractstates' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_plugin_manageentities_contractdays.contracts_id' => $contracts_id,
-                'glpi_plugin_manageentities_contractstates.is_active' => 1
+                'glpi_plugin_manageentities_contractstates.is_active' => 1,
             ],
         ]);
 
@@ -825,7 +822,7 @@ class Contract extends CommonDBTM
         $DB->update(
             'glpi_plugin_manageentities_contracts',
             ['remaining_days' => $remaining],
-            ['contracts_id'   => $contracts_id]
+            ['contracts_id'   => $contracts_id],
         );
     }
 
@@ -889,7 +886,7 @@ class Contract extends CommonDBTM
             && isset($options['searchopt']['remaining_days'])
             && $options['searchopt']['remaining_days']
         ) {
-            $contracts_id = (int)($values['contracts_id'] ?? $values['name'] ?? 0);
+            $contracts_id = (int) ($values['contracts_id'] ?? $values['name'] ?? 0);
             if ($contracts_id <= 0) {
                 return '';
             }
@@ -906,7 +903,7 @@ class Contract extends CommonDBTM
      *
      * @return void
      */
-    static public function preItemForm($params)
+    public static function preItemForm($params)
     {
         if (isset($params['itemtype']) && ($params['itemtype'] == 'Ticket'
                 || $params['itemtype'] == 'Contract')) {
@@ -927,10 +924,10 @@ class Contract extends CommonDBTM
         if (isset($entities_id)
             && $_SESSION['glpiactiveprofile']['interface'] == 'central'
             && Session::haveRight('plugin_manageentities', UPDATE)) {
-//            $sons = getSonsOf("glpi_entities", $entities_id);
-//            if (count($sons) > 1) {
-//                return false;
-//            }
+            //            $sons = getSonsOf("glpi_entities", $entities_id);
+            //            if (count($sons) > 1) {
+            //                return false;
+            //            }
 
             $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
             $contract = new Contract();
@@ -946,7 +943,6 @@ class Contract extends CommonDBTM
             }
 
         }
-
 
         echo $out;
     }
@@ -1008,7 +1004,7 @@ class Contract extends CommonDBTM
             $update = [];
             foreach ($allowed as $field) {
                 if (array_key_exists($field, $input)) {
-                    $update[$field] = (int)(bool)$input[$field];
+                    $update[$field] = (int) (bool) $input[$field];
                 }
             }
 
@@ -1091,7 +1087,6 @@ class Contract extends CommonDBTM
             $DB->doQuery($query);
         }
     }
-
 
     public static function uninstall()
     {
