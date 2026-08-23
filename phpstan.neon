@@ -28,3 +28,12 @@ parameters:
     # can differ between the two. Tolerate baseline entries that do not reproduce on
     # the runner instead of failing on the drift.
     reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # CI-only drift: on the pristine runner core, Company::getLogo()'s return
+        # (Document::$fields['filepath'], a varchar column, always a string) is
+        # inferred as an array, so PHPStan flags the GLPI_DOC_DIR concatenation.
+        # It never holds an array at runtime, so this is not a real defect.
+        -
+            message: '#^Binary operation "\." between .+ and non\-empty\-array<mixed> results in an error\.$#'
+            identifier: binaryOp.invalid
+            path: src/CriPDF.php
