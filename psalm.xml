@@ -3,6 +3,7 @@
     errorLevel="8"
     resolveFromConfigFile="true"
     findUnusedCode="false"
+    ensureOverrideAttribute="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
@@ -46,19 +47,23 @@
         <UndefinedGlobalVariable errorLevel="suppress" />
 
         <!--
-            The reusable GLPI CI (plugin-ci-workflows) runs psalm in full analysis
-            mode against the real GLPI core (taint analysis is not enabled there).
-            That surfaces non-security correctness/style issues the taint-focused
-            security scan never reports. Suppress them so both runs stay green
-            without a separate baseline file; none of these are taint findings,
-            so the security scan is unaffected.
-              MissingOverrideAttribute: Override attribute hints on inherited methods.
+            The reusable GLPI CI (plugin-ci-workflows) runs psalm (6.x) in full
+            analysis mode against the real GLPI core (taint analysis is not enabled
+            there). That surfaces non-security correctness/style issues the
+            taint-focused security scan never reports. Suppress them so both runs
+            stay green without a separate baseline file; none of these are taint
+            findings, so the security scan is unaffected.
+
+            The Override attribute hints are turned off via the root
+            ensureOverrideAttribute="false" instead of an issueHandler, because the
+            security scan pins psalm 5.15.0 whose schema predates the
+            MissingOverrideAttribute element and would reject it; the unknown root
+            attribute is skipped there and honored by psalm 6.x.
               InvalidGlobal: `global $DB` at file scope in front/ajax entry points,
                 which GLPI's router legitimately includes from a non-global scope.
               NoValue, InvalidParamDefault, MissingTemplateParam: pre-existing
                 inference artifacts and core-inherited docblock signatures.
         -->
-        <MissingOverrideAttribute errorLevel="suppress" />
         <InvalidGlobal errorLevel="suppress" />
         <NoValue errorLevel="suppress" />
         <InvalidParamDefault errorLevel="suppress" />
