@@ -32,6 +32,14 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Report;
 
+// Enforce the access control BEFORE rendering anything: Html::header()/Report::title()
+// used to be emitted first, leaking the page chrome to users without the right
+// (aligned with report.form.php).
+$Entity = new Entity();
+if (!$Entity->canView() && !Session::haveRight("config", UPDATE)) {
+    throw new AccessDeniedHttpException();
+}
+
 Html::header(__('Entities portal', 'manageentities'), '', "plugins", "manageentities");
 
 if (isset($_GET)) {
@@ -61,59 +69,52 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
 
 \Report::title();
 
-$Entity = new Entity();
-if ($Entity->canView() || Session::haveRight("config", UPDATE)) {
+// Build the entity list restricted to the caller's active entities.
+$entity    = new \Entity();
+$condition = ['id' => $_SESSION["glpiactiveentities"]];
+$data      = $entity->find($condition);
+$elements  = [];
+foreach ($data as $val) {
+    $elements[$val['entities_id']] = Dropdown::getDropdownName("glpi_entities", $val['entities_id']);
+}
 
-    // Build the entity list restricted to the caller's active entities.
-    $entity    = new \Entity();
-    $condition = ['id' => $_SESSION["glpiactiveentities"]];
-    $data      = $entity->find($condition);
-    $elements  = [];
-    foreach ($data as $val) {
-        $elements[$val['entities_id']] = Dropdown::getDropdownName("glpi_entities", $val['entities_id']);
-    }
+// Capture the GLPI form widgets as HTML fragments for the Twig template.
+// Their user-facing values are escaped by the GLPI helpers themselves.
+ob_start();
+Html::showDateField("date1", ['value' => $_POST["date1"]]);
+$date1_field = ob_get_clean();
 
-    // Capture the GLPI form widgets as HTML fragments for the Twig template.
-    // Their user-facing values are escaped by the GLPI helpers themselves.
-    ob_start();
-    Html::showDateField("date1", ['value' => $_POST["date1"]]);
-    $date1_field = ob_get_clean();
+ob_start();
+Html::showDateField("date2", ['value' => $_POST["date2"]]);
+$date2_field = ob_get_clean();
 
-    ob_start();
-    Html::showDateField("date2", ['value' => $_POST["date2"]]);
-    $date2_field = ob_get_clean();
+ob_start();
+Dropdown::showFromArray(
+    'entities_id',
+    $elements,
+    ['values'   => $_POST['entities_id'] ?? [],
+        'multiple'  => true,
+        'entity'    => $_SESSION['glpiactiveentities']],
+);
+$entities_dropdown = ob_get_clean();
 
-    ob_start();
-    Dropdown::showFromArray(
-        'entities_id',
-        $elements,
-        ['values'   => $_POST['entities_id'] ?? [],
-            'multiple'  => true,
-            'entity'    => $_SESSION['glpiactiveentities']],
-    );
-    $entities_dropdown = ob_get_clean();
+ob_start();
+TaskCategory::dropdown(['name' => 'category_id', 'value' => $_POST['category_id'] ?? 0]);
+$category_dropdown = ob_get_clean();
 
-    ob_start();
-    TaskCategory::dropdown(['name' => 'category_id', 'value' => $_POST['category_id'] ?? 0]);
-    $category_dropdown = ob_get_clean();
+echo "<div class='center'>";
+TemplateRenderer::getInstance()->display('@manageentities/report_moving_form.html.twig', [
+    'form_url'          => $_SERVER['REQUEST_URI'],
+    'date1_field'       => $date1_field,
+    'date2_field'       => $date2_field,
+    'entities_dropdown' => $entities_dropdown,
+    'category_dropdown' => $category_dropdown,
+]);
+echo "</div>";
 
-    echo "<div class='center'>";
-    TemplateRenderer::getInstance()->display('@manageentities/report_moving_form.html.twig', [
-        'form_url'          => $_SERVER['REQUEST_URI'],
-        'date1_field'       => $date1_field,
-        'date2_field'       => $date2_field,
-        'entities_dropdown' => $entities_dropdown,
-        'category_dropdown' => $category_dropdown,
-    ]);
-    echo "</div>";
-
-    if (isset($_POST["send"])) {
-        $report = new Report();
-        $report->showMovingReports($_POST["entities_id"], $_POST['category_id'], $_POST["date1"], $_POST["date2"]);
-    }
-
-} else {
-    throw new AccessDeniedHttpException();
+if (isset($_POST["send"])) {
+    $report = new Report();
+    $report->showMovingReports($_POST["entities_id"], $_POST['category_id'], $_POST["date1"], $_POST["date2"]);
 }
 
 Html::footer();

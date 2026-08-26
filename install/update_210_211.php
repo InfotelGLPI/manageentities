@@ -81,7 +81,16 @@ function update210to211()
         $dbu   = new DbUtils();
         $datas = $dbu->getAllDataFromTable("glpi_plugin_manageentities_configs");
         $data  = reset($datas);
-        $DB->doQuery("INSERT INTO `glpi_plugin_manageentities_companies`(`address`, `entity_id`, `recursive`) VALUES ('" . $data['company_address'] . "', 0, 1)", "Migration company_address");
+        // Use the query builder instead of concatenating the config value into raw
+        // SQL: $DB->insert() escapes the value, so a company address containing an
+        // apostrophe (or a malicious payload) can no longer break or alter the query.
+        if (is_array($data)) {
+            $DB->insert('glpi_plugin_manageentities_companies', [
+                'address'   => $data['company_address'] ?? '',
+                'entity_id' => 0,
+                'recursive' => 1,
+            ]);
+        }
 
         $migration->dropField("glpi_plugin_manageentities_configs", "company_address");
     }
