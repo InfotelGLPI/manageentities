@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-23 15:06+0000\n"
+"POT-Creation-Date: 2026-08-26 08:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -804,9 +804,9 @@ msgstr ""
 
 #: front/generatecri.form.php:98 front/report.form.php:42
 #: front/directhelpdesk.php:41 front/directhelpdesk.php:44
-#: front/directhelpdesk.php:46 front/report_occupation.form.php:35
+#: front/directhelpdesk.php:46 front/report_occupation.form.php:43
 #: front/config.form.php:44 front/generatecri.php:35 front/generatecri.php:38
-#: front/generatecri.php:40 front/report_moving.form.php:35 front/entity.php:54
+#: front/generatecri.php:40 front/report_moving.form.php:43 front/entity.php:54
 #: front/entity.php:57 front/entity.php:59 front/directhelpdesk.form.php:139
 #: front/directhelpdesk.form.php:142 front/directhelpdesk.form.php:144
 #: front/cridetail.form.php:47 front/cridetail.form.php:50
