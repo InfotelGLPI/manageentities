@@ -357,7 +357,10 @@ class Company extends CommonDBTM
             } else {
                 //TRANS: Default document to files attached to tickets : %d is the ticket id
                 $input2["name"] = addslashes(sprintf(__('Logo %d', 'manageentities'), $this->getID()));
-                $input2["entity_id"] = $this->fields["entity_id"];
+                // Document expects the standard "entities_id" key; the company stores its entity in its
+                // own non-standard "entity_id" column, so map the value across so the logo document lands
+                // in the right entity instead of falling back to the default one.
+                $input2["entities_id"] = $this->fields["entity_id"];
                 $input2["_only_if_upload_succeed"] = 1;
                 $input2["_filename"] = [$file];
                 $input2["is_recursive"] = 1;
@@ -378,8 +381,10 @@ class Company extends CommonDBTM
                         stripslashes($doc->fields["filename"]),
                     );
 
-                    if (isset($input2["tag"])) {
-                        $docadded[$docID]['tag'] = $input2["tag"];
+                    // Read the generated tag from the saved Document ($input2 is passed by value to
+                    // add(), so it never carries the tag back); mirrors the duplicate-document branch above.
+                    if (!empty($doc->fields["tag"])) {
+                        $docadded[$docID]['tag'] = $doc->fields["tag"];
                         unset($this->input['_filename'][$key]);
                         unset($this->input['_tag'][$key]);
                     }
