@@ -276,6 +276,32 @@ class Company extends CommonDBTM
         $disablenotif = isset($input['_disablenotif']) ? $input['_disablenotif'] : 0;
 
         foreach ($this->input['_filename'] as $key => $file) {
+            // Path traversal + MIME bypass hardening (aligns Company with the sibling
+            // EntityLogo::addLogo()): _filename is client-supplied and is joined onto
+            // GLPI_TMP_DIR below, then handed to Toolbox::resizePicture(). Reject any path
+            // separator so the value cannot escape the temp directory, and validate the REAL
+            // MIME type of the uploaded temp file (fail-closed: reject when the file is
+            // absent) instead of trusting the client-declared extension.
+            if (!is_string($file) || $file === ''
+                || basename($file) !== $file
+                || strpbrk($file, "/\\") !== false) {
+                Session::addMessageAfterRedirect(
+                    __('The format of the image must be in JPG or JPEG', 'manageentities'),
+                    false,
+                    ERROR,
+                );
+                continue;
+            }
+            $tmpfile = GLPI_TMP_DIR . "/" . $file;
+            if (!is_file($tmpfile) || mime_content_type($tmpfile) !== 'image/jpeg') {
+                Session::addMessageAfterRedirect(
+                    __('The format of the image must be in JPG or JPEG', 'manageentities'),
+                    false,
+                    ERROR,
+                );
+                continue;
+            }
+
             $doc = new Document();
             $docitem = new Document_Item();
             $docID = 0;
