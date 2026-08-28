@@ -33,12 +33,15 @@ use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 
 Html::header_nocache();
 
+// Enforce the plugin right for the whole endpoint before any branching: both
+// the createticket branch and the else/loadModal() branch expose plugin data
+// (direct-helpdesk entries, contract-consumption alert) and must stay
+// restricted to profiles holding the dedicated right. Without this top-level
+// gate, the else branch let any central user reach loadModal(), which twin
+// endpoint ajax/showalertbyentity.php already protects.
+Session::checkRight('plugin_manageentities_directhelpdesk', READ);
+
 if (isset($_GET['action']) && $_GET['action'] == 'createticket') {
-    // Replay the plugin right enforced by the front controller
-    // (front/directhelpdesk.php): the entity check alone is not enough, the
-    // direct-helpdesk entries (names, technicians, comments) must stay
-    // restricted to profiles holding the dedicated right.
-    Session::checkRight('plugin_manageentities_directhelpdesk', READ);
     // Enforce entity scope: without this, a helpdesk user could iterate entities_id
     // and read another entity's direct-helpdesk entries (names, technicians, comments).
     $entities_id = (int) ($_GET['entities_id'] ?? -1);
