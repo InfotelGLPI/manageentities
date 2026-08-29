@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-28 07:16+0000\n"
+"POT-Creation-Date: 2026-08-29 10:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -306,8 +306,9 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/GenerateCRI.php:723 src/Monthly.php:698 src/Monthly.php:729
-#: src/Dashboard.php:229 src/Dashboard.php:293 src/Dashboard.php:345
+#: src/GenerateCRI.php:723 src/Followup.php:913 src/Monthly.php:698
+#: src/Monthly.php:729 src/Dashboard.php:229 src/Dashboard.php:293
+#: src/Dashboard.php:345
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] ""
@@ -458,6 +459,10 @@ msgstr ""
 msgid "Contract number is required"
 msgstr ""
 
+#: src/Followup.php:995 src/Gantt.php:343
+msgid "Contract present"
+msgstr ""
+
 #: templates/cridetail_for_ticket.html.twig:111
 #: templates/wizard/step4_contract.html.twig:82
 #: templates/wizard/step3_contract.html.twig:82
@@ -584,13 +589,15 @@ msgstr ""
 msgid "Date of"
 msgstr ""
 
+#: src/Followup.php:1038 src/Gantt.php:351
 #: templates/contract_detail_form.html.twig:139
 #: templates/wizard/step5_management.html.twig:55
 #: templates/wizard/step4_management.html.twig:55
 msgid "Date of renewal"
 msgstr ""
 
-#: src/Entity.php:581 templates/contract_detail_form.html.twig:135
+#: src/Entity.php:581 src/Followup.php:1023 src/Gantt.php:347
+#: templates/contract_detail_form.html.twig:135
 #: templates/wizard/step5_management.html.twig:51
 #: templates/wizard/step4_management.html.twig:51
 msgid "Date of signature"
@@ -1057,6 +1064,10 @@ msgstr ""
 msgid "Intervention not saved yet"
 msgstr ""
 
+#: src/CriDetail.php:793
+msgid "Intervention of contract"
+msgstr ""
+
 #: templates/cridetail_for_contractday.html.twig:32
 msgid "Intervention periods of contract"
 msgstr ""
@@ -1211,7 +1222,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/Monthly.php:702 src/Monthly.php:734
+#: src/Followup.php:1054 src/Monthly.php:702 src/Monthly.php:734
 #: templates/contract_detail_form.html.twig:146
 #: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step5_management.html.twig:61
@@ -1398,6 +1409,7 @@ msgid "Non-accomplished tasks informations"
 msgstr ""
 
 #: src/DirectHelpdesk.php:58 src/DirectHelpdesk_Ticket.php:52
+#: src/DirectHelpdesk_Ticket.php:89
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] ""
@@ -1521,8 +1533,9 @@ msgstr[1] ""
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: hook.php:812 src/GenerateCRI.php:1263 src/CriDetail.php:1982
-#: src/CriDetail.php:2019 templates/contractday_list.html.twig:33
+#: hook.php:812 src/GenerateCRI.php:1263 src/CriDetail.php:817
+#: src/CriDetail.php:1982 src/CriDetail.php:2019
+#: templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr ""
 
@@ -1559,6 +1572,10 @@ msgstr ""
 msgid "Please anticipate the end of the service period if necessary"
 msgstr ""
 
+#: src/Cri.php:148
+msgid "Please assign a technician to your tasks"
+msgstr ""
+
 #: src/Cri.php:603
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
@@ -1569,6 +1586,16 @@ msgstr ""
 
 #: src/Cri.php:611
 msgid "Please fill the contract period end date."
+msgstr ""
+
+#: src/Contract.php:626
+msgid ""
+"Please note that there are no more contracts with days available for this "
+"customer."
+msgstr ""
+
+#: src/DirectHelpdesk.php:532
+msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 
 #: src/WizardController.php:386
@@ -1787,6 +1814,10 @@ msgstr ""
 #: src/Followup.php:864 src/Followup.php:1205
 #: templates/contractday_form.html.twig:128
 msgid "Remaining total (amount)"
+msgstr ""
+
+#: src/Report.php:285 setup.php:135
+msgid "Report concerning the occupation of the technicians"
 msgstr ""
 
 #: src/Report.php:154 setup.php:133
@@ -2202,7 +2233,7 @@ msgstr ""
 msgid "Type of contract"
 msgstr ""
 
-#: src/ContractDay.php:170 src/ContractDay.php:893
+#: src/ContractDay.php:170 src/ContractDay.php:893 src/Followup.php:1062
 #: templates/contract_detail_form.html.twig:150
 #: templates/contractday_form.html.twig:58
 #: templates/wizard/step5_management.html.twig:65
@@ -2210,7 +2241,7 @@ msgstr ""
 msgid "Type of service contract"
 msgstr ""
 
-#: src/CriDetail.php:2060
+#: src/CriDetail.php:1541 src/CriDetail.php:2060
 msgid "Type of service contract missing"
 msgstr ""
 
@@ -2296,6 +2327,12 @@ msgid ""
 "only the first will be used"
 msgstr ""
 
+#: src/Monthly.php:632
+msgid ""
+"Warning : There are supplementary interventions which depends on a "
+"prestation with a earlier end date"
+msgstr ""
+
 #: templates/config_cri_form.html.twig:100
 msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
@@ -2366,7 +2403,7 @@ msgstr ""
 msgid "hours"
 msgstr ""
 
-#: src/CriPDF.php:328
+#: src/CriPDF.php:300 src/CriPDF.php:328
 msgid "in"
 msgstr ""
 
