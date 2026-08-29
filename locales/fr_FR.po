@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-23 15:06+0000\n"
+"POT-Creation-Date: 2026-08-29 10:41+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -318,8 +318,9 @@ msgstr ""
 msgid "City"
 msgstr "Ville"
 
-#: src/GenerateCRI.php:723 src/Monthly.php:698 src/Monthly.php:729
-#: src/Dashboard.php:229 src/Dashboard.php:293 src/Dashboard.php:345
+#: src/GenerateCRI.php:723 src/Followup.php:913 src/Monthly.php:698
+#: src/Monthly.php:729 src/Dashboard.php:229 src/Dashboard.php:293
+#: src/Dashboard.php:345
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -480,6 +481,10 @@ msgstr "N° du contrat"
 msgid "Contract number is required"
 msgstr "Le numéro de contrat est obligatoire"
 
+#: src/Followup.php:995 src/Gantt.php:343
+msgid "Contract present"
+msgstr "Contrat présent"
+
 #: templates/cridetail_for_ticket.html.twig:111
 #: templates/wizard/step4_contract.html.twig:82
 #: templates/wizard/step3_contract.html.twig:82
@@ -610,13 +615,15 @@ msgstr "Date"
 msgid "Date of"
 msgstr "Date de"
 
+#: src/Followup.php:1038 src/Gantt.php:351
 #: templates/contract_detail_form.html.twig:139
 #: templates/wizard/step5_management.html.twig:55
 #: templates/wizard/step4_management.html.twig:55
 msgid "Date of renewal"
 msgstr "Date de reconduction"
 
-#: src/Entity.php:581 templates/contract_detail_form.html.twig:135
+#: src/Entity.php:581 src/Followup.php:1023 src/Gantt.php:347
+#: templates/contract_detail_form.html.twig:135
 #: templates/wizard/step5_management.html.twig:51
 #: templates/wizard/step4_management.html.twig:51
 msgid "Date of signature"
@@ -831,9 +838,9 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 
 #: front/generatecri.form.php:98 front/report.form.php:42
 #: front/directhelpdesk.php:41 front/directhelpdesk.php:44
-#: front/directhelpdesk.php:46 front/report_occupation.form.php:35
+#: front/directhelpdesk.php:46 front/report_occupation.form.php:43
 #: front/config.form.php:44 front/generatecri.php:35 front/generatecri.php:38
-#: front/generatecri.php:40 front/report_moving.form.php:35
+#: front/generatecri.php:40 front/report_moving.form.php:43
 #: front/entity.php:54 front/entity.php:57 front/entity.php:59
 #: front/directhelpdesk.form.php:139 front/directhelpdesk.form.php:142
 #: front/directhelpdesk.form.php:144 front/cridetail.form.php:47
@@ -1091,6 +1098,10 @@ msgstr "Date d'intervention"
 msgid "Intervention not saved yet"
 msgstr "La prestation n'est pas encore sauvée"
 
+#: src/CriDetail.php:793
+msgid "Intervention of contract"
+msgstr "Intervention des prestations"
+
 #: templates/cridetail_for_contractday.html.twig:32
 msgid "Intervention periods of contract"
 msgstr "Interventions de la prestation du contrat"
@@ -1193,7 +1204,7 @@ msgid "Logo"
 msgstr "Logo"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: src/Company.php:333
+#: src/Company.php:359
 #, php-format
 msgid "Logo %d"
 msgstr "Logo %d"
@@ -1252,7 +1263,7 @@ msgstr "Mobile"
 msgid "Mobile phone"
 msgstr "Mobile"
 
-#: src/Monthly.php:702 src/Monthly.php:734
+#: src/Followup.php:1054 src/Monthly.php:702 src/Monthly.php:734
 #: templates/contract_detail_form.html.twig:146
 #: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step5_management.html.twig:61
@@ -1441,6 +1452,7 @@ msgid "Non-accomplished tasks informations"
 msgstr "Informations sur les tâches non accomplies"
 
 #: src/DirectHelpdesk.php:58 src/DirectHelpdesk_Ticket.php:52
+#: src/DirectHelpdesk_Ticket.php:89
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] "Intervention non facturée"
@@ -1568,8 +1580,9 @@ msgstr[2] "Prestations de contrat"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 
-#: hook.php:812 src/GenerateCRI.php:1263 src/CriDetail.php:1982
-#: src/CriDetail.php:2019 templates/contractday_list.html.twig:33
+#: hook.php:812 src/GenerateCRI.php:1263 src/CriDetail.php:817
+#: src/CriDetail.php:1982 src/CriDetail.php:2019
+#: templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr "Prestations du contrat"
 
@@ -1606,6 +1619,10 @@ msgstr "Merci d'activer le plugin"
 msgid "Please anticipate the end of the service period if necessary"
 msgstr "Veuillez anticiper la fin du contrat si nécessaire."
 
+#: src/Cri.php:148
+msgid "Please assign a technician to your tasks"
+msgstr "Merci d'assigner un technicien au ticket"
+
 #: src/Cri.php:603
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
@@ -1619,6 +1636,19 @@ msgstr "Merci de renseigner la date de début de la prestation du contrat."
 #: src/Cri.php:611
 msgid "Please fill the contract period end date."
 msgstr "Merci de renseigner la date de fin de la prestation du contrat."
+
+#: src/Contract.php:626
+msgid ""
+"Please note that there are no more contracts with days available for this "
+"customer."
+msgstr ""
+"Veuillez noter qu'il n'y a plus de contrats avec des jours disponibles pour "
+"ce client."
+
+#: src/DirectHelpdesk.php:532
+msgid "Please note that there are unbilled interventions for this customer."
+msgstr ""
+"Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
 
 #: src/WizardController.php:386
 msgid "Please select a child entity"
@@ -1847,6 +1877,10 @@ msgstr "Restant au"
 #: templates/contractday_form.html.twig:128
 msgid "Remaining total (amount)"
 msgstr "Total restant (montant)"
+
+#: src/Report.php:285 setup.php:135
+msgid "Report concerning the occupation of the technicians"
+msgstr "Rapport concernant les déplacements des techniciens"
 
 #: src/Report.php:154 setup.php:133
 msgid "Report on the movement of technicians"
@@ -2161,8 +2195,8 @@ msgid "The following unsaved data from this wizard will be lost:"
 msgstr ""
 "Les données non enregistrées suivantes de cet assistant seront perdues :"
 
-#: src/Company.php:199 src/Company.php:221 src/EntityLogo.php:74
-#: src/EntityLogo.php:88
+#: src/Company.php:199 src/Company.php:221 src/Company.php:289
+#: src/Company.php:298 src/EntityLogo.php:74 src/EntityLogo.php:88
 msgid "The format of the image must be in JPG or JPEG"
 msgstr "Le format de l'image doit être en JPG ou JPEG"
 
@@ -2275,7 +2309,7 @@ msgstr "Type"
 msgid "Type of contract"
 msgstr "Type de contrat"
 
-#: src/ContractDay.php:170 src/ContractDay.php:893
+#: src/ContractDay.php:170 src/ContractDay.php:893 src/Followup.php:1062
 #: templates/contract_detail_form.html.twig:150
 #: templates/contractday_form.html.twig:58
 #: templates/wizard/step5_management.html.twig:65
@@ -2283,7 +2317,7 @@ msgstr "Type de contrat"
 msgid "Type of service contract"
 msgstr "Type de contrat de service"
 
-#: src/CriDetail.php:2060
+#: src/CriDetail.php:1541 src/CriDetail.php:2060
 msgid "Type of service contract missing"
 msgstr "Type de contrat de service manquant"
 
@@ -2373,6 +2407,14 @@ msgstr ""
 "Attention : si plusieurs plugins sont lancés au démarrage, seul le premier "
 "sera actif"
 
+#: src/Monthly.php:632
+msgid ""
+"Warning : There are supplementary interventions which depends on a "
+"prestation with a earlier end date"
+msgstr ""
+"Attention : il y a des interventions qui dépendent d'une prestation ayant "
+"une date antérieure"
+
 #: templates/config_cri_form.html.twig:100
 msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
@@ -2452,7 +2494,7 @@ msgstr "jours"
 msgid "hours"
 msgstr "heures"
 
-#: src/CriPDF.php:328
+#: src/CriPDF.php:300 src/CriPDF.php:328
 msgid "in"
 msgstr "à"
 
