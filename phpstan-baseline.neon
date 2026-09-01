@@ -391,12 +391,6 @@ parameters:
 			path: src/CheckSchema.php
 
 		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: src/CheckSchema.php
-
-		-
 			message: '#^Default value of the parameter \#1 \$history \(int\) of method GlpiPlugin\\Manageentities\\Company\:\:post_updateItem\(\) is incompatible with type bool\.$#'
 			identifier: parameter.defaultValue
 			count: 1
