@@ -34,8 +34,6 @@ use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contact;
 use Toolbox;
 
-
-
 class CriPDF extends \TCPDF
 {
     /* Attributs d'un rapport envoyés par l'utilisateur avant la génération. */

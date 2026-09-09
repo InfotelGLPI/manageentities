@@ -43,10 +43,6 @@ use Session;
 use Ticket;
 use User;
 
-
-
-
-
 class Cri extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities_cri_create';

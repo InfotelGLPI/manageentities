@@ -51,8 +51,6 @@ use TicketTask;
 use Toolbox;
 use User;
 
-
-
 /**
  * Class GenerateCRI
  */

@@ -45,8 +45,6 @@ use NotificationTemplate;
 use NotificationTemplateTranslation;
 use Session;
 
-
-
 class EditorSubscription extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

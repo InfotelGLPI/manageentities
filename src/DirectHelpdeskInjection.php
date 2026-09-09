@@ -33,8 +33,6 @@ use PluginDatainjectionCommonInjectionLib;
 use PluginDatainjectionInjectionInterface;
 use Search;
 
-
-
 /**
  * Class DirectHelpdeskInjection
  */

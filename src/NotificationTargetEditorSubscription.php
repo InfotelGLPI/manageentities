@@ -33,8 +33,6 @@ use Html;
 use Migration;
 use NotificationTarget;
 
-
-
 /**
  * Notification target for expired publisher subscriptions.
  *

@@ -41,8 +41,6 @@ use Session;
 use Ticket;
 use Toolbox;
 
-
-
 class Config extends CommonDBTM
 {
     private static $instance;

@@ -29,8 +29,6 @@
 
 namespace GlpiPlugin\Manageentities;
 
-
-
 use CommonDBTM;
 use DbUtils;
 use Glpi\DBAL\QueryExpression;

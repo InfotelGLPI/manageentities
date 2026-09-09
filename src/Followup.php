@@ -33,9 +33,6 @@ use CommonDBTM;
 use DbUtils;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\SearchEngine;
-
-
-
 use Glpi\DBAL\QueryExpression;
 use Html;
 use Search;

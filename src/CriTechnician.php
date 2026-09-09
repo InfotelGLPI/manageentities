@@ -33,8 +33,6 @@ use CommonDBTM;
 use DBConnection;
 use Migration;
 
-
-
 class CriTechnician extends CommonDBTM
 {
     public function getTechnicians($tickets_id, $remove_tag = false)

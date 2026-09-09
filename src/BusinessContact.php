@@ -36,8 +36,6 @@ use Migration;
 use Session;
 use User;
 
-
-
 class BusinessContact extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

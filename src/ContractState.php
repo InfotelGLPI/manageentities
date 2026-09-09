@@ -35,8 +35,6 @@ use DbUtils;
 use Migration;
 use Session;
 
-
-
 class ContractState extends CommonDropdown
 {
     public static $rightname = 'plugin_manageentities';

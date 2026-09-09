@@ -43,8 +43,6 @@ use State;
 use User;
 use UserTitle;
 
-
-
 /**
  * Handles all wizard step save/render logic.
  *

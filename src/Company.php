@@ -42,8 +42,6 @@ use Migration;
 use Session;
 use Toolbox;
 
-
-
 class Company extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

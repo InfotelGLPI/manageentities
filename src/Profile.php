@@ -37,8 +37,6 @@ use ProfileRight;
 use Session;
 use GlpiPlugin\Manageentities\Entity;
 
-
-
 class Profile extends \Profile
 {
     public static function getTypeName($nb = 0)

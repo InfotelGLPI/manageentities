@@ -38,8 +38,6 @@ use Migration;
 use Session;
 use GlpiPlugin\Manageentities\Config;
 
-
-
 class TaskCategory extends CommonDBTM
 {
     public static $rightname = 'dropdown';

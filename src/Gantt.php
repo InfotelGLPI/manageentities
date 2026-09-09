@@ -38,8 +38,6 @@ use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\Entity;
 use Toolbox;
 
-
-
 class Gantt extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

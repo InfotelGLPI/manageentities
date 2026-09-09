@@ -41,8 +41,6 @@ use MassiveAction;
 use Migration;
 use Session;
 
-
-
 class Contract extends CommonDBTM
 {
     public const MANAGEMENT_NONE = 0;

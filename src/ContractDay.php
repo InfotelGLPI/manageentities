@@ -38,8 +38,6 @@ use Migration;
 use Session;
 use Toolbox;
 
-
-
 class ContractDay extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

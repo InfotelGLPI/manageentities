@@ -37,8 +37,6 @@ use Html;
 use Migration;
 use Session;
 
-
-
 /**
  * class plugin_manageentities_preference
  * Load and store the preference configuration from the database

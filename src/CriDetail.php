@@ -44,8 +44,6 @@ use Session;
 use Ticket;
 use Toolbox;
 
-
-
 class CriDetail extends CommonDBTM
 {
     public static $rightname = "plugin_manageentities";

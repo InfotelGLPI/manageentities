@@ -37,8 +37,6 @@ use Migration;
 use Session;
 use Toolbox;
 
-
-
 class EntityLogo extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

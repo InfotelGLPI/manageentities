@@ -34,8 +34,6 @@ use DBConnection;
 use Migration;
 use Session;
 
-
-
 class SubscriptionLevel extends CommonDropdown
 {
     public static $rightname = 'plugin_manageentities';

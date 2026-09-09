@@ -34,8 +34,6 @@ use DbUtils;
 use Html;
 use GlpiPlugin\Manageentities\Config;
 
-
-
 class Report extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

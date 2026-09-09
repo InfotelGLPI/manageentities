@@ -34,8 +34,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Session;
 
-
-
 /**
  * Single-form wizard for EditorSubscription.
  * No session-based multi-step: entity selector + subscription fields in one POST.

@@ -39,8 +39,6 @@ use Html;
 use Migration;
 use Session;
 
-
-
 class DirectHelpdesk_Ticket extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities_directhelpdesk';

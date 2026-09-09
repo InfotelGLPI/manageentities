@@ -35,8 +35,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Session;
 
-
-
 class TicketTask extends CommonDBTM
 {
     public $dohistory = false;

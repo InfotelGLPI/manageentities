@@ -32,9 +32,6 @@ namespace GlpiPlugin\Manageentities;
 use CommonGLPI;
 use GlpiPlugin\Manageentities\Entity;
 
-
-
-
 class Servicecatalog extends CommonGLPI
 {
     public static $rightname = 'plugin_manageentities';

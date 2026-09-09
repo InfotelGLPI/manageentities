@@ -29,8 +29,6 @@
 
 namespace GlpiPlugin\Manageentities;
 
-
-
 class Dropdown extends \Dropdown
 {
     public static $rightname = 'plugin_manageentities';

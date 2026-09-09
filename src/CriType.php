@@ -36,8 +36,6 @@ use Migration;
 use Session;
 use GlpiPlugin\Manageentities\Config;
 
-
-
 class CriType extends CommonDropdown
 {
     public static $rightname = 'plugin_manageentities';

@@ -36,8 +36,6 @@ use Html;
 use Migration;
 use Session;
 
-
-
 class Contact extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

@@ -41,8 +41,6 @@ use Session;
 use Toolbox;
 use User;
 
-
-
 class InterventionStakeholder extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';

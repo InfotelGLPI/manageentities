@@ -44,8 +44,6 @@ use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\EditorSubscription;
 
-
-
 class Entity extends CommonGLPI
 {
     public static $rightname = 'plugin_manageentities';
