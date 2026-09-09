@@ -1197,21 +1197,23 @@ class Cri extends CommonDBTM
         closedir($h);
     }
 
+    /**
+     * Serve an intervention report to the browser.
+     *
+     * The headers used to be written by hand: the file name went into Content-disposition without
+     * escaping the double quote, the MIME type came from the document without a white list - so a
+     * stored text/html was rendered in the GLPI origin instead of being downloaded - and both
+     * failure paths died on a message containing the absolute server path. getAsResponse() is the
+     * GLPI 11 idiom already used by front/logo.send.php: it builds the headers, confines the path
+     * under GLPI_DOC_DIR and raises a NotFoundHttpException when the file is gone.
+     *
+     * @param \Document $doc
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function send($doc)
     {
-        $file = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
-
-        if (!file_exists($file)) {
-            die("Error file " . $file . " does not exist");
-        }
-        // Now send the file with header() magic
-        header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
-        header('Pragma: private'); /// IE BUG + SSL
-        header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-        header("Content-disposition: filename=\"" . $doc->fields['filename'] . "\"");
-        header("Content-type: " . $doc->fields['mime']);
-
-        readfile($file) or die("Error opening file $file");
+        return $doc->getAsResponse();
     }
 
 }

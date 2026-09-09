@@ -41,6 +41,8 @@ use GlpiPlugin\Manageentities\WizardController;
  */
 class WizardIsolationTest extends DbTestCase
 {
+    use WizardTestHelpers;
+
     private string $widA = '';
     private string $widB = '';
 
@@ -98,12 +100,12 @@ class WizardIsolationTest extends DbTestCase
 
         $this->withWid($this->widA, fn() => WizardController::saveEntityAndReturn([
             'name'        => "EntityA-{$uidA}",
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]));
 
         $this->withWid($this->widB, fn() => WizardController::saveEntityAndReturn([
             'name'        => "EntityB-{$uidB}",
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]));
 
         $sessionA = $this->withWid($this->widA, fn() => WizardController::getSession());
@@ -120,11 +122,11 @@ class WizardIsolationTest extends DbTestCase
 
         $this->withWid($this->widA, fn() => WizardController::saveEntityAndReturn([
             'name'        => "EntityA-{$uid}",
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]));
         $this->withWid($this->widB, fn() => WizardController::saveEntityAndReturn([
             'name'        => "EntityB-{$uid}",
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]));
 
         // Reset only widB
@@ -159,7 +161,7 @@ class WizardIsolationTest extends DbTestCase
 
         $this->withWid($this->widA, fn() => WizardController::saveEntityAndReturn([
             'name'        => 'EA-' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]));
         $this->withWid($this->widA, fn() => WizardController::saveContactsAndReturn(['contacts' => []]));
 

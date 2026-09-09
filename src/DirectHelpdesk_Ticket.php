@@ -119,7 +119,9 @@ class DirectHelpdesk_Ticket extends CommonDBTM
                     echo "<tr class='tab_bg_1'>";
                     echo "<td>" . htmlspecialchars((string) $direct->fields['name']) . "</td>";
                     echo "<td>" . Html::convDate($direct->fields['date']) . "</td>";
-                    echo "<td>" . getUserName($direct->fields['users_id']) . "</td>";
+                    // getUserName() returns the raw value when no link is asked for; the sibling
+                    // cells of this row already escape theirs.
+                    echo "<td>" . htmlspecialchars((string) getUserName($direct->fields['users_id'])) . "</td>";
                     echo "<td>" . CommonITILObject::getActionTime($actiontime) . "</td>";
                     echo "<td>" . htmlspecialchars((string) $direct->fields['comment']) . "</td>";
                     echo "</tr>";

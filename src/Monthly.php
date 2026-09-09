@@ -1196,8 +1196,15 @@ class Monthly extends CommonDBTM
         echo "<ul id='next_year'></ul></td>";
         echo "</td></tr>";
         echo "</table></div>";
-        $year = ($_GET['year_current'] != 0) ? $_GET['year_current'] : Date('Y', strtotime('-1 month'));
-        $month = date('m', strtotime($options['begin_date']));
+        // Both values are interpolated below into unquoted JavaScript literals, a context where
+        // HTML escaping would not help: the only safe shape is a number, so they are cast here,
+        // before any use. Anything else posted in year_current used to be written into the script
+        // block as is.
+        $year = (int) ($_GET['year_current'] ?? 0);
+        if ($year <= 0) {
+            $year = (int) date('Y', strtotime('-1 month'));
+        }
+        $month = (int) date('m', strtotime($options['begin_date']));
         echo "<script type='text/javascript'>";
         echo "var yearIdElm = $('[name=\"year\"]');";
         echo "yearIdElm.html($year);";

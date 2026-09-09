@@ -33,7 +33,6 @@ use CommonDBTM;
 use DbUtils;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\SearchEngine;
-use Glpi\DBAL\QueryExpression;
 use Html;
 use Search;
 use Session;
@@ -61,6 +60,34 @@ class Followup extends CommonDBTM
     public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [READ, CREATE, UPDATE, DELETE]);
+    }
+
+    /**
+     * The upper bound of a "before" date criterion, shifted one day forward.
+     *
+     * The two criteria below used to reach the database as
+     * QueryExpression("ADDDATE('" . $value . "', INTERVAL 1 DAY)"), and a QueryExpression is
+     * handed to the engine verbatim: whatever is placed in that string becomes SQL syntax. The
+     * value arrives unfiltered from $_POST through front/entity.php and from $_GET through
+     * Entity::displayTabContentForItem(). The shift is therefore computed in PHP and the result
+     * goes through the query builder as a plain value, which parameterises it. An unparsable date
+     * returns null and the criterion is dropped rather than silently widened.
+     *
+     * @param string $date
+     *
+     * @return string|null
+     */
+    private static function shiftOneDayForward(string $date): ?string
+    {
+        $date = trim($date);
+        foreach (['Y-m-d', 'Y-m-d H:i:s'] as $format) {
+            $parsed = \DateTime::createFromFormat($format, $date);
+            if ($parsed !== false && $parsed->format($format) === $date) {
+                return $parsed->modify('+1 day')->format($format);
+            }
+        }
+
+        return null;
     }
 
     public static function queryFollowUp($instID, $options = [])
@@ -370,15 +397,16 @@ class Followup extends CommonDBTM
                     }
 
                     if (isset($options['begin_date_before']) && $options['begin_date_before'] != '') {
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                            'glpi_plugin_manageentities_contractdays.begin_date'
-                            => [
-                                '<=',
-                                new QueryExpression(
-                                    "ADDDATE('" . $options['begin_date_before'] . "' , INTERVAL 1 DAY)",
-                                ),
-                            ],
-                        ];
+                        $begin_before = self::shiftOneDayForward((string) $options['begin_date_before']);
+                        if ($begin_before !== null) {
+                            $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_plugin_manageentities_contractdays.begin_date'
+                                => [
+                                    '<=',
+                                    $begin_before,
+                                ],
+                            ];
+                        }
                     }
 
                     if (isset($options['end_date_after']) && $options['end_date_after'] != '') {
@@ -391,15 +419,16 @@ class Followup extends CommonDBTM
                     }
 
                     if (isset($options['end_date_before']) && $options['end_date_before'] != '') {
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                            'glpi_plugin_manageentities_contractdays.end_date'
-                            => [
-                                '<=',
-                                new QueryExpression(
-                                    "ADDDATE('" . $options['end_date_before'] . "' , INTERVAL 1 DAY)",
-                                ),
-                            ],
-                        ];
+                        $end_before = self::shiftOneDayForward((string) $options['end_date_before']);
+                        if ($end_before !== null) {
+                            $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                                'glpi_plugin_manageentities_contractdays.end_date'
+                                => [
+                                    '<=',
+                                    $end_before,
+                                ],
+                            ];
+                        }
                         $endDate = $options['end_date_before'];
                     }
 
@@ -421,7 +450,10 @@ class Followup extends CommonDBTM
                             $name = $dataContract["name"];
                         }
                         if (Session::getCurrentInterface() == 'central') {
-                            $name_contract .= $name . "</a>";
+                            // The anchor is written by hand and HTMLSearchOutput::showItem() writes
+                            // its argument into the cell as is, so the contract name - a raw value
+                            // of the database since GLPI 11 - is escaped before being wrapped.
+                            $name_contract .= htmlspecialchars((string) $name, ENT_QUOTES) . "</a>";
                         }
 
                         $list[$num]['entities_name'] = $dataEntity['entities_name'];
@@ -451,7 +483,7 @@ class Followup extends CommonDBTM
                                 $link_period = Toolbox::getItemTypeFormURL(ContractDay::class);
                                 $name_period = "<a class='ganttWhite' href='" . $link_period . "?id=" . $dataContractDay["contractdays_id"] . "&showFromPlugin=1'>";
                             } else {
-                                $name_period = $dataContractDay["name_contractdays"];
+                                $name_period = htmlspecialchars((string) $dataContractDay["name_contractdays"], ENT_QUOTES);
                             }
 
                             if ($dataContractDay["name_contractdays"] == null) {
@@ -460,7 +492,7 @@ class Followup extends CommonDBTM
                                 $nameperiod = $dataContractDay["name_contractdays"];
                             }
                             if (Session::getCurrentInterface() == 'central') {
-                                $name_period .= $nameperiod . "</a>";
+                                $name_period .= htmlspecialchars((string) $nameperiod, ENT_QUOTES) . "</a>";
                             }
 
                             // We get all cri details
@@ -901,7 +933,9 @@ class Followup extends CommonDBTM
                             }
                             $colspanContract = "colspan = '13'";
                             if (empty($list[$i]['contract_name'])) {
-                                $list[$i]['contract_name'] = $list[$i]['name'];
+                                // contract_name already carries the anchor when it is set; the bare
+                                // name does not, so it is escaped before taking its place.
+                                $list[$i]['contract_name'] = htmlspecialchars((string) $list[$i]['name'], ENT_QUOTES);
                             }
                             $html_output .= $output::showHeaderItem(
                                 '<b>' . _n(
@@ -909,7 +943,7 @@ class Followup extends CommonDBTM
                                     'Clients',
                                     1,
                                     'manageentities',
-                                ) . ' : </b>' . $list[$i]['entities_name'],
+                                ) . ' : </b>' . htmlspecialchars((string) $list[$i]['entities_name'], ENT_QUOTES),
                                 $item_num,
                                 '',
                                 0,
@@ -948,7 +982,7 @@ class Followup extends CommonDBTM
 
                         // Display Contract title
                         if (empty($list[$i]['contract_name'])) {
-                            $list[$i]['contract_name'] = $list[$i]['name'];
+                            $list[$i]['contract_name'] = htmlspecialchars((string) $list[$i]['name'], ENT_QUOTES);
                         }
                         if ($is_html_output) {
                             $colspanContractName = "colspan='5'";
@@ -971,7 +1005,10 @@ class Followup extends CommonDBTM
                         // Display contract Num
                         if ($is_html_output) {
                             $html_output .= $output::showItem(
-                                '<b>' . _x('phone', 'Number') . ' : </b>' . $list[$i]['contract_num'],
+                                '<b>' . _x('phone', 'Number') . ' : </b>' . htmlspecialchars(
+                                    (string) $list[$i]['contract_num'],
+                                    ENT_QUOTES,
+                                ),
                                 $item_num,
                                 $row_num,
                                 "colspan='" . $colspan . "'",

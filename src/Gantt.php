@@ -218,17 +218,23 @@ class Gantt extends CommonDBTM
             ];
             $langwait = __('Please wait', 'manageentities');
             echo "<div class='gantt'></div>";
+            // These four payloads are emitted inside an inline <script>, and $data carries entity,
+            // contract and contract day names straight from the database. Without JSON_HEX_TAG the
+            // HTML parser closes the block on a stored "</script>" before JavaScript ever sees the
+            // string. JSON_HEX_QUOT and JSON_HEX_APOS are deliberately left out: json_encode emits
+            // the delimiters of the literals itself.
+            $json_flags = JSON_HEX_TAG | JSON_HEX_AMP;
             $js = "
                            $('.gantt').gantt({
-                                 source: " . json_encode($data) . ",
+                                 source: " . json_encode($data, $json_flags) . ",
                                  navigate: 'scroll',
                                  maxScale: 'months',
                                  minScale: 'hours',
                                  scale: 'months',
-                                 waitText: " . json_encode($langwait) . ",
+                                 waitText: " . json_encode($langwait, $json_flags) . ",
                                  itemsPerPage: 100,
-                                 months: " . json_encode($months) . ",
-                                 dow: " . json_encode($dow) . ",
+                                 months: " . json_encode($months, $json_flags) . ",
+                                 dow: " . json_encode($dow, $json_flags) . ",
                      onRender: function(scales) {";
 
             foreach ($bsize as $col => $size) {
@@ -325,7 +331,10 @@ class Gantt extends CommonDBTM
 
                             $real_end = date('Y/n/j', strtotime($tmp) + 86400);
                             //print_r($real_begin);
-                            $name = $contract_data['entities_name'] . " > " . $contract_data['name'];
+                            // The gantt library inserts this string into the page as HTML, and both
+                            // halves come straight from the database.
+                            $name = htmlspecialchars((string) $contract_data['entities_name'], ENT_QUOTES)
+                                . " &gt; " . htmlspecialchars((string) $contract_data['name'], ENT_QUOTES);
                             $link_contract = Toolbox::getItemTypeFormURL("Contract");
                             $name_contract = "<a href='" . $link_contract . "?id=" . $contract_data["contracts_id"] . "'>";
                             $name_contract .= $name . "</a>";
@@ -334,7 +343,7 @@ class Gantt extends CommonDBTM
                             $desc .= !empty($contract_data['contract_num']) ? '<br/>' . _x(
                                 'phone',
                                 'Number',
-                            ) . ' : ' . $contract_data['contract_num'] : '';
+                            ) . ' : ' . htmlspecialchars((string) $contract_data['contract_num'], ENT_QUOTES) : '';
                             $desc .= !empty($contract_data['contract_added']) ? '<br/>' . __(
                                 'Contract present',
                                 'manageentities',

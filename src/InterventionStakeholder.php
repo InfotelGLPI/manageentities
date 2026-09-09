@@ -169,7 +169,9 @@ class InterventionStakeholder extends CommonDBTM
             }
         } else {
             echo "if (document.getElementById('td_user_id" . $item->fields['id'] . "') != null){\n";
-            echo "   document.getElementById('td_user_id" . $item->fields['id'] . "').innerHTML = '" . $item->fields['number_affected_days'] . " " . _n("Day", "Days", 2) . "';\n";
+            // Emitted inside a JavaScript string literal: casting is what keeps a stored value
+            // from closing the quote and running as code.
+            echo "   document.getElementById('td_user_id" . $item->fields['id'] . "').innerHTML = '" . (float) $item->fields['number_affected_days'] . " " . _n("Day", "Days", 2) . "';\n";
             echo "}else{\n";
             echo "   if (document.getElementById('empty_stakeholders" . $idToUse . "') != null){";
             echo "      tbl.deleteRow(-1);";
@@ -201,7 +203,7 @@ class InterventionStakeholder extends CommonDBTM
             echo "tmpCell=row.insertCell(1);";
             echo "tmpCell.id='td_user_id" . $item->fields['id'] . "';";
             echo "tmpCell.innerHTML=\"";
-            echo $item->fields['number_affected_days'] . "&nbsp;" . _n("Day", "Days", 2);
+            echo (float) $item->fields['number_affected_days'] . "&nbsp;" . _n("Day", "Days", 2);
             echo "\";";
 
             echo "tmpCell=row.insertCell(2);";
@@ -292,7 +294,7 @@ class InterventionStakeholder extends CommonDBTM
                 'row_id'  => 'row_' . $stakeholder['id'],
                 'user'    => $user_link,
                 'nb_days' => "<span id='td_user_id" . $stakeholder['id'] . "'>"
-                    . $stakeholder['number_affected_days'] . '&nbsp;' . _n('Day', 'Days', 2)
+                    . (float) $stakeholder['number_affected_days'] . '&nbsp;' . _n('Day', 'Days', 2)
                     . "</span>",
                 'actions' => $delete_btn,
             ];

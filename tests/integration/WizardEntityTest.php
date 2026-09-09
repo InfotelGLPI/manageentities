@@ -55,7 +55,7 @@ class WizardEntityTest extends DbTestCase
 
         $result = WizardController::saveEntityAndReturn([
             'name'        => 'Test Entity WizardEntityTest',
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
 
         $this->assertTrue($result['success'], 'Expected success=true but got: ' . ($result['message'] ?? ''));
@@ -73,7 +73,7 @@ class WizardEntityTest extends DbTestCase
 
         $result = WizardController::saveEntityAndReturn([
             'name'        => 'Session Entity Test',
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
 
         $this->assertTrue($result['success']);
@@ -88,7 +88,7 @@ class WizardEntityTest extends DbTestCase
 
         WizardController::saveEntityAndReturn([
             'name'        => 'Step Advance Test',
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
 
         $session = WizardController::getSession();
@@ -101,7 +101,7 @@ class WizardEntityTest extends DbTestCase
 
         $result = WizardController::saveEntityAndReturn([
             'name'        => '',
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
 
         $this->assertFalse($result['success']);
@@ -115,12 +115,12 @@ class WizardEntityTest extends DbTestCase
 
         WizardController::saveEntityAndReturn([
             'name'        => 'Original Name',
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
 
         $r2 = WizardController::saveEntityAndReturn([
             'name'        => 'Updated Name',
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
         $this->assertTrue($r2['success']);
 
@@ -134,7 +134,7 @@ class WizardEntityTest extends DbTestCase
 
         $result = WizardController::saveEntityAndReturn([
             'name'        => 'Entity With Fields',
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
             'phonenumber' => '0123456789',
             'email'       => 'test@example.com',
             'town'        => 'Paris',
@@ -155,7 +155,7 @@ class WizardEntityTest extends DbTestCase
 
         $r1 = WizardController::saveEntityAndReturn([
             'name'        => "CommitEnt-{$uid}",
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
         $this->assertTrue($r1['success']);
 

@@ -74,10 +74,46 @@ class Company extends CommonDBTM
         return true;
     }
 
+    /**
+     * Entity criteria matching the perimeter of the current session.
+     *
+     * The table names its columns entity_id / recursive instead of the standard entities_id /
+     * is_recursive, so getEntitiesRestrictCriteria() - which hardcodes is_recursive - cannot be
+     * reused, and CommonDBTM::isEntityAssign() stays false, which means nothing scopes the reads
+     * on its own: the list below and the search engine used to return every client's companies.
+     * The shape is the one of the core helper: the row is visible from its own entity, and a
+     * recursive row is visible from the entities it descends from too.
+     *
+     * @param string $table Table name the columns are prefixed with, empty for none.
+     *
+     * @return array
+     */
+    public static function getEntityCriteria(string $table = ''): array
+    {
+        if (!empty($_SESSION['glpishowallentities'])) {
+            return [];
+        }
+
+        $prefix = $table !== '' ? $table . '.' : '';
+
+        $actives = array_map('intval', $_SESSION['glpiactiveentities'] ?? []);
+        $criteria = [[$prefix . 'entity_id' => ($actives === [] ? [-1] : $actives)]];
+
+        $parents = array_map('intval', $_SESSION['glpiparententities'] ?? []);
+        if ($parents !== []) {
+            $criteria[] = [
+                $prefix . 'recursive' => 1,
+                $prefix . 'entity_id' => $parents,
+            ];
+        }
+
+        return ['OR' => $criteria];
+    }
+
     public static function showList(): void
     {
         $plugin_company = new self();
-        $result = $plugin_company->find();
+        $result = $plugin_company->find(self::getEntityCriteria());
         $companies = [];
         $link = Toolbox::getItemTypeFormURL(self::class);
         foreach ($result as $data) {
@@ -181,16 +217,86 @@ class Company extends CommonDBTM
         unset($_SESSION['plugin_manageentities']['company']);
     }
 
+    /**
+     * Whether the current session may act on this company.
+     *
+     * The table carries its own non standard "entity_id" column instead of entities_id, so
+     * CommonDBTM::isEntityAssign() is false and checkEntity() lets everything through: the
+     * check($id, UPDATE) and check($id, PURGE) of front/company.form.php were validating the
+     * global plugin right alone, and the sequential identifiers made every other client's company
+     * - and its logo - reachable. The boundary is restored in canViewItem(), canUpdateItem() and
+     * canPurgeItem() rather than in the front script alone, so it holds on every path.
+     *
+     * @return bool
+     */
+    private function isInSessionPerimeter(): bool
+    {
+        return Session::haveAccessToEntity(
+            (int) ($this->fields['entity_id'] ?? 0),
+            (bool) ($this->fields['recursive'] ?? 0),
+        );
+    }
+
+    public function canViewItem(): bool
+    {
+        return $this->isInSessionPerimeter();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->isInSessionPerimeter();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->isInSessionPerimeter();
+    }
+
+    /**
+     * Whether an uploaded logo really is a JPEG.
+     *
+     * The name is the last path segment of a file taken from GLPI_TMP_DIR, so any separator in it
+     * would point the check somewhere else entirely, and the extension of that name says nothing
+     * about the content: a file whose bytes are HTML or SVG used to be accepted and served back as
+     * the company logo. Fail-closed - an absent or unreadable file is refused.
+     *
+     * @param mixed $file
+     *
+     * @return bool
+     */
+    private static function isJpegUpload($file): bool
+    {
+        if (!is_string($file) || $file === ''
+            || basename($file) !== $file
+            || strpbrk($file, "/\\") !== false) {
+            return false;
+        }
+
+        $tmpfile = GLPI_TMP_DIR . "/" . $file;
+
+        return is_file($tmpfile) && mime_content_type($tmpfile) === 'image/jpeg';
+    }
+
     public function prepareInputForUpdate($input)
     {
+        // Moving a company into an entity the session cannot see would put it - and its logo -
+        // out of reach of its own owner, so the destination is checked like the row itself.
+        if (isset($input['entity_id'])
+            && !Session::haveAccessToEntity((int) $input['entity_id'], (bool) ($input['recursive'] ?? 0))) {
+            Session::addMessageAfterRedirect(
+                __('Entity not found', 'manageentities'),
+                false,
+                ERROR,
+            );
+            return false;
+        }
+
         if (isset($input["_filename"])) {
             $plugin_company = new Company();
             $company = $plugin_company->find(['id' => $input['id']]);
             $company = reset($company);
 
-            $tmp = explode(".", $input["_filename"][0]);
-            $extension = array_pop($tmp);
-            if (!in_array($extension, ['jpg', 'jpeg'])) {
+            if (!self::isJpegUpload($input["_filename"][0] ?? null)) {
                 Session::addMessageAfterRedirect(
                     __('The format of the image must be in JPG or JPEG', 'manageentities'),
                     false,
@@ -209,10 +315,19 @@ class Company extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        // Same entity check as on update: the company is created where the form says, and nothing
+        // downstream compares that value with the perimeter of the session.
+        if (!Session::haveAccessToEntity((int) ($input['entity_id'] ?? 0), (bool) ($input['recursive'] ?? 0))) {
+            Session::addMessageAfterRedirect(
+                __('Entity not found', 'manageentities'),
+                false,
+                ERROR,
+            );
+            return false;
+        }
+
         if (isset($input["_filename"])) {
-            $tmp = explode(".", $input["_filename"][0]);
-            $extension = array_pop($tmp);
-            if (!in_array($extension, ['jpg', 'jpeg'])) {
+            if (!self::isJpegUpload($input["_filename"][0] ?? null)) {
                 Session::addMessageAfterRedirect(
                     __('The format of the image must be in JPG or JPEG', 'manageentities'),
                     false,
@@ -274,13 +389,10 @@ class Company extends CommonDBTM
         foreach ($this->input['_filename'] as $key => $file) {
             // Path traversal + MIME bypass hardening (aligns Company with the sibling
             // EntityLogo::addLogo()): _filename is client-supplied and is joined onto
-            // GLPI_TMP_DIR below, then handed to Toolbox::resizePicture(). Reject any path
-            // separator so the value cannot escape the temp directory, and validate the REAL
-            // MIME type of the uploaded temp file (fail-closed: reject when the file is
-            // absent) instead of trusting the client-declared extension.
-            if (!is_string($file) || $file === ''
-                || basename($file) !== $file
-                || strpbrk($file, "/\\") !== false) {
+            // GLPI_TMP_DIR below, then handed to Toolbox::resizePicture(). The same check now
+            // guards prepareInputForAdd() and prepareInputForUpdate(), so a file that is not a
+            // JPEG no longer gets as far as deleting the logo it was meant to replace.
+            if (!self::isJpegUpload($file)) {
                 Session::addMessageAfterRedirect(
                     __('The format of the image must be in JPG or JPEG', 'manageentities'),
                     false,
@@ -289,14 +401,6 @@ class Company extends CommonDBTM
                 continue;
             }
             $tmpfile = GLPI_TMP_DIR . "/" . $file;
-            if (!is_file($tmpfile) || mime_content_type($tmpfile) !== 'image/jpeg') {
-                Session::addMessageAfterRedirect(
-                    __('The format of the image must be in JPG or JPEG', 'manageentities'),
-                    false,
-                    ERROR,
-                );
-                continue;
-            }
 
             $doc = new Document();
             $docitem = new Document_Item();

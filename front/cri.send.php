@@ -70,7 +70,7 @@ if (isset($_GET["file"])) { // for other file
             $doc->fields['filepath'] = "_plugins/manageentities/" . $filename;
             $doc->fields['mime']     = 'application/pdf';
             $doc->fields['filename'] = $filename;
-            $cri->send($doc);
+            return $cri->send($doc);
         } else {
             throw new BadRequestHttpException(__('Unauthorized access to this file'), true);
         }

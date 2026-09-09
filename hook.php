@@ -525,6 +525,26 @@ function plugin_manageentities_addLeftJoin($type, $ref_table, $new_table, $linkf
     return "";
 }
 
+/**
+ * Restrict the search engine to the entities of the current session.
+ *
+ * Company is not entity assigned in the CommonDBTM sense - it carries its own entity_id and
+ * recursive columns - so the engine applies no boundary of its own to it. Criteria are returned as
+ * an array so the core builds the SQL itself.
+ *
+ * @param string $type
+ *
+ * @return array
+ */
+function plugin_manageentities_addDefaultWhere($type)
+{
+    if ($type === Company::class) {
+        return Company::getEntityCriteria(Company::getTable());
+    }
+
+    return [];
+}
+
 function plugin_manageentities_forceGroupBy($type)
 {
 

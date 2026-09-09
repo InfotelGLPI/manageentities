@@ -38,6 +38,17 @@ trait WizardTestHelpers
     private int $wizard_contracttype_id = 0;
     private int $wizard_state_id        = 0;
 
+    /**
+     * Parent entity the wizard hangs its fixtures under.
+     *
+     * The wizard refuses a parent outside the perimeter of the logged in profile, and TU_USER only
+     * sees _test_root_entity and its children - not the real root, whose id is 0.
+     */
+    protected function wizardParentEntity(): int
+    {
+        return (int) getItemByTypeName(\Entity::class, '_test_root_entity', true);
+    }
+
     protected function setUpWizardContractTypes(): void
     {
         $uid = $this->getUniqueString();

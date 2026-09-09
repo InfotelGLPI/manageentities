@@ -56,19 +56,22 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
             if (!$checkContractDayAccess()) {
                 break;
             }
+            // nb_days is a half-day count, and add() does not read the row back from the database:
+            // whatever is posted here is the value the stakeholder list re-emits into JavaScript.
+            // The loose "> 0" test accepted any string starting with a digit, so it is cast first.
+            $nbDays = (float) ($_POST['nb_days'] ?? 0);
             if ((isset($_POST["users_id_tech"]) && $_POST['users_id_tech'] > 0) &&
                 (isset($_POST["contractdays_id"]) && $_POST['contractdays_id'] > 0) &&
-                (isset($_POST["nb_days"]) && $_POST['nb_days'] > 0)) {
+                $nbDays > 0) {
 
                 $idUser         = $_POST['users_id_tech'];
                 $idContractdays = $_POST['contractdays_id'];
-                $nbDays         = $_POST['nb_days'];
 
                 $interventionStakeholder->getFromDBByCrit(['users_id'                              => $idUser,
                     'plugin_manageentities_contractdays_id' => $idContractdays]);
 
                 if (isset($interventionStakeholder->fields['id']) && $interventionStakeholder->fields['id'] > 0) {
-                    $interventionStakeholder->fields['number_affected_days'] += $_POST['nb_days'];
+                    $interventionStakeholder->fields['number_affected_days'] += $nbDays;
 
                     if ($interventionStakeholder->update($interventionStakeholder->fields)) {
                         $nbDaysAfter                                   = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);

@@ -37,6 +37,7 @@ use Document;
 use DocumentCategory;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
 use Session;
 use State;
@@ -274,10 +275,20 @@ class WizardController
         if (!Session::haveAccessToEntity($entities_id)) {
             return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
         }
+        // Reparenting an entity is a write on a core object: the plugin right does not stand in
+        // for the core entity right, no more than it does on the creation path above.
+        if (!$entity->can($entities_id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
         $config = Config::getInstance();
         $target_entities_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
         if ($target_entities_id <= 0) {
             return ['success' => false, 'message' => __('Default parent entity is not configured', 'manageentities')];
+        }
+        // The destination comes from the configuration, not from the request, but the caller still
+        // has to be allowed to see the branch the entity is moved into.
+        if (!Session::haveAccessToEntity($target_entities_id)) {
+            return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
         }
         if (!$entity->update(['id' => $entities_id, 'entities_id' => $target_entities_id])) {
             return ['success' => false, 'message' => __('Error unarchiving entity', 'manageentities')];
@@ -1402,7 +1413,13 @@ class WizardController
             if (!self::canCreateUnderEntity((int) ($entity_data['entities_id'] ?? 0))) {
                 return ['success' => false, 'errors' => ['global' => __('Entity not found', 'manageentities')]];
             }
+            // canCreateUnderEntity() above confines the write to the wizard perimeter, but the
+            // object written here belongs to the core: creating it requires the core entity right,
+            // which the global plugin UPDATE right of ajax/wizard.php does not carry.
             $entity = new \Entity();
+            if (!$entity->can(-1, CREATE, $entity_data)) {
+                throw new AccessDeniedHttpException();
+            }
             $entities_id = (int) $entity->add($entity_data);
             if (!$entities_id) {
                 return ['success' => false, 'errors' => ['global' => __('Error creating entity', 'manageentities')]];

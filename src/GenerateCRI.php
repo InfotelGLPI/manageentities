@@ -775,18 +775,51 @@ class GenerateCRI extends CommonGLPI
      * would have offered.
      *
      * @param int|int[] $entity_restrict entity the intervention belongs to
+     * @param string    $right           the same right the matching dropdown was built with
      *
      * @return array<int, string> user id => display name
      */
-    public static function getSelectableTechnicians($entity_restrict): array
+    public static function getSelectableTechnicians($entity_restrict, string $right = 'all'): array
     {
         $dbu   = new DbUtils();
         $techs = [];
-        foreach (User::getSqlSearchResult(false, 'all', $entity_restrict) as $data) {
+        foreach (User::getSqlSearchResult(false, $right, $entity_restrict) as $data) {
             $techs[(int) $data['id']] = $dbu->getUserName($data['id']);
         }
 
         return $techs;
+    }
+
+    /**
+     * Whether a posted task category belongs to the perimeter of the ticket entity.
+     *
+     * Replays what TaskCategory::dropdown(['entity' => ...]) offered: a category of the entity
+     * itself, or a recursive category of one of its ancestors. Zero means "no category", which
+     * the dropdown allows.
+     *
+     * @param int $taskcategories_id the posted value
+     * @param int $entities_id       entity of the ticket the task is attached to
+     *
+     * @return bool
+     */
+    private static function isSelectableTaskCategory(int $taskcategories_id, int $entities_id): bool
+    {
+        if ($taskcategories_id <= 0) {
+            return true;
+        }
+
+        $category = new TaskCategory();
+        if (!$category->getFromDB($taskcategories_id)) {
+            return false;
+        }
+
+        $category_entities_id = (int) $category->fields['entities_id'];
+        if ($category_entities_id === $entities_id) {
+            return true;
+        }
+
+        return (bool) $category->fields['is_recursive']
+            && array_key_exists($category_entities_id, getAncestorsOf('glpi_entities', $entities_id));
     }
 
     /**
@@ -994,6 +1027,18 @@ class GenerateCRI extends CommonGLPI
             $ticket_task->add($input);
         }
 
+        // Every task below is written with the users_id_tech and taskcategories_id posted in the
+        // hidden fields of the wizard form, one pair per task. The right held on the ticket says
+        // nothing about the VALUE posted in a dropdown, so the criteria the two dropdowns were
+        // built with are replayed here: User::dropdown(right own_ticket, entity of the ticket)
+        // and TaskCategory::dropdown(entity of the ticket).
+        $ticket = new Ticket();
+        if (!$ticket->getFromDB($ticket_id)) {
+            return false;
+        }
+        $task_entities_id = (int) $ticket->fields['entities_id'];
+        $selectable_techs = array_keys(self::getSelectableTechnicians($task_entities_id, 'own_ticket'));
+
         $inputs['_plan'] = [];
         //      $inputs['plan']  = [];
         $hasDuration = false;
@@ -1075,12 +1120,21 @@ class GenerateCRI extends CommonGLPI
                 }
 
                 if ($hasBegin && $hasDuration && $hasEnd && $hasDescription && $hasTech) {
+                    $users_id_tech     = (int) $inputs['users_id_tech'];
+                    $taskcategories_id = (int) $inputs['taskcategories_id'];
+                    if (
+                        !in_array($users_id_tech, $selectable_techs, true)
+                        || !self::isSelectableTaskCategory($taskcategories_id, $task_entities_id)
+                    ) {
+                        throw new AccessDeniedHttpException();
+                    }
+
                     $ticket_task = new TicketTask();
                     $ticket_task->add([
                         'tickets_id' => $ticket_id,
                         'users_id' => Session::getLoginUserID(),
-                        'users_id_tech' => $inputs['users_id_tech'],
-                        'taskcategories_id' => $inputs['taskcategories_id'],
+                        'users_id_tech' => $users_id_tech,
+                        'taskcategories_id' => $taskcategories_id,
                         '_plan' => $inputs['_plan'],
                         'plan' => $inputs['plan'],
                         'content' => $inputs['description'],

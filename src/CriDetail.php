@@ -1911,7 +1911,8 @@ class CriDetail extends CommonDBTM
                     }
                 }
                 if ($contractSelected) {
-                    echo \Dropdown::getDropdownName('glpi_contracts', $contractSelected);
+                    // Dropdown names come back raw from the database, and this view is built by echo.
+                    echo htmlspecialchars((string) \Dropdown::getDropdownName('glpi_contracts', $contractSelected));
                 }
             }
         } else {
@@ -1992,7 +1993,8 @@ class CriDetail extends CommonDBTM
             ]);
             echo "</span>";
         } else {
-            echo \Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected);
+            // Dropdown names come back raw from the database, and this view is built by echo.
+            echo htmlspecialchars((string) \Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected));
         }
         echo "</td>";
         echo "</tr>";

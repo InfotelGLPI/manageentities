@@ -27,6 +27,7 @@
  * --------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
 use GlpiPlugin\Manageentities\EntityLogo;
 
 $logo = new EntityLogo();
@@ -47,6 +48,14 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["update"])
            && isset($_POST["entities_id"])) {
 
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/entity.form.php?id=" . $_POST["entities_id"] . "&amps&forcetab=EntityData$1");
+    // The posted value used to be concatenated as is: extra parameters, and a second forcetab,
+    // could be smuggled into the query string of the target page. The stray "&amps" was a mangled
+    // "&amp;" left over from an HTML context.
+    $redirect_entities_id = (int) $_POST["entities_id"];
+    if ($redirect_entities_id <= 0) {
+        throw new BadRequestHttpException();
+    }
+
+    Html::redirect($CFG_GLPI["root_doc"] . "/front/entity.form.php?id=" . $redirect_entities_id . "&forcetab=EntityData$1");
 
 }

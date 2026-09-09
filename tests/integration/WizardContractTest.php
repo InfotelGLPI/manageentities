@@ -54,7 +54,7 @@ class WizardContractTest extends DbTestCase
     {
         WizardController::saveEntityAndReturn([
             'name'        => 'Entity for Contract ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
     }
 
@@ -132,7 +132,7 @@ class WizardContractTest extends DbTestCase
         $this->login('glpi');
         $uid = $this->getUniqueString();
 
-        WizardController::saveEntityAndReturn(['name' => "Ent-{$uid}", 'entities_id' => 0]);
+        WizardController::saveEntityAndReturn(['name' => "Ent-{$uid}", 'entities_id' => $this->wizardParentEntity()]);
         WizardController::saveContactsAndReturn(['contacts' => []]);
         WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "CTR-{$uid}"]));
         WizardController::saveManagementTypeAndReturn([

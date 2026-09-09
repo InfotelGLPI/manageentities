@@ -152,7 +152,7 @@ class WizardDocumentTest extends DbTestCase
         $this->login('glpi');
         $uid = $this->getUniqueString();
 
-        WizardController::saveEntityAndReturn(['name' => "DocEnt-{$uid}", 'entities_id' => 0]);
+        WizardController::saveEntityAndReturn(['name' => "DocEnt-{$uid}", 'entities_id' => $this->wizardParentEntity()]);
         WizardController::saveContactsAndReturn(['contacts' => []]);
         WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "DocCTR-{$uid}"]));
         WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-01-01']);

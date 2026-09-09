@@ -57,7 +57,7 @@ class WizardFullFlowTest extends DbTestCase
         // Step 1 — Entity (stored in session only)
         $r1 = WizardController::saveEntityAndReturn([
             'name'        => "Entity-{$uid}",
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
             'email'       => "entity-{$uid}@example.com",
         ]);
         $this->assertTrue($r1['success'], 'Step 1 failed: ' . json_encode($r1));
@@ -145,7 +145,7 @@ class WizardFullFlowTest extends DbTestCase
 
         WizardController::saveEntityAndReturn([
             'name'        => "Entity-Reset-{$uid}",
-            'entities_id' => 0,
+            'entities_id' => $this->wizardParentEntity(),
         ]);
 
         $sessionBefore = WizardController::getSession();
@@ -178,7 +178,7 @@ class WizardFullFlowTest extends DbTestCase
         $this->login();
         $uid = $this->getUniqueString();
 
-        WizardController::saveEntityAndReturn(['name' => "ResetEnt-{$uid}", 'entities_id' => 0]);
+        WizardController::saveEntityAndReturn(['name' => "ResetEnt-{$uid}", 'entities_id' => $this->wizardParentEntity()]);
         WizardController::saveContractAndReturn($this->minimalContractInput(['name' => "ResetCTR-{$uid}"]));
         WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-01-01']);
 
