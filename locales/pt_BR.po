@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-09 09:16+0000\n"
+"POT-Creation-Date: 2026-09-09 09:26+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2018\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/infotelGLPI/"
@@ -22,33 +22,33 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/Report.php:298
+#: src/Report.php:296
 #, php-format
 msgid "% of time justified"
 msgstr ""
 
-#: src/EditorSubscription.php:991
+#: src/EditorSubscription.php:989
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
 
-#: src/CriPDF.php:618
+#: src/CriPDF.php:616
 msgid "(in days)"
 msgstr ""
 
-#: src/CriPDF.php:620
+#: src/CriPDF.php:618
 msgid "(in hours)"
 msgstr ""
 
-#: src/WizardController.php:1473
+#: src/WizardController.php:1471
 msgid "(no name)"
 msgstr ""
 
-#: src/Contract.php:192
+#: src/Contract.php:190
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:1945
+#: src/WizardController.php:1943
 msgid "-- Select a template --"
 msgstr ""
 
@@ -60,15 +60,15 @@ msgstr ""
 msgid "3 hours minimum"
 msgstr ""
 
-#: src/WizardController.php:210
+#: src/WizardController.php:208
 msgid "A contract with this number already exists"
 msgstr ""
 
-#: src/GenerateCRI.php:748
+#: src/GenerateCRI.php:746
 msgid "Accomplished tasks informations"
 msgstr ""
 
-#: hook.php:848 src/EditorSubscription.php:182
+#: hook.php:848 src/EditorSubscription.php:180
 #: templates/wizard/step4_management.html.twig:121
 msgid "Active editor subscription"
 msgstr ""
@@ -95,11 +95,11 @@ msgctxt "button"
 msgid "Add"
 msgstr ""
 
-#: src/Contract.php:193
+#: src/Contract.php:191
 msgid "Add 12 months to the initial contract period"
 msgstr ""
 
-#: src/Company.php:98
+#: src/Company.php:96
 msgid "Add a company"
 msgstr ""
 
@@ -117,16 +117,16 @@ msgstr ""
 msgid "Add a new contract and service periods to an existing client."
 msgstr ""
 
-#: src/CriPrice.php:311
+#: src/CriPrice.php:309
 msgid "Add a new price"
 msgstr ""
 
-#: src/ContractDay.php:469 templates/wizard/step5_interventions.html.twig:54
+#: src/ContractDay.php:467 templates/wizard/step5_interventions.html.twig:54
 #: templates/wizard/step6_interventions.html.twig:54
 msgid "Add a service period"
 msgstr ""
 
-#: src/Cri.php:174
+#: src/Cri.php:170
 msgid "Add a technician"
 msgstr ""
 
@@ -143,7 +143,7 @@ msgstr ""
 msgid "Add stakeholders"
 msgstr ""
 
-#: src/GenerateCRI.php:749
+#: src/GenerateCRI.php:747
 msgid "Add this Task"
 msgstr ""
 
@@ -187,7 +187,7 @@ msgstr ""
 msgid "Allow periods on the same interval of dates"
 msgstr ""
 
-#: src/Monthly.php:511 src/Monthly.php:521 src/Monthly.php:524
+#: src/Monthly.php:509 src/Monthly.php:519 src/Monthly.php:522
 #: templates/contractday_form.html.twig:106
 #: templates/wizard/step6_intervention_block.html.twig:106
 #: templates/wizard/step5_intervention_block.html.twig:106
@@ -207,27 +207,27 @@ msgstr ""
 msgid "An error happened while saving the data."
 msgstr ""
 
-#: front/editorsubscription.form.php:81 src/EditorSubscriptionWizard.php:216
+#: front/editorsubscription.form.php:81 src/EditorSubscriptionWizard.php:214
 msgid "An error occurred while deleting."
 msgstr ""
 
-#: front/editorsubscription.form.php:58 src/EditorSubscriptionWizard.php:185
+#: front/editorsubscription.form.php:58 src/EditorSubscriptionWizard.php:183
 msgid "An error occurred while saving."
 msgstr ""
 
-#: src/Contract.php:646 src/Contract.php:675
+#: src/Contract.php:644 src/Contract.php:673
 msgid "Annual"
 msgstr ""
 
-#: src/CriDetail.php:802 src/CriDetail.php:1571
+#: src/CriDetail.php:800 src/CriDetail.php:1569
 msgid "Applied daily rate"
 msgstr ""
 
-#: src/CriDetail.php:804 src/CriDetail.php:1572
+#: src/CriDetail.php:802 src/CriDetail.php:1570
 msgid "Applied hourly rate"
 msgstr ""
 
-#: src/CriDetail.php:1572
+#: src/CriDetail.php:1570
 msgid "Applied rate"
 msgstr ""
 
@@ -265,11 +265,11 @@ msgstr[1] ""
 msgid "Associated intervention reports"
 msgstr ""
 
-#: src/CriDetail.php:431
+#: src/CriDetail.php:429
 msgid "Associated ticket"
 msgstr ""
 
-#: src/WizardController.php:1280 src/WizardController.php:1306
+#: src/WizardController.php:1278 src/WizardController.php:1304
 msgid "At least one service period with a rate is required"
 msgstr ""
 
@@ -285,16 +285,16 @@ msgstr ""
 msgid "Begin date"
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:153 src/WizardController.php:191
-#: src/WizardController.php:224
+#: src/EditorSubscriptionWizard.php:151 src/WizardController.php:189
+#: src/WizardController.php:222
 msgid "Begin date is required"
 msgstr ""
 
-#: src/Contract.php:699 src/Contract.php:736
+#: src/Contract.php:697 src/Contract.php:734
 msgid "By intervention"
 msgstr ""
 
-#: src/CriDetail.php:79
+#: src/CriDetail.php:77
 msgid "CRI generation"
 msgstr ""
 
@@ -304,7 +304,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/WizardController.php:1148
+#: src/WizardController.php:1146
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -314,9 +314,9 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/Followup.php:911 src/Monthly.php:696 src/Monthly.php:727
+#: src/Followup.php:908 src/Monthly.php:694 src/Monthly.php:725
 #: src/Dashboard.php:229 src/Dashboard.php:293 src/Dashboard.php:345
-#: src/GenerateCRI.php:721
+#: src/GenerateCRI.php:719
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] ""
@@ -326,7 +326,7 @@ msgstr[1] ""
 msgid "Client annuary"
 msgstr ""
 
-#: src/Entity.php:55
+#: src/Entity.php:53
 msgid "Client management"
 msgid_plural "Clients management"
 msgstr[0] ""
@@ -344,15 +344,15 @@ msgstr ""
 msgid "Closed contract period state"
 msgstr ""
 
-#: src/SubscriptionLevel.php:73 templates/entity/status_tab.html.twig:71
+#: src/SubscriptionLevel.php:71 templates/entity/status_tab.html.twig:71
 #: templates/entity/status_tab.html.twig:158
 #: templates/entity/editorsubscription_tab.html.twig:88
 msgid "Cloud"
 msgstr ""
 
-#: hook.php:861 src/NotificationTargetEditorSubscription.php:89
-#: src/EditorSubscription.php:160 src/EditorSubscription.php:183
-#: src/EditorSubscription.php:647
+#: hook.php:861 src/NotificationTargetEditorSubscription.php:87
+#: src/EditorSubscription.php:158 src/EditorSubscription.php:181
+#: src/EditorSubscription.php:645
 #: templates/wizard/step4_management.html.twig:130
 #: templates/contract_detail_form.html.twig:55
 #: templates/cridetail_for_ticket.html.twig:79
@@ -360,11 +360,11 @@ msgstr ""
 msgid "Cloud client"
 msgstr ""
 
-#: src/ContractState.php:74 src/ContractState.php:104
+#: src/ContractState.php:72 src/ContractState.php:102
 msgid "Color"
 msgstr ""
 
-#: src/ContractState.php:128
+#: src/ContractState.php:126
 msgid "Color field is not correct"
 msgstr ""
 
@@ -387,7 +387,7 @@ msgstr[1] ""
 msgid "Comments"
 msgstr ""
 
-#: src/Followup.php:1769 src/Company.php:55 templates/company_form.html.twig:43
+#: src/Followup.php:1766 src/Company.php:53 templates/company_form.html.twig:43
 #: templates/company_list.html.twig:50 templates/company_list.html.twig:59
 msgid "Company"
 msgid_plural "Companies"
@@ -406,7 +406,7 @@ msgstr ""
 msgid "Confirm and finish"
 msgstr ""
 
-#: src/CriDetail.php:1590
+#: src/CriDetail.php:1588
 msgid "Consumption"
 msgstr ""
 
@@ -421,15 +421,15 @@ msgid_plural "Contacts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1680
+#: src/WizardController.php:1678
 msgid "Contacts"
 msgstr ""
 
-#: src/GenerateCRI.php:602
+#: src/GenerateCRI.php:600
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 
-#: src/WizardController.php:1673 src/WizardController.php:1685
+#: src/WizardController.php:1671 src/WizardController.php:1683
 #: templates/contractday_form.html.twig:46
 #: templates/wizard/step3_contract.html.twig:37
 #: templates/wizard/step4_contract.html.twig:37
@@ -445,11 +445,11 @@ msgstr[1] ""
 msgid "Contract closure"
 msgstr ""
 
-#: src/WizardController.php:1353
+#: src/WizardController.php:1351
 msgid "Contract data is missing"
 msgstr ""
 
-#: src/Contract.php:164 src/Contract.php:166
+#: src/Contract.php:162 src/Contract.php:164
 msgid "Contract detail"
 msgstr ""
 
@@ -459,17 +459,17 @@ msgstr ""
 msgid "Contract is imported in GLPI"
 msgstr ""
 
-#: src/CriDetail.php:685 src/CriPDF.php:542
+#: src/CriDetail.php:683 src/CriPDF.php:540
 #: templates/wizard/step3_contract.html.twig:67
 #: templates/wizard/step4_contract.html.twig:67
 msgid "Contract number"
 msgstr ""
 
-#: src/WizardController.php:187
+#: src/WizardController.php:185
 msgid "Contract number is required"
 msgstr ""
 
-#: src/Followup.php:993 src/Gantt.php:341
+#: src/Followup.php:990 src/Gantt.php:339
 msgid "Contract present"
 msgstr ""
 
@@ -479,11 +479,11 @@ msgstr ""
 msgid "Contract type"
 msgstr ""
 
-#: src/WizardController.php:199
+#: src/WizardController.php:197
 msgid "Contract type is required"
 msgstr ""
 
-#: src/Entity.php:94
+#: src/Entity.php:92
 msgid "Contractual follow-up"
 msgstr ""
 
@@ -519,43 +519,43 @@ msgstr ""
 msgid "Create subscription"
 msgstr ""
 
-#: src/CriPDF.php:297 src/CriPDF.php:313
+#: src/CriPDF.php:295 src/CriPDF.php:311
 msgid "Created by"
 msgstr ""
 
-#: src/ContractDay.php:159
+#: src/ContractDay.php:157
 msgid "Credit remaining"
 msgstr ""
 
-#: src/CriPDF.php:592
+#: src/CriPDF.php:590
 msgid "Crossed time"
 msgstr ""
 
-#: src/CriDetail.php:428 src/CriDetail.php:680 src/CriDetail.php:799
-#: src/CriDetail.php:1568 src/CriPDF.php:572
+#: src/CriDetail.php:426 src/CriDetail.php:678 src/CriDetail.php:797
+#: src/CriDetail.php:1566 src/CriPDF.php:570
 msgid "Crossed time (itinerary including)"
 msgstr ""
 
-#: src/Entity.php:197
+#: src/Entity.php:195
 msgid "Current contracts"
 msgstr ""
 
-#: src/Followup.php:1870
+#: src/Followup.php:1867
 msgid "Current page in landscape PDF"
 msgstr ""
 
-#: src/Followup.php:1873
+#: src/Followup.php:1870
 msgid "Current page in portrait PDF"
 msgstr ""
 
-#: src/Monthly.php:714 src/Monthly.php:752
+#: src/Monthly.php:712 src/Monthly.php:750
 #: templates/interventionstakeholder_list.html.twig:32
 msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/CriPDF.php:952
+#: src/CriPDF.php:950
 msgid "Customer Visa"
 msgstr ""
 
@@ -563,7 +563,7 @@ msgstr ""
 msgid "Customer archiving entity"
 msgstr ""
 
-#: src/CriPDF.php:827
+#: src/CriPDF.php:825
 msgid "Customer comments"
 msgstr ""
 
@@ -571,22 +571,22 @@ msgstr ""
 msgid "Customer entities"
 msgstr ""
 
-#: src/CriPDF.php:945
+#: src/CriPDF.php:943
 msgid "Customer stamp"
 msgstr ""
 
-#: src/CriPrice.php:58 src/CriPrice.php:95 src/CriPrice.php:202
-#: src/CriPrice.php:355 src/Monthly.php:708 src/Monthly.php:744
-#: src/CriType.php:95 templates/wizard/step5_criprices_section.html.twig:32
+#: src/CriPrice.php:56 src/CriPrice.php:93 src/CriPrice.php:200
+#: src/CriPrice.php:353 src/Monthly.php:706 src/Monthly.php:742
+#: src/CriType.php:93 templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Daily rate"
 msgstr ""
 
-#: src/Report.php:287
+#: src/Report.php:285
 msgid "Daily schedule"
 msgstr ""
 
-#: src/Entity.php:107 templates/entity/description.html.twig:38
+#: src/Entity.php:105 templates/entity/description.html.twig:38
 msgid "Data administrative"
 msgstr ""
 
@@ -596,25 +596,25 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: src/CriPDF.php:581 src/CriPDF.php:585
+#: src/CriPDF.php:579 src/CriPDF.php:583
 msgid "Date of"
 msgstr ""
 
-#: src/Followup.php:1036 src/Gantt.php:349
+#: src/Followup.php:1033 src/Gantt.php:347
 #: templates/wizard/step4_management.html.twig:55
 #: templates/wizard/step5_management.html.twig:55
 #: templates/contract_detail_form.html.twig:139
 msgid "Date of renewal"
 msgstr ""
 
-#: src/Followup.php:1021 src/Entity.php:579 src/Gantt.php:345
+#: src/Followup.php:1018 src/Entity.php:577 src/Gantt.php:343
 #: templates/wizard/step4_management.html.twig:51
 #: templates/wizard/step5_management.html.twig:51
 #: templates/contract_detail_form.html.twig:135
 msgid "Date of signature"
 msgstr ""
 
-#: src/WizardController.php:840
+#: src/WizardController.php:838
 msgid "Date of signature is required"
 msgstr ""
 
@@ -662,7 +662,7 @@ msgstr ""
 msgid "Default list of companies for the general monitoring"
 msgstr ""
 
-#: src/WizardController.php:282
+#: src/WizardController.php:280
 msgid "Default parent entity is not configured"
 msgstr ""
 
@@ -682,7 +682,7 @@ msgstr ""
 msgid "Default time PM"
 msgstr ""
 
-#: src/InterventionStakeholder.php:204 src/InterventionStakeholder.php:271
+#: src/InterventionStakeholder.php:202 src/InterventionStakeholder.php:269
 msgid "Delete"
 msgstr ""
 
@@ -709,7 +709,7 @@ msgstr ""
 msgid "Deleting…"
 msgstr ""
 
-#: src/GenerateCRI.php:639
+#: src/GenerateCRI.php:637
 #: templates/entity/directhelpdesk_ticket_select.html.twig:44
 #: templates/directhelpdesk_modal.html.twig:56
 msgid "Description"
@@ -723,11 +723,11 @@ msgstr ""
 msgid "Detail of the realized works"
 msgstr ""
 
-#: src/CriPDF.php:754
+#: src/CriPDF.php:752
 msgid "Detail of work done"
 msgstr ""
 
-#: src/Profile.php:116
+#: src/Profile.php:114
 msgid "Direct helpdesk"
 msgstr ""
 
@@ -756,7 +756,7 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: src/WizardController.php:195
+#: src/WizardController.php:193
 msgid "Duration is required"
 msgstr ""
 
@@ -775,8 +775,8 @@ msgstr ""
 msgid "Editor"
 msgstr ""
 
-#: src/NotificationTargetEditorSubscription.php:90
-#: src/EditorSubscription.php:161 src/EditorSubscription.php:639
+#: src/NotificationTargetEditorSubscription.php:88
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:637
 #: templates/contract_detail_form.html.twig:57
 #: templates/cridetail_for_ticket.html.twig:81
 #: templates/editorsubscription_fields.html.twig:59
@@ -796,9 +796,9 @@ msgstr ""
 msgid "Email address"
 msgstr ""
 
-#: src/NotificationTargetEditorSubscription.php:79
-#: src/NotificationTargetEditorSubscription.php:116
-#: src/EditorSubscription.php:186
+#: src/NotificationTargetEditorSubscription.php:77
+#: src/NotificationTargetEditorSubscription.php:114
+#: src/EditorSubscription.php:184
 #: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/contractday_form.html.twig:69
 #: templates/wizard/step6_intervention_block.html.twig:63
@@ -813,15 +813,15 @@ msgstr ""
 msgid "End date"
 msgstr ""
 
-#: src/ContractDay.php:813
+#: src/ContractDay.php:811
 msgid "End date cannot be less than begin date"
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:156 src/WizardController.php:227
+#: src/EditorSubscriptionWizard.php:154 src/WizardController.php:225
 msgid "End date is required"
 msgstr ""
 
-#: src/GenerateCRI.php:606
+#: src/GenerateCRI.php:604
 msgid "End date must be after the begin date !"
 msgstr ""
 
@@ -834,9 +834,9 @@ msgstr ""
 #: front/directhelpdesk.form.php:139 front/directhelpdesk.form.php:142
 #: front/directhelpdesk.form.php:144 front/cridetail.form.php:47
 #: front/cridetail.form.php:50 front/cridetail.form.php:52
-#: front/report_occupation.form.php:43 src/Followup.php:1493
-#: src/TaskCategory.php:68 src/Monthly.php:1087 src/Preference.php:111
-#: src/Profile.php:52 src/Profile.php:103 src/GenerateCRI.php:1141
+#: front/report_occupation.form.php:43 src/Followup.php:1490
+#: src/TaskCategory.php:66 src/Monthly.php:1085 src/Preference.php:109
+#: src/Profile.php:50 src/Profile.php:101 src/GenerateCRI.php:1139
 #: templates/wizard/mode_choice.html.twig:35
 msgid "Entities portal"
 msgstr "Portal de entidades"
@@ -853,9 +853,9 @@ msgstr ""
 msgid "Entities with an expired publisher subscription:"
 msgstr ""
 
-#: src/NotificationTargetEditorSubscription.php:73
-#: src/NotificationTargetEditorSubscription.php:110
-#: src/EditorSubscription.php:177 templates/entity/contracts_tab.html.twig:51
+#: src/NotificationTargetEditorSubscription.php:71
+#: src/NotificationTargetEditorSubscription.php:108
+#: src/EditorSubscription.php:175 templates/entity/contracts_tab.html.twig:51
 #: templates/entity/editorsubscription_tab.html.twig:70
 #: templates/wizard/step1_select_entity.html.twig:43
 #: templates/wizard/step3_contract.html.twig:91
@@ -879,12 +879,12 @@ msgstr[1] ""
 msgid "Entity already exists"
 msgstr ""
 
-#: src/WizardController.php:1314
+#: src/WizardController.php:1312
 msgid "Entity data is missing"
 msgstr ""
 
-#: src/WizardController.php:271 src/WizardController.php:277
-#: src/WizardController.php:360 src/WizardController.php:366
+#: src/WizardController.php:269 src/WizardController.php:275
+#: src/WizardController.php:358 src/WizardController.php:364
 msgid "Entity not found"
 msgstr ""
 
@@ -892,19 +892,19 @@ msgstr ""
 msgid "Entity used to archive customers."
 msgstr ""
 
-#: src/WizardController.php:1365
+#: src/WizardController.php:1363
 msgid "Error creating contract"
 msgstr ""
 
-#: src/WizardController.php:1319
+#: src/WizardController.php:1317
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:1398
+#: src/WizardController.php:1396
 msgid "Error creating management type"
 msgstr ""
 
-#: src/WizardController.php:285
+#: src/WizardController.php:283
 msgid "Error unarchiving entity"
 msgstr ""
 
@@ -912,7 +912,7 @@ msgstr ""
 msgid "Estimated number of remaining days"
 msgstr ""
 
-#: src/Monthly.php:718 src/Monthly.php:759 src/Monthly.php:1167
+#: src/Monthly.php:716 src/Monthly.php:757 src/Monthly.php:1165
 msgid "Exceeding"
 msgstr ""
 
@@ -924,9 +924,9 @@ msgstr ""
 msgid "Expired only"
 msgstr ""
 
-#: src/NotificationTargetEditorSubscription.php:60
-#: src/NotificationTargetEditorSubscription.php:70
-#: src/NotificationTargetEditorSubscription.php:129
+#: src/NotificationTargetEditorSubscription.php:58
+#: src/NotificationTargetEditorSubscription.php:68
+#: src/NotificationTargetEditorSubscription.php:127
 msgid "Expired publisher subscriptions"
 msgstr ""
 
@@ -959,15 +959,15 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: src/WizardController.php:172
+#: src/WizardController.php:170
 msgid "First name is required"
 msgstr ""
 
-#: src/CriPDF.php:440
+#: src/CriPDF.php:438
 msgid "From"
 msgstr ""
 
-#: src/Gantt.php:85
+#: src/Gantt.php:83
 msgid "GANTT"
 msgstr ""
 
@@ -977,8 +977,8 @@ msgid ""
 "applied to the contract when all periods are closed."
 msgstr ""
 
-#: src/Followup.php:51 src/Followup.php:1493 src/Followup.php:1621
-#: src/Entity.php:95
+#: src/Followup.php:48 src/Followup.php:1490 src/Followup.php:1618
+#: src/Entity.php:93
 msgid "General follow-up"
 msgstr ""
 
@@ -987,24 +987,24 @@ msgctxt "button"
 msgid "Generate"
 msgstr ""
 
-#: src/GenerateCRI.php:204
+#: src/GenerateCRI.php:202
 msgid "Generate Intervention report"
 msgstr ""
 
-#: src/GenerateCRI.php:78
+#: src/GenerateCRI.php:76
 msgid "Generate report intervention"
 msgstr ""
 
-#: front/cri.form.php:42 src/Cri.php:297 src/CriDetail.php:558
+#: front/cri.form.php:42 src/Cri.php:293 src/CriDetail.php:556
 msgid "Generation of the intervention report"
 msgstr "Geração de relatório de intervenção "
 
-#: src/Followup.php:861 src/Followup.php:1195
+#: src/Followup.php:858 src/Followup.php:1192
 #: templates/contractday_form.html.twig:127
 msgid "Guaranteed package"
 msgstr ""
 
-#: src/CriPDF.php:539
+#: src/CriPDF.php:537
 msgid "Help on contract"
 msgstr ""
 
@@ -1012,30 +1012,30 @@ msgstr ""
 msgid "Helpdesk reports"
 msgstr ""
 
-#: src/CriPDF.php:583 src/CriPDF.php:587
+#: src/CriPDF.php:581 src/CriPDF.php:585
 msgid "Hour of"
 msgstr ""
 
-#: src/Contract.php:698 src/Contract.php:734 src/Config.php:349
+#: src/Contract.php:696 src/Contract.php:732 src/Config.php:347
 msgid "Hourly"
 msgstr ""
 
-#: src/CriPrice.php:60 src/CriPrice.php:97 src/CriPrice.php:202
-#: src/CriPrice.php:355 src/Monthly.php:710 src/Monthly.php:746
+#: src/CriPrice.php:58 src/CriPrice.php:95 src/CriPrice.php:200
+#: src/CriPrice.php:353 src/Monthly.php:708 src/Monthly.php:744
 #: templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Hourly rate"
 msgstr ""
 
-#: src/CriDetail.php:181 src/CriDetail.php:321
+#: src/CriDetail.php:179 src/CriDetail.php:319
 msgid "Impossible action as an intervention report exists"
 msgstr ""
 
-#: src/Cri.php:312 src/Cri.php:318
+#: src/Cri.php:308 src/Cri.php:314
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr ""
 
-#: src/Monthly.php:529
+#: src/Monthly.php:527
 msgid "In progress"
 msgstr ""
 
@@ -1047,41 +1047,41 @@ msgstr "Informação adicionada com sucesso"
 msgid "Informations successfully deleted."
 msgstr "Informações excluídas com sucesso"
 
-#: src/Followup.php:848 src/Followup.php:1133 src/ContractDay.php:121
-#: src/ContractDay.php:533 src/Monthly.php:704 src/Monthly.php:736
-#: src/Gantt.php:408 templates/contractday_form.html.twig:94
+#: src/Followup.php:845 src/Followup.php:1130 src/ContractDay.php:119
+#: src/ContractDay.php:531 src/Monthly.php:702 src/Monthly.php:734
+#: src/Gantt.php:406 templates/contractday_form.html.twig:94
 #: templates/wizard/step6_intervention_block.html.twig:69
 #: templates/wizard/step5_intervention_block.html.twig:69
 msgid "Initial credit"
 msgstr ""
 
-#: src/WizardController.php:233
+#: src/WizardController.php:231
 msgid "Initial credit is required"
 msgstr ""
 
-#: hook.php:874 src/EditorSubscription.php:184 src/EditorSubscription.php:655
+#: hook.php:874 src/EditorSubscription.php:182 src/EditorSubscription.php:653
 #: templates/contract_detail_form.html.twig:80
 #: templates/cridetail_for_ticket.html.twig:422
 #: templates/editorsubscription_fields.html.twig:75
 msgid "Internet publication"
 msgstr ""
 
-#: src/Contract.php:763
+#: src/Contract.php:761
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/CriPDF.php:423
+#: src/CriPDF.php:421
 msgid "Intervention date"
 msgstr ""
 
-#: src/WizardController.php:1039 src/WizardController.php:1050
-#: src/WizardController.php:1128
+#: src/WizardController.php:1037 src/WizardController.php:1048
+#: src/WizardController.php:1126
 msgid "Intervention not saved yet"
 msgstr ""
 
-#: src/CriDetail.php:791
+#: src/CriDetail.php:789
 msgid "Intervention of contract"
 msgstr ""
 
@@ -1089,20 +1089,20 @@ msgstr ""
 msgid "Intervention periods of contract"
 msgstr ""
 
-#: setup.php:132 src/Cri.php:56 src/Profile.php:108 src/Config.php:356
+#: setup.php:132 src/Cri.php:52 src/Profile.php:106 src/Config.php:354
 #: templates/cridetail_add_reports.html.twig:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] "Informe de intervenções"
 msgstr[1] "Informe de intervenções"
 
-#: src/CriDetail.php:55
+#: src/CriDetail.php:53
 msgid "Intervention task"
 msgid_plural "Intervention tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/CriType.php:47 templates/wizard/step6_intervention_block.html.twig:84
+#: src/CriType.php:45 templates/wizard/step6_intervention_block.html.twig:84
 #: templates/wizard/step5_intervention_block.html.twig:84
 #: templates/criprice_form.html.twig:42
 msgid "Intervention type"
@@ -1110,12 +1110,12 @@ msgid_plural "Intervention types"
 msgstr[0] "Tipos de intervenção"
 msgstr[1] "Tipos de intervenção"
 
-#: src/CriDetail.php:429 src/CriDetail.php:681 src/CriDetail.php:1882
-#: src/GenerateCRI.php:1194
+#: src/CriDetail.php:427 src/CriDetail.php:679 src/CriDetail.php:1880
+#: src/GenerateCRI.php:1192
 msgid "Intervention with contract"
 msgstr ""
 
-#: src/ContractDay.php:58 src/Entity.php:138
+#: src/ContractDay.php:56 src/Entity.php:136
 msgid "Interventions reports"
 msgstr ""
 
@@ -1123,15 +1123,15 @@ msgstr ""
 msgid "Interventions with old contract"
 msgstr ""
 
-#: src/WizardController.php:326
+#: src/WizardController.php:324
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:471 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:469 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr ""
 
-#: src/CriPrice.php:356 src/CriPrice.php:669
+#: src/CriPrice.php:354 src/CriPrice.php:667
 #: templates/criprice_form.html.twig:52
 msgid "Is default"
 msgstr ""
@@ -1140,12 +1140,12 @@ msgstr ""
 msgid "Last name"
 msgstr ""
 
-#: src/WizardController.php:169
+#: src/WizardController.php:167
 msgid "Last name is required"
 msgstr ""
 
-#: src/Followup.php:860 src/Followup.php:864 src/Followup.php:1187
-#: src/Followup.php:1212
+#: src/Followup.php:857 src/Followup.php:861 src/Followup.php:1184
+#: src/Followup.php:1209
 msgid "Last visit"
 msgstr ""
 
@@ -1153,7 +1153,7 @@ msgstr ""
 msgid "Launch the plugin Entities portal with GLPI launching"
 msgstr ""
 
-#: src/CriDetail.php:77
+#: src/CriDetail.php:75
 msgid "Linked interventions"
 msgstr ""
 
@@ -1176,12 +1176,12 @@ msgstr ""
 msgid "Load"
 msgstr ""
 
-#: src/EntityLogo.php:186 templates/entity/description.html.twig:49
+#: src/EntityLogo.php:184 templates/entity/description.html.twig:49
 msgid "Logo"
 msgstr ""
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: src/Company.php:357
+#: src/Company.php:355
 #, php-format
 msgid "Logo %d"
 msgstr ""
@@ -1190,22 +1190,22 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: hook.php:944 src/Servicecatalog.php:77 src/Servicecatalog.php:83
+#: hook.php:944 src/Servicecatalog.php:74 src/Servicecatalog.php:80
 msgid "Manage your contracts"
 msgstr ""
 
-#: src/WizardController.php:1386
+#: src/WizardController.php:1384
 msgid "Management data is missing"
 msgstr ""
 
-#: src/TaskCategory.php:49
+#: src/TaskCategory.php:47
 msgid "Management of task category"
 msgid_plural "Management of task categories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:65 src/WizardController.php:1674
-#: src/WizardController.php:1686 templates/wizard/step4_management.html.twig:40
+#: src/Contract.php:63 src/WizardController.php:1672
+#: src/WizardController.php:1684 templates/wizard/step4_management.html.twig:40
 #: templates/wizard/step5_management.html.twig:40
 #: templates/contract_detail_form.html.twig:127
 msgid "Management type"
@@ -1224,7 +1224,7 @@ msgstr ""
 msgid "Manager (main contact)"
 msgstr ""
 
-#: src/WizardController.php:1119
+#: src/WizardController.php:1117
 msgid "Missing required fields"
 msgstr ""
 
@@ -1243,7 +1243,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/Followup.php:1052 src/Monthly.php:700 src/Monthly.php:732
+#: src/Followup.php:1049 src/Monthly.php:698 src/Monthly.php:730
 #: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step4_management.html.twig:61
 #: templates/wizard/step5_management.html.twig:61
@@ -1251,12 +1251,12 @@ msgstr ""
 msgid "Mode of management"
 msgstr ""
 
-#: src/Monthly.php:54 src/Monthly.php:1087 src/Monthly.php:1187
-#: src/Entity.php:100
+#: src/Monthly.php:52 src/Monthly.php:1085 src/Monthly.php:1185
+#: src/Entity.php:98
 msgid "Monthly follow-up"
 msgstr ""
 
-#: src/Contract.php:966 templates/wizard/step4_management.html.twig:102
+#: src/Contract.php:964 templates/wizard/step4_management.html.twig:102
 #: templates/wizard/step5_management.html.twig:102
 #: templates/contract_detail_form.html.twig:188
 msgid "Movement management"
@@ -1280,8 +1280,8 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: src/WizardController.php:160 src/WizardController.php:183
-#: src/WizardController.php:221
+#: src/WizardController.php:158 src/WizardController.php:181
+#: src/WizardController.php:219
 msgid "Name is required"
 msgstr ""
 
@@ -1324,7 +1324,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: src/CriDetail.php:1920 src/GenerateCRI.php:1225
+#: src/CriDetail.php:1918 src/GenerateCRI.php:1223
 msgid "No active contracts"
 msgstr ""
 
@@ -1355,11 +1355,11 @@ msgstr ""
 msgid "No days remaining on this contract period"
 msgstr ""
 
-#: src/TicketTask.php:67 src/TicketTask.php:111
+#: src/TicketTask.php:65 src/TicketTask.php:109
 msgid "No days remaining on this contract period. Task addition is blocked."
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:129
+#: src/EditorSubscriptionWizard.php:127
 msgid "No entity selected."
 msgstr ""
 
@@ -1367,7 +1367,7 @@ msgstr ""
 msgid "No expired publisher subscription."
 msgstr ""
 
-#: src/EditorSubscription.php:412
+#: src/EditorSubscription.php:410
 msgid "No level"
 msgstr ""
 
@@ -1408,16 +1408,16 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
-#: src/ContractDay.php:481
+#: src/ContractDay.php:479
 msgid "No service period defined yet."
 msgstr ""
 
-#: src/InterventionStakeholder.php:169
+#: src/InterventionStakeholder.php:167
 #: templates/interventionstakeholder_list.html.twig:59
 msgid "No stakeholders have been affected yet."
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:196 src/EditorSubscriptionWizard.php:201
+#: src/EditorSubscriptionWizard.php:194 src/EditorSubscriptionWizard.php:199
 msgid "No subscription found."
 msgstr ""
 
@@ -1425,16 +1425,16 @@ msgstr ""
 msgid "No subscription recorded."
 msgstr ""
 
-#: src/Cri.php:314
+#: src/Cri.php:310
 msgid "No tasks whose category can be used"
 msgstr ""
 
-#: src/GenerateCRI.php:764
+#: src/GenerateCRI.php:762
 msgid "Non-accomplished tasks informations"
 msgstr ""
 
-#: src/DirectHelpdesk_Ticket.php:50 src/DirectHelpdesk_Ticket.php:87
-#: src/DirectHelpdesk.php:56
+#: src/DirectHelpdesk_Ticket.php:48 src/DirectHelpdesk_Ticket.php:85
+#: src/DirectHelpdesk.php:54
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] ""
@@ -1445,20 +1445,20 @@ msgstr[1] ""
 msgid "Not saved"
 msgstr ""
 
-#: src/Gantt.php:291
+#: src/Gantt.php:289
 msgid "Nothing to display"
 msgstr ""
 
-#: src/WizardController.php:1715
+#: src/WizardController.php:1713
 msgid "Nothing to display."
 msgstr ""
 
-#: src/Gantt.php:338 templates/entity/contracts_tab.html.twig:52
+#: src/Gantt.php:336 templates/entity/contracts_tab.html.twig:52
 msgctxt "phone"
 msgid "Number"
 msgstr ""
 
-#: src/WizardController.php:1122
+#: src/WizardController.php:1120
 msgid "Number of days must be greater than 0"
 msgstr ""
 
@@ -1470,7 +1470,7 @@ msgstr "Número de horas por dia "
 msgid "Number of moving"
 msgstr ""
 
-#: src/CriDetail.php:796 src/CriDetail.php:1576 src/CriDetail.php:1588
+#: src/CriDetail.php:794 src/CriDetail.php:1574 src/CriDetail.php:1586
 msgid "Object of intervention"
 msgstr ""
 
@@ -1478,7 +1478,7 @@ msgstr ""
 msgid "Occupation report"
 msgstr ""
 
-#: src/SubscriptionLevel.php:72
+#: src/SubscriptionLevel.php:70
 msgid "On premise"
 msgstr ""
 
@@ -1487,7 +1487,7 @@ msgstr ""
 msgid "On-premise"
 msgstr ""
 
-#: src/WizardController.php:1057
+#: src/WizardController.php:1055
 msgid "Only one rate is allowed per service period"
 msgstr ""
 
@@ -1520,15 +1520,15 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-#: src/Cri.php:108 src/CriDetail.php:1735 src/CriPDF.php:553
+#: src/Cri.php:104 src/CriDetail.php:1733 src/CriPDF.php:551
 msgid "Out of contract"
 msgstr ""
 
-#: src/Contract.php:706 src/Contract.php:742
+#: src/Contract.php:704 src/Contract.php:740
 msgid "Package"
 msgstr ""
 
-#: src/CriPDF.php:991
+#: src/CriPDF.php:989
 msgid "Page"
 msgstr ""
 
@@ -1540,11 +1540,11 @@ msgstr ""
 msgid "Period comment"
 msgstr ""
 
-#: src/Followup.php:838 src/Followup.php:1094 src/ContractDay.php:61
-#: src/ContractDay.php:63 src/ContractDay.php:480 src/Entity.php:144
-#: src/Config.php:357 src/WizardController.php:1501
-#: src/WizardController.php:1576 src/WizardController.php:1675
-#: src/WizardController.php:1687 templates/contractday_form.html.twig:52
+#: src/Followup.php:835 src/Followup.php:1091 src/ContractDay.php:59
+#: src/ContractDay.php:61 src/ContractDay.php:478 src/Entity.php:142
+#: src/Config.php:355 src/WizardController.php:1499
+#: src/WizardController.php:1574 src/WizardController.php:1673
+#: src/WizardController.php:1685 templates/contractday_form.html.twig:52
 #: templates/wizard/step5_interventions.html.twig:36
 #: templates/wizard/step6_interventions.html.twig:36
 #: templates/wizard/step6_intervention_block.html.twig:33
@@ -1554,18 +1554,18 @@ msgid_plural "Periods of contract"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1286
+#: src/WizardController.php:1284
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: hook.php:812 src/CriDetail.php:815 src/CriDetail.php:1980
-#: src/CriDetail.php:2017 src/GenerateCRI.php:1261
+#: hook.php:812 src/CriDetail.php:813 src/CriDetail.php:1978
+#: src/CriDetail.php:2015 src/GenerateCRI.php:1259
 #: templates/contractday_list.html.twig:33
 msgid "Periods of contract"
 msgstr ""
 
-#: src/CriPDF.php:497
+#: src/CriPDF.php:495
 msgid "Person in charge"
 msgstr ""
 
@@ -1598,37 +1598,37 @@ msgstr "Por favor ative o complemento "
 msgid "Please anticipate the end of the service period if necessary"
 msgstr ""
 
-#: src/Cri.php:146
+#: src/Cri.php:142
 msgid "Please assign a technician to your tasks"
 msgstr ""
 
-#: src/Cri.php:601
+#: src/Cri.php:597
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
 
-#: src/Cri.php:617
+#: src/Cri.php:613
 msgid "Please fill the contract period begin date."
 msgstr ""
 
-#: src/Cri.php:609
+#: src/Cri.php:605
 msgid "Please fill the contract period end date."
 msgstr ""
 
-#: src/Contract.php:624
+#: src/Contract.php:622
 msgid ""
 "Please note that there are no more contracts with days available for this "
 "customer."
 msgstr ""
 
-#: src/DirectHelpdesk.php:530
+#: src/DirectHelpdesk.php:528
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 
-#: src/WizardController.php:384
+#: src/WizardController.php:382
 msgid "Please select a child entity"
 msgstr ""
 
-#: src/WizardController.php:267 src/WizardController.php:356
+#: src/WizardController.php:265 src/WizardController.php:354
 msgid "Please select an entity"
 msgstr ""
 
@@ -1636,7 +1636,7 @@ msgstr ""
 msgid "Please select at least one intervention"
 msgstr ""
 
-#: src/Gantt.php:221
+#: src/Gantt.php:219
 msgid "Please wait"
 msgstr ""
 
@@ -1645,7 +1645,7 @@ msgstr ""
 msgid "Plugin is not activated"
 msgstr ""
 
-#: src/Entity.php:338
+#: src/Entity.php:336
 msgid "Portal"
 msgstr ""
 
@@ -1664,7 +1664,7 @@ msgstr ""
 msgid "Postal code"
 msgstr ""
 
-#: src/ContractDay.php:134 src/ContractDay.php:537
+#: src/ContractDay.php:132 src/ContractDay.php:535
 #: templates/contractday_form.html.twig:81
 #: templates/wizard/step6_intervention_block.html.twig:74
 #: templates/wizard/step5_intervention_block.html.twig:74
@@ -1699,7 +1699,7 @@ msgstr ""
 msgid "Pre-selected state when creating a service period in the wizard."
 msgstr ""
 
-#: src/GenerateCRI.php:747
+#: src/GenerateCRI.php:745
 msgid "Predefined task informations"
 msgstr ""
 
@@ -1730,25 +1730,25 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: src/WizardController.php:1044
+#: src/WizardController.php:1042
 msgid "Price must be greater than 0"
 msgstr ""
 
-#: src/Monthly.php:713 src/Monthly.php:750
+#: src/Monthly.php:711 src/Monthly.php:748
 msgid "Production"
 msgstr ""
 
-#: src/NotificationTargetEditorSubscription.php:74
-#: src/NotificationTargetEditorSubscription.php:111
-#: src/EditorSubscription.php:178 src/EditorSubscription.php:623
+#: src/NotificationTargetEditorSubscription.php:72
+#: src/NotificationTargetEditorSubscription.php:109
+#: src/EditorSubscription.php:176 src/EditorSubscription.php:621
 #: templates/entity/editorsubscription_tab.html.twig:71
 #: templates/contract_detail_form.html.twig:63
 #: templates/editorsubscription_fields.html.twig:38
 msgid "Publisher customer account ID"
 msgstr ""
 
-#: front/editorsubscription.form.php:91 src/Entity.php:115
-#: src/EditorSubscription.php:56
+#: front/editorsubscription.form.php:91 src/Entity.php:113
+#: src/EditorSubscription.php:54
 #: templates/wizard/step3_subscription.html.twig:39
 #: templates/contract_detail_form.html.twig:39
 #: templates/cridetail_for_ticket.html.twig:69
@@ -1769,11 +1769,11 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:504
+#: src/EditorSubscription.php:502
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
-#: src/Contract.php:645 src/Contract.php:673
+#: src/Contract.php:643 src/Contract.php:671
 msgid "Quarterly"
 msgstr ""
 
@@ -1789,26 +1789,26 @@ msgstr ""
 msgid "Recursive"
 msgstr ""
 
-#: src/Contract.php:967 templates/wizard/step4_management.html.twig:82
+#: src/Contract.php:965 templates/wizard/step4_management.html.twig:82
 #: templates/wizard/step5_management.html.twig:82
 #: templates/contract_detail_form.html.twig:168
 msgid "Refacturable costs"
 msgstr ""
 
-#: src/NotificationTargetEditorSubscription.php:75
-#: src/NotificationTargetEditorSubscription.php:112
-#: src/EditorSubscription.php:179
+#: src/NotificationTargetEditorSubscription.php:73
+#: src/NotificationTargetEditorSubscription.php:110
+#: src/EditorSubscription.php:177
 #: templates/entity/editorsubscription_tab.html.twig:72
 #: templates/contract_detail_form.html.twig:69
 #: templates/editorsubscription_fields.html.twig:31
 msgid "Referenced name at the publisher"
 msgstr ""
 
-#: src/Entity.php:159 src/Entity.php:492
+#: src/Entity.php:157 src/Entity.php:490
 msgid "References"
 msgstr ""
 
-#: src/Cri.php:305 src/CriDetail.php:560
+#: src/Cri.php:301 src/CriDetail.php:558
 msgid "Regenerate the intervention report"
 msgstr ""
 
@@ -1838,28 +1838,28 @@ msgstr ""
 msgid "Remaining days number by opened client contracts"
 msgstr ""
 
-#: src/Monthly.php:705 src/Monthly.php:738
+#: src/Monthly.php:703 src/Monthly.php:736
 msgid "Remaining on "
 msgstr ""
 
-#: src/Followup.php:862 src/Followup.php:1203
+#: src/Followup.php:859 src/Followup.php:1200
 #: templates/contractday_form.html.twig:128
 msgid "Remaining total (amount)"
 msgstr ""
 
-#: setup.php:135 src/Report.php:283
+#: setup.php:135 src/Report.php:281
 msgid "Report concerning the occupation of the technicians"
 msgstr "Relatório sobre a ocupação dos técnicos"
 
-#: setup.php:133 src/Report.php:152
+#: setup.php:133 src/Report.php:150
 msgid "Report on the movement of technicians"
 msgstr "Relatório sobre o movimento de técnicos"
 
-#: src/CriPDF.php:383
+#: src/CriPDF.php:381
 msgid "Request number of associated help"
 msgstr ""
 
-#: src/Profile.php:46
+#: src/Profile.php:44
 msgid "Right management"
 msgid_plural "Rights management"
 msgstr[0] ""
@@ -1891,7 +1891,7 @@ msgstr ""
 msgid "Save reports in glpi"
 msgstr ""
 
-#: src/Cri.php:1000
+#: src/Cri.php:996
 msgid "Save the intervention report"
 msgstr ""
 
@@ -1900,7 +1900,7 @@ msgstr ""
 msgid "Save this period"
 msgstr ""
 
-#: hook.php:102 hook.php:121 src/CriType.php:155
+#: hook.php:102 hook.php:121 src/CriType.php:153
 msgid "Scheduled intervention"
 msgstr "Intervenção programada"
 
@@ -1928,7 +1928,7 @@ msgstr ""
 msgid "Select an existing price"
 msgstr ""
 
-#: src/EditorSubscription.php:919
+#: src/EditorSubscription.php:917
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -1948,13 +1948,13 @@ msgstr ""
 msgid "Show expired subscriptions only"
 msgstr ""
 
-#: src/Contract.php:965 templates/wizard/step4_management.html.twig:74
+#: src/Contract.php:963 templates/wizard/step4_management.html.twig:74
 #: templates/wizard/step5_management.html.twig:74
 #: templates/contract_detail_form.html.twig:160
 msgid "Show on GANTT"
 msgstr ""
 
-#: src/CriPDF.php:479
+#: src/CriPDF.php:477
 msgid "Society name"
 msgstr ""
 
@@ -1972,9 +1972,9 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: src/NotificationTargetEditorSubscription.php:78
-#: src/NotificationTargetEditorSubscription.php:115
-#: src/EditorSubscription.php:185
+#: src/NotificationTargetEditorSubscription.php:76
+#: src/NotificationTargetEditorSubscription.php:113
+#: src/EditorSubscription.php:183
 #: templates/entity/editorsubscription_tab.html.twig:75
 #: templates/wizard/step3_contract.html.twig:72
 #: templates/wizard/step4_contract.html.twig:72
@@ -1995,13 +1995,13 @@ msgstr ""
 msgid "State applied to contract periods when the GLPI contract is closed."
 msgstr ""
 
-#: src/ContractState.php:46 templates/contractday_form.html.twig:101
+#: src/ContractState.php:44 templates/contractday_form.html.twig:101
 msgid "State of contract"
 msgid_plural "States of contracts"
 msgstr[0] "Estado dos contratos"
 msgstr[1] "Estado dos contratos"
 
-#: src/Monthly.php:723 src/Monthly.php:764
+#: src/Monthly.php:721 src/Monthly.php:762
 msgid "State of intervention"
 msgstr ""
 
@@ -2017,7 +2017,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: src/WizardController.php:203 src/WizardController.php:230
+#: src/WizardController.php:201 src/WizardController.php:228
 msgid "Status is required"
 msgstr ""
 
@@ -2025,22 +2025,22 @@ msgstr ""
 msgid "Status list contract for the general monitoring"
 msgstr ""
 
-#: src/Entity.php:124 templates/entity/status_tab.html.twig:32
+#: src/Entity.php:122 templates/entity/status_tab.html.twig:32
 msgid "Status overview"
 msgstr ""
 
-#: hook.php:103 hook.php:122 src/CriType.php:156
+#: hook.php:103 hook.php:122 src/CriType.php:154
 msgid "Study and advice"
 msgstr "Estudar e informar"
 
-#: src/WizardController.php:1683
+#: src/WizardController.php:1681
 msgid "Subscription"
 msgstr ""
 
-#: src/SubscriptionLevel.php:49 src/NotificationTargetEditorSubscription.php:77
-#: src/NotificationTargetEditorSubscription.php:114
-#: src/EditorSubscription.php:181 src/EditorSubscription.php:631
-#: src/EditorSubscription.php:686
+#: src/SubscriptionLevel.php:47 src/NotificationTargetEditorSubscription.php:75
+#: src/NotificationTargetEditorSubscription.php:112
+#: src/EditorSubscription.php:179 src/EditorSubscription.php:629
+#: src/EditorSubscription.php:684
 #: templates/entity/editorsubscription_tab.html.twig:74
 #: templates/contract_detail_form.html.twig:75
 #: templates/editorsubscription_fields.html.twig:87
@@ -2049,7 +2049,7 @@ msgid_plural "Subscription levels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/EditorSubscriptionWizard.php:150
+#: src/EditorSubscriptionWizard.php:148
 msgid "Subscription level is required"
 msgstr ""
 
@@ -2057,12 +2057,12 @@ msgstr ""
 msgid "Subscription level is required."
 msgstr ""
 
-#: src/SubscriptionLevel.php:82 src/SubscriptionLevel.php:109
+#: src/SubscriptionLevel.php:80 src/SubscriptionLevel.php:107
 #: templates/editorsubscription_fields.html.twig:49
 msgid "Subscription type"
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:147
+#: src/EditorSubscriptionWizard.php:145
 msgid "Subscription type is required"
 msgstr ""
 
@@ -2086,7 +2086,7 @@ msgstr ""
 msgid "Surname"
 msgstr ""
 
-#: src/TicketTask.php:65
+#: src/TicketTask.php:63
 msgid "Task addition blocked"
 msgstr ""
 
@@ -2094,7 +2094,7 @@ msgstr ""
 msgid "Task category"
 msgstr ""
 
-#: src/GenerateCRI.php:604
+#: src/GenerateCRI.php:602
 msgid "Task category must be defined"
 msgstr ""
 
@@ -2102,11 +2102,11 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
-#: src/Contract.php:705 src/Contract.php:740
+#: src/Contract.php:703 src/Contract.php:738
 msgid "Technical Assistance"
 msgstr ""
 
-#: src/CriPDF.php:403 src/GenerateCRI.php:756
+#: src/CriPDF.php:401 src/GenerateCRI.php:754
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
 #: templates/report_occupation_form.html.twig:48
 msgid "Technician"
@@ -2114,12 +2114,12 @@ msgid_plural "Technicians"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/GenerateCRI.php:640
+#: src/GenerateCRI.php:638
 msgid "Technician as assigned"
 msgstr ""
 
-#: src/CriDetail.php:424 src/CriDetail.php:676 src/CriDetail.php:800
-#: src/CriDetail.php:1580 src/CriDetail.php:1589 src/Report.php:288
+#: src/CriDetail.php:422 src/CriDetail.php:674 src/CriDetail.php:798
+#: src/CriDetail.php:1578 src/CriDetail.php:1587 src/Report.php:286
 #: templates/cri_form.html.twig:43
 msgid "Technicians"
 msgstr ""
@@ -2128,19 +2128,19 @@ msgstr ""
 msgid "Thanks to select a intervention type"
 msgstr "Obrigado por selecionar o tipo de intervenção"
 
-#: src/ContractDay.php:857
+#: src/ContractDay.php:855
 #, php-format
 msgid "The contract period %s already exists"
 msgstr ""
 
-#: src/WizardController.php:1717
+#: src/WizardController.php:1715
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
 "place it under the default parent entity to continue?"
 msgstr ""
 
-#: src/WizardController.php:1716
+#: src/WizardController.php:1714
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
@@ -2162,8 +2162,8 @@ msgstr ""
 msgid "The following unsaved data from this wizard will be lost:"
 msgstr ""
 
-#: src/Company.php:197 src/Company.php:219 src/Company.php:287
-#: src/Company.php:296 src/EntityLogo.php:72 src/EntityLogo.php:86
+#: src/Company.php:195 src/Company.php:217 src/Company.php:285
+#: src/Company.php:294 src/EntityLogo.php:70 src/EntityLogo.php:84
 msgid "The format of the image must be in JPG or JPEG"
 msgstr ""
 
@@ -2178,15 +2178,15 @@ msgid ""
 "run by the plugin."
 msgstr ""
 
-#: src/InterventionStakeholder.php:208 src/InterventionStakeholder.php:273
+#: src/InterventionStakeholder.php:206 src/InterventionStakeholder.php:271
 msgid "This action is irreversible. Continue ?"
 msgstr ""
 
-#: src/GenerateCRI.php:720
+#: src/GenerateCRI.php:718
 msgid "Ticket informations"
 msgstr ""
 
-#: src/CriDetail.php:1530 src/CriDetail.php:2051
+#: src/CriDetail.php:1528 src/CriDetail.php:2049
 msgid "Ticket not validated"
 msgstr ""
 
@@ -2194,7 +2194,7 @@ msgstr ""
 msgid "Tickets without CRI"
 msgstr ""
 
-#: src/Report.php:289
+#: src/Report.php:287
 msgid "Time justified"
 msgstr ""
 
@@ -2205,53 +2205,53 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: src/CriPDF.php:444
+#: src/CriPDF.php:442
 msgid "To"
 msgstr ""
 
-#: src/CriDetail.php:806 src/CriDetail.php:1582
+#: src/CriDetail.php:804 src/CriDetail.php:1580
 msgid "To compute"
 msgstr ""
 
-#: src/Monthly.php:509 src/Monthly.php:516 src/Monthly.php:526
-#: src/Monthly.php:1169
+#: src/Monthly.php:507 src/Monthly.php:514 src/Monthly.php:524
+#: src/Monthly.php:1167
 msgid "To present an invoice"
 msgstr ""
 
-#: src/CriPDF.php:688
+#: src/CriPDF.php:686
 msgid "Total (in days)"
 msgstr ""
 
-#: src/CriPDF.php:690
+#: src/CriPDF.php:688
 msgid "Total (in hours)"
 msgstr ""
 
-#: src/Followup.php:849 src/Followup.php:1141 src/ContractDay.php:539
-#: src/Gantt.php:409 templates/contractday_form.html.twig:119
+#: src/Followup.php:846 src/Followup.php:1138 src/ContractDay.php:537
+#: src/Gantt.php:407 templates/contractday_form.html.twig:119
 msgid "Total consummated"
 msgstr ""
 
-#: src/Followup.php:858 src/Followup.php:1178 src/ContractDay.php:542
-#: src/Monthly.php:721 src/Monthly.php:762
+#: src/Followup.php:855 src/Followup.php:1175 src/ContractDay.php:540
+#: src/Monthly.php:719 src/Monthly.php:760
 #: templates/contractday_form.html.twig:123
 msgid "Total exceeding"
 msgstr ""
 
-#: src/Report.php:156
+#: src/Report.php:154
 msgid "Total moving package"
 msgstr ""
 
-#: src/Monthly.php:716 src/Monthly.php:757
+#: src/Monthly.php:714 src/Monthly.php:755
 msgid "Total production"
 msgstr ""
 
-#: hook.php:834 src/Followup.php:856 src/Followup.php:1169
-#: src/ContractDay.php:541 src/Dashboard.php:165 src/Dashboard.php:437
+#: hook.php:834 src/Followup.php:853 src/Followup.php:1166
+#: src/ContractDay.php:539 src/Dashboard.php:165 src/Dashboard.php:437
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr ""
 
-#: src/Report.php:157
+#: src/Report.php:155
 msgid "Total time of the tasks of a category"
 msgstr ""
 
@@ -2259,17 +2259,17 @@ msgstr ""
 msgid "Total yearly consumption"
 msgstr ""
 
-#: src/CriPDF.php:672
+#: src/CriPDF.php:670
 msgid "Travel"
 msgstr ""
 
-#: src/CriPDF.php:670
+#: src/CriPDF.php:668
 msgid "Travel (in days)"
 msgstr ""
 
-#: src/NotificationTargetEditorSubscription.php:76
-#: src/NotificationTargetEditorSubscription.php:113
-#: src/EditorSubscription.php:180 templates/entity/description.html.twig:185
+#: src/NotificationTargetEditorSubscription.php:74
+#: src/NotificationTargetEditorSubscription.php:111
+#: src/EditorSubscription.php:178 templates/entity/description.html.twig:185
 #: templates/entity/editorsubscription_tab.html.twig:73
 #: templates/entity/contacts_card.html.twig:45
 #: templates/wizard/step2_contact_block.html.twig:84
@@ -2277,12 +2277,12 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/Followup.php:840 src/Followup.php:1111 src/Monthly.php:702
-#: src/Monthly.php:734
+#: src/Followup.php:837 src/Followup.php:1108 src/Monthly.php:700
+#: src/Monthly.php:732
 msgid "Type of contract"
 msgstr ""
 
-#: src/Followup.php:1060 src/ContractDay.php:168 src/ContractDay.php:891
+#: src/Followup.php:1057 src/ContractDay.php:166 src/ContractDay.php:889
 #: templates/contractday_form.html.twig:58
 #: templates/wizard/step4_management.html.twig:65
 #: templates/wizard/step5_management.html.twig:65
@@ -2290,11 +2290,11 @@ msgstr ""
 msgid "Type of service contract"
 msgstr ""
 
-#: src/CriDetail.php:1539 src/CriDetail.php:2058
+#: src/CriDetail.php:1537 src/CriDetail.php:2056
 msgid "Type of service contract missing"
 msgstr ""
 
-#: src/WizardController.php:1718
+#: src/WizardController.php:1716
 msgid "Unarchive and continue"
 msgstr ""
 
@@ -2317,7 +2317,7 @@ msgstr ""
 msgid "Update logo"
 msgstr ""
 
-#: src/Contract.php:955
+#: src/Contract.php:953
 msgid "Update management fields"
 msgstr ""
 
@@ -2330,7 +2330,7 @@ msgstr ""
 msgid "Update subscription fields"
 msgstr ""
 
-#: hook.php:101 hook.php:120 src/CriType.php:154
+#: hook.php:101 hook.php:120 src/CriType.php:152
 msgid "Urgent intervention"
 msgstr "Intervenção urgente"
 
@@ -2362,7 +2362,7 @@ msgid_plural "Users"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/InterventionStakeholder.php:52 src/WizardController.php:1517
+#: src/InterventionStakeholder.php:50 src/WizardController.php:1515
 #: templates/wizard/step6_stakeholders_section.html.twig:32
 #: templates/wizard/step5_stakeholders_section.html.twig:32
 msgid "User affected"
@@ -2370,7 +2370,7 @@ msgid_plural "Users affected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1139
+#: src/WizardController.php:1137
 msgid "User already added"
 msgstr ""
 
@@ -2380,7 +2380,7 @@ msgid ""
 "only the first will be used"
 msgstr ""
 
-#: src/Monthly.php:630
+#: src/Monthly.php:628
 msgid ""
 "Warning : There are supplementary interventions which depends on a "
 "prestation with a earlier end date"
@@ -2415,7 +2415,7 @@ msgid ""
 "subscription step are hidden."
 msgstr ""
 
-#: src/CriDetail.php:1735
+#: src/CriDetail.php:1733
 msgid "With contrat"
 msgstr ""
 
@@ -2423,11 +2423,11 @@ msgstr ""
 msgid "Wizard defaults"
 msgstr ""
 
-#: src/CriPDF.php:579
+#: src/CriPDF.php:577
 msgid "Wording of the activities"
 msgstr ""
 
-#: src/CriPDF.php:426
+#: src/CriPDF.php:424
 msgid "Year"
 msgstr ""
 
@@ -2435,7 +2435,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: src/DirectHelpdesk.php:282
+#: src/DirectHelpdesk.php:280
 msgid "You cannot add an intervention on this entity"
 msgstr ""
 
@@ -2446,30 +2446,30 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1456
+#: src/WizardController.php:1454
 #: templates/wizard/step6_stakeholders_section.html.twig:39
 #: templates/wizard/step5_stakeholders_section.html.twig:39
 msgid "days"
 msgstr ""
 
-#: src/WizardController.php:1455
+#: src/WizardController.php:1453
 msgid "hours"
 msgstr ""
 
-#: src/CriPDF.php:298 src/CriPDF.php:326
+#: src/CriPDF.php:296 src/CriPDF.php:324
 msgid "in"
 msgstr ""
 
-#: src/Followup.php:1706 src/Followup.php:1711 src/Followup.php:1719
-#: src/Followup.php:1724
+#: src/Followup.php:1703 src/Followup.php:1708 src/Followup.php:1716
+#: src/Followup.php:1721
 msgid "of period of contract"
 msgstr ""
 
-#: src/CriDetail.php:1569 src/CriPDF.php:253 src/CriPDF.php:611
+#: src/CriDetail.php:1567 src/CriPDF.php:251 src/CriPDF.php:609
 msgid "of this intervention"
 msgstr ""
 
-#: src/CriPDF.php:992
+#: src/CriPDF.php:990
 msgid "on"
 msgstr ""
 
