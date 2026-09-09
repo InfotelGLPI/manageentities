@@ -1213,6 +1213,17 @@ class WizardController
         if ($idx < 0 || $users_id <= 0) {
             return ['success' => false, 'message' => __('Missing required fields', 'manageentities')];
         }
+
+        // users_id comes from the client and the response carries the friendly name back, so
+        // walking the identifiers used to hand out the whole directory, entity boundaries
+        // included. Scope the value the way the dropdown that feeds it is scoped
+        // (same check as ajax/interventionstakeholderactions.php).
+        if (countElementsInTable(
+            'glpi_profiles_users',
+            ['users_id' => $users_id] + getEntitiesRestrictCriteria('glpi_profiles_users'),
+        ) === 0) {
+            throw new AccessDeniedHttpException();
+        }
         if ($nb_days <= 0) {
             return ['success' => false, 'message' => __('Number of days must be greater than 0', 'manageentities')];
         }
@@ -1450,6 +1461,12 @@ class WizardController
             $glpiContact = new GlpiContact();
             $contactInput = array_merge($cData, ['entities_id' => $entities_id]);
             unset($contactInput['is_manager']);
+            // ajax/wizard.php only gates the endpoint on the plugin right; the object written here
+            // belongs to the core, so creating it takes the core "contact" right, exactly like the
+            // \Entity creation above. Without this the wizard was a way around the profile.
+            if (!$glpiContact->can(-1, CREATE, $contactInput)) {
+                throw new AccessDeniedHttpException();
+            }
             $contact_id = $glpiContact->add($contactInput);
             if ($contact_id) {
                 $contact_ids[$idx] = (int) $contact_id;
@@ -1470,6 +1487,11 @@ class WizardController
                 $contract_data[$df] = 'NULL';
             }
         }
+        // Core object again: the "contract" right of the profile, not the plugin right, is what
+        // decides whether this insertion is allowed.
+        if (!$glpiContract->can(-1, CREATE, $contract_data)) {
+            throw new AccessDeniedHttpException();
+        }
         $contracts_id = (int) $glpiContract->add($contract_data);
         if (!$contracts_id) {
             return ['success' => false, 'errors' => ['global' => __('Error creating contract', 'manageentities')]];
@@ -1480,6 +1502,15 @@ class WizardController
             $doc_id = (int) $doc_id;
             if ($doc_id <= 0) {
                 continue;
+            }
+            // Core object again, so the core right decides. canAddItem() is the idiom the core
+            // itself uses to answer "may this document be attached to that item"
+            // (see Document::canCreateItem()); Document_Item::can() is deliberately not used
+            // here because it also demands both ends share an entity, and the wizard stages its
+            // uploads in the root entity before the client entity even exists
+            // (see uploadDocuments()).
+            if (!$glpiContract->canAddItem(\Document::class)) {
+                throw new AccessDeniedHttpException();
             }
             $di = new \Document_Item();
             $di->add([
@@ -1713,6 +1744,14 @@ class WizardController
                 continue;
             }
             $d = new Document();
+
+            // deleteDocument() pairs the session ownership with can($doc_id, PURGE); this loop
+            // used to trust the session list alone, which made the whole guarantee rest on the
+            // integrity of that list. Anything that cannot be purged is skipped instead.
+            if (!$d->can($doc_id, PURGE)) {
+                continue;
+            }
+
             $d->delete(['id' => $doc_id], true);
         }
 

@@ -919,9 +919,11 @@ class Cri extends CommonDBTM
 
             $input = [];
             $input["entities_id"] = $job->fields["entities_id"];
-            $input["name"] = addslashes($name);
-            $input["filename"] = addslashes($filename);
-            $input["_filename"][0] = addslashes($filename);
+            // Raw storage since GLPI 10: addslashes() here only wrote literal backslashes into
+            // the document name and filename, and the escaping is the query builder's job.
+            $input["name"] = $name;
+            $input["filename"] = $filename;
+            $input["_filename"][0] = $filename;
             $input["upload_file"] = $filename;
             $input["documentcategories_id"] = $config->fields["documentcategories_id"];
             $input["mime"] = "application/pdf";

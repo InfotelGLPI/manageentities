@@ -38,11 +38,14 @@ $tickettask = new TicketTask();
 
 if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettask->getFromDB($_POST['tickettasks_id'])) {
 
-    // Access control: require the task right and edit access to the parent ticket,
-    // and make sure the source task actually belongs to the posted ticket.
+    // Access control: the only live action below creates a task, so the gate has to be a write
+    // gate. The global 'task' CREATE right says nothing about WHICH ticket may receive the task,
+    // and a READ on the target only proved the caller could look at it: a technician able to
+    // consult another service's tickets could plant tasks on them - and trigger the notifications
+    // that go with them. can($id, UPDATE) carries the object right and the entity boundary.
     Session::checkRight('task', CREATE);
     $ticket = new Ticket();
-    if (!$ticket->can((int) $_POST['tickets_id'], READ)
+    if (!$ticket->can((int) $_POST['tickets_id'], UPDATE)
         || (int) $tickettask->fields['tickets_id'] !== (int) $_POST['tickets_id']) {
         throw new AccessDeniedHttpException();
     }
@@ -84,7 +87,8 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
                 unset($tickettask->fields['end']);
                 unset($tickettask->fields['id']);
                 $tickettask->fields['date']    = date("Y-m-d H:i:s", time());
-                $tickettask->fields['content'] = addslashes($tickettask->fields['content']);
+                // The content is read back from the database, where GLPI 10+ stores it raw:
+                // addslashes() made every clone accumulate one more backslash per apostrophe.
                 $tickettask->fields['plan']    = ['begin'     => $tickettask->fields['begin'],
                     '_duration' => $tickettask->fields['actiontime'],
                     'users_id'  => $tickettask->fields['users_id_tech']];

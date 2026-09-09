@@ -302,7 +302,13 @@ class Company extends CommonDBTM
                     false,
                     ERROR,
                 );
-                unset($input);
+
+                // This branch used to unset($input) and fall through to the return below, which
+                // read a variable that no longer existed: PHP warned and the method returned null.
+                // prepareInputForUpdate() is contracted to return either an array or false, and
+                // null is not false, so the refusal depended on how loosely the core tested the
+                // result. Refuse the update explicitly.
+                return false;
             } elseif ($company['logo_id'] != 0) {
                 $doc = new Document();
                 $img = $doc->find(['id' => $company["logo_id"]]);
@@ -456,7 +462,10 @@ class Company extends CommonDBTM
                 }
             } else {
                 //TRANS: Default document to files attached to tickets : %d is the ticket id
-                $input2["name"] = addslashes(sprintf(__('Logo %d', 'manageentities'), $this->getID()));
+                // No addslashes()/stripslashes() here: GLPI stores raw data since version 10 and
+                // the query builder escapes on its own, so the pair used to write literal
+                // backslashes into the database and strip legitimate ones back out.
+                $input2["name"] = sprintf(__('Logo %d', 'manageentities'), $this->getID());
                 // Document expects the standard "entities_id" key; the company stores its entity in its
                 // own non-standard "entity_id" column, so map the value across so the logo document lands
                 // in the right entity instead of falling back to the default one.
@@ -477,8 +486,8 @@ class Company extends CommonDBTM
                 ])) {
                     $docadded[$docID]['data'] = sprintf(
                         __('%1$s - %2$s'),
-                        stripslashes($doc->fields["name"]),
-                        stripslashes($doc->fields["filename"]),
+                        $doc->fields["name"],
+                        $doc->fields["filename"],
                     );
 
                     // Read the generated tag from the saved Document ($input2 is passed by value to

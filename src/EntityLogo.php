@@ -183,7 +183,8 @@ class EntityLogo extends CommonDBTM
                 $entity->getFromDB($values['entities_id']);
                 $name = __('Logo', 'manageentities') . " " . $entity->fields['name'];
                 //TRANS: Default document to files attached to tickets : %d is the ticket id
-                $input2["name"] = addslashes($name);
+                // See Company::addFiles(): raw storage since GLPI 10, the query builder escapes.
+                $input2["name"] = $name;
 
                 $input2["entities_id"] = $values['entities_id'];
                 $input2["_only_if_upload_succeed"] = 1;
@@ -202,12 +203,15 @@ class EntityLogo extends CommonDBTM
                 ])) {
                     $docadded[$docID]['data'] = sprintf(
                         __('%1$s - %2$s'),
-                        stripslashes($doc->fields["name"]),
-                        stripslashes($doc->fields["filename"]),
+                        $doc->fields["name"],
+                        $doc->fields["filename"],
                     );
 
-                    if (isset($input2["tag"])) {
-                        $docadded[$docID]['tag'] = $input2["tag"];
+                    // Read the generated tag from the saved Document ($input2 is passed by value
+                    // to add(), so it never carries the tag back and this branch never ran);
+                    // mirrors what Company::addFiles() already does.
+                    if (!empty($doc->fields["tag"])) {
+                        $docadded[$docID]['tag'] = $doc->fields["tag"];
                         unset($values['_filename'][$key]);
                         unset($values['_tag'][$key]);
                     }

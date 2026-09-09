@@ -80,6 +80,14 @@ class Contract extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        // Defence in depth for every caller that does not go through front/contract.form.php
+        // (massive actions, data injection, other plugins): the entity carried by the input is
+        // the one the row will land in, so it has to belong to the caller perimeter. The table
+        // has no is_recursive column, hence the single-argument call.
+        if (!Session::haveAccessToEntity((int) ($input['entities_id'] ?? 0))) {
+            return false;
+        }
+
         if (isset($input['date_renewal'])
             && empty($input['date_renewal'])) {
             $input['date_renewal'] = 'NULL';

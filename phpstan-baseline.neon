@@ -1153,12 +1153,6 @@ parameters:
 			path: src/EntityLogo.php
 
 		-
-			message: '#^Offset ''tag'' on array\{\}\|array\{name\: string, entities_id\: mixed, _only_if_upload_succeed\: 1, _filename\: array\{mixed\}\} in isset\(\) does not exist\.$#'
-			identifier: isset.offset
-			count: 1
-			path: src/EntityLogo.php
-
-		-
 			message: '#^Parameter \#2 \$force of method CommonDBTM\:\:delete\(\) expects bool, int given\.$#'
 			identifier: argument.type
 			count: 1

@@ -36,7 +36,11 @@ $contractday = new ContractDay();
 $contract    = new Contract();
 
 if (isset($_POST["addcontract"])) {
-    $contract->check(-1, UPDATE);
+    // The posted body has to reach the right check: with an id of -1, CommonDBTM::can() only
+    // copies the submitted fields into the evaluated object when a third argument is given, so
+    // without it canCreateItem() validated an empty object whose entities_id is 0 - never the
+    // entity actually posted. front/entity.php:69 already calls it this way.
+    $contract->check(-1, CREATE, $_POST);
     $newID = $contract->add($_POST);
     Html::back();
 

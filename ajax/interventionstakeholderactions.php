@@ -64,8 +64,20 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                 (isset($_POST["contractdays_id"]) && $_POST['contractdays_id'] > 0) &&
                 $nbDays > 0) {
 
-                $idUser         = $_POST['users_id_tech'];
+                $idUser         = (int) $_POST['users_id_tech'];
                 $idContractdays = $_POST['contractdays_id'];
+
+                // $checkContractDayAccess() validated the parent contract day, not the value
+                // posted with it: users_id_tech comes from the client and is written as is, so a
+                // forged id attaches a technician of another entity to the intervention and puts
+                // their name in the stakeholder list. Scope it like the dropdown that feeds the
+                // field (see ajax/getUserTechName.php).
+                if (countElementsInTable(
+                    'glpi_profiles_users',
+                    ['users_id' => $idUser] + getEntitiesRestrictCriteria('glpi_profiles_users'),
+                ) === 0) {
+                    throw new AccessDeniedHttpException();
+                }
 
                 $interventionStakeholder->getFromDBByCrit(['users_id'                              => $idUser,
                     'plugin_manageentities_contractdays_id' => $idContractdays]);

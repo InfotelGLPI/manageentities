@@ -44,7 +44,19 @@ if (!isset($_GET["showFromPlugin"])) {
 $contractday = new ContractDay();
 
 if (isset($_POST["add"])) {
-    $contractday->check(-1, UPDATE);
+    // Same reasoning as the add_nbday branch below: check(-1, UPDATE) without the posted body
+    // evaluated an empty object whose entities_id is 0, so the submitted entity was never
+    // confronted with the caller perimeter. Pass the body, and make sure the parent contract
+    // really lives in the targeted entity before hanging a day off it.
+    $contractday->check(-1, CREATE, $_POST);
+    $entities_id  = (int) ($_POST['entities_id'] ?? -1);
+    $coreContract = new \Contract();
+    if (
+        !$coreContract->getFromDB((int) ($_POST['contracts_id'] ?? 0))
+        || (int) $coreContract->fields['entities_id'] !== $entities_id
+    ) {
+        throw new AccessDeniedHttpException();
+    }
     $contractday->add($_POST);
     Html::back();
 

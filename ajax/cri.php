@@ -45,6 +45,21 @@ $assertTicketReadable = static function (int $tickets_id): void {
     }
 };
 
+// The guard above protects the parent ticket, not the value posted alongside it: users_id comes
+// from the client and used to be written as is. Identifiers are sequential, so a technician of
+// another entity is trivial to guess, and their name would then surface in the report and in the
+// generated PDF. Scope the value the way the dropdown that feeds it is scoped
+// (see ajax/getUserTechName.php).
+$assertUserVisible = static function (int $users_id): void {
+    if ($users_id <= 0
+        || countElementsInTable(
+            'glpi_profiles_users',
+            ['users_id' => $users_id] + getEntitiesRestrictCriteria('glpi_profiles_users'),
+        ) === 0) {
+        throw new AccessDeniedHttpException();
+    }
+};
+
 switch ($_POST['action']) {
     case 'showCriForm':
         $Cri = new Cri();
@@ -71,7 +86,10 @@ switch ($_POST['action']) {
             $params = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
 
-            $toadd["users_id"]                 = $input->users_id;
+            $users_id = (int) ($input->users_id ?? 0);
+            $assertUserVisible($users_id);
+
+            $toadd["users_id"]                 = $users_id;
             $toadd["tickets_id"]               = $params["job"];
             $CriTechnician = new CriTechnician();
             $CriTechnician->add($toadd);
