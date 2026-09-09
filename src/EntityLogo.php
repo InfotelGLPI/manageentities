@@ -61,7 +61,7 @@ class EntityLogo extends CommonDBTM
         if (isset($values["_filename"]) && is_array($values["_filename"])) {
             foreach ($values["_filename"] as $file) {
                 // Path traversal: _filename is client-supplied and is later joined onto
-                // GLPI_TMP_DIR in addFilesCRI(); reject any path separator so it cannot
+                // GLPI_TMP_DIR in addEntityFiles(); reject any path separator so it cannot
                 // escape the temp directory.
                 if (!is_string($file) || $file === ''
                     || basename($file) !== $file
@@ -92,19 +92,23 @@ class EntityLogo extends CommonDBTM
 
         if ($values["entities_id"]) {
             if ($this->getFromDBByCrit(['entities_id' => $values["entities_id"]])) {
-                $values['id'] = $this->fields['id'];
+                $row_id = (int) $this->fields['id'];
                 $doc = new Document();
                 $img = ["id" => $this->fields["logos_id"]];
                 $doc->delete($img, 1);
-                $logo = $this->addFilesCRI($values, 0, -1);
+                $logo = $this->addEntityFiles($values, 0, -1);
                 foreach ($logo as $key => $name) {
-                    $this->add([
-                        'entities_id' => $values["entities_id"],
+                    // A row already exists for this entity. add() ignores the id it is handed and
+                    // inserts a NEW row, so every replacement used to leave an orphan behind - and
+                    // getLogo() returns the first row it finds (reset()), which could bring a
+                    // previous logo back. Update the existing row instead.
+                    $this->update([
+                        'id' => $row_id,
                         'logos_id' => $key,
                     ]);
                 }
             } else {
-                $logo = $this->addFilesCRI($values, 0, -1);
+                $logo = $this->addEntityFiles($values, 0, -1);
 
                 foreach ($logo as $key => $name) {
                     $this->add([
@@ -124,9 +128,8 @@ class EntityLogo extends CommonDBTM
         );
     }
 
-    public function addFilesCRI($values, $donotif = 0, $disablenotif = 1)
+    public function addEntityFiles($values, $donotif = 0, $disablenotif = 1)
     {
-        global $CFG_GLPI;
 
         if (!isset($values['_filename']) || (count($values['_filename']) == 0)) {
             return [];

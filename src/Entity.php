@@ -500,10 +500,15 @@ class Entity extends CommonGLPI
                 QueryFunction::year('date_signature', 'year'),
             ],
             'FROM' => 'glpi_plugin_manageentities_contracts',
+            // The restriction had been left commented out, so this wall of references listed every
+            // entity of the instance holding a signed contract - name, logo and signature year -
+            // to anyone holding a plain read right on the plugin. Scoping it to the active
+            // perimeter keeps the feature intact for central profiles while removing the
+            // cross-tenant disclosure. The table has no is_recursive column, hence the default
+            // (non-recursive) form of the helper.
             'WHERE' => [
                 'NOT' => ['date_signature' => null],
-                //               'entities_id'  => $instID
-            ],
+            ] + getEntitiesRestrictCriteria('glpi_plugin_manageentities_contracts'),
             'GROUPBY' => 'entities_id',
             'ORDERBY' => 'year DESC',
         ]);

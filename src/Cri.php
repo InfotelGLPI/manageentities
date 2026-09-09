@@ -151,6 +151,11 @@ class Cri extends CommonDBTM
                 foreach ($technicians_id as $remove => $data) {
                     foreach ($data as $users_id => $users_name) {
                         $rand = mt_rand();
+                        // getTechnicians() returns formatUserName() output, which GLPI 10+ leaves raw,
+                        // and the fragment built here is rendered with |raw in cri_form.html.twig -
+                        // auto-escaping is off. Escape here, like the twin construction of
+                        // InterventionStakeholder.php does.
+                        $users_name = htmlspecialchars((string) $users_name, ENT_QUOTES);
                         if ($remove == 'remove') {
                             $tech_params = $params;
                             $tech_params['tech_id'] = $users_id;
@@ -402,15 +407,35 @@ class Cri extends CommonDBTM
             }
         }
 
+        // The loop above copies the posted payload verbatim, documents_id included, and that value
+        // used to reach Document::update() further down without a single right check: any document
+        // of the instance could be overwritten by pointing this key at its id. The identifier has
+        // exactly one legitimate source, the CRI detail row already attached to the target ticket -
+        // which is what the "updateCri" action of ajax/cri.php reloads before calling this method,
+        // while "saveCri" did not. Resolve it here so that every caller is covered.
+        $p['documents_id'] = 0;
+        $reportCriDetails  = (new CriDetail())->find(['tickets_id' => (int) ($p['REPORT_ID'] ?? 0)]);
+        $reportCriDetail   = reset($reportCriDetails);
+        if (is_array($reportCriDetail)) {
+            $p['documents_id'] = (int) $reportCriDetail['documents_id'];
+        }
+
         // ajout de la configuration du plugin
         $config = Config::getInstance();
 
         $PDF = new CriPDF('P', 'mm', 'A4');
 
         /* Initialisation du document avec les informations saisies par l'utilisateur. */
-        $criType_id = $p['REPORT_ACTIVITE_ID'];
+        // REPORT_ACTIVITE_ID comes straight from the client payload: the guards of ajax/cri.php
+        // cover the parent ticket and the technician, not this dropdown value, which used to be
+        // resolved with a bare getFromDB() and its label printed into the generated PDF. The id
+        // is also written back as plugin_manageentities_critypes_id further down, hence the cast.
+        // can($id, READ) carries the read right of the itemtype and performs the load; the table
+        // is a global dropdown with no entities_id column, so there is no entity boundary to
+        // enforce on top of it.
+        $criType_id = (int) $p['REPORT_ACTIVITE_ID'];
         $typeCri = new CriType();
-        if ($typeCri->getFromDB($criType_id)) {
+        if ($criType_id > 0 && $typeCri->can($criType_id, READ)) {
             $p['REPORT_ACTIVITE'] = $typeCri->getField('name');
         }
         if ($config->fields['useprice'] == Config::NOPRICE

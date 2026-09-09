@@ -28,6 +28,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use GlpiPlugin\Manageentities\Cri;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriTechnician;
@@ -60,7 +61,9 @@ $assertUserVisible = static function (int $users_id): void {
     }
 };
 
-switch ($_POST['action']) {
+// Nothing guarantees the parameter is there: reading it directly raised a PHP warning on any
+// call without it, and the switch then fell through silently.
+switch ($_POST['action'] ?? '') {
     case 'showCriForm':
         $Cri = new Cri();
         $params                  = $_POST["params"];
@@ -222,4 +225,6 @@ switch ($_POST['action']) {
         }
         break;
 
+    default:
+        throw new BadRequestHttpException();
 }

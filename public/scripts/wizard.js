@@ -540,9 +540,12 @@ function wizardAddCriPrice(interventionIdx, rand, url) {
                 var row = document.createElement('div');
                 row.className = 'd-flex align-items-center gap-2 mb-2 criprice-row';
                 row.dataset.id = res.criprice_id;
-                row.innerHTML = '<span class="badge bg-outline-secondary">' + (critypeEl.options[critypeEl.selectedIndex] ? critypeEl.options[critypeEl.selectedIndex].text : '') + '</span>'
+                // option.text returns the DECODED label, so a type stored as &lt;img ...&gt; comes
+                // back as live markup once reinjected through innerHTML. Both values are database
+                // content, so both go through the helper this file already uses everywhere else.
+                row.innerHTML = '<span class="badge bg-outline-secondary">' + (critypeEl.options[critypeEl.selectedIndex] ? _escHtml(critypeEl.options[critypeEl.selectedIndex].text) : '') + '</span>'
                     + '<strong>' + parseFloat(priceEl.value).toFixed(2) + '</strong>'
-                    + (defEl && defEl.checked ? '<span class="badge bg-outline-primary">' + (defEl.dataset.labelDefault || 'Default') + '</span>' : '')
+                    + (defEl && defEl.checked ? '<span class="badge bg-outline-primary">' + _escHtml(defEl.dataset.labelDefault || 'Default') + '</span>' : '')
                     + '<button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCriPrice(\'' + res.criprice_id + '\', this, \'' + url + '\')">'
                     + '<i class="ti ti-trash"></i></button>';
                 listEl.appendChild(row);

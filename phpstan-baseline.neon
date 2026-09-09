@@ -945,7 +945,7 @@ parameters:
 		-
 			message: '#^Instantiated class GlpiPlugin\\Mydashboard\\Html not found\.$#'
 			identifier: class.notFound
-			count: 4
+			count: 5
 			path: src/Dashboard.php
 
 		-

@@ -835,7 +835,9 @@ class CriDetail extends CommonDBTM
                                     echo "<td></td>";
                                 }
 
-                                echo "<td>" . htmlspecialchars((string) $dataCriDetail['tech'], ENT_QUOTES) . "</td>";
+                                // Already escaped name by name in getCriDetailData(), and the <br/>
+                                // separators it carries are meant to be rendered.
+                                echo "<td>" . $dataCriDetail['tech'] . "</td>";
                                 // Else no cri generated
                             } else {
                                 echo "<td>" . htmlspecialchars((string) \Dropdown::getDropdownName(
@@ -849,7 +851,8 @@ class CriDetail extends CommonDBTM
                                 } else {
                                     echo "<td>" . \Dropdown::EMPTY_VALUE . "</td>";
                                 }
-                                echo "<td>" . htmlspecialchars((string) $dataCriDetail['tech'], ENT_QUOTES) . "</td>";
+                                // Same as the branch above: escaped at the source.
+                                echo "<td>" . $dataCriDetail['tech'] . "</td>";
                             }
 
                             if ($dataCriDetail['pricecri']) {
@@ -1426,7 +1429,15 @@ class CriDetail extends CommonDBTM
 
                 if ($numberTask != 0) {
                     $left = $contractDayValues["nbday"];
-                    $tech = implode('<br/>', $critechnicians->getTechnicians($dataCriDetail['tickets_id']));
+                    // This string is handed to the datatable with a raw_html formatter
+                    // (showForContractDay() below) and echoed as is by showPeriod(), while
+                    // getTechnicians() returns formatUserName() output, which GLPI 10+ leaves raw.
+                    // Escape each name here rather than the joined string, so that the only HTML
+                    // left in it is the <br/> separator this rendering relies on.
+                    $tech = implode('<br/>', array_map(
+                        static fn($name): string => htmlspecialchars((string) $name, ENT_QUOTES),
+                        $critechnicians->getTechnicians($dataCriDetail['tickets_id']),
+                    ));
                     foreach ($iteratorTask as $dataTask) {
                         // Init depass
                         if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'])) {

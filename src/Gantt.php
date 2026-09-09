@@ -361,11 +361,18 @@ class Gantt extends CommonDBTM
                             //print_r($real_end);
                             $todisplay[$real_begin . '#' . $real_end . '#task' . $contract_data['contracts_id']]
                                 = [
-                                    'name' => $contract_data['entities_name'],
+                                    // jquery-gantt.js concatenates name, label and desc into HTML
+                                    // strings (fn-label spans, then .html(desc) for the hint), so
+                                    // these three keys are HTML sinks and they carry raw database
+                                    // columns. The JSON_HEX_TAG of showGantt() only keeps the
+                                    // payload from breaking out of the <script> block: the string
+                                    // is rebuilt as is in memory and handed back to jQuery, which
+                                    // parses it as HTML. The 'link' key is not read by the library.
+                                    'name' => htmlspecialchars((string) $contract_data['entities_name'], ENT_QUOTES),
                                     'id' => $contract_data['contracts_id'],
                                     'link' => $name,//name_contract
-                                    'label' => $contract_data['entities_name'],
-                                    'desc' => $contract_data['name'],
+                                    'label' => htmlspecialchars((string) $contract_data['entities_name'], ENT_QUOTES),
+                                    'desc' => htmlspecialchars((string) $contract_data['name'], ENT_QUOTES),
                                     'percent' => 0,
                                     'type' => 'contract',
                                     'from' => $real_begin . ' 00:00:00',
@@ -408,7 +415,10 @@ class Gantt extends CommonDBTM
                     $real_end = date('Y/n/j', strtotime($day_data['end_date']) + 86400);
                 }
 
-                $desc = __('Name') . ' : ' . $day_data['contractdayname'];
+                // contractdayname is the RAW twin of contractday_name, which Followup.php escapes
+                // when it builds it (see Followup.php:486 and 495); this string ends up in
+                // .html(desc) on the gantt hint, so it has to be escaped here.
+                $desc = __('Name') . ' : ' . htmlspecialchars((string) $day_data['contractdayname'], ENT_QUOTES);
                 if (isset($day_data['contract_type']) && $day_data['contract_type'] == Contract::CONTRACT_TYPE_FORFAIT) {
                     $percent = 100;
                 } else {
@@ -424,7 +434,7 @@ class Gantt extends CommonDBTM
                 // Add current task
                 $todisplay[$real_begin . '#' . $real_end . '#task' . $day_data['contractdays_id']]
                     = [
-                        'name' => $day_data['contractdayname'],
+                        'name' => htmlspecialchars((string) $day_data['contractdayname'], ENT_QUOTES),
                         'id' => $day_data['contractdays_id'],
                         'label' => $percentview,
                         'desc' => $desc,
