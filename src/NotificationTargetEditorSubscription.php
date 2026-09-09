@@ -33,9 +33,7 @@ use Html;
 use Migration;
 use NotificationTarget;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 /**
  * Notification target for expired publisher subscriptions.

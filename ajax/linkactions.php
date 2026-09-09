@@ -32,10 +32,6 @@ use GlpiPlugin\Manageentities\Config;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (!defined('GLPI_ROOT')) {
-    die("Can not acces directly to this file");
-}
-
 Session::checkRight("plugin_manageentities", READ);
 
 if (isset($_POST["action"])) {

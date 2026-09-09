@@ -44,9 +44,7 @@ use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\EditorSubscription;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class Entity extends CommonGLPI
 {

@@ -34,9 +34,7 @@ use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contact;
 use Toolbox;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class CriPDF extends \TCPDF
 {

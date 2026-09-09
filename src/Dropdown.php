@@ -29,9 +29,7 @@
 
 namespace GlpiPlugin\Manageentities;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class Dropdown extends \Dropdown
 {

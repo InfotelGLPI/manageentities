@@ -36,9 +36,7 @@ use Html;
 use Migration;
 use Session;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class Contact extends CommonDBTM
 {

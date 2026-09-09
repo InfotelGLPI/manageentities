@@ -178,7 +178,7 @@ function plugin_init_manageentities()
                 ],
             );
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
-                $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js.php';
+                $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js';
             }
         }
 

@@ -34,9 +34,7 @@ use DbUtils;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\SearchEngine;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 use Glpi\DBAL\QueryExpression;
 use Html;

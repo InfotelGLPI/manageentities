@@ -34,6 +34,7 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Plugin;
+use Session;
 
 /**
  *
@@ -132,6 +133,8 @@ class CheckSchema extends CommonDBTM
         bool $ignore_unsigned_keys_migration = true
     ): bool {
         global $DB;
+
+        Session::checkRight('plugin_manageentities', UPDATE);
 
         $schemaFile = $this->getSchemaPath($version);
 

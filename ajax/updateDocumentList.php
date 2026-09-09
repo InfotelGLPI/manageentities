@@ -36,9 +36,7 @@ Html::header_nocache();
 // reach the contract document listing below.
 Session::checkRight('plugin_manageentities', READ);
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 global $DB;
 

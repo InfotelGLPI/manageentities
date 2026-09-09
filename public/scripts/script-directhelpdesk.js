@@ -1,5 +1,3 @@
-<?php
-
 /**
  * -------------------------------------------------------------------------
  * manageentities plugin for GLPI
@@ -27,19 +25,16 @@
  * --------------------------------------------------------------------------
  */
 
-header('Content-Type: text/javascript');
-$add_text = __('Add');
-$add_text_collapsed = __('A');
-$modalUrl = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/directhelpdesk.php';
-if (Session::getCurrentInterface() == 'central') {
-    ?>
+// Racine web du plugin, miroir de PLUGIN_MANAGEENTITIES_WEBDIR (setup.php). GLPI
+// expose les deux variables dans le <head> (config_js) avant tout script de
+// plugin : aucune interpolation cote serveur n'est necessaire ici.
+var root_manageentities_doc = ((window.CFG_GLPI && CFG_GLPI.root_doc) || '')
+   + ((window.GLPI_PLUGINS_PATH && GLPI_PLUGINS_PATH.manageentities) || '/plugins/manageentities');
 
 $(window).on("load", function() {
     const newDiv = document.createElement('div');
     newDiv.classList.add('center');
     const newButton = document.createElement('button');
-    const add_text = "<?php echo $add_text ?>";
-    const add_text_collapsed = "<?php echo $add_text_collapsed ?>";
 
     newButton.id = 'launch-directhelpdesk-modal';
     newButton.classList.add('btn', 'btn-sm', 'btn-primary', 'me-1');
@@ -48,15 +43,18 @@ $(window).on("load", function() {
         const collapsed = $('body').hasClass('navbar-collapsed');
         if (collapsed) {
             newButton.style.marginLeft = '0px';
-            newButton.textContent = add_text_collapsed;
+            newButton.textContent = __('A');
         } else {
             newButton.style.marginLeft = '70px';
-            newButton.textContent = add_text;
+            newButton.textContent = __('Add');
         }
     }
 
     // état initial
     updateButtonState();
+    // Les traductions arrivent en AJAX (locales_js) ; si elles atterrissent
+    // apres ce point, on reapplique le libelle des la fin des requetes.
+    $(document).one('ajaxStop', updateButtonState);
 
     newDiv.appendChild(newButton);
 
@@ -76,7 +74,7 @@ $(window).on("load", function() {
     newButton.addEventListener('click', function() {
         if (!document.getElementById('directhelpdesk-modal')) {
             $('#directhelpdeskmodalcontainer').load(
-                '<?php echo $modalUrl ?>',
+                root_manageentities_doc + '/ajax/directhelpdesk.php',
                 function() {
                     $("#directhelpdesk-modal").modal('show');
                 }
@@ -104,5 +102,3 @@ $(window).on("load", function() {
     }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 });
 
-<?php
-}

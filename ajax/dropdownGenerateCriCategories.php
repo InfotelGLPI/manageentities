@@ -37,8 +37,6 @@ if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('t
 if (strpos($_SERVER['PHP_SELF'], "dropdownGenerateCriCategories.php")) {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-} elseif (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
 }
 
 // The entity restriction comes from $_POST: enforce access to every requested entity

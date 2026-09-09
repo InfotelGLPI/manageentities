@@ -45,9 +45,7 @@ use NotificationTemplate;
 use NotificationTemplateTranslation;
 use Session;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class EditorSubscription extends CommonDBTM
 {

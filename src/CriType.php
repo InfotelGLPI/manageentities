@@ -36,9 +36,7 @@ use Migration;
 use Session;
 use GlpiPlugin\Manageentities\Config;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class CriType extends CommonDropdown
 {

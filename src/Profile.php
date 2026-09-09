@@ -37,9 +37,7 @@ use ProfileRight;
 use Session;
 use GlpiPlugin\Manageentities\Entity;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class Profile extends \Profile
 {

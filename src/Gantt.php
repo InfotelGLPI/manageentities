@@ -38,9 +38,7 @@ use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\Entity;
 use Toolbox;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class Gantt extends CommonDBTM
 {

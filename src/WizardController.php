@@ -43,9 +43,7 @@ use State;
 use User;
 use UserTitle;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 /**
  * Handles all wizard step save/render logic.

@@ -44,9 +44,7 @@ use Session;
 use Ticket;
 use Toolbox;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class CriDetail extends CommonDBTM
 {
