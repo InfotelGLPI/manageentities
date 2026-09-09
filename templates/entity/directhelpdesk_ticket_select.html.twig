@@ -58,7 +58,7 @@
                     <td>{{ row.technician }}</td>
                     <td>{{ row.duration }}</td>
                     {% if is_central %}
-                    <td>{{ row.comment|raw }}</td>
+                    <td>{{ row.comment|nl2br }}</td>
                     {% endif %}
                 </tr>
                 {% endfor %}

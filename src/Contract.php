@@ -492,7 +492,9 @@ class Contract extends CommonDBTM
                 'entity_name'   => \Dropdown::getDropdownName('glpi_entities', $data['plugin_entities_id']),
                 'num'           => $data['num'],
                 'state'         => \Dropdown::getDropdownName('glpi_states', $data['states_id'] ?? 0),
-                'comment'       => nl2br($data['comment'] ?? ''),
+                // Escaping is the template's job: nl2br() only inserts <br>, it does not
+                // neutralize the HTML the comment may carry.
+                'comment'       => $data['comment'] ?? '',
                 'management'    => $show_management ? self::getContractManagement($data['management']) : '',
                 'contract_type' => $show_type ? self::getContractType($data['contract_type']) : '',
                 'is_default'    => (bool) $data['is_default'],

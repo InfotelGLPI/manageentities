@@ -34,6 +34,7 @@ use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\ContractState;
+use GlpiPlugin\Manageentities\Cri;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\CriTechnician;
@@ -457,6 +458,43 @@ function plugin_manageentities_uninstall()
     $rep_files_manageentities = GLPI_PLUGIN_DOC_DIR . "/manageentities";
 
     Toolbox::deleteDir($rep_files_manageentities);
+
+    // Rows the core keeps outside the plugin tables, keyed by itemtype: one per user and per
+    // displayed column in glpi_displaypreferences, one per change in glpi_logs. Dropping the
+    // tables above leaves both behind, so a later reinstall inherits the column layouts and the
+    // history of the previous one, and the history of a client that was purged on purpose stays
+    // readable to anyone with the log right.
+    $itemtypes = [
+        BusinessContact::class,
+        Company::class,
+        Contact::class,
+        Contract::class,
+        ContractDay::class,
+        ContractState::class,
+        Cri::class,
+        CriDetail::class,
+        CriPrice::class,
+        CriTechnician::class,
+        CriType::class,
+        DirectHelpdesk::class,
+        DirectHelpdesk_Ticket::class,
+        EditorSubscription::class,
+        EntityLogo::class,
+        InterventionStakeholder::class,
+        Preference::class,
+        SubscriptionLevel::class,
+        TaskCategory::class,
+    ];
+
+    // Instances upgraded from GLPI 10 still hold rows under the pre-namespace class names.
+    $legacy_itemtypes = [];
+    foreach ($itemtypes as $itemtype) {
+        $legacy_itemtypes[] = 'PluginManageentities' . substr($itemtype, (int) strrpos($itemtype, '\\') + 1);
+    }
+    $itemtypes = array_merge($itemtypes, $legacy_itemtypes);
+
+    $DB->delete('glpi_displaypreferences', ['itemtype' => $itemtypes]);
+    $DB->delete('glpi_logs', ['itemtype' => $itemtypes]);
 
     Profile::removeRightsFromSession();
     Profile::removeRightsFromDB();

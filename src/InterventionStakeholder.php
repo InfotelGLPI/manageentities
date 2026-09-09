@@ -182,14 +182,21 @@ class InterventionStakeholder extends CommonDBTM
             $link = $user->getLinkURL();
 
             echo "var tmpCell=row.insertCell(0);\n";
-            echo "tmpCell.innerHTML=\"";
-            echo "<a href='" . $link . "' target='_blank'>" . $dbu->formatUserName(
-                $user->fields['id'],
-                $user->fields['name'],
-                $user->fields['realname'],
-                $user->fields['firstname'],
-            ) . "</a>";
-            echo "\";";
+
+            // Two contexts in one statement: the value lands in a JavaScript string literal, which
+            // is then assigned to innerHTML. A quote in the user name closed the literal, and a tag
+            // in it was parsed by innerHTML - two escapes for one field. Escape for HTML first,
+            // then let json_encode() build the JS literal. JSON_HEX_QUOT is deliberately left out:
+            // it would encode the delimiters of the literal itself.
+            $user_link = "<a href='" . htmlspecialchars($link) . "' target='_blank'>"
+                . htmlspecialchars($dbu->formatUserName(
+                    $user->fields['id'],
+                    $user->fields['name'],
+                    $user->fields['realname'],
+                    $user->fields['firstname'],
+                )) . "</a>";
+            echo "tmpCell.innerHTML="
+                . json_encode($user_link, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS) . ";";
 
             echo "tmpCell=row.insertCell(1);";
             echo "tmpCell.id='td_user_id" . $item->fields['id'] . "';";

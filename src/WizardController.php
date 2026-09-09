@@ -390,6 +390,44 @@ class WizardController
         return ['success' => true, 'entities_id' => $entities_id, 'step' => $session['step']];
     }
 
+    /**
+     * Whether the caller may hang a new client under this parent entity.
+     *
+     * ajax/wizard.php is gated by the global plugin UPDATE right alone, which carries no entity,
+     * and CommonDBTM::add() applies none either - the entity boundary of the core lives in
+     * canCreateItem(), which add() never reaches. Without this check the parent id posted at step
+     * one placed the new entity, and the Contact and Contract created along with it, anywhere in
+     * the tree: the root and the entities of other clients included.
+     *
+     * The core CREATE rights of Entity, Contact and Contract are deliberately not required here:
+     * holding plugin_manageentities UPDATE is what the wizard delegates that capability to, and
+     * demanding them would lock out the very profiles it exists for. What is restored is the
+     * perimeter that delegation must not cross.
+     *
+     * @param int $entities_id the parent entity, as resolved from the request
+     *
+     * @return bool
+     */
+    private static function canCreateUnderEntity(int $entities_id): bool
+    {
+        if ($entities_id < 0 || !Session::haveAccessToEntity($entities_id)) {
+            return false;
+        }
+
+        // When the configuration pins a root for the wizard, the tree below it is the only place
+        // a client may be created - saveSelectEntityAndReturn() already refuses anything else
+        // when an existing entity is picked instead.
+        $forced_entities_id = (int) (Config::getInstance()->fields['wizard_default_entities_id'] ?? 0);
+        if ($forced_entities_id > 0 && $entities_id !== $forced_entities_id) {
+            $sons = getSonsOf('glpi_entities', $forced_entities_id);
+            if (!isset($sons[$entities_id])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static function saveEntityAndReturn(array $input = []): array
     {
         if (empty($input)) {
@@ -407,6 +445,12 @@ class WizardController
         $forced_entities_id    = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
         $submitted_entities_id = (int) ($input['entities_id'] ?? 0);
         $resolved_entities_id  = ($submitted_entities_id > 0) ? $submitted_entities_id : $forced_entities_id;
+
+        // Same generic message as the sibling methods, to avoid turning the wizard into an entity
+        // oracle.
+        if (!self::canCreateUnderEntity($resolved_entities_id)) {
+            return ['success' => false, 'errors' => ['entities_id' => __('Entity not found', 'manageentities')]];
+        }
 
         $entity_data = [
             'name'        => trim($input['name']),
@@ -552,6 +596,30 @@ class WizardController
     // Contract template pre-fill (session only)
     // -------------------------------------------------------------------------
 
+    /**
+     * Criteria the contract template dropdown of step 3 is built from.
+     *
+     * Extracted so the sink below can replay exactly what the list offered, instead of
+     * deciding a rule of its own.
+     *
+     * @return array<string, mixed>
+     */
+    private static function getContractTemplateCondition(): array
+    {
+        $condition = ['is_template' => 1];
+
+        $config_forced_entity = (int) (Config::getInstance()->fields['wizard_default_entities_id'] ?? 0);
+        if ($config_forced_entity > 0) {
+            $dbu = new DbUtils();
+            $condition['glpi_contracts.entities_id'] = array_map('intval', array_merge(
+                [$config_forced_entity],
+                array_keys($dbu->getAncestorsOf('glpi_entities', $config_forced_entity)),
+            ));
+        }
+
+        return $condition;
+    }
+
     public static function loadContractTemplate(): void
     {
         header('Content-Type: application/json');
@@ -563,6 +631,24 @@ class WizardController
         if (!$contract->getFromDB($contracts_id) || empty($contract->fields['is_template'])) {
             self::jsonOut(['success' => false]);
         }
+
+        // getFromDB() applies neither right nor entity boundary, so contracts_id used to name
+        // any template of the instance - root and sibling entities included - and its name,
+        // number and comment came back prefilled in the step 4 form. Replay here what the
+        // dropdown actually offered: the entity boundary the core Dropdown adds, and the
+        // optional wizard restriction.
+        $condition   = self::getContractTemplateCondition();
+        $entities_id = (int) ($contract->fields['entities_id'] ?? 0);
+        if (!Session::haveAccessToEntity($entities_id, (bool) ($contract->fields['is_recursive'] ?? false))) {
+            self::jsonOut(['success' => false]);
+        }
+        if (
+            isset($condition['glpi_contracts.entities_id'])
+            && !in_array($entities_id, $condition['glpi_contracts.entities_id'], true)
+        ) {
+            self::jsonOut(['success' => false]);
+        }
+
         $f = $contract->fields;
 
         $session = self::getSession();
@@ -1311,11 +1397,20 @@ class WizardController
             if (empty($entity_data)) {
                 return ['success' => false, 'errors' => ['global' => __('Entity data is missing', 'manageentities')]];
             }
+            // The session is filled one step at a time from the request, so the parent resolved at
+            // step one is checked again here, where the write actually happens.
+            if (!self::canCreateUnderEntity((int) ($entity_data['entities_id'] ?? 0))) {
+                return ['success' => false, 'errors' => ['global' => __('Entity not found', 'manageentities')]];
+            }
             $entity = new \Entity();
             $entities_id = (int) $entity->add($entity_data);
             if (!$entities_id) {
                 return ['success' => false, 'errors' => ['global' => __('Error creating entity', 'manageentities')]];
             }
+        } elseif (!Session::haveAccessToEntity($entities_id)) {
+            // existing_entity mode: the id was checked when it was picked, but everything below -
+            // subscription, contacts, contracts, contract days, prices - is written into it now.
+            return ['success' => false, 'errors' => ['global' => __('Entity not found', 'manageentities')]];
         }
 
         // 1b. Publisher subscription (new_entity mode only, skipped if user left step blank)
@@ -1926,16 +2021,7 @@ class WizardController
 
         $rand_tpl = mt_rand();
         ob_start();
-        $template_condition  = ['is_template' => 1];
-        $config_forced_entity = (int) (Config::getInstance()->fields['wizard_default_entities_id'] ?? 0);
-        if ($config_forced_entity > 0) {
-            $dbu = new DbUtils();
-            $visible_entities = array_merge(
-                [$config_forced_entity],
-                array_keys($dbu->getAncestorsOf('glpi_entities', $config_forced_entity)),
-            );
-            $template_condition['glpi_contracts.entities_id'] = $visible_entities;
-        }
+        $template_condition = self::getContractTemplateCondition();
         Dropdown::show(\Contract::class, [
             'name'        => '_contract_template_id',
             'rand'        => $rand_tpl,

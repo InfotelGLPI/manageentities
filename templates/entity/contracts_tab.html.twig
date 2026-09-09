@@ -69,7 +69,7 @@
                         <td>{{ row.entity_name }}</td>
                         <td class="text-center">{{ row.num }}</td>
                         <td>{{ row.state }}</td>
-                        <td>{{ row.comment|raw }}</td>
+                        <td>{{ row.comment|nl2br }}</td>
                         {% if show_management %}
                         <td class="text-center">{{ row.management }}</td>
                         {% endif %}

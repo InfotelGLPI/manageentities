@@ -333,7 +333,8 @@ class Entity extends CommonGLPI
     public static function showManageentitiesHeader($subtitle = '')
     {
         echo "<h3><div class='alert alert-secondary' role='alert'>";
-        echo __('Portal', 'manageentities') . " " . $_SESSION["glpiactive_entity_name"];
+        // completename of the active entity, editable by whoever administers that entity.
+        echo __('Portal', 'manageentities') . " " . htmlspecialchars((string) $_SESSION["glpiactive_entity_name"]);
         echo '<br/>' . $subtitle;
         echo "</div></h3>";
     }

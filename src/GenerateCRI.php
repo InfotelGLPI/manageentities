@@ -34,6 +34,7 @@ use CommonGLPI;
 use CommonITILObject;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\RichText\RichText;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Contract;
@@ -389,15 +390,10 @@ class GenerateCRI extends CommonGLPI
             $priority_dropdown = $capture(fn() => Ticket::dropdownImpact(['value' => $options['priority']]));
         }
 
-        // Technician (multiple)
-        $user = new User();
-        $dbu  = new DbUtils();
-        $condition = ['is_deleted' => 0];
-        $users = $user->find($condition);
-        $techs = [];
-        foreach ($users as $data) {
-            $techs[$data['id']] = $dbu->getUserName($data['id']);
-        }
+        // Technician (multiple). The list used to be every non-deleted account of the instance,
+        // the 'entity' option below being ignored by showFromArray(): it named the technicians of
+        // every other client, and the ticket creation trusted whatever came back.
+        $techs = self::getSelectableTechnicians($entities);
         $technician_dropdown = $capture(fn() => \Dropdown::showFromArray('users_intervenor', $techs, [
             'values' => $options["users_intervenor"],
             'multiple' => true,
@@ -770,6 +766,47 @@ class GenerateCRI extends CommonGLPI
      *
      * @return bool|int
      */
+    /**
+     * Technicians the caller may assign on an intervention of a given entity.
+     *
+     * Single source of truth for the criteria: showWizard() builds its dropdown from this list,
+     * and the ticket creations below replay it on the ids that come back. getSqlSearchResult() is
+     * the core helper the User dropdown itself relies on, so the perimeter is the same one GLPI
+     * would have offered.
+     *
+     * @param int|int[] $entity_restrict entity the intervention belongs to
+     *
+     * @return array<int, string> user id => display name
+     */
+    public static function getSelectableTechnicians($entity_restrict): array
+    {
+        $dbu   = new DbUtils();
+        $techs = [];
+        foreach (User::getSqlSearchResult(false, 'all', $entity_restrict) as $data) {
+            $techs[(int) $data['id']] = $dbu->getUserName($data['id']);
+        }
+
+        return $techs;
+    }
+
+    /**
+     * Keep, among posted assignee ids, those the wizard could actually have offered.
+     *
+     * @param mixed $posted       the users_intervenor field, as posted
+     * @param int   $entities_id  entity the ticket was created in
+     *
+     * @return int[]
+     */
+    private static function filterIntervenors($posted, int $entities_id): array
+    {
+        $selectable = self::getSelectableTechnicians($entities_id);
+
+        return array_values(array_intersect(
+            array_map('intval', (array) $posted),
+            array_keys($selectable),
+        ));
+    }
+
     public static function createTicketAndAssociateContract($input)
     {
         $ticket = new Ticket();
@@ -814,10 +851,25 @@ class GenerateCRI extends CommonGLPI
         }
         $inputs['status'] = CommonITILObject::PLANNED;
 
+        // entities_id is one of the posted fields copied above, and add() applies no right of its
+        // own: the caller only held the global ticket CREATE right, which says nothing about the
+        // entity. can(-1, CREATE, $inputs) runs Ticket::canCreateItem(), that is the entity
+        // boundary, against the very input about to be written.
+        if (!$ticket->can(-1, CREATE, $inputs)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $ticketId = $ticket->add($inputs);
 
         if ($ticketId) {
-            foreach ($input['users_intervenor'] as $user_assign) {
+            // The assignee ids are posted as well. Keep only the technicians the wizard could
+            // have offered for this entity, so the form cannot assign an account of another
+            // client to an intervention.
+            $intervenors = self::filterIntervenors(
+                $input['users_intervenor'] ?? [],
+                (int) $ticket->fields['entities_id'],
+            );
+            foreach ($intervenors as $user_assign) {
                 $user_ticket = new Ticket_User();
                 if (!$user_ticket->getFromDBByCrit([
                     'tickets_id' => $ticketId,
@@ -877,11 +929,20 @@ class GenerateCRI extends CommonGLPI
         }
         $inputs['status'] = CommonITILObject::INCOMING;
 
+        // Same posted entity, same absence of right in add(): see createTicketAndAssociateContract().
+        if (!$ticket->can(-1, CREATE, $inputs)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $ticketId = $ticket->add($inputs);
 
         $ticket_ticket->add(['tickets_id_1' => $ticketId, 'tickets_id_2' => $tickets_id, 'link' => '3']);
         if ($ticketId) {
-            foreach ($input['users_intervenor'] as $user_assign) {
+            $intervenors = self::filterIntervenors(
+                $input['users_intervenor'] ?? [],
+                (int) $ticket->fields['entities_id'],
+            );
+            foreach ($intervenors as $user_assign) {
                 $user_ticket = new Ticket_User();
                 if (!$user_ticket->getFromDBByCrit([
                     'tickets_id' => $ticketId,
@@ -907,11 +968,12 @@ class GenerateCRI extends CommonGLPI
      */
     public static function createTasks($inputs, $ticket_id)
     {
-        if (isset($inputs['predefined-task'])) {
-            $task_template = new TaskTemplate();
-            $task_template_id = $inputs['predefined-task'];
-            $task_template->getFromDB($task_template_id);
-
+        // The template id reaches this method through a hidden field of the wizard form, and its
+        // content, duration, technician and group are copied verbatim into the task below. Check
+        // it is a template the caller may actually read instead of loading it by id.
+        $task_template    = new TaskTemplate();
+        $task_template_id = (int) ($inputs['predefined-task'] ?? 0);
+        if ($task_template_id > 0 && $task_template->can($task_template_id, READ)) {
             $ticket_task = new TicketTask();
             $user_ticket_task = $task_template->getField('users_id_tech') > 0 ?
                 $task_template->getField('users_id_tech') : Session::getLoginUserID();
@@ -1216,7 +1278,8 @@ class GenerateCRI extends CommonGLPI
                 foreach ($iterator as $data) {
                 }
                 if ($contractSelected) {
-                    echo \Dropdown::getDropdownName('glpi_contracts', $contractSelected);
+                    // Dropdown names come back raw from the database, and this view is built by echo.
+                    echo htmlspecialchars((string) \Dropdown::getDropdownName('glpi_contracts', $contractSelected));
                 }
             }
         } else {
@@ -1273,7 +1336,8 @@ class GenerateCRI extends CommonGLPI
                 ]);
                 echo "</span>";
             } else {
-                echo \Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected);
+                // Dropdown names come back raw from the database, and this view is built by echo.
+                echo htmlspecialchars((string) \Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected));
             }
             echo "</td>";
             echo "</tr>";

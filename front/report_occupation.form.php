@@ -65,19 +65,11 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
     $_POST["date1"] = $_POST["date2"];
     $_POST["date2"] = $tmp;
 }
-$dbu = new DbUtils();
-
 \Report::title();
 
-// Technician list restricted to users of the caller's active entities.
-$user      = new User();
-$condition = ['is_deleted'  => 0,
-    'entities_id' => $_SESSION["glpiactiveentities"]];
-$users     = $user->find($condition);
-$techs     = [];
-foreach ($users as $data) {
-    $techs[$data['id']] = $dbu->getUserName($data['id']);
-}
+// Technician list restricted to users of the caller's active entities. Report replays these
+// same criteria on the posted ids, so the two cannot drift apart.
+$techs = Report::getSelectableTechnicians();
 
 // Capture the GLPI form widgets as HTML fragments for the Twig template.
 // Their user-facing values are escaped by the GLPI helpers themselves.

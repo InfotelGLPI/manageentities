@@ -36,6 +36,11 @@ if (isset($_GET["file"])) { // for other file
     if (count($splitter) == 3) {
         $send     = false;
         $filename = $splitter[2];
+        // Only the previews this session generated are servable. The right checked below is
+        // global: it says the caller may produce intervention reports, not that they may read
+        // the ones another entity produced. Preview names used to be the generation timestamp,
+        // so without this the reports of every client were enumerable one second at a time.
+        $previews = $_SESSION['plugin_manageentities_cri_previews'] ?? [];
         // Path traversal hardening: on Windows "\" is also a directory separator, so a
         // segment such as "..\..\..\config\config_db.php" survives the "/" split as a single
         // segment and the raw value used to be concatenated straight into readfile(). Rebuild
@@ -47,6 +52,7 @@ if (isset($_GET["file"])) { // for other file
             && $filename === basename($filename)
             && strpbrk($filename, "/\\") === false
             && strpos($filename, "..") === false
+            && isset($previews[$filename])
             && Session::haveRight("plugin_manageentities_cri_create", READ)
         ) {
             $base      = GLPI_DOC_DIR . "/_plugins/manageentities";

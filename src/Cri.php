@@ -57,6 +57,35 @@ class Cri extends CommonDBTM
         return "ti ti-headset";
     }
 
+    /**
+     * Build the onclick attribute of a manageentities_loadCriForm() call.
+     *
+     * Two nested contexts for one value: a JavaScript call inside an HTML attribute. The browser
+     * decodes the entities of the attribute before handing the content to the JavaScript parser,
+     * so escaping for HTML alone would be undone; the arguments have to be valid JS literals
+     * first. Both the modal name and the DOM id to refresh come straight from the request, so a
+     * quote in either used to close the attribute.
+     *
+     * @param string               $action the manageentities_loadCriForm action
+     * @param string               $modal  the modal to close, as posted
+     * @param array<string, mixed> $params the parameters forwarded to ajax/cri.php
+     *
+     * @return string the attribute value, ready to be placed between single quotes
+     */
+    private static function getLoadCriFormHandler(string $action, string $modal, array $params): string
+    {
+        // JSON_HEX_QUOT is wanted here, unlike in the plain JS string sinks: json_encode() emits
+        // the delimiters of the literals itself, so nothing of ours depends on a raw quote.
+        $flags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+
+        return htmlspecialchars(
+            "manageentities_loadCriForm("
+            . json_encode($action, $flags) . ", "
+            . json_encode($modal, $flags) . ", "
+            . json_encode($params, $flags) . ");",
+        );
+    }
+
     public function showForm($ID, $options = [])
     {
         global $DB;
@@ -80,7 +109,7 @@ class Cri extends CommonDBTM
             'height' => 550,
         ];
 
-        $modal = $options['modal'];
+        $modal = (string) ($options['modal'] ?? '');
 
         // Contract block: capture the GLPI-generated dropdown while keeping its return value.
         $restrict = [
@@ -126,9 +155,8 @@ class Cri extends CommonDBTM
                             $tech_params = $params;
                             $tech_params['tech_id'] = $users_id;
                             $techs[] = $users_name . "&nbsp;"
-                                . "<a class='pointer' name='deleteTech$rand' onclick='manageentities_loadCriForm(\"deleteTech\", \"" . $modal . "\", " . json_encode(
-                                    $tech_params,
-                                ) . ");'>"
+                                . "<a class='pointer' name='deleteTech$rand' onclick='"
+                                . self::getLoadCriFormHandler('deleteTech', $modal, $tech_params) . "'>"
                                 . "<i class=\"ti ti-trash\" title=\"" . _x('button', 'Delete permanently') . "\"></i>"
                                 . "</a>";
                         } else {
@@ -164,9 +192,8 @@ class Cri extends CommonDBTM
             'width' => $width,
         ]);
         $add_tech_html = ob_get_clean();
-        $add_tech_html .= "&nbsp;<a class='pointer' name='add_tech$rand' onclick='manageentities_loadCriForm(\"addTech\", \"" . $modal . "\", " . json_encode(
-            $params,
-        ) . ");'>"
+        $add_tech_html .= "&nbsp;<a class='pointer' name='add_tech$rand' onclick='"
+            . self::getLoadCriFormHandler('addTech', $modal, $params) . "'>"
             . "<i class=\"ti ti-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i></a>";
 
         // Hidden contract fields + optional CRI-type / moving-number dropdowns.
@@ -290,17 +317,16 @@ class Cri extends CommonDBTM
                 if (empty($options['action'])) {
                     if (!empty($technicians_id)) {
                         $generate_button_html = "<input type='button' name='add_cri' value=\""
-                            . __('Generation of the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button' onClick='manageentities_loadCriForm(\"addCri\", \"" . $modal . "\", " . json_encode(
-                                $params,
-                            ) . ");'>";
+                            . __('Generation of the intervention report', 'manageentities')
+                            . "\" class='submit btn btn-primary manageentities_button' onClick='"
+                            . self::getLoadCriFormHandler('addCri', $modal, $params) . "'>";
                     }
                     // action not empty : update cri
                 } elseif ($options['action'] == 'update_cri') {
                     if (!empty($technicians_id)) {
                         $generate_button_html = "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\""
-                            . __('Regenerate the intervention report', 'manageentities') . "\" onClick='manageentities_loadCriForm(\"updateCri\", \"" . $modal . "\", " . json_encode(
-                                $params,
-                            ) . ");'>";
+                            . __('Regenerate the intervention report', 'manageentities') . "\" onClick='"
+                            . self::getLoadCriFormHandler('updateCri', $modal, $params) . "'>";
                     }
                 }
             } else {
@@ -879,7 +905,14 @@ class Cri extends CommonDBTM
         $savepath = GLPI_TMP_DIR . "/";
         $seepath = GLPI_PLUGIN_DOC_DIR . "/manageentities/";
         $savefilepath = $savepath . $filename;
-        $seefilepath = $seepath . $filename;
+
+        // The preview is served by front/cri.send.php out of a directory shared by every
+        // entity, and it used to be named after the CRI number, which is a timestamp: a day
+        // of reports was enumerable in 86400 guesses by anyone holding the global cri right.
+        // Give the preview an unguessable name of its own, registered in the session below,
+        // so the only readable file is the one this session just generated.
+        $seefilename = "CRI-preview-" . bin2hex(random_bytes(16)) . ".pdf";
+        $seefilepath = $seepath . $seefilename;
 
         if ($config->fields["backup"] == 1 && $p['enregistrement']) {
             $PDF->Output($savefilepath, 'F');
@@ -955,6 +988,15 @@ class Cri extends CommonDBTM
             //Sauvegarde du PDF dans le fichier
             $PDF->Output($seefilepath, 'F');
 
+            // A short list rather than a single slot, so two tabs do not invalidate each
+            // other's preview. Nothing here survives the session.
+            $previews = $_SESSION['plugin_manageentities_cri_previews'] ?? [];
+            $previews[$seefilename] = time();
+            if (count($previews) > 10) {
+                $previews = array_slice($previews, -10, null, true);
+            }
+            $_SESSION['plugin_manageentities_cri_previews'] = $previews;
+
             if ($config->fields["backup"] == 1) {
                 echo "<form method='post' name='formReport'>";
                 echo Html::hidden('REPORT_ID', ['value' => $p['REPORT_ID']]);
@@ -993,12 +1035,11 @@ class Cri extends CommonDBTM
                     'toupdate' => $options['toupdate'],
                 ];
                 echo "<p><input type='button' name='save_cri' value=\""
-                    . __('Save the intervention report', 'manageentities') . "\" class='submit btn btn-primary manageentities_button'
-                 onClick='manageentities_loadCriForm(\"saveCri\", \"" . $options['modal'] . "\", " . json_encode(
-                        $params,
-                    ) . ");'></p>";
+                    . __('Save the intervention report', 'manageentities')
+                    . "\" class='submit btn btn-primary manageentities_button' onClick='"
+                    . self::getLoadCriFormHandler('saveCri', (string) $options['modal'], $params) . "'></p>";
 
-                echo "<IFRAME style='width:500px;height:700px' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/$filename' scrolling=none frameborder=1></IFRAME>";
+                echo "<IFRAME style='width:500px;height:700px' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/" . rawurlencode($seefilename) . "' scrolling=none frameborder=1></IFRAME>";
                 Html::closeForm();
             }
 

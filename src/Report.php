@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use CommonDBTM;
 use DbUtils;
 use Html;
+use User;
 use GlpiPlugin\Manageentities\Config;
 
 class Report extends CommonDBTM
@@ -164,7 +165,8 @@ class Report extends CommonDBTM
                     $class = " class='tab_bg_1 ";
                 }
                 echo "<tr>";
-                echo "<td class='center'>" . \Dropdown::getDropdownName("glpi_entities", $key) . "</td>";
+                // Entity names come back raw from the database, and this view is built by echo.
+                echo "<td class='center'>" . htmlspecialchars((string) \Dropdown::getDropdownName("glpi_entities", $key)) . "</td>";
                 echo "<td class='center'>" . Html::formatNumber($row['total_depl']) . "</td>";
                 echo "<td class='center'>" . Html::formatNumber($row['actiontime']) . "</td>";
                 echo "<td class='center'>" . Html::formatNumber($row['total']) . "</td>";
@@ -173,6 +175,26 @@ class Report extends CommonDBTM
             echo "</table></div>";
             Html::closeForm();
         }
+    }
+
+    /**
+     * Technicians the caller may report on, keyed by user id.
+     *
+     * Single source of truth for the criteria: front/report_occupation.form.php builds its
+     * dropdown from this list, and showOccupationReports() replays it on what comes back.
+     *
+     * @return array<int, string> user id => display name
+     */
+    public static function getSelectableTechnicians(): array
+    {
+        $dbu   = new DbUtils();
+        $user  = new User();
+        $techs = [];
+        foreach ($user->find(['is_deleted' => 0, 'entities_id' => $_SESSION['glpiactiveentities']]) as $data) {
+            $techs[(int) $data['id']] = $dbu->getUserName($data['id']);
+        }
+
+        return $techs;
     }
 
     /**
@@ -194,6 +216,16 @@ class Report extends CommonDBTM
             return;
         }
         $techs = array_map('intval', (array) $techs);
+
+        // The posted ids drive getUserName() in the column headers below, which resolves any
+        // id to a full name whatever the entity - the very enumeration ajax/getUserTechName.php
+        // already refuses. The figures were scoped by getEntitiesRestrictCriteria() further
+        // down, but the headers were not. Keep only the technicians the caller could have
+        // selected, and do it here so the method stays safe for any caller.
+        $techs = array_values(array_intersect($techs, array_keys(self::getSelectableTechnicians())));
+        if (empty($techs)) {
+            return;
+        }
 
         $days = self::getDatesBetween2Dates($date1, $date2);
         $dbu = new DbUtils();
@@ -290,7 +322,9 @@ class Report extends CommonDBTM
             echo "<tr>";
             echo "<th>" . __('Date') . "</th>";
             foreach ($techs as $tech) {
-                echo "<th>" . $dbu->getUserName($tech) . "</th>";
+                // getUserName() returns the raw value when no link is asked for, and this view
+                // builds its HTML by echo: nothing escapes it further down.
+                echo "<th>" . htmlspecialchars($dbu->getUserName($tech)) . "</th>";
             }
             echo "<th>" . __('Total') . "</th>";
             echo "<th>" . __('% of time justified', 'manageentities') . "</th>";

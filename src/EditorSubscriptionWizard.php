@@ -51,6 +51,14 @@ class EditorSubscriptionWizard
 
         // entities_id may come from GET (existing_entity shortcut from tab)
         $entities_id = (int) ($_GET['entities_id'] ?? 0);
+
+        // Entity scope (anti-IDOR): saveAndReturn() and deleteAndReturn() already refuse an
+        // entity outside the caller's scope, but the read path did not, and the controller
+        // only checks the global CREATE/UPDATE right. Iterating on entities_id displayed the
+        // subscription of every client: customer account id, level, dates and comments.
+        if ($entities_id > 0 && !Session::haveAccessToEntity($entities_id)) {
+            throw new AccessDeniedHttpException();
+        }
         $page_url    = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
         $rand        = mt_rand();
 
