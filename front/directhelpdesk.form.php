@@ -42,6 +42,7 @@ if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
             throw new AccessDeniedHttpException();
         }
         $ticket = new Ticket();
+
         $items = $_POST["select"] ?? [];
         $sum = 0;
         $input['content'] = '';
@@ -86,6 +87,9 @@ if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
             Html::back();
         }
 
+        if (!$ticket->can(-1, CREATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
         $newID = $ticket->add($input);
 
         foreach ($selected as $item) {
