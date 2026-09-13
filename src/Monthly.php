@@ -444,12 +444,17 @@ class Monthly extends CommonDBTM
                     $tot_credit += $credit;
 
                     // link of contract
+                    // The anchor is written by hand and HTMLSearchOutput::showItem() writes its
+                    // argument into the cell as is, so the contract number - a raw value of the
+                    // database since GLPI 10 - is escaped before being wrapped, exactly as
+                    // Followup::showFollowup() does for the same column. The id is an integer
+                    // key, so casting it is enough to keep it out of the href and of the label.
                     $link_contract = Toolbox::getItemTypeFormURL("Contract");
-                    $name_contract = "<a href='" . $link_contract . "?id=" . $dataContractDay["contracts_id"] . "' target='_blank'>";
+                    $name_contract = "<a href='" . $link_contract . "?id=" . (int) $dataContractDay["contracts_id"] . "' target='_blank'>";
                     if ($dataContractDay["num"] == null) {
-                        $name_contract .= "(" . $dataContractDay["contracts_id"] . ")";
+                        $name_contract .= "(" . (int) $dataContractDay["contracts_id"] . ")";
                     } else {
-                        $name_contract .= $dataContractDay["num"];
+                        $name_contract .= htmlspecialchars((string) $dataContractDay["num"], ENT_QUOTES);
                     }
                     $name_contract .= "</a>";
 
@@ -791,8 +796,11 @@ class Monthly extends CommonDBTM
                 }
                 // Client
                 if ($is_html_output) {
+                    // HTMLSearchOutput::showItem() does not escape its $value argument, so every
+                    // database label rendered below is escaped here rather than in $list: the CSV
+                    // and PDF branches below must keep the raw value.
                     $html_output .= $output::showItem(
-                        $list[$i]['entities_name'],
+                        htmlspecialchars((string) $list[$i]['entities_name'], ENT_QUOTES),
                         $item_num,
                         $row_num,
                         $depassClass,
@@ -814,7 +822,7 @@ class Monthly extends CommonDBTM
                 //Period
                 if ($is_html_output) {
                     $html_output .= $output::showItem(
-                        $list[$i]['name_contractdays'],
+                        htmlspecialchars((string) $list[$i]['name_contractdays'], ENT_QUOTES),
                         $item_num,
                         $row_num,
                         $depassClass,
@@ -904,8 +912,11 @@ class Monthly extends CommonDBTM
                 }
                 // Stakeholder
                 if ($is_html_output) {
+                    // getUserName() only escapes its result on the deprecated $link branches; with
+                    // $link left to 0 it returns User::getName() verbatim, so the name of the
+                    // technician is a database value reaching an unescaped sink like the others.
                     $html_output .= $output::showItem(
-                        getUserName($list[$i]['users_id']),
+                        htmlspecialchars((string) getUserName($list[$i]['users_id']), ENT_QUOTES),
                         $item_num,
                         $row_num,
                         $depassClass,

@@ -217,6 +217,13 @@ class Preference extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        // front/preference.form.php reloads the row and refuses any id that is not the
+        // caller's own, but it then hands the whole of $_POST over, and users_id is a real
+        // column of glpi_plugin_manageentities_preferences: a posted users_id would hand the
+        // caller's own preference row over to somebody else, or silently take over theirs.
+        // The owner follows from who is logged in, it is never an input of the form.
+        unset($input['users_id']);
+
         if (isset($input['contract_states'])) {
             $input['contract_states'] = json_encode($input['contract_states']);
         } else {

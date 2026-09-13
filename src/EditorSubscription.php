@@ -112,7 +112,6 @@ class EditorSubscription extends CommonDBTM
 
         if (!self::canView()) {
             throw new AccessDeniedHttpException();
-            exit;
         }
 
         if (Session::getCurrentInterface() === 'helpdesk') {
