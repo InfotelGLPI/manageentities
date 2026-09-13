@@ -67,7 +67,10 @@ if (isset($_POST["add"])) {
 
 } elseif (isset($_POST["delete"])) {
     $contracts_id = $_POST["contracts_id"];
-    $contractday->check($_POST["id"], UPDATE);
+    // Separation of duties: the row is really removed from the table (no is_deleted column),
+    // so evaluate the PURGE bit - the deletion bit exposed by the rights matrix of
+    // 'plugin_manageentities' - and not UPDATE, which an administrator may want to grant alone.
+    $contractday->check($_POST["id"], PURGE);
     $contractday->delete($_POST);
     Html::redirect(Toolbox::getItemTypeFormURL('Contract') . "?id=" . $contracts_id);
 
@@ -88,12 +91,14 @@ if (isset($_POST["add"])) {
     Html::back();
 
 } elseif (isset($_POST["delete_nbday"])) {
-    Session::checkRight("contract", UPDATE);
+    // The rows being deleted belong to the plugin, so gate the branch on the plugin right and
+    // on the bit that matches the operation, rather than on the core "contract UPDATE" right.
+    Session::checkRight(ContractDay::$rightname, PURGE);
     foreach ($_POST["item_nbday"] as $key => $val) {
         if ($val == 1) {
-            // Per-item check like the deleteAll branch: the global "contract UPDATE" right
-            // does not scope the deletion to the user's entity perimeter on each row.
-            $contractday->check((int) $key, UPDATE);
+            // Per-item check like the deleteAll branch: the global right does not scope the
+            // deletion to the user's entity perimeter on each row.
+            $contractday->check((int) $key, PURGE);
             $contractday->delete(['id' => (int) $key]);
         }
     }
@@ -103,7 +108,7 @@ if (isset($_POST["add"])) {
     foreach ($_POST["item"] as $key => $val) {
         $input = ['id' => $key];
         if ($val == 1) {
-            $contractday->check($key, UPDATE);
+            $contractday->check($key, PURGE);
             $contractday->delete($input);
         }
     }

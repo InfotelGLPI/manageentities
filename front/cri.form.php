@@ -51,7 +51,23 @@ if (isset($_POST["addcridetail"])) {
         // checks the global cri-create right, not the targeted ticket/entity.
         $ticket = new Ticket();
         if ($ticket->can((int) ($_POST['tickets_id'] ?? 0), READ)) {
-            $criDetail->add($_POST);
+            // Never hand the raw body to add(): the form only carries the fields below, and
+            // anything else posted alongside them would be written to the row as is. The entity
+            // is taken from the ticket rather than from the hidden field, so the two can no
+            // longer disagree.
+            $input = [
+                'tickets_id'                            => (int) $ticket->fields['id'],
+                'entities_id'                           => (int) $ticket->fields['entities_id'],
+                'date'                                  => $_POST['date'] ?? $ticket->fields['date'],
+                'withcontract'                          => (int) ($_POST['withcontract'] ?? 0),
+                'contracts_id'                          => (int) ($_POST['contracts_id'] ?? 0),
+                'plugin_manageentities_contractdays_id' => (int) ($_POST['plugin_manageentities_contractdays_id'] ?? 0),
+            ];
+            if (!$input['withcontract']) {
+                $input['contracts_id']                          = 0;
+                $input['plugin_manageentities_contractdays_id'] = 0;
+            }
+            $criDetail->add($input);
         }
     }
     if (strpos($_SERVER['HTTP_REFERER'] ?? '', "generatecri.form.php") > 0) {

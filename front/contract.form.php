@@ -45,7 +45,10 @@ if (isset($_POST["addcontract"])) {
     Html::back();
 
 } elseif (isset($_POST["delcontract"])) {
-    $contract->check($_POST["id"], UPDATE);
+    // Separation of duties: the row is really removed from the table (no is_deleted column),
+    // so evaluate the PURGE bit - the deletion bit exposed by the rights matrix of
+    // 'plugin_manageentities' - and not UPDATE, which an administrator may want to grant alone.
+    $contract->check($_POST["id"], PURGE);
     $contract->delete($_POST);
     Html::back();
 

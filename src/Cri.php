@@ -388,6 +388,72 @@ class Cri extends CommonDBTM
      * @global type $CFG_GLPI
      *
      */
+    /**
+     * Re-validate a posted core contract identifier against the entity of the report ticket.
+     *
+     * CriDetail::showContractLinkDropdown() only offers a contract when a plugin Contract row
+     * declares it for the entity of the ticket, but that criterion lives in the list builder
+     * alone: the identifier travels back as a hidden field and used to be trusted verbatim.
+     * Replay the very same criterion here rather than inventing another one - comparing the
+     * entity of the *core* contract with the entity of the ticket would wrongly reject the
+     * recursive contracts the dropdown does legitimately offer.
+     *
+     * No additional right bit is required on top: the CRI form is already gated on
+     * plugin_manageentities_cri_create plus READ on the ticket, and its users are not expected
+     * to hold the contract rights themselves.
+     *
+     * @param int $contracts_id the posted core contract identifier
+     * @param int $entities_id  the entity of the ticket the report belongs to
+     *
+     * @return int the validated identifier, 0 when nothing was posted
+     */
+    private static function validateContract(int $contracts_id, int $entities_id): int
+    {
+        if ($contracts_id <= 0) {
+            return 0;
+        }
+
+        $dbu = new DbUtils();
+        if ($dbu->countElementsInTable(
+            Contract::getTable(),
+            ['contracts_id' => $contracts_id, 'entities_id' => $entities_id],
+        ) === 0) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $contracts_id;
+    }
+
+    /**
+     * Re-validate a posted contract period against the contract it is claimed to belong to.
+     *
+     * Mirror of the dropdown restriction of CriDetail::showContractLinkDropdown(): a period is
+     * only offered for the selected contract. The contract itself has already been anchored on
+     * the entity of the ticket by validateContract(), so tying the period to it is enough to
+     * keep the pair inside that entity.
+     *
+     * @param int $contractdays_id the posted contract period identifier
+     * @param int $contracts_id    the contract identifier already validated
+     *
+     * @return int the validated identifier, 0 when nothing was posted
+     */
+    private static function validateContractDay(int $contractdays_id, int $contracts_id): int
+    {
+        if ($contractdays_id <= 0) {
+            return 0;
+        }
+
+        $contract_day = new ContractDay();
+        if ($contracts_id <= 0
+            || !$contract_day->getFromDB($contractdays_id)
+            || (int) $contract_day->fields['contracts_id'] !== $contracts_id
+        ) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $contractdays_id;
+    }
+
     public function generatePdf($params, $options = [])
     {
         global $PDF, $DB, $CFG_GLPI;
@@ -451,6 +517,15 @@ class Cri extends CommonDBTM
 
         $job = new Ticket();
         if ($job->getfromDB($p['REPORT_ID'])) {
+            // Security (cross-entity IDOR): CONTRAT and CONTRACTDAY come back from the client as
+            // hidden fields (see the Html::hidden() calls at the end of this method) and used to
+            // be consumed as is, although the only thing that ever restricted them is the list
+            // builder of the dropdown. Anchor them on the entity of the ticket before they reach
+            // the generated PDF, the CriDetail row and Contract::updateRemainingDays(), which
+            // would otherwise disclose and decrement another entity's contract.
+            $p['CONTRAT']     = self::validateContract((int) $p['CONTRAT'], (int) $job->fields['entities_id']);
+            $p['CONTRACTDAY'] = self::validateContractDay((int) $p['CONTRACTDAY'], (int) $p['CONTRAT']);
+
             /* Récupération des informations du ticket et initialisation du rapport. */
             $PDF->SetDemandeAssociee($p['REPORT_ID']); // Demande / ticket associée au rapport.
             // Set intervenants

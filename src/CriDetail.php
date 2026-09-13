@@ -168,6 +168,42 @@ class CriDetail extends CommonDBTM
         );
     }
 
+    /**
+     * Tell whether a contract may be attached to a ticket.
+     *
+     * Replay of the criterion of showContractLinkDropdown(): the contract is only offered when a
+     * plugin Contract row declares it for the entity of the ticket. Rebuilding the rule here
+     * (comparing entities by hand) would diverge from the dropdown, so the very same lookup is
+     * performed instead. Defense in depth only: the controllers already validate the pair, this
+     * makes sure no other writer can bind a ticket to a contract of another entity.
+     *
+     * @param int $tickets_id   the ticket the report line belongs to
+     * @param int $contracts_id the core contract identifier
+     *
+     * @return bool true when there is nothing to attach, or when the pair is legitimate
+     */
+    public static function isContractAllowedForTicket(int $tickets_id, int $contracts_id): bool
+    {
+        if ($contracts_id <= 0) {
+            return true;
+        }
+
+        $ticket = new \Ticket();
+        if ($tickets_id <= 0 || !$ticket->getFromDB($tickets_id)) {
+            return false;
+        }
+
+        $dbu = new DbUtils();
+
+        return $dbu->countElementsInTable(
+            Contract::getTable(),
+            [
+                'contracts_id' => $contracts_id,
+                'entities_id'  => (int) $ticket->fields['entities_id'],
+            ],
+        ) > 0;
+    }
+
     public function prepareInputForUpdate($input)
     {//si un document lié ne pas permettre l'update via le form self::showForTicket($item);
         if (isset($input['updatecridetail'])) {
@@ -188,6 +224,10 @@ class CriDetail extends CommonDBTM
             return false;
         }
 
+        if (!$this->checkContractPair($input, $this->fields)) {
+            return false;
+        }
+
         return $input;
     }
 
@@ -197,7 +237,37 @@ class CriDetail extends CommonDBTM
             return false;
         }
 
+        if (!$this->checkContractPair($input, [])) {
+            return false;
+        }
+
         return $input;
+    }
+
+    /**
+     * Refuse a report line whose contract does not belong to the entity of its ticket.
+     *
+     * @param array<string, mixed> $input   the submitted values
+     * @param array<string, mixed> $current the values already stored, for a partial update
+     *
+     * @return bool
+     */
+    private function checkContractPair(array $input, array $current): bool
+    {
+        $tickets_id   = (int) ($input['tickets_id']   ?? $current['tickets_id']   ?? 0);
+        $contracts_id = (int) ($input['contracts_id'] ?? $current['contracts_id'] ?? 0);
+
+        if (self::isContractAllowedForTicket($tickets_id, $contracts_id)) {
+            return true;
+        }
+
+        Session::addMessageAfterRedirect(
+            htmlescape(__('This contract is not available for the entity of the ticket', 'manageentities')),
+            true,
+            ERROR,
+        );
+
+        return false;
     }
 
     public function post_addItem()
@@ -228,6 +298,13 @@ class CriDetail extends CommonDBTM
         global $DB;
 
         if ($tickets_id <= 0 || $contracts_id <= 0) {
+            return;
+        }
+
+        // Last line of defense before a raw insert into a core relation table: the pair has
+        // already been validated by the controller and by prepareInputForAdd()/Update(), but
+        // this method is the one that actually binds a ticket to a contract.
+        if (!self::isContractAllowedForTicket($tickets_id, $contracts_id)) {
             return;
         }
 

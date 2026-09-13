@@ -33,8 +33,12 @@ use GlpiPlugin\Manageentities\EditorSubscription;
 header('Content-Type: application/json; charset=UTF-8');
 Html::header_nocache();
 
-// Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
-if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
+// Authorization: plugin access or intervention-report rights (shared by the admin pages and the
+// CRI generation page). The payloads below are contractual data - contract comment, end date and
+// status, subscription flags, remaining days - so the entry right is the one actually carried by
+// the calling page, and no longer the far broader "may create a ticket".
+if (!Session::haveRight('plugin_manageentities', READ)
+    && !Session::haveRight('plugin_manageentities_cri_create', READ)) {
     throw new AccessDeniedHttpException();
 }
 
