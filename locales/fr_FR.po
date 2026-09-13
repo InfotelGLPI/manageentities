@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-09 15:45+0000\n"
+"POT-Creation-Date: 2026-09-10 08:42+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -850,8 +850,8 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/directhelpdesk.php:46 front/addelements.form.php:37
 #: front/generatecri.form.php:98 front/report.form.php:42
 #: front/generatecri.php:35 front/generatecri.php:38 front/generatecri.php:40
-#: front/directhelpdesk.form.php:139 front/directhelpdesk.form.php:142
-#: front/directhelpdesk.form.php:144 front/cridetail.form.php:47
+#: front/directhelpdesk.form.php:143 front/directhelpdesk.form.php:146
+#: front/directhelpdesk.form.php:148 front/cridetail.form.php:47
 #: front/cridetail.form.php:50 front/cridetail.form.php:52
 #: front/report_occupation.form.php:43 src/Followup.php:1527
 #: src/TaskCategory.php:66 src/Monthly.php:1085 src/Preference.php:109
@@ -1226,7 +1226,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
-#: hook.php:1002 src/Servicecatalog.php:74 src/Servicecatalog.php:80
+#: src/Servicecatalog.php:74 src/Servicecatalog.php:80
 msgid "Manage your contracts"
 msgstr "Gérer vos contrats"
 
@@ -1338,7 +1338,7 @@ msgstr "Nouveau contrat"
 msgid "New entity"
 msgstr "Nouvelle entité"
 
-#: front/directhelpdesk.form.php:64
+#: front/directhelpdesk.form.php:65
 msgid "New intervention"
 msgstr "Nouvelle prestation"
 
@@ -1678,7 +1678,7 @@ msgstr "Merci de sélectionner une entité enfant"
 msgid "Please select an entity"
 msgstr "Veuillez sélectionner une entité"
 
-#: front/directhelpdesk.form.php:82
+#: front/directhelpdesk.form.php:83
 msgid "Please select at least one intervention"
 msgstr "Veuillez sélectionner au moins une intervention"
 
@@ -2402,7 +2402,7 @@ msgstr "Mise à jour des champs du type de gestion"
 msgid "Update publisher subscription"
 msgstr "Mise à jour de la souscription éditeur"
 
-#: hook.php:1081
+#: hook.php:1049
 msgid "Update subscription fields"
 msgstr "Mise à jour des champs du type de gestion"
 

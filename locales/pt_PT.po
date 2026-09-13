@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-09 15:45+0000\n"
+"POT-Creation-Date: 2026-09-10 08:42+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Emperium <real.emperium@gmail.com>, 2019\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/infotelGLPI/"
@@ -831,8 +831,8 @@ msgstr ""
 #: front/directhelpdesk.php:46 front/addelements.form.php:37
 #: front/generatecri.form.php:98 front/report.form.php:42
 #: front/generatecri.php:35 front/generatecri.php:38 front/generatecri.php:40
-#: front/directhelpdesk.form.php:139 front/directhelpdesk.form.php:142
-#: front/directhelpdesk.form.php:144 front/cridetail.form.php:47
+#: front/directhelpdesk.form.php:143 front/directhelpdesk.form.php:146
+#: front/directhelpdesk.form.php:148 front/cridetail.form.php:47
 #: front/cridetail.form.php:50 front/cridetail.form.php:52
 #: front/report_occupation.form.php:43 src/Followup.php:1527
 #: src/TaskCategory.php:66 src/Monthly.php:1085 src/Preference.php:109
@@ -1196,7 +1196,7 @@ msgstr "Logotipo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (formato JPG or JPEG)"
 
-#: hook.php:1002 src/Servicecatalog.php:74 src/Servicecatalog.php:80
+#: src/Servicecatalog.php:74 src/Servicecatalog.php:80
 msgid "Manage your contracts"
 msgstr "Gerir os seus contactos "
 
@@ -1307,7 +1307,7 @@ msgstr "Novo contrato "
 msgid "New entity"
 msgstr "Nova entidade "
 
-#: front/directhelpdesk.form.php:64
+#: front/directhelpdesk.form.php:65
 msgid "New intervention"
 msgstr "Nova intervenção "
 
@@ -1637,7 +1637,7 @@ msgstr ""
 msgid "Please select an entity"
 msgstr ""
 
-#: front/directhelpdesk.form.php:82
+#: front/directhelpdesk.form.php:83
 msgid "Please select at least one intervention"
 msgstr ""
 
@@ -2331,7 +2331,7 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1081
+#: hook.php:1049
 msgid "Update subscription fields"
 msgstr ""
 
