@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-10 08:42+0000\n"
+"POT-Creation-Date: 2026-09-13 09:26+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Emperium <real.emperium@gmail.com>, 2019\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/infotelGLPI/"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "% of time justified"
 msgstr "% de tempo justificado "
 
-#: src/EditorSubscription.php:989
+#: src/EditorSubscription.php:988
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
@@ -68,7 +68,7 @@ msgstr ""
 msgid "Accomplished tasks informations"
 msgstr ""
 
-#: hook.php:906 src/EditorSubscription.php:180
+#: hook.php:906 src/EditorSubscription.php:179
 #: templates/wizard/step4_management.html.twig:121
 msgid "Active editor subscription"
 msgstr ""
@@ -187,7 +187,7 @@ msgstr "Todos os relatórios "
 msgid "Allow periods on the same interval of dates"
 msgstr ""
 
-#: src/Monthly.php:509 src/Monthly.php:519 src/Monthly.php:522
+#: src/Monthly.php:514 src/Monthly.php:524 src/Monthly.php:527
 #: templates/contractday_form.html.twig:106
 #: templates/wizard/step6_intervention_block.html.twig:106
 #: templates/wizard/step5_intervention_block.html.twig:106
@@ -314,7 +314,7 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/Followup.php:942 src/Monthly.php:694 src/Monthly.php:725
+#: src/Followup.php:942 src/Monthly.php:699 src/Monthly.php:730
 #: src/Dashboard.php:242 src/Dashboard.php:306 src/Dashboard.php:358
 #: src/GenerateCRI.php:715
 msgid "Client"
@@ -351,8 +351,8 @@ msgid "Cloud"
 msgstr ""
 
 #: hook.php:919 src/NotificationTargetEditorSubscription.php:87
-#: src/EditorSubscription.php:158 src/EditorSubscription.php:181
-#: src/EditorSubscription.php:645
+#: src/EditorSubscription.php:157 src/EditorSubscription.php:180
+#: src/EditorSubscription.php:644
 #: templates/wizard/step4_management.html.twig:130
 #: templates/contract_detail_form.html.twig:55
 #: templates/cridetail_for_ticket.html.twig:79
@@ -548,7 +548,7 @@ msgstr ""
 msgid "Current page in portrait PDF"
 msgstr ""
 
-#: src/Monthly.php:712 src/Monthly.php:750
+#: src/Monthly.php:717 src/Monthly.php:755
 #: templates/interventionstakeholder_list.html.twig:32
 msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
@@ -576,7 +576,7 @@ msgid "Customer stamp"
 msgstr "Selo do cliente "
 
 #: src/CriPrice.php:56 src/CriPrice.php:93 src/CriPrice.php:200
-#: src/CriPrice.php:353 src/Monthly.php:706 src/Monthly.php:742
+#: src/CriPrice.php:353 src/Monthly.php:711 src/Monthly.php:747
 #: src/CriType.php:93 templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Daily rate"
@@ -776,7 +776,7 @@ msgid "Editor"
 msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:88
-#: src/EditorSubscription.php:159 src/EditorSubscription.php:637
+#: src/EditorSubscription.php:158 src/EditorSubscription.php:636
 #: templates/contract_detail_form.html.twig:57
 #: templates/cridetail_for_ticket.html.twig:81
 #: templates/editorsubscription_fields.html.twig:59
@@ -798,7 +798,7 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:77
 #: src/NotificationTargetEditorSubscription.php:114
-#: src/EditorSubscription.php:184
+#: src/EditorSubscription.php:183
 #: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/contractday_form.html.twig:69
 #: templates/wizard/step6_intervention_block.html.twig:63
@@ -835,7 +835,7 @@ msgstr ""
 #: front/directhelpdesk.form.php:148 front/cridetail.form.php:47
 #: front/cridetail.form.php:50 front/cridetail.form.php:52
 #: front/report_occupation.form.php:43 src/Followup.php:1527
-#: src/TaskCategory.php:66 src/Monthly.php:1085 src/Preference.php:109
+#: src/TaskCategory.php:66 src/Monthly.php:1096 src/Preference.php:109
 #: src/Profile.php:50 src/Profile.php:101 src/GenerateCRI.php:1255
 #: templates/wizard/mode_choice.html.twig:35
 msgid "Entities portal"
@@ -855,7 +855,7 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:71
 #: src/NotificationTargetEditorSubscription.php:108
-#: src/EditorSubscription.php:175 templates/entity/contracts_tab.html.twig:51
+#: src/EditorSubscription.php:174 templates/entity/contracts_tab.html.twig:51
 #: templates/entity/editorsubscription_tab.html.twig:70
 #: templates/wizard/step1_select_entity.html.twig:43
 #: templates/wizard/step3_contract.html.twig:91
@@ -915,7 +915,7 @@ msgstr ""
 msgid "Estimated number of remaining days"
 msgstr "Estimativa do número restante de dias "
 
-#: src/Monthly.php:716 src/Monthly.php:757 src/Monthly.php:1165
+#: src/Monthly.php:721 src/Monthly.php:762 src/Monthly.php:1176
 msgid "Exceeding"
 msgstr ""
 
@@ -1024,7 +1024,7 @@ msgid "Hourly"
 msgstr "Hora a hora "
 
 #: src/CriPrice.php:58 src/CriPrice.php:95 src/CriPrice.php:200
-#: src/CriPrice.php:353 src/Monthly.php:708 src/Monthly.php:744
+#: src/CriPrice.php:353 src/Monthly.php:713 src/Monthly.php:749
 #: templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Hourly rate"
@@ -1038,7 +1038,7 @@ msgstr ""
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr ""
 
-#: src/Monthly.php:527
+#: src/Monthly.php:532
 msgid "In progress"
 msgstr "Em progresso "
 
@@ -1051,7 +1051,7 @@ msgid "Informations successfully deleted."
 msgstr "Informações apagadas com sucesso "
 
 #: src/Followup.php:877 src/Followup.php:1167 src/ContractDay.php:119
-#: src/ContractDay.php:531 src/Monthly.php:702 src/Monthly.php:734
+#: src/ContractDay.php:531 src/Monthly.php:707 src/Monthly.php:739
 #: src/Gantt.php:425 templates/contractday_form.html.twig:94
 #: templates/wizard/step6_intervention_block.html.twig:69
 #: templates/wizard/step5_intervention_block.html.twig:69
@@ -1062,7 +1062,7 @@ msgstr "Crédito inicial"
 msgid "Initial credit is required"
 msgstr ""
 
-#: hook.php:932 src/EditorSubscription.php:182 src/EditorSubscription.php:653
+#: hook.php:932 src/EditorSubscription.php:181 src/EditorSubscription.php:652
 #: templates/contract_detail_form.html.twig:80
 #: templates/cridetail_for_ticket.html.twig:422
 #: templates/editorsubscription_fields.html.twig:75
@@ -1249,7 +1249,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/Followup.php:1086 src/Monthly.php:698 src/Monthly.php:730
+#: src/Followup.php:1086 src/Monthly.php:703 src/Monthly.php:735
 #: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step4_management.html.twig:61
 #: templates/wizard/step5_management.html.twig:61
@@ -1257,7 +1257,7 @@ msgstr ""
 msgid "Mode of management"
 msgstr "Modo de gestão "
 
-#: src/Monthly.php:52 src/Monthly.php:1085 src/Monthly.php:1185
+#: src/Monthly.php:52 src/Monthly.php:1096 src/Monthly.php:1196
 #: src/Entity.php:98
 msgid "Monthly follow-up"
 msgstr "Seguimento mensal"
@@ -1373,7 +1373,7 @@ msgstr ""
 msgid "No expired publisher subscription."
 msgstr ""
 
-#: src/EditorSubscription.php:410
+#: src/EditorSubscription.php:409
 msgid "No level"
 msgstr ""
 
@@ -1739,13 +1739,13 @@ msgstr ""
 msgid "Price must be greater than 0"
 msgstr ""
 
-#: src/Monthly.php:711 src/Monthly.php:748
+#: src/Monthly.php:716 src/Monthly.php:753
 msgid "Production"
 msgstr "Produção"
 
 #: src/NotificationTargetEditorSubscription.php:72
 #: src/NotificationTargetEditorSubscription.php:109
-#: src/EditorSubscription.php:176 src/EditorSubscription.php:621
+#: src/EditorSubscription.php:175 src/EditorSubscription.php:620
 #: templates/entity/editorsubscription_tab.html.twig:71
 #: templates/contract_detail_form.html.twig:63
 #: templates/editorsubscription_fields.html.twig:38
@@ -1774,7 +1774,7 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:502
+#: src/EditorSubscription.php:501
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
@@ -1802,7 +1802,7 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:73
 #: src/NotificationTargetEditorSubscription.php:110
-#: src/EditorSubscription.php:177
+#: src/EditorSubscription.php:176
 #: templates/entity/editorsubscription_tab.html.twig:72
 #: templates/contract_detail_form.html.twig:69
 #: templates/editorsubscription_fields.html.twig:31
@@ -1843,7 +1843,7 @@ msgstr ""
 msgid "Remaining days number by opened client contracts"
 msgstr ""
 
-#: src/Monthly.php:703 src/Monthly.php:736
+#: src/Monthly.php:708 src/Monthly.php:741
 msgid "Remaining on "
 msgstr ""
 
@@ -1933,7 +1933,7 @@ msgstr ""
 msgid "Select an existing price"
 msgstr "Selecionar um preço existente "
 
-#: src/EditorSubscription.php:917
+#: src/EditorSubscription.php:916
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -1979,7 +1979,7 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:76
 #: src/NotificationTargetEditorSubscription.php:113
-#: src/EditorSubscription.php:183
+#: src/EditorSubscription.php:182
 #: templates/entity/editorsubscription_tab.html.twig:75
 #: templates/wizard/step3_contract.html.twig:72
 #: templates/wizard/step4_contract.html.twig:72
@@ -2006,7 +2006,7 @@ msgid_plural "States of contracts"
 msgstr[0] "Estado do contrato"
 msgstr[1] "Estado dos contratos"
 
-#: src/Monthly.php:721 src/Monthly.php:762
+#: src/Monthly.php:726 src/Monthly.php:767
 msgid "State of intervention"
 msgstr "Estado da intervenção "
 
@@ -2044,8 +2044,8 @@ msgstr ""
 
 #: src/SubscriptionLevel.php:47 src/NotificationTargetEditorSubscription.php:75
 #: src/NotificationTargetEditorSubscription.php:112
-#: src/EditorSubscription.php:179 src/EditorSubscription.php:629
-#: src/EditorSubscription.php:684
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:628
+#: src/EditorSubscription.php:683
 #: templates/entity/editorsubscription_tab.html.twig:74
 #: templates/contract_detail_form.html.twig:75
 #: templates/editorsubscription_fields.html.twig:87
@@ -2218,8 +2218,8 @@ msgstr "Para "
 msgid "To compute"
 msgstr ""
 
-#: src/Monthly.php:507 src/Monthly.php:514 src/Monthly.php:524
-#: src/Monthly.php:1167
+#: src/Monthly.php:512 src/Monthly.php:519 src/Monthly.php:529
+#: src/Monthly.php:1178
 msgid "To present an invoice"
 msgstr ""
 
@@ -2237,7 +2237,7 @@ msgid "Total consummated"
 msgstr "Total consumido "
 
 #: src/Followup.php:887 src/Followup.php:1212 src/ContractDay.php:540
-#: src/Monthly.php:719 src/Monthly.php:760
+#: src/Monthly.php:724 src/Monthly.php:765
 #: templates/contractday_form.html.twig:123
 msgid "Total exceeding"
 msgstr "Total excedido "
@@ -2246,7 +2246,7 @@ msgstr "Total excedido "
 msgid "Total moving package"
 msgstr "Total de embalagem movidas "
 
-#: src/Monthly.php:714 src/Monthly.php:755
+#: src/Monthly.php:719 src/Monthly.php:760
 msgid "Total production"
 msgstr "Produção total "
 
@@ -2274,7 +2274,7 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:74
 #: src/NotificationTargetEditorSubscription.php:111
-#: src/EditorSubscription.php:178 templates/entity/description.html.twig:185
+#: src/EditorSubscription.php:177 templates/entity/description.html.twig:185
 #: templates/entity/editorsubscription_tab.html.twig:73
 #: templates/entity/contacts_card.html.twig:45
 #: templates/wizard/step2_contact_block.html.twig:84
@@ -2282,8 +2282,8 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/Followup.php:869 src/Followup.php:1145 src/Monthly.php:700
-#: src/Monthly.php:732
+#: src/Followup.php:869 src/Followup.php:1145 src/Monthly.php:705
+#: src/Monthly.php:737
 msgid "Type of contract"
 msgstr "Tipos de contrato "
 
@@ -2385,7 +2385,7 @@ msgid ""
 "only the first will be used"
 msgstr ""
 
-#: src/Monthly.php:628
+#: src/Monthly.php:633
 msgid ""
 "Warning : There are supplementary interventions which depends on a "
 "prestation with a earlier end date"
