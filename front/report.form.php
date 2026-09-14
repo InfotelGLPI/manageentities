@@ -34,8 +34,12 @@ use GlpiPlugin\Manageentities\Entity;
 
 // Enforce the access control BEFORE rendering anything: Html::header()/Report::title()
 // used to be emitted first, leaking the page chrome to users without the right.
-$Entity = new \Entity();
-if (!$Entity->canView() && !Session::haveRight("config", UPDATE)) {
+// The right tested here is the plugin's own, not the core "entity" one this used to read
+// through \Entity::canView(): these reports display the plugin's intervention data, so the
+// profile setting an administrator edits to grant or revoke them has to be the one that
+// actually governs the screen. The "config" UPDATE fallback is kept deliberately, so that a
+// technical administration profile keeps its access to the reporting screens.
+if (!Session::haveRight(Entity::$rightname, READ) && !Session::haveRight("config", UPDATE)) {
     throw new AccessDeniedHttpException();
 }
 

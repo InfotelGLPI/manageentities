@@ -31,10 +31,14 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Company;
 use GlpiPlugin\Manageentities\Entity;
 
-Html::header(Company::getTypeName(2), '', "management", Entity::class, "company");
-
+// The right is evaluated before Html::header(), otherwise the menu, the breadcrumb and the
+// plugin labels are already on the wire when the refusal happens - which both advertises the
+// plugin to a user who has no access to it and corrupts the rendering of the error page.
+// front/report.form.php and front/report_moving.form.php already follow this order.
 $company = new Company();
 $company->checkGlobal(READ);
+
+Html::header(Company::getTypeName(2), '', "management", Entity::class, "company");
 
 if ($company->canView()) {
     Search::show(Company::class);

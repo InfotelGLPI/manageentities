@@ -377,6 +377,11 @@ function plugin_manageentities_install()
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.2.3.sql");
     }
 
+    //version 4.2.12 : canonical entity columns on the companies table
+    if (!$DB->fieldExists("glpi_plugin_manageentities_companies", "entities_id")) {
+        $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.2.13.sql");
+    }
+
 
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
         include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
@@ -525,25 +530,10 @@ function plugin_manageentities_addLeftJoin($type, $ref_table, $new_table, $linkf
     return "";
 }
 
-/**
- * Restrict the search engine to the entities of the current session.
- *
- * Company is not entity assigned in the CommonDBTM sense - it carries its own entity_id and
- * recursive columns - so the engine applies no boundary of its own to it. Criteria are returned as
- * an array so the core builds the SQL itself.
- *
- * @param string $type
- *
- * @return array
- */
-function plugin_manageentities_addDefaultWhere($type)
-{
-    if ($type === Company::class) {
-        return Company::getEntityCriteria(Company::getTable());
-    }
-
-    return [];
-}
+// plugin_manageentities_addDefaultWhere() used to restrict the search engine to the entities of
+// the session for Company alone, because that itemtype was not entity assigned in the CommonDBTM
+// sense. Its table now carries entities_id / is_recursive, so the engine adds that restriction
+// itself for every listing and export, and the hook had nothing else to do.
 
 function plugin_manageentities_forceGroupBy($type)
 {

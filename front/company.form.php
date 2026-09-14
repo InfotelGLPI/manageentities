@@ -33,7 +33,10 @@ use GlpiPlugin\Manageentities\Entity;
 $company = new Company();
 
 if (isset($_POST["add"])) {
-    $company->check(-1, CREATE);
+    // The input has to be passed so the entity carried by the form is the one checked: without
+    // it can(-1, CREATE) falls back on the empty item, whose entities_id is the active entity,
+    // and the destination chosen in the dropdown is never compared to the perimeter.
+    $company->check(-1, CREATE, $_POST);
     $newID = $company->add($_POST);
     if ($_SESSION['glpibackcreated']) {
         Html::redirect($company->getFormURL() . "?id=" . $newID);

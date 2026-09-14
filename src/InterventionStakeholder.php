@@ -310,14 +310,28 @@ class InterventionStakeholder extends CommonDBTM
     }
 
 
-    public function hideAddForm($idToUse)
+    /**
+     * Security (JS injection): $idToUse is concatenated straight into the JavaScript these
+     * two methods emit, and every caller passes $_POST['contractdays_id'] verbatim. The
+     * closure guarding the endpoint casts that value for its own lookup but leaves the raw
+     * string in $_POST, so a payload closing the selector string escaped into the script the
+     * browser executes. Typing the parameter makes the identifier an integer whatever the
+     * caller hands over, which is the only shape a row id can take; the call sites cast as
+     * well so that a non-numeric value is rejected as 0 rather than raising a TypeError.
+     *
+     * @param int $idToUse identifier of the contract day whose form block is toggled
+     */
+    public function hideAddForm(int $idToUse)
     {
         $this->showHeaderJS();
         echo "var tbl = $('#global_form_content" . $idToUse . "').hide();";
         $this->closeFormJS();
     }
 
-    public function showAddForm($idToUse)
+    /**
+     * @param int $idToUse identifier of the contract day whose form block is toggled
+     */
+    public function showAddForm(int $idToUse)
     {
         $this->showHeaderJS();
         echo "var tbl = $('#global_form_content" . $idToUse . "').show();";

@@ -36,6 +36,12 @@ $GenerateCri = new GenerateCri();
 $Cri         = new Cri();
 $ticket                          = new Ticket();
 
+// Every branch of this controller is about tickets, including the entity switch just below,
+// which writes the active entity into the session. The floor is therefore settled once, before
+// any branching, instead of being left to each branch - that is how the display branch ended up
+// with no check at all.
+Session::checkRight('ticket', READ);
+
 if (count($_SESSION["glpiactiveentities"]) > 1
     && isset($_GET['active_entity'])) {
 
@@ -95,6 +101,15 @@ if (isset($_POST['generatecri'])) {
     }
     $GenerateCri->generateCri($_POST, $ticket_id, $Cri);
 } else {
+    // The wizard used to be rendered with no authorization whatsoever, while the POST branch
+    // that submits it requires ticket CREATE and the sibling listing front/generatecri.php
+    // applies exactly this check before calling the very same showWizard(). Any authenticated
+    // user could therefore reach the service contracts and the intervention periods of the
+    // entity through showContractLinkDropdown(), and have $_SESSION['glpiactive_entity']
+    // rewritten on the way. The check comes before Html::header() so a refusal does not ship a
+    // rendered page shell.
+    Session::checkRight('ticket', CREATE);
+
     Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", GenerateCri::class);
     $ticket->fields['itilcategories_id'] = $_POST['itilcategories_id'] ?? 0;
     $ticket->fields['type']              = $_POST['type'] ?? '';

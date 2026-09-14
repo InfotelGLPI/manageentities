@@ -31,13 +31,14 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\Entity;
 
-Html::header(ContractDay::getTypeName(2), '', "management", Entity::class, "contractday");
-
-$contractday = new Contractday();
+// Same ordering as front/company.php: the right is evaluated before any output is emitted.
+$contractday = new ContractDay();
 $contractday->checkGlobal(READ);
 
+Html::header(ContractDay::getTypeName(2), '', "management", Entity::class, "contractday");
+
 if ($contractday->canView()) {
-    Search::show(Contractday::class);
+    Search::show(ContractDay::class);
 
 } else {
     throw new AccessDeniedHttpException();

@@ -84,11 +84,31 @@ if (isset($_POST["addcridetail"])) {
             || !Session::haveAccessToEntity($criDetail->fields['entities_id'])) {
             throw new AccessDeniedHttpException();
         }
-        if (isset($_POST['withcontract']) && !$_POST['withcontract']) {
-            $_POST['contracts_id']                          = 0;
-            $_POST['plugin_manageentities_contractdays_id'] = 0;
+        // Never hand the raw body to update(), exactly as in the addcridetail branch above:
+        // update() persists every key it is given column by column, so tickets_id and
+        // entities_id could be reassigned by the request even though the guard above had
+        // just validated them against the stored row -- moving the report line onto another
+        // entity's ticket in a single POST, and leaving documents_id, realtime, technicians
+        // and number_moving writable from the same request too. Both identifying columns are
+        // therefore re-read from the row that was just loaded and are not updatable at all;
+        // the form only owns the four fields below. The 'updatecridetail' marker is kept
+        // because prepareInputForUpdate() keys the "a report document already exists" lock
+        // on its presence.
+        $input = [
+            'id'                                    => (int) $criDetail->fields['id'],
+            'tickets_id'                            => (int) $criDetail->fields['tickets_id'],
+            'entities_id'                           => (int) $criDetail->fields['entities_id'],
+            'date'                                  => $_POST['date'] ?? $criDetail->fields['date'],
+            'withcontract'                          => (int) ($_POST['withcontract'] ?? 0),
+            'contracts_id'                          => (int) ($_POST['contracts_id'] ?? 0),
+            'plugin_manageentities_contractdays_id' => (int) ($_POST['plugin_manageentities_contractdays_id'] ?? 0),
+            'updatecridetail'                       => 1,
+        ];
+        if (!$input['withcontract']) {
+            $input['contracts_id']                          = 0;
+            $input['plugin_manageentities_contractdays_id'] = 0;
         }
-        $criDetail->update($_POST);
+        $criDetail->update($input);
     }
     Html::back();
 
@@ -116,6 +136,15 @@ if (isset($_POST["addcridetail"])) {
     Html::back();
 
 } else {
+    // Same gate as the twin AJAX path (ajax/cri.php, case showCriForm). Cri::showForm()
+    // checks read access to the underlying ticket - which covers the right and the entity
+    // boundary of the ticket - but not the CRI business right, so this branch used to
+    // render the report form, its contracts, contractual periods and technician lists to
+    // any profile merely able to read the ticket. Every POST branch of this file already
+    // checks canCreate(); only the rendering branch was left open.
+    if (!$Cri->canCreate()) {
+        throw new AccessDeniedHttpException();
+    }
     $Cri->showForm($_GET["job"], ['action' => $_GET["action"]]);
 }
 

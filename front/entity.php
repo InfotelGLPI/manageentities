@@ -28,6 +28,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use GlpiPlugin\Manageentities\BusinessContact;
 use GlpiPlugin\Servicecatalog\Main;
 use GlpiPlugin\Manageentities\Contract;
@@ -139,7 +140,14 @@ if ($ManageentitiesEntity->canView()
             }
 
         } elseif (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
-            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php?active_entity=" . $_POST["entities_id"] . "");
+            // Same treatment as front/entity.form.php: the posted value used to be
+            // concatenated as is, which let extra parameters be smuggled into the query
+            // string of the target page. Only the integer reaches the URL.
+            $redirect_entities_id = (int) $_POST["entities_id"];
+            if ($redirect_entities_id <= 0) {
+                throw new BadRequestHttpException();
+            }
+            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php?active_entity=" . $redirect_entities_id);
 
         } else {
             if (Session::getCurrentInterface() == 'central') {

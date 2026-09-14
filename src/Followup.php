@@ -358,10 +358,10 @@ class Followup extends CommonDBTM
                             $company = $plugin_company->find(['id' => $id]);
                             $company = reset($company);
                             $sons = [];
-                            if ($company['recursive'] == 1) {
-                                $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
+                            if ($company['is_recursive'] == 1) {
+                                $sons = $dbu->getSonsOf('glpi_entities', $company['entities_id']);
                             } else {
-                                $sons[0] = $company['entity_id'];
+                                $sons[0] = $company['entities_id'];
                             }
                         }
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
@@ -374,10 +374,10 @@ class Followup extends CommonDBTM
                             $plugin_company = new Company();
                             $company = $plugin_company->find(['id' => $id]);
                             $company = reset($company);
-                            if ($company['recursive'] == 1) {
-                                $sons = $dbu->getSonsOf('glpi_entities', $company['entity_id']);
+                            if ($company['is_recursive'] == 1) {
+                                $sons = $dbu->getSonsOf('glpi_entities', $company['entities_id']);
                             } else {
-                                $sons[0] = $company['entity_id'];
+                                $sons[0] = $company['entities_id'];
                             }
                         }
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
@@ -1265,6 +1265,7 @@ class Followup extends CommonDBTM
                                 $html_output .= self::showNewLine(
                                     false,
                                     $day['contract_is_closed'],
+                                    false,
                                     $day['contractstates_color'],
                                 );
                             }

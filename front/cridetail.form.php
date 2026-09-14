@@ -33,15 +33,20 @@ use GlpiPlugin\Manageentities\Entity;
 if (!isset($_GET["id"])) {
     $_GET["id"] = 0;
 }
-if (!isset($_GET["users_id"])) {
-    $users_id = Session::getLoginUserID();
-} else {
-    $users_id = $_GET["users_id"];
-}
 
-$cri = new TicketTask();
+// The class instantiated below is the core \TicketTask, not the plugin one: without an
+// import the short name resolved to the core class anyway, and the plugin class of the
+// same name is only a hook carrier (preItemForm/preItemAdd/postForm), with neither
+// showForm() nor defineTabs(), so it cannot be displayed. The leading backslash makes
+// that resolution explicit instead of accidental.
+// The guard, however, was checking the core "task" right, which is decorrelated from the
+// screen actually served: a profile holding core task READ but nothing on this plugin got
+// in, while a plugin manager without it was refused. Check the business right of the
+// plugin, the same one the rest of the portal requires, and keep the core class checks
+// underneath as the object-level boundary.
+Session::checkRight('plugin_manageentities', READ);
 
-$cri->checkGlobal(READ);
+$cri = new \TicketTask();
 
 if (Session::getCurrentInterface() == 'central') {
     Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);

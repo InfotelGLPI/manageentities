@@ -51,10 +51,11 @@
     </div>
     <div class="card-body p-0">
         {% if companies|length > 0 %}
+            {# name is the anchor produced by CommonDBTM::getLink(), already escaped by the
+             # core, hence the raw_html formatter. Nothing is assembled here: building the
+             # markup in the template is what let an unescaped company name through. #}
             {{ include('components/datatable.html.twig', {
-                'entries': companies|map(c => {
-                    'name': '<a href="' ~ c.url ~ '">' ~ c.name ~ '</a>',
-                }),
+                'entries': companies,
                 'columns': {
                     'name': _n('Company', 'Companies', 1, 'manageentities'),
                 },

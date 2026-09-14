@@ -74,53 +74,29 @@ class Company extends CommonDBTM
         return true;
     }
 
-    /**
-     * Entity criteria matching the perimeter of the current session.
-     *
-     * The table names its columns entity_id / recursive instead of the standard entities_id /
-     * is_recursive, so getEntitiesRestrictCriteria() - which hardcodes is_recursive - cannot be
-     * reused, and CommonDBTM::isEntityAssign() stays false, which means nothing scopes the reads
-     * on its own: the list below and the search engine used to return every client's companies.
-     * The shape is the one of the core helper: the row is visible from its own entity, and a
-     * recursive row is visible from the entities it descends from too.
-     *
-     * @param string $table Table name the columns are prefixed with, empty for none.
-     *
-     * @return array
-     */
-    public static function getEntityCriteria(string $table = ''): array
-    {
-        if (!empty($_SESSION['glpishowallentities'])) {
-            return [];
-        }
-
-        $prefix = $table !== '' ? $table . '.' : '';
-
-        $actives = array_map('intval', $_SESSION['glpiactiveentities'] ?? []);
-        $criteria = [[$prefix . 'entity_id' => ($actives === [] ? [-1] : $actives)]];
-
-        $parents = array_map('intval', $_SESSION['glpiparententities'] ?? []);
-        if ($parents !== []) {
-            $criteria[] = [
-                $prefix . 'recursive' => 1,
-                $prefix . 'entity_id' => $parents,
-            ];
-        }
-
-        return ['OR' => $criteria];
-    }
-
     public static function showList(): void
     {
+        $dbu = new DbUtils();
         $plugin_company = new self();
-        $result = $plugin_company->find(self::getEntityCriteria());
+        // find() applies no boundary of its own, so the criteria are explicit. Now that the
+        // table carries entities_id / is_recursive, the core helper builds exactly the
+        // perimeter this class used to assemble by hand - the row is visible from its own
+        // entity, a recursive one from its descendants too - and it honours "see all
+        // entities" without a special case.
+        $result = $plugin_company->find(
+            $dbu->getEntitiesRestrictCriteria(self::getTable(), '', '', true),
+        );
         $companies = [];
         $link = Toolbox::getItemTypeFormURL(self::class);
         foreach ($result as $data) {
             $plugin_company->getFromDB($data['id']);
+            // getLink() builds the whole anchor itself and escapes both the href and the label,
+            // which is what the column needs: the template used to concatenate the url and the
+            // raw getNameID() into an <a> and hand the result to the raw_html formatter, so a
+            // company name carrying markup - it is free text, saved by anyone holding the
+            // plugin's update right - was executed in the browser of every reader of the tab.
             $companies[] = [
-                'url'  => $link . '?id=' . (int) $data['id'],
-                'name' => $plugin_company->getNameID(),
+                'name' => $plugin_company->getLink(),
             ];
         }
 
@@ -217,40 +193,12 @@ class Company extends CommonDBTM
         unset($_SESSION['plugin_manageentities']['company']);
     }
 
-    /**
-     * Whether the current session may act on this company.
-     *
-     * The table carries its own non standard "entity_id" column instead of entities_id, so
-     * CommonDBTM::isEntityAssign() is false and checkEntity() lets everything through: the
-     * check($id, UPDATE) and check($id, PURGE) of front/company.form.php were validating the
-     * global plugin right alone, and the sequential identifiers made every other client's company
-     * - and its logo - reachable. The boundary is restored in canViewItem(), canUpdateItem() and
-     * canPurgeItem() rather than in the front script alone, so it holds on every path.
-     *
-     * @return bool
-     */
-    private function isInSessionPerimeter(): bool
-    {
-        return Session::haveAccessToEntity(
-            (int) ($this->fields['entity_id'] ?? 0),
-            (bool) ($this->fields['recursive'] ?? 0),
-        );
-    }
-
-    public function canViewItem(): bool
-    {
-        return $this->isInSessionPerimeter();
-    }
-
-    public function canUpdateItem(): bool
-    {
-        return $this->isInSessionPerimeter();
-    }
-
-    public function canPurgeItem(): bool
-    {
-        return $this->isInSessionPerimeter();
-    }
+    // canViewItem(), canUpdateItem() and canPurgeItem() used to be overridden here to rebuild
+    // the entity boundary by hand, because the table named its columns entity_id / recursive
+    // and CommonDBTM::isEntityAssign() therefore returned false. The columns are now the
+    // canonical entities_id / is_recursive (install/sql/update-4.2.13.sql), so the inherited
+    // implementations call checkEntity() themselves and the overrides are gone: access control
+    // belongs to the framework, and an override is precisely what used to make it disappear.
 
     /**
      * Whether an uploaded logo really is a JPEG.
@@ -281,8 +229,8 @@ class Company extends CommonDBTM
     {
         // Moving a company into an entity the session cannot see would put it - and its logo -
         // out of reach of its own owner, so the destination is checked like the row itself.
-        if (isset($input['entity_id'])
-            && !Session::haveAccessToEntity((int) $input['entity_id'], (bool) ($input['recursive'] ?? 0))) {
+        if (isset($input['entities_id'])
+            && !Session::haveAccessToEntity((int) $input['entities_id'], (bool) ($input['is_recursive'] ?? 0))) {
             Session::addMessageAfterRedirect(
                 __('Entity not found', 'manageentities'),
                 false,
@@ -321,9 +269,10 @@ class Company extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        // Same entity check as on update: the company is created where the form says, and nothing
-        // downstream compares that value with the perimeter of the session.
-        if (!Session::haveAccessToEntity((int) ($input['entity_id'] ?? 0), (bool) ($input['recursive'] ?? 0))) {
+        // Same entity check as on update. check(-1, CREATE, $_POST) in front/company.form.php
+        // now covers the web form, but the check is kept here so it also holds on the paths that
+        // never go through that controller (massive actions, API, another plugin calling add()).
+        if (!Session::haveAccessToEntity((int) ($input['entities_id'] ?? 0), (bool) ($input['is_recursive'] ?? 0))) {
             Session::addMessageAfterRedirect(
                 __('Entity not found', 'manageentities'),
                 false,
@@ -466,10 +415,9 @@ class Company extends CommonDBTM
                 // the query builder escapes on its own, so the pair used to write literal
                 // backslashes into the database and strip legitimate ones back out.
                 $input2["name"] = sprintf(__('Logo %d', 'manageentities'), $this->getID());
-                // Document expects the standard "entities_id" key; the company stores its entity in its
-                // own non-standard "entity_id" column, so map the value across so the logo document lands
-                // in the right entity instead of falling back to the default one.
-                $input2["entities_id"] = $this->fields["entity_id"];
+                // The logo belongs to the entity of the company, not to the one the uploader
+                // happens to be working in.
+                $input2["entities_id"] = $this->fields["entities_id"];
                 $input2["_only_if_upload_succeed"] = 1;
                 $input2["_filename"] = [$file];
                 $input2["is_recursive"] = 1;
@@ -518,14 +466,14 @@ class Company extends CommonDBTM
     public static function getAddress($obj)
     {
         $plugin_company = new Company();
-        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
+        $company = $plugin_company->find(['entities_id' => $obj->entite[0]->fields['id']]);
         $company = reset($company);
         $dbu = new DbUtils();
         if ($company == false) {
             $companies = $plugin_company->find();
             foreach ($companies as $data) {
-                if ($data['recursive'] == 1) {
-                    $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
+                if ($data['is_recursive'] == 1) {
+                    $sons = $dbu->getSonsOf("glpi_entities", $data['entities_id']);
                     foreach ($sons as $son) {
                         if ($son == $obj->entite[0]->fields['id']) {
                             return $data['address'];
@@ -548,15 +496,15 @@ class Company extends CommonDBTM
     public static function getLogo($obj)
     {
         $plugin_company = new Company();
-        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
+        $company = $plugin_company->find(['entities_id' => $obj->entite[0]->fields['id']]);
         $company = reset($company);
         $doc = new Document();
         $dbu = new DbUtils();
         if ($company == false) {
             $companies = $plugin_company->find();
             foreach ($companies as $data) {
-                if ($data['recursive'] == 1) {
-                    $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
+                if ($data['is_recursive'] == 1) {
+                    $sons = $dbu->getSonsOf("glpi_entities", $data['entities_id']);
                     foreach ($sons as $son) {
                         if ($son == $obj->entite[0]->fields['id']) {
                             if ($doc->getFromDB($data["logo_id"])) {
@@ -585,14 +533,14 @@ class Company extends CommonDBTM
     public static function getComment($obj)
     {
         $plugin_company = new Company();
-        $company = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
+        $company = $plugin_company->find(['entities_id' => $obj->entite[0]->fields['id']]);
         $company = reset($company);
         $dbu = new DbUtils();
         if ($company == false) {
             $companies = $plugin_company->find();
             foreach ($companies as $data) {
-                if ($data['recursive'] == 1) {
-                    $sons = $dbu->getSonsOf("glpi_entities", $data['entity_id']);
+                if ($data['is_recursive'] == 1) {
+                    $sons = $dbu->getSonsOf("glpi_entities", $data['entities_id']);
                     foreach ($sons as $son) {
                         if ($son == $obj->entite[0]->fields['id']) {
                             return $data['comment'];
@@ -620,11 +568,13 @@ class Company extends CommonDBTM
                         `id` int {$default_key_sign} NOT NULL auto_increment,
                         `name` varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
                         `address` text collate utf8mb4_unicode_ci COMMENT 'address of the company shown on CRI',
-                        `entity_id` text DEFAULT NULL,
-                        `recursive` int {$default_key_sign} DEFAULT 0,
+                        `entities_id` int {$default_key_sign} NOT NULL DEFAULT 0 COMMENT 'RELATION to glpi_entities (id)',
+                        `is_recursive` tinyint NOT NULL DEFAULT 0,
                         `logo_id` int {$default_key_sign} DEFAULT 0 COMMENT 'RELATION to glpi_documents',
                         `comment` text collate utf8mb4_unicode_ci,
                         PRIMARY KEY  (`id`),
+                        KEY `entities_id` (`entities_id`),
+                        KEY `is_recursive` (`is_recursive`),
                         KEY `logo_id` (`logo_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 

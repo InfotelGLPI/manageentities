@@ -36,6 +36,7 @@ use DBConnection;
 use DbUtils;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\RichText\RichText;
 use Html;
 use Migration;
@@ -90,6 +91,23 @@ class CriDetail extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        // Security (authorization bypass): the plugin right plugin_manageentities_cri_create in
+        // READ and the entity scope (the sons of wizard_default_entities_id) were evaluated in
+        // getTabNameForItem() alone, that is, in the tab menu builder - the function that
+        // decides whether the tab is OFFERED. ajax/common.tabs.php only replays
+        // can($_GET['id'], READ) on the HOST item (the ticket) and
+        // CommonGLPI::displayStandardTab() forwards the received _glpi_tab verbatim, without
+        // ever checking that it was part of the menu, so the content of this tab - the service
+        // contracts of the entity, the contract periods, the editor subscription - was
+        // reachable with a forged tab name by anyone allowed to read any ticket.
+        // Asking the menu builder itself replays every per-itemtype condition exactly once and
+        // cannot drift from it; same guard as Entity::displayTabContentForItem().
+        $tabs = (new self())->getTabNameForItem($item, $withtemplate);
+        $offered = is_array($tabs) ? isset($tabs[(int) $tabnum]) : (string) $tabs !== '';
+        if (!$offered) {
+            throw new AccessDeniedHttpException();
+        }
+
         if ($item->getType() == 'Ticket') {
             if (Session::getCurrentInterface() == 'central') {
                 self::showForTicket($item);
@@ -184,13 +202,26 @@ class CriDetail extends CommonDBTM
      */
     public static function isContractAllowedForTicket(int $tickets_id, int $contracts_id): bool
     {
-        if ($contracts_id <= 0) {
-            return true;
+        if ($tickets_id <= 0) {
+            // Legacy rows carry tickets_id = 0 until the document-based repair in hook.php
+            // fills it in; there is then no ticket to validate the pair against. That is only
+            // acceptable while no contract is attached either, otherwise the whole check
+            // below could be skipped by simply omitting the ticket from the payload.
+            return $contracts_id <= 0;
         }
 
         $ticket = new \Ticket();
-        if ($tickets_id <= 0 || !$ticket->getFromDB($tickets_id)) {
+        if (!$ticket->getFromDB($tickets_id)) {
             return false;
+        }
+
+        // The early return on contracts_id used to sit before the lookup above, so the
+        // "withcontract = 0" path - the one the form takes by default - validated nothing at
+        // all and a report line pointing at a ticket that does not exist, or no longer does,
+        // was written without a word. The contract/entity comparison itself is still only
+        // meaningful when a contract is actually being attached.
+        if ($contracts_id <= 0) {
+            return true;
         }
 
         $dbu = new DbUtils();
@@ -862,10 +893,16 @@ class CriDetail extends CommonDBTM
                 echo "<div class='center'>";
                 echo "<table class='tab_cadre_fixe' cellpadding='5'>";
                 echo "<tr>";
+                // Security (stored XSS): the contract name comes straight from
+                // glpi_contracts through find(), and GLPI stores data unescaped since
+                // version 10, so escaping belongs here. The sibling $data['name'] a few
+                // lines below is already escaped the same way; only this occurrence had
+                // been missed. This table is rendered from Entity::showPeriod() too, that
+                // is, in the entity portal reachable from the simplified interface.
                 echo "<tr><th colspan='" . $colspan . "'>" . __(
                     'Intervention of contract',
                     'manageentities',
-                ) . " : " . $data_contract["name"] . "</th></tr>";
+                ) . " : " . htmlspecialchars((string) $data_contract["name"], ENT_QUOTES) . "</th></tr>";
                 echo "<tr>";
                 echo "<th>" . __('Date') . "</th>";
                 echo "<th>" . __('Object of intervention', 'manageentities') . "</th>";
@@ -1768,7 +1805,14 @@ class CriDetail extends CommonDBTM
             return false;
         }
 
-        if ($config->fields["backup"] == 1) {
+        // This block repairs the tickets_id of the intervention reports attached to a document
+        // of the ticket, and it used to run on every display: a GET request mutated the
+        // database, and a caller holding nothing but the read right on the ticket triggered the
+        // write. The repair is kept - removing it would leave the rows unlinked forever, and
+        // there is no POST path through this tab to move it to - but it is now reserved to a
+        // caller who may actually modify the ticket, which is the right the mutation belongs
+        // to. $canEdit is read above, from the same can() pair as $canView.
+        if ($canEdit && $config->fields["backup"] == 1) {
             $criDetail = new CriDetail();
 
             $iterator = $DB->request([
@@ -2215,7 +2259,9 @@ class CriDetail extends CommonDBTM
          OR `glpi_plugin_manageentities_critechnicians`.`users_id` =" . $who;
         }
         if ($who_group > 0) {
-            $ASSIGN = " AND `users_id` IN (SELECT `users_id`
+            // The leading " AND " produced " AND  AND " once concatenated below, so this
+            // branch built syntactically invalid SQL and had clearly never been exercised.
+            $ASSIGN = "`users_id` IN (SELECT `users_id`
                                  FROM `glpi_groups_users`
                                  WHERE `groups_id` = " . $who_group . ")";
         }
@@ -2228,7 +2274,16 @@ class CriDetail extends CommonDBTM
                   AND `glpi_tickettasks`.`end` <= '" . $end . "') "
             . " AND NOT `glpi_tickets`.`is_deleted` "
             . " $addcrit "
-            . " AND $ASSIGN "
+            // Security (entity segregation): $ASSIGN carries a top-level OR in two of its
+            // three branches, and it used to be spliced in bare. Since AND binds tighter
+            // than OR in SQL, the effective condition became
+            // (dates AND not deleted AND addcrit AND users_id_tech = X)
+            // OR (critechnicians.users_id = X AND <entity restriction> AND actiontime != 0):
+            // the first alternative lost the getEntitiesRestrictRequest() clause entirely,
+            // so a technician saw the ticket tasks assigned to them even in entities they
+            // have no access to. Wrapping once here rather than in each branch keeps a
+            // single source of truth, and covers any branch added later.
+            . " AND (" . $ASSIGN . ") "
             . $dbu->getEntitiesRestrictRequest("AND", "glpi_tickets", '', $_SESSION["glpiactiveentities"], false)
             . " AND `glpi_tickettasks`.`actiontime` != 0";
 

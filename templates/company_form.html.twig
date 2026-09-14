@@ -45,15 +45,15 @@
 
             {{ fields.dropdownField(
                 'Entity',
-                'entity_id',
-                item.fields['entity_id'],
+                'entities_id',
+                item.fields['entities_id'],
                 _n('Entity', 'Entities', 1),
                 {'right': 'all'}
             ) }}
 
             {{ fields.dropdownYesNo(
-                'recursive',
-                item.fields['recursive'],
+                'is_recursive',
+                item.fields['is_recursive'],
                 __('Recursive')
             ) }}
 

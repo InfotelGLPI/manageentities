@@ -34,8 +34,7 @@ use Document;
 use Document_Item;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
-use GlpiPlugin\Accounts\Account;
-use GlpiPlugin\Accounts\Account_Item;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
 use Plugin;
 use Session;
@@ -147,12 +146,6 @@ class Entity extends CommonGLPI
                 $tabs[9] = Document::createTabEntry(_n('Document', 'Documents', 2));
             }
 
-            //if (Plugin::isPluginActive('accounts')) {
-            //    if (Session::haveRight("plugin_accounts", READ)) {
-            //        $tabs[11] = Account::createTabEntry(__('Accounts', 'manageentities'));
-            //    }
-            //}
-
             if (Session::getCurrentInterface() != 'helpdesk' && $this->canview()) {
                 $tabs[12] = self::createTabEntry(__('References', 'manageentities'));
             }
@@ -166,6 +159,27 @@ class Entity extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
+            // Security (authorization bypass): this class extends CommonGLPI, whose
+            // $get_item_to_display_tab is false, so ajax/common.tabs.php skips the
+            // can($id, READ) it performs for CommonDBTM items, and displayStandardTab()
+            // forwards any requested $tabnum without ever checking that this tab was
+            // offered. Every right of this tab set used to live in getTabNameForItem()
+            // alone, that is, in the menu builder, so a forged _glpi_tab reached the
+            // content of any tab with no right check at all.
+            // Both guards below replay existing rules rather than restating them: the
+            // first one is the guard of front/entity.php, the only page rendering these
+            // tabs, and the second one asks the menu builder itself whether the tab is
+            // currently offered, which enforces every per-tab condition exactly once and
+            // cannot drift from the menu.
+            if (!self::canView() && !Session::haveRight('config', UPDATE)) {
+                throw new AccessDeniedHttpException();
+            }
+
+            $tabs = $item->getTabNameForItem($item, $withtemplate);
+            if (!is_array($tabs) || !isset($tabs[(int) $tabnum])) {
+                throw new AccessDeniedHttpException();
+            }
+
             $ManageentitiesEntity = new Entity();
             $Contract = new Contract();
             $CriDetail = new CriDetail();
@@ -278,12 +292,6 @@ class Entity extends CommonGLPI
                         }
                         // withtemplate=2 suppresses the add form in tree mode
                         Document_Item::showForItem($entity, $is_single ? 0 : 2);
-                    }
-                    break;
-                case 11:
-                    foreach ($entities as $entity_id) {
-                        $entity->getFromDB($entity_id);
-                        Account_Item::showForAsset($entity, true);
                     }
                     break;
                 case 12:

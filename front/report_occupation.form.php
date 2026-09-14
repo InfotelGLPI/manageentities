@@ -34,9 +34,9 @@ use GlpiPlugin\Manageentities\Report;
 
 // Enforce the access control BEFORE rendering anything: Html::header()/Report::title()
 // used to be emitted first, leaking the page chrome to users without the right
-// (aligned with report.form.php).
-$Entity = new Entity();
-if (!$Entity->canView() && !Session::haveRight("config", UPDATE)) {
+// (aligned with report.form.php, including the explicit plugin right and the deliberate
+// "config" UPDATE fallback).
+if (!Session::haveRight(Entity::$rightname, READ) && !Session::haveRight("config", UPDATE)) {
     throw new AccessDeniedHttpException();
 }
 

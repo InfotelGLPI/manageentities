@@ -239,11 +239,13 @@ CREATE TABLE `glpi_plugin_manageentities_companies` (
    `id` int unsigned NOT NULL auto_increment,
    `name` varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
    `address` text collate utf8mb4_unicode_ci COMMENT 'address of the company shown on CRI',
-   `entity_id` text DEFAULT NULL,
-   `recursive` int unsigned DEFAULT 0,
+   `entities_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_entities (id)',
+   `is_recursive` tinyint NOT NULL DEFAULT '0',
    `logo_id` int unsigned DEFAULT 0 COMMENT 'RELATION to glpi_documents',
    `comment` text collate utf8mb4_unicode_ci,
    PRIMARY KEY  (`id`),
+   KEY `entities_id` (`entities_id`),
+   KEY `is_recursive` (`is_recursive`),
    KEY `logo_id` (`logo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

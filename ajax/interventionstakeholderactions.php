@@ -93,7 +93,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                         $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
 
                         if ($nbDaysAfter <= 0) {
-                            $interventionStakeholder->hideAddForm($_POST['contractdays_id']);
+                            $interventionStakeholder->hideAddForm((int) ($_POST['contractdays_id'] ?? 0));
                         }
 
                     } else {
@@ -110,7 +110,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                         $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
                         $nbDaysAfter = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                         if ($nbDaysAfter == 0) {
-                            $interventionStakeholder->hideAddForm($_POST['contractdays_id']);
+                            $interventionStakeholder->hideAddForm((int) ($_POST['contractdays_id'] ?? 0));
                         }
                     } else {
                         $interventionStakeholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
@@ -145,7 +145,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                     $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays'], true);
 
                     if ($nbDaysAfter > 0) {
-                        $interventionStakeholder->showAddForm($_POST['contractdays_id']);
+                        $interventionStakeholder->showAddForm((int) ($_POST['contractdays_id'] ?? 0));
                     }
 
                 } else {

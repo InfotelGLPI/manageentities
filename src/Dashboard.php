@@ -145,19 +145,26 @@ class Dashboard extends CommonGLPI
                                     if (!empty($contract_data['days'])) {
                                         foreach ($contract_data['days'] as $day_data) {
                                             $entity->getFromDB($contract_data['entities_id']);
-                                            $data["parent"] = $dbu->getTreeLeafValueName(
-                                                "glpi_entities",
-                                                $entity->fields['entities_id'],
+                                            // Values are stored raw in the database since GLPI 10 and these cells are
+                                            // written into the widget as HTML, so each one is escaped where it is
+                                            // wrapped - the same treatment src/Followup.php:456 already applies. The
+                                            // identifiers going into the href are cast, which also closes the attribute.
+                                            $data["parent"] = htmlspecialchars(
+                                                (string) $dbu->getTreeLeafValueName(
+                                                    "glpi_entities",
+                                                    $entity->fields['entities_id'],
+                                                ),
+                                                ENT_QUOTES,
                                             );
 
-                                            $data["entities_id"] = $contract_data['entities_name'];
+                                            $data["entities_id"] = htmlspecialchars((string) $contract_data['entities_name'], ENT_QUOTES);
 
-                                            $name_contract = "<a href='" . $link_contract . "?id=" . $contract_data["contracts_id"] . "' target='_blank'>";
-                                            $name_contract .= $contract_data['name'] . "</a>";
+                                            $name_contract = "<a href='" . $link_contract . "?id=" . (int) $contract_data["contracts_id"] . "' target='_blank'>";
+                                            $name_contract .= htmlspecialchars((string) $contract_data['name'], ENT_QUOTES) . "</a>";
                                             $data["contracts_id"] = $name_contract;
 
-                                            $name_contract_day = "<a href='" . $link_contract_day . "?id=" . $day_data['contractdays_id'] . "' target='_blank'>";
-                                            $name_contract_day .= $day_data['contractdayname'] . "</a>";
+                                            $name_contract_day = "<a href='" . $link_contract_day . "?id=" . (int) $day_data['contractdays_id'] . "' target='_blank'>";
+                                            $name_contract_day .= htmlspecialchars((string) $day_data['contractdayname'], ENT_QUOTES) . "</a>";
                                             $data["days"] = $name_contract_day;
                                             $data["reste"] = $day_data['reste'];
                                             $data["total"] = $day_data['credit'];
@@ -317,14 +324,17 @@ class Dashboard extends CommonGLPI
                         foreach ($iterator as $data) {
                             $datas[$i]["date"] = Html::convDateTime($data['date']);
 
-                            $datas[$i]["entity"] = $data['entity'];
+                            $datas[$i]["entity"] = htmlspecialchars((string) $data['entity'], ENT_QUOTES);
 
-                            $name_ticket = "<a href='" . $link_ticket . "?id=" . $data['tickets_id'] . "' target='_blank'>";
-                            $name_ticket .= $data['title'] . "</a>";
+                            // The ticket title is free text written by any requester, including from
+                            // the simplified interface, and this cell is rendered as HTML by the
+                            // datatable of the mydashboard widget.
+                            $name_ticket = "<a href='" . $link_ticket . "?id=" . (int) $data['tickets_id'] . "' target='_blank'>";
+                            $name_ticket .= htmlspecialchars((string) $data['title'], ENT_QUOTES) . "</a>";
                             $datas[$i]["title"] = $name_ticket;
 
-                            $name_contract = "<a href='" . $link_contract_day . "?id=" . $data['id'] . "' target='_blank'>";
-                            $name_contract .= $data['name'] . "</a>";
+                            $name_contract = "<a href='" . $link_contract_day . "?id=" . (int) $data['id'] . "' target='_blank'>";
+                            $name_contract .= htmlspecialchars((string) $data['name'], ENT_QUOTES) . "</a>";
                             $datas[$i]["name"] = $name_contract;
 
                             $i++;
@@ -370,14 +380,14 @@ class Dashboard extends CommonGLPI
                     foreach ($iterator as $data) {
                         $datas[$i]["date"] = Html::convDateTime($data['cridetails_date']);
 
-                        $datas[$i]["entity"] = $data['entities_name'];
+                        $datas[$i]["entity"] = htmlspecialchars((string) $data['entities_name'], ENT_QUOTES);
 
-                        $name_ticket = "<a href='" . $link_ticket . "?id=" . $data['tickets_id'] . "' target='_blank'>";
-                        $name_ticket .= $data['tickets_name'] . "</a>";
+                        $name_ticket = "<a href='" . $link_ticket . "?id=" . (int) $data['tickets_id'] . "' target='_blank'>";
+                        $name_ticket .= htmlspecialchars((string) $data['tickets_name'], ENT_QUOTES) . "</a>";
                         $datas[$i]["tickets_name"] = $name_ticket;
 
-                        $name_contract = "<a href='" . $link_contract_day . "?id=" . $data['id'] . "' target='_blank'>";
-                        $name_contract .= $data['name'] . "</a>";
+                        $name_contract = "<a href='" . $link_contract_day . "?id=" . (int) $data['id'] . "' target='_blank'>";
+                        $name_contract .= htmlspecialchars((string) $data['name'], ENT_QUOTES) . "</a>";
                         $datas[$i]["name"] = $name_contract;
 
                         $datas[$i]["end_date"] = Html::convDateTime($data['end_date']);
@@ -418,19 +428,26 @@ class Dashboard extends CommonGLPI
                                         $data = [];
                                         foreach ($contract_data['days'] as $day_data) {
                                             $entity->getFromDB($contract_data['entities_id']);
-                                            $data["parent"] = $dbu->getTreeLeafValueName(
-                                                "glpi_entities",
-                                                $entity->fields['entities_id'],
+                                            // Values are stored raw in the database since GLPI 10 and these cells are
+                                            // written into the widget as HTML, so each one is escaped where it is
+                                            // wrapped - the same treatment src/Followup.php:456 already applies. The
+                                            // identifiers going into the href are cast, which also closes the attribute.
+                                            $data["parent"] = htmlspecialchars(
+                                                (string) $dbu->getTreeLeafValueName(
+                                                    "glpi_entities",
+                                                    $entity->fields['entities_id'],
+                                                ),
+                                                ENT_QUOTES,
                                             );
 
-                                            $data["entities_id"] = $contract_data['entities_name'];
+                                            $data["entities_id"] = htmlspecialchars((string) $contract_data['entities_name'], ENT_QUOTES);
 
-                                            $name_contract = "<a href='" . $link_contract . "?id=" . $contract_data["contracts_id"] . "' target='_blank'>";
-                                            $name_contract .= $contract_data['name'] . "</a>";
+                                            $name_contract = "<a href='" . $link_contract . "?id=" . (int) $contract_data["contracts_id"] . "' target='_blank'>";
+                                            $name_contract .= htmlspecialchars((string) $contract_data['name'], ENT_QUOTES) . "</a>";
                                             $data["contracts_id"] = $name_contract;
 
-                                            $name_contract_day = "<a href='" . $link_contract_day . "?id=" . $day_data['contractdays_id'] . "' target='_blank'>";
-                                            $name_contract_day .= $day_data['contractdayname'] . "</a>";
+                                            $name_contract_day = "<a href='" . $link_contract_day . "?id=" . (int) $day_data['contractdays_id'] . "' target='_blank'>";
+                                            $name_contract_day .= htmlspecialchars((string) $day_data['contractdayname'], ENT_QUOTES) . "</a>";
                                             $data["days"] = $name_contract_day;
                                             $data["reste"] = $day_data['reste'];
                                             $data["total"] = $day_data['credit'];
@@ -646,7 +663,7 @@ class Dashboard extends CommonGLPI
 
                         if (Session::getCurrentInterface() == 'central') {
                             $link_contract = Toolbox::getItemTypeFormURL("Contract");
-                            $name_contract .= "<a href='" . $link_contract . "?id=" . $dataContract["contracts_id"] . "'>";
+                            $name_contract .= "<a href='" . $link_contract . "?id=" . (int) $dataContract["contracts_id"] . "'>";
                         }
                         if ($dataContract["name"] == null) {
                             $name = "(" . $dataContract["contracts_id"] . ")";
@@ -654,7 +671,10 @@ class Dashboard extends CommonGLPI
                             $name = $dataContract["name"];
                         }
                         if (Session::getCurrentInterface() == 'central') {
-                            $name_contract .= $name . "</a>";
+                            // contract_name is a ready-made anchor consumed as HTML by the widget,
+                            // so the label is escaped here; the raw name is kept untouched under the
+                            // 'name' key, which its own consumer escapes where it wraps it.
+                            $name_contract .= htmlspecialchars((string) $name, ENT_QUOTES) . "</a>";
                         }
 
                         $list[$num]['entities_name'] = $dataEntity['entities_name'];
