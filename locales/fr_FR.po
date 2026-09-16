@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 08:13+0000\n"
+"POT-Creation-Date: 2026-09-16 10:53+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "% of time justified"
 msgstr "% de temps justifié"
 
-#: src/EditorSubscription.php:988
+#: src/EditorSubscription.php:1000
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr "%d notifications des souscriptions éditeurs expirées"
@@ -363,7 +363,7 @@ msgstr "Cloud"
 
 #: hook.php:909 src/NotificationTargetEditorSubscription.php:87
 #: src/EditorSubscription.php:157 src/EditorSubscription.php:180
-#: src/EditorSubscription.php:644
+#: src/EditorSubscription.php:656
 #: templates/wizard/step4_management.html.twig:130
 #: templates/contract_detail_form.html.twig:55
 #: templates/cridetail_for_ticket.html.twig:79
@@ -795,7 +795,7 @@ msgid "Editor"
 msgstr "Editeur"
 
 #: src/NotificationTargetEditorSubscription.php:88
-#: src/EditorSubscription.php:158 src/EditorSubscription.php:636
+#: src/EditorSubscription.php:158 src/EditorSubscription.php:648
 #: templates/contract_detail_form.html.twig:57
 #: templates/cridetail_for_ticket.html.twig:81
 #: templates/editorsubscription_fields.html.twig:59
@@ -1085,7 +1085,7 @@ msgstr "Crédit initial"
 msgid "Initial credit is required"
 msgstr "Le crédit initial est obligatoire"
 
-#: hook.php:922 src/EditorSubscription.php:181 src/EditorSubscription.php:652
+#: hook.php:922 src/EditorSubscription.php:181 src/EditorSubscription.php:664
 #: templates/contract_detail_form.html.twig:80
 #: templates/cridetail_for_ticket.html.twig:422
 #: templates/editorsubscription_fields.html.twig:75
@@ -1794,7 +1794,7 @@ msgstr "Production"
 
 #: src/NotificationTargetEditorSubscription.php:72
 #: src/NotificationTargetEditorSubscription.php:109
-#: src/EditorSubscription.php:175 src/EditorSubscription.php:620
+#: src/EditorSubscription.php:175 src/EditorSubscription.php:632
 #: templates/entity/editorsubscription_tab.html.twig:71
 #: templates/contract_detail_form.html.twig:63
 #: templates/editorsubscription_fields.html.twig:38
@@ -1824,7 +1824,7 @@ msgstr "La souscription éditeur a été sauvée avec succès."
 msgid "Publisher subscriptions"
 msgstr "Souscriptions éditeurs"
 
-#: src/EditorSubscription.php:501
+#: src/EditorSubscription.php:513
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr "La souscription éditeur ne peut pas être créé pour l'entité racine."
 
@@ -1984,7 +1984,7 @@ msgstr "Sélectionner une entité existante"
 msgid "Select an existing price"
 msgstr "Sélectionner un prix existant"
 
-#: src/EditorSubscription.php:916
+#: src/EditorSubscription.php:928
 msgid "Send the list of expired publisher subscriptions"
 msgstr "Envoyer la liste des souscriptions éditeurs expirées"
 
@@ -2098,8 +2098,8 @@ msgstr "Souscription"
 
 #: src/SubscriptionLevel.php:47 src/NotificationTargetEditorSubscription.php:75
 #: src/NotificationTargetEditorSubscription.php:112
-#: src/EditorSubscription.php:178 src/EditorSubscription.php:628
-#: src/EditorSubscription.php:683
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:640
+#: src/EditorSubscription.php:695
 #: templates/entity/editorsubscription_tab.html.twig:74
 #: templates/contract_detail_form.html.twig:75
 #: templates/editorsubscription_fields.html.twig:87

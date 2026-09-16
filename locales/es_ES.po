@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 08:13+0000\n"
+"POT-Creation-Date: 2026-09-16 10:53+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2019\n"
 "Language-Team: Spanish (Spain) (https://www.transifex.com/infotelGLPI/"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "% of time justified"
 msgstr ""
 
-#: src/EditorSubscription.php:988
+#: src/EditorSubscription.php:1000
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
@@ -352,7 +352,7 @@ msgstr ""
 
 #: hook.php:909 src/NotificationTargetEditorSubscription.php:87
 #: src/EditorSubscription.php:157 src/EditorSubscription.php:180
-#: src/EditorSubscription.php:644
+#: src/EditorSubscription.php:656
 #: templates/wizard/step4_management.html.twig:130
 #: templates/contract_detail_form.html.twig:55
 #: templates/cridetail_for_ticket.html.twig:79
@@ -776,7 +776,7 @@ msgid "Editor"
 msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:88
-#: src/EditorSubscription.php:158 src/EditorSubscription.php:636
+#: src/EditorSubscription.php:158 src/EditorSubscription.php:648
 #: templates/contract_detail_form.html.twig:57
 #: templates/cridetail_for_ticket.html.twig:81
 #: templates/editorsubscription_fields.html.twig:59
@@ -1062,7 +1062,7 @@ msgstr ""
 msgid "Initial credit is required"
 msgstr ""
 
-#: hook.php:922 src/EditorSubscription.php:181 src/EditorSubscription.php:652
+#: hook.php:922 src/EditorSubscription.php:181 src/EditorSubscription.php:664
 #: templates/contract_detail_form.html.twig:80
 #: templates/cridetail_for_ticket.html.twig:422
 #: templates/editorsubscription_fields.html.twig:75
@@ -1745,7 +1745,7 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:72
 #: src/NotificationTargetEditorSubscription.php:109
-#: src/EditorSubscription.php:175 src/EditorSubscription.php:620
+#: src/EditorSubscription.php:175 src/EditorSubscription.php:632
 #: templates/entity/editorsubscription_tab.html.twig:71
 #: templates/contract_detail_form.html.twig:63
 #: templates/editorsubscription_fields.html.twig:38
@@ -1774,7 +1774,7 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:501
+#: src/EditorSubscription.php:513
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
@@ -1933,7 +1933,7 @@ msgstr ""
 msgid "Select an existing price"
 msgstr ""
 
-#: src/EditorSubscription.php:916
+#: src/EditorSubscription.php:928
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -2044,8 +2044,8 @@ msgstr ""
 
 #: src/SubscriptionLevel.php:47 src/NotificationTargetEditorSubscription.php:75
 #: src/NotificationTargetEditorSubscription.php:112
-#: src/EditorSubscription.php:178 src/EditorSubscription.php:628
-#: src/EditorSubscription.php:683
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:640
+#: src/EditorSubscription.php:695
 #: templates/entity/editorsubscription_tab.html.twig:74
 #: templates/contract_detail_form.html.twig:75
 #: templates/editorsubscription_fields.html.twig:87
