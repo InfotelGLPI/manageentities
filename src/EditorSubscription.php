@@ -455,6 +455,18 @@ class EditorSubscription extends CommonDBTM
         // Scope to the entity (or entities, if displayed recursively) currently active
         $where = !empty($instID) ? ['s.entities_id' => $instID] : [];
 
+        // Exclude the archive entity subtree, mirroring showStatusTab()/exportCsv():
+        // archived customers must not appear in the subscription list.
+        $config              = Config::getInstance();
+        $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive_entities_id > 0) {
+            $archive_sons = getSonsOf('glpi_entities', $archive_entities_id);
+            unset($archive_sons[$archive_entities_id]);
+            if (!empty($archive_sons)) {
+                $where[] = ['NOT' => ['s.entities_id' => array_keys($archive_sons)]];
+            }
+        }
+
         $now  = date('Y-m-d');
         $rows = [];
 
