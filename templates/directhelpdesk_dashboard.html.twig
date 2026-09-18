@@ -33,7 +33,7 @@
             {% for card in row %}
                 {# overflow:hidden contains the float:right tech tag so it stays inside the card #}
                 <div class="form-group center"
-                     style="margin-right:5px;margin-bottom: 5px;min-width:400px;max-width:400px;border: #e9e9e9 5px solid;background: white;overflow:hidden;">
+                     style="margin-right:5px;margin-bottom: 5px;min-width:400px;max-width:400px;border: var(--tblr-border-color, #e9e9e9) 5px solid;background: var(--tblr-bg-surface, white);overflow:hidden;">
                     <div style="margin-bottom: -50px;margin-top: 10px;">{{ card.name }}</div>
                     <div id="container{{ card.entities_id }}" style="min-height: 250px;width: 100%;"
                          data-me-gauge="{{ card.gauge|json_encode }}"></div>

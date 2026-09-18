@@ -189,6 +189,9 @@ a.manageentities_href {
    padding: 2px 16px 16px 16px;
    height: 22px;
    text-shadow: 1px 1px #fff;
+   /* Sits on tag.png, a light-grey sprite used by both palettes: keep the
+      label dark, otherwise --tblr-body-color turns it light and unreadable. */
+   color: #1f2937;
    border-radius: 2px;
    font-size: 12px;
 
@@ -209,3 +212,17 @@ a.manageentities_href {
    min-height: 600px;
 }
 
+/*
+ * Contract-state colours (Followup) are user-configured light tints, #F2F2F2 by default.
+ * Rendered as-is they become bright bands in a dark palette, and forcing a dark text
+ * colour on the row does not reach the <a> children, which keep --tblr-link-color.
+ * The row therefore blends its configured colour into the theme surface instead. The mix
+ * is 0% in light palettes, so the colour comes out exactly as configured there.
+ */
+:root {
+   --me-state-mix: 0%;
+}
+
+:root[data-glpi-theme-dark="1"] {
+   --me-state-mix: 80%;
+}

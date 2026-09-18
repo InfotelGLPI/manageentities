@@ -1614,7 +1614,7 @@ class Followup extends CommonDBTM
             default:
 
                 if ($color != "") {
-                    $class = " style='background-color:" . $color . "' ";
+                    $class = " style='background-color:color-mix(in srgb," . $color . ", var(--tblr-bg-surface) var(--me-state-mix, 0%))' ";
                 } else {
                     $class = " class='tab_bg_1' ";
                     if ($odd) {
@@ -1642,7 +1642,7 @@ class Followup extends CommonDBTM
             // before writing them into the style attribute and the cell, otherwise a
             // crafted color like "red' onmouseover='..." breaks out and injects markup
             // (same escaping the DirectHelpdesk_Ticket neighbour already applies).
-            echo "<td width=10px style='background-color:" . htmlspecialchars((string) $contract['color'], ENT_QUOTES) . "'> </td>";
+            echo "<td width=10px style='background-color:color-mix(in srgb," . htmlspecialchars((string) $contract['color'], ENT_QUOTES) . ", var(--tblr-bg-surface) var(--me-state-mix, 0%))'> </td>";
             echo "<td> " . htmlspecialchars((string) $contract['name'], ENT_QUOTES) . "</td>";
             $i = $i + 1;
         }
