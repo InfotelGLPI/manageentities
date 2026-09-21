@@ -209,7 +209,12 @@
         }
 
         calendar = new FullCalendar.Calendar(element, {
-            plugins: ['resourceTimeline'],
+            // interaction carries the dragging implementation the timeline looks for in
+            // initResourceAreaWidthDragging(): without it the divider between the contract
+            // column and the timeline is drawn, and styled as a col-resize handle by the
+            // core stylesheet, but nothing listens to it. Nothing else of the plugin comes
+            // into play here, events staying read-only as long as editable is off.
+            plugins: ['interaction', 'resourceTimeline'],
             schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
             locale: manageentitiesGanttLocale(),
             // A bounded height is what gives the chart its own scrollers: told to grow to

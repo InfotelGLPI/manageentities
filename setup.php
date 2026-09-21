@@ -157,7 +157,7 @@ function plugin_init_manageentities()
         $PLUGIN_HOOKS[Hooks::ITEM_ADD]['manageentities']['Ticket_Contract'] = [CriDetail::class, 'autoLinkTicketToActiveContractDay'];
         $PLUGIN_HOOKS[Hooks::POST_ITEM_FORM]['manageentities'] = 'plugin_manageentities_post_item_form';
         // Add specific files to add to the header : javascript or css
-        $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css"];
+        $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["css/manageentities.css"];
 
         // DirectHelpdesk dashboard gauges (data-driven; harmless when no gauge is present).
         // Registered unconditionally so the dashboard also renders in the helpdesk

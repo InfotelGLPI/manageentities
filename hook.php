@@ -944,7 +944,7 @@ function plugin_manageentities_postinit()
     // its registration and silently ran against ours. Deduplication across plugin boundaries
     // is not this plugin's call to make -- GLPI emits each plugin's assets once, and loading
     // a library twice is a far smaller cost than stripping a third party's dependency.
-    // The plugin no longer ships ECharts at all; it uses core's (see public/lib/VERSIONS.md).
+    // The plugin no longer ships ECharts at all; it uses the bundle of the core.
     $PLUGIN_HOOKS['item_purge']['manageentities']["Document"]
       = [EntityLogo::class, 'cleanForItem'];
 }
