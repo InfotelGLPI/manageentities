@@ -471,40 +471,44 @@ class InterventionStakeholder extends CommonDBTM
     }
 
 
+    /**
+     * Display a feedback message as a core Bootstrap modal.
+     *
+     * $with and $height are kept so existing callers keep working: the core modal sizes
+     * itself, so both are ignored.
+     */
     public function showMessage($message, $messageType, $with = -1, $height = -1)
     {
         switch ($messageType) {
             case ERROR:
-                $srcImg     = "ti ti-alert-triangle";
-                $color      = "orange";
-                $alertTitle = __("Warning");
+                $icon       = 'ti ti-alert-triangle';
+                $color      = 'orange';
+                $alertTitle = __('Warning');
                 break;
             case INFO:
             default:
-                $srcImg     = "ti ti-info-circle";
-                $color      = "forestgreen";
-                $alertTitle = _n("Information", "Informations", 1);
+                $icon       = 'ti ti-info-circle';
+                $color      = 'forestgreen';
+                $alertTitle = _n('Information', 'Informations', 1);
                 break;
         }
 
-        $this->showHeaderJS();
-        echo " if ($('#alert-message').val()){ $('#alert-message').val(''); }";
-        $this->closeFormJS();
+        // glpi_alert() writes the title into the modal header as HTML, so the icon markup is
+        // assembled here while the translated label is escaped before being concatenated.
+        $title = "<i class='" . $icon . "' style='color:" . $color . "'></i>&nbsp;"
+            . htmlspecialchars((string) $alertTitle, ENT_QUOTES);
 
-        echo "<div id='alert-message' class='tab_cadre_navigation_center' style='display:none;'>" . $message . "</div>";
+        // Both payloads are emitted inside an inline <script>. json_encode writes the string
+        // delimiters itself, so only the flags that keep the block from being closed early are
+        // wanted here: JSON_HEX_QUOT and JSON_HEX_APOS would break the literals.
+        // 'message' stays an HTML sink, as it was in the jQuery UI version this replaces.
+        $json_flags = JSON_HEX_TAG | JSON_HEX_AMP;
 
         $this->showHeaderJS();
-        echo "var mTitle = \"<i class='" . $srcImg . "' style='color:" . $color . "'></i>&nbsp;" . $alertTitle . "\";";
-        echo "$('#alert-message').dialog({
-            autoOpen: false,
-            height: " . ($height > 0 ? $height : 150) . ",
-            width: " . ($with > 0 ? $with : 250) . ",
-            modal: true,
-            open: function(){ $(this).parent().children('.ui-dialog-titlebar').html(mTitle); },
-            buttons: { 'ok': function(){ $(this).dialog('close'); } },
-            beforeClose: function(event){ $('#alert-message').remove(); return false; }
-        });
-        $('#alert-message').dialog('open');";
+        echo 'glpi_alert({'
+            . 'title: ' . json_encode($title, $json_flags) . ','
+            . 'message: ' . json_encode($message, $json_flags)
+            . '});';
         $this->closeFormJS();
     }
 

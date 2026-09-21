@@ -173,7 +173,6 @@ function plugin_init_manageentities()
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'] ?? [],
                 [
                     'scripts/scripts-manageentities.js',
-                    'scripts/jquery.form.js',
                     'scripts/wizard.js',
                 ],
             );
