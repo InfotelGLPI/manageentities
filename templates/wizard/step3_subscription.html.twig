@@ -56,10 +56,18 @@
             onclick="wizardBack({{ step }}, '{{ wizard_url }}')">
             <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
         </button>
-        <button type="button" class="btn btn-primary"
-            onclick="wizardSaveStep(3, '{{ wizard_url }}')">
-            <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
-        </button>
+        <div class="d-flex gap-2">
+            {# Early exit: only the entity, its contacts and this subscription get created #}
+            <button type="button" class="btn btn-outline-success" id="btn-save-finish"
+                data-label="{{ __('Finish without contract', 'manageentities') }}"
+                onclick="wizardFinishWithoutContract({{ step }}, '{{ wizard_url }}')">
+                <i class="ti ti-check me-1"></i>{{ __('Finish without contract', 'manageentities') }}
+            </button>
+            <button type="button" class="btn btn-primary"
+                onclick="wizardSaveStep(3, '{{ wizard_url }}')">
+                <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
+            </button>
+        </div>
     </div>
 </div>
 

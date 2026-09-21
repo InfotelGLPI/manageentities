@@ -86,6 +86,9 @@ class WizardController
             'entities_id'        => 0,   // set only in existing_entity mode or after finishWizard
             'contacts_data'      => [],   // [idx => [fields]]
             'subscription_data'  => [],   // new_entity mode only: EditorSubscription fields
+            // Set at step 3: finish right after the subscription, writing neither
+            // contract, management type nor period of contract.
+            'skip_contract'      => 0,
             'contract_data'      => [],
             'contract_prefill'   => [],
             'management_data'    => [],
@@ -726,6 +729,9 @@ class WizardController
         }
 
         $session['contract_data'] = $contract_data;
+        // Reaching this step means the contract is wanted after all: a skip asked for at
+        // step 3 must not survive a later round trip through the contract form.
+        $session['skip_contract'] = 0;
         $session['step']          = max($session['step'], 5);
         self::saveSession($session);
 
@@ -750,6 +756,12 @@ class WizardController
 
         $session = self::getSession();
 
+        // The step offers two exits: "Next", which goes on to the contract, and "Finish
+        // without contract", which stops the wizard here so that only the entity, its
+        // contacts and this subscription are written. The intent is stored in the session
+        // because the finish modal confirms through a separate request.
+        $session['skip_contract'] = (int) (bool) ($input['skip_contract'] ?? 0);
+
         $cloud_client      = (int) (bool) ($input['cloud_client'] ?? 0);
         $active_sub        = (int) (bool) ($input['active_editor_suscription'] ?? 0);
         $name              = trim($input['name'] ?? '');
@@ -760,7 +772,9 @@ class WizardController
 
         if (!$has_content) {
             $session['subscription_data'] = [];
-            $session['step']              = max($session['step'], 4);
+            if (!$session['skip_contract']) {
+                $session['step'] = max($session['step'], 4);
+            }
             self::saveSession($session);
             return ['success' => true, 'step' => $session['step']];
         }
@@ -778,7 +792,9 @@ class WizardController
         ];
 
         $session['subscription_data'] = $subscription_data;
-        $session['step']              = max($session['step'], 4); // next is step 4 = contract
+        if (!$session['skip_contract']) {
+            $session['step'] = max($session['step'], 4); // next is step 4 = contract
+        }
         self::saveSession($session);
 
         return ['success' => true, 'step' => $session['step']];
@@ -1382,6 +1398,20 @@ class WizardController
         $session       = self::getSession();
         $interventions = $session['interventions_data'] ?? [];
 
+        // Finishing at step 3 writes the entity, its contacts and the subscription only,
+        // so the contract chain -- contract, management type, periods and rates -- is not
+        // required and the entity is the single mandatory piece left.
+        if (!empty($session['skip_contract'])) {
+            if ($session['wizard_mode'] !== 'existing_entity' && empty($session['entity_data'])) {
+                return ['success' => false, 'errors' => ['global' => __('Entity data is missing', 'manageentities')]];
+            }
+
+            return [
+                'success' => true,
+                'summary' => self::buildFinishSummaryFromSession($session, 0, 0),
+            ];
+        }
+
         if (empty($interventions)) {
             return ['success' => false, 'errors' => ['global' => __('At least one service period with a rate is required', 'manageentities')]];
         }
@@ -1405,10 +1435,13 @@ class WizardController
     public static function commitWizardAndReturn(): array
     {
         $session = self::getSession();
+        // Same two exits as validateAndSummarize(): when the wizard stops after the
+        // subscription, everything from the contract onwards is skipped below.
+        $skip_contract = !empty($session['skip_contract']);
 
         // Re-validate before writing
         $interventions = $session['interventions_data'] ?? [];
-        if (empty($interventions)) {
+        if (!$skip_contract && empty($interventions)) {
             return ['success' => false, 'errors' => ['global' => __('At least one service period with a rate is required', 'manageentities')]];
         }
 
@@ -1472,6 +1505,33 @@ class WizardController
                 $contact_ids[$idx] = (int) $contact_id;
                 self::linkPluginContact((int) $contact_id, $entities_id, (int) ($cData['is_manager'] ?? 0));
             }
+        }
+
+        // The wizard stops here when step 3 asked for it: no contract, hence no document
+        // to attach to one, no management type and no period of contract either. Files
+        // staged by a contract step the user has since walked away from would stay behind
+        // as orphans, so they are purged exactly as resetAndDeleteAndReturn() does.
+        if ($skip_contract) {
+            foreach (($session['documents_ids'] ?? []) as $doc_id) {
+                $doc_id = (int) $doc_id;
+                if ($doc_id <= 0) {
+                    continue;
+                }
+                $staged_doc = new Document();
+                if (!$staged_doc->can($doc_id, PURGE)) {
+                    continue;
+                }
+                $staged_doc->delete(['id' => $doc_id], true);
+            }
+
+            $summary = self::buildFinishSummaryFromSession($session, $entities_id, 0);
+            self::clearWizardSession();
+
+            return [
+                'success'      => true,
+                'summary'      => $summary,
+                'redirect_url' => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php',
+            ];
         }
 
         // 3. GLPI Contract
@@ -1623,6 +1683,13 @@ class WizardController
 
         foreach (($session['contacts_data'] ?? []) as $c) {
             $items[] = ['type' => __('Contact'), 'label' => trim(($c['firstname'] ?? '') . ' ' . $c['name'])];
+        }
+
+        // Everything below belongs to the contract chain the step 3 early exit skips. The
+        // session may still carry a contract the user has since walked back from, and the
+        // summary must not promise items the commit will not write.
+        if (!empty($session['skip_contract'])) {
+            return $items;
         }
 
         if (!empty($session['contract_data']['name'])) {

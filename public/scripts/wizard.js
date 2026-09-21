@@ -305,8 +305,40 @@ function wizardReset(url) {
         .catch(function () { reloadStep(1, url); });
 }
 
+/**
+ * Step 3 exit that creates the entity, its contacts and the subscription only.
+ * The subscription fields are saved first, carrying the skip flag the server stores in
+ * the wizard session, then the regular finish modal opens on a summary that no longer
+ * lists a contract, a management type nor a period of contract.
+ */
+function wizardFinishWithoutContract(step, url) {
+    clearStepErrors(step);
+    var card = document.querySelector('#wizard-step-content .card');
+
+    var payload = {};
+    if (card) Object.assign(payload, collectSection(card));
+    payload.action = 'save_subscription';
+    payload.skip_contract = '1';
+
+    wizardFetch(url, payload)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+            if (!res.success) {
+                showStepErrors(step, res.errors || res.message || 'Error');
+                return;
+            }
+            wizardLoadFinishSummary(url, step);
+        })
+        .catch(function (err) { showStepErrors(step, _networkErrMsg(err)); });
+}
+
+// Step whose error box wizardConfirmFinish() writes into: the finish modal is shared by
+// the last step and by the early exit of step 3, and it is opened from either.
+var _wizardFinishStep = 6;
+
 function wizardLoadFinishSummary(url, step) {
     var currentStep = step || 6;
+    _wizardFinishStep = currentStep;
     var saveBtn = document.getElementById('btn-save-finish');
     if (saveBtn) {
         saveBtn.disabled = true;
@@ -379,7 +411,7 @@ function wizardConfirmFinish(url) {
                     confirmBtn.disabled = false;
                     confirmBtn.innerHTML = '<i class="ti ti-check me-1"></i>' + (confirmBtn.dataset.label || 'Confirm');
                 }
-                showStepErrors(5, res.errors || res.message || 'Error');
+                showStepErrors(_wizardFinishStep, res.errors || res.message || 'Error');
                 return;
             }
             var redirectUrl = res.redirect_url || '';
@@ -394,7 +426,7 @@ function wizardConfirmFinish(url) {
                 confirmBtn.disabled = false;
                 confirmBtn.innerHTML = '<i class="ti ti-check me-1"></i>' + (confirmBtn.dataset.label || 'Confirm');
             }
-            showStepErrors(5, _networkErrMsg(err));
+            showStepErrors(_wizardFinishStep, _networkErrMsg(err));
         });
 }
 
