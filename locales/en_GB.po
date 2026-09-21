@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-21 08:45+0000\n"
+"POT-Creation-Date: 2026-09-21 09:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -103,7 +103,6 @@ msgstr "Add a company"
 msgid "Add a contact"
 msgstr ""
 
-#: ajax/updateDocumentList.php:48 ajax/updateDocumentList.php:51
 #: templates/wizard/step3_contract.html.twig:111
 #: templates/wizard/step4_contract.html.twig:111
 msgid "Add a document"
@@ -821,7 +820,7 @@ msgstr ""
 msgid "End date must be after the begin date !"
 msgstr "End date must be after the begin date !"
 
-#: setup.php:205 front/entity.php:55 front/entity.php:58 front/entity.php:60
+#: setup.php:204 front/entity.php:55 front/entity.php:58 front/entity.php:60
 #: front/config.form.php:44 front/report_moving.form.php:43
 #: front/directhelpdesk.php:41 front/directhelpdesk.php:44
 #: front/directhelpdesk.php:46 front/addelements.form.php:37
