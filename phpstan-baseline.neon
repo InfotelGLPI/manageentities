@@ -1219,30 +1219,6 @@ parameters:
 			path: src/Followup.php
 
 		-
-			message: '#^Binary operation "\-" between ''01''\|''02''\|''03''\|''04''\|''05''\|''06''\|''07''\|''08''\|''09''\|''10''\|''11''\|''12'' and ''01''\|''02''\|''03''\|''04''\|''05''\|''06''\|''07''\|''08''\|''09''\|''10''\|''11''\|''12'' results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: src/Gantt.php
-
-		-
-			message: '#^Parameter \#1 \$datetime of function strtotime expects string, \(int\|false\) given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Gantt.php
-
-		-
-			message: '#^Parameter \#2 \$edit of static method Html\:\:formatNumber\(\) expects bool, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Gantt.php
-
-		-
-			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
-			identifier: glpi.forbidExit
-			count: 1
-			path: src/Gantt.php
-
-		-
 			message: '#^Class GlpiPlugin\\Manageentities\\GenerateCRI referenced with incorrect case\: GlpiPlugin\\Manageentities\\Generatecri\.$#'
 			identifier: class.nameCase
 			count: 1

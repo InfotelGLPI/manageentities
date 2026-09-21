@@ -6,30 +6,46 @@ is ever served.
 
 `package.json` and `package-lock.json` at the root of the plugin pin the versions
 listed below so that `npm audit` and Dependabot can see them. Installing them produces
-no artefact the plugin uses -- they exist for the tooling, not for the build. Run
-`npm run audit` to confront the shipped versions with the upstream advisories. Both
-manifests currently declare no dependency at all: the single library still vendored is
-the one that cannot be pinned, described in the next section.
+no artefact the plugin uses -- they exist for the tooling, not for the build.
 
-This file stays the reference for what is actually vendored: **every time a library
-below is added, upgraded or removed, update the matching row, then the manifest**.
+**Nothing is vendored here any more.** Every front-end library the plugin draws on is
+now the one GLPI core already ships under its own `public/lib/`, which is versioned,
+audited and upgraded with the core. This file stays the reference for that state:
+**if a library is ever added back, add its row below and pin it in the manifest**.
 
 | Path | Library | Version | Licence | Upstream |
 | --- | --- | --- | --- | --- |
-| `jquery-gantt.js`, `jquery-gantt.css`, `jquery-gantt/img/`, `jquery-plugins/img/` | jQuery Gantt Chart (taitems) | unknown, see below | MIT | https://github.com/taitems/jQuery.Gantt |
+| _(none)_ | | | | |
 
-## The one library that cannot be pinned
+## Notes on what was removed
 
-`jquery-gantt.js` is a webpack bundle of **taitems/jQuery.Gantt**, carrying no version
-marker. That project is unmaintained (last release 2016) and is **not on npm**.
+`jquery-gantt.js`, `jquery-gantt.css`, `jquery-gantt/img/` and `jquery-plugins/img/`
+were a webpack bundle of **taitems/jQuery.Gantt** (100 KB, unmaintained since 2016)
+plus two identical copies of eleven sprites. The bundle carried no version marker and
+is **not on npm**: the package named `jquery.gantt` there is a different project
+(`oguzhanoya/jquery-gantt`), sharing none of the identifiers of the file we shipped
+(`UTC_DAY_IN_MS`, `scrollToToday`, `waitToggle`, the `:findday` selector), so pinning it
+would have aimed the security tooling at the wrong codebase. It could therefore never be
+tracked by anything but this file.
 
-The npm package named `jquery.gantt` is a different project entirely
-(`oguzhanoya/jquery-gantt`): its source shares none of the identifiers of the file we
-ship (`UTC_DAY_IN_MS`, `scrollToToday`, `waitToggle`, the `:findday` selector). Pinning
-it would aim the security tooling at the wrong codebase, which is worse than the gap it
-appears to close. The dependency is therefore tracked here and here only.
+`Gantt::showGantt()` now builds the chart with the FullCalendar bundle of the core
+(`public/lib/fullcalendar.js`), in its `resourceTimeline` view: one parent row per
+contract, one child row per contract day. Core already ships the library, its GPL
+scheduler licence key and its locales, so the migration added no dependency at all. It
+also closed an HTML injection sink: the removed library built its rows by concatenating
+the strings it was handed, which is why `getDataToDisplayOnGantt()` used to pre-escape
+them and glue them together with `<br/>`; FullCalendar escapes resource and event titles
+itself, so the two collectors now return plain text and the tooltip is set through
+`setAttribute('title', ...)`. The eleven sprites went with it: the share of consumed
+credit is painted by a CSS gradient in `public/scripts/gantt.js`.
 
-## Notes on what is shipped
+`public/style.css` went with the library: its 86 rules were the stock jQuery.Gantt
+theme (`.fn-gantt`, `.gantt2`, `.fn-gantt-hint`, `.fn-gantt-loader`, the sprite
+offsets), none of which any PHP, Twig or JS file of the plugin ever emitted once the
+chart moved. It was registered on every central page through `ADD_CSS`; that entry is
+gone from `setup.php`, and what the new chart needs sits with the rest of the plugin
+styles in `public/manageentities.css`, where the dead `.fn-gantt` rule was replaced by
+the `.manageentities-gantt` ones.
 
 `jquery-ui/` was removed, together with the npm dependency that pinned it. The directory
 shipped a full 1.14.2 build (336 KB) that no PHP, Twig or JS file ever registered, so the
@@ -61,14 +77,22 @@ the `window.echarts` global -- core's own charts ran on a version core does not 
 The gauges use no API newer than 5.x, so they now run on the core bundle. The themes
 went with it: the gauges init with a `null` theme and never referenced `azul`.
 
-`jquery-gantt/img/` and `jquery-plugins/img/` hold the same eleven sprites. Only the
-`jquery-plugins/` copy is used, by `Gantt.php`.
+## Loading a core library from an AJAX tab
+
+Both remaining call sites -- the DirectHelpdesk gauges and the GANTT tab -- render inside
+the response of `ajax/common.tabs.php`, which emits no page footer, so
+`Html::requireJs()` is silently dropped there. They solve it differently, and on purpose:
+
+* `public/scripts/directhelpdesk-gauges.js` is registered through `ADD_JAVASCRIPT`, so it
+  runs at page load, before the tab exists. It injects `lib/echarts.js` itself and waits
+  for the container with a `MutationObserver`.
+* `Gantt::showGantt()` echoes `lib/fullcalendar.css`, `lib/fullcalendar.js`, the locale
+  file and `scripts/gantt.js` inside the tab response. jQuery `.html()` inserts the
+  container first and then evaluates the scripts in document order, `<script src>`
+  included, so no observer is needed.
 
 ## Licence headers
 
-The file listed above (jQuery Gantt) carries a stale manageentities GPL header, prepended
-years ago by a licence-header run that did not exclude this directory. It does **not**
-describe it: the licence that applies is the one in the table above.
 `tools/regenerate_headers.php` excludes `public/lib` (along with `vendor`,
-`node_modules`, `lib`, `dist` and `var`), so the situation cannot get worse; fixing the
-rest is a job for the upgrade that re-downloads that library.
+`node_modules`, `lib`, `dist` and `var`), so a library added back here will not be
+stamped with the manageentities GPL header the way the removed ones had been.

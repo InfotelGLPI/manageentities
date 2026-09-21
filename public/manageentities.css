@@ -90,12 +90,28 @@
    font-weight: bold;
 }
 
-/* GANTT diagram */
-
-.fn-gantt {
+/*
+ * GANTT tab (Gantt::showGantt), drawn with the FullCalendar bundle of the core in its
+ * resourceTimeline view. Loaded on every page through ADD_CSS, which is what the tab
+ * needs: its own response is served by ajax/common.tabs.php, with no header to add a
+ * stylesheet to.
+ */
+.manageentities-gantt {
+   max-width: 100%;
    text-align: left;
-   font-size: 11px;
-   width: 100%;
+   font-size: 12px;
+}
+
+.manageentities-gantt .manageentities-gantt-day,
+.manageentities-gantt .manageentities-gantt-contract {
+   border-radius: 2px;
+}
+
+/* Keep long contract names from widening the left column instead of wrapping. */
+.manageentities-gantt .fc-resource-area .fc-cell-text {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
 }
 
 div#tabcontent {
