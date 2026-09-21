@@ -38,6 +38,7 @@ use ITILCategory;
 use Migration;
 use Session;
 use Ticket;
+use Toolbox;
 
 class DirectHelpdesk extends CommonDBTM
 {
@@ -302,9 +303,14 @@ class DirectHelpdesk extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        // echarts + the gauge init script are registered in setup.php (ADD_JAVASCRIPT hook)
-        // so they land in the page <head> for both the central and helpdesk interfaces.
-        Html::requireJs('charts');
+        // ECharts comes from core (public/lib/echarts.js): ask core to emit it in the page
+        // footer, ahead of the gauge script registered in setup.php. An AJAX tab response
+        // renders no footer, so the request would not be honoured there -- it would just sit
+        // in the session and load the bundle on whatever page comes next. On that path the
+        // gauge script fetches the same core bundle itself instead.
+        if (!Toolbox::isAjax()) {
+            Html::requireJs('charts');
+        }
 
         $direct = new DirectHelpdesk();
 

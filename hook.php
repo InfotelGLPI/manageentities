@@ -937,26 +937,14 @@ function plugin_manageentities_postinit()
 {
     global $PLUGIN_HOOKS;
 
-    $plugin = 'manageentities';
-    foreach (['add_css', 'add_javascript'] as $type) {
-        if (isset($PLUGIN_HOOKS[$type][$plugin])) {
-            foreach ($PLUGIN_HOOKS[$type][$plugin] as $data) {
-                if (!empty($PLUGIN_HOOKS[$type])) {
-                    foreach ($PLUGIN_HOOKS[$type] as $key => $plugins_data) {
-                        if (is_array($plugins_data) && $key != $plugin) {
-                            foreach ($plugins_data as $key2 => $values) {
-                                if ($values == $data) {
-                                    unset($PLUGIN_HOOKS[$type][$key][$key2]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
+    // This used to deduplicate front-end assets by unregistering, from EVERY other plugin,
+    // any add_css/add_javascript entry whose relative path matched one of ours. The paths
+    // compared were generic ('lib/echarts/echarts.js'), so the match said nothing about the
+    // files being the same build: a neighbour shipping its own ECharts under that path lost
+    // its registration and silently ran against ours. Deduplication across plugin boundaries
+    // is not this plugin's call to make -- GLPI emits each plugin's assets once, and loading
+    // a library twice is a far smaller cost than stripping a third party's dependency.
+    // The plugin no longer ships ECharts at all; it uses core's (see public/lib/VERSIONS.md).
     $PLUGIN_HOOKS['item_purge']['manageentities']["Document"]
       = [EntityLogo::class, 'cleanForItem'];
 }

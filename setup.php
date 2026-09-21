@@ -159,12 +159,12 @@ function plugin_init_manageentities()
         // Add specific files to add to the header : javascript or css
         $PLUGIN_HOOKS[Hooks::ADD_CSS]['manageentities'] = ["manageentities.css", "style.css"];
 
-        // echarts must be in the page <head> — it cannot be loaded via AJAX tab responses
-        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'lib/echarts/echarts.js';
-        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'lib/echarts/theme/azul.js';
         // DirectHelpdesk dashboard gauges (data-driven; harmless when no gauge is present).
-        // Registered unconditionally like echarts so the dashboard also renders in the
-        // helpdesk interface, where the central-only scripts below are not loaded.
+        // Registered unconditionally so the dashboard also renders in the helpdesk
+        // interface, where the central-only scripts below are not loaded. ECharts itself
+        // is the core bundle: DirectHelpdesk::showDashboard() requests it through
+        // Html::requireJs('charts'), and the script below loads it on the AJAX tab path,
+        // where no footer is emitted to honour that request.
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/directhelpdesk-gauges.js';
 
         if (isset($_SESSION['glpiactiveprofile']['interface'])

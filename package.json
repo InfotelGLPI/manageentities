@@ -1,0 +1,13 @@
+{
+  "name": "glpi-plugin-manageentities",
+  "version": "4.2.13",
+  "private": true,
+  "description": "Version pinning of the third-party bundles vendored under public/lib/, so that npm audit and Dependabot can see them. The plugin has no JavaScript build step: installing this manifest produces no artefact the plugin uses. See public/lib/VERSIONS.md, including the library listed there that cannot be pinned here.",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "audit": "npm audit --omit=dev"
+  },
+  "dependencies": {
+    "jquery-ui": "1.14.2"
+  }
+}

@@ -37,16 +37,54 @@
 // first pass. We therefore try immediately and, if the wrapper is not present, watch the
 // DOM with a MutationObserver until it appears (or a safety timeout elapses).
 //
+// ECharts itself comes from GLPI core (public/lib/echarts.js), not from this plugin:
+// DirectHelpdesk::showDashboard() requests it with Html::requireJs('charts') and core
+// emits it in the footer, before this file. AJAX tab responses carry no footer, so on
+// those the library is absent and we load it here -- but only once a dashboard has been
+// found, so pages without gauges download nothing.
+var manageentitiesEchartsLoading = false;
+var manageentitiesGaugesObserver = null;
+
+// Pull the core ECharts bundle, then draw. Only ever fires on the AJAX tab path.
+function loadManageentitiesEcharts() {
+    if (manageentitiesEchartsLoading) {
+        return;
+    }
+    manageentitiesEchartsLoading = true;
+
+    var root   = (typeof CFG_GLPI !== 'undefined' && CFG_GLPI.root_doc) ? CFG_GLPI.root_doc : '';
+    var script = document.createElement('script');
+    script.src = root + '/lib/echarts.js';
+    script.onload  = tryManageentitiesGauges;
+    script.onerror = function () {
+        // Allow a later mutation to retry rather than wedging the dashboard for good.
+        manageentitiesEchartsLoading = false;
+    };
+    document.head.appendChild(script);
+}
+
+// Draw, and stop watching the DOM once the gauges are up.
+function tryManageentitiesGauges() {
+    if (initManageentitiesGauges() && manageentitiesGaugesObserver) {
+        manageentitiesGaugesObserver.disconnect();
+        manageentitiesGaugesObserver = null;
+    }
+}
+
 // Returns true once the dashboard wrapper has been found and its gauges initialised.
 function initManageentitiesGauges() {
-    if (typeof echarts === 'undefined') {
-        return false;
-    }
-
     var wrapper = document.querySelector('[data-me-gauges]');
     if (!wrapper) {
         return false;
     }
+
+    if (typeof echarts === 'undefined') {
+        // Dashboard is on the page but the library is not loaded yet: fetch it and let
+        // its onload handler draw. Reported as "not done" so the observer stays armed.
+        loadManageentitiesEcharts();
+        return false;
+    }
+
     var hour    = wrapper.getAttribute('data-me-hour') || '';
     var hours   = wrapper.getAttribute('data-me-hours') || '';
 
@@ -175,16 +213,15 @@ function bootstrapManageentitiesGauges() {
         return;
     }
 
-    var observer = new MutationObserver(function () {
-        if (initManageentitiesGauges()) {
-            observer.disconnect();
-        }
-    });
-    observer.observe(document.documentElement, { childList: true, subtree: true });
+    manageentitiesGaugesObserver = new MutationObserver(tryManageentitiesGauges);
+    manageentitiesGaugesObserver.observe(document.documentElement, { childList: true, subtree: true });
 
     // Stop observing after 20s to avoid a permanent observer on dashboard-less pages.
     window.setTimeout(function () {
-        observer.disconnect();
+        if (manageentitiesGaugesObserver) {
+            manageentitiesGaugesObserver.disconnect();
+            manageentitiesGaugesObserver = null;
+        }
     }, 20000);
 }
 
