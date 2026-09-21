@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-21 09:52+0000\n"
+"POT-Creation-Date: 2026-09-21 11:59+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Tiago Graça, 2022\n"
 "Language-Team: French (Canada) (https://www.transifex.com/infotelGLPI/"
@@ -187,7 +187,7 @@ msgstr "Tous les rapports"
 msgid "Allow periods on the same interval of dates"
 msgstr "Autoriser les interventions sur un même intervalle de date"
 
-#: src/Monthly.php:514 src/Monthly.php:524 src/Monthly.php:527
+#: src/Monthly.php:515 src/Monthly.php:525 src/Monthly.php:528
 #: templates/contractday_form.html.twig:106
 #: templates/wizard/step6_intervention_block.html.twig:106
 #: templates/wizard/step5_intervention_block.html.twig:106
@@ -282,6 +282,9 @@ msgstr ""
 #: templates/wizard/step6_intervention_block.html.twig:58
 #: templates/wizard/step5_intervention_block.html.twig:58
 #: templates/cridetail_for_ticket.html.twig:166
+#: templates/monthly_criterias.html.twig:50
+#: templates/followup_criterias.html.twig:65
+#: templates/followup_criterias.html.twig:70
 msgid "Begin date"
 msgstr ""
 
@@ -298,6 +301,10 @@ msgstr "A l'intervention"
 msgid "CRI generation"
 msgstr ""
 
+#: templates/followup_export_toolbar.html.twig:56
+msgid "CSV"
+msgstr ""
+
 #: templates/wizard/layout.html.twig:74 templates/wizard/layout.html.twig:100
 #: templates/wizard/layout.html.twig:128 templates/wizard/layout.html.twig:158
 #: templates/editorsubscription_wizard.html.twig:74
@@ -309,12 +316,16 @@ msgstr ""
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
 
+#: templates/legend.html.twig:41
+msgid "Caption"
+msgstr ""
+
 #: templates/entity/description.html.twig:131
 #: templates/wizard/step1_entity.html.twig:103
 msgid "City"
 msgstr ""
 
-#: src/Followup.php:942 src/Monthly.php:699 src/Monthly.php:730
+#: src/Followup.php:943 src/Monthly.php:700 src/Monthly.php:731
 #: src/Dashboard.php:249 src/Dashboard.php:313 src/Dashboard.php:368
 #: src/GenerateCRI.php:715
 msgid "Client"
@@ -387,8 +398,9 @@ msgstr[1] ""
 msgid "Comments"
 msgstr ""
 
-#: src/Followup.php:1804 src/Company.php:53 templates/company_form.html.twig:43
+#: src/Company.php:53 templates/company_form.html.twig:43
 #: templates/company_list.html.twig:50 templates/company_list.html.twig:60
+#: templates/followup_criterias.html.twig:88
 msgid "Company"
 msgid_plural "Companies"
 msgstr[0] "Société"
@@ -470,7 +482,7 @@ msgstr "N° du contrat"
 msgid "Contract number is required"
 msgstr ""
 
-#: src/Followup.php:1027 src/Gantt.php:302
+#: src/Followup.php:1028 src/Gantt.php:302
 msgid "Contract present"
 msgstr "Présent contrat"
 
@@ -541,15 +553,11 @@ msgstr "Temps passé (trajet inclus)"
 msgid "Current contracts"
 msgstr ""
 
-#: src/Followup.php:1905
-msgid "Current page in landscape PDF"
+#: templates/followup_export_toolbar.html.twig:44
+msgid "Current page"
 msgstr ""
 
-#: src/Followup.php:1908
-msgid "Current page in portrait PDF"
-msgstr ""
-
-#: src/Monthly.php:717 src/Monthly.php:755
+#: src/Monthly.php:718 src/Monthly.php:756
 #: templates/interventionstakeholder_list.html.twig:32
 msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
@@ -577,7 +585,7 @@ msgid "Customer stamp"
 msgstr "Cachet client"
 
 #: src/CriPrice.php:56 src/CriPrice.php:93 src/CriPrice.php:200
-#: src/CriPrice.php:353 src/Monthly.php:711 src/Monthly.php:747
+#: src/CriPrice.php:353 src/Monthly.php:712 src/Monthly.php:748
 #: src/CriType.php:93 templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Daily rate"
@@ -601,14 +609,14 @@ msgstr ""
 msgid "Date of"
 msgstr "Date de"
 
-#: src/Followup.php:1070 src/Gantt.php:310
+#: src/Followup.php:1071 src/Gantt.php:310
 #: templates/wizard/step4_management.html.twig:55
 #: templates/wizard/step5_management.html.twig:55
 #: templates/contract_detail_form.html.twig:139
 msgid "Date of renewal"
 msgstr "Date de reconduction"
 
-#: src/Followup.php:1055 src/Entity.php:591 src/Gantt.php:306
+#: src/Followup.php:1056 src/Entity.php:591 src/Gantt.php:306
 #: templates/wizard/step4_management.html.twig:51
 #: templates/wizard/step5_management.html.twig:51
 #: templates/contract_detail_form.html.twig:135
@@ -808,8 +816,11 @@ msgstr ""
 #: templates/cridetail_for_ticket.html.twig:128
 #: templates/cridetail_for_ticket.html.twig:181
 #: templates/report_occupation_form.html.twig:41
+#: templates/monthly_criterias.html.twig:51
 #: templates/editorsubscription_fields.html.twig:117
 #: templates/report_moving_form.html.twig:41
+#: templates/followup_criterias.html.twig:76
+#: templates/followup_criterias.html.twig:81
 #: templates/report_search_form.html.twig:41
 msgid "End date"
 msgstr ""
@@ -835,8 +846,8 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/directhelpdesk.form.php:143 front/directhelpdesk.form.php:146
 #: front/directhelpdesk.form.php:148 front/cridetail.form.php:52
 #: front/cridetail.form.php:55 front/cridetail.form.php:57
-#: front/report_occupation.form.php:43 src/Followup.php:1528
-#: src/TaskCategory.php:66 src/Monthly.php:1096 src/Preference.php:109
+#: front/report_occupation.form.php:43 src/Followup.php:1529
+#: src/TaskCategory.php:66 src/Monthly.php:1097 src/Preference.php:109
 #: src/Profile.php:50 src/Profile.php:101 src/GenerateCRI.php:1255
 #: templates/wizard/mode_choice.html.twig:35
 msgid "Entities portal"
@@ -871,6 +882,7 @@ msgstr ""
 #: templates/editorsubscription_wizard.html.twig:38
 #: templates/editorsubscription_wizard.html.twig:44
 #: templates/report_moving_form.html.twig:48
+#: templates/followup_criterias.html.twig:49
 msgid "Entity"
 msgid_plural "Entities"
 msgstr[0] ""
@@ -916,7 +928,7 @@ msgstr ""
 msgid "Estimated number of remaining days"
 msgstr "Estimation du nombre de jours restant"
 
-#: src/Monthly.php:721 src/Monthly.php:762 src/Monthly.php:1176
+#: src/Monthly.php:722 src/Monthly.php:763 src/Monthly.php:1169
 msgid "Exceeding"
 msgstr "Dépassement"
 
@@ -936,6 +948,10 @@ msgstr ""
 
 #: templates/entity/editorsubscription_tab.html.twig:39
 msgid "Expired subscriptions"
+msgstr ""
+
+#: templates/followup_export_toolbar.html.twig:40
+msgid "Export"
 msgstr ""
 
 #: templates/entity/editorsubscription_tab.html.twig:54
@@ -981,8 +997,8 @@ msgid ""
 "applied to the contract when all periods are closed."
 msgstr ""
 
-#: src/Followup.php:47 src/Followup.php:1528 src/Followup.php:1656
-#: src/Entity.php:92
+#: src/Followup.php:48 src/Followup.php:1529 src/Entity.php:92
+#: templates/followup_criterias.html.twig:43
 msgid "General follow-up"
 msgstr "Suivi général"
 
@@ -1003,7 +1019,7 @@ msgstr "Générer le rapport d'intervention"
 msgid "Generation of the intervention report"
 msgstr "Génération du rapport d'intervention"
 
-#: src/Followup.php:890 src/Followup.php:1229
+#: src/Followup.php:891 src/Followup.php:1230
 #: templates/contractday_form.html.twig:127
 msgid "Guaranteed package"
 msgstr "Forfait garanti"
@@ -1025,7 +1041,7 @@ msgid "Hourly"
 msgstr "Horaire"
 
 #: src/CriPrice.php:58 src/CriPrice.php:95 src/CriPrice.php:200
-#: src/CriPrice.php:353 src/Monthly.php:713 src/Monthly.php:749
+#: src/CriPrice.php:353 src/Monthly.php:714 src/Monthly.php:750
 #: templates/wizard/step5_criprices_section.html.twig:32
 #: templates/wizard/step6_criprices_section.html.twig:32
 msgid "Hourly rate"
@@ -1039,7 +1055,7 @@ msgstr "Action impossible car un rapport d'intervention existe"
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr "Génération impossible, aucune tâche planifiée créée"
 
-#: src/Monthly.php:532
+#: src/Monthly.php:533
 msgid "In progress"
 msgstr "En cours"
 
@@ -1051,8 +1067,8 @@ msgstr "Les informations ont bien été ajoutées."
 msgid "Informations successfully deleted."
 msgstr "Les informations ont bien été supprimées"
 
-#: src/Followup.php:877 src/Followup.php:1167 src/ContractDay.php:119
-#: src/ContractDay.php:531 src/Monthly.php:707 src/Monthly.php:739
+#: src/Followup.php:878 src/Followup.php:1168 src/ContractDay.php:119
+#: src/ContractDay.php:531 src/Monthly.php:708 src/Monthly.php:740
 #: src/Gantt.php:382 templates/contractday_form.html.twig:94
 #: templates/wizard/step6_intervention_block.html.twig:69
 #: templates/wizard/step5_intervention_block.html.twig:69
@@ -1140,6 +1156,10 @@ msgstr ""
 msgid "Is default"
 msgstr "Utilisé par défaut"
 
+#: templates/followup_export_toolbar.html.twig:48
+msgid "Landscape PDF"
+msgstr ""
+
 #: templates/wizard/step2_contact_block.html.twig:48
 msgid "Last name"
 msgstr ""
@@ -1148,8 +1168,8 @@ msgstr ""
 msgid "Last name is required"
 msgstr ""
 
-#: src/Followup.php:889 src/Followup.php:893 src/Followup.php:1221
-#: src/Followup.php:1246
+#: src/Followup.php:890 src/Followup.php:894 src/Followup.php:1222
+#: src/Followup.php:1247
 msgid "Last visit"
 msgstr "Dernière visite"
 
@@ -1250,7 +1270,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/Followup.php:1086 src/Monthly.php:703 src/Monthly.php:735
+#: src/Followup.php:1087 src/Monthly.php:704 src/Monthly.php:736
 #: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step4_management.html.twig:61
 #: templates/wizard/step5_management.html.twig:61
@@ -1258,8 +1278,9 @@ msgstr ""
 msgid "Mode of management"
 msgstr "Mode de gestion"
 
-#: src/Monthly.php:52 src/Monthly.php:1096 src/Monthly.php:1196
-#: src/Entity.php:97
+#: src/Monthly.php:53 src/Monthly.php:1097 src/Entity.php:97
+#: templates/monthly_period_nav.html.twig:34
+#: templates/monthly_criterias.html.twig:43
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
 
@@ -1549,7 +1570,7 @@ msgstr ""
 msgid "Period comment"
 msgstr ""
 
-#: src/Followup.php:867 src/Followup.php:1128 src/ContractDay.php:59
+#: src/Followup.php:868 src/Followup.php:1129 src/ContractDay.php:59
 #: src/ContractDay.php:61 src/ContractDay.php:478 src/Entity.php:141
 #: src/Config.php:355 src/WizardController.php:1642
 #: src/WizardController.php:1717 src/WizardController.php:1824
@@ -1655,6 +1676,10 @@ msgstr "Le plugin n'est pas activé"
 msgid "Portal"
 msgstr "Portail"
 
+#: templates/followup_export_toolbar.html.twig:52
+msgid "Portrait PDF"
+msgstr ""
+
 #: templates/entity/directhelpdesk_ticket_select.html.twig:72
 #: templates/directhelpdesk_modal.html.twig:78
 #: templates/preference_form.html.twig:68
@@ -1740,7 +1765,7 @@ msgstr ""
 msgid "Price must be greater than 0"
 msgstr ""
 
-#: src/Monthly.php:716 src/Monthly.php:753
+#: src/Monthly.php:717 src/Monthly.php:754
 msgid "Production"
 msgstr "Production"
 
@@ -1844,11 +1869,11 @@ msgstr ""
 msgid "Remaining days number by opened client contracts"
 msgstr "Nombre de jours restants par contrat client"
 
-#: src/Monthly.php:708 src/Monthly.php:741
+#: src/Monthly.php:709 src/Monthly.php:742
 msgid "Remaining on "
 msgstr "Restant au"
 
-#: src/Followup.php:891 src/Followup.php:1237
+#: src/Followup.php:892 src/Followup.php:1238
 #: templates/contractday_form.html.twig:128
 msgid "Remaining total (amount)"
 msgstr "Total restant (montant)"
@@ -1915,6 +1940,12 @@ msgid "Schema check"
 msgstr ""
 
 #: templates/entity/editorsubscription_tab.html.twig:47
+msgid "Search"
+msgstr ""
+
+#: templates/monthly_criterias.html.twig:59
+#: templates/followup_criterias.html.twig:98
+msgctxt "button"
 msgid "Search"
 msgstr ""
 
@@ -2007,7 +2038,7 @@ msgid_plural "States of contracts"
 msgstr[0] "État du contrat"
 msgstr[1] "États du contrat"
 
-#: src/Monthly.php:726 src/Monthly.php:767
+#: src/Monthly.php:727 src/Monthly.php:768
 msgid "State of intervention"
 msgstr "Etat de l'intervention"
 
@@ -2223,8 +2254,8 @@ msgstr "au"
 msgid "To compute"
 msgstr "Calculer"
 
-#: src/Monthly.php:512 src/Monthly.php:519 src/Monthly.php:529
-#: src/Monthly.php:1178
+#: src/Monthly.php:513 src/Monthly.php:520 src/Monthly.php:530
+#: src/Monthly.php:1173
 msgid "To present an invoice"
 msgstr "A facturer"
 
@@ -2236,13 +2267,13 @@ msgstr "Total (en jours)"
 msgid "Total (in hours)"
 msgstr "Total (en heures)"
 
-#: src/Followup.php:878 src/Followup.php:1175 src/ContractDay.php:537
+#: src/Followup.php:879 src/Followup.php:1176 src/ContractDay.php:537
 #: src/Gantt.php:383 templates/contractday_form.html.twig:119
 msgid "Total consummated"
 msgstr "Total consommé"
 
-#: src/Followup.php:887 src/Followup.php:1212 src/ContractDay.php:540
-#: src/Monthly.php:724 src/Monthly.php:765
+#: src/Followup.php:888 src/Followup.php:1213 src/ContractDay.php:540
+#: src/Monthly.php:725 src/Monthly.php:766
 #: templates/contractday_form.html.twig:123
 msgid "Total exceeding"
 msgstr "Total de dépassement"
@@ -2251,11 +2282,11 @@ msgstr "Total de dépassement"
 msgid "Total moving package"
 msgstr "Nombre de forfait de déplacement"
 
-#: src/Monthly.php:719 src/Monthly.php:760
+#: src/Monthly.php:720 src/Monthly.php:761
 msgid "Total production"
 msgstr "Total consommation mensuelle"
 
-#: hook.php:882 src/Followup.php:885 src/Followup.php:1203
+#: hook.php:882 src/Followup.php:886 src/Followup.php:1204
 #: src/ContractDay.php:539 src/Dashboard.php:185 src/Dashboard.php:467
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
@@ -2287,12 +2318,12 @@ msgstr "Déplacement (en jours)"
 msgid "Type"
 msgstr ""
 
-#: src/Followup.php:869 src/Followup.php:1145 src/Monthly.php:705
-#: src/Monthly.php:737
+#: src/Followup.php:870 src/Followup.php:1146 src/Monthly.php:706
+#: src/Monthly.php:738
 msgid "Type of contract"
 msgstr "Type de contrat"
 
-#: src/Followup.php:1094 src/ContractDay.php:166 src/ContractDay.php:897
+#: src/Followup.php:1095 src/ContractDay.php:166 src/ContractDay.php:897
 #: templates/contractday_form.html.twig:58
 #: templates/wizard/step4_management.html.twig:65
 #: templates/wizard/step5_management.html.twig:65
@@ -2392,7 +2423,7 @@ msgstr ""
 "Attention : si plusieurs plugins sont lancés au démarrage, seul le premier "
 "sera actif"
 
-#: src/Monthly.php:633
+#: src/Monthly.php:634
 msgid ""
 "Warning : There are supplementary interventions which depends on a "
 "prestation with a earlier end date"
@@ -2453,6 +2484,16 @@ msgstr ""
 msgid "You cannot add an intervention on this entity"
 msgstr ""
 
+#: templates/followup_criterias.html.twig:65
+#: templates/followup_criterias.html.twig:76
+msgid "after"
+msgstr ""
+
+#: templates/followup_criterias.html.twig:70
+#: templates/followup_criterias.html.twig:81
+msgid "before"
+msgstr ""
+
 #: templates/wizard/step6_stakeholders_section.html.twig:48
 #: templates/wizard/step5_stakeholders_section.html.twig:48
 msgid "day"
@@ -2474,8 +2515,10 @@ msgstr ""
 msgid "in"
 msgstr "à"
 
-#: src/Followup.php:1741 src/Followup.php:1746 src/Followup.php:1754
-#: src/Followup.php:1759
+#: templates/followup_criterias.html.twig:65
+#: templates/followup_criterias.html.twig:70
+#: templates/followup_criterias.html.twig:76
+#: templates/followup_criterias.html.twig:81
 msgid "of period of contract"
 msgstr "de la période de contrat"
 
