@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 10:53+0000\n"
+"POT-Creation-Date: 2026-09-21 08:45+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -1157,7 +1157,7 @@ msgstr "Interventions sur des contrats terminés"
 msgid "Invalid wizard mode"
 msgstr "Mode wizard invalide"
 
-#: src/DirectHelpdesk.php:469 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:475 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr "Est facturée"
 
@@ -1473,7 +1473,7 @@ msgid "Non-accomplished tasks informations"
 msgstr "Informations sur les tâches non accomplies"
 
 #: src/DirectHelpdesk_Ticket.php:48 src/DirectHelpdesk_Ticket.php:85
-#: src/DirectHelpdesk.php:54
+#: src/DirectHelpdesk.php:55
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] "Intervention non facturée"
@@ -1665,7 +1665,7 @@ msgstr ""
 "Veuillez noter qu'il n'y a plus de contrats avec des jours disponibles pour "
 "ce client."
 
-#: src/DirectHelpdesk.php:528
+#: src/DirectHelpdesk.php:534
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 "Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
@@ -2406,7 +2406,7 @@ msgstr "Mise à jour des champs du type de gestion"
 msgid "Update publisher subscription"
 msgstr "Mise à jour de la souscription éditeur"
 
-#: hook.php:1039
+#: hook.php:1027
 msgid "Update subscription fields"
 msgstr "Mise à jour des champs du type de gestion"
 
@@ -2529,7 +2529,7 @@ msgstr "Année"
 msgid "Yes"
 msgstr "Oui"
 
-#: src/DirectHelpdesk.php:280
+#: src/DirectHelpdesk.php:281
 msgid "You cannot add an intervention on this entity"
 msgstr "Vous ne pouvez pas ajouter d'intervention dans cette entité"
 

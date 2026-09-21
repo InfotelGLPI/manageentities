@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 10:53+0000\n"
+"POT-Creation-Date: 2026-09-21 08:45+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Emperium <real.emperium@gmail.com>, 2019\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/infotelGLPI/"
@@ -1130,7 +1130,7 @@ msgstr ""
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:469 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:475 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr ""
 
@@ -1440,7 +1440,7 @@ msgid "Non-accomplished tasks informations"
 msgstr ""
 
 #: src/DirectHelpdesk_Ticket.php:48 src/DirectHelpdesk_Ticket.php:85
-#: src/DirectHelpdesk.php:54
+#: src/DirectHelpdesk.php:55
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] ""
@@ -1625,7 +1625,7 @@ msgid ""
 "customer."
 msgstr ""
 
-#: src/DirectHelpdesk.php:528
+#: src/DirectHelpdesk.php:534
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 
@@ -2335,7 +2335,7 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1039
+#: hook.php:1027
 msgid "Update subscription fields"
 msgstr ""
 
@@ -2444,7 +2444,7 @@ msgstr "Ano "
 msgid "Yes"
 msgstr ""
 
-#: src/DirectHelpdesk.php:280
+#: src/DirectHelpdesk.php:281
 msgid "You cannot add an intervention on this entity"
 msgstr ""
 
