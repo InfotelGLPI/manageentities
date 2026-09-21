@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\SearchEngine;
@@ -1100,13 +1101,7 @@ class Monthly extends CommonDBTM
                 }
             }
             if ($is_html_output) {
-                Followup::printPager(
-                    $start,
-                    $numrows,
-                    $_SERVER['PHP_SELF'],
-                    $parameters,
-                    Monthly::class,
-                );
+                Followup::showExportToolbar($parameters, Monthly::class);
             }
 
             if ($is_html_output) {
@@ -1155,29 +1150,48 @@ class Monthly extends CommonDBTM
         }
     }
 
+    /**
+     * Caption of the monthly follow-up.
+     *
+     * Unlike the general follow-up this one does not list the contract states: it names the
+     * two backgrounds the report paints its own cells with. The colours are read back from
+     * self::$style so the swatch and the cells cannot drift apart -- the second one used to
+     * be written into an unquoted style attribute, which only held together because the
+     * declaration happens to carry no space.
+     *
+     * @return void
+     */
     public static function showLegendary()
     {
-        $contractstate = new ContractState();
-        $contracts = $contractstate->find();
-        $nb = count($contracts);
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre'><tr><th colspan='10'>" . __('Caption') . "</th></tr>";
-        /*$i = 0;
-        foreach ($contracts as $contract){
-           if($i == 5){
-              echo "</tr><tr>";
-           }
-           echo "<td width=10px style='background-color:".$contract['color']."'> </td>";
-           echo "<td> ".$contract['name']."</td>";
-           $i = $i + 1;
+        TemplateRenderer::getInstance()->display('@manageentities/legend.html.twig', [
+            'entries' => [
+                [
+                    'name'  => __('Exceeding', 'manageentities'),
+                    'color' => self::getStyleColor(self::$style[2]),
+                ],
+                [
+                    'name'  => __('Closed') . ' & ' . __('To present an invoice', 'manageentities'),
+                    'color' => self::getStyleColor(self::$style[3]),
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Extract the background colour of one of the style declarations of self::$style.
+     *
+     * @param string $style
+     *
+     * @return string
+     */
+    private static function getStyleColor(string $style): string
+    {
+        $color = '';
+        if (preg_match('/background-color[ ]*:[ ]*([^;]+)/', $style, $matches) === 1) {
+            $color = $matches[1];
         }
-        echo "</tr><tr>";*/
-        echo "<tr><td width=10px style='" . self::$style[2] . "'></td>";
-        echo "<td>" . __('Exceeding', 'manageentities') . "</td>";
-        echo "<td width=10px style=" . self::$style[3] . "></td>";
-        echo "<td>" . __('Closed') . " & " . __('To present an invoice', 'manageentities') . "</td>";
-        echo "</tr></table></br>";
-        echo "</div>";
+
+        return Followup::sanitizeStateColor($color);
     }
 
     public static function checkValue($value, $output_type)
@@ -1193,62 +1207,32 @@ class Monthly extends CommonDBTM
 
     public function showHeader($options = [])
     {
-        Entity::showManageentitiesHeader(__('Monthly follow-up', 'manageentities'));
+        //        Entity::showManageentitiesHeader(__('Monthly follow-up', 'manageentities'));
 
-        $rand = mt_rand();
-        echo "<form method='post' name='criterias_form$rand' id='criterias_form$rand'
-               action=\"./entity.php\">";
-        echo "<div class='plugin_manageentities_color' ><table style='margin: 0px auto 5px auto;'>";
-        echo "<tr><td colspan='2' class='center' name='year'></td></tr>";
-        echo "<tr><td>";
-        echo "<ul id='last_year'></ul></td>";
-        echo "<td><ul id='manageentities-months-list'></ul>";
-        echo "<td>";
-        echo "<ul id='next_year'></ul></td>";
-        echo "</td></tr>";
-        echo "</table></div>";
-        // Both values are interpolated below into unquoted JavaScript literals, a context where
-        // HTML escaping would not help: the only safe shape is a number, so they are cast here,
-        // before any use. Anything else posted in year_current used to be written into the script
-        // block as is.
+        // The whole criteria block is rendered server side. It used to be a run of echo
+        // producing a tab_cadre_fixe layout table with tab_bg_2 rows and center cells, plus
+        // an empty table filled in by an inline script that built the period picker with
+        // FullCalendar 3 button classes (fc-button, fc-state-default) removed in GLPI 11, so
+        // the year buttons were styled unlike the month ones and the hardcoded colours of the
+        // companion CSS ignored the dark theme.
+        // Both values reach the template and the data attributes the script reads back, so
+        // they are cast to integers before any use: anything else posted in year_current used
+        // to be written into the script block as is.
         $year = (int) ($_GET['year_current'] ?? 0);
         if ($year <= 0) {
             $year = (int) date('Y', strtotime('-1 month'));
         }
         $month = (int) date('m', strtotime($options['begin_date']));
-        echo "<script type='text/javascript'>";
-        echo "var yearIdElm = $('[name=\"year\"]');";
-        echo "yearIdElm.html($year);";
-        echo "lastYearManagesEntities('criterias_form$rand', '#last_year', $year, " . json_encode(
-            Toolbox::getMonthsOfYearArray(),
-        ) . ");";
-        echo "manageentitiesShowMonth('criterias_form$rand', '#manageentities-months-list', " . json_encode(
-            Toolbox::getMonthsOfYearArray(),
-        ) . ", $year,  $month) ;";
-        echo "nextYearManagesEntities('criterias_form$rand', '#next_year', $year, " . json_encode(
-            Toolbox::getMonthsOfYearArray(),
-        ) . ");";
 
-        echo "</script>";
-
-        echo "<div align='spaced'><table class='tab_cadre_fixe center'>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td class='center'>" . __('Begin date') . "</td>";
-        echo "<td class='center'>";
-        Html::showDateField("begin_date", ['value' => $options['begin_date']]);
-        echo "</td><td class='center'>" . __('End date') . "</td>";
-        echo "<td class='center'>";
-        Html::showDateField("end_date", ['value' => $options['end_date']]);
-        echo "</td></tr>";
-        echo "<tr class='tab_bg_2'>";
-        echo "<td class='center' colspan='8'>";
-        echo Html::submit(_sx('button', 'Search'), ['name' => 'searchmonthly', 'class' => 'btn btn-primary']);
-        echo Html::hidden('entities_id', ['value' => $options['entities_id']]);
-        echo Html::hidden('year_current', ['id' => 'action', 'value' => $year]);
-        echo "</td></tr>";
-        echo "</table></div>";
-
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('@manageentities/monthly_criterias.html.twig', [
+            'form_name'   => 'criterias_form' . mt_rand(),
+            'form_action' => './entity.php',
+            'year'        => $year,
+            'month'       => $month,
+            'months'      => Toolbox::getMonthsOfYearArray(),
+            'begin_date'  => $options['begin_date'],
+            'end_date'    => $options['end_date'],
+            'entities_id' => $options['entities_id'],
+        ]);
     }
 }

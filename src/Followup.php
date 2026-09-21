@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\SearchEngine;
 use Html;
@@ -793,7 +794,7 @@ class Followup extends CommonDBTM
         if (!empty($results)) {
             if ($is_html_output && Session::getCurrentInterface() == 'central') {
                 self::showLegendary();
-                self::printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters, Followup::class);
+                self::showExportToolbar($parameters, Followup::class);
             }
 
             //            headers 1ere ligne
@@ -1529,16 +1530,6 @@ class Followup extends CommonDBTM
                         $numrows,
                     );
                 }
-                //                if ($is_html_output) {
-                //                    self::printPager(
-                //                        $start,
-                //                        $numrows,
-                //                        $_SERVER['PHP_SELF'],
-                //                        $parameters,
-                //                        Monthly::class
-                //                    );
-                //                }
-
                 if ($is_html_output) {
                     echo $html_output;
                 } else {
@@ -1614,7 +1605,11 @@ class Followup extends CommonDBTM
             default:
 
                 if ($color != "") {
-                    $class = " style='background-color:color-mix(in srgb," . $color . ", var(--tblr-bg-surface) var(--me-state-mix, 0%))' ";
+                    // The colour comes straight out of the contract state, which is free
+                    // text: it is checked before reaching the style attribute, exactly like
+                    // the swatches of the caption.
+                    $class = " style='background-color:color-mix(in srgb," . self::sanitizeStateColor((string) $color)
+                        . ", var(--tblr-bg-surface) var(--me-state-mix, 0%))' ";
                 } else {
                     $class = " class='tab_bg_1' ";
                     if ($odd) {
@@ -1626,295 +1621,180 @@ class Followup extends CommonDBTM
         return $out;
     }
 
+    /**
+     * Restrict a contract state colour to something that can only ever be a colour.
+     *
+     * ContractState.color is free text typed in the dropdown form and it is written into a
+     * style attribute twice: on every row of the report (showNewLine()) and on every swatch
+     * of the caption. Escaping the quotes keeps the value inside the attribute but still
+     * lets it close the declaration and append its own, so the value itself is checked here
+     * and replaced by a transparent background when it is not a plain CSS colour.
+     *
+     * @param string $color
+     *
+     * @return string
+     */
+    public static function sanitizeStateColor(string $color): string
+    {
+        $color = trim($color);
+
+        $patterns = [
+            '/^#(?:[0-9A-Fa-f]{3,4}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/',
+            '/^[A-Za-z]{3,20}$/',
+            '/^rgba?[(][0-9.,%\/ ]+[)]$/',
+            '/^hsla?[(][0-9.,%\/ adeg]+[)]$/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $color) === 1) {
+                return $color;
+            }
+        }
+
+        return 'transparent';
+    }
+
+    /**
+     * Caption of the report: one swatch per contract state.
+     *
+     * @return void
+     */
     public static function showLegendary()
     {
-        $contractstate = new ContractState();
-        $contracts = $contractstate->find();
-        $nb = count($contracts);
-        echo "<div class='center'>";
-        echo "<table class='tab_cadre'><tr><th colspan='20'>" . __('Caption') . "</th></tr>";
-        $i = 0;
-        foreach ($contracts as $contract) {
-            if ($i == 10) {
-                echo "</tr><tr>";
-            }
-            // ContractState color/name are stored raw (GLPI 10+ dropdowns); escape both
-            // before writing them into the style attribute and the cell, otherwise a
-            // crafted color like "red' onmouseover='..." breaks out and injects markup
-            // (same escaping the DirectHelpdesk_Ticket neighbour already applies).
-            echo "<td width=10px style='background-color:color-mix(in srgb," . htmlspecialchars((string) $contract['color'], ENT_QUOTES) . ", var(--tblr-bg-surface) var(--me-state-mix, 0%))'> </td>";
-            echo "<td> " . htmlspecialchars((string) $contract['name'], ENT_QUOTES) . "</td>";
-            $i = $i + 1;
+        $contract_state = new ContractState();
+
+        $entries = [];
+        foreach ($contract_state->find() as $state) {
+            $entries[] = [
+                'name'  => $state['name'],
+                'color' => self::sanitizeStateColor((string) $state['color']),
+            ];
         }
-        echo "</tr></table></br>";
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('@manageentities/legend.html.twig', [
+            'entries' => $entries,
+        ]);
     }
 
+    /**
+     * Criteria form of the general follow-up.
+     *
+     * @param array $options
+     *
+     * @return void
+     */
     public function showCriteriasForm($options = [])
     {
-        global $DB;
-        Entity::showManageentitiesHeader(__('General follow-up', 'manageentities'));
+        //        Entity::showManageentitiesHeader(__('General follow-up', 'manageentities'));
 
-        if (Session::getCurrentInterface() == 'central') {
-            $rand = mt_rand();
-
-            echo "<form method='post' name='criterias_form$rand' id='criterias_form$rand'
-               action=\"./entity.php\">";
-
-            echo "<div align='spaced'><table class='tab_cadre_fixe'>";
-
-            echo "<tr class='tab_bg_1'>";
-            if ((isset($_SESSION['glpiactive_entity_recursive'])
-                    && $_SESSION['glpiactive_entity_recursive'])
-                || (isset($_SESSION['glpishowallentities'])
-                    && $_SESSION['glpishowallentities'])) {
-                echo "<td>" . _n('Entity', 'Entities', 1) . "</td>";
-                echo "<td>";
-                \Dropdown::show('Entity', ['value' => $options['entities_id']]);
-                echo "</td>";
-                $colspan = '1';
-            } else {
-                $colspan = '2';
-                echo Html::hidden('entities_id', ['value' => -1]);
-            }
-
-            $plugin_config = new Config();
-            $config_states = $plugin_config->find();
-            $config_states = reset($config_states);
-
-            $plugin_pref = new Preference();
-            $preferences = $plugin_pref->find(['users_id' => Session::getLoginUserID()]);
-            $preferences = reset($preferences);
-
-            $contractstate = new ContractState();
-            $contractstates = $contractstate->find();
-            $states = [];
-            foreach ($contractstates as $key => $val) {
-                $states[$key] = $val['name'];
-            }
-            echo "<td class='left' colspan='$colspan'>" . ContractState::getTypeName(2) . "</td>";
-            echo "<td class='left' colspan='$colspan'>";
-
-            //            Toolbox::logInfo($options['contract_states']);
-            //            Toolbox::logInfo($states);
-
-            if (isset($options['contract_states'])
-                && is_array($options['contract_states'])
-                && count($options['contract_states']) > 0) {
-                // Explicit values from form POST
-                \Dropdown::showFromArray("contract_states", $states, [
-                    'multiple' => true,
-                    'width' => 200,
-                    'values' => $options['contract_states'],
-                ]);
-            } elseif (isset($options['contract_states']) && $options['contract_states'] == 0) {
-                // User explicitly cleared the filter: show empty dropdown
-                \Dropdown::showFromArray("contract_states", $states, [
-                    'multiple' => true,
-                    'width' => 200,
-                ]);
-            } elseif (isset($preferences['contract_states'])
-                && $preferences['contract_states'] != null) {
-                // Initial load: pre-populate from preferences
-                \Dropdown::showFromArray("contract_states", $states, [
-                    'multiple' => true,
-                    'width' => 200,
-                    'values' => json_decode($preferences['contract_states'], true),
-                ]);
-            } elseif (isset($config_states['contract_states'])
-                && $config_states['contract_states'] != null) {
-                // Initial load: pre-populate from config
-                \Dropdown::showFromArray("contract_states", $states, [
-                    'multiple' => true,
-                    'width' => 200,
-                    'values' => json_decode($config_states['contract_states'], true),
-                ]);
-            } else {
-                \Dropdown::showFromArray("contract_states", $states, [
-                    'multiple' => true,
-                    'width' => 200,
-                ]);
-            }
-            echo "</td></tr><tr class='tab_bg_1'>";
-
-            echo "<td class='left'>" . __('Begin date') . " "
-                . __('of period of contract', 'manageentities') . ", " . __('after') . "</td>";
-            echo "<td class='left'>";
-            Html::showDateField("begin_date_after", ['value' => $options['begin_date_after']]);
-            echo "</td>";
-            echo "<td class='left'>" . __('Begin date') . " "
-                . __('of period of contract', 'manageentities') . ", " . __('before') . "</td>";
-            echo "<td class='left'>";
-            Html::showDateField("begin_date_before", ['value' => $options['begin_date_before']]);
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='left'>" . __('End date') . " "
-                . __('of period of contract', 'manageentities') . ", " . __('after') . "</td>";
-            echo "<td class='left'>";
-            Html::showDateField("end_date_after", ['value' => $options['end_date_after']]);
-            echo "</td>";
-            echo "<td class='left'>" . __('End date') . " "
-                . __('of period of contract', 'manageentities') . ", " . __('before') . "</td>";
-            echo "<td class='left'>";
-            Html::showDateField("end_date_before", ['value' => $options['end_date_before']]);
-            echo "</td>";
-            echo "</tr>";
-
-
-            $iterator_use = $DB->request([
-                'SELECT' => [
-                    'glpi_users.*',
-                    'glpi_plugin_manageentities_businesscontacts.id AS users_id',
-                ],
-                'FROM' => 'glpi_plugin_manageentities_businesscontacts',
-                'LEFT JOIN' => [
-                    'glpi_users' => [
-                        'ON' => [
-                            'glpi_plugin_manageentities_businesscontacts' => 'users_id',
-                            'glpi_users' => 'id',
-                        ],
-                    ],
-                ],
-                'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
-            ]);
-
-            if (count($iterator_use) > 0) {
-                foreach ($iterator_use as $data_use) {
-                    $users[$data_use['id']] = $data_use['realname'] . " " . $data_use['firstname'];
-                }
-            }
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='left'>";
-            //            echo __('Business', 'manageentities');
-            echo "</td>";
-            echo "<td class='left'>";
-
-            $plugin_company = new Company();
-            $result = $plugin_company->find();
-
-            $company = [];
-            foreach ($result as $data) {
-                $company[$data['id']] = $data['name'];
-            }
-            echo "</td>";
-            echo "<td class='left'>";
-            echo _n('Company', 'Companies', 2, 'manageentities');
-            echo "</td>";
-            echo "<td class='left'>";
-
-            if (isset($options['company_id'])
-                && is_array($options['company_id'])
-                && count($options['company_id']) > 0) {
-                \Dropdown::showFromArray("company_id", $company, [
-                    'multiple' => true,
-                    'width' => 200,
-                    'values' => $options['company_id'],
-                ]);
-            } elseif (isset($preferences['companies_id'])
-                && $preferences['companies_id'] != null) {
-                $options['company_id'] = json_decode($preferences['companies_id'], true);
-                \Dropdown::showFromArray("company_id", $company, [
-                    'multiple' => true,
-                    'width' => 200,
-                    'values' => $options['company_id'],
-                ]);
-            } else {
-                \Dropdown::showFromArray("company_id", $company, [
-                    'multiple' => true,
-                    'width' => 200,
-                    //                    'value' => 'name'
-                ]);
-            }
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' colspan='4'>";
-            echo Html::submit(_sx('button', 'Search'), ['name' => 'searchcontract', 'class' => 'btn btn-primary']);
-            echo Html::hidden('begin_date', ['value' => $options['begin_date']]);
-            echo Html::hidden('end_date', ['value' => $options['end_date']]);
-            echo "</td></tr>";
-
-
-            echo "</table></div>";
-
-            Html::closeForm();
+        if (Session::getCurrentInterface() !== 'central') {
+            return;
         }
+
+        // The entity selector is only offered when the session actually spans several
+        // entities; otherwise the report stays on the active one, which -1 stands for.
+        $show_entity = !empty($_SESSION['glpiactive_entity_recursive'])
+            || !empty($_SESSION['glpishowallentities']);
+
+        $contract_state = new ContractState();
+        $contract_states = [];
+        foreach ($contract_state->find() as $key => $state) {
+            $contract_states[$key] = $state['name'];
+        }
+
+        $plugin_company = new Company();
+        $companies = [];
+        foreach ($plugin_company->find() as $company) {
+            $companies[$company['id']] = $company['name'];
+        }
+
+        $plugin_pref = new Preference();
+        $preferences = $plugin_pref->find(['users_id' => Session::getLoginUserID()]);
+        $preferences = reset($preferences) ?: [];
+
+        $plugin_config = new Config();
+        $config_states = $plugin_config->find();
+        $config_states = reset($config_states) ?: [];
+
+        // Same cascade as before: what the form posted wins, an explicit 0 means the filter
+        // was cleared and must stay empty, then the personal preference, then the plugin
+        // configuration.
+        $selected_contract_states = [];
+        if (
+            isset($options['contract_states'])
+            && is_array($options['contract_states'])
+            && count($options['contract_states']) > 0
+        ) {
+            $selected_contract_states = $options['contract_states'];
+        } elseif (isset($options['contract_states']) && $options['contract_states'] == 0) {
+            $selected_contract_states = [];
+        } elseif (!empty($preferences['contract_states'])) {
+            $selected_contract_states = json_decode($preferences['contract_states'], true) ?: [];
+        } elseif (!empty($config_states['contract_states'])) {
+            $selected_contract_states = json_decode($config_states['contract_states'], true) ?: [];
+        }
+
+        $selected_companies = [];
+        if (
+            isset($options['company_id'])
+            && is_array($options['company_id'])
+            && count($options['company_id']) > 0
+        ) {
+            $selected_companies = $options['company_id'];
+        } elseif (!empty($preferences['companies_id'])) {
+            $selected_companies = json_decode($preferences['companies_id'], true) ?: [];
+        }
+
+        TemplateRenderer::getInstance()->display('@manageentities/followup_criterias.html.twig', [
+            'form_name'                => 'criterias_form' . mt_rand(),
+            'form_action'              => './entity.php',
+            'show_entity'              => $show_entity,
+            'entities_id'              => $options['entities_id'],
+            'contract_states'          => $contract_states,
+            'contract_states_label'    => ContractState::getTypeName(2),
+            'selected_contract_states' => $selected_contract_states,
+            'companies'                => $companies,
+            'selected_companies'       => $selected_companies,
+            'begin_date_after'         => $options['begin_date_after'],
+            'begin_date_before'        => $options['begin_date_before'],
+            'end_date_after'           => $options['end_date_after'],
+            'end_date_before'          => $options['end_date_before'],
+            'begin_date'               => $options['begin_date'],
+            'end_date'                 => $options['end_date'],
+        ]);
     }
 
-    public static function printPager(
-        $start,
-        $numrows,
-        $target,
-        $parameters,
-        $item_type_output = 0,
-        $item_type_output_param = 0
-    ) {
+    /**
+     * Export control of the two reports.
+     *
+     * Used to be printPager(): it carried a $start/$numrows/$target triple that only fed
+     * local variables nothing ever read, since the pager navigation itself had already been
+     * removed and only the export select was left. The form it opened was never closed, so
+     * everything rendered after it -- the report and the forms below -- ended up nested in
+     * it. The core exports through links since GLPI 10, so there is no form left to close.
+     *
+     * @param string $parameters       Query string of the report, joined with "&amp;"
+     * @param string $item_type_output Itemtype plugin_manageentities_dynamicReport() dispatches on
+     *
+     * @return void
+     */
+    public static function showExportToolbar(string $parameters, string $item_type_output)
+    {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $list_limit = $_SESSION['glpilist_limit'];
-        // Forward is the next step forward
-        $forward = $start + $list_limit;
+        // $parameters is built for href attributes, so its separators are entities: decode
+        // once and parse, which also rebuilds the nested keys (company_id[0]) the report
+        // reads back. The former explode() on "&amp;" split on the first "=" without ever
+        // checking there was one, and emitted an unnamed hidden field for the trailing
+        // separator the callers always leave behind.
+        $criteria = [];
+        parse_str(html_entity_decode($parameters, ENT_QUOTES, 'UTF-8'), $criteria);
+        $criteria['item_type'] = $item_type_output;
 
-        // This is the end, my friend
-        $end = $numrows - $list_limit;
-
-        // Human readable count starts here
-        $current_start = $start + 1;
-
-        // And the human is viewing from start to end
-        $current_end = $current_start + $list_limit - 1;
-        if ($current_end > $numrows) {
-            $current_end = $numrows;
-        }
-
-        // Backward browsing
-        if ($current_start - $list_limit <= 0) {
-            $back = 0;
-        } else {
-            $back = $start - $list_limit;
-        }
-
-        // Print it
-
-        echo "<form method='GET' action=\"" . $CFG_GLPI["root_doc"]
-            . "/front/report.dynamic.php\" target='_blank'>\n";
-
-        echo "<table class='tab_cadre_pager'>\n";
-        echo "<tr>\n";
-
-        if (Session::getCurrentInterface()
-            && Session::getCurrentInterface()) {
-            echo "<td class='tab_bg_2' width='30%'>";
-
-            echo Html::hidden('item_type', ['value' => $item_type_output]);
-            if ($item_type_output_param != 0) {
-                echo Html::hidden('item_type_param', ['value' => serialize($item_type_output_param)]);
-            }
-
-            $explode = explode("&amp;", $parameters);
-            for ($i = 0; $i < count($explode); $i++) {
-                $pos = strpos($explode[$i], '=');
-                $name = substr($explode[$i], 0, $pos);
-                echo Html::hidden($name, ['value' => substr($explode[$i], $pos + 1)]);
-            }
-            echo "<select class='form-select' name='display_type'>";
-            echo "<option value='" . Search::PDF_OUTPUT_LANDSCAPE . "'>" . __(
-                'Current page in landscape PDF',
-            ) . "</option>";
-            echo "<option value='" . Search::PDF_OUTPUT_PORTRAIT . "'>" . __(
-                'Current page in portrait PDF',
-            ) . "</option>";
-            echo "<option value='" . Search::CSV_OUTPUT . "'>" . __('Current page in CSV') . "</option>";
-            echo "</select>&nbsp;";
-            echo Html::submit(_sx('button', 'Export'), ['name' => 'export', 'class' => 'btn btn-primary']);
-            echo "</td>";
-        }
-
-        // End pager
-        echo "</tr>\n";
-        echo "</table><br>\n";
+        TemplateRenderer::getInstance()->display('@manageentities/followup_export_toolbar.html.twig', [
+            'rand'       => mt_rand(),
+            'export_url' => $CFG_GLPI['root_doc'] . '/front/report.dynamic.php?' . http_build_query($criteria),
+        ]);
     }
 }

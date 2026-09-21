@@ -1,0 +1,60 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{#
+ # Export control of the two reports. It used to live in a tab_cadre_pager table opened by
+ # a <form method='GET'> that no method ever closed, so the rest of the page -- including
+ # the report itself and the forms that follow -- was nested inside it. The core exports
+ # through plain links since GLPI 10 (templates/components/search/controls.html.twig), so
+ # the form is gone entirely: every parameter is already carried by the URL built server
+ # side.
+ #}
+<div class="d-flex justify-content-end mb-3">
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                id="manageentities-export-{{ rand }}" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="ti ti-download me-1" aria-hidden="true"></i>{{ __('Export') }}
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="manageentities-export-{{ rand }}" role="menu">
+            <div role="separator"><h6 class="dropdown-header">{{ __('Current page') }}</h6></div>
+
+            <a class="dropdown-item" role="menuitem" target="_blank" rel="noopener"
+               href="{{ export_url }}&display_type={{ constant('Search::PDF_OUTPUT_LANDSCAPE') }}">
+                <i class="ti ti-file-type-pdf me-1" aria-hidden="true"></i>{{ __('Landscape PDF') }}
+            </a>
+            <a class="dropdown-item" role="menuitem" target="_blank" rel="noopener"
+               href="{{ export_url }}&display_type={{ constant('Search::PDF_OUTPUT_PORTRAIT') }}">
+                <i class="ti ti-file-type-pdf me-1" aria-hidden="true"></i>{{ __('Portrait PDF') }}
+            </a>
+            <a class="dropdown-item" role="menuitem" target="_blank" rel="noopener"
+               href="{{ export_url }}&display_type={{ constant('Search::CSV_OUTPUT') }}">
+                <i class="ti ti-file-type-csv me-1" aria-hidden="true"></i>{{ __('CSV') }}
+            </a>
+        </div>
+    </div>
+</div>

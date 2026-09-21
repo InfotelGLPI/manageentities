@@ -201,113 +201,64 @@ function getManageentitiesFormData(form) {
     return JSON.stringify(indexed_array);
 }
 
-function manageentitiesShowMonth(formId, toupdate, monthNames, year, month) {
-    $.each(monthNames, function (index, val) {
-        var monthClass = 'btn btn-xs btn-outline-info manageentities-button';
-        if (index == 1) {
-            monthClass = 'btn btn-xs btn-outline-info manageentities-button manageentities-corner-left';
-        }
+/**
+ * Period picker of the monthly follow-up.
+ *
+ * The bar itself is rendered by templates/monthly_period_nav.html.twig; the only thing left
+ * here is turning a click on one of its buttons into a search over that period. The listener
+ * is delegated from the document because the script is emitted at the end of the body, after
+ * the markup, and the bar is also reachable from content loaded later.
+ */
+document.addEventListener('click', function (event) {
+    if (!(event.target instanceof Element)) {
+        return;
+    }
 
-        if (index == 12) {
-            monthClass = 'btn btn-xs btn-outline-info manageentities-button manageentities-corner-right';
-        }
-        if (month == index) {
-           monthClass = 'btn btn-xs btn-outline-info manageentities-button active';
-        }
-        $('<a class="' + monthClass + '" href="#' + index + '_' + year + '">' + val + '</a>').click(function () {
-            if (!$(this).hasClass('manageentities-state-disabled')) {
-                $(this).removeClass('manageentities-state-hover');
-            }
-            searchManageentities(index, formId, year, monthNames);
+    const button = event.target.closest('[data-manageentities-period-nav] button[data-year]');
+    if (button === null) {
+        return;
+    }
 
-        }).mousedown(function () {
-            $(this).not('.manageentities-state-active')
-                    .not('.manageentities-state-disabled')
-                    .addClass('manageentities-state-down');
-        }).mouseup(function () {
-            $(this).removeClass('manageentities-state-down');
-        }).hover(
-                function () {
-                    $(this).not('.manageentities-state-active')
-                            .not('.manageentities-state-disabled')
-                            .addClass('manageentities-state-hover');
-                },
-                function () {
-                    $(this).removeClass('manageentities-state-hover')
-                            .removeClass('manageentities-state-down');
-                }
-        ).appendTo(toupdate);
+    event.preventDefault();
 
-    });
+    const nav = button.closest('[data-manageentities-period-nav]');
+    const form = document.forms[nav.dataset.form];
+    if (form === undefined) {
+        return;
+    }
+
+    const year = parseInt(button.dataset.year, 10);
+    const month = parseInt(button.dataset.month, 10);
+
+    // Month is 1 based in the markup and 0 based in Date: the first day of the month asked
+    // for, and day 0 of the next one, which is the last day of that month.
+    setFormDate(form, 'begin_date', new Date(year, month - 1, 1));
+    setFormDate(form, 'end_date', new Date(year, month, 0));
+
+    const current = form.elements.year_current;
+    if (current !== undefined) {
+        current.value = year;
+    }
+
+    form.requestSubmit();
+});
+
+/**
+ * Write a date into one of the flatpickr fields of the criteria form, in the ISO shape the
+ * controller reads back.
+ *
+ * @param {HTMLFormElement} form
+ * @param {string}          name
+ * @param {Date}            date
+ */
+function setFormDate(form, name, date) {
+    const field = form.elements[name];
+    if (field === undefined) {
+        return;
+    }
+
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    field.value = date.getFullYear() + '-' + month + '-' + day;
 }
-function searchManageentities(index, formId, year, monthNames) {
-    $("input[name='year_current']").val(year);
-
-    var begin_date = new Date(year, index - 1, 1);
-    var end_date = new Date(year, index, 0);
-    $("input[name='begin_date']").val(begin_date.yyyymmdd());
-    $("input[name='end_date']").val(end_date.yyyymmdd());
-    $('#' + formId).submit();
-}
-
-function lastYearManagesEntities(formId, element, year, monthNames) {
-    var monthClass = 'btn btn-outline-info fc-button fc-button-agendaWeek fc-state-default';
-    $('<a class=\"' + monthClass + ' manageentities_href\"  href=\"#' + (year - 1) + '\">' + (year - 1) + '</a>').click(function () {
-        if (!$(this).hasClass('fc-state-disabled')) {
-            $(this).removeClass('fc-state-hover');
-        }
-        searchManageentities(12, formId, year-1, monthNames);
-    }).mousedown(function () {
-        $(this).not('.manageentities-state-active')
-                .not('.manageentities-state-disabled')
-                .addClass('manageentities-state-down');
-    }).mouseup(function () {
-        $(this).removeClass('manageentities-state-down');
-    }).hover(
-            function () {
-                $(this).not('.manageentities-state-active')
-                        .not('.manageentities-state-disabled')
-                        .addClass('manageentities-state-hover');
-            },
-            function () {
-                $(this).removeClass('manageentities-state-hover')
-                        .removeClass('manageentities-state-down');
-            }
-    ).appendTo(element);
-}
-
-function nextYearManagesEntities(formId, element, year, monthNames) {
-    var monthClass = 'btn btn-outline-info fc-button fc-button-agendaWeek fc-state-default';
-    $('<a class=\"' + monthClass + ' manageentities_href\"  href=\"#' + (year + 1) + '\">' + (year + 1) + '</a>').click(function () {
-        if (!$(this).hasClass('fc-state-disabled')) {
-            $(this).removeClass('fc-state-hover');
-        }
-        searchManageentities(1, formId, year+1, monthNames);
-    }).mousedown(function () {
-        $(this).not('.manageentities-state-active')
-                .not('.manageentities-state-disabled')
-                .addClass('manageentities-state-down');
-    }).mouseup(function () {
-        $(this).removeClass('manageentities-state-down');
-    }).hover(
-            function () {
-                $(this).not('.manageentities-state-active')
-                        .not('.manageentities-state-disabled')
-                        .addClass('manageentities-state-hover');
-            },
-            function () {
-                $(this).removeClass('manageentities-state-hover')
-                        .removeClass('manageentities-state-down');
-            }
-    ).appendTo(element);
-}
-
-
-Date.prototype.yyyymmdd = function() {
-
-        var yyyy = this.getFullYear().toString();
-        var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
-        var dd  = this.getDate().toString();
-
-        return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-   };

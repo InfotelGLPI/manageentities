@@ -1,0 +1,60 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{#
+ # Period picker of the monthly follow-up: the previous year, the twelve months of the
+ # current one, and the next year. The whole bar used to be assembled client side by
+ # jQuery from an inline script block; it is rendered here so the markup is valid and
+ # themed, and the script only has to read the data attributes back.
+ #}
+<nav class="mb-3 text-center" aria-label="{{ __('Monthly follow-up', 'manageentities') }}"
+     data-manageentities-period-nav data-form="{{ form_name }}">
+    <div class="fw-bold mb-1">{{ year }}</div>
+
+    <div class="btn-group flex-wrap" role="group">
+        <button type="button" class="btn btn-outline-primary"
+                data-year="{{ year - 1 }}" data-month="12">
+            <i class="ti ti-chevron-left" aria-hidden="true"></i>
+            {{ year - 1 }}
+        </button>
+
+        {% for index, label in months %}
+            <button type="button"
+                    class="btn btn-outline-primary{{ index == month ? ' active' : '' }}"
+                    data-year="{{ year }}" data-month="{{ index }}"
+                    {% if index == month %}aria-current="true"{% endif %}>
+                {{ label }}
+            </button>
+        {% endfor %}
+
+        <button type="button" class="btn btn-outline-primary"
+                data-year="{{ year + 1 }}" data-month="1">
+            {{ year + 1 }}
+            <i class="ti ti-chevron-right" aria-hidden="true"></i>
+        </button>
+    </div>
+</nav>

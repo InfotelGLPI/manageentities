@@ -1,0 +1,63 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{#
+ # Criteria form of the monthly follow-up: the period picker plus the two date bounds it
+ # writes into. It replaced a tab_cadre_fixe layout table built by a run of echo, whose
+ # tab_bg_2 rows and center cells are GLPI 9 markup that Tabler no longer styles, and
+ # whose date fields were emitted by Html::showDateField() with a label in a neighbouring
+ # cell, so nothing tied the two together for assistive technologies.
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<form method="post" name="{{ form_name }}" id="{{ form_name }}" action="{{ form_action }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+
+    <div class="card mb-3 mx-auto">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-calendar-month"></i>
+            <strong>{{ __('Monthly follow-up', 'manageentities') }}</strong>
+        </div>
+
+        <div class="card-body">
+            {% include '@manageentities/monthly_period_nav.html.twig' %}
+
+            <div class="row">
+                {{ fields.dateField('begin_date', begin_date, __('Begin date')) }}
+                {{ fields.dateField('end_date', end_date, __('End date')) }}
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-end">
+            <input type="hidden" name="entities_id" value="{{ entities_id }}">
+            <input type="hidden" name="year_current" id="action" value="{{ year }}">
+            <button type="submit" name="searchmonthly" class="btn btn-primary">
+                <i class="ti ti-search me-1"></i>{{ _x('button', 'Search') }}
+            </button>
+        </div>
+    </div>
+</form>

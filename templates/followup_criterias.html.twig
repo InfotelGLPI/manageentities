@@ -1,0 +1,102 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{#
+ # Criteria form of the general follow-up. It replaced a tab_cadre_fixe layout table whose
+ # tab_bg_1 rows and left cells are GLPI 9 markup Tabler no longer styles, and whose labels
+ # sat in a neighbouring cell of the field they described -- Html::showDateField() emits no
+ # id, so nothing tied the two together. The core field macros generate the pair, so every
+ # label now points at its own control.
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<form method="post" name="{{ form_name }}" id="{{ form_name }}" action="{{ form_action }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-filter" aria-hidden="true"></i>
+            <strong>{{ __('General follow-up', 'manageentities') }}</strong>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                {% if show_entity %}
+                    {{ fields.dropdownField('Entity', 'entities_id', entities_id, _n('Entity', 'Entities', 1)) }}
+                {% else %}
+                    <input type="hidden" name="entities_id" value="-1">
+                {% endif %}
+
+                {{ fields.dropdownArrayField(
+                    'contract_states',
+                    null,
+                    contract_states,
+                    contract_states_label,
+                    {'multiple': true, 'values': selected_contract_states}
+                ) }}
+
+                {{ fields.dateField(
+                    'begin_date_after',
+                    begin_date_after,
+                    __('Begin date') ~ ' ' ~ __('of period of contract', 'manageentities') ~ ', ' ~ __('after')
+                ) }}
+                {{ fields.dateField(
+                    'begin_date_before',
+                    begin_date_before,
+                    __('Begin date') ~ ' ' ~ __('of period of contract', 'manageentities') ~ ', ' ~ __('before')
+                ) }}
+
+                {{ fields.dateField(
+                    'end_date_after',
+                    end_date_after,
+                    __('End date') ~ ' ' ~ __('of period of contract', 'manageentities') ~ ', ' ~ __('after')
+                ) }}
+                {{ fields.dateField(
+                    'end_date_before',
+                    end_date_before,
+                    __('End date') ~ ' ' ~ __('of period of contract', 'manageentities') ~ ', ' ~ __('before')
+                ) }}
+
+                {{ fields.dropdownArrayField(
+                    'company_id',
+                    null,
+                    companies,
+                    _n('Company', 'Companies', 2, 'manageentities'),
+                    {'multiple': true, 'values': selected_companies}
+                ) }}
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-end">
+            <input type="hidden" name="begin_date" value="{{ begin_date }}">
+            <input type="hidden" name="end_date" value="{{ end_date }}">
+            <button type="submit" name="searchcontract" class="btn btn-primary">
+                <i class="ti ti-search me-1" aria-hidden="true"></i>{{ _x('button', 'Search') }}
+            </button>
+        </div>
+    </div>
+</form>
