@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-21 09:02+0000\n"
+"POT-Creation-Date: 2026-09-21 09:52+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Tiago Graça, 2022\n"
 "Language-Team: French (Canada) (https://www.transifex.com/infotelGLPI/"
@@ -470,7 +470,7 @@ msgstr "N° du contrat"
 msgid "Contract number is required"
 msgstr ""
 
-#: src/Followup.php:1027 src/Gantt.php:348
+#: src/Followup.php:1027 src/Gantt.php:302
 msgid "Contract present"
 msgstr "Présent contrat"
 
@@ -601,14 +601,14 @@ msgstr ""
 msgid "Date of"
 msgstr "Date de"
 
-#: src/Followup.php:1070 src/Gantt.php:356
+#: src/Followup.php:1070 src/Gantt.php:310
 #: templates/wizard/step4_management.html.twig:55
 #: templates/wizard/step5_management.html.twig:55
 #: templates/contract_detail_form.html.twig:139
 msgid "Date of renewal"
 msgstr "Date de reconduction"
 
-#: src/Followup.php:1055 src/Entity.php:591 src/Gantt.php:352
+#: src/Followup.php:1055 src/Entity.php:591 src/Gantt.php:306
 #: templates/wizard/step4_management.html.twig:51
 #: templates/wizard/step5_management.html.twig:51
 #: templates/contract_detail_form.html.twig:135
@@ -971,7 +971,7 @@ msgstr ""
 msgid "From"
 msgstr "du"
 
-#: src/Gantt.php:83
+#: src/Gantt.php:84
 msgid "GANTT"
 msgstr "GANTT"
 
@@ -1053,7 +1053,7 @@ msgstr "Les informations ont bien été supprimées"
 
 #: src/Followup.php:877 src/Followup.php:1167 src/ContractDay.php:119
 #: src/ContractDay.php:531 src/Monthly.php:707 src/Monthly.php:739
-#: src/Gantt.php:425 templates/contractday_form.html.twig:94
+#: src/Gantt.php:382 templates/contractday_form.html.twig:94
 #: templates/wizard/step6_intervention_block.html.twig:69
 #: templates/wizard/step5_intervention_block.html.twig:69
 msgid "Initial credit"
@@ -1452,7 +1452,7 @@ msgstr[1] ""
 msgid "Not saved"
 msgstr ""
 
-#: src/Gantt.php:295
+#: src/Gantt.php:89 src/Gantt.php:162
 msgid "Nothing to display"
 msgstr "Rien à afficher"
 
@@ -1460,7 +1460,7 @@ msgstr "Rien à afficher"
 msgid "Nothing to display."
 msgstr ""
 
-#: src/Gantt.php:345 templates/entity/contracts_tab.html.twig:52
+#: templates/entity/contracts_tab.html.twig:52
 msgctxt "phone"
 msgid "Number"
 msgstr ""
@@ -1645,10 +1645,6 @@ msgstr ""
 #: front/directhelpdesk.form.php:83
 msgid "Please select at least one intervention"
 msgstr ""
-
-#: src/Gantt.php:219
-msgid "Please wait"
-msgstr "Merci de patienter"
 
 #: src/Dashboard.php:196 src/Dashboard.php:259 src/Dashboard.php:348
 #: src/Dashboard.php:477
@@ -2241,7 +2237,7 @@ msgid "Total (in hours)"
 msgstr "Total (en heures)"
 
 #: src/Followup.php:878 src/Followup.php:1175 src/ContractDay.php:537
-#: src/Gantt.php:426 templates/contractday_form.html.twig:119
+#: src/Gantt.php:383 templates/contractday_form.html.twig:119
 msgid "Total consummated"
 msgstr "Total consommé"
 
@@ -2494,6 +2490,9 @@ msgstr "sur"
 #: templates/entity/contracts_tab.html.twig:91
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
+
+#~ msgid "Please wait"
+#~ msgstr "Merci de patienter"
 
 #~ msgid "Please add this contact before adding another."
 #~ msgstr "Merci d'ajouter cet utilisateur avant d'en ajouter un autre."
