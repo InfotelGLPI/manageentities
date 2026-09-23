@@ -846,6 +846,30 @@ class Contract extends CommonDBTM
     }
 
     /**
+     * Recompute remaining_days for every contract (plugin update, configuration change).
+     */
+    public static function updateAllRemainingDays(): void
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => ['contracts_id'],
+            'FROM'   => self::getTable(),
+        ]);
+        foreach ($iterator as $row) {
+            self::updateRemainingDays((int) $row['contracts_id']);
+        }
+    }
+
+    public function post_updateItem($history = true)
+    {
+        // The contract type decides how task durations are consumed (hours vs interventions).
+        if (in_array('contract_type', $this->updates, true)) {
+            self::updateRemainingDays((int) ($this->fields['contracts_id'] ?? 0));
+        }
+    }
+
+    /**
      * Recompute remaining_days for every contract a ticket consumes on.
      *
      * The consumption is computed from the ticket tasks and from the ticket itself

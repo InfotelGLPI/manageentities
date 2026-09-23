@@ -780,6 +780,17 @@ class WizardController
             return ['success' => true, 'step' => $session['step']];
         }
 
+        $errors = [];
+        if ($begin_date === null) {
+            $errors['begin_date'] = __('Begin date is required', 'manageentities');
+        }
+        if (($input['end_date'] ?? '') === '') {
+            $errors['end_date'] = __('End date is required', 'manageentities');
+        }
+        if (!empty($errors)) {
+            return ['success' => false, 'errors' => $errors];
+        }
+
         $subscription_data = [
             'name'                                        => $name,
             'customer_account_id'                         => trim($input['customer_account_id'] ?? ''),

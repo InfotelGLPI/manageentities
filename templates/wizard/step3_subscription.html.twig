@@ -46,6 +46,7 @@
         <div class="row g-3" id="step3-fields-{{ rand }}">
             {% include '@manageentities/editorsubscription_fields.html.twig' with {
                 fields_required: false,
+                dates_required: true,
                 container_id: 'step3-fields-' ~ rand,
                 load_entity_ajax: false
             } %}

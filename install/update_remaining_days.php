@@ -54,14 +54,5 @@ function addRemainingDaysColumn(): void
  */
 function refreshAllRemainingDays(): void
 {
-    global $DB;
-
-    $iterator = $DB->request([
-        'SELECT' => ['contracts_id'],
-        'FROM'   => 'glpi_plugin_manageentities_contracts',
-    ]);
-
-    foreach ($iterator as $row) {
-        Contract::updateRemainingDays((int) $row['contracts_id']);
-    }
+    Contract::updateAllRemainingDays();
 }

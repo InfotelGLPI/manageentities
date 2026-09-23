@@ -333,6 +333,15 @@ class Config extends CommonDBTM
         return $input;
     }
 
+    public function post_updateItem($history = true)
+    {
+        // These settings drive how task durations are converted into consumption: the
+        // stored remaining days of every contract are stale as soon as one of them changes.
+        if (array_intersect(['hourorday', 'hourbyday', 'needvalidationforcri'], $this->updates)) {
+            Contract::updateAllRemainingDays();
+        }
+    }
+
     public function isCommentCri()
     {
         $config = new Config();

@@ -25,6 +25,9 @@
  # --------------------------------------------------------------------------
  #}
 
+{# Dates can be enforced on their own (e.g. in the optional wizard step) #}
+{% set dates_required = dates_required ?? fields_required %}
+
 {# Referenced name + customer account ID #}
 <div class="col-sm-6">
     <label class="col-form-label fw-bold" for="me_sub_name_{{ rand }}">
@@ -106,20 +109,20 @@
 <div class="col-sm-3">
     <label class="col-form-label fw-bold" for="me_sub_begin_{{ rand }}">
         {{ __('Start date', 'manageentities') }}
-        {% if fields_required %}<span class="text-danger">*</span>{% endif %}
+        {% if dates_required %}<span class="text-danger">*</span>{% endif %}
     </label>
     <input type="date" name="begin_date" id="me_sub_begin_{{ rand }}" class="form-control"
-           {% if fields_required %}required{% endif %}
+           {% if dates_required %}required{% endif %}
            value="{{ begin_date ? begin_date|date('Y-m-d') : '' }}">
 </div>
 <div class="col-sm-3">
     <label class="col-form-label fw-bold" for="me_sub_end_{{ rand }}">
         {{ __('End date', 'manageentities') }}
-        {% if fields_required %}<span class="text-danger">*</span>{% endif %}
+        {% if dates_required %}<span class="text-danger">*</span>{% endif %}
     </label>
     <input type="date" name="end_date" id="me_sub_end_{{ rand }}"
            class="form-control {% if end_date_expired %}border-danger{% endif %}"
-           {% if fields_required %}required{% endif %}
+           {% if dates_required %}required{% endif %}
            value="{{ end_date ? end_date|date('Y-m-d') : '' }}">
     {% if end_date_expired %}
         <small class="text-danger"><i class="ti ti-alert-circle me-1"></i>{{ __('Expired', 'manageentities') }}</small>
