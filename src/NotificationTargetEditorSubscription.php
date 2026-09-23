@@ -54,7 +54,7 @@ class NotificationTargetEditorSubscription extends NotificationTarget
      * NotificationTargetContract::validateSendTo(): this alert is one cross-entity digest
      * raised at the root entity, so core's recipient restriction resolves to "any profile
      * assignment on entity 0" and bounds nothing. The audience is bounded on the recipient
-     * side instead, by the plugin read right.
+     * side instead, by the plugin read right on every entity the mail lists.
      *
      * @param string $event
      * @param array  $infos
@@ -74,7 +74,12 @@ class NotificationTargetEditorSubscription extends NotificationTarget
             return true;
         }
 
-        return Profile::userHasRight($users_id, EditorSubscription::$rightname, READ);
+        return Profile::userHasRightOnEntities(
+            $users_id,
+            EditorSubscription::$rightname,
+            READ,
+            array_column($this->options['subscriptions'] ?? [], 'entities_id'),
+        );
     }
 
     /**

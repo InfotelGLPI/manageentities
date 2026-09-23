@@ -60,8 +60,9 @@ class NotificationTargetContract extends NotificationTarget
      * assignment on the root entity matches, recursive or not, whatever plugin right it holds.
      *
      * The digest is therefore bounded on the recipient side instead: a GLPI user only receives
-     * it if it holds the plugin read right. An administrator adding a broad profile or group as
-     * target can no longer widen the audience beyond the plugin's own users.
+     * it if it holds the plugin read right on every entity the mail lists (directly or through
+     * a recursive assignment on an ancestor). An administrator adding a broad profile or group
+     * as target can no longer widen the audience beyond who may already read those contracts.
      *
      * A target that is a bare email address carries no users_id and cannot be checked; it is
      * let through on purpose, because naming one address is an explicit, deliberate routing
@@ -85,7 +86,12 @@ class NotificationTargetContract extends NotificationTarget
             return true;
         }
 
-        return Profile::userHasRight($users_id, Contract::$rightname, READ);
+        return Profile::userHasRightOnEntities(
+            $users_id,
+            Contract::$rightname,
+            READ,
+            array_column($this->options['contracts'] ?? [], 'entities_id'),
+        );
     }
 
     /**

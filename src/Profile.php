@@ -318,30 +318,36 @@ class Profile extends \Profile
     }
 
     /**
-     * Does this user hold $right on $rightname through any of its profiles?
+     * Does this user hold $right on $rightname on EVERY one of $entities_ids?
      *
      * Session::haveRight() answers for the CURRENT user only, which is of no use in an
-     * automatic action: those run with no session and have to decide per recipient. No entity
-     * condition is applied on purpose — the callers are the two cross-entity digests, whose
-     * whole point is to span entities; what is asked here is only whether the recipient is
-     * entitled to the plugin at all.
+     * automatic action: those run with no session and have to decide per recipient. The
+     * callers are the two cross-entity digests: one mail spans many clients, so the recipient
+     * must already be able to read each entity it lists, through a profile assignment carrying
+     * the right on that entity itself or recursively on one of its ancestors.
      *
      * @param int    $users_id
      * @param string $rightname
      * @param int    $right
+     * @param int[]  $entities_ids entities listed in the mail
      *
      * @return bool
      */
-    public static function userHasRight(int $users_id, string $rightname, int $right): bool
+    public static function userHasRightOnEntities(int $users_id, string $rightname, int $right, array $entities_ids): bool
     {
         global $DB;
 
-        if ($users_id <= 0) {
+        $entities_ids = array_unique(array_map('intval', $entities_ids));
+        // Nothing to cover would pass vacuously: refuse instead.
+        if ($users_id <= 0 || $entities_ids === []) {
             return false;
         }
 
         $iterator = $DB->request([
-            'COUNT'      => 'cpt',
+            'SELECT'     => [
+                'glpi_profiles_users.entities_id',
+                'glpi_profiles_users.is_recursive',
+            ],
             'FROM'       => 'glpi_profiles_users',
             'INNER JOIN' => [
                 'glpi_profilerights' => [
@@ -360,6 +366,16 @@ class Profile extends \Profile
             ],
         ]);
 
-        return (int) ($iterator->current()['cpt'] ?? 0) > 0;
+        $covered = [];
+        foreach ($iterator as $assignment) {
+            $assignment_entity = (int) $assignment['entities_id'];
+            if ($assignment['is_recursive']) {
+                $covered += getSonsOf('glpi_entities', $assignment_entity);
+            } else {
+                $covered[$assignment_entity] = $assignment_entity;
+            }
+        }
+
+        return array_diff($entities_ids, array_keys($covered)) === [];
     }
 }
