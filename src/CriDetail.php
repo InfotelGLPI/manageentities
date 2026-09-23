@@ -861,17 +861,51 @@ class CriDetail extends CommonDBTM
     {
         global $DB;
 
-        $colspan = 8;
         $config = Config::getInstance();
+        $is_day = $config->fields['hourorday'] == Config::DAY;
+        $is_central = Session::getCurrentInterface() == 'central';
+
+        // The periods used to be group rows spanning the whole table; the datatable
+        // component has no such row, so the period a line belongs to is carried by a
+        // column of its own. The contract stays the first level of grouping: one card
+        // and one table per contract.
+        $columns = [
+            'period' => __('Periods of contract', 'manageentities'),
+            'date'   => __('Date'),
+            'object' => __('Object of intervention', 'manageentities'),
+            'type'   => CriType::getTypeName(1),
+            'file'   => __('File'),
+            'conso'  => __('Crossed time (itinerary including)', 'manageentities'),
+            'tech'   => __('Technicians', 'manageentities'),
+            'rate'   => $is_day
+                ? __('Applied daily rate', 'manageentities')
+                : __('Applied hourly rate', 'manageentities'),
+            'amount' => __('To compute', 'manageentities'),
+        ];
+
+        // 'tech' is built name by name by getCriDetailData(), which escapes each of them
+        // and joins them with <br/> separators that are meant to be rendered. 'file' is
+        // the anchor of Document::getDownloadLink(), which only the central interface
+        // builds: everywhere else the column holds the document name as plain text, so
+        // the formatter is not declared and the datatable escapes it. Every other column
+        // is plain text too and escaped the same way.
+        $formatters = ['tech' => 'raw_html'];
+        if ($is_central) {
+            $formatters['file'] = 'raw_html';
+        }
 
         $contract = new Contract();
         $contracts = $contract->find(['entities_id' => $entity]);
 
+        $blocks = [];
         foreach ($contracts as $data_contract) {
+            // The loop below reads id, name and contract_type off every row, so the
+            // periods themselves are selected. The aggregate this used to ask for,
+            // "COUNT(`glpi_plugin_manageentities_contractdays`.*)", is not valid MySQL
+            // anyway, and the ORDERBY carried a stray backtick left over from the days
+            // it was a raw SQL string.
             $iterator = $DB->request([
-                'SELECT' => [
-                    'COUNT' => 'glpi_plugin_manageentities_contractdays.*',
-                ],
+                'SELECT' => 'glpi_plugin_manageentities_contractdays.*',
                 'FROM' => 'glpi_plugin_manageentities_contractdays',
                 'LEFT JOIN' => [
                     'glpi_plugin_manageentities_contractstates' => [
@@ -882,125 +916,97 @@ class CriDetail extends CommonDBTM
                     ],
                 ],
                 'WHERE' => [
-                    'contracts_id' => $data_contract["id"],
-                    'entities_id' => $entity,
+                    'glpi_plugin_manageentities_contractdays.contracts_id' => $data_contract["id"],
+                    'glpi_plugin_manageentities_contractdays.entities_id' => $entity,
                     'glpi_plugin_manageentities_contractstates.is_closed' => ['<>', 1],
                 ],
-                'ORDERBY' => 'glpi_plugin_manageentities_contractdays.begin_date` DESC',
+                'ORDERBY' => 'glpi_plugin_manageentities_contractdays.begin_date DESC',
             ]);
 
-            if (count($iterator) > 0) {
-                echo "<div class='center'>";
-                echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-                echo "<tr>";
-                // Security (stored XSS): the contract name comes straight from
-                // glpi_contracts through find(), and GLPI stores data unescaped since
-                // version 10, so escaping belongs here. The sibling $data['name'] a few
-                // lines below is already escaped the same way; only this occurrence had
-                // been missed. This table is rendered from Entity::showPeriod() too, that
-                // is, in the entity portal reachable from the simplified interface.
-                echo "<tr><th colspan='" . $colspan . "'>" . __(
-                    'Intervention of contract',
-                    'manageentities',
-                ) . " : " . htmlspecialchars((string) $data_contract["name"], ENT_QUOTES) . "</th></tr>";
-                echo "<tr>";
-                echo "<th>" . __('Date') . "</th>";
-                echo "<th>" . __('Object of intervention', 'manageentities') . "</th>";
-                echo "<th>" . CriType::getTypeName(1) . "</th>";
-                echo "<th>" . __('File') . "</th>";
-                echo "<th>" . __('Crossed time (itinerary including)', 'manageentities') . "</th>";
-                echo "<th>" . __('Technicians', 'manageentities') . "</th>";
-                if ($config->fields['hourorday'] == Config::DAY) {
-                    echo "<th>" . __('Applied daily rate', 'manageentities') . "</th>";
-                } else {
-                    echo "<th>" . __('Applied hourly rate', 'manageentities') . "</th>";
-                }
-                echo "<th>" . __('To compute', 'manageentities') . "</th>";
-                echo "</tr>";
-                foreach ($iterator as $data) {
-                    $data['contractdays_id'] = $data['id'];
-                    $options['sorting_date'] = true;
-                    $resultCriDetail = self::getCriDetailData($data, $options);
-
-                    if (sizeof($resultCriDetail['result']) > 0) {
-                        echo "<tr  class='tab_bg_2'><td class='center' colspan='" . $colspan . "'>" . __(
-                            'Periods of contract',
-                            'manageentities',
-                        ) . " :  " . htmlspecialchars((string) $data['name'], ENT_QUOTES) . "</td></tr>";
-                        foreach ($resultCriDetail['result'] as $dataCriDetail) {
-                            echo "<tr class='tab_bg_1" . ($dataCriDetail["is_deleted"] == '1' ? "_2" : "") . "'>";
-                            echo "<td>" . Html::convdate($dataCriDetail['tickets_date']) . "</td>";
-                            echo "<td>" . htmlspecialchars((string) $dataCriDetail['tickets_name'], ENT_QUOTES) . "</td>";
-
-                            // If a cri as been generated we get its data
-                            if (isset($dataCriDetail["documents_id"]) && $dataCriDetail["documents_id"] != 0) {
-                                echo "<td>" . htmlspecialchars((string) $dataCriDetail['plugin_manageentities_critypes_name'], ENT_QUOTES) . "</td>";
-                                $doc = new Document();
-                                $doc->getFromDB($dataCriDetail["documents_id"]);
-                                if (Session::getCurrentInterface() == 'central') {
-                                    echo "<td class='center'  width='100px'>" . $doc->getDownloadLink() . "</td>";
-                                } else {
-                                    echo "<td class='center'  width='100px'>" . htmlspecialchars((string) $doc->getName(), ENT_QUOTES) . "</td>";
-                                }
-                                if ($config->fields['hourorday'] == Config::HOUR
-                                    || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
-                                    echo "<td>" . Html::formatNumber($dataCriDetail['conso'], 0, 2) . "</td>";
-                                } else {
-                                    echo "<td></td>";
-                                }
-
-                                // Already escaped name by name in getCriDetailData(), and the <br/>
-                                // separators it carries are meant to be rendered.
-                                echo "<td>" . $dataCriDetail['tech'] . "</td>";
-                                // Else no cri generated
-                            } else {
-                                echo "<td>" . htmlspecialchars((string) \Dropdown::getDropdownName(
-                                    'glpi_plugin_manageentities_critypes',
-                                    $dataCriDetail['plugin_manageentities_critypes_id'],
-                                ), ENT_QUOTES) . "</td>";
-                                echo "<td class='center'  width='100px'></td>";
-                                if ($config->fields['hourorday'] == Config::HOUR
-                                    || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
-                                    echo "<td>" . Html::formatNumber($dataCriDetail['conso'], 0, 2) . "</td>";
-                                } else {
-                                    echo "<td>" . \Dropdown::EMPTY_VALUE . "</td>";
-                                }
-                                // Same as the branch above: escaped at the source.
-                                echo "<td>" . $dataCriDetail['tech'] . "</td>";
-                            }
-
-                            if ($dataCriDetail['pricecri']) {
-                                echo "<td>";
-                                if ($config->fields['hourorday'] == Config::HOUR
-                                    || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
-                                    echo Html::formatNumber($dataCriDetail['pricecri'], 0, 2);
-                                } else {
-                                    echo \Dropdown::EMPTY_VALUE;
-                                }
-
-                                echo "</td>";
-                                if ($config->fields['hourorday'] == Config::HOUR
-                                    || ($config->fields['hourorday'] == Config::DAY && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
-                                    echo "<td>" . Html::formatNumber(
-                                        $dataCriDetail['pricecri'] * $dataCriDetail['conso'],
-                                        0,
-                                        2,
-                                    ) . "</td>";
-                                } else {
-                                    echo "<td>" . \Dropdown::EMPTY_VALUE . "</td>";
-                                }
-                            } else {
-                                echo "<td colspan='2'>";
-                                echo "</td>";
-                            }
-                            echo "</tr>";
-                        }
-                    }
-                }
-                echo "</table>";
-                echo "</div>";
+            if (count($iterator) === 0) {
+                continue;
             }
+
+            $entries = [];
+            foreach ($iterator as $data) {
+                $data['contractdays_id'] = $data['id'];
+                $options['sorting_date'] = true;
+                $resultCriDetail = self::getCriDetailData($data, $options);
+
+                // A forfait contract billed by the day hides the consumption and the
+                // amounts it derives from: the day is due whatever time was spent on it.
+                $show_conso = $config->fields['hourorday'] == Config::HOUR
+                    || ($is_day && $data['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT);
+
+                foreach ($resultCriDetail['result'] as $dataCriDetail) {
+                    $has_document = isset($dataCriDetail["documents_id"])
+                        && $dataCriDetail["documents_id"] != 0;
+
+                    // If a cri has been generated we get its data, else no cri generated
+                    if ($has_document) {
+                        $critypes_name = $dataCriDetail['plugin_manageentities_critypes_name'];
+                        $doc = new Document();
+                        $doc->getFromDB($dataCriDetail["documents_id"]);
+                        $file = $is_central ? $doc->getDownloadLink() : $doc->getName();
+                    } else {
+                        $critypes_name = \Dropdown::getDropdownName(
+                            'glpi_plugin_manageentities_critypes',
+                            $dataCriDetail['plugin_manageentities_critypes_id'],
+                        );
+                        $file = '';
+                    }
+
+                    if ($show_conso) {
+                        $conso = Html::formatNumber($dataCriDetail['conso'], 0, 2);
+                    } else {
+                        $conso = $has_document ? '' : \Dropdown::EMPTY_VALUE;
+                    }
+
+                    $rate = '';
+                    $amount = '';
+                    if ($dataCriDetail['pricecri']) {
+                        $rate = $show_conso
+                            ? Html::formatNumber($dataCriDetail['pricecri'], 0, 2)
+                            : \Dropdown::EMPTY_VALUE;
+                        $amount = $show_conso
+                            ? Html::formatNumber($dataCriDetail['pricecri'] * $dataCriDetail['conso'], 0, 2)
+                            : \Dropdown::EMPTY_VALUE;
+                    }
+
+                    $entries[] = [
+                        'period'    => $data['name'],
+                        'date'      => Html::convdate($dataCriDetail['tickets_date']),
+                        'object'    => $dataCriDetail['tickets_name'],
+                        'type'      => $critypes_name,
+                        'file'      => $file,
+                        'conso'     => $conso,
+                        'tech'      => $dataCriDetail['tech'],
+                        'rate'      => $rate,
+                        'amount'    => $amount,
+                        'row_class' => $dataCriDetail["is_deleted"] == '1' ? 'table-secondary text-muted' : '',
+                    ];
+                }
+            }
+
+            if ($entries === []) {
+                continue;
+            }
+
+            $blocks[] = [
+                'contract_name' => $data_contract["name"],
+                'entries'       => $entries,
+            ];
         }
+
+        if ($blocks === []) {
+            return;
+        }
+
+        TemplateRenderer::getInstance()->display('@manageentities/cridetail_periods.html.twig', [
+            'blocks'     => $blocks,
+            'columns'    => $columns,
+            'formatters' => $formatters,
+        ]);
     }
 
     //    public static function getCriDetailData($contractDayValues = [], $options = [])
@@ -1543,8 +1549,8 @@ class CriDetail extends CommonDBTM
 
                 if ($numberTask != 0) {
                     $left = $contractDayValues["nbday"];
-                    // This string is handed to the datatable with a raw_html formatter
-                    // (showForContractDay() below) and echoed as is by showPeriod(), while
+                    // This string is handed to the datatable with a raw_html formatter, by
+                    // showForContractDay() below and by showPeriod(), while
                     // getTechnicians() returns formatUserName() output, which GLPI 10+ leaves raw.
                     // Escape each name here rather than the joined string, so that the only HTML
                     // left in it is the <br/> separator this rendering relies on.

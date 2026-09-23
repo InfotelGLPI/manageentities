@@ -413,6 +413,11 @@ function plugin_manageentities_install()
     // above only runs on a brand new install).
     EditorSubscription::install(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
 
+    // Same reasoning for the contracts running out of remaining days notification and
+    // its daily automatic action: installNotification() is idempotent, and calling it
+    // here is what seeds them on an upgrade.
+    Contract::installNotification(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
+
     return true;
 }
 

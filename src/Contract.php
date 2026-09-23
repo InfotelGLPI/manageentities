@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use CommonGLPI;
+use CronTask;
 use DBConnection;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
@@ -39,6 +40,11 @@ use GlpiPlugin\Manageentities\Entity;
 use Html;
 use MassiveAction;
 use Migration;
+use Notification;
+use Notification_NotificationTemplate;
+use NotificationEvent;
+use NotificationTemplate;
+use NotificationTemplateTranslation;
 use Session;
 
 class Contract extends CommonDBTM
@@ -55,6 +61,13 @@ class Contract extends CommonDBTM
     //Daily mode
     public const CONTRACT_TYPE_AT = 4;
     public const CONTRACT_TYPE_FORFAIT = 5;
+
+    /**
+     * A contract is reported by the daily automatic action when EVERY one of its open
+     * periods is strictly below this many remaining days. A contract whose periods are
+     * not all running dry still has days to sell, so it is not an alert yet.
+     */
+    public const LOW_REMAINING_DAYS_THRESHOLD = 2;
 
     public static $rightname = 'plugin_manageentities';
 
@@ -1092,12 +1105,367 @@ class Contract extends CommonDBTM
 
             $DB->doQuery($query);
         }
+
+        self::installNotification($migration);
+    }
+
+    /**
+     * Seed the "Alert Contracts Without Remaining Days" notification (template header,
+     * default translation, notification and its mailing link) and register the daily
+     * automatic action. Fully idempotent: each row is inserted only when missing and
+     * CronTask::register() skips an already-registered task, so it is safe to call on
+     * every install and upgrade.
+     */
+    public static function installNotification(Migration $migration): void
+    {
+        global $DB;
+
+        // Template header (idempotent guard inside).
+        NotificationTargetContract::install($migration);
+
+        $template = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_notificationtemplates',
+            'WHERE'  => ['itemtype' => self::class],
+        ])->current();
+        $templates_id = $template['id'] ?? 0;
+        if (!$templates_id) {
+            return;
+        }
+
+        // Canonical default translation.
+        //
+        // The FOREACH block MUST contain inline elements only (<strong>, <br />) and
+        // never a block-level element such as <table>/<tr>/<td>: the GLPI rich-text
+        // editor hoists a block-level element out of its surrounding node, which
+        // strands the ##FOREACHcontracts## / ##ENDFOREACHcontracts## markers and leaves
+        // the row tags outside any FOREACH block, so they reach the recipient as raw
+        // text. Same reasoning as EditorSubscription::installNotification().
+        $content_text = '##contract.action##
+
+##FOREACHcontracts####lang.contract.entity##: ##contract.entity##
+##lang.contract.name##: ##contract.name##
+##lang.contract.num##: ##contract.num##
+##lang.contract.begindate##: ##contract.begindate##
+##lang.contract.remaining##: ##contract.remaining##
+##lang.contract.prestations##: ##contract.prestations##
+
+##ENDFOREACHcontracts##';
+
+        $content_html = '&lt;p&gt;&lt;strong&gt;##contract.action##&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;'
+            . '##FOREACHcontracts##'
+            . '&lt;strong&gt;##lang.contract.entity##:&lt;/strong&gt; ##contract.entity##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.contract.name##:&lt;/strong&gt; ##contract.name##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.contract.num##:&lt;/strong&gt; ##contract.num##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.contract.begindate##:&lt;/strong&gt; ##contract.begindate##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.contract.remaining##:&lt;/strong&gt; ##contract.remaining##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.contract.prestations##:&lt;/strong&gt; ##contract.prestations##&lt;br /&gt;&lt;br /&gt;'
+            . '##ENDFOREACHcontracts##'
+            . '&lt;/p&gt;';
+
+        // Insert when missing; otherwise repair a translation whose FOREACH block has
+        // been broken by an editor round-trip (empty ##FOREACH...####ENDFOREACH...## with
+        // the row tags stranded outside). Detection: no ##contract. tag survives between
+        // the two markers. A healthy, admin-customized translation keeps at least one
+        // row tag inside the block and is left untouched.
+        $existing = $DB->request([
+            'FROM'  => 'glpi_notificationtemplatetranslations',
+            'WHERE' => ['notificationtemplates_id' => $templates_id],
+        ]);
+
+        if (count($existing) === 0) {
+            $DB->insert('glpi_notificationtemplatetranslations', [
+                'notificationtemplates_id' => $templates_id,
+                'language'                 => '',
+                'subject'                  => '##contract.action##',
+                'content_text'             => $content_text,
+                'content_html'             => $content_html,
+            ]);
+        } else {
+            foreach ($existing as $translation) {
+                $html = (string) ($translation['content_html'] ?? '');
+                if (
+                    preg_match('/##FOREACHcontracts##(.*?)##ENDFOREACHcontracts##/is', $html, $m) !== 1
+                    || strpos($m[1], '##contract.') === false
+                ) {
+                    $DB->update(
+                        'glpi_notificationtemplatetranslations',
+                        [
+                            'content_text' => $content_text,
+                            'content_html' => $content_html,
+                        ],
+                        ['id' => $translation['id']],
+                    );
+                }
+            }
+        }
+
+        // Notification (only if not already present for this itemtype/event).
+        $has_notification = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => 'glpi_notifications',
+            'WHERE' => [
+                'itemtype' => self::class,
+                'event'    => NotificationTargetContract::LowRemainingDaysContracts,
+            ],
+        ])->current();
+
+        if ((int) ($has_notification['cpt'] ?? 0) === 0) {
+            $DB->insert('glpi_notifications', [
+                'name'         => 'Alert Contracts Without Remaining Days',
+                'entities_id'  => 0,
+                'itemtype'     => self::class,
+                'event'        => NotificationTargetContract::LowRemainingDaysContracts,
+                'is_recursive' => 1,
+                'is_active'    => 1,
+            ]);
+            $notifications_id = $DB->insertId();
+
+            $DB->insert('glpi_notifications_notificationtemplates', [
+                'notifications_id'         => $notifications_id,
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => $templates_id,
+            ]);
+        }
+
+        // Daily automatic action (register() is idempotent): an alert about contracts
+        // with less than two days left is worthless if it can be up to a week late.
+        CronTask::register(self::class, 'LowRemainingDaysContracts', DAY_TIMESTAMP);
     }
 
     public static function uninstall()
     {
         global $DB;
 
+        // Remove the low remaining days notification, its template, translations and
+        // mailing links. The automatic action is unregistered by
+        // EditorSubscription::uninstall(), which drops every 'manageentities' task.
+        $notif = new Notification();
+        foreach (
+            $DB->request([
+                'FROM'  => 'glpi_notifications',
+                'WHERE' => ['itemtype' => self::class],
+            ]) as $data
+        ) {
+            $notif->delete($data);
+        }
+
+        $template       = new NotificationTemplate();
+        $translation    = new NotificationTemplateTranslation();
+        $notif_template = new Notification_NotificationTemplate();
+        foreach (
+            $DB->request([
+                'FROM'  => 'glpi_notificationtemplates',
+                'WHERE' => ['itemtype' => self::class],
+            ]) as $data
+        ) {
+            foreach (
+                $DB->request([
+                    'FROM'  => 'glpi_notificationtemplatetranslations',
+                    'WHERE' => ['notificationtemplates_id' => $data['id']],
+                ]) as $data_translation
+            ) {
+                $translation->delete($data_translation);
+            }
+            foreach (
+                $DB->request([
+                    'FROM'  => 'glpi_notifications_notificationtemplates',
+                    'WHERE' => ['notificationtemplates_id' => $data['id']],
+                ]) as $data_link
+            ) {
+                $notif_template->delete($data_link);
+            }
+            $template->delete($data);
+        }
+
+        CronTask::unregister('manageentities');
+
         $DB->dropTable(self::getTable(), true);
+    }
+
+    // -----------------------------------------------------------------------
+    // Automatic action (cron) : contracts running out of remaining days
+    // -----------------------------------------------------------------------
+
+    /**
+     * Give localized information about the automatic action.
+     *
+     * @param string $name Cron task name
+     *
+     * @return array
+     */
+    public static function cronInfo($name)
+    {
+        switch ($name) {
+            case 'LowRemainingDaysContracts':
+                return ['description' => __('Send the list of contracts running out of remaining days', 'manageentities')];
+        }
+        return [];
+    }
+
+    /**
+     * Daily automatic action: send a single global email listing every contract whose
+     * open periods are all running out of remaining days.
+     *
+     * A contract is reported when it has at least one open period and EVERY one of them
+     * is strictly below LOW_REMAINING_DAYS_THRESHOLD: a contract still holding a
+     * well-stocked period has days left to consume, so it is not an alert. Closed
+     * contracts are left out, "closed" being the GLPI contract state configured in the
+     * plugin setup (closed_glpi_state_id).
+     *
+     * The cron runs without a session, so the remaining days are recomputed here from
+     * CriDetail::getCriDetailData() exactly like getTotalRemainingDays() does, rather
+     * than read from the denormalized remaining_days column, which is only refreshed
+     * when a CRI is written.
+     *
+     * @param CronTask|null $task
+     *
+     * @return int 0 = nothing done, 1 = done
+     */
+    public static function cronLowRemainingDaysContracts($task = null)
+    {
+        global $DB, $CFG_GLPI;
+
+        if (!$CFG_GLPI['notifications_mailing']) {
+            return 0;
+        }
+
+        $config               = Config::getInstance();
+        $closed_glpi_state_id = (int) ($config->fields['closed_glpi_state_id'] ?? 0);
+
+        $where = ['glpi_contracts.is_deleted' => 0];
+        if ($closed_glpi_state_id > 0) {
+            $where[] = ['NOT' => ['glpi_contracts.states_id' => $closed_glpi_state_id]];
+        }
+
+        $iterator = $DB->request([
+            'SELECT' => [
+                'glpi_contracts.id AS contracts_id',
+                'glpi_contracts.name AS name',
+                'glpi_contracts.num AS num',
+                'glpi_contracts.begin_date AS begin_date',
+                'glpi_entities.completename AS entity_completename',
+            ],
+            'FROM'       => self::getTable(),
+            'INNER JOIN' => [
+                'glpi_contracts' => [
+                    'ON' => [
+                        self::getTable() => 'contracts_id',
+                        'glpi_contracts' => 'id',
+                    ],
+                ],
+            ],
+            'LEFT JOIN' => [
+                'glpi_entities' => [
+                    'ON' => [
+                        'glpi_contracts' => 'entities_id',
+                        'glpi_entities'  => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'   => $where,
+            'GROUPBY' => 'glpi_contracts.id',
+            'ORDERBY' => ['glpi_entities.completename ASC', 'glpi_contracts.name ASC'],
+        ]);
+
+        $contracts = [];
+        foreach ($iterator as $contract) {
+            $periods = self::getLowRemainingDaysPeriods((int) $contract['contracts_id']);
+            if ($periods === null) {
+                continue;
+            }
+
+            $contract['remaining_days'] = $periods['total'];
+            $contract['prestations']    = implode(' - ', $periods['labels']);
+            $contracts[]                = $contract;
+        }
+
+        if (empty($contracts)) {
+            return 0;
+        }
+
+        NotificationEvent::raiseEvent(
+            NotificationTargetContract::LowRemainingDaysContracts,
+            new self(),
+            [
+                'entities_id' => 0,
+                'contracts'   => $contracts,
+            ],
+        );
+
+        if ($task instanceof CronTask) {
+            $task->addVolume(count($contracts));
+            $task->log(sprintf(__('%d contracts running out of remaining days notified', 'manageentities'), count($contracts)));
+        }
+
+        return 1;
+    }
+
+    /**
+     * Open periods of a contract, when they all run below the alert threshold.
+     *
+     * @param int $contracts_id GLPI contract ID
+     *
+     * @return array{total: float, labels: array<int, string>}|null null when the contract
+     *                                                             has no open period, or
+     *                                                             when one of them still
+     *                                                             holds enough days
+     */
+    private static function getLowRemainingDaysPeriods(int $contracts_id): ?array
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => [
+                'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
+                'glpi_plugin_manageentities_contractdays.name AS period_name',
+                'glpi_plugin_manageentities_contractdays.nbday',
+                'glpi_plugin_manageentities_contractdays.report',
+                'glpi_plugin_manageentities_contractdays.contracts_id',
+                'glpi_plugin_manageentities_contractdays.entities_id',
+                'glpi_plugin_manageentities_contractdays.contract_type',
+            ],
+            'FROM'      => 'glpi_plugin_manageentities_contractdays',
+            'LEFT JOIN' => [
+                'glpi_plugin_manageentities_contractstates' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_contractdays'    => 'plugin_manageentities_contractstates_id',
+                        'glpi_plugin_manageentities_contractstates'  => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                'glpi_plugin_manageentities_contractdays.contracts_id' => $contracts_id,
+                'glpi_plugin_manageentities_contractstates.is_closed'  => 0,
+            ],
+            'ORDERBY' => 'glpi_plugin_manageentities_contractdays.end_date ASC',
+        ]);
+
+        // A contract without any open period is not an alert: there is nothing left to
+        // run out of. Guarding on the loop alone would report it "for free".
+        if (count($iterator) === 0) {
+            return null;
+        }
+
+        $total  = 0.0;
+        $labels = [];
+        foreach ($iterator as $period) {
+            $result    = CriDetail::getCriDetailData($period);
+            $remaining = (float) $result['resultOther']['reste'];
+
+            if ($remaining >= self::LOW_REMAINING_DAYS_THRESHOLD) {
+                return null;
+            }
+
+            $name = $period['period_name'] ?? null;
+            if ($name === null || $name === '') {
+                $name = '(' . $period['contractdays_id'] . ')';
+            }
+
+            $total   += $remaining;
+            $labels[] = sprintf('%s: %s', $name, Html::formatNumber($remaining, false, 2));
+        }
+
+        return ['total' => $total, 'labels' => $labels];
     }
 }
