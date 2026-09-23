@@ -47,7 +47,6 @@ use GlpiPlugin\Manageentities\EditorSubscriptionInjection;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
-use GlpiPlugin\Manageentities\Gantt;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
 use GlpiPlugin\Manageentities\Monthly;
 use GlpiPlugin\Manageentities\Preference;
@@ -388,6 +387,7 @@ function plugin_manageentities_install()
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
         addRemainingDaysColumn();
     } else {
+        fixRemainingDaysColumnType();
         refreshAllRemainingDays();
     }
 
