@@ -307,7 +307,13 @@ class DirectHelpdesk extends CommonDBTM
         return true;
     }
 
-    public static function showDashboard($min_sum = 0)
+    /**
+     * @param int|float $min_sum      Only gauges worth at least this many seconds are drawn.
+     * @param int       $entities_id  When > 0, draw the gauge of that client only. Used by the
+     *                                links of the unplanned-interventions overview, which point
+     *                                at one customer and should not reopen the full board.
+     */
+    public static function showDashboard($min_sum = 0, int $entities_id = 0)
     {
         global $CFG_GLPI;
 
@@ -328,6 +334,12 @@ class DirectHelpdesk extends CommonDBTM
         }
 
         $entities = $_SESSION["glpiactiveentities"];
+        if ($entities_id > 0) {
+            // Narrowing by intersection, never by replacement: an id the session has no access
+            // to leaves an empty perimeter and therefore no gauge at all, so the parameter can
+            // come straight from the query string without widening anything.
+            $entities = array_values(array_intersect($entities, [$entities_id]));
+        }
         $directs  = [];
         $techs    = [];
         foreach ($items as $item) {
@@ -436,12 +448,37 @@ class DirectHelpdesk extends CommonDBTM
      */
     public static function showUnbilledOverview(): void
     {
-        global $DB;
-
         // This method is public and static: it cannot rely on the guard of whatever renders it.
         if (!Session::haveRight(self::$rightname, READ)) {
             throw new AccessDeniedHttpException();
         }
+
+        $data = self::buildUnbilledOverview();
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/entity/unbilled_tab.html.twig',
+            $data + [
+                'months'     => self::UNBILLED_ALERT_MONTHS,
+                'export_url' => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php?export=unbilled',
+            ],
+        );
+    }
+
+    /**
+     * The data behind showUnbilledOverview(), extracted so the screen and the CSV export cannot
+     * drift apart: both read the very same rows, built once here.
+     *
+     * @return array{
+     *     rows: array<int, array<string, mixed>>,
+     *     archived: array<int, array<string, mixed>>,
+     *     stale: array<int, array<string, mixed>>,
+     *     total_hours: float,
+     *     total_nb: int
+     * }
+     */
+    private static function buildUnbilledOverview(): array
+    {
+        global $DB;
 
         $entity_ids = $_SESSION['glpiactiveentities'];
         $config     = Config::getInstance();
@@ -545,6 +582,16 @@ class DirectHelpdesk extends CommonDBTM
             strtotime('-' . self::UNBILLED_ALERT_MONTHS . ' months'),
         );
 
+        // Half a working day, read from the plugin configuration rather than hardcoded: the
+        // whole plugin converts action time to days with $actiontime / 3600 / hourbyday, so a
+        // day here has to mean the same thing. The column may be 0, which the rest of the code
+        // guards against the same way.
+        $hours_per_day = (float) ($config->fields['hourbyday'] ?? 0);
+        if ($hours_per_day <= 0) {
+            $hours_per_day = 8.0;
+        }
+        $half_day_hours = $hours_per_day / 2;
+
         $rows        = [];
         $archived    = [];
         $stale       = [];
@@ -562,7 +609,10 @@ class DirectHelpdesk extends CommonDBTM
                 // displayed form sorts lexicographically by day/month/year.
                 'oldest_raw'  => $data['oldest'],
                 'is_stale'    => $data['oldest'] !== null && $data['oldest'] < $threshold,
-                'url'         => self::getUnbilledSearchUrl($entities_id),
+                // Drives the red badge in both alert lists: past half a working day the amount
+                // at stake stops being noise.
+                'over_half_day' => $data['hours'] > $half_day_hours,
+                'url'           => self::getUnbilledSearchUrl($entities_id),
             ];
 
             // An archived customer belongs to its own alert and to nothing else: it has no
@@ -596,30 +646,97 @@ class DirectHelpdesk extends CommonDBTM
         // the customer is gone, so the only actionable ordering is how much is left to bill.
         usort($archived, static fn(array $a, array $b): int => $b['hours'] <=> $a['hours']);
 
-        TemplateRenderer::getInstance()->display(
-            '@manageentities/entity/unbilled_tab.html.twig',
-            [
-                'rows'        => $rows,
-                'archived'    => $archived,
-                'stale'       => $stale,
-                'total_hours' => round($total_hours, 2),
-                'total_nb'    => $total_nb,
-                'months'      => self::UNBILLED_ALERT_MONTHS,
-            ],
-        );
+        return [
+            'rows'        => $rows,
+            'archived'    => $archived,
+            'stale'       => $stale,
+            'total_hours' => round($total_hours, 2),
+            'total_nb'    => $total_nb,
+        ];
+    }
+
+    /**
+     * CSV export of the main table of the unplanned-interventions overview: the unbilled hours
+     * of the clients holding a contract with ongoing services. The two alert lists are not
+     * exported — they are read on screen and acted upon, not reconciled in a spreadsheet.
+     *
+     * Emits the file and exits, so it must be called before any header output.
+     */
+    public static function exportUnbilledCsv(): void
+    {
+        if (!Session::haveRight(self::$rightname, READ)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $data = self::buildUnbilledOverview();
+
+        $filename = 'unbilled_hours_' . date('Ymd_His') . '.csv';
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        Html::header_nocache();
+
+        $out = fopen('php://output', 'w');
+        // UTF-8 BOM for Excel
+        fwrite($out, "\xEF\xBB\xBF");
+
+        fputcsv($out, [
+            _n('Client', 'Clients', 1, 'manageentities'),
+            _n('Intervention', 'Interventions', 2, 'manageentities'),
+            __('Unbilled hours', 'manageentities'),
+            __('Oldest intervention', 'manageentities'),
+            sprintf(__('More than %d months', 'manageentities'), self::UNBILLED_ALERT_MONTHS),
+        ], ';');
+
+        // Neutralize CSV formula injection: a spreadsheet interprets a cell starting with
+        // =, +, -, @, TAB or CR as a formula. Prefix such user-controlled values with an
+        // apostrophe so they are treated as text (OWASP CSV injection). Same helper as
+        // EditorSubscription::exportCsv().
+        $csvSafe = static function ($value): string {
+            $value = (string) $value;
+            if ($value !== '' && strpbrk($value[0], "=+-@\t\r") !== false) {
+                return "'" . $value;
+            }
+            return $value;
+        };
+
+        foreach ($data['rows'] as $row) {
+            fputcsv($out, [
+                $csvSafe($row['name'] ?? ''),
+                (string) $row['nb'],
+                (string) $row['hours'],
+                // Raw date rather than the displayed one: a spreadsheet sorts an ISO date and
+                // cannot sort dd/mm/yyyy.
+                !empty($row['oldest_raw']) ? substr((string) $row['oldest_raw'], 0, 10) : '',
+                $row['is_stale'] ? '1' : '0',
+            ], ';');
+        }
+
+        fputcsv($out, [
+            __('Total'),
+            (string) $data['total_nb'],
+            (string) $data['total_hours'],
+            '',
+            '',
+        ], ';');
+
+        fclose($out);
+        exit;
     }
 
     /**
      * Search URL listing the unbilled interventions of one entity, used to jump from the
      * overview to the records themselves. Search option 11 is is_billed and 80 is the entity,
      * both declared in rawSearchOptions(). checkbox3 is pinned to 0 so the page does not silently
-     * apply its default three-hour filter to the gauges it renders above the list.
+     * apply its default three-hour filter to the gauge, and entities_id narrows that gauge to the
+     * client that was clicked instead of reopening the whole board.
      */
     private static function getUnbilledSearchUrl(int $entities_id): string
     {
         return PLUGIN_MANAGEENTITIES_WEBDIR . '/front/directhelpdesk.php?' . http_build_query([
-            'checkbox3' => 0,
-            'criteria'  => [
+            'checkbox3'   => 0,
+            'entities_id' => $entities_id,
+            'criteria'    => [
                 ['field' => 11, 'searchtype' => 'equals', 'value' => 0],
                 [
                     'link'       => 'AND',

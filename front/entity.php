@@ -33,13 +33,18 @@ use GlpiPlugin\Manageentities\BusinessContact;
 use GlpiPlugin\Servicecatalog\Main;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\Contact;
+use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\Entity;
 
-// CSV export — must run before any Html::header() output
+// CSV exports — must run before any Html::header() output
 if (isset($_GET['export']) && $_GET['export'] === 'subscriptions') {
     EditorSubscription::exportCsv();
     // exportCsv() calls exit — code below never reached
+}
+if (isset($_GET['export']) && $_GET['export'] === 'unbilled') {
+    DirectHelpdesk::exportUnbilledCsv();
+    // same: the method exits once the file is written
 }
 
 $Contract        = new Contract();

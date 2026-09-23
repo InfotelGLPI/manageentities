@@ -75,7 +75,9 @@ if ($checkbox3State === '1') {
     $min = 0;
 }
 
-DirectHelpdesk::showDashboard($min);
+// Set by the links of the unplanned-interventions overview: draw the gauge of that client only.
+// showDashboard() intersects it with the session perimeter, so no check is owed here.
+DirectHelpdesk::showDashboard($min, (int) ($_GET['entities_id'] ?? 0));
 
 Search::show(DirectHelpdesk::class);
 

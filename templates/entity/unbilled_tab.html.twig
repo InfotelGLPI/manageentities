@@ -48,7 +48,9 @@
                             {% for row in archived %}
                                 <li>
                                     <a href="{{ row.url }}">{{ row.name }}</a>
-                                    <span class="badge bg-outline-danger ms-1">
+                                    {# Red past half a working day, neutral below: the badge has
+                                       to say how much is at stake, not just repeat the alert. #}
+                                    <span class="badge ms-1 {{ row.over_half_day ? 'bg-red-lt' : 'bg-secondary-lt' }}">
                                         {{ row.hours }} {{ _n('Hour', 'Hours', 2)|lower }}
                                     </span>
                                 </li>
@@ -77,7 +79,8 @@
                             {% for row in stale %}
                                 <li>
                                     <a href="{{ row.url }}">{{ row.name }}</a>
-                                    <span class="badge bg-outline-warning ms-1">
+                                    {# Same rule as the archived list above. #}
+                                    <span class="badge ms-1 {{ row.over_half_day ? 'bg-red-lt' : 'bg-secondary-lt' }}">
                                         {{ row.hours }} {{ _n('Hour', 'Hours', 2)|lower }}
                                     </span>
                                     <span class="text-muted small ms-1">
@@ -99,10 +102,17 @@
         </div>
 
         {# Main table: active clients holding a contract with ongoing services #}
-        <h4 class="text-muted mb-3 fs-5">
-            <i class="ti ti-clock-dollar me-1"></i>
-            {{ __('Unbilled hours by client with an ongoing contract', 'manageentities') }}
-        </h4>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <h4 class="text-muted mb-0 fs-5">
+                <i class="ti ti-clock-dollar me-1"></i>
+                {{ __('Unbilled hours by client with an ongoing contract', 'manageentities') }}
+            </h4>
+            {% if rows|length > 0 %}
+                <a href="{{ export_url }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="ti ti-table-export me-1"></i>{{ __('Export CSV', 'manageentities') }}
+                </a>
+            {% endif %}
+        </div>
 
         {% if rows|length > 0 %}
         <div class="table-responsive">
@@ -124,7 +134,7 @@
                         <td>
                             {{ row.oldest }}
                             {% if row.is_stale %}
-                                <span class="badge bg-outline-warning ms-1">
+                                <span class="badge bg-orange-lt ms-1">
                                     <i class="ti ti-alert-triangle me-1"></i>
                                     {{ __('More than %d months', 'manageentities')|format(months) }}
                                 </span>

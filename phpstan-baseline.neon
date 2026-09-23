@@ -1081,6 +1081,12 @@ parameters:
 			path: src/EditorSubscription.php
 
 		-
+			message: '#^You should not use the `exit` function\. It prevents the execution of post\-request/post\-command routines\.$#'
+			identifier: glpi.forbidExit
+			count: 1
+			path: src/DirectHelpdesk.php
+
+		-
 			message: '#^Method GlpiPlugin\\Manageentities\\EditorSubscriptionInjection\:\:addOrUpdateObject\(\) has invalid return type GlpiPlugin\\Manageentities\\an\.$#'
 			identifier: class.notFound
 			count: 1
