@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use CommonGLPI;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Html;
 use ProfileRight;
 use Session;
@@ -314,5 +315,51 @@ class Profile extends \Profile
                 $_SESSION['glpiactiveprofile'][$right] = $value;
             }
         }
+    }
+
+    /**
+     * Does this user hold $right on $rightname through any of its profiles?
+     *
+     * Session::haveRight() answers for the CURRENT user only, which is of no use in an
+     * automatic action: those run with no session and have to decide per recipient. No entity
+     * condition is applied on purpose — the callers are the two cross-entity digests, whose
+     * whole point is to span entities; what is asked here is only whether the recipient is
+     * entitled to the plugin at all.
+     *
+     * @param int    $users_id
+     * @param string $rightname
+     * @param int    $right
+     *
+     * @return bool
+     */
+    public static function userHasRight(int $users_id, string $rightname, int $right): bool
+    {
+        global $DB;
+
+        if ($users_id <= 0) {
+            return false;
+        }
+
+        $iterator = $DB->request([
+            'COUNT'      => 'cpt',
+            'FROM'       => 'glpi_profiles_users',
+            'INNER JOIN' => [
+                'glpi_profilerights' => [
+                    'FKEY' => [
+                        'glpi_profiles_users' => 'profiles_id',
+                        'glpi_profilerights'  => 'profiles_id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                'glpi_profiles_users.users_id' => $users_id,
+                'glpi_profilerights.name'      => $rightname,
+                new QueryExpression(
+                    $DB::quoteName('glpi_profilerights.rights') . ' & ' . (int) $right,
+                ),
+            ],
+        ]);
+
+        return (int) ($iterator->current()['cpt'] ?? 0) > 0;
     }
 }

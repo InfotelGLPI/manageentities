@@ -52,6 +52,43 @@ class NotificationTargetContract extends NotificationTarget
     public const LowRemainingDaysContracts = "LowRemainingDaysContracts";
 
     /**
+     * This alert is deliberately ONE cross-entity digest: a single mail listing the contracts
+     * of every client, addressed to the people who steer them. That choice costs the entity
+     * restriction core applies to recipients, because the event is raised at the root entity
+     * (entities_id 0) and getEntitiesRestrictCriteria() then resolves to
+     * "glpi_profiles_users.entities_id = 0" with no ancestor to widen it -- so ANY profile
+     * assignment on the root entity matches, recursive or not, whatever plugin right it holds.
+     *
+     * The digest is therefore bounded on the recipient side instead: a GLPI user only receives
+     * it if it holds the plugin read right. An administrator adding a broad profile or group as
+     * target can no longer widen the audience beyond the plugin's own users.
+     *
+     * A target that is a bare email address carries no users_id and cannot be checked; it is
+     * let through on purpose, because naming one address is an explicit, deliberate routing
+     * decision, not the silent fan-out this guard exists to prevent.
+     *
+     * @param string $event
+     * @param array  $infos
+     * @param bool   $notify_me
+     * @param mixed  $emitter
+     *
+     * @return bool
+     */
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    {
+        if (!parent::validateSendTo($event, $infos, $notify_me, $emitter)) {
+            return false;
+        }
+
+        $users_id = (int) ($infos['users_id'] ?? 0);
+        if ($users_id <= 0) {
+            return true;
+        }
+
+        return Profile::userHasRight($users_id, Contract::$rightname, READ);
+    }
+
+    /**
      * @return array
      */
     public function getEvents()

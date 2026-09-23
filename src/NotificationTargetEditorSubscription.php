@@ -50,6 +50,34 @@ class NotificationTargetEditorSubscription extends NotificationTarget
     public const ExpiredSubscriptions = "ExpiredSubscriptions";
 
     /**
+     * Same shape, same reasoning and same guard as
+     * NotificationTargetContract::validateSendTo(): this alert is one cross-entity digest
+     * raised at the root entity, so core's recipient restriction resolves to "any profile
+     * assignment on entity 0" and bounds nothing. The audience is bounded on the recipient
+     * side instead, by the plugin read right.
+     *
+     * @param string $event
+     * @param array  $infos
+     * @param bool   $notify_me
+     * @param mixed  $emitter
+     *
+     * @return bool
+     */
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    {
+        if (!parent::validateSendTo($event, $infos, $notify_me, $emitter)) {
+            return false;
+        }
+
+        $users_id = (int) ($infos['users_id'] ?? 0);
+        if ($users_id <= 0) {
+            return true;
+        }
+
+        return Profile::userHasRight($users_id, EditorSubscription::$rightname, READ);
+    }
+
+    /**
      * @return array
      */
     public function getEvents()
