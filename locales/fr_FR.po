@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 08:01+0000\n"
+"POT-Creation-Date: 2026-09-23 09:55+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -29,12 +29,12 @@ msgstr ""
 msgid "% of time justified"
 msgstr "% de temps justifié"
 
-#: src/Contract.php:1398
+#: src/Contract.php:1456
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr "%d contrats arrivant à échéance sont notifiés"
 
-#: src/EditorSubscription.php:1000
+#: src/EditorSubscription.php:1018
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr "%d notifications des souscriptions éditeurs expirées"
@@ -239,6 +239,10 @@ msgstr "Tarif Horaire appliqué"
 msgid "Applied rate"
 msgstr "Tarif appliqué"
 
+#: templates/entity/unbilled_tab.html.twig:46
+msgid "Archived clients with unbilled hours:"
+msgstr ""
+
 #: templates/wizard/layout.html.twig:91
 msgid "Archived customer"
 msgstr "Client archivé"
@@ -338,7 +342,7 @@ msgstr "Ville"
 
 #: src/Followup.php:943 src/Monthly.php:700 src/Monthly.php:731
 #: src/Dashboard.php:249 src/Dashboard.php:313 src/Dashboard.php:368
-#: src/GenerateCRI.php:715
+#: src/GenerateCRI.php:715 templates/entity/unbilled_tab.html.twig:112
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -355,6 +359,11 @@ msgid_plural "Clients management"
 msgstr[0] "Gestion des clients"
 msgstr[1] "Gestion des clients"
 msgstr[2] "Gestion des clients"
+
+#: templates/entity/unbilled_tab.html.twig:74
+#, php-format
+msgid "Clients with hours left unbilled for more than %d months:"
+msgstr ""
 
 #: templates/directhelpdesk_modal.html.twig:39
 msgid "Close"
@@ -487,7 +496,8 @@ msgstr "Détail du contrat"
 msgid "Contract is imported in GLPI"
 msgstr "Le contrat est importé dans GLPI"
 
-#: src/CriDetail.php:791 src/CriPDF.php:540
+#: src/NotificationTargetContract.php:75 src/NotificationTargetContract.php:110
+#: src/CriDetail.php:536 src/CriDetail.php:791 src/CriPDF.php:540
 #: templates/wizard/step4_contract.html.twig:67
 msgid "Contract number"
 msgstr "N° du contrat"
@@ -514,7 +524,11 @@ msgstr "Le type de contrat est obligatoire"
 msgid "Contracts running out of remaining days"
 msgstr "Contrats arrivant à échéance"
 
-#: src/Entity.php:96
+#: src/Entity.php:143 templates/entity/status_tab.html.twig:32
+msgid "Contracts status overview"
+msgstr ""
+
+#: src/Entity.php:108
 msgid "Contractual follow-up"
 msgstr "Suivi contractuel"
 
@@ -569,7 +583,7 @@ msgstr "Temps passé"
 msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
-#: src/Entity.php:214
+#: src/Entity.php:248
 msgid "Current contracts"
 msgstr "Contrats en cours"
 
@@ -616,7 +630,7 @@ msgstr "Tarif journalier"
 msgid "Daily schedule"
 msgstr "Temps quotidien"
 
-#: src/Entity.php:109 templates/entity/description.html.twig:38
+#: src/Entity.php:125 templates/entity/description.html.twig:38
 msgid "Data administrative"
 msgstr "Données administratives"
 
@@ -637,7 +651,7 @@ msgstr "Date de"
 msgid "Date of renewal"
 msgstr "Date de reconduction"
 
-#: src/Followup.php:1056 src/Entity.php:596 src/Gantt.php:306
+#: src/Followup.php:1056 src/Entity.php:633 src/Gantt.php:306
 #: templates/wizard/step4_management.html.twig:51
 #: templates/wizard/step5_management.html.twig:51
 #: templates/contract_detail_form.html.twig:135
@@ -1033,7 +1047,7 @@ msgstr ""
 "période et est appliqué au contrat lorsque toutes les périodes sont "
 "clôturées."
 
-#: src/Followup.php:48 src/Followup.php:1529 src/Entity.php:97
+#: src/Followup.php:48 src/Followup.php:1529 src/Entity.php:109
 #: templates/followup_criterias.html.twig:43
 msgid "General follow-up"
 msgstr "Suivi général"
@@ -1067,6 +1081,14 @@ msgstr "Assistance sur contrat"
 #: templates/report_search_form.html.twig:33
 msgid "Helpdesk reports"
 msgstr "Rapports d'interventions"
+
+#: templates/entity/unbilled_tab.html.twig:52
+#: templates/entity/unbilled_tab.html.twig:81
+msgid "Hour"
+msgid_plural "Hours"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: src/CriPDF.php:581 src/CriPDF.php:585
 msgid "Hour of"
@@ -1122,7 +1144,7 @@ msgstr "Le crédit initial est obligatoire"
 msgid "Internet publication"
 msgstr "Publié sur internet"
 
-#: src/Contract.php:784
+#: src/Contract.php:784 templates/entity/unbilled_tab.html.twig:113
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] "Intervention"
@@ -1175,7 +1197,7 @@ msgstr[2] "Types d'intervention"
 msgid "Intervention with contract"
 msgstr "Intervention sous contrat"
 
-#: src/ContractDay.php:56 src/Entity.php:140
+#: src/ContractDay.php:56 src/Entity.php:173
 msgid "Interventions reports"
 msgstr "Rapports d'interventions"
 
@@ -1187,7 +1209,7 @@ msgstr "Interventions sur des contrats terminés"
 msgid "Invalid wizard mode"
 msgstr "Mode wizard invalide"
 
-#: src/DirectHelpdesk.php:475 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:693 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr "Est facturée"
 
@@ -1321,11 +1343,16 @@ msgstr "Mobile"
 msgid "Mode of management"
 msgstr "Mode de gestion"
 
-#: src/Monthly.php:53 src/Monthly.php:1097 src/Entity.php:102
+#: src/Monthly.php:53 src/Monthly.php:1097 src/Entity.php:114
 #: templates/monthly_period_nav.html.twig:34
 #: templates/monthly_criterias.html.twig:43
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
+
+#: templates/entity/unbilled_tab.html.twig:129
+#, php-format
+msgid "More than %d months"
+msgstr ""
 
 #: src/Contract.php:987 templates/wizard/step4_management.html.twig:102
 #: templates/wizard/step5_management.html.twig:102
@@ -1405,6 +1432,10 @@ msgstr "Pas de souscription éditeur active pour ce client"
 msgid "No active subscription"
 msgstr "Pas de souscription active"
 
+#: templates/entity/unbilled_tab.html.twig:62
+msgid "No archived client with unbilled hours."
+msgstr ""
+
 #: templates/entity/description.html.twig:306
 #: templates/entity/business_card.html.twig:78
 msgid "No business contact"
@@ -1437,6 +1468,11 @@ msgstr "Pas d'entité sélectionnée."
 #: templates/entity/status_tab.html.twig:95
 msgid "No expired publisher subscription."
 msgstr "Pas de souscription éditeur expirée."
+
+#: templates/entity/unbilled_tab.html.twig:94
+#, php-format
+msgid "No hours left unbilled for more than %d months."
+msgstr ""
 
 #: src/EditorSubscription.php:409
 msgid "No level"
@@ -1500,12 +1536,16 @@ msgstr "Pas de souscription enregistrée."
 msgid "No tasks whose category can be used"
 msgstr "Merci de configurer une catégorie de tâche de ticket avec le plugin"
 
+#: templates/entity/unbilled_tab.html.twig:147
+msgid "No unbilled intervention for a client with an ongoing contract."
+msgstr ""
+
 #: src/GenerateCRI.php:758
 msgid "Non-accomplished tasks informations"
 msgstr "Informations sur les tâches non accomplies"
 
 #: src/DirectHelpdesk_Ticket.php:48 src/DirectHelpdesk_Ticket.php:85
-#: src/DirectHelpdesk.php:55
+#: src/DirectHelpdesk.php:63
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] "Intervention non facturée"
@@ -1549,6 +1589,10 @@ msgstr "Objet de l'intervention"
 #: templates/report_occupation_form.html.twig:33
 msgid "Occupation report"
 msgstr "Rapport d'occupations"
+
+#: templates/entity/unbilled_tab.html.twig:115
+msgid "Oldest intervention"
+msgstr ""
 
 #: src/SubscriptionLevel.php:70
 msgid "On premise"
@@ -1612,7 +1656,7 @@ msgid "Period comment"
 msgstr "Commentaires de la prestation"
 
 #: src/Followup.php:868 src/Followup.php:1129 src/ContractDay.php:59
-#: src/ContractDay.php:61 src/ContractDay.php:478 src/Entity.php:146
+#: src/ContractDay.php:61 src/ContractDay.php:478 src/Entity.php:179
 #: src/Config.php:355 src/WizardController.php:1754
 #: src/WizardController.php:1829 src/WizardController.php:1936
 #: src/WizardController.php:1948 templates/contractday_form.html.twig:52
@@ -1695,7 +1739,7 @@ msgstr ""
 "Veuillez noter qu'il n'y a plus de contrats avec des jours disponibles pour "
 "ce client."
 
-#: src/DirectHelpdesk.php:534
+#: src/DirectHelpdesk.php:752
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 "Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
@@ -1717,7 +1761,7 @@ msgstr "Veuillez sélectionner au moins une intervention"
 msgid "Plugin is not activated"
 msgstr "Le plugin n'est pas activé"
 
-#: src/Entity.php:350
+#: src/Entity.php:387
 msgid "Portal"
 msgstr "Portail"
 
@@ -1830,7 +1874,7 @@ msgstr "Production"
 msgid "Publisher customer account ID"
 msgstr "ID du compte client chez l'éditeur"
 
-#: front/editorsubscription.form.php:91 src/Entity.php:117
+#: front/editorsubscription.form.php:91 src/Entity.php:134
 #: src/EditorSubscription.php:54
 #: templates/wizard/step3_subscription.html.twig:39
 #: templates/contract_detail_form.html.twig:39
@@ -1888,7 +1932,7 @@ msgstr "Frais refacturables"
 msgid "Referenced name at the publisher"
 msgstr "Nom référencé chez l'éditeur"
 
-#: src/Entity.php:155 src/Entity.php:504
+#: src/Entity.php:189 src/Entity.php:541
 msgid "References"
 msgstr "References"
 
@@ -2019,13 +2063,13 @@ msgstr "Sélectionner une entité existante"
 msgid "Select an existing price"
 msgstr "Sélectionner un prix existant"
 
-#: src/Contract.php:1301
+#: src/Contract.php:1315
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 "Envoyez la liste des contrats dont le nombre de jours restants arrive à "
 "échéance."
 
-#: src/EditorSubscription.php:928
+#: src/EditorSubscription.php:946
 msgid "Send the list of expired publisher subscriptions"
 msgstr "Envoyer la liste des souscriptions éditeurs expirées"
 
@@ -2122,10 +2166,6 @@ msgstr "Le statut est obligatoire"
 #: templates/preference_form.html.twig:48
 msgid "Status list contract for the general monitoring"
 msgstr "Liste des statuts du contrat pour le suivi général"
-
-#: src/Entity.php:126 templates/entity/status_tab.html.twig:32
-msgid "Status overview"
-msgstr "Etat des lieux"
 
 #: hook.php:105 hook.php:124 src/CriType.php:154
 msgid "Study and advice"
@@ -2337,6 +2377,10 @@ msgstr "Décompte"
 msgid "To present an invoice"
 msgstr "A facturer"
 
+#: templates/entity/unbilled_tab.html.twig:138
+msgid "Total"
+msgstr ""
+
 #: src/CriPDF.php:686
 msgid "Total (in days)"
 msgstr "Total (en jours)"
@@ -2418,9 +2462,21 @@ msgstr "Type de contrat de service manquant"
 msgid "Unarchive and continue"
 msgstr "Désarchiver et continuer"
 
+#: templates/entity/unbilled_tab.html.twig:114
+msgid "Unbilled hours"
+msgstr ""
+
+#: templates/entity/unbilled_tab.html.twig:104
+msgid "Unbilled hours by client with an ongoing contract"
+msgstr ""
+
 #: templates/checkschema_result.html.twig:31
 msgid "Unknown table"
 msgstr "Table inconnue"
+
+#: src/Entity.php:155 templates/entity/unbilled_tab.html.twig:32
+msgid "Unplanned interventions"
+msgstr ""
 
 #: templates/contract_detail_form.html.twig:214
 #: templates/cridetail_for_ticket.html.twig:256
@@ -2569,7 +2625,7 @@ msgstr "Année"
 msgid "Yes"
 msgstr "Oui"
 
-#: src/DirectHelpdesk.php:281
+#: src/DirectHelpdesk.php:289
 msgid "You cannot add an intervention on this entity"
 msgstr "Vous ne pouvez pas ajouter d'intervention dans cette entité"
 
@@ -2620,7 +2676,14 @@ msgstr "d'intervention"
 msgid "on"
 msgstr "sur"
 
+#: templates/entity/unbilled_tab.html.twig:84
+msgid "since"
+msgstr ""
+
 #: templates/entity/contracts_tab.html.twig:91
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
 "Essayez de modifier le filtre sur le statut par défaut dans la configuration."
+
+#~ msgid "Status overview"
+#~ msgstr "Etat des lieux"
