@@ -757,16 +757,18 @@ class EditorSubscription extends CommonDBTM
 
         // Canonical default translation.
         //
-        // The FOREACH block MUST contain inline elements only (<strong>, <br />) and
-        // never a block-level element such as <table>/<tr>/<td>. When the notification
-        // template is opened and saved in the GLPI rich-text (TinyMCE) editor, the DOM
-        // normalizer hoists a block-level <table> out of its surrounding node; that
-        // orphans the ##FOREACHsubscriptions## / ##ENDFOREACHsubscriptions## text
-        // markers (they collapse into an empty adjacent pair) and pushes the template
-        // row -- with its ##subscription.*## tags -- outside any FOREACH block, so the
-        // row tags are never substituted and reach the recipient as raw text. Mirror
-        // the core "Alert Reservation" template, whose FOREACH body is inline-only and
-        // therefore survives an editor round-trip.
+        // The HTML body is a table, and each FOREACH marker sits inside a hidden full-width
+        // cell of its own row rather than loose between the rows. That placement is what makes
+        // a table usable here: a bare ##FOREACH...## between </tr> and <tr> is not valid table
+        // content, so the GLPI rich-text (TinyMCE) editor hoists it out of the table on the
+        // first round-trip, which orphans the markers and leaves the ##subscription.*## row
+        // outside any FOREACH block -- the tags then reach the recipient as raw text. Wrapped
+        // in a <td>, the markers are ordinary table content and survive untouched.
+        //
+        // NotificationTemplate::getByLanguage() (src/NotificationTemplate.php:388-397) captures
+        // whatever lies between the two markers and repeats it verbatim, markup included, so
+        // each iteration re-emits the closing and opening tags of the hidden rows and the table
+        // stays well-formed.
         $content_text = '##subscription.action##
 
 ##FOREACHsubscriptions####lang.subscription.entity##: ##subscription.entity##
@@ -779,17 +781,33 @@ class EditorSubscription extends CommonDBTM
 
 ##ENDFOREACHsubscriptions##';
 
-        $content_html = '&lt;p&gt;&lt;strong&gt;##subscription.action##&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;'
-            . '##FOREACHsubscriptions##'
-            . '&lt;strong&gt;##lang.subscription.entity##:&lt;/strong&gt; ##subscription.entity##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.subscription.customeraccountid##:&lt;/strong&gt; ##subscription.customeraccountid##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.subscription.name##:&lt;/strong&gt; ##subscription.name##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.subscription.type##:&lt;/strong&gt; ##subscription.type##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.subscription.level##:&lt;/strong&gt; ##subscription.level##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.subscription.begindate##:&lt;/strong&gt; ##subscription.begindate##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.subscription.enddate##:&lt;/strong&gt; ##subscription.enddate##&lt;br /&gt;&lt;br /&gt;'
-            . '##ENDFOREACHsubscriptions##'
-            . '&lt;/p&gt;';
+        $content_html = '&lt;p&gt;&lt;strong&gt;##subscription.action##&lt;/strong&gt;&lt;/p&gt;'
+            . '&lt;table border="1" cellspacing="0" cellpadding="5"&gt;'
+            . '&lt;thead&gt;'
+            . '&lt;tr&gt;'
+            . '&lt;th&gt;##lang.subscription.entity##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.subscription.customeraccountid##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.subscription.name##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.subscription.type##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.subscription.level##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.subscription.begindate##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.subscription.enddate##&lt;/th&gt;'
+            . '&lt;/tr&gt;'
+            . '&lt;/thead&gt;'
+            . '&lt;tbody&gt;'
+            . '&lt;tr&gt;&lt;td style="display: none;" colspan="7"&gt;##FOREACHsubscriptions##&lt;/td&gt;&lt;/tr&gt;'
+            . '&lt;tr&gt;'
+            . '&lt;td&gt;##subscription.entity##&lt;/td&gt;'
+            . '&lt;td&gt;##subscription.customeraccountid##&lt;/td&gt;'
+            . '&lt;td&gt;##subscription.name##&lt;/td&gt;'
+            . '&lt;td&gt;##subscription.type##&lt;/td&gt;'
+            . '&lt;td&gt;##subscription.level##&lt;/td&gt;'
+            . '&lt;td&gt;##subscription.begindate##&lt;/td&gt;'
+            . '&lt;td&gt;##subscription.enddate##&lt;/td&gt;'
+            . '&lt;/tr&gt;'
+            . '&lt;tr&gt;&lt;td style="display: none;" colspan="7"&gt;##ENDFOREACHsubscriptions##&lt;/td&gt;&lt;/tr&gt;'
+            . '&lt;/tbody&gt;'
+            . '&lt;/table&gt;';
 
         // Insert when missing; otherwise repair a translation whose FOREACH block has
         // been broken by an editor round-trip (empty ##FOREACH...####ENDFOREACH...## with

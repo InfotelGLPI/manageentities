@@ -33,6 +33,8 @@ use Ajax;
 use CommonDBTM;
 use DBConnection;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
 use ITILCategory;
 use Migration;
@@ -49,6 +51,12 @@ class DirectHelpdesk extends CommonDBTM
     public const ONE_HOUR = 3600;
     public const TWO_HOUR = 7200;
     public const THREE_HOUR = 10800;
+
+    /**
+     * Age, in months, past which unbilled interventions are reported as forgotten by
+     * showUnbilledOverview().
+     */
+    public const UNBILLED_ALERT_MONTHS = 6;
 
     public static function getTypeName($nb = 0)
     {
@@ -410,6 +418,216 @@ class DirectHelpdesk extends CommonDBTM
             'hour'     => lcfirst(_n('Hour', 'Hours', 1)),
             'hours'    => lcfirst(_n('Hour', 'Hours', 2)),
             'tag_url'  => PLUGIN_MANAGEENTITIES_WEBDIR . "/pics/tag.png",
+        ]);
+    }
+
+    /**
+     * Management view of the unplanned interventions: how many hours are still waiting to be
+     * billed, for which customer, and how long they have been waiting.
+     *
+     * Built on the same foundations as EditorSubscription::showStatusTab(): same entity
+     * perimeter (the customer subtree of wizard_default_entities_id, minus the archive subtree
+     * of wizard_archive_entities_id) and the same definition of an ongoing contract (a contract
+     * day in one of the states selected in the plugin configuration).
+     *
+     * Two situations are reported apart from the main table because they are the ones that cost
+     * money silently: a customer that was archived while interventions were still unbilled, and
+     * interventions left unbilled for more than UNBILLED_ALERT_MONTHS months.
+     */
+    public static function showUnbilledOverview(): void
+    {
+        global $DB;
+
+        // This method is public and static: it cannot rely on the guard of whatever renders it.
+        if (!Session::haveRight(self::$rightname, READ)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $entity_ids = $_SESSION['glpiactiveentities'];
+        $config     = Config::getInstance();
+
+        $parent_id           = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
+        $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
+
+        // concerned_ids: active customers. archived_ids: customers moved to the archive subtree.
+        // Both are intersected with the session perimeter, which never widens them.
+        $concerned_ids = [];
+        $archived_ids  = [];
+
+        if ($parent_id > 0 && !empty($entity_ids)) {
+            $customer_sons = getSonsOf('glpi_entities', $parent_id);
+            unset($customer_sons[$parent_id]);
+
+            // The archive root is kept in the list: it is excluded from the active customers
+            // and included in the archived ones, exactly as showStatusTab() does.
+            $archive_son_ids = $archive_entities_id > 0
+                ? array_keys(getSonsOf('glpi_entities', $archive_entities_id))
+                : [];
+
+            $concerned_ids = array_map('intval', array_values(
+                array_diff(
+                    array_intersect($entity_ids, array_keys($customer_sons)),
+                    $archive_son_ids,
+                ),
+            ));
+            $archived_ids = array_map('intval', array_values(
+                array_intersect($archive_son_ids, $entity_ids),
+            ));
+        }
+
+        $active_states = json_decode($config->fields['contract_states'] ?? '', true);
+        $active_states = is_array($active_states) && !empty($active_states)
+            ? array_map('intval', $active_states)
+            : [];
+
+        // Customers holding at least one contract day in an active state: the "contract with
+        // ongoing services" the main table is restricted to.
+        $with_active_contract = [];
+        if (!empty($concerned_ids) && !empty($active_states)) {
+            $iter = $DB->request([
+                'SELECT'     => ['c.entities_id'],
+                'DISTINCT'   => true,
+                'FROM'       => 'glpi_plugin_manageentities_contractdays AS cd',
+                'INNER JOIN' => [
+                    'glpi_contracts AS c' => ['FKEY' => ['cd' => 'contracts_id', 'c' => 'id']],
+                ],
+                'WHERE' => [
+                    'c.entities_id' => $concerned_ids,
+                    'cd.plugin_manageentities_contractstates_id' => $active_states,
+                    'c.is_deleted'  => 0,
+                ],
+            ]);
+            $with_active_contract = array_map(
+                'intval',
+                array_column(iterator_to_array($iter), 'entities_id'),
+            );
+        }
+
+        // One aggregate per customer, active and archived alike: the archived ones feed their own
+        // alert and must not be filtered out before it is built.
+        $scope_ids  = array_values(array_unique(array_merge($concerned_ids, $archived_ids)));
+        $aggregates = [];
+        if (!empty($scope_ids)) {
+            $iter = $DB->request([
+                'SELECT'  => [
+                    'entities_id',
+                    QueryFunction::sum('actiontime', false, 'total_time'),
+                    QueryFunction::min('date', 'oldest_date'),
+                    QueryFunction::count('id', false, 'nb'),
+                ],
+                'FROM'    => self::getTable(),
+                'WHERE'   => ['is_billed' => 0, 'entities_id' => $scope_ids],
+                'GROUPBY' => ['entities_id'],
+            ]);
+            foreach ($iter as $row) {
+                $aggregates[(int) $row['entities_id']] = [
+                    'hours'  => round(((int) $row['total_time']) / HOUR_TIMESTAMP, 2),
+                    'oldest' => $row['oldest_date'],
+                    'nb'     => (int) $row['nb'],
+                ];
+            }
+        }
+
+        $names = [];
+        if (!empty($aggregates)) {
+            $iter = $DB->request([
+                'SELECT' => ['id', 'completename'],
+                'FROM'   => 'glpi_entities',
+                'WHERE'  => ['id' => array_keys($aggregates)],
+            ]);
+            foreach ($iter as $row) {
+                $names[(int) $row['id']] = $row['completename'];
+            }
+        }
+
+        $threshold = date(
+            'Y-m-d H:i:s',
+            strtotime('-' . self::UNBILLED_ALERT_MONTHS . ' months'),
+        );
+
+        $rows        = [];
+        $archived    = [];
+        $stale       = [];
+        $total_hours = 0.0;
+        $total_nb    = 0;
+
+        foreach ($aggregates as $entities_id => $data) {
+            $row = [
+                'entities_id' => $entities_id,
+                'name'        => $names[$entities_id] ?? '',
+                'hours'       => $data['hours'],
+                'nb'          => $data['nb'],
+                'oldest'      => $data['oldest'] !== null ? Html::convDate($data['oldest']) : '',
+                // Kept alongside the formatted date: the lists are ordered on it, and the
+                // displayed form sorts lexicographically by day/month/year.
+                'oldest_raw'  => $data['oldest'],
+                'is_stale'    => $data['oldest'] !== null && $data['oldest'] < $threshold,
+                'url'         => self::getUnbilledSearchUrl($entities_id),
+            ];
+
+            // An archived customer belongs to its own alert and to nothing else: it has no
+            // ongoing contract by definition, and its age is not actionable the same way.
+            if (in_array($entities_id, $archived_ids, true)) {
+                $archived[] = $row;
+                continue;
+            }
+
+            if (in_array($entities_id, $with_active_contract, true)) {
+                $rows[]       = $row;
+                $total_hours += $data['hours'];
+                $total_nb    += $data['nb'];
+            }
+
+            // Deliberately not restricted to the customers of the table above: unbilled hours
+            // left on a customer whose contract has ended are exactly what this alert is for.
+            if ($row['is_stale']) {
+                $stale[] = $row;
+            }
+        }
+
+        // Oldest first: the point of both lists is what has been waiting the longest, not what
+        // weighs the most. A row with no date sorts last rather than first.
+        $by_oldest_first = static fn(array $a, array $b): int
+            => ($a['oldest_raw'] ?? "\xFF") <=> ($b['oldest_raw'] ?? "\xFF");
+        usort($rows, $by_oldest_first);
+        usort($stale, $by_oldest_first);
+
+        // The archived list keeps the amount at stake first: nothing is waiting there any more,
+        // the customer is gone, so the only actionable ordering is how much is left to bill.
+        usort($archived, static fn(array $a, array $b): int => $b['hours'] <=> $a['hours']);
+
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/entity/unbilled_tab.html.twig',
+            [
+                'rows'        => $rows,
+                'archived'    => $archived,
+                'stale'       => $stale,
+                'total_hours' => round($total_hours, 2),
+                'total_nb'    => $total_nb,
+                'months'      => self::UNBILLED_ALERT_MONTHS,
+            ],
+        );
+    }
+
+    /**
+     * Search URL listing the unbilled interventions of one entity, used to jump from the
+     * overview to the records themselves. Search option 11 is is_billed and 80 is the entity,
+     * both declared in rawSearchOptions(). checkbox3 is pinned to 0 so the page does not silently
+     * apply its default three-hour filter to the gauges it renders above the list.
+     */
+    private static function getUnbilledSearchUrl(int $entities_id): string
+    {
+        return PLUGIN_MANAGEENTITIES_WEBDIR . '/front/directhelpdesk.php?' . http_build_query([
+            'checkbox3' => 0,
+            'criteria'  => [
+                ['field' => 11, 'searchtype' => 'equals', 'value' => 0],
+                [
+                    'link'       => 'AND',
+                    'field'      => 80,
+                    'searchtype' => 'equals',
+                    'value'      => $entities_id,
+                ],
+            ],
         ]);
     }
 

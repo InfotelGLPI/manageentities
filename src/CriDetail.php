@@ -533,7 +533,7 @@ class CriDetail extends CommonDBTM
         }
         $columns['realtime']     = __('Crossed time (itinerary including)', 'manageentities');
         $columns['withcontract'] = __('Intervention with contract', 'manageentities');
-        $columns['contract_num'] = __('Contract number');
+        $columns['contract_num'] = __('Contract number', 'manageentities');
         $columns['ticket']       = __('Associated ticket', 'manageentities');
         $columns['name']         = __('Name');
         $columns['file']         = __('File');

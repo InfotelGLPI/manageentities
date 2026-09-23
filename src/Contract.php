@@ -67,7 +67,7 @@ class Contract extends CommonDBTM
      * periods is strictly below this many remaining days. A contract whose periods are
      * not all running dry still has days to sell, so it is not an alert yet.
      */
-    public const LOW_REMAINING_DAYS_THRESHOLD = 2;
+    public const LOW_REMAINING_DAYS_THRESHOLD = 1;
 
     public static $rightname = 'plugin_manageentities';
 
@@ -1135,12 +1135,11 @@ class Contract extends CommonDBTM
 
         // Canonical default translation.
         //
-        // The FOREACH block MUST contain inline elements only (<strong>, <br />) and
-        // never a block-level element such as <table>/<tr>/<td>: the GLPI rich-text
-        // editor hoists a block-level element out of its surrounding node, which
-        // strands the ##FOREACHcontracts## / ##ENDFOREACHcontracts## markers and leaves
-        // the row tags outside any FOREACH block, so they reach the recipient as raw
-        // text. Same reasoning as EditorSubscription::installNotification().
+        // The HTML body is a table built on the same model as
+        // EditorSubscription::installNotification(): each FOREACH marker sits inside a hidden
+        // full-width cell of its own row, so it stays valid table content and the GLPI
+        // rich-text editor does not hoist it out on a round-trip. See that method for the
+        // full reasoning.
         $content_text = '##contract.action##
 
 ##FOREACHcontracts####lang.contract.entity##: ##contract.entity##
@@ -1152,16 +1151,31 @@ class Contract extends CommonDBTM
 
 ##ENDFOREACHcontracts##';
 
-        $content_html = '&lt;p&gt;&lt;strong&gt;##contract.action##&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;'
-            . '##FOREACHcontracts##'
-            . '&lt;strong&gt;##lang.contract.entity##:&lt;/strong&gt; ##contract.entity##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.contract.name##:&lt;/strong&gt; ##contract.name##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.contract.num##:&lt;/strong&gt; ##contract.num##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.contract.begindate##:&lt;/strong&gt; ##contract.begindate##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.contract.remaining##:&lt;/strong&gt; ##contract.remaining##&lt;br /&gt;'
-            . '&lt;strong&gt;##lang.contract.prestations##:&lt;/strong&gt; ##contract.prestations##&lt;br /&gt;&lt;br /&gt;'
-            . '##ENDFOREACHcontracts##'
-            . '&lt;/p&gt;';
+        $content_html = '&lt;p&gt;&lt;strong&gt;##contract.action##&lt;/strong&gt;&lt;/p&gt;'
+            . '&lt;table border="1" cellspacing="0" cellpadding="5"&gt;'
+            . '&lt;thead&gt;'
+            . '&lt;tr&gt;'
+            . '&lt;th&gt;##lang.contract.entity##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.contract.name##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.contract.num##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.contract.begindate##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.contract.remaining##&lt;/th&gt;'
+            . '&lt;th&gt;##lang.contract.prestations##&lt;/th&gt;'
+            . '&lt;/tr&gt;'
+            . '&lt;/thead&gt;'
+            . '&lt;tbody&gt;'
+            . '&lt;tr&gt;&lt;td style="display: none;" colspan="6"&gt;##FOREACHcontracts##&lt;/td&gt;&lt;/tr&gt;'
+            . '&lt;tr&gt;'
+            . '&lt;td&gt;##contract.entity##&lt;/td&gt;'
+            . '&lt;td&gt;##contract.name##&lt;/td&gt;'
+            . '&lt;td&gt;##contract.num##&lt;/td&gt;'
+            . '&lt;td&gt;##contract.begindate##&lt;/td&gt;'
+            . '&lt;td&gt;##contract.remaining##&lt;/td&gt;'
+            . '&lt;td&gt;##contract.prestations##&lt;/td&gt;'
+            . '&lt;/tr&gt;'
+            . '&lt;tr&gt;&lt;td style="display: none;" colspan="6"&gt;##ENDFOREACHcontracts##&lt;/td&gt;&lt;/tr&gt;'
+            . '&lt;/tbody&gt;'
+            . '&lt;/table&gt;';
 
         // Insert when missing; otherwise repair a translation whose FOREACH block has
         // been broken by an editor round-trip (empty ##FOREACH...####ENDFOREACH...## with
@@ -1307,11 +1321,16 @@ class Contract extends CommonDBTM
      * Daily automatic action: send a single global email listing every contract whose
      * open periods are all running out of remaining days.
      *
-     * A contract is reported when it has at least one open period and EVERY one of them
-     * is strictly below LOW_REMAINING_DAYS_THRESHOLD: a contract still holding a
-     * well-stocked period has days left to consume, so it is not an alert. Closed
-     * contracts are left out, "closed" being the GLPI contract state configured in the
-     * plugin setup (closed_glpi_state_id).
+     * A contract is a candidate when it has at least one open period and EVERY one of
+     * them is strictly below LOW_REMAINING_DAYS_THRESHOLD: a contract still holding a
+     * well-stocked period has days left to consume. The decision is then taken per
+     * CUSTOMER rather than per contract: an entity whose contracts add up to the
+     * threshold or more still has days to consume somewhere, so none of its contracts
+     * is reported.
+     *
+     * Closed contracts are left out, "closed" being the GLPI contract state configured
+     * in the plugin setup (closed_glpi_state_id), and so are the contracts of archived
+     * customers, that is, of the entities sitting under wizard_archive_entities_id.
      *
      * The cron runs without a session, so the remaining days are recomputed here from
      * CriDetail::getCriDetailData() exactly like getTotalRemainingDays() does, rather
@@ -1338,12 +1357,26 @@ class Contract extends CommonDBTM
             $where[] = ['NOT' => ['glpi_contracts.states_id' => $closed_glpi_state_id]];
         }
 
+        // Contracts of archived customers are out of scope: a customer is archived by moving
+        // its entity under wizard_archive_entities_id, so the whole subtree is excluded, root
+        // included -- a contract sitting directly on the archive entity is archived too.
+        // getSonsOf() reads the entity tree through $DB and $GLPI_CACHE only, so it is safe in
+        // a cron, which runs with no session.
+        $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive_entities_id > 0) {
+            $archive_ids = array_keys(getSonsOf('glpi_entities', $archive_entities_id));
+            if (!empty($archive_ids)) {
+                $where[] = ['NOT' => ['glpi_contracts.entities_id' => $archive_ids]];
+            }
+        }
+
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_contracts.id AS contracts_id',
                 'glpi_contracts.name AS name',
                 'glpi_contracts.num AS num',
                 'glpi_contracts.begin_date AS begin_date',
+                'glpi_contracts.entities_id AS entities_id',
                 'glpi_entities.completename AS entity_completename',
             ],
             'FROM'       => self::getTable(),
@@ -1368,16 +1401,41 @@ class Contract extends CommonDBTM
             'ORDERBY' => ['glpi_entities.completename ASC', 'glpi_contracts.name ASC'],
         ]);
 
-        $contracts = [];
+        // Two passes over the same scan. A contract is a candidate when every one of its open
+        // periods runs below the threshold, but the decision is taken per CUSTOMER: the days
+        // left on the other contracts of the same entity are days that customer can still
+        // consume, so they are accumulated here and used to drop the whole entity below.
+        $candidates    = [];
+        $entity_totals = [];
         foreach ($iterator as $contract) {
-            $periods = self::getLowRemainingDaysPeriods((int) $contract['contracts_id']);
+            $periods = self::getOpenPeriodsRemainingDays((int) $contract['contracts_id']);
             if ($periods === null) {
+                continue;
+            }
+
+            $entities_id = (int) $contract['entities_id'];
+            $entity_totals[$entities_id] = ($entity_totals[$entities_id] ?? 0.0) + $periods['total'];
+
+            if (!$periods['all_low']) {
                 continue;
             }
 
             $contract['remaining_days'] = $periods['total'];
             $contract['prestations']    = implode(' - ', $periods['labels']);
-            $contracts[]                = $contract;
+            $contract['entities_id']    = $entities_id;
+            $candidates[]               = $contract;
+        }
+
+        // An entity whose contracts add up to the threshold or more is not running out of
+        // anything: it still holds at least one full day somewhere. Applied whatever the number
+        // of contracts -- with a single one the sum is that contract's own total, and several
+        // periods below the threshold can add up above it just the same.
+        $contracts = [];
+        foreach ($candidates as $contract) {
+            if (($entity_totals[(int) $contract['entities_id']] ?? 0.0) >= self::LOW_REMAINING_DAYS_THRESHOLD) {
+                continue;
+            }
+            $contracts[] = $contract;
         }
 
         if (empty($contracts)) {
@@ -1402,16 +1460,20 @@ class Contract extends CommonDBTM
     }
 
     /**
-     * Open periods of a contract, when they all run below the alert threshold.
+     * Remaining days of the open periods of a contract.
+     *
+     * 'all_low' says whether EVERY period runs below the alert threshold, which is what makes
+     * the contract a candidate for the alert. 'total' is returned either way: the caller sums
+     * it over the contracts of an entity to find out whether that customer still has days to
+     * consume somewhere.
      *
      * @param int $contracts_id GLPI contract ID
      *
-     * @return array{total: float, labels: array<int, string>}|null null when the contract
-     *                                                             has no open period, or
-     *                                                             when one of them still
-     *                                                             holds enough days
+     * @return array{total: float, all_low: bool, labels: array<int, string>}|null null when the
+     *                                                                             contract has
+     *                                                                             no open period
      */
-    private static function getLowRemainingDaysPeriods(int $contracts_id): ?array
+    private static function getOpenPeriodsRemainingDays(int $contracts_id): ?array
     {
         global $DB;
 
@@ -1447,14 +1509,18 @@ class Contract extends CommonDBTM
             return null;
         }
 
-        $total  = 0.0;
-        $labels = [];
+        $total   = 0.0;
+        $all_low = true;
+        $labels  = [];
         foreach ($iterator as $period) {
             $result    = CriDetail::getCriDetailData($period);
             $remaining = (float) $result['resultOther']['reste'];
 
+            // No early return any more: even a well-stocked period has to be added to the
+            // total, because the caller sums the contracts of an entity to decide whether that
+            // customer still has days available somewhere.
             if ($remaining >= self::LOW_REMAINING_DAYS_THRESHOLD) {
-                return null;
+                $all_low = false;
             }
 
             $name = $period['period_name'] ?? null;
@@ -1466,6 +1532,6 @@ class Contract extends CommonDBTM
             $labels[] = sprintf('%s: %s', $name, Html::formatNumber($remaining, false, 2));
         }
 
-        return ['total' => $total, 'labels' => $labels];
+        return ['total' => $total, 'all_low' => $all_low, 'labels' => $labels];
     }
 }

@@ -72,7 +72,7 @@ class NotificationTargetContract extends NotificationTarget
         // Column labels (##lang.contract.*##)
         $this->data['##lang.contract.entity##']      = __('Entity', 'manageentities');
         $this->data['##lang.contract.name##']        = __('Name');
-        $this->data['##lang.contract.num##']         = __('Contract number');
+        $this->data['##lang.contract.num##']         = __('Contract number', 'manageentities');
         $this->data['##lang.contract.begindate##']   = __('Start date');
         $this->data['##lang.contract.remaining##']   = __('Total remaining', 'manageentities');
         $this->data['##lang.contract.prestations##'] = __('Prestation', 'manageentities');
@@ -107,7 +107,7 @@ class NotificationTargetContract extends NotificationTarget
         $tags = [
             'contract.entity'      => __('Entity', 'manageentities'),
             'contract.name'        => __('Name'),
-            'contract.num'         => __('Contract number'),
+            'contract.num'         => __('Contract number', 'manageentities'),
             'contract.begindate'   => __('Start date'),
             'contract.remaining'   => __('Total remaining', 'manageentities'),
             'contract.prestations' => __('Prestation', 'manageentities'),

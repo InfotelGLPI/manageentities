@@ -84,11 +84,23 @@ class Entity extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
+            // Every entry below is conditional, so the array has to exist up-front: it used to
+            // be created by the administrative data tab, which was the only unconditional one.
+            $tabs = [];
+
             $followUp = new Followup();
             $monthly = new Monthly();
             $gantt = new Gantt();
             $Cri = new Cri();
             $config = new Config();
+
+            // Same perimeter displayTabContentForItem() feeds the renderers with. Two tabs below
+            // render one block per entity of that perimeter and are unusably slow on a parent
+            // entity, where it spans the whole subtree: they are offered on a single entity only.
+            $entities = Session::getCurrentInterface() != 'helpdesk'
+                ? $_SESSION["glpiactiveentities"]
+                : [$_SESSION["glpiactive_entity"]];
+            $is_single_entity = (count($entities) === 1);
 
             if ($followUp->canView()) {
                 $tabs[1] = Followup::createTabEntry(
@@ -106,7 +118,12 @@ class Entity extends CommonGLPI
                 $tabs[3] = Gantt::createTabEntry(__('GANTT'));
             }
 
-            $tabs[4] = self::createTabEntry(__('Data administrative', 'manageentities'));
+            // showDescription() issues two queries and one Html::file() capture per entity, so a
+            // parent entity multiplies the cost by the size of its subtree for a page that is
+            // only ever read one customer at a time.
+            if ($is_single_entity) {
+                $tabs[4] = self::createTabEntry(__('Data administrative', 'manageentities'));
+            }
 
             if (Session::haveRight("contract", READ)) {
                 $tabs[5] = Contract::createTabEntry(_n('Contract', 'Contracts', 2));
@@ -123,28 +140,45 @@ class Entity extends CommonGLPI
 
             if (Session::getCurrentInterface() == 'central' && Config::useEditorSubscriptions()) {
                 $tabs[7] = self::createTabEntry(
-                    __('Status overview', 'manageentities'),
+                    __('Contracts status overview', 'manageentities'),
                     0,
                     self::class,
                     'ti ti-clipboard-check',
                 );
             }
 
+            // Central only, like the contracts status overview above: this is a provider-side
+            // management view, not something a customer reads from the simplified interface.
+            if (Session::getCurrentInterface() == 'central'
+                && Session::haveRight(DirectHelpdesk::$rightname, READ)) {
+                $tabs[13] = DirectHelpdesk::createTabEntry(
+                    __('Unplanned interventions', 'manageentities'),
+                    0,
+                    self::class,
+                    DirectHelpdesk::getIcon(),
+                );
+            }
+
             // ajout de la configuration du plugin
+            // Same reasoning as the administrative data tab above: showReports() switches to its
+            // tree mode as soon as the perimeter holds more than one entity and then lists every
+            // intervention document of the whole subtree, which is what makes it slow.
             $config = Config::getInstance();
-            if ((Session::getCurrentInterface() == 'central')
-                || (Session::getCurrentInterface() == 'helpdesk'
-                    && $config->fields['choice_intervention'] == Config::REPORT_INTERVENTION)) {
-                if ($Cri->canView()) {
+            if ($is_single_entity) {
+                if ((Session::getCurrentInterface() == 'central')
+                    || (Session::getCurrentInterface() == 'helpdesk'
+                        && $config->fields['choice_intervention'] == Config::REPORT_INTERVENTION)) {
+                    if ($Cri->canView()) {
+                        $tabs[8] = CriDetail::createTabEntry(
+                            __("Interventions reports", 'manageentities'),
+                        );
+                    }
+                } elseif (Session::getCurrentInterface() == 'helpdesk'
+                    && $config->fields['choice_intervention'] == Config::PERIOD_INTERVENTION) {
                     $tabs[8] = CriDetail::createTabEntry(
-                        __("Interventions reports", 'manageentities'),
+                        _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
                     );
                 }
-            } elseif (Session::getCurrentInterface() == 'helpdesk'
-                && $config->fields['choice_intervention'] == Config::PERIOD_INTERVENTION) {
-                $tabs[8] = CriDetail::createTabEntry(
-                    _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
-                );
             }
 
             if (Session::haveRight("document", UPDATE)) {
@@ -301,6 +335,9 @@ class Entity extends CommonGLPI
                     break;
                 case 12:
                     $ManageentitiesEntity->showReferences($entities);
+                    break;
+                case 13:
+                    DirectHelpdesk::showUnbilledOverview();
                     break;
                 default:
                     break;
