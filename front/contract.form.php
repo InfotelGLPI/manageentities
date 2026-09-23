@@ -74,12 +74,14 @@ if (isset($_POST["addcontract"])) {
     Html::back();
 
 } elseif (isset($_POST["delete_nbday"])) {
-    Session::checkRight("contract", UPDATE);
-    foreach ($_POST["item_nbday"] as $key => $val) {
+    // Same guard as the twin branch of contractday.form.php: this is a permanent deletion,
+    // so it requires PURGE on the plugin right (UPDATE can be granted alone).
+    Session::checkRight(ContractDay::$rightname, PURGE);
+    foreach ($_POST["item_nbday"] ?? [] as $key => $val) {
         if ($val == 1) {
-            // Per-item check like the twin controller: the global "contract UPDATE" right does
-            // not scope the deletion to the user's entity perimeter on each row.
-            $contractday->check((int) $key, UPDATE);
+            // Per-item check: the global right does not scope the deletion to the user's
+            // entity perimeter on each row.
+            $contractday->check((int) $key, PURGE);
             $contractday->delete(['id' => (int) $key]);
         }
     }

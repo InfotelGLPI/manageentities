@@ -2406,14 +2406,14 @@ class CriDetail extends CommonDBTM
         $dbu = new DbUtils();
         if ($complete) {
             if ($val["entities_name"]) {
-                $html .= "<strong>" . _n('Entity', 'Entities', 1) . "</strong> : " . $val['entities_name'] . "<br>";
+                $html .= "<strong>" . _n('Entity', 'Entities', 1) . "</strong> : " . htmlescape($val['entities_name']) . "<br>";
             }
 
             if ($val["end"]) {
                 $html .= "<strong>" . __('End date') . "</strong> : " . Html::convdatetime($val["end"]) . "<br>";
             }
             if ($val["users_id"] && $who != 0) {
-                $html .= "<strong>" . __('User') . "</strong> : " . $dbu->getUserName($val["users_id"]) . "<br>";
+                $html .= "<strong>" . __('User') . "</strong> : " . htmlescape($dbu->getUserName($val["users_id"])) . "<br>";
             }
             if ($val["actiontime"]) {
                 $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(
@@ -2425,7 +2425,7 @@ class CriDetail extends CommonDBTM
             $html .= "<div class='event-description'>" . htmlspecialchars($val["content"]) . "</div>";
         } else {
             if ($val["entities_name"]) {
-                $html .= "<strong>" . _n('Entity', 'Entities', 1) . "</strong> : " . $val['entities_name'] . "<br>";
+                $html .= "<strong>" . _n('Entity', 'Entities', 1) . "</strong> : " . htmlescape($val['entities_name']) . "<br>";
             }
             if ($val["actiontime"]) {
                 $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(
@@ -2436,8 +2436,9 @@ class CriDetail extends CommonDBTM
 
             //$html.= "<div class='event-description'>".$val["content"]."</div>";
 
+            // showToolTip() renders its content as HTML: the text comes decoded from the task.
             $html .= Html::showToolTip(
-                $val["content"],
+                htmlescape((string) $val["content"]),
                 [
                     'applyto' => "cri_" . $val["id"] . $rand,
                     'display' => false,
