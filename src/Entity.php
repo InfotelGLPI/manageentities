@@ -36,6 +36,11 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
+use Migration;
+use Notification;
+use Notification_NotificationTemplate;
+use NotificationTemplate;
+use NotificationTemplateTranslation;
 use Plugin;
 use Session;
 use GlpiPlugin\Manageentities\Config;
@@ -603,6 +608,175 @@ class Entity extends CommonGLPI
                 }
             }
             echo "</table>";
+        }
+    }
+
+    /**
+     * Seed the "Alert Wizard Creation" notification: template header, default
+     * translation, notification and its mailing link.
+     *
+     * Entity has no table of its own, so there is no install()/uninstall() pair to
+     * hang this on: hook.php calls it directly, on install and on upgrade. Fully
+     * idempotent, each row being inserted only when missing.
+     *
+     * No automatic action here, unlike the two other notifications of the plugin: the
+     * event is raised inline by WizardController when the wizard commits, so the mail
+     * leaves as soon as the elements are written.
+     */
+    public static function installNotification(Migration $migration): void
+    {
+        global $DB;
+
+        // Template header (idempotent guard inside).
+        NotificationTargetEntity::install($migration);
+
+        $template = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_notificationtemplates',
+            'WHERE'  => ['itemtype' => self::class],
+        ])->current();
+        $templates_id = $template['id'] ?? 0;
+        if (!$templates_id) {
+            return;
+        }
+
+        // Canonical default translation.
+        //
+        // The FOREACH block MUST contain inline elements only (<strong>, <br />) and
+        // never a block-level element such as <table>/<tr>/<td>: the GLPI rich-text
+        // editor hoists a block-level element out of its surrounding node, which
+        // strands the ##FOREACHitems## / ##ENDFOREACHitems## markers and leaves the
+        // row tags unsubstituted. Same constraint as the two other notifications of
+        // the plugin.
+        $content_text = '##wizard.action##
+
+##lang.wizard.entity##: ##wizard.entity##
+##lang.wizard.author##: ##wizard.author##
+##lang.wizard.date##: ##wizard.date##
+
+##FOREACHitems####item.type##: ##item.label##
+##ENDFOREACHitems##';
+
+        $content_html = '&lt;p&gt;&lt;strong&gt;##wizard.action##&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.wizard.entity##:&lt;/strong&gt; ##wizard.entity##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.wizard.author##:&lt;/strong&gt; ##wizard.author##&lt;br /&gt;'
+            . '&lt;strong&gt;##lang.wizard.date##:&lt;/strong&gt; ##wizard.date##&lt;br /&gt;&lt;br /&gt;'
+            . '##FOREACHitems##'
+            . '&lt;strong&gt;##item.type##:&lt;/strong&gt; ##item.label##&lt;br /&gt;'
+            . '##ENDFOREACHitems##'
+            . '&lt;/p&gt;';
+
+        // Insert when missing; otherwise repair a translation whose FOREACH block has
+        // been broken by an editor round-trip (empty ##FOREACH...####ENDFOREACH...##
+        // with the row tags stranded outside). Detection: no ##item. tag survives
+        // between the two markers. A healthy, admin-customized translation keeps at
+        // least one row tag inside the block and is left untouched.
+        $existing = $DB->request([
+            'FROM'  => 'glpi_notificationtemplatetranslations',
+            'WHERE' => ['notificationtemplates_id' => $templates_id],
+        ]);
+
+        if (count($existing) === 0) {
+            $DB->insert('glpi_notificationtemplatetranslations', [
+                'notificationtemplates_id' => $templates_id,
+                'language'                 => '',
+                'subject'                  => '##wizard.action## - ##wizard.entity##',
+                'content_text'             => $content_text,
+                'content_html'             => $content_html,
+            ]);
+        } else {
+            foreach ($existing as $translation) {
+                $html = (string) ($translation['content_html'] ?? '');
+                if (
+                    preg_match('/##FOREACHitems##(.*?)##ENDFOREACHitems##/is', $html, $m) !== 1
+                    || strpos($m[1], '##item.') === false
+                ) {
+                    $DB->update(
+                        'glpi_notificationtemplatetranslations',
+                        [
+                            'content_text' => $content_text,
+                            'content_html' => $content_html,
+                        ],
+                        ['id' => $translation['id']],
+                    );
+                }
+            }
+        }
+
+        // Notification (only if not already present for this itemtype/event).
+        $has_notification = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => 'glpi_notifications',
+            'WHERE' => [
+                'itemtype' => self::class,
+                'event'    => NotificationTargetEntity::WizardCreation,
+            ],
+        ])->current();
+
+        if ((int) ($has_notification['cpt'] ?? 0) === 0) {
+            $DB->insert('glpi_notifications', [
+                'name'         => 'Alert Wizard Creation',
+                'entities_id'  => 0,
+                'itemtype'     => self::class,
+                'event'        => NotificationTargetEntity::WizardCreation,
+                'is_recursive' => 1,
+                'is_active'    => 1,
+            ]);
+            $notifications_id = $DB->insertId();
+
+            $DB->insert('glpi_notifications_notificationtemplates', [
+                'notifications_id'         => $notifications_id,
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => $templates_id,
+            ]);
+        }
+    }
+
+    /**
+     * Remove the wizard creation notification, its template, translations and mailing
+     * links. Entity owns no table, so this is not named uninstall(): there is nothing
+     * to drop besides the notification chain.
+     */
+    public static function uninstallNotification(): void
+    {
+        global $DB;
+
+        $notif = new Notification();
+        foreach (
+            $DB->request([
+                'FROM'  => 'glpi_notifications',
+                'WHERE' => ['itemtype' => self::class],
+            ]) as $data
+        ) {
+            $notif->delete($data);
+        }
+
+        $template       = new NotificationTemplate();
+        $translation    = new NotificationTemplateTranslation();
+        $notif_template = new Notification_NotificationTemplate();
+        foreach (
+            $DB->request([
+                'FROM'  => 'glpi_notificationtemplates',
+                'WHERE' => ['itemtype' => self::class],
+            ]) as $data
+        ) {
+            foreach (
+                $DB->request([
+                    'FROM'  => 'glpi_notificationtemplatetranslations',
+                    'WHERE' => ['notificationtemplates_id' => $data['id']],
+                ]) as $row
+            ) {
+                $translation->delete($row);
+            }
+            foreach (
+                $DB->request([
+                    'FROM'  => 'glpi_notifications_notificationtemplates',
+                    'WHERE' => ['notificationtemplates_id' => $data['id']],
+                ]) as $row
+            ) {
+                $notif_template->delete($row);
+            }
+            $template->delete($data);
         }
     }
 }

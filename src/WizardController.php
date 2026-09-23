@@ -39,6 +39,7 @@ use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
+use NotificationEvent;
 use Session;
 use State;
 use User;
@@ -1525,6 +1526,7 @@ class WizardController
             }
 
             $summary = self::buildFinishSummaryFromSession($session, $entities_id, 0);
+            self::raiseWizardNotification($summary, $entities_id);
             self::clearWizardSession();
 
             return [
@@ -1638,6 +1640,7 @@ class WizardController
         }
 
         $summary = self::buildFinishSummaryFromSession($session, $entities_id, $contracts_id);
+        self::raiseWizardNotification($summary, $entities_id);
 
         // Clear this wizard slot (not all slots — other tabs stay alive)
         self::clearWizardSession();
@@ -1647,6 +1650,48 @@ class WizardController
             'summary'      => $summary,
             'redirect_url' => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php',
         ];
+    }
+
+    /**
+     * Send the "Alert Wizard Creation" notification once the wizard has committed.
+     *
+     * Called from both commit exits, so the three combinations the wizard can write
+     * are covered by the same event: entity + subscription + contract, contract alone
+     * on an existing entity, and entity + subscription alone when step 3 skips the
+     * contract. What was actually written is the summary, which is also what the
+     * confirmation modal shows -- the mail and the screen cannot disagree.
+     *
+     * $summary is empty only when the wizard wrote nothing worth reporting; there is
+     * then nothing to tell the recipients about.
+     */
+    private static function raiseWizardNotification(array $summary, int $entities_id): void
+    {
+        if (empty($summary)) {
+            return;
+        }
+
+        $entity      = new \Entity();
+        $entity_name = $entity->getFromDB($entities_id)
+            ? (string) ($entity->fields['completename'] ?? $entity->fields['name'] ?? '')
+            : '';
+
+        $author = '';
+        $user   = new User();
+        if ($user->getFromDB((int) Session::getLoginUserID())) {
+            $author = $user->getFriendlyName();
+        }
+
+        NotificationEvent::raiseEvent(
+            NotificationTargetEntity::WizardCreation,
+            new Entity(),
+            [
+                'entities_id' => $entities_id,
+                'entity_name' => $entity_name,
+                'author'      => $author,
+                'date'        => Html::convDateTime($_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s')),
+                'items'       => $summary,
+            ],
+        );
     }
 
     private static function buildFinishSummaryFromSession(array $session, int $entities_id, int $contracts_id): array

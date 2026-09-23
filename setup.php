@@ -91,6 +91,9 @@ function plugin_init_manageentities()
             'addtabon'                  => Entity::class,
             'notificationtemplates_types' => true,
         ]);
+        // No addtabon here: Entity is registered only so its wizard creation
+        // notification template is selectable in Configuration > Notifications.
+        Plugin::registerClass(Entity::class, ['notificationtemplates_types' => true]);
         Plugin::registerClass(SubscriptionLevel::class);
         Plugin::registerClass(Profile::class, ['addtabon' => 'Profile']);
         Plugin::registerClass(Contract::class, [

@@ -44,6 +44,7 @@ use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\DirectHelpdeskInjection;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\EditorSubscriptionInjection;
+use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
 use GlpiPlugin\Manageentities\Gantt;
@@ -418,6 +419,10 @@ function plugin_manageentities_install()
     // here is what seeds them on an upgrade.
     Contract::installNotification(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
 
+    // Wizard creation notification. No automatic action for this one: the event is
+    // raised inline when the wizard commits.
+    Entity::installNotification(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
+
     return true;
 }
 
@@ -447,6 +452,10 @@ function plugin_manageentities_uninstall()
     DirectHelpdesk_Ticket::uninstall();
     SubscriptionLevel::uninstall();
     EditorSubscription::uninstall();
+
+    // Entity owns no table, so it is absent from the list above: only its notification
+    // chain has to be removed.
+    Entity::uninstallNotification();
 
     //old versions
     $tables = ["glpi_plugin_manageentity_contracts",
