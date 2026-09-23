@@ -846,6 +846,32 @@ class Contract extends CommonDBTM
     }
 
     /**
+     * Recompute remaining_days for every contract a ticket consumes on.
+     *
+     * The consumption is computed from the ticket tasks and from the ticket itself
+     * (deleted flag, validation), so any change there has to refresh the denormalized
+     * column too, not only the CRI and period writes.
+     */
+    public static function updateRemainingDaysForTicket(int $tickets_id): void
+    {
+        global $DB;
+
+        if ($tickets_id <= 0) {
+            return;
+        }
+
+        $iterator = $DB->request([
+            'SELECT'   => ['contracts_id'],
+            'DISTINCT' => true,
+            'FROM'     => CriDetail::getTable(),
+            'WHERE'    => ['tickets_id' => $tickets_id],
+        ]);
+        foreach ($iterator as $row) {
+            self::updateRemainingDays((int) $row['contracts_id']);
+        }
+    }
+
+    /**
      * Sum of remaining days across all open contract periods for a given contract.
      *
      * @param int $contracts_id  GLPI contract ID

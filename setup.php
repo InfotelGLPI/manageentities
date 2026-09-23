@@ -80,9 +80,19 @@ function plugin_init_manageentities()
         ],
     ];
     $PLUGIN_HOOKS[Hooks::ITEM_UPDATE]['manageentities'] = [
-        'Document' => [Entity::class, 'UpdateDocument'],
-        'Contract' => 'plugin_manageentities_contract_item_update',
+        'Document'   => [Entity::class, 'UpdateDocument'],
+        'Contract'   => 'plugin_manageentities_contract_item_update',
+        'TicketTask' => [TicketTask::class, 'refreshRemainingDays'],
+        'Ticket'     => [TicketTask::class, 'refreshTicketRemainingDaysOnUpdate'],
     ];
+
+    // The remaining days shown in the contract list (remaining_days) are denormalized
+    // and computed from the ticket tasks: keep them in sync with every task and ticket
+    // change, including those made without a session (mail collector, crons).
+    $PLUGIN_HOOKS[Hooks::ITEM_ADD]['manageentities']['TicketTask']     = [TicketTask::class, 'refreshRemainingDays'];
+    $PLUGIN_HOOKS[Hooks::ITEM_PURGE]['manageentities']['TicketTask']   = [TicketTask::class, 'refreshRemainingDays'];
+    $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['Ticket']      = [TicketTask::class, 'refreshTicketRemainingDays'];
+    $PLUGIN_HOOKS[Hooks::ITEM_RESTORE]['manageentities']['Ticket']     = [TicketTask::class, 'refreshTicketRemainingDays'];
 
     $PLUGIN_HOOKS[Hooks::ITEM_TRANSFER]['manageentities'] = 'plugin_item_transfer_manageentities';
 

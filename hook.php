@@ -384,9 +384,11 @@ function plugin_manageentities_install()
     }
 
 
+    include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
-        include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
         addRemainingDaysColumn();
+    } else {
+        refreshAllRemainingDays();
     }
 
 

@@ -113,6 +113,37 @@ class TicketTask extends CommonDBTM
         $item->input = [];
     }
 
+    /**
+     * Refresh the remaining days of the contracts the task's ticket consumes on
+     * (task added, updated or purged: duration, privacy or dates may have changed).
+     */
+    public static function refreshRemainingDays(\TicketTask $item): void
+    {
+        Contract::updateRemainingDaysForTicket((int) ($item->fields['tickets_id'] ?? 0));
+    }
+
+    /**
+     * Refresh the remaining days when the validation status of the ticket changes:
+     * it decides whether its tasks are consumed (needvalidationforcri).
+     */
+    public static function refreshTicketRemainingDaysOnUpdate(\Ticket $item): void
+    {
+        if (!in_array('global_validation', $item->updates, true)) {
+            return;
+        }
+
+        Contract::updateRemainingDaysForTicket((int) $item->getID());
+    }
+
+    /**
+     * Refresh the remaining days when the ticket is trashed or restored: tasks of
+     * deleted tickets are not consumed.
+     */
+    public static function refreshTicketRemainingDays(\Ticket $item): void
+    {
+        Contract::updateRemainingDaysForTicket((int) $item->getID());
+    }
+
     public static function postForm($params): void
     {
         global $CFG_GLPI;

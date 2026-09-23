@@ -34,8 +34,6 @@ use GlpiPlugin\Manageentities\Contract;
  */
 function addRemainingDaysColumn(): void
 {
-    global $DB;
-
     $migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
     $migration->addField(
         'glpi_plugin_manageentities_contracts',
@@ -45,7 +43,19 @@ function addRemainingDaysColumn(): void
     );
     $migration->executeMigration();
 
-    // Backfill: recompute remaining days for every existing contract row
+    refreshAllRemainingDays();
+}
+
+/**
+ * Recompute remaining_days for every existing contract row.
+ *
+ * Run on every plugin update: before the ticket task hooks existed, the column was not
+ * refreshed when tasks changed, so values stored by older versions may be stale.
+ */
+function refreshAllRemainingDays(): void
+{
+    global $DB;
+
     $iterator = $DB->request([
         'SELECT' => ['contracts_id'],
         'FROM'   => 'glpi_plugin_manageentities_contracts',
