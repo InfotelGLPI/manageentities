@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 10:13+0000\n"
+"POT-Creation-Date: 2026-09-23 10:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -327,9 +327,10 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/GenerateCRI.php:715 src/Followup.php:943 src/Monthly.php:700
-#: src/Monthly.php:731 src/Dashboard.php:249 src/Dashboard.php:313
-#: src/Dashboard.php:368 templates/entity/unbilled_tab.html.twig:112
+#: src/DirectHelpdesk.php:684 src/GenerateCRI.php:715 src/Followup.php:943
+#: src/Monthly.php:700 src/Monthly.php:731 src/Dashboard.php:249
+#: src/Dashboard.php:313 src/Dashboard.php:368
+#: templates/entity/unbilled_tab.html.twig:122
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -345,7 +346,7 @@ msgid_plural "Clients management"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/entity/unbilled_tab.html.twig:74
+#: templates/entity/unbilled_tab.html.twig:76
 #, php-format
 msgid "Clients with hours left unbilled for more than %d months:"
 msgstr ""
@@ -859,8 +860,8 @@ msgstr "End date must be after the begin date !"
 #: front/report_moving.form.php:43 front/generatecri.form.php:113
 #: front/config.form.php:44 front/directhelpdesk.form.php:143
 #: front/directhelpdesk.form.php:146 front/directhelpdesk.form.php:148
-#: front/report.form.php:46 front/entity.php:55 front/entity.php:58
-#: front/entity.php:60 front/generatecri.php:35 front/generatecri.php:38
+#: front/report.form.php:46 front/entity.php:60 front/entity.php:63
+#: front/entity.php:65 front/generatecri.php:35 front/generatecri.php:38
 #: front/generatecri.php:40 front/cridetail.form.php:52
 #: front/cridetail.form.php:55 front/cridetail.form.php:57
 #: front/addelements.form.php:37 setup.php:210 src/Preference.php:109
@@ -974,6 +975,7 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
+#: templates/entity/unbilled_tab.html.twig:112
 #: templates/entity/editorsubscription_tab.html.twig:54
 msgid "Export CSV"
 msgstr ""
@@ -1057,8 +1059,8 @@ msgstr "Help on contract"
 msgid "Helpdesk reports"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:52
-#: templates/entity/unbilled_tab.html.twig:81
+#: templates/entity/unbilled_tab.html.twig:54
+#: templates/entity/unbilled_tab.html.twig:84
 msgid "Hour"
 msgid_plural "Hours"
 msgstr[0] ""
@@ -1118,7 +1120,8 @@ msgstr ""
 msgid "Internet publication"
 msgstr ""
 
-#: src/Contract.php:784 templates/entity/unbilled_tab.html.twig:113
+#: src/DirectHelpdesk.php:685 src/Contract.php:784
+#: templates/entity/unbilled_tab.html.twig:123
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] "Intervention"
@@ -1179,7 +1182,7 @@ msgstr "Interventions with old contract"
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:693 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:810 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr ""
 
@@ -1315,7 +1318,7 @@ msgstr "Mode of management"
 msgid "Monthly follow-up"
 msgstr "Monthly follow-up"
 
-#: templates/entity/unbilled_tab.html.twig:129
+#: src/DirectHelpdesk.php:688 templates/entity/unbilled_tab.html.twig:139
 #, php-format
 msgid "More than %d months"
 msgstr ""
@@ -1398,7 +1401,7 @@ msgstr ""
 msgid "No active subscription"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:62
+#: templates/entity/unbilled_tab.html.twig:64
 msgid "No archived client with unbilled hours."
 msgstr ""
 
@@ -1433,7 +1436,7 @@ msgstr ""
 msgid "No expired publisher subscription."
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:94
+#: templates/entity/unbilled_tab.html.twig:97
 #, php-format
 msgid "No hours left unbilled for more than %d months."
 msgstr ""
@@ -1500,7 +1503,7 @@ msgstr ""
 msgid "No tasks whose category can be used"
 msgstr "No tasks whose category can be used"
 
-#: templates/entity/unbilled_tab.html.twig:147
+#: templates/entity/unbilled_tab.html.twig:157
 msgid "No unbilled intervention for a client with an ongoing contract."
 msgstr ""
 
@@ -1553,7 +1556,7 @@ msgstr "Object of intervention"
 msgid "Occupation report"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:115
+#: src/DirectHelpdesk.php:687 templates/entity/unbilled_tab.html.twig:125
 msgid "Oldest intervention"
 msgstr ""
 
@@ -1697,7 +1700,7 @@ msgid ""
 "customer."
 msgstr ""
 
-#: src/DirectHelpdesk.php:752
+#: src/DirectHelpdesk.php:869
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 
@@ -2301,7 +2304,7 @@ msgstr "To compute"
 msgid "To present an invoice"
 msgstr "To present an invoice"
 
-#: templates/entity/unbilled_tab.html.twig:138
+#: templates/entity/unbilled_tab.html.twig:148
 msgid "Total"
 msgstr ""
 
@@ -2388,11 +2391,11 @@ msgstr "Type of service contract missing"
 msgid "Unarchive and continue"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:114
+#: src/DirectHelpdesk.php:686 templates/entity/unbilled_tab.html.twig:124
 msgid "Unbilled hours"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:104
+#: templates/entity/unbilled_tab.html.twig:108
 msgid "Unbilled hours by client with an ongoing contract"
 msgstr ""
 
@@ -2591,7 +2594,7 @@ msgstr "of this intervention"
 msgid "on"
 msgstr "on"
 
-#: templates/entity/unbilled_tab.html.twig:84
+#: templates/entity/unbilled_tab.html.twig:87
 msgid "since"
 msgstr ""
 
