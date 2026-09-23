@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 16:28+0000\n"
+"POT-Creation-Date: 2026-09-23 17:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1981,7 +1981,7 @@ msgstr "Save the intervention report"
 msgid "Save this period"
 msgstr ""
 
-#: hook.php:104 hook.php:123 src/CriType.php:153
+#: hook.php:103 hook.php:122 src/CriType.php:153
 msgid "Scheduled intervention"
 msgstr "Scheduled intervention"
 
@@ -2114,7 +2114,7 @@ msgstr ""
 msgid "Status list contract for the general monitoring"
 msgstr "Status list contract for the general monitoring"
 
-#: hook.php:105 hook.php:124 src/CriType.php:154
+#: hook.php:104 hook.php:123 src/CriType.php:154
 msgid "Study and advice"
 msgstr "Study and advice"
 
@@ -2437,7 +2437,7 @@ msgstr ""
 msgid "Update subscription fields"
 msgstr ""
 
-#: hook.php:103 hook.php:122 src/CriType.php:152
+#: hook.php:102 hook.php:121 src/CriType.php:152
 msgid "Urgent intervention"
 msgstr "Urgent intervention"
 
