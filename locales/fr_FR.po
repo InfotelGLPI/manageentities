@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 11:02+0000\n"
+"POT-Creation-Date: 2026-09-23 11:33+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "% of time justified"
 msgstr "% de temps justifié"
 
-#: src/Contract.php:1456
+#: src/Contract.php:1482
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr "%d contrats arrivant à échéance sont notifiés"
@@ -75,7 +75,7 @@ msgstr "Un contrat avec ce numéro existe déjà"
 msgid "Accomplished tasks informations"
 msgstr "Informations sur les tâches accomplies"
 
-#: hook.php:910 src/EditorSubscription.php:179
+#: hook.php:912 src/EditorSubscription.php:179
 #: templates/wizard/step4_management.html.twig:121
 msgid "Active editor subscription"
 msgstr "Souscription active éditeur"
@@ -384,7 +384,7 @@ msgstr "État de la période contractuelle fermée"
 msgid "Cloud"
 msgstr "Cloud"
 
-#: hook.php:923 src/NotificationTargetEditorSubscription.php:115
+#: hook.php:925 src/NotificationTargetEditorSubscription.php:115
 #: src/EditorSubscription.php:157 src/EditorSubscription.php:180
 #: src/EditorSubscription.php:656
 #: templates/wizard/step4_management.html.twig:130
@@ -878,7 +878,7 @@ msgstr "La date de fin est obligatoire"
 msgid "End date must be after the begin date !"
 msgstr "La date de fin doit être postérieure à la date de début!"
 
-#: setup.php:210 front/entity.php:60 front/entity.php:63 front/entity.php:65
+#: setup.php:220 front/entity.php:60 front/entity.php:63 front/entity.php:65
 #: front/config.form.php:44 front/report_moving.form.php:43
 #: front/directhelpdesk.php:41 front/directhelpdesk.php:44
 #: front/directhelpdesk.php:46 front/addelements.form.php:37
@@ -1141,7 +1141,7 @@ msgstr "Crédit initial"
 msgid "Initial credit is required"
 msgstr "Le crédit initial est obligatoire"
 
-#: hook.php:936 src/EditorSubscription.php:181 src/EditorSubscription.php:664
+#: hook.php:938 src/EditorSubscription.php:181 src/EditorSubscription.php:664
 #: templates/contract_detail_form.html.twig:80
 #: templates/cridetail_for_ticket.html.twig:422
 #: templates/editorsubscription_fields.html.twig:75
@@ -1173,7 +1173,7 @@ msgstr "Intervention des prestations"
 msgid "Intervention periods of contract"
 msgstr "Interventions de la prestation du contrat"
 
-#: setup.php:138 src/Cri.php:52 src/Profile.php:107 src/Config.php:354
+#: setup.php:148 src/Cri.php:52 src/Profile.php:107 src/Config.php:354
 #: templates/cridetail_add_reports.html.twig:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -1359,7 +1359,7 @@ msgstr "Suivi mensuel"
 msgid "More than %d months"
 msgstr "Plus de %d mois"
 
-#: src/Contract.php:987 templates/wizard/step4_management.html.twig:102
+#: src/Contract.php:1013 templates/wizard/step4_management.html.twig:102
 #: templates/wizard/step5_management.html.twig:102
 #: templates/contract_detail_form.html.twig:188
 msgid "Movement management"
@@ -1681,7 +1681,7 @@ msgstr[2] "Prestations de contrat"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 
-#: hook.php:874 src/CriDetail.php:873 src/CriDetail.php:2117
+#: hook.php:876 src/CriDetail.php:873 src/CriDetail.php:2117
 #: src/CriDetail.php:2155 src/GenerateCRI.php:1376
 #: templates/contractday_list.html.twig:33
 msgid "Periods of contract"
@@ -1923,7 +1923,7 @@ msgstr "Tarifs"
 msgid "Recursive"
 msgstr "Sous-entités"
 
-#: src/Contract.php:988 templates/wizard/step4_management.html.twig:82
+#: src/Contract.php:1014 templates/wizard/step4_management.html.twig:82
 #: templates/wizard/step5_management.html.twig:82
 #: templates/contract_detail_form.html.twig:168
 msgid "Refacturable costs"
@@ -1981,11 +1981,11 @@ msgstr "Restant au"
 msgid "Remaining total (amount)"
 msgstr "Total restant (montant)"
 
-#: setup.php:141 src/Report.php:313
+#: setup.php:151 src/Report.php:313
 msgid "Report concerning the occupation of the technicians"
 msgstr "Rapport concernant les déplacements des techniciens"
 
-#: setup.php:139 src/Report.php:151
+#: setup.php:149 src/Report.php:151
 msgid "Report on the movement of technicians"
 msgstr "Rapport concernant l'occupation des techniciens"
 
@@ -2069,7 +2069,7 @@ msgstr "Sélectionner une entité existante"
 msgid "Select an existing price"
 msgstr "Sélectionner un prix existant"
 
-#: src/Contract.php:1315
+#: src/Contract.php:1341
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 "Envoyez la liste des contrats dont le nombre de jours restants arrive à "
@@ -2095,7 +2095,7 @@ msgstr "Configuration pour \"Générer le rapport d'intervention\""
 msgid "Show expired subscriptions only"
 msgstr "Voir les souscriptions expirées uniquement"
 
-#: src/Contract.php:986 templates/wizard/step4_management.html.twig:74
+#: src/Contract.php:1012 templates/wizard/step4_management.html.twig:74
 #: templates/wizard/step5_management.html.twig:74
 #: templates/contract_detail_form.html.twig:160
 msgid "Show on GANTT"
@@ -2415,7 +2415,7 @@ msgstr "Nombre de forfait de déplacement"
 msgid "Total production"
 msgstr "Total consommation mensuelle"
 
-#: hook.php:896 src/Followup.php:886 src/Followup.php:1204
+#: hook.php:898 src/Followup.php:886 src/Followup.php:1204
 #: src/ContractDay.php:539 src/NotificationTargetContract.php:114
 #: src/NotificationTargetContract.php:149 src/Dashboard.php:185
 #: src/Dashboard.php:467 templates/contractday_form.html.twig:122
@@ -2500,7 +2500,7 @@ msgstr "Mise à jour des données administratives"
 msgid "Update logo"
 msgstr "Mise à jour du logo"
 
-#: src/Contract.php:976
+#: src/Contract.php:1002
 msgid "Update management fields"
 msgstr "Mise à jour des champs du type de gestion"
 
@@ -2509,7 +2509,7 @@ msgstr "Mise à jour des champs du type de gestion"
 msgid "Update publisher subscription"
 msgstr "Mise à jour de la souscription éditeur"
 
-#: hook.php:1041
+#: hook.php:1043
 msgid "Update subscription fields"
 msgstr "Mise à jour des champs du type de gestion"
 
