@@ -46,14 +46,19 @@
                 {# One badge per tech lead: a click unfolds the clients below, each linked to
                    the customer sheet of the entity, where its tech leads are changed #}
                 {% set rand = random() %}
+                {# Same cards as "Subscriptions by type" of the contracts status overview #}
                 <div class="d-flex flex-wrap gap-2 p-3 border-bottom" id="techlead_badges{{ rand }}">
                     {% for tech in techs %}
-                        <button type="button" class="btn btn-sm btn-ghost-secondary border"
+                        <button type="button" class="card card-link text-center border-2 flex-shrink-0 flex-grow-1 p-0"
+                                style="min-width:110px"
                                 data-bs-toggle="collapse" data-bs-target="#techlead_clients{{ rand }}_{{ tech.users_id }}"
                                 aria-expanded="false" aria-controls="techlead_clients{{ rand }}_{{ tech.users_id }}">
-                            <i class="ti ti-user me-1"></i>
-                            {{ tech.name }}
-                            <span class="badge bg-blue-lt ms-2">{{ tech.nb_clients }}</span>
+                            <div class="card-body p-3 w-100">
+                                <div class="display-6 fw-bold text-primary">{{ tech.nb_clients }}</div>
+                                <div class="text-muted small mt-1">
+                                    <i class="ti ti-user me-1"></i>{{ tech.name }}
+                                </div>
+                            </div>
                         </button>
                     {% endfor %}
                 </div>
