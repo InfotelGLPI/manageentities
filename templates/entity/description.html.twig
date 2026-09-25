@@ -201,7 +201,7 @@
                                     {{ contact.contact_type }}
                                     {% if is_single and interface != 'helpdesk' %}
                                         {% if contact.is_default %}
-                                            <span class="badge bg-outline-success">{{ __('Manager') }}</span>
+                                            <span class="badge bg-green-lt">{{ __('Manager') }}</span>
                                         {% elseif can_edit_contacts %}
                                             <form method="post" action="{{ entity_action_url }}" class="d-inline">
                                                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
@@ -211,7 +211,7 @@
                                             </form>
                                         {% endif %}
                                     {% elseif contact.is_default %}
-                                        <span class="badge bg-outline-success">{{ __('Manager') }}</span>
+                                        <span class="badge bg-green-lt">{{ __('Manager') }}</span>
                                     {% endif %}
                                 </td>
                                 {% if can_edit_contacts and is_single %}
@@ -322,6 +322,8 @@
             </div>
         </div>
         {% endif %}
+
+        {{ include('@manageentities/entity/techleads_card.html.twig') }}
 
     </div>{# /col right #}
 </div>{# /row #}

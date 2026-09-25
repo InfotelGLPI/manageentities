@@ -53,6 +53,7 @@ use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\SubscriptionLevel;
 use GlpiPlugin\Manageentities\TaskCategory;
+use GlpiPlugin\Manageentities\TechLead;
 use GlpiPlugin\Manageentities\TicketTask;
 
 use function Safe\mkdir;
@@ -87,6 +88,7 @@ function plugin_manageentities_install()
         SubscriptionLevel::install($migration);
         EditorSubscription::install($migration);
         DirectHelpdesk_Ticket::install($migration);
+        TechLead::install($migration);
 
     } elseif ($DB->tableExists("glpi_plugin_manageentity_profiles") && !$DB->tableExists("glpi_plugin_manageentity_preference")) {
         $update = true;
@@ -382,6 +384,9 @@ function plugin_manageentities_install()
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.2.13.sql");
     }
 
+    //version 4.2.18 : tech leads of a client (idempotent, creates the table on upgrades)
+    TechLead::install(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
+
 
     include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
@@ -454,6 +459,7 @@ function plugin_manageentities_uninstall()
     DirectHelpdesk_Ticket::uninstall();
     SubscriptionLevel::uninstall();
     EditorSubscription::uninstall();
+    TechLead::uninstall();
 
     // Entity owns no table, so it is absent from the list above: only its notification
     // chain has to be removed.
@@ -626,6 +632,9 @@ function plugin_pre_item_purge_manageentities($item)
 
             $temp = new CriDetail();
             $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
+
+            $temp = new TechLead();
+            $temp->deleteByCriteria(['entities_id' => $item->getField('id')]);
             break;
         case 'Ticket':
             $temp = new CriTechnician();
@@ -647,6 +656,10 @@ function plugin_pre_item_purge_manageentities($item)
         case 'Contact':
             $temp = new Contact();
             $temp->deleteByCriteria(['contacts_id' => $item->getField('id')]);
+            break;
+        case 'User':
+            $temp = new TechLead();
+            $temp->deleteByCriteria(['users_id' => $item->getField('id')]);
             break;
         case 'TaskCategory':
             $temp = new TaskCategory();

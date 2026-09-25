@@ -312,3 +312,15 @@ CREATE TABLE `glpi_plugin_manageentities_directhelpdesks_tickets` (
     KEY `tickets_id` (`tickets_id`),
     KEY `plugin_manageentities_directhelpdesks_id` (`plugin_manageentities_directhelpdesks_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_techleads`;
+CREATE TABLE `glpi_plugin_manageentities_techleads` (
+   `id` int unsigned NOT NULL auto_increment,
+   `users_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
+   `entities_id` int unsigned NOT NULL DEFAULT '0',
+   `is_default` tinyint NOT NULL DEFAULT '0',
+   PRIMARY KEY  (`id`),
+   UNIQUE KEY `unicity` (`users_id`,`entities_id`),
+   KEY `users_id` (`users_id`),
+   KEY `entities_id` (`entities_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

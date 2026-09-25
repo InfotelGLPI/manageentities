@@ -1,0 +1,118 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Number of clients per tech lead: a client can have several tech leads, so the bars are
+   relative to the busiest tech lead and the counts do not add up to the number of clients #}
+<div class="row g-3 mt-1">
+    <div class="col-12 col-xl-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="ti ti-user-star me-1"></i>
+                    {{ __('Clients by tech lead', 'manageentities') }}
+                </h3>
+                <div class="card-actions">
+                    <span class="badge bg-blue-lt">
+                        {{ __('%1$s client(s) followed by %2$s tech lead(s)', 'manageentities')|format(total_clients, techs|length) }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if techs is not empty %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover table-vcenter mb-0">
+                        <thead>
+                            <tr>
+                                <th>{{ __('Technician') }}</th>
+                                <th class="text-end">{{ _n('Client', 'Clients', 2, 'manageentities') }}</th>
+                                <th class="text-end">{{ __('As main tech lead', 'manageentities') }}</th>
+                                <th class="w-50"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for tech in techs %}
+                            <tr>
+                                <td>
+                                    <details>
+                                        <summary class="cursor-pointer">{{ tech.name }}</summary>
+                                        <ul class="list-unstyled small mt-1 mb-0 ms-3">
+                                            {% for client in tech.clients %}
+                                                <li>
+                                                    {{ client.name }}
+                                                    {% if client.is_main %}
+                                                        <span class="badge bg-green-lt ms-1">{{ __('Main tech lead', 'manageentities') }}</span>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </details>
+                                </td>
+                                <td class="text-end fw-bold">{{ tech.nb_clients }}</td>
+                                <td class="text-end">{{ tech.nb_main }}</td>
+                                <td>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-primary" style="width: {{ tech.percent }}%" role="progressbar"
+                                             aria-valuenow="{{ tech.nb_clients }}" aria-valuemin="0" aria-valuemax="{{ total_clients }}"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <p class="text-muted text-center py-3 mb-0">{{ __('No tech lead', 'manageentities') }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="ti ti-alert-triangle me-1"></i>
+                    {{ __('Clients without tech lead', 'manageentities') }}
+                </h3>
+                <div class="card-actions">
+                    <span class="badge {{ without_techlead is empty ? 'bg-green-lt' : 'bg-orange-lt' }}">{{ without_techlead|length }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if without_techlead is not empty %}
+                    <ul class="list-unstyled small mb-0">
+                        {% for name in without_techlead %}
+                            <li>{{ name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted text-center mb-0">{{ __('Every client has a tech lead', 'manageentities') }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

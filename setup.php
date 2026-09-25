@@ -34,6 +34,7 @@ global $CFG_GLPI;
 use Glpi\Plugin\Hooks;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\CustomerSheet;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\Dashboard;
@@ -71,6 +72,7 @@ function plugin_init_manageentities()
         'Contract' => 'plugin_pre_item_purge_manageentities',
         'Contact' => 'plugin_pre_item_purge_manageentities',
         'TaskCategory' => 'plugin_pre_item_purge_manageentities',
+        'User' => 'plugin_pre_item_purge_manageentities',
     ];
 
     $PLUGIN_HOOKS[Hooks::PRE_ITEM_UPDATE]['manageentities'] = [
@@ -105,6 +107,7 @@ function plugin_init_manageentities()
         // notification template is selectable in Configuration > Notifications.
         Plugin::registerClass(Entity::class, ['notificationtemplates_types' => true]);
         Plugin::registerClass(SubscriptionLevel::class);
+        Plugin::registerClass(CustomerSheet::class, ['addtabon' => 'Entity']);
         Plugin::registerClass(Profile::class, ['addtabon' => 'Profile']);
         Plugin::registerClass(Contract::class, [
             'addtabon'                    => 'Contract',

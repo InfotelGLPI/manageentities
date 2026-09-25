@@ -36,6 +36,7 @@ use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\TechLead;
 
 // CSV exports — must run before any Html::header() output
 if (isset($_GET['export']) && $_GET['export'] === 'subscriptions') {
@@ -51,6 +52,7 @@ $Contract        = new Contract();
 $Contact         = new Contact();
 $ManageentitiesEntity          = new Entity();
 $BusinessContact = new BusinessContact();
+$TechLead        = new TechLead();
 
 if (!isset($_POST["entities_id"])) {
     $_POST["entities_id"] = "";
@@ -118,6 +120,26 @@ if ($ManageentitiesEntity->canView()
     } elseif (isset($_POST["deletebusiness"])) {
         if ($BusinessContact->can((int) $_POST["id"], DELETE)) {
             $BusinessContact->delete(['id' => (int) $_POST["id"]]);
+        }
+        Html::back();
+
+    } elseif (isset($_POST["addtechlead"])) {
+        if ($TechLead->can(-1, CREATE, $_POST)) {
+            $TechLead->add($_POST);
+        }
+        Html::back();
+
+    } elseif (isset($_POST["deletetechlead"])) {
+        // Same right as the business contacts: PURGE is only granted to the full profile
+        if ($TechLead->can((int) $_POST["id"], DELETE)) {
+            $TechLead->delete(['id' => (int) $_POST["id"]], true);
+        }
+        Html::back();
+
+    } elseif (isset($_POST["techleadbydefault"])) {
+        // can($id, UPDATE) reloads the row and enforces entity access on it
+        if ($TechLead->can((int) $_POST["id"], UPDATE)) {
+            $TechLead->setAsDefault((int) $_POST["id"]);
         }
         Html::back();
 

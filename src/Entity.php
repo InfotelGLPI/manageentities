@@ -159,6 +159,16 @@ class Entity extends CommonGLPI
                 );
             }
 
+            // Workload of the tech leads: central only, like the other provider-side overviews
+            if (Session::getCurrentInterface() == 'central' && TechLead::canView()) {
+                $tabs[14] = TechLead::createTabEntry(
+                    __('Clients by tech lead', 'manageentities'),
+                    0,
+                    self::class,
+                    TechLead::getIcon(),
+                );
+            }
+
             // ajout de la configuration du plugin
             // Same reasoning as the administrative data tab above: showReports() switches to its
             // tree mode as soon as the perimeter holds more than one entity and then lists every
@@ -339,6 +349,9 @@ class Entity extends CommonGLPI
                 case 13:
                     DirectHelpdesk::showUnbilledOverview();
                     break;
+                case 14:
+                    TechLead::showClientsByTech($entities);
+                    break;
                 default:
                     break;
             }
@@ -395,6 +408,7 @@ class Entity extends CommonGLPI
 
         $contact         = new Contact();
         $businessContact = new BusinessContact();
+        $techLead        = new TechLead();
         $entityObj       = new \Entity();
         $can_edit        = (Session::getCurrentInterface() !== 'helpdesk');
         $is_single       = (count($entities) === 1);
@@ -445,9 +459,11 @@ class Entity extends CommonGLPI
         // Contacts and business are fetched once for ALL entities (like the original)
         $contacts_data = $contact->buildContactsForTemplate($entities, $CFG_GLPI['root_doc']);
         $business_data = $businessContact->buildBusinessForTemplate($entities, $CFG_GLPI['root_doc']);
+        $techlead_data = $techLead->buildTechLeadsForTemplate($entities, $CFG_GLPI['root_doc']);
 
         $contact_dropdown_html = '';
         $user_dropdown_html    = '';
+        $techlead_dropdown_html = '';
         if ($can_edit && $is_single) {
             ob_start();
             \Dropdown::show('Contact', ['name' => 'contacts_id']);
@@ -456,6 +472,15 @@ class Entity extends CommonGLPI
             ob_start();
             \User::dropdown(['right' => 'interface']);
             $user_dropdown_html = ob_get_clean();
+
+            // Tech leads are technicians: same right filter as the ticket assignment dropdowns
+            $techlead_dropdown_html = \User::dropdown([
+                'name'    => 'users_id',
+                'right'   => 'own_ticket',
+                'entity'  => $entities,
+                'used'    => array_column($techLead->find(['entities_id' => $entities]), 'users_id'),
+                'display' => false,
+            ]);
         }
 
         TemplateRenderer::getInstance()->display(
@@ -475,6 +500,9 @@ class Entity extends CommonGLPI
                 'can_edit_business'    => $businessContact->canCreate(),
                 'contact_dropdown_html' => $contact_dropdown_html,
                 'user_dropdown_html'   => $user_dropdown_html,
+                'techleads'            => $techlead_data,
+                'can_edit_techleads'   => $can_edit && $techLead->canCreate(),
+                'techlead_dropdown_html' => $techlead_dropdown_html,
                 // For the add-contact/business form, use the first (or only) entity id
                 'entity_id'            => $entities[array_key_first($entities)] ?? 0,
             ],
