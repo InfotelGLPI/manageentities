@@ -61,37 +61,50 @@
                 {% for tech in techs %}
                     <div class="collapse border-bottom" id="techlead_clients{{ rand }}_{{ tech.users_id }}"
                          data-bs-parent="#techlead_clients_list{{ rand }}">
-                        <div class="p-3">
+                        <div class="px-3 pt-3">
                             <h4 class="mb-2">
                                 {{ tech.name }}
                                 <span class="badge bg-blue-lt ms-1">{{ tech.nb_clients }}</span>
                             </h4>
-                            <div class="d-flex flex-wrap gap-2">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover table-vcenter mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>{{ _n('Client', 'Clients', 1, 'manageentities') }}</th>
+                                        <th class="text-end">{{ __('Main tech lead', 'manageentities') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                 {% for client in tech.clients %}
-                                    {% if can_toggle_main %}
-                                        {# A click switches the main tech lead of the client directly #}
-                                        <form method="post" action="{{ action_url }}" class="d-inline-flex align-items-center">
-                                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                                            <input type="hidden" name="id" value="{{ client.link_id }}">
-                                            <button type="submit" name="toggletechleadbydefault" value="1"
-                                                    class="badge border-0 {{ client.is_main ? 'bg-green-lt' : 'bg-secondary-lt' }}"
-                                                    title="{{ client.is_main ? __('Main tech lead - click to no longer be the main one', 'manageentities') : __('Tech lead - click to become the main one', 'manageentities') }}">
-                                                {% if client.is_main %}<i class="ti ti-star me-1"></i>{% endif %}
-                                                {{ client.name }}
-                                            </button>
-                                            <a href="{{ client.url }}" class="ms-1 text-muted" title="{{ __('Customer sheet', 'manageentities') }}">
-                                                <i class="ti ti-external-link"></i>
-                                            </a>
-                                        </form>
-                                    {% else %}
-                                        <a href="{{ client.url }}" class="badge {{ client.is_main ? 'bg-green-lt' : 'bg-secondary-lt' }} text-decoration-none"
-                                           title="{{ client.is_main ? __('Main tech lead', 'manageentities') : _n('Tech lead', 'Tech leads', 1, 'manageentities') }}">
-                                            {% if client.is_main %}<i class="ti ti-star me-1"></i>{% endif %}
-                                            {{ client.name }}
-                                        </a>
-                                    {% endif %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ client.url }}" title="{{ __('Customer sheet', 'manageentities') }}">{{ client.name }}</a>
+                                        </td>
+                                        <td class="text-end">
+                                            {% if can_toggle_main %}
+                                                {# A click switches the main tech lead of the client directly #}
+                                                <form method="post" action="{{ action_url }}" class="d-inline">
+                                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                                    <input type="hidden" name="id" value="{{ client.link_id }}">
+                                                    <button type="submit" name="toggletechleadbydefault" value="1"
+                                                            class="badge border-0 {{ client.is_main ? 'bg-green-lt' : 'bg-secondary-lt' }}"
+                                                            title="{{ client.is_main ? __('Main tech lead - click to no longer be the main one', 'manageentities') : __('Tech lead - click to become the main one', 'manageentities') }}">
+                                                        <i class="ti {{ client.is_main ? 'ti-star' : 'ti-star-off' }} me-1"></i>
+                                                        {{ client.is_main ? __('Yes') : __('No') }}
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <span class="badge {{ client.is_main ? 'bg-green-lt' : 'bg-secondary-lt' }}">
+                                                    <i class="ti {{ client.is_main ? 'ti-star' : 'ti-star-off' }} me-1"></i>
+                                                    {{ client.is_main ? __('Yes') : __('No') }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
                                 {% endfor %}
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 {% endfor %}
@@ -103,33 +116,22 @@
                                 <th>{{ __('Technician') }}</th>
                                 <th class="text-end">{{ _n('Client', 'Clients', 2, 'manageentities') }}</th>
                                 <th class="text-end">{{ __('As main tech lead', 'manageentities') }}</th>
-                                <th class="w-50"></th>
+                                <th class="w-50">{{ __('Share', 'manageentities') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                         {% for tech in techs %}
                             <tr>
-                                <td>
-                                    <details>
-                                        <summary class="cursor-pointer">{{ tech.name }}</summary>
-                                        <ul class="list-unstyled small mt-1 mb-0 ms-3">
-                                            {% for client in tech.clients %}
-                                                <li>
-                                                    <a href="{{ client.url }}">{{ client.name }}</a>
-                                                    {% if client.is_main %}
-                                                        <span class="badge bg-green-lt ms-1">{{ __('Main tech lead', 'manageentities') }}</span>
-                                                    {% endif %}
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </details>
+                                {# The clients of each tech lead are listed by the badges above #}
+                                <td class="text-nowrap">
+                                    <i class="ti ti-user me-1"></i>{{ tech.name }}
                                 </td>
                                 <td class="text-end fw-bold">{{ tech.nb_clients }}</td>
                                 <td class="text-end">{{ tech.nb_main }}</td>
-                                <td>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-primary" style="width: {{ tech.percent }}%" role="progressbar"
-                                             aria-valuenow="{{ tech.nb_clients }}" aria-valuemin="0" aria-valuemax="{{ total_clients }}"></div>
+                                <td style="min-width: 8rem;">
+                                    <div class="progress" style="height: 0.75rem;">
+                                        <div class="progress-bar bg-primary" style="width: {{ tech.percent }}%;" role="progressbar"
+                                             aria-valuenow="{{ tech.percent }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </td>
                             </tr>
