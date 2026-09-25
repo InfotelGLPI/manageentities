@@ -1267,8 +1267,10 @@ class Followup extends CommonDBTM
                             }
 
                             if ($is_html_output) {
+                                // showItem() writes its argument into the cell as is: the state
+                                // label is a raw database value, escaped here so exports keep it raw
                                 $html_output .= $output::showItem(
-                                    $day['contractstates'],
+                                    htmlspecialchars((string) $day['contractstates'], ENT_QUOTES),
                                     $item_num,
                                     $row_num,
                                     "colspan='2' ",
