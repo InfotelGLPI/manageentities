@@ -215,7 +215,8 @@ class TechLead extends CommonDBTM
      * Keep the active customers only, same scope as DirectHelpdesk::getUnbilledOverviewData():
      * the entities below wizard_default_entities_id (the customers entity itself excluded),
      * minus the archived ones, a customer being archived by moving its entity under
-     * wizard_archive_entities_id (whole subtree excluded, root included)
+     * wizard_archive_entities_id (whole subtree excluded, root included), and minus the
+     * parent entities of other active customers
      *
      * @param array $entities
      *
@@ -237,7 +238,16 @@ class TechLead extends CommonDBTM
             $entities = array_diff($entities, array_keys(getSonsOf('glpi_entities', $archive_entities_id)));
         }
 
-        return array_map('intval', array_values($entities));
+        // Parent entities are only grouping levels of the tree: the clients are their leaves
+        $entities = array_map('intval', array_values($entities));
+        if ($entities !== []) {
+            $entities = array_values(array_diff(
+                $entities,
+                array_map('intval', getAncestorsOf('glpi_entities', $entities)),
+            ));
+        }
+
+        return $entities;
     }
 
     /**
