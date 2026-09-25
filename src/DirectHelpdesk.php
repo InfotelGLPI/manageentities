@@ -849,28 +849,44 @@ class DirectHelpdesk extends CommonDBTM
 
     public function displayAlertforEntity($instID)
     {
+        return self::getUnbilledAlert((int) $instID);
+    }
+
+    /**
+     * Alert telling that the customer still has unbilled interventions, with their number
+     * and duration, and a link to them when the user may read the interventions
+     *
+     * @param int $entities_id
+     *
+     * @return string '' when the customer has no unbilled intervention
+     */
+    public static function getUnbilledAlert(int $entities_id): string
+    {
         global $DB;
 
-        $alert = "";
-        $iterator = $DB->request([
+        $table = self::getTable();
+        $data  = $DB->request([
             'SELECT' => [
-                $this->getTable() . '.id',
+                QueryFunction::count("$table.id", false, 'nb'),
+                QueryFunction::sum("$table.actiontime", false, 'total'),
             ],
-            'FROM' => $this->getTable(),
-            'WHERE' => [
-                $this->getTable() . '.is_billed' => 0,
-                $this->getTable() . '.entities_id' => $instID,
+            'FROM'   => $table,
+            'WHERE'  => [
+                "$table.is_billed"   => 0,
+                "$table.entities_id" => $entities_id,
             ],
-        ]);
+        ])->current();
 
-        if (count($iterator) > 0) {
-            $alert .= "<div class='alert alert-danger d-flex'>";
-            $alert .= "<b>" . __(
-                "Please note that there are unbilled interventions for this customer.",
-                "manageentities",
-            ) . "</b></div>";
+        $nb = (int) ($data['nb'] ?? 0);
+        if ($nb === 0) {
+            return '';
         }
-        return $alert;
+
+        return TemplateRenderer::getInstance()->render('@manageentities/directhelpdesk_unbilled_alert.html.twig', [
+            'nb'       => $nb,
+            'duration' => Html::timestampToString((int) ($data['total'] ?? 0), false),
+            'url'      => Session::haveRight(self::$rightname, READ) ? self::getUnbilledSearchUrl($entities_id) : '',
+        ]);
     }
 
     public static function install(Migration $migration)

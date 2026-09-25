@@ -1,0 +1,40 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Customer with unplanned interventions still to be billed #}
+<div class="alert alert-danger d-flex align-items-center mb-2" role="alert">
+    <i class="ti ti-file-euro fs-2 me-2"></i>
+    <div>
+        <b>{{ __('Please note that there are unbilled interventions for this customer.', 'manageentities') }}</b>
+        <span class="ms-1">
+            ({{ _n('%1$s intervention', '%1$s interventions', nb, 'manageentities')|format(nb) }} - {{ duration }})
+        </span>
+        {% if url is not empty %}
+            <a href="{{ url }}" class="ms-2">{{ __('See the unbilled interventions', 'manageentities') }}</a>
+        {% endif %}
+    </div>
+</div>

@@ -990,6 +990,20 @@ class Contract extends CommonDBTM
         }
         $out = "";
 
+        // Unbilled interventions: shown on top of the ticket to anyone reading the plugin data,
+        // not only to those allowed to manage the contracts
+        if (isset($entities_id, $item)
+            && $item->getType() == 'Ticket'
+            && !Session::haveRight('plugin_manageentities', UPDATE)
+            && Session::getCurrentInterface() == 'central'
+            && Session::haveRight('plugin_manageentities', READ)) {
+            $alert = DirectHelpdesk::getUnbilledAlert((int) $entities_id);
+            if ($alert !== '') {
+                echo '<div class="col-12">' . $alert . '</div>';
+            }
+            return;
+        }
+
         if (isset($entities_id)
             && $_SESSION['glpiactiveprofile']['interface'] == 'central'
             && Session::haveRight('plugin_manageentities', UPDATE)) {

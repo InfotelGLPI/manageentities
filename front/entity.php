@@ -143,6 +143,18 @@ if ($ManageentitiesEntity->canView()
         }
         Html::back();
 
+    } elseif (isset($_POST["toggletechleadbydefault"])) {
+        // One-click switch from the "Clients by tech lead" tab: the main tech lead
+        // stops being the main one, any other one becomes the main one
+        if ($TechLead->can((int) $_POST["id"], UPDATE)) {
+            if ($TechLead->fields['is_default']) {
+                $TechLead->update(['id' => $TechLead->getID(), 'is_default' => 0]);
+            } else {
+                $TechLead->setAsDefault($TechLead->getID());
+            }
+        }
+        Html::back();
+
     } elseif (isset($_POST["contactbydefault"])) {
         // Align with the sibling branches: canCreate() is entity-agnostic. Enforce access to
         // the posted entity AND reload the target row via can($id, UPDATE) before flipping the

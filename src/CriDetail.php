@@ -110,6 +110,10 @@ class CriDetail extends CommonDBTM
 
         if ($item->getType() == 'Ticket') {
             if (Session::getCurrentInterface() == 'central') {
+                // Billing information: the customer still has interventions to be billed
+                if ($item instanceof Ticket) {
+                    echo DirectHelpdesk::getUnbilledAlert((int) $item->fields['entities_id']);
+                }
                 self::showForTicket($item);
             }
             self::showReports($item, $item->getField('id'));

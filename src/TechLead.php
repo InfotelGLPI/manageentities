@@ -32,6 +32,8 @@ namespace GlpiPlugin\Manageentities;
 use CommonDBTM;
 use DBConnection;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Migration;
 use Session;
 
@@ -257,6 +259,7 @@ class TechLead extends CommonDBTM
         $table    = self::getTable();
         $iterator = $DB->request([
             'SELECT'     => [
+                $table . '.id',
                 $table . '.users_id',
                 $table . '.entities_id',
                 $table . '.is_default',
@@ -295,7 +298,9 @@ class TechLead extends CommonDBTM
             }
             $techs[$users_id]['clients'][] = [
                 'name'    => \Dropdown::getDropdownName('glpi_entities', $data['entities_id']),
+                'url'     => self::getCustomerSheetUrl((int) $data['entities_id']),
                 'is_main' => (bool) $data['is_default'],
+                'link_id' => (int) $data['id'],
             ];
             $total_clients[(int) $data['entities_id']] = true;
         }
@@ -360,9 +365,74 @@ class TechLead extends CommonDBTM
 
         $clients = [];
         foreach ($iterator as $data) {
-            $clients[] = $data['completename'];
+            $clients[] = [
+                'name' => $data['completename'],
+                'url'  => self::getCustomerSheetUrl((int) $data['id']),
+            ];
         }
         return $clients;
+    }
+
+    /**
+     * Clients of the given entities having tech leads, but none of them as the main one
+     *
+     * @param array $entities
+     *
+     * @return array
+     */
+    public static function getClientsWithoutMainTechLead(array $entities): array
+    {
+        global $DB;
+
+        $entities = self::filterActiveCustomers($entities);
+        if ($entities === []) {
+            return [];
+        }
+
+        $table    = self::getTable();
+        $iterator = $DB->request([
+            'SELECT'     => ['glpi_entities.id', 'glpi_entities.completename'],
+            'FROM'       => 'glpi_entities',
+            'INNER JOIN' => [
+                $table => [
+                    'ON' => [
+                        $table          => 'entities_id',
+                        'glpi_entities' => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'      => [
+                'glpi_entities.id' => $entities,
+            ],
+            'GROUPBY'    => ['glpi_entities.id', 'glpi_entities.completename'],
+            'HAVING'     => [
+                new QueryExpression(QueryFunction::sum($table . '.is_default') . ' = 0'),
+            ],
+            'ORDERBY'    => ['glpi_entities.completename'],
+        ]);
+
+        $clients = [];
+        foreach ($iterator as $data) {
+            $clients[] = [
+                'name' => $data['completename'],
+                'url'  => self::getCustomerSheetUrl((int) $data['id']),
+            ];
+        }
+        return $clients;
+    }
+
+    /**
+     * Entity form opened on its "Customer sheet" tab, where the tech leads are changed
+     *
+     * @param int $entities_id
+     *
+     * @return string
+     */
+    private static function getCustomerSheetUrl(int $entities_id): string
+    {
+        return \Entity::getFormURLWithID($entities_id) . '&' . http_build_query([
+            'forcetab' => CustomerSheet::class . '$1',
+        ]);
     }
 
     /**
@@ -380,6 +450,9 @@ class TechLead extends CommonDBTM
             'techs'           => $stats['techs'] ?? [],
             'total_clients'   => $stats['total_clients'] ?? 0,
             'without_techlead' => self::getClientsWithoutTechLead($entities),
+            'without_main'     => self::getClientsWithoutMainTechLead($entities),
+            'can_toggle_main'  => self::canUpdate(),
+            'action_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
         ]);
     }
 

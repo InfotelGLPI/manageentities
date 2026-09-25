@@ -43,6 +43,59 @@
             </div>
             <div class="card-body p-0">
                 {% if techs is not empty %}
+                {# One badge per tech lead: a click unfolds the clients below, each linked to
+                   the customer sheet of the entity, where its tech leads are changed #}
+                {% set rand = random() %}
+                <div class="d-flex flex-wrap gap-2 p-3 border-bottom" id="techlead_badges{{ rand }}">
+                    {% for tech in techs %}
+                        <button type="button" class="btn btn-sm btn-ghost-secondary border"
+                                data-bs-toggle="collapse" data-bs-target="#techlead_clients{{ rand }}_{{ tech.users_id }}"
+                                aria-expanded="false" aria-controls="techlead_clients{{ rand }}_{{ tech.users_id }}">
+                            <i class="ti ti-user me-1"></i>
+                            {{ tech.name }}
+                            <span class="badge bg-blue-lt ms-2">{{ tech.nb_clients }}</span>
+                        </button>
+                    {% endfor %}
+                </div>
+                <div id="techlead_clients_list{{ rand }}">
+                {% for tech in techs %}
+                    <div class="collapse border-bottom" id="techlead_clients{{ rand }}_{{ tech.users_id }}"
+                         data-bs-parent="#techlead_clients_list{{ rand }}">
+                        <div class="p-3">
+                            <h4 class="mb-2">
+                                {{ tech.name }}
+                                <span class="badge bg-blue-lt ms-1">{{ tech.nb_clients }}</span>
+                            </h4>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for client in tech.clients %}
+                                    {% if can_toggle_main %}
+                                        {# A click switches the main tech lead of the client directly #}
+                                        <form method="post" action="{{ action_url }}" class="d-inline-flex align-items-center">
+                                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="id" value="{{ client.link_id }}">
+                                            <button type="submit" name="toggletechleadbydefault" value="1"
+                                                    class="badge border-0 {{ client.is_main ? 'bg-green-lt' : 'bg-secondary-lt' }}"
+                                                    title="{{ client.is_main ? __('Main tech lead - click to no longer be the main one', 'manageentities') : __('Tech lead - click to become the main one', 'manageentities') }}">
+                                                {% if client.is_main %}<i class="ti ti-star me-1"></i>{% endif %}
+                                                {{ client.name }}
+                                            </button>
+                                            <a href="{{ client.url }}" class="ms-1 text-muted" title="{{ __('Customer sheet', 'manageentities') }}">
+                                                <i class="ti ti-external-link"></i>
+                                            </a>
+                                        </form>
+                                    {% else %}
+                                        <a href="{{ client.url }}" class="badge {{ client.is_main ? 'bg-green-lt' : 'bg-secondary-lt' }} text-decoration-none"
+                                           title="{{ client.is_main ? __('Main tech lead', 'manageentities') : _n('Tech lead', 'Tech leads', 1, 'manageentities') }}">
+                                            {% if client.is_main %}<i class="ti ti-star me-1"></i>{% endif %}
+                                            {{ client.name }}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover table-vcenter mb-0">
                         <thead>
@@ -62,7 +115,7 @@
                                         <ul class="list-unstyled small mt-1 mb-0 ms-3">
                                             {% for client in tech.clients %}
                                                 <li>
-                                                    {{ client.name }}
+                                                    <a href="{{ client.url }}">{{ client.name }}</a>
                                                     {% if client.is_main %}
                                                         <span class="badge bg-green-lt ms-1">{{ __('Main tech lead', 'manageentities') }}</span>
                                                     {% endif %}
@@ -92,6 +145,31 @@
     </div>
 
     <div class="col-12 col-xl-4">
+        {# Clients having tech leads, but none of them flagged as the main one #}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="ti ti-star-off me-1"></i>
+                    {{ __('Clients without main tech lead', 'manageentities') }}
+                </h3>
+                <div class="card-actions">
+                    <span class="badge {{ without_main is empty ? 'bg-green-lt' : 'bg-yellow-lt' }}">{{ without_main|length }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if without_main is not empty %}
+                    <ul class="list-unstyled small mb-0">
+                        {% for client in without_main %}
+                            <li><a href="{{ client.url }}">{{ client.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted text-center mb-0">{{ __('Every client with tech leads has a main one', 'manageentities') }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Clients without any tech lead at all #}
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -105,8 +183,8 @@
             <div class="card-body">
                 {% if without_techlead is not empty %}
                     <ul class="list-unstyled small mb-0">
-                        {% for name in without_techlead %}
-                            <li>{{ name }}</li>
+                        {% for client in without_techlead %}
+                            <li><a href="{{ client.url }}">{{ client.name }}</a></li>
                         {% endfor %}
                     </ul>
                 {% else %}
