@@ -66,11 +66,12 @@ if (isset($_POST["add"])) {
     Html::back();
 
 } elseif (isset($_POST["delete"])) {
-    $contracts_id = $_POST["contracts_id"];
     // Separation of duties: the row is really removed from the table (no is_deleted column),
     // so evaluate the PURGE bit - the deletion bit exposed by the rights matrix of
     // 'plugin_manageentities' - and not UPDATE, which an administrator may want to grant alone.
     $contractday->check($_POST["id"], PURGE);
+    // Redirect to the contract of the loaded row, not to a posted value
+    $contracts_id = (int) $contractday->fields['contracts_id'];
     $contractday->delete($_POST);
     Html::redirect(Toolbox::getItemTypeFormURL('Contract') . "?id=" . $contracts_id);
 
