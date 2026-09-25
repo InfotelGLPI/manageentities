@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 17:20+0000\n"
+"POT-Creation-Date: 2026-09-25 17:25+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -92,10 +92,10 @@ msgstr "Informations sur les tâches accomplies"
 msgid "Active editor subscription"
 msgstr "Souscription active éditeur"
 
-#: templates/entity/description.html.twig:245
-#: templates/entity/description.html.twig:248
-#: templates/entity/description.html.twig:317
-#: templates/entity/description.html.twig:320
+#: templates/entity/description.html.twig:247
+#: templates/entity/description.html.twig:250
+#: templates/entity/description.html.twig:319
+#: templates/entity/description.html.twig:322
 #: templates/entity/contacts_card.html.twig:107
 #: templates/entity/contacts_card.html.twig:111
 #: templates/entity/business_card.html.twig:87
@@ -170,7 +170,7 @@ msgstr "Ajouter cette tâche"
 msgid "Add user"
 msgstr "Ajouter un intervenant"
 
-#: templates/entity/description.html.twig:123
+#: templates/entity/description.html.twig:125
 #: templates/wizard/step1_entity.html.twig:95
 #: templates/company_form.html.twig:63
 msgid "Address"
@@ -275,7 +275,7 @@ msgstr "Associer à un contrat"
 msgid "Associated assistance contracts"
 msgstr "Contrats d'assistance associés"
 
-#: templates/entity/description.html.twig:262
+#: templates/entity/description.html.twig:264
 #: templates/entity/business_card.html.twig:32
 msgid "Associated commercial"
 msgid_plural "Associated business"
@@ -283,7 +283,7 @@ msgstr[0] "Commercial associé"
 msgstr[1] "Commerciaux associés"
 msgstr[2] "Commerciaux associés"
 
-#: templates/entity/description.html.twig:174
+#: templates/entity/description.html.twig:176
 #: templates/entity/contacts_card.html.twig:32
 msgid "Associated contact"
 msgid_plural "Associated contacts"
@@ -355,7 +355,7 @@ msgstr "Légende"
 msgid "Category"
 msgstr "Catégorie"
 
-#: templates/entity/description.html.twig:133
+#: templates/entity/description.html.twig:135
 #: templates/wizard/step1_entity.html.twig:105
 msgid "City"
 msgstr "Ville"
@@ -566,7 +566,7 @@ msgstr "Etat des lieux des contrats"
 msgid "Contractual follow-up"
 msgstr "Suivi contractuel"
 
-#: templates/entity/description.html.twig:143
+#: templates/entity/description.html.twig:145
 #: templates/wizard/step1_entity.html.twig:115
 msgid "Country"
 msgstr "Etat"
@@ -778,8 +778,8 @@ msgstr "Supprimer"
 msgid "Delete and reinitialize"
 msgstr "Supprimer et réinitialiser"
 
-#: templates/entity/description.html.twig:224
-#: templates/entity/description.html.twig:296
+#: templates/entity/description.html.twig:226
+#: templates/entity/description.html.twig:298
 #: templates/entity/contacts_card.html.twig:86
 #: templates/entity/business_card.html.twig:66
 #: templates/entity/techleads_card.html.twig:80
@@ -889,9 +889,9 @@ msgstr "Éléments ajoutés via l'assistant"
 msgid "Email"
 msgstr "Courriel"
 
-#: templates/entity/description.html.twig:114
-#: templates/entity/description.html.twig:186
-#: templates/entity/description.html.twig:275
+#: templates/entity/description.html.twig:116
+#: templates/entity/description.html.twig:188
+#: templates/entity/description.html.twig:277
 #: templates/entity/contacts_card.html.twig:44
 #: templates/entity/business_card.html.twig:45
 #: templates/entity/techleads_card.html.twig:46
@@ -1383,9 +1383,9 @@ msgstr[2] "Gestion des catégories de tâches"
 msgid "Management type"
 msgstr "Type de gestion"
 
-#: templates/entity/description.html.twig:206
-#: templates/entity/description.html.twig:212
-#: templates/entity/description.html.twig:216
+#: templates/entity/description.html.twig:208
+#: templates/entity/description.html.twig:214
+#: templates/entity/description.html.twig:218
 #: templates/entity/contacts_card.html.twig:66
 #: templates/entity/contacts_card.html.twig:73
 #: templates/entity/contacts_card.html.twig:78
@@ -1408,8 +1408,8 @@ msgstr "Table manquante"
 msgid "Mobile"
 msgstr "Mobile"
 
-#: templates/entity/description.html.twig:185
-#: templates/entity/description.html.twig:274
+#: templates/entity/description.html.twig:187
+#: templates/entity/description.html.twig:276
 #: templates/entity/contacts_card.html.twig:43
 #: templates/entity/business_card.html.twig:44
 #: templates/entity/techleads_card.html.twig:45
@@ -1444,8 +1444,8 @@ msgid "Moving report"
 msgstr "Déplacement"
 
 #: templates/entity/description.html.twig:79
-#: templates/entity/description.html.twig:183
-#: templates/entity/description.html.twig:271
+#: templates/entity/description.html.twig:185
+#: templates/entity/description.html.twig:273
 #: templates/entity/contacts_card.html.twig:41
 #: templates/entity/business_card.html.twig:41
 #: templates/entity/contracts_tab.html.twig:50
@@ -1516,12 +1516,12 @@ msgstr "Pas de souscription active"
 msgid "No archived client with unbilled hours."
 msgstr "Aucun client archivé avec des heures non facturées."
 
-#: templates/entity/description.html.twig:308
+#: templates/entity/description.html.twig:310
 #: templates/entity/business_card.html.twig:78
 msgid "No business contact"
 msgstr "Pas de commercial trouvé"
 
-#: templates/entity/description.html.twig:236
+#: templates/entity/description.html.twig:238
 #: templates/entity/contacts_card.html.twig:98
 msgid "No contact"
 msgstr "Pas decontact trouvé"
@@ -1776,9 +1776,9 @@ msgid "Person in charge"
 msgstr "Responsable"
 
 #: templates/entity/description.html.twig:95
-#: templates/entity/description.html.twig:184
-#: templates/entity/description.html.twig:272
-#: templates/entity/description.html.twig:273
+#: templates/entity/description.html.twig:186
+#: templates/entity/description.html.twig:274
+#: templates/entity/description.html.twig:275
 #: templates/entity/contacts_card.html.twig:42
 #: templates/entity/business_card.html.twig:42
 #: templates/entity/business_card.html.twig:43
@@ -1872,7 +1872,7 @@ msgctxt "button"
 msgid "Post"
 msgstr "Envoyer"
 
-#: templates/entity/description.html.twig:128
+#: templates/entity/description.html.twig:130
 #: templates/wizard/step1_entity.html.twig:100
 msgid "Postal code"
 msgstr "Code postal"
@@ -2021,7 +2021,7 @@ msgstr "Frais refacturables"
 msgid "Referenced name at the publisher"
 msgstr "Nom référencé chez l'éditeur"
 
-#: src/Entity.php:198 src/Entity.php:530
+#: src/Entity.php:198 src/Entity.php:534
 msgid "References"
 msgstr "References"
 
@@ -2226,7 +2226,7 @@ msgstr "Commencer"
 msgid "Start date"
 msgstr "Date de début"
 
-#: templates/entity/description.html.twig:138
+#: templates/entity/description.html.twig:140
 #: templates/wizard/step1_entity.html.twig:110
 msgid "State"
 msgstr "Etat"
@@ -2583,7 +2583,7 @@ msgstr "Déplacement (en jours)"
 #: src/EditorSubscription.php:177
 #: src/NotificationTargetEditorSubscription.php:107
 #: src/NotificationTargetEditorSubscription.php:144
-#: templates/entity/description.html.twig:187
+#: templates/entity/description.html.twig:189
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/editorsubscription_tab.html.twig:75
 #: templates/wizard/step2_contact_block.html.twig:86
@@ -2644,7 +2644,7 @@ msgctxt "button"
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: templates/entity/description.html.twig:153
+#: templates/entity/description.html.twig:155
 msgid "Update administrative data"
 msgstr "Mise à jour des données administratives"
 
