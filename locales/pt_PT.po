@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 16:28+0000\n"
+"POT-Creation-Date: 2026-09-23 17:24+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Emperium <real.emperium@gmail.com>, 2019\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/infotelGLPI/"
@@ -1984,7 +1984,7 @@ msgstr "Guardar o relatório de intervenção"
 msgid "Save this period"
 msgstr ""
 
-#: hook.php:104 hook.php:123 src/CriType.php:153
+#: hook.php:103 hook.php:122 src/CriType.php:153
 msgid "Scheduled intervention"
 msgstr "Intervenção agendada "
 
@@ -2117,7 +2117,7 @@ msgstr ""
 msgid "Status list contract for the general monitoring"
 msgstr ""
 
-#: hook.php:105 hook.php:124 src/CriType.php:154
+#: hook.php:104 hook.php:123 src/CriType.php:154
 msgid "Study and advice"
 msgstr "Analisar e aconselhar "
 
@@ -2440,7 +2440,7 @@ msgstr ""
 msgid "Update subscription fields"
 msgstr ""
 
-#: hook.php:103 hook.php:122 src/CriType.php:152
+#: hook.php:102 hook.php:121 src/CriType.php:152
 msgid "Urgent intervention"
 msgstr "Intervenção urgente "
 
