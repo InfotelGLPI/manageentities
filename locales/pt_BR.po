@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 17:20+0000\n"
+"POT-Creation-Date: 2026-09-25 17:25+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2018\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/infotelGLPI/"
@@ -89,10 +89,10 @@ msgstr ""
 msgid "Active editor subscription"
 msgstr ""
 
-#: templates/entity/description.html.twig:245
-#: templates/entity/description.html.twig:248
-#: templates/entity/description.html.twig:317
-#: templates/entity/description.html.twig:320
+#: templates/entity/description.html.twig:247
+#: templates/entity/description.html.twig:250
+#: templates/entity/description.html.twig:319
+#: templates/entity/description.html.twig:322
 #: templates/entity/contacts_card.html.twig:107
 #: templates/entity/contacts_card.html.twig:111
 #: templates/entity/business_card.html.twig:87
@@ -166,7 +166,7 @@ msgstr ""
 msgid "Add user"
 msgstr ""
 
-#: templates/entity/description.html.twig:123
+#: templates/entity/description.html.twig:125
 #: templates/wizard/step1_entity.html.twig:95
 #: templates/company_form.html.twig:63
 msgid "Address"
@@ -269,14 +269,14 @@ msgstr ""
 msgid "Associated assistance contracts"
 msgstr ""
 
-#: templates/entity/description.html.twig:262
+#: templates/entity/description.html.twig:264
 #: templates/entity/business_card.html.twig:32
 msgid "Associated commercial"
 msgid_plural "Associated business"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/entity/description.html.twig:174
+#: templates/entity/description.html.twig:176
 #: templates/entity/contacts_card.html.twig:32
 msgid "Associated contact"
 msgid_plural "Associated contacts"
@@ -345,7 +345,7 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: templates/entity/description.html.twig:133
+#: templates/entity/description.html.twig:135
 #: templates/wizard/step1_entity.html.twig:105
 msgid "City"
 msgstr ""
@@ -549,7 +549,7 @@ msgstr ""
 msgid "Contractual follow-up"
 msgstr ""
 
-#: templates/entity/description.html.twig:143
+#: templates/entity/description.html.twig:145
 #: templates/wizard/step1_entity.html.twig:115
 msgid "Country"
 msgstr ""
@@ -757,8 +757,8 @@ msgstr ""
 msgid "Delete and reinitialize"
 msgstr ""
 
-#: templates/entity/description.html.twig:224
-#: templates/entity/description.html.twig:296
+#: templates/entity/description.html.twig:226
+#: templates/entity/description.html.twig:298
 #: templates/entity/contacts_card.html.twig:86
 #: templates/entity/business_card.html.twig:66
 #: templates/entity/techleads_card.html.twig:80
@@ -868,9 +868,9 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: templates/entity/description.html.twig:114
-#: templates/entity/description.html.twig:186
-#: templates/entity/description.html.twig:275
+#: templates/entity/description.html.twig:116
+#: templates/entity/description.html.twig:188
+#: templates/entity/description.html.twig:277
 #: templates/entity/contacts_card.html.twig:44
 #: templates/entity/business_card.html.twig:45
 #: templates/entity/techleads_card.html.twig:46
@@ -1349,9 +1349,9 @@ msgstr[1] ""
 msgid "Management type"
 msgstr ""
 
-#: templates/entity/description.html.twig:206
-#: templates/entity/description.html.twig:212
-#: templates/entity/description.html.twig:216
+#: templates/entity/description.html.twig:208
+#: templates/entity/description.html.twig:214
+#: templates/entity/description.html.twig:218
 #: templates/entity/contacts_card.html.twig:66
 #: templates/entity/contacts_card.html.twig:73
 #: templates/entity/contacts_card.html.twig:78
@@ -1374,8 +1374,8 @@ msgstr ""
 msgid "Mobile"
 msgstr ""
 
-#: templates/entity/description.html.twig:185
-#: templates/entity/description.html.twig:274
+#: templates/entity/description.html.twig:187
+#: templates/entity/description.html.twig:276
 #: templates/entity/contacts_card.html.twig:43
 #: templates/entity/business_card.html.twig:44
 #: templates/entity/techleads_card.html.twig:45
@@ -1410,8 +1410,8 @@ msgid "Moving report"
 msgstr ""
 
 #: templates/entity/description.html.twig:79
-#: templates/entity/description.html.twig:183
-#: templates/entity/description.html.twig:271
+#: templates/entity/description.html.twig:185
+#: templates/entity/description.html.twig:273
 #: templates/entity/contacts_card.html.twig:41
 #: templates/entity/business_card.html.twig:41
 #: templates/entity/contracts_tab.html.twig:50
@@ -1482,12 +1482,12 @@ msgstr ""
 msgid "No archived client with unbilled hours."
 msgstr ""
 
-#: templates/entity/description.html.twig:308
+#: templates/entity/description.html.twig:310
 #: templates/entity/business_card.html.twig:78
 msgid "No business contact"
 msgstr ""
 
-#: templates/entity/description.html.twig:236
+#: templates/entity/description.html.twig:238
 #: templates/entity/contacts_card.html.twig:98
 msgid "No contact"
 msgstr ""
@@ -1736,9 +1736,9 @@ msgid "Person in charge"
 msgstr ""
 
 #: templates/entity/description.html.twig:95
-#: templates/entity/description.html.twig:184
-#: templates/entity/description.html.twig:272
-#: templates/entity/description.html.twig:273
+#: templates/entity/description.html.twig:186
+#: templates/entity/description.html.twig:274
+#: templates/entity/description.html.twig:275
 #: templates/entity/contacts_card.html.twig:42
 #: templates/entity/business_card.html.twig:42
 #: templates/entity/business_card.html.twig:43
@@ -1828,7 +1828,7 @@ msgctxt "button"
 msgid "Post"
 msgstr ""
 
-#: templates/entity/description.html.twig:128
+#: templates/entity/description.html.twig:130
 #: templates/wizard/step1_entity.html.twig:100
 msgid "Postal code"
 msgstr ""
@@ -1968,7 +1968,7 @@ msgstr ""
 msgid "Referenced name at the publisher"
 msgstr ""
 
-#: src/Entity.php:198 src/Entity.php:530
+#: src/Entity.php:198 src/Entity.php:534
 msgid "References"
 msgstr ""
 
@@ -2170,7 +2170,7 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
-#: templates/entity/description.html.twig:138
+#: templates/entity/description.html.twig:140
 #: templates/wizard/step1_entity.html.twig:110
 msgid "State"
 msgstr ""
@@ -2502,7 +2502,7 @@ msgstr ""
 #: src/EditorSubscription.php:177
 #: src/NotificationTargetEditorSubscription.php:107
 #: src/NotificationTargetEditorSubscription.php:144
-#: templates/entity/description.html.twig:187
+#: templates/entity/description.html.twig:189
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/editorsubscription_tab.html.twig:75
 #: templates/wizard/step2_contact_block.html.twig:86
@@ -2563,7 +2563,7 @@ msgctxt "button"
 msgid "Update"
 msgstr ""
 
-#: templates/entity/description.html.twig:153
+#: templates/entity/description.html.twig:155
 msgid "Update administrative data"
 msgstr ""
 
