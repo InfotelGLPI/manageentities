@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 16:52+0000\n"
+"POT-Creation-Date: 2026-09-25 16:57+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/"
@@ -225,11 +225,11 @@ msgstr "Произошла ошибка при удалении данных."
 msgid "An error happened while saving the data."
 msgstr "Произошла ошибка при сохранении данных."
 
-#: front/editorsubscription.form.php:81 src/EditorSubscriptionWizard.php:215
+#: front/editorsubscription.form.php:81 src/EditorSubscriptionWizard.php:221
 msgid "An error occurred while deleting."
 msgstr ""
 
-#: front/editorsubscription.form.php:58 src/EditorSubscriptionWizard.php:184
+#: front/editorsubscription.form.php:58 src/EditorSubscriptionWizard.php:190
 msgid "An error occurred while saving."
 msgstr ""
 
@@ -1612,7 +1612,7 @@ msgstr ""
 msgid "No stakeholders have been affected yet."
 msgstr "Никакие заинтересованные стороны еще не были затронуты."
 
-#: src/EditorSubscriptionWizard.php:195 src/EditorSubscriptionWizard.php:200
+#: src/EditorSubscriptionWizard.php:201 src/EditorSubscriptionWizard.php:206
 msgid "No subscription found."
 msgstr ""
 

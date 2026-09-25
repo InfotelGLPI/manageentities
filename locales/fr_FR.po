@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 16:52+0000\n"
+"POT-Creation-Date: 2026-09-25 16:57+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -227,11 +227,11 @@ msgstr "Une erreur est survenue lors de la suppressions des données"
 msgid "An error happened while saving the data."
 msgstr "Une erreur est survenue lors de la sauvegarde des données."
 
-#: front/editorsubscription.form.php:81 src/EditorSubscriptionWizard.php:215
+#: front/editorsubscription.form.php:81 src/EditorSubscriptionWizard.php:221
 msgid "An error occurred while deleting."
 msgstr "Une erreur est survenue lors de la suppression."
 
-#: front/editorsubscription.form.php:58 src/EditorSubscriptionWizard.php:184
+#: front/editorsubscription.form.php:58 src/EditorSubscriptionWizard.php:190
 msgid "An error occurred while saving."
 msgstr "Une erreur est survenue à la sauvegarde."
 
@@ -1610,7 +1610,7 @@ msgstr "Pas encore de prestations définies."
 msgid "No stakeholders have been affected yet."
 msgstr "Aucun intervenant n'a encore été ajouté."
 
-#: src/EditorSubscriptionWizard.php:195 src/EditorSubscriptionWizard.php:200
+#: src/EditorSubscriptionWizard.php:201 src/EditorSubscriptionWizard.php:206
 msgid "No subscription found."
 msgstr "Pas de souscriptions trouvées."
 
