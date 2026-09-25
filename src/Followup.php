@@ -739,11 +739,8 @@ class Followup extends CommonDBTM
         $rows = [];
 
         $numrows = count($results);
-        //        $end_display = $start + $_SESSION['glpilist_limit'];
-        //        if (isset($_GET['export_all'])) {
         $start = 0;
         $end_display = $numrows;
-        //        }
 
         $nbcols = 12;
         $row_num = 0;
@@ -797,7 +794,7 @@ class Followup extends CommonDBTM
                 self::showExportToolbar($parameters, Followup::class);
             }
 
-            //            headers 1ere ligne
+            // Headers, first line
             if (1 == 1) {
                 if ($is_html_output) {
                     $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
@@ -863,7 +860,7 @@ class Followup extends CommonDBTM
                 $i++;
             }
 
-            // 2eme ligne header only for pdf
+            // Second header line, PDF only
             if (!$is_html_output) {
                 $headers[] = _n('Period of contract', 'Periods of contract', 1, 'manageentities');
                 $headers[] = ContractState::getTypeName(1);
@@ -958,7 +955,7 @@ class Followup extends CommonDBTM
                     }
 
 
-                    //1eme ligne header
+                    // First header line
                     if (1 == 1 && $is_html_output) {
                         $row_num++;
                         $item_num = 0;
@@ -969,12 +966,10 @@ class Followup extends CommonDBTM
                         if (Session::getCurrentInterface() == 'central') {
                             if ($entity_id != $list[$i]['entities_id']) {
                                 if (!$is_html_output) {
-                                    //                                $html_output .= $output::showItem( $list[$i]['entities_name'], $item_num, $row_num);
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['entities_name']];
                                 }
                             } else {
                                 if (!$is_html_output) {
-                                    //                                $html_output .= $output::showItem( '', $item_num, $row_num);
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                                 }
                             }
@@ -998,9 +993,6 @@ class Followup extends CommonDBTM
                             $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_name']];
                             $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                             $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            //                        $html_output .= $output::showItem( $list[$i]['contract_name'], $item_num, $row_num);
-                            //                        $html_output .= $output::showItem( '', $item_num, $row_num);
-                            //                        $html_output .= $output::showItem( '', $item_num, $row_num);
                         }
 
                         // Display contract Num
@@ -1035,13 +1027,6 @@ class Followup extends CommonDBTM
                                 }
                             } else {
                                 if ($config->fields['hourorday'] == Config::DAY) {
-                                    //                                $html_output .= $output::showItem(
-                                    //
-                                    //                                    $list[$i]['contract_added'],
-                                    //                                    $item_num,
-                                    //                                    $row_num,
-                                    //                                    "colspan='2'"
-                                    //                                );
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_added']];
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                                 } else {
@@ -1122,7 +1107,7 @@ class Followup extends CommonDBTM
                         $row_num++;
                         $item_num = 0;
 
-                        //                    2eme ligne header only html
+                        // Second header line, HTML only
                         if ($is_html_output) {
                             $html_output .= $output::showNewLine();
                             $html_output .= $output::showHeaderItem(
@@ -1258,7 +1243,7 @@ class Followup extends CommonDBTM
                                 $html_output .= $output::showEndLine();
                             }
                         }
-                        // result 2eme ligne
+                        // Result, second line
                         foreach ($list[$i]['days'] as $w => $day) {
                             $row_num++;
                             $item_num = 0;
@@ -1270,10 +1255,6 @@ class Followup extends CommonDBTM
                                     $day['contractstates_color'],
                                 );
                             }
-                            //                            if (Session::getCurrentInterface() == 'central' && $output_type != Search::HTML_OUTPUT) {
-                            //                                //                            $html_output .= $output::showItem( '', $item_num, $row_num);
-                            //                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            //                            }
                             if ($is_html_output) {
                                 $html_output .= $output::showItem(
                                     $day['contractday_name'],
@@ -1473,7 +1454,6 @@ class Followup extends CommonDBTM
                                 if ($config->fields['useprice'] == Config::PRICE) {
                                     if ($is_html_output) {
                                         $html_output .= $output::showItem($day['last_visit'] ?? '', $item_num, $row_num, "");
-                                        //                        $html_output .= $output::showItem( Html::formatNumber($day['price'], 0, 2), $item_num, $row_num, "");
                                         $html_output .= $output::showItem($day['forfait'], $item_num, $row_num, "");
                                         $html_output .= $output::showItem(
                                             $day['reste_montant'],
@@ -1498,17 +1478,12 @@ class Followup extends CommonDBTM
                                         $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
                                     }
                                     if ($output_type != Search::HTML_OUTPUT) {
-                                        //                           $html_output .= $output::showItem( '', $item_num, $row_num, "");
-                                        //                                    $html_output .= $output::showItem( '', $item_num, $row_num, "");
-                                        //                                    $html_output .= $output::showItem( '', $item_num, $row_num);
                                         $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                                         $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                                     }
                                 }
                                 if ($config->fields['hourorday'] == Config::HOUR
                                     && $output_type != Search::HTML_OUTPUT) {
-                                    //                                $html_output .= $output::showItem( '', $item_num, $row_num);
-                                    //                                $html_output .= $output::showItem( '', $item_num, $row_num);
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
                                 }
@@ -1685,8 +1660,6 @@ class Followup extends CommonDBTM
      */
     public function showCriteriasForm($options = [])
     {
-        //        Entity::showManageentitiesHeader(__('General follow-up', 'manageentities'));
-
         if (Session::getCurrentInterface() !== 'central') {
             return;
         }

@@ -47,6 +47,9 @@ class Cri extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities_cri_create';
 
+    // Seconds a report preview is kept on disk before CleanFiles() removes it
+    public const PREVIEW_LIFETIME = 3600;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Intervention report', 'Intervention reports', $nb, 'manageentities');
@@ -375,8 +378,8 @@ class Cri extends CommonDBTM
     }
 
     /**
-     * Récupération des données et génération du document. Il sera enregistré suivant le paramétre
-     * enregistrement.
+     * Collect the data and generate the document. It is saved depending on the
+     * saving parameter.
      *
      * @param $params
      * @param $options
@@ -485,12 +488,11 @@ class Cri extends CommonDBTM
             $p['documents_id'] = (int) $reportCriDetail['documents_id'];
         }
 
-        // ajout de la configuration du plugin
         $config = Config::getInstance();
 
         $PDF = new CriPDF('P', 'mm', 'A4');
 
-        /* Initialisation du document avec les informations saisies par l'utilisateur. */
+        /* Initialise the document with the data entered by the user. */
         // REPORT_ACTIVITE_ID comes straight from the client payload: the guards of ajax/cri.php
         // cover the parent ticket and the technician, not this dropdown value, which used to be
         // resolved with a bare getFromDB() and its label printed into the generated PDF. The id
@@ -507,10 +509,8 @@ class Cri extends CommonDBTM
             || $config->fields['hourorday'] == Config::HOUR
         ) {
             $p['REPORT_ACTIVITE'] = [];
-            //         $criType_id           = 0;
         }
 
-        //$PDF->SetDescriptionCri(Toolbox::unclean_cross_side_scripting_deep($p['REPORT_DESCRIPTION']));
         $p['REPORT_DESCRIPTION'] = str_replace("’", "'", $p['REPORT_DESCRIPTION']);
         $PDF->SetDescriptionCri($p['REPORT_DESCRIPTION']);
 
@@ -525,8 +525,8 @@ class Cri extends CommonDBTM
             $p['CONTRAT']     = self::validateContract((int) $p['CONTRAT'], (int) $job->fields['entities_id']);
             $p['CONTRACTDAY'] = self::validateContractDay((int) $p['CONTRACTDAY'], (int) $p['CONTRAT']);
 
-            /* Récupération des informations du ticket et initialisation du rapport. */
-            $PDF->SetDemandeAssociee($p['REPORT_ID']); // Demande / ticket associée au rapport.
+            /* Load the ticket data and initialise the report. */
+            $PDF->SetDemandeAssociee($p['REPORT_ID']); // Ticket linked to the report.
             // Set intervenants
             $critechnicians = new CriTechnician();
             $intervenants = implode(',', $critechnicians->getTechnicians($p['REPORT_ID']));
@@ -536,18 +536,18 @@ class Cri extends CommonDBTM
                 $sous_contrat = false;
                 $PDF->SetSousContrat(0);
 
-                /* Information de l'entité active et son contrat. */
+                /* Active entity and its contract. */
                 $infos_entite = [];
                 $entite = new \Entity();
                 $entite->getFromDB($job->fields["entities_id"]);
                 $infos_entite[0] = $entite;
                 $PDF->SetEntite($infos_entite);
 
-                /* Année et mois de l'intervention (post du ticket). */
+                /* Year and month of the intervention (ticket date). */
                 $infos_date = [];
                 $infos_date[0] = $job->fields["date"];
 
-                /* Du ... au ... */
+                /* From ... to ... */
                 //configuration only public task
 
                 $criteria1 = [
@@ -743,7 +743,7 @@ class Cri extends CommonDBTM
                     return false;
                 }
 
-                /* Année et mois de l'intervention (post du ticket). */
+                /* Year and month of the intervention (ticket date). */
                 $infos_date = [];
                 $infos_date[0] = $job->fields["date"];
                 $queries = [];
@@ -751,7 +751,7 @@ class Cri extends CommonDBTM
                 if (($config->fields['hourorday'] == Config::HOUR)
                     || (isset($contract_days->fields['contract_type'])
                         && $contract_days->fields['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
-                    /* Du ... au ... */
+                    /* From ... to ... */
                     //configuration only public task
                     $criteria1 = [
                         'SELECT' => [
@@ -827,7 +827,7 @@ class Cri extends CommonDBTM
                     $PDF->SetDateIntervention($infos_date);
                 }
 
-                /* Information de l'entité active et son contrat. */
+                /* Active entity and its contract. */
                 $infos_entite = [];
                 $entite = new \Entity();
                 $entite->getFromDB($job->fields["entities_id"]);
@@ -975,7 +975,7 @@ class Cri extends CommonDBTM
                     $PDF->SetTempsPasses($temps_passes);
                 }
 
-                //Déplacement
+                // Travel
                 if ($manageentities_contract_data['moving_management']) {
                     $PDF->SetDeplacement(true);
                     if ($config->fields['hourorday'] == Config::HOUR) {
@@ -991,13 +991,13 @@ class Cri extends CommonDBTM
             }
         }
 
-        // On dessine le document.
+        // Draw the document.
         $PDF->DrawCri();
 
         //for insert into table cridetails
         $totaltemps_passes = $PDF->TotalTpsPassesArrondis($_SESSION["glpi_plugin_manageentities_total"]);
 
-        /* Génération du fichier et enregistrement de la liaisons en base. */
+        /* Generate the file and store the link in the database. */
 
         $name = "CRI - " . $PDF->GetNoCri();
         $filename = $name . ".pdf";
@@ -1079,7 +1079,7 @@ class Cri extends CommonDBTM
 
             $this->CleanFiles($seepath);
         } else {
-            //Sauvegarde du PDF dans le fichier
+            // Save the PDF into the preview file
             $PDF->Output($seefilepath, 'F');
 
             // A short list rather than a single slot, so two tabs do not invalidate each
@@ -1270,19 +1270,28 @@ class Cri extends CommonDBTM
         return $iterator;
     }
 
+    /**
+     * Remove the report previews older than PREVIEW_LIFETIME. Recent ones are kept, so a
+     * preview generated concurrently (another tab or another user) is not deleted under it.
+     */
     public function CleanFiles($dir)
     {
-        //Efface les fichiers temporaires
-        $t = time();
-        $h = opendir($dir);
-        while ($file = readdir($h)) {
-            if (substr($file, 0, 3) == 'CRI' and substr($file, -4) == '.pdf') {
-                $path = $dir . '/' . $file;
-                //if ($t-filemtime($path)>3600)
-                @unlink($path);
+        $handle = opendir($dir);
+        if ($handle === false) {
+            return;
+        }
+        $now = time();
+        while (($file = readdir($handle)) !== false) {
+            if (!str_starts_with($file, 'CRI') || !str_ends_with($file, '.pdf')) {
+                continue;
+            }
+            $path  = $dir . '/' . $file;
+            $mtime = is_file($path) ? filemtime($path) : false;
+            if ($mtime !== false && $now - $mtime > self::PREVIEW_LIFETIME) {
+                unlink($path);
             }
         }
-        closedir($h);
+        closedir($handle);
     }
 
     /**

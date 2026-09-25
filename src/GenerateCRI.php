@@ -743,15 +743,7 @@ class GenerateCRI extends CommonGLPI
 
         foreach ($input as $key => $value) {
             if (in_array($key, $allowed_fields)) {
-                switch ($key) {
-                    //               case 'content':
-                    //               case 'name':
-                    //                  $inputs[$key] = addslashes($value);
-                    //                  break;
-                    default:
-                        $inputs[$key] = $value;
-                        break;
-                }
+                $inputs[$key] = $value;
             }
         }
         $inputs['status'] = CommonITILObject::PLANNED;
@@ -912,7 +904,6 @@ class GenerateCRI extends CommonGLPI
         $selectable_techs = array_keys(self::getSelectableTechnicians($task_entities_id, 'own_ticket'));
 
         $inputs['_plan'] = [];
-        //      $inputs['plan']  = [];
         $hasDuration = false;
         $hasBegin = false;
         $hasEnd = false;
@@ -1036,8 +1027,8 @@ class GenerateCRI extends CommonGLPI
         $config = Config::getInstance();
 
         /*
-         * Information complémentaire pour la description globale du CRI.
-         * Préremplissage avec les informations des suivis non privés.
+         * Additional information for the global description of the report,
+         * prefilled with the public followups.
          */
         $desc = "";
         $criteria = [
@@ -1118,7 +1109,6 @@ class GenerateCRI extends CommonGLPI
             $input['REPORT_DESCRIPTION'] = $desc;
             $input['entities_id'] = $inputs['entities_id'] ?? 0;
             $input['enregistrement'] = true;
-            //      $input['download']           = isset($inputs['download']) ? $inputs['download'] : 0;
             $Cri->generatePdf($input);
         } else {
             $ticket = new Ticket();

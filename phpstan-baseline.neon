@@ -655,44 +655,8 @@ parameters:
 			path: src/CriPDF.php
 
 		-
-			message: '#^Method GlpiPlugin\\Manageentities\\CriPDF\:\:CompleterAvec0\(\) has invalid return type GlpiPlugin\\Manageentities\\La\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPDF.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\CriPDF\:\:GetDateFormatee\(\) has invalid return type GlpiPlugin\\Manageentities\\La\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPDF.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\CriPDF\:\:GetDateFormatee\(\) should return GlpiPlugin\\Manageentities\\La but returns string\.$#'
-			identifier: return.type
-			count: 1
-			path: src/CriPDF.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\CriPDF\:\:GetNoCri\(\) has invalid return type GlpiPlugin\\Manageentities\\Le\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/CriPDF.php
-
-		-
 			message: '#^Method GlpiPlugin\\Manageentities\\CriPDF\:\:TotalTpsPassesArrondis\(\) should return int but returns float\.$#'
 			identifier: return.type
-			count: 1
-			path: src/CriPDF.php
-
-		-
-			message: '#^PHPDoc tag @param has invalid value \(int Total à arrondir\.\)\: Unexpected token "Total", expected variable at offset 246 on line 6$#'
-			identifier: phpDoc.parseError
-			count: 1
-			path: src/CriPDF.php
-
-		-
-			message: '#^PHPDoc tag @return has invalid value \(L''heure donnée au format hh\:mm\.\)\: Unexpected token "''heure", expected TOKEN_HORIZONTAL_WS at offset 127 on line 6$#'
-			identifier: phpDoc.parseError
 			count: 1
 			path: src/CriPDF.php
 
@@ -1031,12 +995,6 @@ parameters:
 			identifier: glpi.forbidExit
 			count: 1
 			path: src/DirectHelpdesk_Ticket.php
-
-		-
-			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
-			identifier: glpi.forbidExit
-			count: 1
-			path: src/Dropdown.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
@@ -1425,12 +1383,6 @@ parameters:
 		-
 			message: '#^Call to static method haveAccessToEntity\(\) on an unknown class GlpiPlugin\\Manageentities\\Session\.$#'
 			identifier: class.notFound
-			count: 1
-			path: src/Report.php
-
-		-
-			message: '#^Method GlpiPlugin\\Manageentities\\Report\:\:getDatesBetween\(\) should return bool but returns array\<string, array\<string, list\<string\>\>\>\.$#'
-			identifier: return.type
 			count: 1
 			path: src/Report.php
 

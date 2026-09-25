@@ -547,10 +547,6 @@ class Contract extends CommonDBTM
                     ],
                     'WHERE' => [
                         'glpi_plugin_manageentities_contractstates.is_closed' => 0,
-                        //                        'glpi_plugin_manageentities_contractdays.end_date' => [
-                        //                            '>',
-                        //                            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']))
-                        //                        ],
                         'glpi_plugin_manageentities_contractdays.contracts_id' => $data["contracts_id"],
                     ],
                 ];
@@ -936,11 +932,6 @@ class Contract extends CommonDBTM
         if (isset($entities_id)
             && $_SESSION['glpiactiveprofile']['interface'] == 'central'
             && Session::haveRight('plugin_manageentities', UPDATE)) {
-            //            $sons = getSonsOf("glpi_entities", $entities_id);
-            //            if (count($sons) > 1) {
-            //                return false;
-            //            }
-
             $contract = new Contract();
             if (isset($params['item'])
                 && ($item->getType() == 'Ticket')) {

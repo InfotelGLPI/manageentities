@@ -202,7 +202,6 @@ if ($ManageentitiesEntity->canView()
             } else {
                 $month   = date("m");
                 $lastday = $month == 1 ? 31 : cal_days_in_month(CAL_GREGORIAN, $month - 1, date("Y"));
-                //$lastday = cal_days_in_month(CAL_GREGORIAN, date("m") - 1, date("Y"));
                 $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
                 $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
             }

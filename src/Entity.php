@@ -169,7 +169,6 @@ class Entity extends CommonGLPI
                 );
             }
 
-            // ajout de la configuration du plugin
             // Same reasoning as the administrative data tab above: showReports() switches to its
             // tree mode as soon as the perimeter holds more than one entity and then lists every
             // intervention document of the whole subtree, which is what makes it slow.

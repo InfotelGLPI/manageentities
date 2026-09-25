@@ -674,7 +674,6 @@ class EditorSubscription extends CommonDBTM
             'table' => $this->getTable(),
             'field' => 'customer_account_id',
             'name' => __('Publisher customer account ID', 'manageentities'),
-            //            'datatype' => 'text'
         ];
 
         $tab[] = [

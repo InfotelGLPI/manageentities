@@ -78,7 +78,6 @@ if (isset($_POST['generatecri'])) {
                     $_POST['content'] = $_POST['description-undone'];
                     $GenerateCri->createTicketTaskUndone($_POST, $ticket_id);
                 }
-                //            $_POST['download'] = true;
                 $GenerateCri->generateCri($_POST, $ticket_id, $Cri);
                 if (!$config->getField('get_pdf_cri')) {
                     Html::back();

@@ -240,7 +240,8 @@ class CriDetail extends CommonDBTM
     }
 
     public function prepareInputForUpdate($input)
-    {//si un document lié ne pas permettre l'update via le form self::showForTicket($item);
+    {
+        // A detail linked to a report document cannot be updated from the ticket form (showForTicket())
         if (isset($input['updatecridetail'])) {
             $criDetail = new CriDetail();
             $criDetail->getFromDB($input['id']);
@@ -424,7 +425,7 @@ class CriDetail extends CommonDBTM
 
     public function pre_deleteItem()
     {
-        //si un document lié ne pas permettre le delete via le form self::showForTicket($item);
+        // A detail linked to a report document cannot be deleted from the ticket form (showForTicket())
         if (isset($this->input['delcridetail'])) {
             if ($this->fields['documents_id'] != '0') {
                 Session::addMessageAfterRedirect(
@@ -445,7 +446,6 @@ class CriDetail extends CommonDBTM
         global $DB, $CFG_GLPI;
 
         $dbu = new DbUtils();
-        // ajout de la configuration du plugin
         $config = Config::getInstance();
 
         $criteria = [
@@ -1013,324 +1013,6 @@ class CriDetail extends CommonDBTM
         ]);
     }
 
-    //    public static function getCriDetailData($contractDayValues = [], $options = [])
-    //    {
-    //        global $DB;
-    //        $params['condition'] = '1';
-    //
-    //        foreach ($options as $key => $value) {
-    //            $params[$key] = $value;
-    //        }
-    //
-    //        $tabResults = [];
-    //        $taskCount = 0; // Count the number of tasks for all entities
-    //        $conso = 0;
-    //        $tot_amount = 0;
-    //        $tot_conso = 0;
-    //        $price = 0;
-    //
-    //        $config = Config::getInstance();
-    //        $critechnicians = new CriTechnician();
-    //
-    //        $PDF = new CriPDF('P', 'mm', 'A4');
-    //
-    //        $tabOther = [
-    //            'tot_amount' => 0,
-    //            'reste_montant' => 0,
-    //            'depass' => 0,
-    //            'reste' => 0,
-    //            'forfait' => 0,
-    //        ];
-    //
-    //        $criteria = [
-    //            'SELECT' => [
-    //                'glpi_plugin_manageentities_cridetails.realtime as actiontime',
-    //                'glpi_plugin_manageentities_cridetails.documents_id',
-    //                'glpi_documents.is_deleted',
-    //                'glpi_plugin_manageentities_cridetails.tickets_id',
-    //                'glpi_plugin_manageentities_cridetails.id as cridetails_id',
-    //                'glpi_plugin_manageentities_cridetails.technicians as technicians',
-    //                'glpi_plugin_manageentities_cridetails.plugin_manageentities_critypes_id',
-    //                'glpi_plugin_manageentities_cridetails.date as cridetails_date',
-    //                'glpi_tickets.name as tickets_name',
-    //                'glpi_tickets.date as tickets_date',
-    //                'glpi_plugin_manageentities_critypes.name as plugin_manageentities_critypes_name',
-    //                'glpi_tickets.global_validation',
-    //            ],
-    //            'FROM' => 'glpi_plugin_manageentities_cridetails',
-    //            'LEFT JOIN' => [
-    //                'glpi_plugin_manageentities_critypes' => [
-    //                    'ON' => [
-    //                        'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_critypes_id',
-    //                        'glpi_plugin_manageentities_critypes' => 'id',
-    //                    ],
-    //                ],
-    //                'glpi_documents' => [
-    //                    'ON' => [
-    //                        'glpi_plugin_manageentities_cridetails' => 'documents_id',
-    //                        'glpi_documents' => 'id',
-    //                    ],
-    //                ],
-    //                'glpi_tickets' => [
-    //                    'ON' => [
-    //                        'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-    //                        'glpi_tickets' => 'id',
-    //                    ],
-    //                ],
-    //                'glpi_tickettasks' => [
-    //                    'ON' => [
-    //                        'glpi_tickets' => 'id',
-    //                        'glpi_tickettasks' => 'tickets_id',
-    //                    ],
-    //                ],
-    //            ],
-    //            'WHERE' => [
-    //                'glpi_plugin_manageentities_cridetails.contracts_id' => $contractDayValues["contracts_id"],
-    //                'glpi_plugin_manageentities_cridetails.entities_id' => $contractDayValues["entities_id"],
-    //                'glpi_plugin_manageentities_cridetails.plugin_manageentities_contractdays_id' => $contractDayValues["contractdays_id"],
-    //                'glpi_tickets.is_deleted' => 0,
-    //                'glpi_tickets.actiontime' => ['>', 0],
-    //
-    //            ],
-    //            'GROUPBY' => ['glpi_plugin_manageentities_cridetails.id'],
-    ////            'ORDERBY' => [],
-    //        ];
-    //
-    //        if (isset($options['begin_date'])) {
-    //            $options['begin_date'] .= ' 00:00:00';
-    //            $criteria['WHERE'] = $criteria['WHERE'] + [
-    //                    'OR' => [
-    //                        ['glpi_tickettasks.begin' => ['>=', $options['begin_date']]],
-    //                        ['glpi_tickettasks.begin' => 'NULL'],
-    //                    ],
-    //            ];
-    //        }
-    //
-    //        if (isset($options['end_date'])) {
-    //            $options['end_date'] .= ' 23:59:59';
-    //            $criteria['WHERE'] = $criteria['WHERE'] + [
-    //                    'OR' => [
-    //                        ['glpi_tickettasks.end' => ['<=', $options['end_date']]],
-    //                        ['glpi_tickettasks.end' => 'NULL'],
-    //                    ],
-    //            ];
-    //        }
-    //
-    //        if (isset($options['sorting_date'])) {
-    //            $criteria['ORDERBY'] = $criteria['GROUPBY'] + ['tickets_date DESC'];
-    //        } else {
-    //            $criteria['ORDERBY'] = $criteria['GROUPBY'] + ['glpi_plugin_manageentities_cridetails ASC'];
-    //        }
-    //
-    //        $iterator = $DB->request($criteria);
-    //
-    //        $restrict = [
-    //            "`glpi_plugin_manageentities_contracts`.`entities_id`" => $contractDayValues["entities_id"],
-    //            "`glpi_plugin_manageentities_contracts`.`contracts_id`" => $contractDayValues["contracts_id"],
-    //        ];
-    //        $dbu = new DbUtils();
-    //        $pluginContracts = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contracts", $restrict);
-    //        $pluginContract = reset($pluginContracts);
-    //
-    //        // Default Cri price
-    //        $default_price = 0;
-    //        $default_critypes_name = '';
-    //        $default_critypes_id = 0;
-    //        $cri_price = new CriPrice();
-    //        $condition = ['glpi_plugin_manageentities_criprices.is_default' => 1];
-    //        $price_data = $cri_price->getItems($contractDayValues["contractdays_id"], 0, $condition);
-    //        if (!empty($price_data)) {
-    //            $price_data = reset($price_data);
-    //            $price = $price_data["price"];
-    //            $default_price = $price_data["price"];
-    //            $default_critypes_name = $price_data["critypes_name"];
-    //            $default_critypes_id = $price_data["plugin_manageentities_critypes_id"];
-    //        }
-    //
-    //        if (count($iterator) > 0) {
-    //
-    //            $taskCount++;
-    //            foreach ($iterator as $dataCriDetail) {
-    //                // Get cridetail Cri Price if exists
-    //                $price = 0;
-    //                $critypes_name = '';
-    //                $critypes_id = 0;
-    //                if ($dataCriDetail['plugin_manageentities_critypes_id'] != 0) {
-    //                    $price_data = $cri_price->getItems(
-    //                        $contractDayValues["contractdays_id"],
-    //                        $dataCriDetail['plugin_manageentities_critypes_id']
-    //                    );
-    //                    if (!empty($price_data)) {
-    //                        $price_data = reset($price_data);
-    //                        $price = $price_data["price"];
-    //                        $critypes_name = $price_data["critypes_name"];
-    //                        $critypes_id = $price_data["plugin_manageentities_critypes_id"];
-    //                    }
-    //                }
-    //                $price = empty($price) ? $default_price : $price;
-    //                $critypes_name = empty($critypes_name) ? $default_critypes_name : $critypes_name;
-    //                $critypes_id = empty($critypes_id) ? $default_critypes_id : $critypes_id;
-    //
-    //                $criteria = [
-    //                    'SELECT' => [
-    //                        'actiontime',
-    //                        'users_id_tech',
-    //                        'is_private',
-    //                    ],
-    //                    'FROM' => 'glpi_tickettasks',
-    //                    'LEFT JOIN' => [
-    //                        'glpi_plugin_manageentities_cridetails' => [
-    //                            'ON' => [
-    //                                'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-    //                                'glpi_tickettasks' => 'tickets_id',
-    //                            ],
-    //                        ],
-    //                    ],
-    //                    'WHERE' => [
-    //                        'glpi_tickettasks.tickets_id' => $dataCriDetail['tickets_id'],
-    //                        'glpi_tickettasks.is_private' => 0,
-    //                        'glpi_plugin_manageentities_cridetails.id' => $dataCriDetail['cridetails_id'],
-    //                    ],
-    //                    'ORDERBY' => ['glpi_tickettasks.begin'],
-    //                ];
-    //
-    //                if (isset($options['begin_date'])) {
-    //                    $criteria['WHERE'] = $criteria['WHERE'] + [
-    //                        'OR' => [
-    //                            ['glpi_tickettasks.begin' => ['>=', $options['begin_date']]],
-    //                            ['glpi_tickettasks.begin' => 'NULL'],
-    //                        ],
-    //                    ];
-    //                }
-    //
-    //                if (isset($options['end_date'])) {
-    //                    $criteria['WHERE'] = $criteria['WHERE'] + [
-    //                        'OR' => [
-    //                            ['glpi_tickettasks.end' => ['<=', $options['end_date']]],
-    //                            ['glpi_tickettasks.end' => 'NULL'],
-    //                        ],
-    //                    ];
-    //                }
-    //
-    //                if ($config->fields['hourorday'] == Config::HOUR) {
-    //                    $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + [
-    //                        'glpi_plugin_manageentities_taskcategories' => [
-    //                            'ON' => [
-    //                                'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-    //                                'glpi_tickettasks' => 'taskcategories_id',
-    //                            ],
-    //                        ],
-    //                    ];
-    //                    $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_plugin_manageentities_taskcategories.is_usedforcount' => 1];
-    //                }
-    //                $iterator = $DB->request($criteria);
-    //
-    //                $tech = '';
-    //                $conso = 0;
-    //                $conso_per_tech = [];
-    //
-    //                if (count($iterator) > 0) {
-    //                    $left = $contractDayValues["nbday"];
-    //                    $tech = implode('<br/>', $critechnicians->getTechnicians($dataCriDetail['tickets_id']));
-    //
-    //                    foreach ($iterator as $dataTask) {
-    //                        // Init depass
-    //                        if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'])) {
-    //                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] = 0;
-    //                        }
-    //
-    //                        //Init conso per techs
-    //                        if (!isset($conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'])) {
-    //                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] = 0;
-    //                        }
-    //                        // Set conso per techs
-    //                        $tmp = self::setConso($dataTask['actiontime'], 0, $config, $dataCriDetail, $pluginContract, 1);
-    //
-    //                        $round = round($tmp, 2,PHP_ROUND_HALF_UP);
-    //
-    //                        $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += $PDF->TotalTpsPassesArrondis(
-    //                            $round
-    //                        );
-    //
-    //                        // Set global conso of contractday
-    //                        $tempasse = $PDF->TotalTpsPassesArrondis($round);
-    //                        $conso += $tempasse;
-    //
-    //                        // Set depass per techs
-    //                        $left -= self::computeInDays(
-    //                            $dataTask['actiontime'],
-    //                            $config,
-    //                            $dataCriDetail,
-    //                            $pluginContract,
-    //                            1
-    //                        );
-    //                        if ($left <= 0) {
-    //                            $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] += abs(
-    //                                $PDF->TotalTpsPassesArrondis($left)
-    //                            );
-    //                            $left = 0;
-    //                        }
-    //                    }
-    //                }
-    //
-    //                // Ticket name
-    //                $ticket = new Ticket();
-    //                $ticket->getFromDB($dataCriDetail["tickets_id"]);
-    //                $ticket_name = $ticket->getName();
-    //
-    //
-    //                $tot_amount += $conso * $price;
-    //                $tot_conso += $conso;
-    //
-    //                //Task informations
-    //                $tabResults[$dataCriDetail['cridetails_id']]['tickets_id'] = $dataCriDetail['tickets_id'];
-    //                $tabResults[$dataCriDetail['cridetails_id']]['tickets_name'] = $ticket_name;
-    //                $tabResults[$dataCriDetail['cridetails_id']]['is_deleted'] = $dataCriDetail['is_deleted'];
-    //                $tabResults[$dataCriDetail['cridetails_id']]['tickets_date'] = $dataCriDetail['tickets_date'];
-    //                $tabResults[$dataCriDetail['cridetails_id']]['conso'] = $conso;
-    //                $tabResults[$dataCriDetail['cridetails_id']]['conso_per_tech'] = $conso_per_tech;
-    //                $tabResults[$dataCriDetail['cridetails_id']]['tech'] = $tech;
-    //                $tabResults[$dataCriDetail['cridetails_id']]['conso_amount'] = $conso * $price;
-    //                $tabResults[$dataCriDetail['cridetails_id']]['pricecri'] = $price;
-    //                $tabResults[$dataCriDetail['cridetails_id']]['documents_id'] = $dataCriDetail['documents_id'];
-    //                $tabResults[$dataCriDetail['cridetails_id']]['plugin_manageentities_critypes_name'] = $critypes_name;
-    //                $tabResults[$dataCriDetail['cridetails_id']]['plugin_manageentities_critypes_id'] = $critypes_id;
-    //            }
-    //        }
-    //
-    //        //Rest number / depass
-    //        $tabOther['reste'] = (number_format($contractDayValues["nbday"], 0) + number_format($contractDayValues["report"], 0)) - $tot_conso;
-    //        if ($tabOther['reste'] < 0) {
-    //            $tabOther['depass'] = abs($tabOther['reste']);
-    //            $tabOther['reste'] = 0;
-    //        }
-    //
-    //        // If depass on contract day set depass on last tech of last ticket of last intervention
-    //        if ($tabOther['depass'] > 0) {
-    //            $lastIntervention = end($tabResults);
-    //            if (count($lastIntervention['conso_per_tech']) > 0) {
-    //                $lastTicket = end($lastIntervention['conso_per_tech']);
-    //                end($lastTicket);
-    //                $tabResults[key($tabResults)]['conso_per_tech'][key($lastIntervention['conso_per_tech'])][key(
-    //                    $lastTicket
-    //                )]['depass'] = $tabOther['depass'];
-    //            }
-    //            reset($tabResults);
-    //        }
-    //
-    //        //Forfait
-    //        $tabOther['forfait'] = ($contractDayValues["nbday"] + $contractDayValues["report"]) * $default_price;
-    //
-    //        // Default criprice
-    //        $tabOther['default_criprice'] = $default_price;
-    //
-    //        //Rest amount
-    //        $tabOther['reste_montant'] = $tabOther['forfait'] - $tot_amount;
-    //        $tabOther['tot_amount'] = $tot_amount;
-    //
-    //        return ['result' => $tabResults, 'resultOther' => $tabOther];
-    //    }
-
     /**
      * Validate that a string is a safe SQL date or datetime (Y-m-d or Y-m-d H:i:s).
      * Used to guard user-supplied date filters before they reach the query builder.
@@ -1474,7 +1156,6 @@ class CriDetail extends CommonDBTM
         $cri_price             = new CriPrice();
         $condition = ['glpi_plugin_manageentities_criprices.is_default' => 1];
         $price_data = $cri_price->getItems($contractDayValues["contractdays_id"], 0, $condition);
-        //        $price_data            = $cri_price->getItems($contractDayValues["contractdays_id"], 0, "`glpi_plugin_manageentities_criprices`.`is_default`='1'");
         if (!empty($price_data)) {
             $price_data            = reset($price_data);
             $price                 = $price_data["price"];
@@ -2410,8 +2091,6 @@ class CriDetail extends CommonDBTM
                     false,
                 ) . "<br>";
             }
-
-            //$html.= "<div class='event-description'>".$val["content"]."</div>";
 
             // showToolTip() renders its content as HTML: the text comes decoded from the task.
             $html .= Html::showToolTip(

@@ -69,7 +69,6 @@ class DirectHelpdeskInjection extends DirectHelpdesk implements PluginDatainject
 
         $tab[4]['checktype'] = 'date';
 
-        //$blacklist = PluginDatainjectionCommonInjectionLib::getBlacklistedOptions();
         //Remove some options because some fields cannot be imported
         $notimportable = [30, 80];
         $options['ignore_fields'] = $notimportable;

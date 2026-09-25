@@ -102,16 +102,6 @@ if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
         }
 
         Html::redirect($ticket->getLinkURL());
-
-        //        Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", "DirectHelpdesk::class);
-        //        $options['entities_id'] = $_POST['entities_id'];
-        //        $direct = new DirectHelpdesk();
-        //        $options['content'] = "";
-        //        $options['_created_from_directhelpdesk'] = true;
-
-        //        $ticket = new Ticket();
-        //        $ticket->showForm(0, $options);
-        //        Html::footer();
     } elseif (isset($_POST["add"])) {
         // Per-object check like the update branch: the global plugin UPDATE right is
         // not scoped by entity, so enforce CREATE (with the posted entities_id) before

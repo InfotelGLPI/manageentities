@@ -154,7 +154,7 @@
             <div class="col-sm-6"></div>
             {% endif %}
 
-            {# Switches : GANTT / Coûts refacturables / Contrat importé GLPI / Gestion des déplacements #}
+            {# Switches: GANTT / rebillable costs / imported GLPI contract / travel management #}
 
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Show on GANTT', 'manageentities') }}</label>
@@ -193,7 +193,7 @@
                 </div>
             </div>
 
-            {# Durée des déplacements (conditionnelle) #}
+            {# Travel duration (conditional) #}
             <div class="col-sm-3" id="movement_block_{{ rand }}"{% if not moving_management %} style="display:none"{% endif %}>
                 <label class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
                 {{ duration_moving_html|raw }}

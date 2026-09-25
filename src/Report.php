@@ -341,15 +341,12 @@ class Report extends CommonDBTM
     }
 
     /**
-     * function getDatesBetween
-     * renvoie un tableau contenant toutes les dates, jour par jour,
-     * comprises entre les deux dates passées en paramètre.
+     * Return every date, day by day, between the two given dates.
      *
-     * @param (string) $dStart : date de départ
-     * @param (string) $dEnd : date de fin
+     * @param string $dStart start date
+     * @param string $dEnd   end date
      *
-     * @return (array) aDates : tableau des dates si succès
-     * @return (bool) false : si échec
+     * @return array|false the dates on success, false on failure
      */
     public function getDatesBetween($dStart, $dEnd)
     {

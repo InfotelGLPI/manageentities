@@ -25,9 +25,9 @@
  * --------------------------------------------------------------------------
  */
 
-// Racine web du plugin, miroir de PLUGIN_MANAGEENTITIES_WEBDIR (setup.php). GLPI
-// expose les deux variables dans le <head> (config_js) avant tout script de
-// plugin : aucune interpolation cote serveur n'est necessaire ici.
+// Web root of the plugin, mirror of PLUGIN_MANAGEENTITIES_WEBDIR (setup.php). GLPI
+// exposes both variables in the <head> (config_js) before any plugin script:
+// no server-side interpolation is needed here.
 var root_manageentities_doc = ((window.CFG_GLPI && CFG_GLPI.root_doc) || '')
    + ((window.GLPI_PLUGINS_PATH && GLPI_PLUGINS_PATH.manageentities) || '/plugins/manageentities');
 
@@ -50,27 +50,27 @@ $(window).on("load", function() {
         }
     }
 
-    // état initial
+    // Initial state
     updateButtonState();
-    // Les traductions arrivent en AJAX (locales_js) ; si elles atterrissent
-    // apres ce point, on reapplique le libelle des la fin des requetes.
+    // Translations are loaded through AJAX (locales_js); when they land after
+    // this point, the label is applied again once the requests are done.
     $(document).one('ajaxStop', updateButtonState);
 
     newDiv.appendChild(newButton);
 
-    // Insérer avant le bouton existant
+    // Insert before the existing button
     const existingButton = document.querySelector('.trigger-fuzzy');
     if (typeof existingButton !== "undefined" && existingButton !== null) {
         existingButton.parentNode.insertBefore(newDiv, existingButton);
     }
-    // Préparer la modal
+    // Prepare the modal
     const page = document.querySelector("div.page");
     const modalContainer = document.createElement('div');
     modalContainer.id = 'directhelpdeskmodalcontainer';
     if (typeof page !== "undefined" && page !== null) {
         page.append(modalContainer);
     }
-    // clic sur le bouton
+    // Button click
     newButton.addEventListener('click', function() {
         if (!document.getElementById('directhelpdesk-modal')) {
             $('#directhelpdeskmodalcontainer').load(
@@ -84,7 +84,7 @@ $(window).on("load", function() {
         }
     });
 
-    // Fermer la modal si clic en dehors
+    // Close the modal on an outside click
     $(document).on('click', function(event) {
         const modal = document.getElementById('directhelpdesk-modal');
         if (modal && event.target === modal) {
@@ -92,7 +92,7 @@ $(window).on("load", function() {
         }
     });
 
-    // Réagir au toggle effectif de la classe navbar-collapsed sur <body>
+    // React to the navbar-collapsed class toggle on <body>
     new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.attributeName === 'class') {

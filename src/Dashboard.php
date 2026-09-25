@@ -130,7 +130,6 @@ class Dashboard extends CommonGLPI
                     $link_contract_day = Toolbox::getItemTypeFormURL(ContractDay::class);
                     $entity = new \Entity();
                     $contracts = self::queryFollowUpSimplified($_SESSION['glpiactiveentities'], []);
-                    //               Toolbox::logDebug($contracts);
                     $datas = [];
                     if (!empty($contracts)) {
                         foreach ($contracts as $key => $contract_data) {
@@ -400,7 +399,6 @@ class Dashboard extends CommonGLPI
                 $widget->setOption("bSort", false);
                 $widget->toggleWidgetRefresh();
                 $widget->setWidgetTitle(__("Interventions with old contract", "manageentities"));
-                //
                 return $widget;
                 break;
             case $this->getType() . "5":

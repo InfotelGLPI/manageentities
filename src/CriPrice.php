@@ -514,7 +514,7 @@ class CriPrice extends CommonDBTM
     }
 
     public function prepareInputForUpdate($input)
-    {//si un document lié ne pas permettre l'update via le form self::showForTicket($item);
+    {
         if (!$this->checkMandatoryFields($input)) {
             return false;
         }

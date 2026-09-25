@@ -120,11 +120,6 @@ class ContractDay extends CommonDBTM
             'datatype' => 'decimal',
         ];
 
-        //      $tab[5]['table']    = 'glpi_plugin_manageentities_critypes';
-        //      $tab[5]['field']    = 'name';
-        //      $tab[5]['name']     = __('Intervention type', 'manageentities');
-        //      $tab[5]['datatype'] = 'dropdown';
-
         $tab[] = [
             'id' => '6',
             'table' => $this->getTable(),
@@ -244,7 +239,6 @@ class ContractDay extends CommonDBTM
      */
     public function addNbDay($values)
     {
-        //      if ($this->getFromDBbyTypeAndContract($values["plugin_manageentities_critypes_id"], $values["contracts_id"], $values["entities_id"])) {
         if ($this->getFromDBByCrit([
             'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
             'contracts_id' => $values["contracts_id"],

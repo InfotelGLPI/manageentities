@@ -71,9 +71,8 @@ class EditorSubscriptionInjection extends EditorSubscription implements PluginDa
         //Specific to location
         $tab[10]['linkfield'] = 'plugin_manageentities_subscriptionlevels_id';
 
-        //$blacklist = PluginDatainjectionCommonInjectionLib::getBlacklistedOptions();
         //Remove some options because some fields cannot be imported
-        $notimportable = [30, 80];//8, 16, 18, 19, 31, 32, 33, 34, 80
+        $notimportable = [30, 80];
         $options['ignore_fields'] = $notimportable;
         $options['displaytype'] = [
             "dropdown" => [10],

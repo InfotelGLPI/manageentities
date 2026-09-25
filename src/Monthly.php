@@ -92,61 +92,6 @@ class Monthly extends CommonDBTM
         // We configure the type of contract Hourly or Dayly
         $config = Config::getInstance();
 
-        //        $criteria = [
-        //            'SELECT' => [
-        //                'glpi_entities.id AS entities_id',
-        //                'glpi_entities.name AS entities_name',
-        //            ],
-        //            'DISTINCT' => true,
-        //            'FROM' => 'glpi_tickets',
-        //            'LEFT JOIN' => [
-        //                'glpi_entities' => [
-        //                    'ON' => [
-        //                        'glpi_tickets' => 'entities_id',
-        //                        'glpi_entities' => 'id'
-        //                    ]
-        //                ],
-        //                'glpi_tickettasks' => [
-        //                    'ON' => [
-        //                        'glpi_tickettasks' => 'tickets_id',
-        //                        'glpi_tickets' => 'id'
-        //                    ]
-        //                ]
-        //            ],
-        //            'WHERE' => [
-        //                [
-        //                    'OR' => [
-        //                        ['glpi_tickettasks.end' => 'NULL'],
-        //                        ['glpi_tickettasks.end' => ['>=', $values['begin_date']]]
-        //                    ],
-        //                ],
-        //                [
-        //                    'OR' => [
-        //                        ['glpi_tickettasks.begin' => 'NULL'],
-        //                        [
-        //                            'glpi_tickettasks.begin' => [
-        //                                '<=',
-        //                                new QueryExpression("ADDDATE('" . $values['end_date'] . "', INTERVAL 1 DAY)")
-        //                            ]
-        //                        ]
-        //                    ],
-        //                ],
-        //            ],
-        //            'ORDERBY' => [
-        //                'glpi_entities.name',
-        //                'glpi_tickettasks.end ASC'
-        //            ],
-        //        ];
-        //        $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-        //                'glpi_entities'
-        //            );
-        //
-        //        $iterator = $DB->request($criteria);
-        //
-        //        $nbTotEntity = (count($iterator) > 0 ? count($iterator) : 0);
-        //
-        //        if ($nbTotEntity > 0) {
-        //            foreach ($iterator as $dataEntity) {
         $criteriaEntity = [
             'SELECT' => [
                 'glpi_entities.id AS entities_id',
@@ -197,119 +142,6 @@ class Monthly extends CommonDBTM
         foreach ($iteratorEntity as $dataEntity) {
             $tabResults[$dataEntity['entities_id']]['entities_name'] = $dataEntity['entities_name'];
             $tabResults[$dataEntity['entities_id']]['entities_id'] = $dataEntity['entities_id'];
-
-            //                $criteriad = [
-            //                    'SELECT' => [
-            //                        'glpi_plugin_manageentities_contractdays.name AS name_contractdays',
-            //                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id AS contractstates_id',
-            //                        'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
-            //                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
-            //                        'glpi_plugin_manageentities_contractdays.report AS report',
-            //                        'glpi_plugin_manageentities_contractdays.nbday AS nbday',
-            //                        'glpi_plugin_manageentities_contractdays.charged AS charged',
-            //                        'glpi_plugin_manageentities_contractdays.begin_date AS begin_date',
-            //                        'glpi_plugin_manageentities_contractdays.end_date AS end_date',
-            //                        'glpi_plugin_manageentities_contractdays.plugin_manageentities_critypes_id',
-            //                        'glpi_contracts.name AS name',
-            //                        'glpi_contracts.id AS contracts_id',
-            //                        'glpi_contracts.num AS num',
-            //                        'glpi_contracts.entities_id AS entities_id',
-            //                        'glpi_plugin_manageentities_contractstates.is_closed AS is_closed',
-            //                        'glpi_plugin_manageentities_contractstates.color',
-            //                    ],
-            //                    'FROM' => 'glpi_plugin_manageentities_contractdays',
-            //                    'LEFT JOIN' => [
-            //                        'glpi_contracts' => [
-            //                            'ON' => [
-            //                                'glpi_contracts' => 'id',
-            //                                'glpi_plugin_manageentities_contractdays' => 'contracts_id'
-            //                            ]
-            //                        ],
-            //                        'glpi_plugin_manageentities_contracts' => [
-            //                            'ON' => [
-            //                                'glpi_plugin_manageentities_contracts' => 'contracts_id',
-            //                                'glpi_contracts' => 'id'
-            //                            ]
-            //                        ],
-            //                        'glpi_plugin_manageentities_contractstates' => [
-            //                            'ON' => [
-            //                                'glpi_plugin_manageentities_contractdays' => 'plugin_manageentities_contractstates_id',
-            //                                'glpi_plugin_manageentities_contractstates' => 'id'
-            //                            ]
-            //                        ],
-            //                        'glpi_plugin_manageentities_cridetails' => [
-            //                            'ON' => [
-            //                                'glpi_plugin_manageentities_contractdays' => 'id',
-            //                                'glpi_plugin_manageentities_cridetails' => 'plugin_manageentities_contractdays_id'
-            //                            ]
-            //                        ],
-            //                        'glpi_tickets' => [
-            //                            'ON' => [
-            //                                'glpi_plugin_manageentities_cridetails' => 'tickets_id',
-            //                                'glpi_tickets' => 'id'
-            //                            ]
-            //                        ],
-            //                        'glpi_tickettasks' => [
-            //                            'ON' => [
-            //                                'glpi_tickettasks' => 'tickets_id',
-            //                                'glpi_tickets' => 'id'
-            //                            ]
-            //                        ]
-            //                    ],
-            //                    'WHERE' => [
-            //                        'glpi_contracts.is_deleted' => 0,
-            //                        'glpi_plugin_manageentities_contractdays.entities_id' => $dataEntity["entities_id"],
-            //                        [
-            //                            'OR' => [
-            //                                ['glpi_tickettasks.begin' => 'NULL'],
-            //                                ['glpi_tickettasks.begin' => ['>=', $values['begin_date'] . " 00:00:00"]]
-            //                            ],
-            //                        ],
-            //                        [
-            //                            'OR' => [
-            //                                ['glpi_tickettasks.end' => 'NULL'],
-            //                                ['glpi_tickettasks.end' => ['<=', $values['end_date'] . " 23:59:59"]]
-            //                            ],
-            //                        ],
-            //
-            //                    ],
-            //                    'GROUPBY' => 'glpi_plugin_manageentities_contractdays.id',
-            //                    'ORDERBY' => ['glpi_contracts.name,glpi_plugin_manageentities_contractdays.end_date ASC'],
-            //                ];
-            //
-            //
-            //                if ($config->fields['hourorday'] == Config::HOUR) {// Hourly
-            //                    $types_contracts = [
-            //                        Contract::CONTRACT_TYPE_NULL,
-            //                        Contract::CONTRACT_TYPE_HOUR,
-            //                        Contract::CONTRACT_TYPE_INTERVENTION,
-            //                        Contract::CONTRACT_TYPE_UNLIMITED
-            //                    ];
-            //                    $criteriad['SELECT'] = array_merge(
-            //                        $criteriad['SELECT'],
-            //                        ['glpi_plugin_manageentities_contracts.contract_type AS contract_type']
-            //                    );
-            //                    $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contracts.contract_type' => $types_contracts];
-            //                } else {
-            //                    $types_contracts = [
-            //                        Contract::CONTRACT_TYPE_NULL,
-            //                        Contract::CONTRACT_TYPE_AT,
-            //                        Contract::CONTRACT_TYPE_FORFAIT
-            //                    ];
-            //                    $criteriad['SELECT'] = array_merge(
-            //                        $criteriad['SELECT'],
-            //                        ['glpi_plugin_manageentities_contractdays.contract_type AS contract_type']
-            //                    );
-            //                    $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.contract_type' => $types_contracts];
-            //                }
-            //
-            //                $iteratord = $DB->request($criteriad);
-            //
-            //                $nbContractDay = count($iteratord);
-            //
-            ////             We get contract days datas
-            //                if ($nbContractDay > 0) {
-            //                    foreach ($iteratord as $dataContractDay) {
 
             if ($config->fields['hourorday'] == Config::HOUR) {
                 $types_contracts = [
@@ -682,11 +514,8 @@ class Monthly extends CommonDBTM
         $row_num = 0;
         $numrows = count($list);
 
-        //        $end_display = $start + $_SESSION['glpilist_limit'];
-        //        if (isset($_GET['export_all'])) {
         $start = 0;
         $end_display = $numrows;
-        //        }
 
         $nbcols = 4;
         if (!$is_html_output) {
@@ -1208,8 +1037,6 @@ class Monthly extends CommonDBTM
 
     public function showHeader($options = [])
     {
-        //        Entity::showManageentitiesHeader(__('Monthly follow-up', 'manageentities'));
-
         // The whole criteria block is rendered server side. It used to be a run of echo
         // producing a tab_cadre_fixe layout table with tab_bg_2 rows and center cells, plus
         // an empty table filled in by an inline script that built the period picker with
