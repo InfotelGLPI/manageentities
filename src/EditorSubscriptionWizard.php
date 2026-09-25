@@ -172,6 +172,12 @@ class EditorSubscriptionWizard
         $sub      = new EditorSubscription();
         $existing = EditorSubscription::getForEntity($entities_id);
 
+        // The controller accepts CREATE or UPDATE: require the right matching the
+        // operation, so CREATE alone cannot overwrite an existing subscription
+        if (!Session::haveRight('plugin_manageentities', !empty($existing) ? UPDATE : CREATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
         if (!empty($existing)) {
             $data['id'] = $existing['id'];
             $result     = $sub->update($data);
