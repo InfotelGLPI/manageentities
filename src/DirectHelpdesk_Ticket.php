@@ -101,42 +101,26 @@ class DirectHelpdesk_Ticket extends CommonDBTM
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
+        $rows = [];
         if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
             $self = new self();
-            if ($items = $self->find(['tickets_id' => $item->getID()])) {
-                echo "<table class='tab_cadre_fixe'>";
-                echo "<tr class='tab_bg_1'>";
-                echo "<th>" . __('Title') . "</th>";
-                echo "<th>" . __('Date') . "</th>";
-                echo "<th>" . __('Technician') . "</th>";
-                echo "<th>" . __('Duration') . "</th>";
-                echo "<th>" . __('Description') . "</th>";
-                echo "</tr>";
-                foreach ($items as $item) {
-                    $direct = new DirectHelpdesk();
-                    $direct->getFromDB($item['plugin_manageentities_directhelpdesks_id']);
-                    $actiontime = $direct->fields['actiontime'];
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<td>" . htmlspecialchars((string) $direct->fields['name']) . "</td>";
-                    echo "<td>" . Html::convDate($direct->fields['date']) . "</td>";
-                    // getUserName() returns the raw value when no link is asked for; the sibling
-                    // cells of this row already escape theirs.
-                    echo "<td>" . htmlspecialchars((string) getUserName($direct->fields['users_id'])) . "</td>";
-                    echo "<td>" . CommonITILObject::getActionTime($actiontime) . "</td>";
-                    echo "<td>" . htmlspecialchars((string) $direct->fields['comment']) . "</td>";
-                    echo "</tr>";
+            foreach ($self->find(['tickets_id' => $item->getID()]) as $link) {
+                $direct = new DirectHelpdesk();
+                if (!$direct->getFromDB($link['plugin_manageentities_directhelpdesks_id'])) {
+                    continue;
                 }
-                echo "</table>";
-            } else {
-                echo "<div class='center alert alert-info d-flex'>";
-                echo __('No results found');
-                echo "</div>";
+                $rows[] = [
+                    'name'       => $direct->fields['name'],
+                    'date'       => Html::convDate($direct->fields['date']),
+                    'technician' => getUserName($direct->fields['users_id']),
+                    'duration'   => CommonITILObject::getActionTime($direct->fields['actiontime']),
+                    'comment'    => $direct->fields['comment'],
+                ];
             }
-        } else {
-            echo "<div class='center alert alert-info d-flex'>";
-            echo __('No results found');
-            echo "</div>";
         }
+        TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_ticket_tab.html.twig', [
+            'rows' => $rows,
+        ]);
         return true;
     }
 

@@ -99,7 +99,11 @@
         <form method="post" action="{{ entity_url }}">
             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             <div class="d-flex align-items-center gap-2">
+                <input type="hidden" name="entities_id" value="{{ session('glpiactive_entity') }}">
                 {{ add_dropdown_html|raw }}
+                <a href="{{ path('front/setup.templates.php?itemtype=Contract&add=1') }}" target="_blank">
+                    <i title="{{ _x('button', 'Add') }}" class="ti ti-square-plus ms-1"></i>
+                </a>
                 <button type="submit" name="addcontracts" class="btn btn-primary btn-sm">
                     <i class="ti ti-plus me-1"></i>{{ _x('button', 'Add') }}
                 </button>

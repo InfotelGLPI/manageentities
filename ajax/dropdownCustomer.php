@@ -28,7 +28,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use GlpiPlugin\Manageentities\GenerateCRI;
+use GlpiPlugin\Manageentities\CriDetail;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -48,5 +48,5 @@ if (isset($_POST["entities_id"])) {
     if (!Session::haveAccessToEntity((int) $_POST["entities_id"])) {
         throw new AccessDeniedHttpException();
     }
-    GenerateCRI::showContractLinkDropdown($_POST["entities_id"]);
+    CriDetail::showContractLinkDropdown([], (int) $_POST["entities_id"], 'ticket', 'rows');
 }

@@ -129,10 +129,6 @@ function cloneTicketTask(options) {
     });
 }
 
-function manageentities_loadPrice(value) {
-    document.getElementsByName('price')[0].value = parseInt(value).toFixed(2);
-}
-
 function manageentities_loadCriForm(action, modal, params) {
     var formInput;
 

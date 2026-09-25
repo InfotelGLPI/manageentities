@@ -40,7 +40,18 @@
     {% endif %}
 {% endif %}
 
-<div class="card w-100">
+{# Behaviour: public/scripts/cridetail-contract.js, configured by data-me-cridetail #}
+<div class="card w-100" data-me-cridetail="{{ {
+    ajax_url: ajax_url,
+    closed_state_id: closed_glpi_state_id|default(0),
+    contractdays_id: contractdays_id_selected,
+    labels: {
+        no_days_left: __('No days remaining on this contract period', 'manageentities'),
+        remaining_days: __('Remaining days', 'manageentities'),
+        anticipate: __('Please anticipate the end of the service period if necessary', 'manageentities'),
+        internet_publication: __('Internet publication', 'manageentities'),
+    },
+}|json_encode }}">
     <div class="card-header">
         <h3 class="card-title">
             <i class="ti ti-file-invoice me-2"></i>
@@ -76,26 +87,26 @@
                     {% if sub_no_active %}
                         <span class="badge bg-danger-lt"><i class="ti ti-alert-circle me-1"></i>{{ __('No active subscription', 'manageentities') }}</span>
                     {% elseif sub_cloud %}
-                        <span class="badge bg-outline-info"><i class="ti ti-cloud me-1"></i>{{ __('Cloud client', 'manageentities') }}</span>
+                        <span class="badge bg-info-lt"><i class="ti ti-cloud me-1"></i>{{ __('Cloud client', 'manageentities') }}</span>
                     {% else %}
-                        <span class="badge bg-outline-success"><i class="ti ti-certificate me-1"></i>{{ __('Editor subscription', 'manageentities') }}</span>
+                        <span class="badge bg-success-lt"><i class="ti ti-certificate me-1"></i>{{ __('Editor subscription', 'manageentities') }}</span>
                     {% endif %}
                     {% if sub_customer_account_id %}
-                        <span class="badge bg-outline-secondary"><i class="ti ti-id-badge me-1"></i>{{ sub_customer_account_id }}</span>
+                        <span class="badge bg-secondary-lt"><i class="ti ti-id-badge me-1"></i>{{ sub_customer_account_id }}</span>
                     {% endif %}
                     {% if sub_name %}
-                        <span class="badge bg-outline-secondary">{{ sub_name }}</span>
+                        <span class="badge bg-secondary-lt">{{ sub_name }}</span>
                     {% endif %}
                     {% if sub_level_name %}
-                        <span class="badge bg-outline-secondary"><i class="ti ti-layer-group me-1"></i>{{ sub_level_name }}</span>
+                        <span class="badge bg-secondary-lt"><i class="ti ti-layer-group me-1"></i>{{ sub_level_name }}</span>
                     {% endif %}
                     {% if sub_begin_date %}
-                        <span class="badge bg-outline-secondary">
+                        <span class="badge bg-secondary-lt">
                             <i class="ti ti-calendar-plus me-1"></i>{{ sub_begin_date|date('d/m/Y') }}
                         </span>
                     {% endif %}
                     {% if sub_end_date %}
-                        <span class="badge {% if sub_end_expired %}bg-danger-lt{% else %}bg-outline-secondary{% endif %}">
+                        <span class="badge {% if sub_end_expired %}bg-danger-lt{% else %}bg-secondary-lt{% endif %}">
                             <i class="ti ti-calendar-event me-1"></i>{{ sub_end_date|date('d/m/Y') }}
                             {% if sub_end_expired %}<i class="ti ti-alert-circle ms-1"></i>{% endif %}
                         </span>
@@ -117,7 +128,7 @@
         </div>
 
         {# Row 2 — contract + period selectors #}
-        <div id="contract">
+        <div id="contract" {% if not with_contract %}style="display:none"{% endif %}>
             {{ contract_link_dropdown|raw }}
         </div>
 
@@ -155,7 +166,7 @@
                 <i class="ti ti-tags me-1"></i>{{ __('Options', 'manageentities') }}
             </label>
             <div class="col-sm-9 d-flex flex-wrap gap-2 pt-2">
-                <span id="contract_inet_badge" class="badge bg-outline-secondary" style="display:none"></span>
+                <span id="contract_inet_badge" class="badge bg-secondary-lt" style="display:none"></span>
             </div>
         </div>
 
@@ -267,192 +278,3 @@
 {% if can_edit %}
 </form>
 {% endif %}
-
-{{ change_contract_script|raw }}
-
-<script>
-(function () {
-    var ajaxUrl = {{ ajax_url|json_encode|raw }};
-
-    function formatDateDMY(raw) {
-        if (!raw) return '';
-        var parts = raw.split('-');
-        return parts.length === 3 ? parts[2] + '/' + parts[1] + '/' + parts[0] : raw;
-    }
-
-    function updateContractdayFields(data) {
-        var beginBlock = document.getElementById('contractday_begin_date_block');
-        var beginText  = document.getElementById('contractday_begin_date_text');
-        var endBlock   = document.getElementById('contractday_end_date_block');
-        var endText    = document.getElementById('contractday_end_date_text');
-        var commBlock  = document.getElementById('contractday_comment_block');
-        var commText   = document.getElementById('contractday_comment_text');
-
-        if (beginBlock && beginText) {
-            var bd = formatDateDMY(data.begin_date || '');
-            beginText.textContent = bd;
-            beginBlock.style.display = bd ? '' : 'none';
-        }
-        if (endBlock && endText) {
-            var rawEnd = data.end_date || '';
-            var ed = formatDateDMY(rawEnd);
-            endText.textContent = ed;
-            endBlock.style.display = ed ? '' : 'none';
-            var today = new Date(); today.setHours(0,0,0,0);
-            var isPast = rawEnd && (new Date(rawEnd) < today);
-            endText.classList.toggle('text-danger', isPast);
-            endText.classList.toggle('fw-bold', isPast);
-        }
-        if (commBlock && commText) {
-            var cm = data.comment || '';
-            commText.textContent = cm;
-            commBlock.style.display = cm ? '' : 'none';
-        }
-    }
-
-    function updateRemainingDays(contractdays_id) {
-        var block = document.getElementById('remaining_days_block');
-        var alert = document.getElementById('remaining_days_alert');
-        var valueEl = document.getElementById('remaining_days_value');
-
-        if (!contractdays_id || contractdays_id == 0) {
-            block.style.display = 'none';
-            updateContractdayFields({ begin_date: '', end_date: '', comment: '' });
-            return;
-        }
-
-        $.post(ajaxUrl, { contractdays_id: contractdays_id }, function (data) {
-            updateContractdayFields(data);
-
-            block.style.display = '';
-
-            if (data.remaining === null) {
-                block.style.display = 'none';
-                return;
-            }
-
-            var remaining = parseFloat(data.remaining);
-
-            if (remaining <= 0) {
-                alert.className = 'alert alert-danger d-flex align-items-center gap-2 mb-0';
-                alert.innerHTML =
-                    '<i class="ti ti-alert-triangle fs-4"></i>' +
-                    '<div><strong>{{ __('No days remaining on this contract period', 'manageentities')|e('js') }}</strong>' +
-                    '<br><span class="text-muted">{{ __('Remaining days', 'manageentities')|e('js') }}: <strong>0</strong></span></div>';
-            } else if (remaining <= 1) {
-                alert.className = 'alert alert-warning d-flex align-items-center gap-2 mb-0';
-                alert.innerHTML =
-                    '<i class="ti ti-alert-circle fs-4"></i>' +
-                    '<div><span>{{ __('Remaining days', 'manageentities')|e('js') }}:</span> <strong id="remaining_days_value">' + remaining.toFixed(1) + '</strong>' +
-                    '<br><span class="text-muted fst-italic">{{ __('Please anticipate the end of the service period if necessary', 'manageentities')|e('js') }}</span></div>';
-            } else {
-                alert.className = 'alert alert-success d-flex align-items-center gap-2 mb-0';
-                alert.innerHTML =
-                    '<i class="ti ti-calendar-stats fs-4"></i>' +
-                    '<div><span>{{ __('Remaining days', 'manageentities')|e('js') }}:</span> ' +
-                    '<strong>' + remaining.toFixed(1) + '</strong></div>';
-            }
-        }, 'json');
-    }
-
-    // Manual change on the period dropdown
-    $(document).on('change', '[name="plugin_manageentities_contractdays_id"]', function () {
-        updateRemainingDays($(this).val());
-    });
-
-    var closedGlpiStateId = {{ closed_glpi_state_id|default(0) }};
-
-    function updateContractStatus(container) {
-        const badge = document.getElementById('contract_status_badge');
-        const commentBlock = document.getElementById('contract_comment_block');
-        const commentText  = document.getElementById('contract_comment_text');
-
-        if (badge) {
-            const statusEl  = container.querySelector('.me-contract-status-data');
-            const statesIdEl = container.querySelector('.me-contract-states-id-data');
-            const label     = statusEl ? statusEl.textContent.trim() : '';
-            const statesId  = statesIdEl ? parseInt(statesIdEl.textContent.trim(), 10) : 0;
-
-            if (!label) {
-                badge.innerHTML = '';
-            } else if (closedGlpiStateId > 0 && statesId === closedGlpiStateId) {
-                badge.innerHTML = '<span class="badge bg-danger-lt fs-6"><i class="ti ti-circle-x me-1"></i>' + label + '</span>';
-            } else {
-                badge.innerHTML = '<span class="badge bg-outline-success fs-6"><i class="ti ti-circle-check me-1"></i>' + label + '</span>';
-            }
-        }
-
-        if (commentBlock && commentText) {
-            const commentEl = container.querySelector('.me-contract-comment-data');
-            const comment = commentEl ? commentEl.textContent.trim() : '';
-            if (comment) {
-                commentText.textContent = comment;
-                commentBlock.style.display = '';
-            } else {
-                commentText.textContent = '';
-                commentBlock.style.display = 'none';
-            }
-        }
-
-        const endDateBlock = document.getElementById('contract_end_date_block');
-        const endDateText  = document.getElementById('contract_end_date_text');
-        if (endDateBlock && endDateText) {
-            const endDateEl = container.querySelector('.me-contract-end-date-data');
-            const rawDate = endDateEl ? endDateEl.textContent.trim() : '';
-            if (rawDate) {
-                // rawDate is YYYY-MM-DD, reformat to DD/MM/YYYY
-                const parts = rawDate.split('-');
-                endDateText.textContent = parts.length === 3
-                    ? parts[2] + '/' + parts[1] + '/' + parts[0]
-                    : rawDate;
-                endDateBlock.style.display = '';
-            } else {
-                endDateText.textContent = '';
-                endDateBlock.style.display = 'none';
-            }
-        }
-
-        // Plugin contract flags — internet publication only
-        const flagsBlock = document.getElementById('contract_flags_block');
-        const inetBadge  = document.getElementById('contract_inet_badge');
-        if (flagsBlock && inetBadge) {
-            const inetEl = container.querySelector('.me-contract-inet-data');
-            const inet   = inetEl ? parseInt(inetEl.textContent.trim(), 10) : 0;
-            if (inet) {
-                inetBadge.textContent = '{{ __('Internet publication', 'manageentities')|e('js') }}';
-                inetBadge.className = 'badge bg-outline-cyan';
-                inetBadge.style.display = '';
-                flagsBlock.style.display = '';
-            } else {
-                inetBadge.textContent = '';
-                inetBadge.style.display = 'none';
-                flagsBlock.style.display = 'none';
-            }
-        }
-    }
-
-    // When the contract dropdown changes, Ajax rebuilds #show_contractdays.
-    // The new <select> is injected silently, so we watch the container with
-    // a MutationObserver and read the preselected value once the DOM settles.
-    var container = document.getElementById('show_contractdays');
-    if (container) {
-        var observer = new MutationObserver(function () {
-            var sel = container.querySelector('select[name="plugin_manageentities_contractdays_id"]');
-            if (sel) {
-                updateRemainingDays(sel.value);
-            }
-            updateContractStatus(container);
-        });
-        observer.observe(container, { childList: true, subtree: true });
-    }
-
-    // Initial load
-    var contractContainer = document.getElementById('show_contractdays');
-    if (contractContainer) {
-        updateContractStatus(contractContainer);
-    }
-    {% if contractdays_id_selected > 0 %}
-    updateRemainingDays({{ contractdays_id_selected }});
-    {% endif %}
-})();
-</script>

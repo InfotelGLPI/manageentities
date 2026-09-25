@@ -49,6 +49,12 @@ class CriDetail extends CommonDBTM
 {
     public static $rightname = "plugin_manageentities";
 
+    /**
+     * on_change of the contract dropdowns: select2 only fires jQuery events, relayed here as a
+     * native one for public/scripts/cridetail-contract.js
+     */
+    public const CHANGE_EVENT_JS = "this.dispatchEvent(new Event('manageentities:change', {bubbles: true}));";
+
     public static function getTypeName($nb = 0)
     {
         return _n('Intervention task', 'Intervention tasks', $nb, 'manageentities');
@@ -1873,7 +1879,7 @@ class CriDetail extends CommonDBTM
         $rand = \Dropdown::showFromArray(
             'withcontract',
             [0 => __('Out of contract', 'manageentities'), 1 => __('With contrat', 'manageentities')],
-            ['value' => ($cridetail) ? $cridetail['withcontract'] : 1, 'on_change' => 'changecontract();'],
+            ['value' => ($cridetail) ? $cridetail['withcontract'] : 1, 'on_change' => self::CHANGE_EVENT_JS],
         );
         $contract_type_dropdown = ob_get_clean();
 
@@ -1918,18 +1924,6 @@ class CriDetail extends CommonDBTM
         $me_config = Config::getInstance();
         $closed_glpi_state_id = (int) ($me_config->fields['closed_glpi_state_id'] ?? 0);
 
-        // Build the JS block to show/hide the contract section
-        $change_contract_script = Html::scriptBlock("
-            function changecontract(){
-                if($('#dropdown_withcontract{$rand}').val() != 0){
-                    $('#contract').show();
-                } else {
-                    $('#contract').hide();
-                }
-            }
-            changecontract();
-        ");
-
         // Publisher subscription for the ticket's entity
         $sub              = EditorSubscription::getForEntity((int) $ticket->fields['entities_id']);
         $now              = date('Y-m-d');
@@ -1962,7 +1956,7 @@ class CriDetail extends CommonDBTM
             'contractday_comment'       => $contractday_comment,
             'contract_type_dropdown'    => $contract_type_dropdown,
             'contract_link_dropdown'    => $contract_link_dropdown,
-            'change_contract_script'    => $change_contract_script,
+            'with_contract'             => (bool) ($cridetail ? $cridetail['withcontract'] : 1),
             // Publisher subscription
             'has_subscription'          => !empty($sub),
             'sub_customer_account_id'   => $sub['customer_account_id'] ?? '',
@@ -1977,14 +1971,23 @@ class CriDetail extends CommonDBTM
         ]);
     }
 
-    public static function showContractLinkDropdown($cridetail, $entities_id, $type = 'ticket')
+    /**
+     * "Intervention with contract" and "Periods of contract" selectors, shared by the CRI detail
+     * of a ticket, the CRI report form (type 'cri', read-only) and the CRI generation wizard.
+     *
+     * @param array|false $cridetail   current CRI detail, [] or false when there is none
+     * @param int|array   $entities_id
+     * @param string      $type        'ticket' (dropdowns) or 'cri' (read-only names)
+     * @param string      $layout      'table' (own table) or 'rows' (bare row of a 4-column table)
+     *
+     * @return array{contractSelected: int, contractdaySelected: int, is_contract: int}
+     */
+    public static function showContractLinkDropdown($cridetail, $entities_id, $type = 'ticket', string $layout = 'table')
     {
         global $DB;
 
-        $contract = new \Contract();
-        $contract->getEmpty();
-        $rand = mt_rand();
-        $width = 300;
+        $cridetail = is_array($cridetail) ? $cridetail : [];
+        $width     = 300;
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -2012,140 +2015,116 @@ class CriDetail extends CommonDBTM
             'ORDERBY' => 'glpi_contracts.name',
         ]);
 
-        $selected = false;
-        $contractSelected = 0;
+        $selected            = false;
+        $contractSelected    = 0;
         $contractdaySelected = 0;
+        $value               = 0;
+        $elements            = [\Dropdown::EMPTY_VALUE];
+        $current_contract    = (int) ($cridetail['contracts_id'] ?? 0);
 
-        echo "<table class='tab_cadre' style='margin:0px'>";
-        // Display contract
-        echo "<tr class='tab_bg_1'>";
-        echo "<th>" . __('Intervention with contract', 'manageentities') . "</th>";
-        echo "<td>";
-        if (count($iterator) > 0) {
-            if ($type == 'ticket') {
-                $elements = [\Dropdown::EMPTY_VALUE];
-                $value = 0;
-                foreach ($iterator as $data) {
-                    if (($cridetail['contracts_id'] ?? 0) == $data["id"]) {
-                        $selected = true;
-                        $contractSelected = $cridetail['contracts_id'];
-                        $contractdaySelected = $cridetail["plugin_manageentities_contractdays_id"];
-                        $value = $data["id"];
-                    } elseif ($data["is_default"] == '1' && !$selected) {
-                        $contractSelected = $data['contracts_id'];
-                        $value = $data["id"];
-                    }
-
-                    if (Contract::checkRemainingOpenContractDays($data["id"])
-                        || ($cridetail['contracts_id'] ?? 0) == $data["id"]) {
-                        $elements[$data["id"]] = $data["name"] . " - " . $data["num"];
-                    }
-                }
-                if ($value == 0 && count($elements) == 2) {
-                    unset($elements[0]);
-                }
-                $rand = \Dropdown::showFromArray('contracts_id', $elements, ['value' => $value, 'width' => $width]);
-            } else {
-                foreach ($iterator as $data) {
-                    if ($cridetail['contracts_id'] == $data["id"]) {
-                        $contractSelected = $cridetail['contracts_id'];
-                        $contractdaySelected = $cridetail["plugin_manageentities_contractdays_id"];
-                    }
-                }
-                if ($contractSelected) {
-                    // Dropdown names come back raw from the database, and this view is built by echo.
-                    echo htmlspecialchars((string) \Dropdown::getDropdownName('glpi_contracts', $contractSelected));
-                }
+        foreach ($iterator as $data) {
+            if ($current_contract > 0 && $current_contract == $data["id"]) {
+                $selected            = true;
+                $contractSelected    = $current_contract;
+                $contractdaySelected = (int) $cridetail["plugin_manageentities_contractdays_id"];
+                $value               = $data["id"];
+            } elseif ($type == 'ticket' && $data["is_default"] == '1' && !$selected) {
+                $contractSelected = (int) $data['contracts_id'];
+                $value            = $data["id"];
             }
-        } else {
-            echo __('No active contracts', 'manageentities');
+
+            if ($type == 'ticket'
+                && (Contract::checkRemainingOpenContractDays($data["id"]) || $current_contract == $data["id"])) {
+                $elements[$data["id"]] = $data["name"] . " - " . $data["num"];
+            }
         }
 
-        // Tooltip for contract + hidden data spans for JS
-        if (!empty($contractSelected)) {
-            echo '&nbsp;';
-            $contract->getFromDB($contractSelected);
-            Html::showToolTip($contract->fields['comment'], [
-                'link' => $contract->getLinkURL(),
+        $contract = new \Contract();
+        $contract->getEmpty();
+        $has_contracts = count($iterator) > 0;
+
+        // Core widgets only: the template escapes everything else
+        $contract_field    = '';
+        $contract_tooltip  = '';
+        $contract_ajax     = '';
+        $contractday_field = '';
+        if ($has_contracts && $type == 'ticket') {
+            if ($value == 0 && count($elements) == 2) {
+                unset($elements[0]);
+            }
+            $rand = mt_rand();
+            $contract_field = \Dropdown::showFromArray('contracts_id', $elements, [
+                'value'   => $value,
+                'width'   => $width,
+                'rand'    => $rand,
+                'display' => false,
+            ]);
+
+            $params = [
+                'contracts_id'         => '__VALUE__',
+                'contractdays_id'      => $contractdaySelected,
+                'current_contracts_id' => $contractSelected,
+                'width'                => $width,
+            ];
+            $contract_ajax = Ajax::updateItemOnSelectEvent(
+                "dropdown_contracts_id$rand",
+                "show_contractdays",
+                PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php",
+                $params,
+                false,
+            ) . Ajax::updateItem(
+                "show_contractdays",
+                PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php",
+                $params,
+                "dropdown_contracts_id$rand",
+                false,
+            );
+        }
+
+        if (!empty($contractSelected) && $contract->getFromDB($contractSelected)) {
+            $contract_tooltip = Html::showToolTip($contract->fields['comment'], [
+                'link'       => $contract->getLinkURL(),
                 'linktarget' => '_blank',
+                'display'    => false,
             ]);
-            if (isset($contract->fields['states_id']) && $contract->fields['states_id'] > 0) {
-                echo "<span class='me-contract-status-data' style='display:none'>"
-                    . htmlspecialchars(\Dropdown::getDropdownName('glpi_states', $contract->fields['states_id']), ENT_QUOTES)
-                    . "</span>";
-                echo "<span class='me-contract-states-id-data' style='display:none'>"
-                    . (int) $contract->fields['states_id']
-                    . "</span>";
-            }
-            echo "<span class='me-contract-comment-data' style='display:none'>"
-                . htmlspecialchars($contract->fields['comment'] ?? '', ENT_QUOTES)
-                . "</span>";
-            echo "<span class='me-contract-end-date-data' style='display:none'>"
-                . htmlspecialchars($contract->fields['end_date'] ?? '', ENT_QUOTES)
-                . "</span>";
-            // Subscription flags read from EditorSubscription (internet_publication now lives there)
-            $subData = EditorSubscription::getForEntity((int) $contract->fields['entities_id']);
-            echo "<span class='me-contract-editor-sub-data' style='display:none'>"
-                . (int) ($subData['active_editor_suscription'] ?? 0)
-                . "</span>";
-            echo "<span class='me-contract-cloud-data' style='display:none'>"
-                . (int) ($subData['cloud_client'] ?? 0)
-                . "</span>";
-            echo "<span class='me-contract-inet-data' style='display:none'>"
-                . (int) ($subData['internet_publication'] ?? 0)
-                . "</span>";
         }
 
-        // Ajax for contract
-        $params = [
-            'contracts_id' => '__VALUE__',
-            'contractdays_id' => $contractdaySelected,
-            'current_contracts_id' => $contractSelected,
-            'width' => $width,
-        ];
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_contracts_id$rand",
-            "show_contractdays",
-            PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php",
-            $params,
-        );
-        Ajax::updateItem(
-            "show_contractdays",
-            PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/dropdownContract.php",
-            $params,
-            "dropdown_contracts_id$rand",
-        );
-        echo "</td>";
-
-        // Display contract day
-        echo "<th>" . __('Periods of contract', 'manageentities') . "</th>";
-        echo "<td>";
-        $restrict = [
-            'entities_id' => $contract->fields['entities_id'],
-            'contracts_id' => $contractSelected,
-        ];
-        $restrict += ['NOT' => ['plugin_manageentities_contractstates_id' => 2]];//Closed contract was 8, is now 2
-        if ($type == 'ticket') {
-            echo "<span id='show_contractdays'>";
-            \Dropdown::show(ContractDay::class, [
-                'name' => 'plugin_manageentities_contractdays_id',
-                'value' => $contractdaySelected,
-                'condition' => $restrict,
-                'width' => $width,
+        if ($has_contracts && $type == 'ticket') {
+            $contractday_field = \Dropdown::show(ContractDay::class, [
+                'name'      => 'plugin_manageentities_contractdays_id',
+                'value'     => $contractdaySelected,
+                'condition' => [
+                    'entities_id'  => $contract->fields['entities_id'],
+                    'contracts_id' => $contractSelected,
+                    // Closed contract was 8, is now 2
+                    'NOT'          => ['plugin_manageentities_contractstates_id' => 2],
+                ],
+                'width'     => $width,
+                'on_change' => self::CHANGE_EVENT_JS,
+                'display'   => false,
             ]);
-            echo "</span>";
-        } else {
-            // Dropdown names come back raw from the database, and this view is built by echo.
-            echo htmlspecialchars((string) \Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected));
         }
-        echo "</td>";
-        echo "</tr>";
-        echo "</table>";
+
+        TemplateRenderer::getInstance()->display('@manageentities/contract_link_dropdown.html.twig', [
+            'layout'            => $layout,
+            'type'              => $type,
+            'has_contracts'     => $has_contracts,
+            'contract_field'    => $contract_field,
+            'contract_name'     => $contractSelected
+                ? \Dropdown::getDropdownName('glpi_contracts', $contractSelected)
+                : '',
+            'contract_tooltip'  => $contract_tooltip,
+            'contract_ajax'     => $contract_ajax,
+            'contractday_field' => $contractday_field,
+            'contractday_name'  => $contractdaySelected
+                ? \Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected)
+                : '',
+        ]);
 
         return [
-            'contractSelected' => $contractSelected,
+            'contractSelected'    => $contractSelected,
             'contractdaySelected' => $contractdaySelected,
-            'is_contract' => count($iterator),
+            'is_contract'         => count($iterator),
         ];
     }
 

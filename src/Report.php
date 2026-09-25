@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use DbUtils;
+use Glpi\Application\View\TemplateRenderer;
 use Html;
 use User;
 use GlpiPlugin\Manageentities\Config;
@@ -146,34 +147,18 @@ class Report extends CommonDBTM
         }
 
         if (!empty($resultat)) {
-            echo "<form method='post' action=\"./front/entity.php\">";
-            echo "<div class='center'><table class='tab_cadre center' width='95%'>";
-            echo "<tr><th colspan='4'>" . __('Report on the movement of technicians', 'manageentities') . "</th></tr>";
-            echo "<tr>";
-
-            echo "<th>" . _n('Entity', 'Entities', 1) . "</th>";
-            echo "<th>" . __('Total moving package', 'manageentities') . "</th>";
-            echo "<th>" . __('Total time of the tasks of a category', 'manageentities') . "</th>";
-            echo "<th>" . __('Total') . "</th>";
-            echo "</tr>";
-
-            $i = 0;
+            $rows = [];
             foreach ($resultat as $key => $row) {
-                $i++;
-                $class = " class='tab_bg_2 ";
-                if ($i % 2) {
-                    $class = " class='tab_bg_1 ";
-                }
-                echo "<tr>";
-                // Entity names come back raw from the database, and this view is built by echo.
-                echo "<td class='center'>" . htmlspecialchars((string) \Dropdown::getDropdownName("glpi_entities", $key)) . "</td>";
-                echo "<td class='center'>" . Html::formatNumber($row['total_depl']) . "</td>";
-                echo "<td class='center'>" . Html::formatNumber($row['actiontime']) . "</td>";
-                echo "<td class='center'>" . Html::formatNumber($row['total']) . "</td>";
-                echo "</tr>";
+                $rows[] = [
+                    'entity'     => \Dropdown::getDropdownName("glpi_entities", $key),
+                    'total_depl' => Html::formatNumber($row['total_depl']),
+                    'actiontime' => Html::formatNumber($row['actiontime']),
+                    'total'      => Html::formatNumber($row['total']),
+                ];
             }
-            echo "</table></div>";
-            Html::closeForm();
+            TemplateRenderer::getInstance()->display('@manageentities/report_moving_result.html.twig', [
+                'rows' => $rows,
+            ]);
         }
     }
 
@@ -307,47 +292,27 @@ class Report extends CommonDBTM
         }
 
         if (!empty($resultat)) {
-            echo "<form method='post' action=\"./front/entity.php\">";
-            echo "<div class='center'><table class='tab_cadre center' width='95%'>";
-            echo "<tr><th colspan='" . (count($techs) + 3) . "'>" . __(
-                'Report concerning the occupation of the technicians',
-                'manageentities',
-            ) . "</th></tr>";
-            echo "<tr>";
-            echo "<th>" . __('Daily schedule', 'manageentities') . "</th>";
-            echo "<th colspan='" . (count($techs) + 1) . "'>" . __('Technicians', 'manageentities') . "</th>";
-            echo "<th>" . __('Time justified', 'manageentities') . "</th>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>" . __('Date') . "</th>";
+            $technicians = [];
             foreach ($techs as $tech) {
-                // getUserName() returns the raw value when no link is asked for, and this view
-                // builds its HTML by echo: nothing escapes it further down.
-                echo "<th>" . htmlspecialchars($dbu->getUserName($tech)) . "</th>";
+                $technicians[] = $dbu->getUserName($tech);
             }
-            echo "<th>" . __('Total') . "</th>";
-            echo "<th>" . __('% of time justified', 'manageentities') . "</th>";
-            echo "</tr>";
-
-            $i = 0;
+            $rows = [];
             foreach ($resultat as $key => $data) {
-                $i++;
-                $class = " class='tab_bg_2 ";
-                if ($i % 2) {
-                    $class = " class='tab_bg_1 ";
-                }
-                echo "<tr $class center'>";
-                echo "<td class='center'>" . Html::convdate($key) . "</td>";
+                $times = [];
                 foreach ($techs as $tech) {
-                    echo "<td class='center'>" . Html::formatNumber($data[$tech]) . "</td>";
+                    $times[] = Html::formatNumber($data[$tech]);
                 }
-                echo "<td class='center'>" . Html::formatNumber($data['total']) . "</td>";
-                echo "<td class='center'>" . Html::formatNumber($data['total_justified']) . "</td>";
-                echo "</tr>";
+                $rows[] = [
+                    'date'            => Html::convDate($key),
+                    'times'           => $times,
+                    'total'           => Html::formatNumber($data['total']),
+                    'total_justified' => Html::formatNumber($data['total_justified']),
+                ];
             }
-            echo "</table></div>";
-            Html::closeForm();
+            TemplateRenderer::getInstance()->display('@manageentities/report_occupation_result.html.twig', [
+                'technicians' => $technicians,
+                'rows'        => $rows,
+            ]);
         }
     }
 

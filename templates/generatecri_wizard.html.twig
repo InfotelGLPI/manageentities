@@ -46,7 +46,7 @@
         <tr class="tab_bg_1">
             {# label_* below embed GLPI's trusted mandatory-mark HTML (getMandatoryMark) #}
             <td>{{ label_category|raw }}</td>
-            <td colspan="3">{{ category_dropdown|raw }}</td>
+            <td colspan="3"><span id="show_category_by_type">{{ category_dropdown|raw }}</span></td>
         </tr>
 
         {% if show_contract %}
@@ -93,12 +93,22 @@
             <td colspan="3">{{ technician_dropdown|raw }}</td>
         </tr>
 
-        {% if tasktemplate_block %}
+        {% if tasktemplate %}
             <tr class="tab_bg_1">
                 <th colspan="4">{{ label_tasktemplate }}</th>
             </tr>
             <tr class="tab_bg_1">
-                <td colspan="4">{{ tasktemplate_block|raw }}</td>
+                <td colspan="4">
+                    <div class="rounded p-2 m-2" style="border: 1px dashed; max-width: 400px;">
+                        <div class="fw-bold fs-4">{{ _n('Task', 'Tasks', 1) }} :</div>
+                        <div><span class="fw-bold">{{ __('Description') }} :</span> {{ tasktemplate.description }}</div>
+                        <div><span class="fw-bold">{{ __('Duration') }} :</span> {{ tasktemplate.duration }}</div>
+                        {% if tasktemplate.group_name is not null %}
+                            <div><span class="fw-bold">{{ __('Technician group') }} :</span> {{ tasktemplate.group_name }}</div>
+                        {% endif %}
+                        <input type="hidden" name="predefined-task" value="{{ tasktemplate.id }}">
+                    </div>
+                </td>
             </tr>
         {% endif %}
 
@@ -127,11 +137,10 @@
             </td>
         </tr>
 
-        {{ tasks_script|raw }}
-
         <tr class="tab_bg_1" id="tab-tasks" style="display: none">
             <td colspan="4">
-                <div style="width: 400px;" id="tasks"></div>
+                {# Read by public/scripts/generatecri-tasks.js #}
+                <div style="width: 400px;" id="tasks" data-me-config="{{ tasks_config|json_encode }}"></div>
             </td>
         </tr>
 

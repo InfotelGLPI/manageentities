@@ -105,25 +105,12 @@ class DirectHelpdesk extends CommonDBTM
      */
     public static function loadModal()
     {
-        // Entity selector: capture its markup while keeping the rand for the AJAX callback.
-        ob_start();
-        $rand = \Entity::dropdown([
+        // Entity selector: its change refreshes the contract alert (public/scripts/directhelpdesk-modal.js)
+        $entity_dropdown = \Entity::dropdown([
             'name'      => 'entities_id',
-            'on_change' => 'entity_contract()',
+            'on_change' => CriDetail::CHANGE_EVENT_JS,
+            'display'   => false,
         ]);
-        $entity_dropdown = ob_get_clean();
-
-        // Refresh the contract alert whenever the selected entity changes.
-        $JS  = "function entity_contract(){";
-        $JS .= Ajax::updateItemJsCode(
-            "entity_alert",
-            PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/showalertbyentity.php",
-            ['entities_id' => '__VALUE__'],
-            'dropdown_entities_id' . $rand,
-            false,
-        );
-        $JS .= "}";
-        $js_block = Html::scriptBlock($JS);
 
         $contract = new Contract();
         $alert    = $contract->displayAlertforEntity($_SESSION['glpiactive_entity']);
@@ -176,7 +163,7 @@ class DirectHelpdesk extends CommonDBTM
             'form_url'          => self::getFormURL(),
             'entity_type'       => \Entity::getTypeName(),
             'entity_dropdown'   => $entity_dropdown,
-            'js_block'          => $js_block,
+            'alert_url'         => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/showalertbyentity.php',
             'alert'             => $alert,
             'category_dropdown' => $category_dropdown,
             'comment_textarea'  => $comment_textarea,

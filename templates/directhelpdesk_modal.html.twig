@@ -27,7 +27,8 @@
 
 <form action="{{ form_url }}" method="post">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-    <div class="modal" tabindex="-1" id="directhelpdesk-modal">
+    {# The entity refreshes the contract alert: public/scripts/directhelpdesk-modal.js #}
+    <div class="modal" tabindex="-1" id="directhelpdesk-modal" data-me-entity-alert="{{ alert_url }}">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -44,7 +45,6 @@
                             <td>{{ entity_type }} <span class="red">*</span></td>
                             <td>
                                 {{ entity_dropdown|raw }}
-                                {{ js_block|raw }}
                             </td>
                         </tr>
                         <span id="entity_alert">{{ alert|raw }}</span>

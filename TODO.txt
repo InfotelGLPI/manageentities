@@ -1,0 +1,36 @@
+Ajout section "Avant-vente" dans manageentities/front/addelements.form.php qui permettra la génération de proposition financière
+Reprendre le comportement de http://localhost/mytemplates/poc/public au travers d'un wizard :
+
+1er step : Détail du client (à stocker dans une table dédié pour une fois la proposition validée, que cela puisse etre utilisé pour créer une entité glpi)
+2eme step : Contact -> à stocker dans une table (pourra être utilisé pour ajouter un contact lié à l'entité)
+3ème step prérempli : commercial (ajouter config des commerciaux attitrés) utilisable après dans la config de l'entité (Données administratives)
+4ème step prérempli : Chef de projet (ajout config Chef de projets attitrés)
+5ème step : informations générales de la proposition
+6ème step : Défintion des annexes associées (ajouter config pour créer des annexes et utiliser les souscription du plugin si annexe concernant une souscription)
+7ème step : génération de la proposition et stockage en BDD (pour réutilisation dans le wizard de création de nouveau client)
+
+
+********************
+Pour rappel, la régression signalée au lot 1 est toujours là : depuis le retrait de reinitValuesNbDays, le maximum de jours du dropdown n'est plus rafraîchi.
+
+Plugin Manageentities
+pouvoir ensuite créer / gérer des règles d'affectation automatique de tech par clients lorsqu'un client ouvre un ticket (par défaut le techlead)
+donc forcément depuis l'interface simplifiée
+
+critères si Source de la demande est Interface simplifiée ET si entité est X alors Action : assigner technicien = Le tech lead responsable
+
+
+Il faudra que cette nouvelle classe Techlead permette aussi de préremplir par défaut le tech attribué (stakeholder) lors de la saisie d'un nouveau contrat dans le wizard
+
+et dans le cas d'une nouvelle entité, il faudra permettre aussi l'ajout du commercial et du techlead (dans le wizard)
+
+Tickets :
+Avoir liste des tickets en souffrance ouvert depuis plus de X semaines ou mois par techniciens
+Avoir liste des tickets en souffrance ouvert depuis plus de X semaines ou mois par techlead
+Avoir liste des tickets ou la dernière action est un suivi client
+
+Générer un livret d'accueil client
+
+Ouverture compte wiki
+Ouverture compte wimi
+Ouverture compte sesame

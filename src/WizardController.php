@@ -2175,7 +2175,7 @@ class WizardController
         $duration_html = ob_get_clean();
 
         // Pre-render existing document rows (for Back navigation)
-        $existing_docs_html = '';
+        $existing_docs = [];
         foreach (($session['documents_ids'] ?? []) as $doc_id) {
             $doc_id = (int) $doc_id;
             if ($doc_id <= 0) {
@@ -2188,14 +2188,11 @@ class WizardController
             $docCat   = new DocumentCategory();
             $docCatId = (int) ($d->fields['documentcategories_id'] ?? 0);
             $catName  = ($docCatId > 0 && $docCat->getFromDB($docCatId)) ? ($docCat->fields['completename'] ?? $docCat->fields['name']) : '';
-            $docName  = htmlspecialchars($d->fields['name'] ?? $d->fields['filename'] ?? '');
-            $existing_docs_html .= '<div class="document-block d-flex align-items-center gap-2 mb-2 flex-wrap" data-id="' . $doc_id . '">'
-                . '<span class="badge bg-outline-secondary">' . $docName . '</span>'
-                . ($catName ? '<span class="text-muted small">' . htmlspecialchars($catName) . '</span>' : '')
-                . '<button type="button" class="btn btn-sm btn-outline-danger"'
-                . ' onclick="wizardDeleteDocument(' . $doc_id . ', this, WIZARD_URL)">'
-                . '<i class="ti ti-trash"></i></button>'
-                . '</div>';
+            $existing_docs[] = [
+                'id'       => $doc_id,
+                'name'     => $d->fields['name'] ?? $d->fields['filename'] ?? '',
+                'category' => $catName,
+            ];
         }
 
         $rand_tpl = mt_rand();
@@ -2217,7 +2214,7 @@ class WizardController
             'state_html'             => $state_html,
             'alert_html'             => $alert_html,
             'duration_html'          => $duration_html,
-            'existing_docs_html'     => $existing_docs_html,
+            'existing_docs'          => $existing_docs,
             'entities_html'          => self::buildSessionEntityHtml('entities_id', $session),
             'template_dropdown_html' => $template_dropdown_html,
             'rand'                   => $rand,

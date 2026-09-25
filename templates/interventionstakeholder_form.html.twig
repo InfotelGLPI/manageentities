@@ -56,27 +56,18 @@
             </div>
 
             <div class="col-sm-3">
-                <input type="hidden" id="id_user" name="id_user" value="{{ id_user_field }}">
+                {# Handled by public/scripts/interventionstakeholder.js #}
                 <button type="button" class="btn btn-primary w-100"
-                    onclick="{{ add_fn }}();">
+                        data-me-stakeholder-add
+                        data-me-url="{{ ajax_url }}"
+                        data-me-contractdays-id="{{ contractdays_id }}"
+                        data-me-user-field="{{ user_field }}"
+                        data-me-nbdays-field="{{ nbdays_field }}">
                     <i class="ti ti-plus me-1"></i>{{ __('Add') }}
                 </button>
             </div>
 
         </div>
     </div>
-    <div id="{{ id_div_ajax }}" class="card-footer text-center"></div>
 </div>
 
-<script type="text/javascript">
-function {{ add_fn }}() {
-    $('#{{ id_div_ajax }}').load('{{ ajax_url }}', {
-        {% for key, val in list_ids %}
-        {{ val[1] }}: $('#{{ key }}').val(),
-        {% endfor %}
-        {% for key, val in params %}
-        {{ key }}: '{{ val }}',
-        {% endfor %}
-    });
-}
-</script>

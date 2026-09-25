@@ -111,7 +111,21 @@
                 <i class="ti ti-plus me-1"></i>{{ __('Add a document', 'manageentities') }}
             </button>
         </div>
-        <div id="documents-container">{{ existing_docs_html|raw }}</div>
+        <div id="documents-container">
+            {# Documents already uploaded, shown again on Back navigation #}
+            {% for doc in existing_docs %}
+                <div class="document-block d-flex align-items-center gap-2 mb-2 flex-wrap" data-id="{{ doc.id }}">
+                    <span class="badge bg-secondary-lt">{{ doc.name }}</span>
+                    {% if doc.category is not empty %}
+                        <span class="text-muted small">{{ doc.category }}</span>
+                    {% endif %}
+                    <button type="button" class="btn btn-sm btn-outline-danger"
+                            onclick="wizardDeleteDocument({{ doc.id }}, this, WIZARD_URL)">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
 
     </div>
     <div class="card-footer d-flex gap-2 justify-content-between">

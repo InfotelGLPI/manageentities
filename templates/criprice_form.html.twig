@@ -27,7 +27,8 @@
 
 {% import "components/form/fields_macros.html.twig" as fields %}
 
-<div class="asset">
+{# The intervention type reloads the existing prices: public/scripts/criprice.js #}
+<div class="asset" data-me-criprice-form="{{ {ajax_url: ajax_url, entities_id: entities_id}|json_encode }}">
     {% include("components/form/header.html.twig") %}
 
     <input type="hidden" name="plugin_manageentities_contractdays_id" value="{{ contractdays_id }}">
@@ -53,7 +54,7 @@
 
                 {# Select an existing price #}
                 {% set select_price_with_div %}
-                    <div id="manageentities_loadPrice">{{ select_price_html|raw }}</div>
+                    <div data-me-criprice-prices>{{ select_price_html|raw }}</div>
                 {% endset %}
                 {{ fields.field('select_critype', select_price_with_div,
                     __('Select an existing price', 'manageentities')) }}
@@ -64,20 +65,3 @@
 
     {% include("components/form/buttons.html.twig") %}
 </div>
-
-<script type="text/javascript">
-function manageentities_loadSelectPrice() {
-    $.ajax({
-        url:  '{{ ajax_url }}',
-        type: 'POST',
-        data: {
-            action:      'loadPrice',
-            critypes_id: $('#dropdown_plugin_manageentities_critypes_id{{ rand_critype }}').val(),
-            entities_id: {{ entities_id }}
-        },
-        success: function(html) {
-            $('#manageentities_loadPrice').html(html);
-        }
-    });
-}
-</script>

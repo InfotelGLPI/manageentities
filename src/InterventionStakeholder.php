@@ -38,7 +38,6 @@ use GlpiPlugin\Manageentities\Config;
 use Html;
 use Migration;
 use Session;
-use Toolbox;
 use User;
 
 class InterventionStakeholder extends CommonDBTM
@@ -114,124 +113,56 @@ class InterventionStakeholder extends CommonDBTM
                 $_SESSION['glpi_plugin_manageentities_nbdays'] = 0;
             }
             $interventionStakeholder->showForm($item, $options);
-            echo "<div id='divAjaxDisplay" . $item->fields['id'] . "'></div>";
         }
         return true;
     }
 
-
-    public function reinitValuesNbDays($idDpNbdays, $contractdaysId)
+    /**
+     * Emit an instruction for public/scripts/interventionstakeholder.js, which replays it once
+     * the AJAX response is loaded. The payload travels as JSON in an auto-escaped attribute:
+     * no JavaScript is generated here.
+     *
+     * @param 'message'|'row'|'form' $action
+     * @param array<string, mixed>   $payload
+     */
+    private function renderAction(string $action, array $payload): void
     {
-        $nbDays = $this->getNbAvailiableDay($contractdaysId);
-
-        $this->showHeaderJS();
-        for ($i = 0; $i <= $nbDays; $i += 0.5) {
-            $data[] = ['id' => $i, 'text' => "$i"];
-        }
-        echo "$('input[name=\"nb_days\"]').select2({width : '100', data:" . json_encode($data) . "});";
-        $this->closeFormJS();
+        TemplateRenderer::getInstance()->display('@manageentities/interventionstakeholder_action.html.twig', [
+            'action'  => $action,
+            'payload' => $payload,
+        ]);
     }
 
-    public function reinitListStakeholders($item, $contractdaysId, $idDpNbdays = null, $toDelete = false)
+    /**
+     * Refresh the stakeholder row of $item in the list after an AJAX add, update or delete.
+     */
+    public function reinitListStakeholders(InterventionStakeholder $item, bool $toDelete = false): void
     {
-        if ($item->getType() == InterventionStakeholder::getType()) {
-            $idToUse   = $item->fields['plugin_manageentities_contractdays_id'];
-            $idDivAjax = "divAjaxDisplay" . $item->fields['plugin_manageentities_contractdays_id'];
-        } else {
-            $idToUse   = $item->fields['id'];
-            $idDivAjax = "divAjaxDisplay" . $item->fields['id'];
-        }
+        $idToUse = $item->fields['plugin_manageentities_contractdays_id'];
 
-        $user      = new User();
+        $user = new User();
         $user->getFromDB($item->fields['users_id']);
-        $condition = ['plugin_manageentities_contractdays_id' => $item->fields['plugin_manageentities_contractdays_id']];
-
-        $this->showHeaderJS();
-
-        echo "var tbl = document.getElementById('list_stakeholders" . $idToUse . "');\n";
+        $condition = ['plugin_manageentities_contractdays_id' => $idToUse];
 
         $dbu = new DbUtils();
-        if ($toDelete) {
-            echo "var row = document.getElementById('row_" . $item->fields['id'] . "');";
-            echo "row.parentNode.removeChild(row);";
-            $cd = $dbu->getAllDataFromTable($this->getTable(), $condition);
-            if (sizeof($cd) == 0) {
-                echo "if(document.getElementById('empty_stakeholders" . $idToUse . "') != null){";
-                echo "   tbl.deleteRow(-1);";
-                echo "}else{";
-                echo "   row=tbl.insertRow(-1);\n";
-                echo "   row=tbl.insertRow(-1);\n";
-                echo "   row.setAttribute('class','tab_bg_1');\n";
-                echo "   row.id='empty_stakeholders" . $idToUse . "';";
-                echo "   var tmpCell=row.insertCell(0);\n";
-                echo "   tmpCell.innerHTML=\"" . __("No stakeholders have been affected yet.", "manageentities") . "\";";
-                echo "}";
-            }
-        } else {
-            echo "if (document.getElementById('td_user_id" . $item->fields['id'] . "') != null){\n";
-            // Emitted inside a JavaScript string literal: casting is what keeps a stored value
-            // from closing the quote and running as code.
-            echo "   document.getElementById('td_user_id" . $item->fields['id'] . "').innerHTML = '" . (float) $item->fields['number_affected_days'] . " " . _n("Day", "Days", 2) . "';\n";
-            echo "}else{\n";
-            echo "   if (document.getElementById('empty_stakeholders" . $idToUse . "') != null){";
-            echo "      tbl.deleteRow(-1);";
-            echo "   }";
-
-            echo "row=tbl.insertRow(-1);\n";
-            echo "row.id='row_" . $item->fields['id'] . "';\n";
-            echo "row.setAttribute('class','tab_bg_1');\n";
-
-            $link = $user->getLinkURL();
-
-            echo "var tmpCell=row.insertCell(0);\n";
-
-            // Two contexts in one statement: the value lands in a JavaScript string literal, which
-            // is then assigned to innerHTML. A quote in the user name closed the literal, and a tag
-            // in it was parsed by innerHTML - two escapes for one field. Escape for HTML first,
-            // then let json_encode() build the JS literal. JSON_HEX_QUOT is deliberately left out:
-            // it would encode the delimiters of the literal itself.
-            $user_link = "<a href='" . htmlspecialchars($link) . "' target='_blank'>"
-                . htmlspecialchars($dbu->formatUserName(
-                    $user->fields['id'],
-                    $user->fields['name'],
-                    $user->fields['realname'],
-                    $user->fields['firstname'],
-                )) . "</a>";
-            echo "tmpCell.innerHTML="
-                . json_encode($user_link, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS) . ";";
-
-            echo "tmpCell=row.insertCell(1);";
-            echo "tmpCell.id='td_user_id" . $item->fields['id'] . "';";
-            echo "tmpCell.innerHTML=\"";
-            echo (float) $item->fields['number_affected_days'] . "&nbsp;" . _n("Day", "Days", 2);
-            echo "\";";
-
-            echo "tmpCell=row.insertCell(2);";
-            echo "tmpCell.innerHTML=\"";
-            echo "<i title=\\\"" . __("Delete", "manageentities") . "\\\" class=\\\"ti ti-trash pointer\\\" id='delete_" . $user->fields['id'] . "'></i>";
-            echo "\";";
-            echo "}";
-
-            echo "document.getElementById('delete_" . $user->fields['id'] . "').onclick= function () {if (confirm('" . __("This action is irreversible. Continue ?", 'manageentities') . "')){deleteStakeholder" . $idToUse . $item->fields['id'] . "();}};";
-        }
-
-        $this->closeFormJS();
-
-        if (!$toDelete) {
-            $ajax_url = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionstakeholderactions.php";
-            $params   = [
-                'action'          => 'delete_user_datas',
-                'id_div_ajax'     => $idDivAjax,
-                'id_dp_nbdays'    => "nb_days" . $item->fields['plugin_manageentities_contractdays_id'],
-                'contractdays_id' => $item->fields['plugin_manageentities_contractdays_id'],
-                'stakeholder_id'  => $item->fields['id'],
-            ];
-            $this->showJSfunction("deleteStakeholder" . $idToUse . $item->fields['id'], $idDivAjax, $ajax_url, [], $params);
-        }
-
-        if ($idDpNbdays != null) {
-            $this->reinitValuesNbDays('nb_days2', $contractdaysId);
-        }
+        $this->renderAction('row', [
+            'table_id'       => 'list_stakeholders' . $idToUse,
+            'empty_id'       => 'empty_stakeholders' . $idToUse,
+            'row_id'         => 'row_' . $item->fields['id'],
+            'cell_id'        => 'td_user_id' . $item->fields['id'],
+            'stakeholder_id' => (int) $item->fields['id'],
+            'to_delete'      => $toDelete,
+            'is_empty'       => $toDelete
+                && count($dbu->getAllDataFromTable($this->getTable(), $condition)) === 0,
+            'user_url'       => $user->getLinkURL(),
+            'user_name'      => $dbu->formatUserName(
+                $user->fields['id'] ?? 0,
+                $user->fields['name'] ?? '',
+                $user->fields['realname'] ?? '',
+                $user->fields['firstname'] ?? '',
+            ),
+            'nb_days'        => (float) $item->fields['number_affected_days'] . "\u{00A0}" . _n('Day', 'Days', 2),
+        ]);
     }
 
     private function listStakeholders($item, $options = [])
@@ -243,99 +174,53 @@ class InterventionStakeholder extends CommonDBTM
         $idToUse  = ($item->getType() == InterventionStakeholder::getType())
             ? $item->fields['plugin_manageentities_contractdays_id']
             : $item->fields['id'];
-        $idDivAjax = "divAjaxDisplay" . $idToUse;
 
         $condition        = ['plugin_manageentities_contractdays_id' => $item->fields['id']];
         $dbu              = new DbUtils();
         $listStakeholders = $dbu->getAllDataFromTable($this->getTable(), $condition);
-        $can_create       = $this->canCreate();
-        $ajax_url         = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionstakeholderactions.php";
 
-        $entries    = [];
-        $delete_js  = [];
-
+        $entries = [];
         foreach ($listStakeholders as $stakeholder) {
             $user = new User();
             $user->getFromDB($stakeholder['users_id']);
             if (!isset($user->fields['id'])) {
                 continue;
             }
-            $user_link = "<a href='" . $user->getLinkURL() . "' target='_blank'>"
-                . htmlspecialchars(
-                    $dbu->formatUserName(
-                        $user->fields['id'],
-                        $user->fields['name'],
-                        $user->fields['realname'],
-                        $user->fields['firstname'],
-                    ),
-                    ENT_QUOTES,
-                    'UTF-8',
-                ) . "</a>";
 
-            $delete_btn = '';
-            if ($can_create) {
-                $fn         = "deleteStakeholder" . $idToUse . $stakeholder['id'];
-                $delete_btn = "<i title=\"" . __('Delete', 'manageentities')
-                    . "\" class=\"ti ti-trash pointer\" id='delete_" . $user->fields['id'] . "'"
-                    . " onclick=\"if(confirm('" . __('This action is irreversible. Continue ?', 'manageentities')
-                    . "')){" . $fn . "();}\"></i>";
-
-                $delete_js[] = [
-                    'fn'              => $fn,
-                    'idDivAjax'       => $idDivAjax,
-                    'url'             => $ajax_url,
-                    'stakeholder_id'  => $stakeholder['id'],
-                    'contractdays_id' => $item->fields['id'],
-                    'id_dp_nbdays'    => "nb_days" . $stakeholder['plugin_manageentities_contractdays_id'],
-                ];
-            }
-
+            // Structured data: the template escapes it, nothing is concatenated as HTML here
             $entries[] = [
-                'row_id'  => 'row_' . $stakeholder['id'],
-                'user'    => $user_link,
-                'nb_days' => "<span id='td_user_id" . $stakeholder['id'] . "'>"
-                    . (float) $stakeholder['number_affected_days'] . '&nbsp;' . _n('Day', 'Days', 2)
-                    . "</span>",
-                'actions' => $delete_btn,
+                'row_id'         => 'row_' . $stakeholder['id'],
+                'stakeholder_id' => (int) $stakeholder['id'],
+                'user_url'       => $user->getLinkURL(),
+                'user_name'      => $dbu->formatUserName(
+                    $user->fields['id'],
+                    $user->fields['name'],
+                    $user->fields['realname'],
+                    $user->fields['firstname'],
+                ),
+                'nb_days'        => (float) $stakeholder['number_affected_days'],
             ];
         }
 
         TemplateRenderer::getInstance()->display('@manageentities/interventionstakeholder_list.html.twig', [
             'id_to_use'  => $idToUse,
-            'can_create' => $can_create,
+            'can_create' => $this->canCreate(),
             'entries'    => $entries,
-            'delete_js'  => $delete_js,
-            'ajax_url'   => $ajax_url,
+            'ajax_url'   => PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/interventionstakeholderactions.php",
         ]);
     }
 
-
     /**
-     * Security (JS injection): $idToUse is concatenated straight into the JavaScript these
-     * two methods emit, and every caller passes $_POST['contractdays_id'] verbatim. The
-     * closure guarding the endpoint casts that value for its own lookup but leaves the raw
-     * string in $_POST, so a payload closing the selector string escaped into the script the
-     * browser executes. Typing the parameter makes the identifier an integer whatever the
-     * caller hands over, which is the only shape a row id can take; the call sites cast as
-     * well so that a non-numeric value is rejected as 0 rather than raising a TypeError.
+     * Show or hide the add form of a contract day, depending on the days left to affect.
      *
      * @param int $idToUse identifier of the contract day whose form block is toggled
      */
-    public function hideAddForm(int $idToUse)
+    public function toggleAddForm(int $idToUse, bool $visible): void
     {
-        $this->showHeaderJS();
-        echo "var tbl = $('#global_form_content" . $idToUse . "').hide();";
-        $this->closeFormJS();
-    }
-
-    /**
-     * @param int $idToUse identifier of the contract day whose form block is toggled
-     */
-    public function showAddForm(int $idToUse)
-    {
-        $this->showHeaderJS();
-        echo "var tbl = $('#global_form_content" . $idToUse . "').show();";
-        $this->closeFormJS();
+        $this->renderAction('form', [
+            'contractdays_id' => $idToUse,
+            'visible'         => $visible,
+        ]);
     }
 
 
@@ -344,13 +229,10 @@ class InterventionStakeholder extends CommonDBTM
         $idToUse   = ($item->getType() == InterventionStakeholder::getType())
             ? $item->fields['plugin_manageentities_contractdays_id']
             : $item->fields['id'];
-        $idDivAjax = "tabstakeholderajax" . $idToUse;
 
         if (!isset($options['display_list']) || $options['display_list'] != "false") {
             $this->listStakeholders($item);
         }
-
-        echo "<div id='divAjaxDisplay" . $idToUse . "'></div>";
 
         if (!$this->canCreate()) {
             return;
@@ -382,74 +264,18 @@ class InterventionStakeholder extends CommonDBTM
         ]);
         $nbdays_dropdown_html = ob_get_clean();
 
-        $add_fn   = "addStakeholder" . $idToUse;
-        $list_ids = [
-            "dropdown_nb_days" . $idToUse                 => ['dropdown', 'nb_days'],
-            "dropdown_users_id_tech" . $idToUse . $idUser => ['dropdown', 'users_id_tech'],
-        ];
-        $params   = [
-            'action'          => 'add_user_datas',
-            'id_dp_nbdays'    => "dropdown_nb_days" . $idToUse,
-            'id_div_ajax'     => $idDivAjax,
-            'contractdays_id' => $item->fields['id'],
-        ];
-
         TemplateRenderer::getInstance()->display('@manageentities/interventionstakeholder_form.html.twig', [
             'id_to_use'            => $idToUse,
-            'id_div_ajax'          => $idDivAjax,
             'nb_days'              => $nbDays,
             'unit'                 => $unit,
             'user_dropdown_html'   => $user_dropdown_html,
             'nbdays_dropdown_html' => $nbdays_dropdown_html,
-            'id_user_field'        => "dropdown_users_id_tech" . $idUser,
-            'add_fn'               => $add_fn,
+            'user_field'           => Html::cleanId('dropdown_users_id_tech' . $idToUse . $idUser),
+            'nbdays_field'         => Html::cleanId('dropdown_nb_days' . $rand),
+            'contractdays_id'      => (int) $item->fields['id'],
             'ajax_url'             => $url,
-            'list_ids'             => $list_ids,
-            'params'               => $params,
         ]);
     }
-
-    public static function jsGetElementbyID($id)
-    {
-        return "$('#$id')";
-    }
-
-    public function showJSfunction($functionName, $idDivAjax, $url, $listId, $params, $additionalDiv = null)
-    {
-        $this->showHeaderJS();
-        echo "function " . $functionName . "() {\n";
-
-        $divReturned = $additionalDiv ?? $idDivAjax;
-
-        echo self::jsGetElementbyID($divReturned) . ".load(\n            '" . $url . "'\n";
-        echo ",{";
-        $first = true;
-        foreach ($listId as $key => $val) {
-            if (!$first) {
-                echo ",";
-            }
-            $first = false;
-            switch ($val[0]) {
-                case "checkbox":
-                    echo $val[1] . ":" . self::jsGetElementbyID(Html::cleanId($key)) . ".is(':checked')";
-                    break;
-                default:
-                    echo $val[1] . ":" . self::jsGetElementbyID(Html::cleanId($key)) . ".val()";
-                    break;
-            }
-        }
-        foreach ($params as $key => $val) {
-            if (!$first) {
-                echo ",";
-            }
-            $first = false;
-            echo $key . ":'" . $val . "'";
-        }
-        echo "}\n);";
-        echo "}";
-        $this->closeFormJS();
-    }
-
 
     public function getNbAvailiableDay($contractdays_id)
     {
@@ -472,56 +298,18 @@ class InterventionStakeholder extends CommonDBTM
 
 
     /**
-     * Display a feedback message as a core Bootstrap modal.
+     * Display a feedback message in a core modal.
      *
-     * $with and $height are kept so existing callers keep working: the core modal sizes
-     * itself, so both are ignored.
+     * The title and the message are inserted as text by public/scripts/interventionstakeholder.js.
      */
-    public function showMessage($message, $messageType, $with = -1, $height = -1)
+    public function showMessage(string $message, int $messageType): void
     {
-        switch ($messageType) {
-            case ERROR:
-                $icon       = 'ti ti-alert-triangle';
-                $color      = 'orange';
-                $alertTitle = __('Warning');
-                break;
-            case INFO:
-            default:
-                $icon       = 'ti ti-info-circle';
-                $color      = 'forestgreen';
-                $alertTitle = _n('Information', 'Informations', 1);
-                break;
-        }
-
-        // glpi_alert() writes the title into the modal header as HTML, so the icon markup is
-        // assembled here while the translated label is escaped before being concatenated.
-        $title = "<i class='" . $icon . "' style='color:" . $color . "'></i>&nbsp;"
-            . htmlspecialchars((string) $alertTitle, ENT_QUOTES);
-
-        // Both payloads are emitted inside an inline <script>. json_encode writes the string
-        // delimiters itself, so only the flags that keep the block from being closed early are
-        // wanted here: JSON_HEX_QUOT and JSON_HEX_APOS would break the literals.
-        // 'message' stays an HTML sink, as it was in the jQuery UI version this replaces.
-        $json_flags = JSON_HEX_TAG | JSON_HEX_AMP;
-
-        $this->showHeaderJS();
-        echo 'glpi_alert({'
-            . 'title: ' . json_encode($title, $json_flags) . ','
-            . 'message: ' . json_encode($message, $json_flags)
-            . '});';
-        $this->closeFormJS();
+        $this->renderAction('message', [
+            'type'    => $messageType === ERROR ? 'error' : 'info',
+            'title'   => $messageType === ERROR ? __('Warning') : _n('Information', 'Informations', 1),
+            'message' => $message,
+        ]);
     }
-
-    private function showHeaderJS()
-    {
-        echo "\n<script type='text/javascript'>\n";
-    }
-
-    private function closeFormJS()
-    {
-        echo "</script>\n";
-    }
-
 
     public static function install(Migration $migration)
     {

@@ -401,47 +401,6 @@ class ContractDay extends CommonDBTM
         return true;
     }
 
-    /**
-     * Add a new contract day
-     *
-     * @param Contract $contract
-     * @param $options
-     */
-    public static function addNewContractDay(\Contract $contract, $options = [])
-    {
-        $contract_id = $contract->fields['id'];
-        $canEdit = $contract->can($contract_id, UPDATE);
-        $addButton = "";
-
-        if (Session::haveRight('plugin_manageentities', UPDATE) && $canEdit) {
-            $rand = mt_rand();
-
-            $addButton = "<form method='post' name='contractDays_form'.$rand.'' id='contractDays_form" . $rand . "'
-               action='" . Toolbox::getItemTypeFormURL(
-                ContractDay::class,
-            ) . "?contract_id=" . $contract->fields['id'] . "'>";
-            $addButton .= Html::hidden('contract_id', ['value' => $contract_id]);
-            $addButton .= Html::hidden('id', ['value' => '']);
-            $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'addperiod', 'class' => 'btn btn-primary']);
-        }
-
-        if (isset($options['title'])) {
-            echo '<table class="tab_cadre_fixe">';
-            echo '<tr><th>' . $options['title'] . '</th></tr>';
-            echo '<tr class="tab_bg_1">
-               <td class="center">';
-            echo $addButton;
-            Html::closeForm();
-            echo '</td></tr></table>';
-        } else {
-            echo '<tr class="tab_bg_1">
-               <td class="center" colspan="' . $options['colspan'] . '">';
-            echo $addButton;
-            Html::closeForm();
-            echo '</td></tr>';
-        }
-    }
-
     public static function showForContract(\Contract $contract)
     {
         $rand      = mt_rand();

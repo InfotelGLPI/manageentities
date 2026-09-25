@@ -41,8 +41,28 @@
 
             <tr class="tab_bg_1">
                 <th>{{ __('Technicians', 'manageentities') }}</th>
-                <td>{{ technicians_html|raw }}</td>
-                <td>{{ add_tech_html|raw }}</td>
+                <td>
+                    {% if is_task_list %}
+                        {% for tech in technicians %}
+                            {{ tech.name }}
+                            {% if tech.delete_onclick is not empty %}
+                                &nbsp;<a class="pointer" name="deleteTech{{ loop.index }}_{{ add_tech_rand }}" onclick="{{ tech.delete_onclick }}">
+                                    <i class="ti ti-trash" title="{{ _x('button', 'Delete permanently') }}"></i>
+                                </a>
+                            {% endif %}
+                            {% if not loop.last %}<br>{% endif %}
+                        {% else %}
+                            <span style="font-weight:bold; color:red">{{ __('Please assign a technician to your tasks', 'manageentities') }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td>
+                    {# User dropdown rendered by the core #}
+                    {{ add_tech_html|raw }}
+                    &nbsp;<a class="pointer" name="add_tech{{ add_tech_rand }}" onclick="{{ add_tech_onclick }}">
+                        <i class="ti ti-plus" title="{{ __('Add a technician', 'manageentities') }}"></i>
+                    </a>
+                </td>
             </tr>
 
             {% if critype_html is not null %}

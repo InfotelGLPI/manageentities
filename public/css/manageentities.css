@@ -171,3 +171,34 @@ div#tabcontent {
    border-radius: 2px;
    background-color: color-mix(in srgb, var(--me-state-color, transparent), var(--tblr-bg-surface) var(--me-state-mix, 0%));
 }
+
+/*
+ * "Clients by tech lead" (templates/techlead/clients_by_tech.html.twig): filter of the client
+ * lists on the "Main tech lead" column, driven by the radio buttons of the card header.
+ * The placeholder row only shows when the filter hides every client of a tech lead.
+ */
+.me-techlead-card:has(input[value="main"]:checked) tr[data-me-main="0"],
+.me-techlead-card:has(input[value="other"]:checked) tr[data-me-main="1"] {
+   display: none;
+}
+
+.me-techlead-card tr.me-techlead-filter-empty {
+   display: none;
+}
+
+.me-techlead-card:has(input[value="main"]:checked) tbody:not(:has(tr[data-me-main="1"])) tr.me-techlead-filter-empty,
+.me-techlead-card:has(input[value="other"]:checked) tbody:not(:has(tr[data-me-main="0"])) tr.me-techlead-filter-empty {
+   display: table-row;
+}
+
+/* Counts of the tech lead cards and of the unfolded lists follow the same filter */
+.me-techlead-card .me-techlead-count:not([data-me-count="all"]),
+.me-techlead-card:has(input[value="main"]:checked) .me-techlead-count[data-me-count="all"],
+.me-techlead-card:has(input[value="other"]:checked) .me-techlead-count[data-me-count="all"] {
+   display: none;
+}
+
+.me-techlead-card:has(input[value="main"]:checked) .me-techlead-count[data-me-count="main"],
+.me-techlead-card:has(input[value="other"]:checked) .me-techlead-count[data-me-count="other"] {
+   display: inline;
+}

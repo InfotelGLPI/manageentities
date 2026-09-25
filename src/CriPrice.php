@@ -29,7 +29,6 @@
 
 namespace GlpiPlugin\Manageentities;
 
-use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use DBConnection;
@@ -39,7 +38,6 @@ use GlpiPlugin\Manageentities\Config;
 use Html;
 use Migration;
 use Session;
-use Toolbox;
 
 class CriPrice extends CommonDBTM
 {
@@ -161,12 +159,12 @@ class CriPrice extends CommonDBTM
 
         // Capture CriType dropdown
         ob_start();
-        $rand_critype = \Dropdown::show(CriType::class, [
+        \Dropdown::show(CriType::class, [
             'name'      => 'plugin_manageentities_critypes_id',
             'value'     => $this->fields['plugin_manageentities_critypes_id'],
             'entity'    => $options['parent']->getField('entities_id'),
             'used'      => $used_critypes,
-            'on_change' => 'manageentities_loadSelectPrice();',
+            'on_change' => CriDetail::CHANGE_EVENT_JS,
         ]);
         $critype_html = ob_get_clean();
 
@@ -190,7 +188,6 @@ class CriPrice extends CommonDBTM
             'params'             => $options,
             'is_day'             => $is_day,
             'critype_html'       => $critype_html,
-            'rand_critype'       => $rand_critype,
             'is_default_html'    => $is_default_html,
             'select_price_html'  => $select_price_html,
             'price'              => Html::formatNumber($this->fields['price']),
@@ -225,7 +222,7 @@ class CriPrice extends CommonDBTM
                 }
             }
         }
-        \Dropdown::showFromArray('select_critype', $data, ['on_change' => "manageentities_loadPrice(this.value)"]);
+        \Dropdown::showFromArray('select_critype', $data, ['on_change' => CriDetail::CHANGE_EVENT_JS]);
     }
 
     /**
@@ -248,27 +245,20 @@ class CriPrice extends CommonDBTM
 
         $data = $this->getItems(0, $item->getField('id'));
         if (!empty($data) && $canedit) {
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<th>" . ContractDay::getTypeName() . "</th>";
-            echo "<th>" . _n('Entity', 'Entities', 1) . "</th>";
-            echo "<th>" . CriPrice::getTypeName() . "</th>";
-            echo "</tr>";
+            $rows = [];
             foreach ($data as $value) {
-                echo "<tr class='tab_bg_2'>";
-                // Stored XSS: entity/contract-day names are stored raw in GLPI 10+, so
-                // escape them (and the id in the URL) before echoing into HTML.
-                echo "<td><a href='" . Toolbox::getItemTypeFormURL(
-                    Contractday::class,
-                ) . "?id=" . (int) $value['plugin_manageentities_contractdays_id'] . "'>"
-                    . htmlspecialchars((string) $value['contractdays_name'], ENT_QUOTES) . "</a></td>";
-                echo "<td>" . htmlspecialchars((string) $value['entities_name'], ENT_QUOTES) . "</td>";
-                echo "<td>" . Html::formatNumber($value["price"], true) . "</td>";
-                echo "</tr>";
+                $rows[] = [
+                    'url'        => ContractDay::getFormURLWithID((int) $value['plugin_manageentities_contractdays_id']),
+                    'contractday' => $value['contractdays_name'],
+                    'entity'     => $value['entities_name'],
+                    'price'      => Html::formatNumber($value["price"], true),
+                ];
             }
-            echo "</table>";
-            echo "</div>";
+            TemplateRenderer::getInstance()->display('@manageentities/criprice_for_critype.html.twig', [
+                'contractday_label' => ContractDay::getTypeName(),
+                'price_label'       => CriPrice::getTypeName(),
+                'rows'              => $rows,
+            ]);
         }
     }
 
@@ -292,31 +282,13 @@ class CriPrice extends CommonDBTM
         $rand    = mt_rand();
         $data    = $this->getItems($item->getField('id'));
 
-        // Capture add button (inline AJAX edition)
-        $add_button_html = '';
-        if ($canedit) {
-            ob_start();
-            echo "<div id='viewcriprice" . $item->fields['id'] . "_$rand'></div>\n";
-            self::getJSEdition(
-                "viewcriprice" . $item->fields['id'] . "_$rand",
-                "viewAddCriprice" . $item->fields['id'] . "_$rand",
-                $this->getType(),
-                -1,
-                ContractDay::class,
-                $item->fields['id'],
-            );
-            echo "<a class='btn btn-primary' href='javascript:viewAddCriprice" . $item->fields['id'] . "_$rand();'>";
-            echo __('Add a new price', 'manageentities') . "</a>\n";
-            $add_button_html = ob_get_clean();
-        }
-
-        $this->listItems($item->fields['id'], $data, $canedit, $rand, $add_button_html);
+        $this->listItems($item->fields['id'], $data, $canedit, $rand);
     }
 
     /**
      * List items for contract days (Twig datatable)
      */
-    public function listItems($ID, $data, $canedit, $rand, $add_button_html = '')
+    public function listItems($ID, $data, $canedit, $rand)
     {
         $config      = Config::getInstance();
         $is_day      = ($config->fields['hourorday'] == Config::DAY);
@@ -366,29 +338,17 @@ class CriPrice extends CommonDBTM
             if ($canedit) {
                 ob_start();
                 Html::showMassiveActionCheckBox(__CLASS__, $field['id']);
-                self::getJSEdition(
-                    "viewcriprice" . $ID . "_$rand",
-                    "viewEditCriprice" . $field['plugin_manageentities_contractdays_id'] . "_" . $field['id'] . "_$rand",
-                    $this->getType(),
-                    $field['id'],
-                    ContractDay::class,
-                    $field['plugin_manageentities_contractdays_id'],
-                );
                 $checkbox_html = ob_get_clean();
             }
 
             $row = [
+                'id'           => $field['id'],
                 '_checkbox'    => $checkbox_html,
                 'critypes_name' => $field['critypes_name'],
                 'price'        => Html::formatNumber($field['price'], false),
                 'is_default'   => \Dropdown::getYesNo($field['is_default']),
                 'row_class'    => $canedit ? 'cursor-pointer' : '',
             ];
-
-            if ($canedit) {
-                $row['row_onclick'] = "viewEditCriprice" . $field['plugin_manageentities_contractdays_id']
-                    . "_" . $field['id'] . "_$rand();";
-            }
 
             if ($multi_entity) {
                 $row['entities_name'] = \Dropdown::getDropdownName('glpi_entities', $field['entities_id']);
@@ -407,7 +367,14 @@ class CriPrice extends CommonDBTM
             'massive_actions_top'   => $massive_actions_top,
             'massive_actions_bottom' => $massive_actions_bottom,
             'massive_form_close'    => $massive_form_close,
-            'add_button_html'       => $add_button_html,
+            // Edition form loaded by public/scripts/criprice.js
+            'editor'                => [
+                'url'          => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/viewsubitem.php',
+                'type'         => self::class,
+                'parenttype'   => ContractDay::class,
+                'parent_field' => ContractDay::getForeignKeyField(),
+                'parents_id'   => (int) $ID,
+            ],
         ]);
     }
 
@@ -544,42 +511,6 @@ class CriPrice extends CommonDBTM
         }
 
         return $input;
-    }
-
-    /**
-     * Manage AJAX showForm display
-     *
-     * @param $toupdate
-     * @param $function_name
-     * @param $itemtype
-     * @param $items_id
-     * @param $parenttype
-     * @param $parents_id
-     *
-     * @global type $CFG_GLPI
-     *
-     */
-    public static function getJSEdition($toupdate, $function_name, $itemtype, $items_id, $parenttype, $parents_id)
-    {
-
-        $dbu = new DbUtils();
-        $parent = $dbu->getItemForItemtype($parenttype);
-
-        echo "\n<script type='text/javascript' >\n";
-        echo "function $function_name() {\n";
-        $params = [
-            'type' => $itemtype,
-            'parenttype' => $parenttype,
-            $parent->getForeignKeyField() => $parents_id,
-            'id' => $items_id,
-        ];
-        Ajax::updateItemJsCode(
-            $toupdate,
-            PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/viewsubitem.php",
-            $params,
-        );
-        echo "};";
-        echo "</script>\n";
     }
 
     public function prepareInputForUpdate($input)

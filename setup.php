@@ -185,6 +185,10 @@ function plugin_init_manageentities()
         // Html::requireJs('charts'), and the script below loads it on the AJAX tab path,
         // where no footer is emitted to honour that request.
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/directhelpdesk-gauges.js';
+        // "Associate to a contract" card of the CRI detail (native ES module, no-op elsewhere)
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/cridetail-contract.js';
+        // Prices of a contract period and their edition form (native ES module, no-op elsewhere)
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/criprice.js';
 
         if (isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
@@ -195,8 +199,14 @@ function plugin_init_manageentities()
                     'scripts/wizard.js',
                 ],
             );
+            // Stakeholders tab of a contract day (native ES module, no jQuery)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/interventionstakeholder.js';
+            // "+ 12 months" button of the contract form (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/contract-add-months.js';
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js';
+                // Contract alert of the unbilled intervention modal (native ES module)
+                $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/directhelpdesk-modal.js';
             }
         }
 

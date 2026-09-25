@@ -1,0 +1,69 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+
+{# "Intervention with contract" and "Periods of contract" selectors, built by
+   CriDetail::showContractLinkDropdown() for the CRI detail of a ticket, the CRI report form
+   and the CRI generation wizard. The |raw fragments are core widgets only (Dropdown,
+   tooltip, Ajax refresh of #show_contractdays); every name coming from the database is
+   escaped here.
+   layout 'table' wraps the row in its own table, layout 'rows' emits the bare row for a
+   4-column host table. #}
+{% set label_tag = layout == 'rows' ? 'td' : 'th' %}
+{% if layout == 'table' %}<table class="tab_cadre" style="margin:0px">{% endif %}
+{% if out_of_contract|default(false) %}
+    <tr class="tab_bg_1">
+        <th>{{ __('Out of contract', 'manageentities') }}</th>
+    </tr>
+{% else %}
+    <tr class="tab_bg_1">
+        <{{ label_tag }}>{{ __('Intervention with contract', 'manageentities') }}</{{ label_tag }}>
+        <td>
+            {% if not has_contracts %}
+                {{ __('No active contracts', 'manageentities') }}
+            {% elseif type == 'ticket' %}
+                {{ contract_field|raw }}
+            {% else %}
+                {{ contract_name }}
+            {% endif %}
+            {% if contract_tooltip %}
+                &nbsp;{{ contract_tooltip|raw }}
+            {% endif %}
+            {{ contract_ajax|raw }}
+        </td>
+        <{{ label_tag }}>{{ __('Periods of contract', 'manageentities') }}</{{ label_tag }}>
+        <td>
+            {% if type == 'ticket' %}
+                {# Rebuilt by ajax/dropdownContract.php when the contract changes #}
+                <span id="show_contractdays">{{ contractday_field|raw }}</span>
+            {% else %}
+                {{ contractday_name }}
+            {% endif %}
+        </td>
+    </tr>
+{% endif %}
+{% if layout == 'table' %}</table>{% endif %}

@@ -630,17 +630,18 @@ class Monthly extends CommonDBTM
         $query = ContractDay::queryOldContractDaywithInterventions($date);
         $iterator = $DB->request($query);
         if (count($iterator) > 0 && $output_type == search::HTML_OUTPUT) {
-            echo "<div class = 'alert alert-warning d-flex'>" . __(
-                'Warning : There are supplementary interventions which depends on a prestation with a earlier end date',
-                'manageentities',
-            ) . "</div>";
-            echo _n('Ticket', 'Tickets', count($iterator));
-            echo " : ";
+            $tickets = [];
             foreach ($iterator as $data) {
                 $ticket = new Ticket();
                 $ticket->getFromDB($data["tickets_id"]);
-                echo $ticket->getLink() . " (" . $data["tickets_id"] . ")<br>";
+                $tickets[] = [
+                    'id'   => (int) $data["tickets_id"],
+                    'link' => $ticket->getLink(),
+                ];
             }
+            TemplateRenderer::getInstance()->display('@manageentities/monthly_old_contractdays_alert.html.twig', [
+                'tickets' => $tickets,
+            ]);
         }
 
         $headers = [];

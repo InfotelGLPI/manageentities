@@ -1,0 +1,54 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# "General follow-up" tab of the helpdesk interface: current contracts on the left, unbilled
+   direct helpdesk interventions (gauge above the table) on the right. The panel contents are
+   rendered by Followup::showFollowUp() and DirectHelpdesk, captured by the caller. #}
+<div class="row g-3">
+    <div class="col-12 {{ directhelpdesk_html is not empty ? 'col-md-6' }}">
+        <div class="card h-100">
+            <div class="card-header" style="background-color: var(--tblr-primary-fg);">
+                <h4 class="mb-3">{{ __('Current contracts', 'manageentities') }}</h4>
+            </div>
+            <div class="card-body">
+                {{ followup_html|raw }}
+            </div>
+        </div>
+    </div>
+    {% if directhelpdesk_html is not empty %}
+        <div class="col-12 col-md-6">
+            <div class="card h-100">
+                <div class="card-header" style="background-color: var(--tblr-primary-fg);">
+                    <h4 class="mb-3">{{ directhelpdesk_title }}</h4>
+                </div>
+                <div class="card-body">
+                    {{ directhelpdesk_html|raw }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>

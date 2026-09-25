@@ -57,14 +57,7 @@ class TicketTask extends CommonDBTM
             return;
         }
 
-        echo '<div class="alert alert-danger d-flex align-items-center gap-2 mb-3" role="alert">';
-        echo '<i class="ti ti-ban fs-4"></i>';
-        echo '<div>';
-        echo '<strong>' . __('Task addition blocked', 'manageentities') . '</strong>';
-        echo '<br>';
-        echo __('No days remaining on this contract period. Task addition is blocked.', 'manageentities');
-        echo '</div>';
-        echo '</div>';
+        TemplateRenderer::getInstance()->display('@manageentities/tickettask_blocked_alert.html.twig');
     }
 
     private static function hasNoRemainingDays(int $tickets_id): bool

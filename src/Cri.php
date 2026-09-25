@@ -74,16 +74,29 @@ class Cri extends CommonDBTM
      */
     private static function getLoadCriFormHandler(string $action, string $modal, array $params): string
     {
+        return htmlspecialchars(self::getLoadCriFormCall($action, $modal, $params));
+    }
+
+    /**
+     * The manageentities_loadCriForm() call itself, not yet escaped for HTML: meant for a Twig
+     * attribute, where the auto-escaping adds the HTML layer
+     *
+     * @param string               $action the manageentities_loadCriForm action
+     * @param string               $modal  the modal to close, as posted
+     * @param array<string, mixed> $params the parameters forwarded to ajax/cri.php
+     *
+     * @return string
+     */
+    private static function getLoadCriFormCall(string $action, string $modal, array $params): string
+    {
         // JSON_HEX_QUOT is wanted here, unlike in the plain JS string sinks: json_encode() emits
         // the delimiters of the literals itself, so nothing of ours depends on a raw quote.
         $flags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
 
-        return htmlspecialchars(
-            "manageentities_loadCriForm("
+        return "manageentities_loadCriForm("
             . json_encode($action, $flags) . ", "
             . json_encode($modal, $flags) . ", "
-            . json_encode($params, $flags) . ");",
-        );
+            . json_encode($params, $flags) . ");";
     }
 
     public function showForm($ID, $options = [])
@@ -128,10 +141,10 @@ class Cri extends CommonDBTM
             );
             $contract_html = ob_get_clean();
         } else {
-            $contract_html = "<table class='tab_cadre' style='margin:0px'>"
-                . "<tr class='tab_bg_1'>"
-                . "<th>" . __('Out of contract', 'manageentities') . "</th>"
-                . "</tr></table>";
+            $contract_html = TemplateRenderer::getInstance()->render('@manageentities/contract_link_dropdown.html.twig', [
+                'layout'          => 'table',
+                'out_of_contract' => true,
+            ]);
             $contractSelected = [
                 'contractSelected' => 0,
                 'contractdaySelected' => 0,
@@ -144,37 +157,22 @@ class Cri extends CommonDBTM
         $technicians_id = $CriTechnician->getTechnicians($ID, true);
         $is_task = self::isTask($ID);
 
-        $technicians_html = '';
+        // Structured data: cri_form.html.twig escapes the names and the handlers itself
+        $technicians = [];
         if ($is_task) {
-            if (!empty($technicians_id)) {
-                $techs = [];
-                foreach ($technicians_id as $remove => $data) {
-                    foreach ($data as $users_id => $users_name) {
-                        $rand = mt_rand();
-                        // getTechnicians() returns formatUserName() output, which GLPI 10+ leaves raw,
-                        // and the fragment built here is rendered with |raw in cri_form.html.twig -
-                        // auto-escaping is off. Escape here, like the twin construction of
-                        // InterventionStakeholder.php does.
-                        $users_name = htmlspecialchars((string) $users_name, ENT_QUOTES);
-                        if ($remove == 'remove') {
-                            $tech_params = $params;
-                            $tech_params['tech_id'] = $users_id;
-                            $techs[] = $users_name . "&nbsp;"
-                                . "<a class='pointer' name='deleteTech$rand' onclick='"
-                                . self::getLoadCriFormHandler('deleteTech', $modal, $tech_params) . "'>"
-                                . "<i class=\"ti ti-trash\" title=\"" . _x('button', 'Delete permanently') . "\"></i>"
-                                . "</a>";
-                        } else {
-                            $techs[] = $users_name;
-                        }
+            foreach ($technicians_id as $remove => $data) {
+                foreach ($data as $users_id => $users_name) {
+                    $delete_onclick = '';
+                    if ($remove == 'remove') {
+                        $tech_params = $params;
+                        $tech_params['tech_id'] = $users_id;
+                        $delete_onclick = self::getLoadCriFormCall('deleteTech', $modal, $tech_params);
                     }
+                    $technicians[] = [
+                        'name'           => (string) $users_name,
+                        'delete_onclick' => $delete_onclick,
+                    ];
                 }
-                $technicians_html = implode('<br>', $techs);
-            } else {
-                $technicians_html = "<span style=\"font-weight:bold; color:red\">" . __(
-                    'Please assign a technician to your tasks',
-                    'manageentities',
-                ) . "</span>";
             }
         }
 
@@ -196,10 +194,8 @@ class Cri extends CommonDBTM
             'right' => 'all',
             'width' => $width,
         ]);
-        $add_tech_html = ob_get_clean();
-        $add_tech_html .= "&nbsp;<a class='pointer' name='add_tech$rand' onclick='"
-            . self::getLoadCriFormHandler('addTech', $modal, $params) . "'>"
-            . "<i class=\"ti ti-plus\" title=\"" . __('Add a technician', 'manageentities') . "\"></i></a>";
+        $add_tech_html    = ob_get_clean();
+        $add_tech_onclick = self::getLoadCriFormCall('addTech', $modal, $params);
 
         // Hidden contract fields + optional CRI-type / moving-number dropdowns.
         $hidden_fields = '';
@@ -350,8 +346,11 @@ class Cri extends CommonDBTM
             'report_id'            => $ID,
             'hidden_fields'        => $hidden_fields,
             'contract_html'        => $contract_html,
-            'technicians_html'     => $technicians_html,
+            'is_task_list'         => $is_task,
+            'technicians'          => $technicians,
             'add_tech_html'        => $add_tech_html,
+            'add_tech_onclick'     => $add_tech_onclick,
+            'add_tech_rand'        => $rand,
             'critype_html'         => $critype_html,
             'critype_label'        => $critype_label,
             'number_moving_html'   => $number_moving_html,
@@ -1100,16 +1099,12 @@ class Cri extends CommonDBTM
             $_SESSION['plugin_manageentities_cri_previews'] = $previews;
 
             if ($config->fields["backup"] == 1) {
-                echo "<form method='post' name='formReport'>";
-                echo Html::hidden('REPORT_ID', ['value' => $p['REPORT_ID']]);
-                echo Html::hidden('REPORT_SOUS_CONTRAT', ['value' => $sous_contrat]);
-
                 if ($config->fields['hourorday'] == Config::HOUR) {
-                    echo Html::hidden('REPORT_ACTIVITE', ['value' => 'hour']);
+                    $report_activite = 'hour';
                 } elseif ($config->fields['useprice'] == Config::PRICE) {
-                    echo Html::hidden('REPORT_ACTIVITE', ['value' => $p['REPORT_ACTIVITE']]);
+                    $report_activite = $p['REPORT_ACTIVITE'];
                 } else {
-                    echo Html::hidden('REPORT_ACTIVITE', ['value' => 'noprice']);
+                    $report_activite = 'noprice';
                 }
                 $p['REPORT_DESCRIPTION'] = stripcslashes($p['REPORT_DESCRIPTION']);
                 $p['REPORT_DESCRIPTION'] = str_replace("\\\\", "\\", $p['REPORT_DESCRIPTION']);
@@ -1121,14 +1116,19 @@ class Cri extends CommonDBTM
                 // editor: this preview step only needs to forward the value already entered in the
                 // first modal, so a plain hidden field is enough (the PDF is regenerated from it on
                 // save). A richtext textarea here rendered a useless empty TinyMCE editor.
-                echo Html::hidden('REPORT_DESCRIPTION', ['value' => $p['REPORT_DESCRIPTION']]);
-                echo Html::hidden('INTERVENANTS', ['value' => $intervenants]);
-                echo Html::hidden('documents_id', ['value' => $p['documents_id']]);
-                echo Html::hidden('CONTRAT', ['value' => $p['CONTRAT']]);
-                echo Html::hidden('CONTRACTDAY', ['value' => $p['CONTRACTDAY']]);
-                echo Html::hidden('WITHOUTCONTRACT', ['value' => $p['WITHOUTCONTRACT']]);
-                echo Html::hidden('number_moving', ['value' => $p['number_moving']]);
-                echo Html::hidden('REPORT_ACTIVITE_ID', ['value' => $p['REPORT_ACTIVITE_ID']]);
+                $hidden_fields = [
+                    'REPORT_ID'           => $p['REPORT_ID'],
+                    'REPORT_SOUS_CONTRAT' => $sous_contrat,
+                    'REPORT_ACTIVITE'     => $report_activite,
+                    'REPORT_DESCRIPTION'  => $p['REPORT_DESCRIPTION'],
+                    'INTERVENANTS'        => $intervenants,
+                    'documents_id'        => $p['documents_id'],
+                    'CONTRAT'             => $p['CONTRAT'],
+                    'CONTRACTDAY'         => $p['CONTRACTDAY'],
+                    'WITHOUTCONTRACT'     => $p['WITHOUTCONTRACT'],
+                    'number_moving'       => $p['number_moving'],
+                    'REPORT_ACTIVITE_ID'  => $p['REPORT_ACTIVITE_ID'],
+                ];
 
                 $params = [
                     'job' => $job->fields['id'],
@@ -1136,13 +1136,11 @@ class Cri extends CommonDBTM
                     'root_doc' => PLUGIN_MANAGEENTITIES_WEBDIR,
                     'toupdate' => $options['toupdate'],
                 ];
-                echo "<p><input type='button' name='save_cri' value=\""
-                    . __('Save the intervention report', 'manageentities')
-                    . "\" class='submit btn btn-primary manageentities_button' onClick='"
-                    . self::getLoadCriFormHandler('saveCri', (string) $options['modal'], $params) . "'></p>";
-
-                echo "<IFRAME style='width:500px;height:700px' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/" . rawurlencode($seefilename) . "' scrolling=none frameborder=1></IFRAME>";
-                Html::closeForm();
+                TemplateRenderer::getInstance()->display('@manageentities/cri_preview.html.twig', [
+                    'hidden_fields' => $hidden_fields,
+                    'save_onclick'  => self::getLoadCriFormCall('saveCri', (string) $options['modal'], $params),
+                    'preview_url'   => PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/" . rawurlencode($seefilename),
+                ]);
             }
 
 

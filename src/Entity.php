@@ -248,36 +248,24 @@ class Entity extends CommonGLPI
                         $direct = new DirectHelpdesk();
                         $items  = $direct->find(['is_billed' => 0, 'entities_id' => $entities], ['date']);
 
-                        // Display the two panels side by side: current contracts on the
-                        // left, unbilled interventions (gauge above the table) on the right.
-                        echo "<div class='row g-3'>";
-
-                        echo "<div class='col-12 " . ($items ? "col-md-6" : "") . "'>";
-                        echo "<div class='card h-100'>";
-                        echo "<div class='card-header' style='background-color: var(--tblr-primary-fg);'>";
-                        echo "<h4 class='mb-3'>" . htmlspecialchars(__('Current contracts', 'manageentities')) . "</h4>";
-                        echo "</div>";
-                        echo "<div class='card-body'>";
+                        // Both panels are rendered by legacy methods which echo their output
+                        ob_start();
                         Followup::showFollowUp($_GET);
-                        echo "</div>";
-                        echo "</div>";
-                        echo "</div>";
+                        $followup_html = ob_get_clean();
 
+                        $directhelpdesk_html = '';
                         if ($items) {
-                            echo "<div class='col-12 col-md-6'>";
-                            echo "<div class='card h-100'>";
-                            echo "<div class='card-header' style='background-color: var(--tblr-primary-fg);'>";
-                            echo "<h4 class='mb-3'>" . htmlspecialchars(DirectHelpdesk::getTypeName(2)) . "</h4>";
-                            echo "</div>";
-                            echo "<div class='card-body'>";
+                            ob_start();
                             DirectHelpdesk::showDashboard();
                             DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($entities);
-                            echo "</div>";
-                            echo "</div>";
-                            echo "</div>";
+                            $directhelpdesk_html = ob_get_clean();
                         }
 
-                        echo "</div>";
+                        TemplateRenderer::getInstance()->display('@manageentities/entity/followup_helpdesk.html.twig', [
+                            'followup_html'       => $followup_html,
+                            'directhelpdesk_title' => DirectHelpdesk::getTypeName(2),
+                            'directhelpdesk_html' => $directhelpdesk_html,
+                        ]);
                     } else {
                         Followup::showFollowUp($_GET);
                     }
@@ -335,9 +323,9 @@ class Entity extends CommonGLPI
                             if (!$has_docs) {
                                 continue;
                             }
-                            echo "<h4 class='mt-3 ms-3'><i class='ti ti-building me-1'></i>"
-                                . htmlspecialchars($entity->fields['completename'])
-                                . "</h4>";
+                            TemplateRenderer::getInstance()->display('@manageentities/entity/documents_heading.html.twig', [
+                                'entity_name' => $entity->fields['completename'],
+                            ]);
                         }
                         // withtemplate=2 suppresses the add form in tree mode
                         Document_Item::showForItem($entity, $is_single ? 0 : 2);
@@ -395,11 +383,10 @@ class Entity extends CommonGLPI
 
     public static function showManageentitiesHeader($subtitle = '')
     {
-        echo "<h3><div class='alert alert-secondary' role='alert'>";
-        // completename of the active entity, editable by whoever administers that entity.
-        echo __('Portal', 'manageentities') . " " . htmlspecialchars((string) $_SESSION["glpiactive_entity_name"]);
-        echo '<br/>' . $subtitle;
-        echo "</div></h3>";
+        TemplateRenderer::getInstance()->display('@manageentities/entity/portal_header.html.twig', [
+            'entity_name' => $_SESSION["glpiactive_entity_name"] ?? '',
+            'subtitle'    => $subtitle,
+        ]);
     }
 
     public function showDescription($entities)
@@ -561,14 +548,9 @@ class Entity extends CommonGLPI
 
     public function showReferences($instID)
     {
-        global $DB, $CFG_GLPI;
-
-        $entity = new \Entity();
-        $entity->getFromDB($_SESSION["glpiactive_entity"]);
+        global $DB;
 
         self::showManageentitiesHeader(__('References', 'manageentities'));
-
-        echo "<table class='tab_cadre' width='60%'>";
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -591,89 +573,29 @@ class Entity extends CommonGLPI
             'ORDERBY' => 'year DESC',
         ]);
 
-        $year = "";
-        $debug = [];
+        $years       = [];
+        $debug       = [];
         $entity_logo = new EntityLogo();
-        $entity = new \Entity();
-        $i = 0;
+        $entity      = new \Entity();
 
         foreach ($iterator as $data) {
-            if ($entity->getFromDB($data['entities_id'])) {
-                $debug[$data['entities_id']] = [
-                    'name' => $entity->getName(),
-                    'signature' => $data['signature'],
-                ];
-
-                if (empty($year) || $year != $data['year']) {
-                    $year = $data['year'];
-                    if ($i % 2 != 0) {
-                        echo "<td colspan='2'></td>";
-                        echo "</tr>";
-                    }
-
-                    $i = 0;
-
-                    echo "<tr>";
-                    echo "<th colspan='4'>" . $data['year'] . "</th>";
-                    echo "</tr>";
-                }
-
-                if ($i % 2 == 0) {
-                    echo "<tr>";
-                }
-
-                // Escape: getName() returns the raw DB name (GLPI 10+ stores it
-                // unescaped), so echoing it directly would be a stored XSS sink.
-                echo "<td>" . htmlspecialchars((string) $entity->getName()) . "</td>";
-
-                if ($logos = $entity_logo->find(['entities_id' => $data['entities_id']])) {
-                    echo "<td>";
-                    foreach ($logos as $logo) {
-                        echo "<img height='50px' alt=\"" . __s('Picture') . "\"
-                src='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $logo["logos_id"] . "'>";
-                    }
-
-                    echo "</td>";
-                } else {
-                    echo "<td></td>";
-                }
-
-                $i++;
-                if ($i % 2 == 0) {
-                    echo "</tr>";
-                }
+            if (!$entity->getFromDB($data['entities_id'])) {
+                continue;
             }
+            $debug[] = [
+                'name'      => $entity->getName(),
+                'signature' => Html::convDate($data['signature']),
+            ];
+            $years[$data['year']][] = [
+                'name'  => $entity->getName(),
+                'logos' => array_column($entity_logo->find(['entities_id' => $data['entities_id']]), 'logos_id'),
+            ];
         }
-        if ($i % 2 != 0) {
-            echo "<td colspan='2'></td>";
-            echo "</tr>";
-        }
-        echo "</table>";
 
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            echo "<br><table class='tab_cadre'>";
-            echo "<tr>";
-            echo "<th colspan='2'>" . __('DEBUG') . "</th>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>" . _n('Entity', 'Entities', 1) . "</th>";
-            echo "<th>" . __('Date of signature', 'manageentities') . "</th>";
-            echo "</tr>";
-
-
-            if (count($debug) > 0) {
-                foreach ($debug as $client) {
-                    echo "<tr class='tab_bg_1'>";
-                    // Entity name is stored raw; escape it before echo (debug view).
-                    echo "<td>" . htmlspecialchars((string) $client['name'], ENT_QUOTES) . "</td>";
-
-                    echo "<td>" . Html::convDate($client['signature']) . "</td>";
-                    echo "</tr>";
-                }
-            }
-            echo "</table>";
-        }
+        TemplateRenderer::getInstance()->display('@manageentities/entity/references.html.twig', [
+            'years' => $years,
+            'debug' => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? $debug : [],
+        ]);
     }
 
     /**

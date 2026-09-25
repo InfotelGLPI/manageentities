@@ -208,73 +208,12 @@ class Contract extends CommonDBTM
             return;
         }
 
-        $label = __('+ 12 months', 'manageentities');
-        $title = __('Add 12 months to the initial contract period', 'manageentities');
-
-        echo \Html::scriptBlock("
-(function () {
-    function attachBtn() {
-        var sel = document.querySelector('select[name=\"duration\"]');
-        if (!sel || document.getElementById('manageentities-add-12months')) return;
-
-        var btn = document.createElement('button');
-        btn.type      = 'button';
-        btn.id        = 'manageentities-add-12months';
-        btn.className = 'btn btn-sm btn-outline-secondary ms-2';
-        btn.title     = " . json_encode($title) . ";
-        btn.innerHTML = '<i class=\"ti ti-calendar-plus me-1\"></i>' + " . json_encode($label) . ";
-
-        btn.addEventListener('click', function () {
-            var current = parseInt(sel.value, 10);
-            if (isNaN(current) || current < 1) current = 0;
-            var target = current + 12;
-            if (target > 120) target = 120;
-
-            if (window.jQuery && jQuery(sel).data('select2')) {
-                // Select2 AJAX dropdown: the option list is not pre-loaded in the DOM.
-                // Setting .val(target) without a matching <option> element empties the
-                // selection. We must create the Option ourselves, which requires the
-                // translated label. Fetch it from the same AJAX endpoint Select2 uses.
-                var fieldId = sel.id;
-                var cfg = window.select2_configs && window.select2_configs[fieldId];
-                if (cfg && cfg.url) {
-                    var postData = jQuery.extend({}, cfg.params, {
-                        searchText: String(target),
-                        page: 1,
-                        page_limit: 200
-                    });
-                    jQuery.post(cfg.url, postData, function (data) {
-                        var results = (data && data.results) ? data.results : [];
-                        var found = null;
-                        for (var i = 0; i < results.length; i++) {
-                            if (parseInt(results[i].id, 10) === target) {
-                                found = results[i];
-                                break;
-                            }
-                        }
-                        var labelText = found ? found.text : String(target);
-                        var newOpt = new Option(labelText, target, true, true);
-                        jQuery(sel).empty().append(newOpt).trigger('change');
-                    }, 'json');
-                }
-            } else {
-                sel.value = target;
-                sel.dispatchEvent(new Event('change', {bubbles: true}));
-            }
-        });
-
-        var s2 = sel.parentNode.querySelector('.select2-container');
-        var anchor = s2 || sel;
-        anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', attachBtn);
-    } else {
-        setTimeout(attachBtn, 100);
-    }
-})();
-        ");
+        // The button itself is added next to the duration field by public/scripts/contract-add-months.js
+        TemplateRenderer::getInstance()->display('@manageentities/contract_add_months.html.twig', [
+            'label' => __('+ 12 months', 'manageentities'),
+            'title' => __('Add 12 months to the initial contract period', 'manageentities'),
+            'max'   => 120,
+        ]);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -530,13 +469,7 @@ class Contract extends CommonDBTM
         // Add-contract dropdown
         $add_dropdown_html = '';
         if ($can_edit) {
-            ob_start();
-            echo Html::hidden('entities_id', ['value' => $_SESSION['glpiactive_entity']]);
-            \Dropdown::show('Contract', ['name' => 'contracts_id', 'used' => $used]);
-            echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/setup.templates.php?itemtype=Contract&add=1' target='_blank'>";
-            echo "<i title=\"" . _sx('button', 'Add') . "\" class=\"ti ti-square-plus ms-1\"></i>";
-            echo "</a>";
-            $add_dropdown_html = ob_get_clean();
+            $add_dropdown_html = \Dropdown::show('Contract', ['name' => 'contracts_id', 'used' => $used, 'display' => false]);
         }
 
         TemplateRenderer::getInstance()->display('@manageentities/entity/contracts_tab.html.twig', [

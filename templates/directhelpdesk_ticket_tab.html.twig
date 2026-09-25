@@ -1,0 +1,58 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# "Direct helpdesk" tab of a ticket (DirectHelpdesk_Ticket::displayTabContentForItem()) #}
+{% if rows is not empty %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover table-vcenter">
+            <thead>
+                <tr>
+                    <th>{{ __('Title') }}</th>
+                    <th>{{ __('Date') }}</th>
+                    <th>{{ __('Technician') }}</th>
+                    <th>{{ __('Duration') }}</th>
+                    <th>{{ __('Description') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.date }}</td>
+                        <td>{{ row.technician }}</td>
+                        <td>{{ row.duration }}</td>
+                        <td>{{ row.comment }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        {{ __('No results found') }}
+    </div>
+{% endif %}

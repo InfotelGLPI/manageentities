@@ -30,11 +30,17 @@
         <h3 class="card-title">
             <i class="ti ti-users me-2"></i>
             {{ _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities') }}
-            <span class="badge bg-outline-secondary ms-1">{{ entries|length }}</span>
+            <span class="badge bg-secondary-lt ms-1">{{ entries|length }}</span>
         </h3>
     </div>
     <div class="card-body p-0">
-        <table class="table table-hover table-sm card-table" id="list_stakeholders{{ id_to_use }}">
+        {# Read by public/scripts/interventionstakeholder.js (delete and AJAX refresh) #}
+        <table class="table table-hover table-sm card-table" id="list_stakeholders{{ id_to_use }}"
+               data-me-url="{{ ajax_url }}"
+               data-me-contractdays-id="{{ id_to_use }}"
+               data-me-empty-label="{{ __('No stakeholders have been affected yet.', 'manageentities') }}"
+               data-me-delete-label="{{ __('Delete', 'manageentities') }}"
+               data-me-confirm-label="{{ __('This action is irreversible. Continue ?', 'manageentities') }}">
             <thead>
                 <tr>
                     <th>{{ __('User') }}</th>
@@ -46,10 +52,14 @@
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
                     <tr id="{{ entry.row_id }}">
-                        <td>{{ entry.user|raw }}</td>
-                        <td>{{ entry.nb_days|raw }}</td>
+                        <td><a href="{{ entry.user_url }}" target="_blank">{{ entry.user_name }}</a></td>
+                        {# The id is targeted by the JS refreshing the number of days after an update #}
+                        <td><span id="td_user_id{{ entry.stakeholder_id }}">{{ entry.nb_days }}&nbsp;{{ _n('Day', 'Days', 2) }}</span></td>
                         {% if can_create %}
-                        <td class="text-end">{{ entry.actions|raw }}</td>
+                        <td class="text-end">
+                            <i title="{{ __('Delete', 'manageentities') }}" class="ti ti-trash pointer"
+                               data-me-stakeholder-delete="{{ entry.stakeholder_id }}"></i>
+                        </td>
                         {% endif %}
                     </tr>
                     {% endfor %}
@@ -65,16 +75,3 @@
     </div>
 </div>
 
-{% for js in delete_js %}
-<script type="text/javascript">
-function {{ js.fn }}() {
-    $('#{{ js.idDivAjax }}').load('{{ js.url }}', {
-        action:          'delete_user_datas',
-        id_div_ajax:     '{{ js.idDivAjax }}',
-        id_dp_nbdays:    '{{ js.id_dp_nbdays }}',
-        contractdays_id: '{{ js.contractdays_id }}',
-        stakeholder_id:  '{{ js.stakeholder_id }}'
-    });
-}
-</script>
-{% endfor %}

@@ -27,11 +27,13 @@
  * --------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use GlpiPlugin\Manageentities\Contract as PluginContract;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\ContractState;
+use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\EditorSubscription;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -84,33 +86,21 @@ if (isset($_POST["contracts_id"])) {
             $contractdays_id = $datas['id'];
         }
     }
-    if (isset($contract->fields['states_id']) && $contract->fields['states_id'] > 0) {
-        echo "<span class='me-contract-status-data' style='display:none'>"
-           . htmlspecialchars(Dropdown::getDropdownName("glpi_states", $contract->fields['states_id']), ENT_QUOTES)
-           . "</span>";
-        echo "<span class='me-contract-states-id-data' style='display:none'>"
-           . (int) $contract->fields['states_id']
-           . "</span>";
-    }
-    echo "<span class='me-contract-comment-data' style='display:none'>"
-       . htmlspecialchars($contract->fields['comment'] ?? '', ENT_QUOTES)
-       . "</span>";
-    echo "<span class='me-contract-end-date-data' style='display:none'>"
-       . htmlspecialchars($contract->fields['end_date'] ?? '', ENT_QUOTES)
-       . "</span>";
-
-    // Plugin contract fields — subscription flags read from EditorSubscription
-    $subData = EditorSubscription::getForEntity((int) $contract->fields['entities_id']);
-    echo "<span class='me-contract-editor-sub-data' style='display:none'>"
-       . (int) ($subData['active_editor_suscription'] ?? 0)
-       . "</span>";
-    echo "<span class='me-contract-cloud-data' style='display:none'>"
-       . (int) ($subData['cloud_client'] ?? 0)
-       . "</span>";
-    echo "<span class='me-contract-inet-data' style='display:none'>"
-       . (int) ($subData['internet_publication'] ?? 0)
-       . "</span>";
-
+    // Details of the contract for public/scripts/cridetail-contract.js, as JSON in an
+    // auto-escaped attribute; subscription flags are read from EditorSubscription
+    $subData  = EditorSubscription::getForEntity((int) $contract->fields['entities_id']);
+    $statesId = (int) ($contract->fields['states_id'] ?? 0);
+    TemplateRenderer::getInstance()->display('@manageentities/contract_info.html.twig', [
+        'info' => [
+            'status'     => $statesId > 0 ? Dropdown::getDropdownName('glpi_states', $statesId) : '',
+            'states_id'  => $statesId,
+            'comment'    => $contract->fields['comment'] ?? '',
+            'end_date'   => $contract->fields['end_date'] ?? '',
+            'editor_sub' => (int) ($subData['active_editor_suscription'] ?? 0),
+            'cloud'      => (int) ($subData['cloud_client'] ?? 0),
+            'inet'       => (int) ($subData['internet_publication'] ?? 0),
+        ],
+    ]);
     $restrict = ['entities_id'  => $contract->fields['entities_id'],
         'contracts_id' => $_POST["contracts_id"],
         [
@@ -123,5 +113,6 @@ if (isset($_POST["contracts_id"])) {
     Dropdown::show(ContractDay::class, ['name'      => 'plugin_manageentities_contractdays_id',
         'value'     => $contractdays_id,
         'condition' => $restrict,
-        'width'     => $_POST['width']]);
+        'width'     => (int) ($_POST['width'] ?? 300),
+        'on_change' => CriDetail::CHANGE_EVENT_JS]);
 }

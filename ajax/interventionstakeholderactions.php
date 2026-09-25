@@ -65,7 +65,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                 $nbDays > 0) {
 
                 $idUser         = (int) $_POST['users_id_tech'];
-                $idContractdays = $_POST['contractdays_id'];
+                $idContractdays = (int) $_POST['contractdays_id'];
 
                 // $checkContractDayAccess() validated the parent contract day, not the value
                 // posted with it: users_id_tech comes from the client and is written as is, so a
@@ -90,11 +90,8 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                         $_SESSION['glpi_plugin_manageentities_nbdays'] += $nbDaysAfter;
 
                         $interventionStakeholder->showMessage(__("Stakeholder successfully updated.", "manageentities"), INFO);
-                        $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
-
-                        if ($nbDaysAfter <= 0) {
-                            $interventionStakeholder->hideAddForm((int) ($_POST['contractdays_id'] ?? 0));
-                        }
+                        $interventionStakeholder->reinitListStakeholders($interventionStakeholder);
+                        $interventionStakeholder->toggleAddForm((int) $idContractdays, $nbDaysAfter > 0);
 
                     } else {
                         $interventionStakeholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
@@ -107,11 +104,9 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
 
                     if ($interventionStakeholder->add($interventionStakeholder->fields)) {
                         $interventionStakeholder->showMessage(__("Informations successfully added.", "manageentities"), INFO);
-                        $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays']);
-                        $nbDaysAfter = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
-                        if ($nbDaysAfter == 0) {
-                            $interventionStakeholder->hideAddForm((int) ($_POST['contractdays_id'] ?? 0));
-                        }
+                        $interventionStakeholder->reinitListStakeholders($interventionStakeholder);
+                        $nbDaysAfter = $interventionStakeholder->getNbAvailiableDay($idContractdays);
+                        $interventionStakeholder->toggleAddForm((int) $idContractdays, $nbDaysAfter > 0);
                     } else {
                         $interventionStakeholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
                     }
@@ -142,11 +137,8 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                     $nbDaysAfter                                   = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                     $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDaysAfter;
                     $interventionStakeholder->showMessage(__("Informations successfully deleted.", "manageentities"), INFO);
-                    $interventionStakeholder->reinitListStakeholders($interventionStakeholder, $_POST['contractdays_id'], $_POST['id_dp_nbdays'], true);
-
-                    if ($nbDaysAfter > 0) {
-                        $interventionStakeholder->showAddForm((int) ($_POST['contractdays_id'] ?? 0));
-                    }
+                    $interventionStakeholder->reinitListStakeholders($interventionStakeholder, true);
+                    $interventionStakeholder->toggleAddForm((int) $_POST['contractdays_id'], $nbDaysAfter > 0);
 
                 } else {
                     $interventionStakeholder->showMessage(__("An error happened while deleting the data.", "manageentities"), ERROR);
