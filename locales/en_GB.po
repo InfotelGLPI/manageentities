@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 16:45+0000\n"
+"POT-Creation-Date: 2026-09-25 16:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -917,7 +917,7 @@ msgstr "End date must be after the begin date !"
 #: front/cridetail.form.php:55 front/cridetail.form.php:57
 #: front/addelements.form.php:37 setup.php:244 src/Preference.php:109
 #: src/GenerateCRI.php:944 src/TaskCategory.php:66 src/Profile.php:51
-#: src/Profile.php:102 src/Followup.php:1504 src/Monthly.php:927
+#: src/Profile.php:102 src/Followup.php:1506 src/Monthly.php:927
 #: templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
 msgstr "Entities portal"
@@ -1086,7 +1086,7 @@ msgid ""
 "applied to the contract when all periods are closed."
 msgstr ""
 
-#: src/Followup.php:48 src/Followup.php:1504 src/Entity.php:109
+#: src/Followup.php:48 src/Followup.php:1506 src/Entity.php:109
 #: templates/followup_criterias.html.twig:43
 msgid "General follow-up"
 msgstr "General follow-up"
