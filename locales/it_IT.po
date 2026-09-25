@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 10:40+0000\n"
+"POT-Creation-Date: 2026-09-25 10:58+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2017\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/infotelGLPI/"
@@ -259,7 +259,7 @@ msgstr ""
 msgid "Are you sure you want to permanently delete this subscription?"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:105
+#: templates/techlead/clients_by_tech.html.twig:118
 msgid "As main tech lead"
 msgstr ""
 
@@ -352,7 +352,8 @@ msgstr ""
 #: src/Monthly.php:700 src/Monthly.php:731 src/Dashboard.php:249
 #: src/Dashboard.php:313 src/Dashboard.php:368
 #: templates/entity/unbilled_tab.html.twig:122
-#: templates/techlead/clients_by_tech.html.twig:104
+#: templates/techlead/clients_by_tech.html.twig:74
+#: templates/techlead/clients_by_tech.html.twig:117
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -377,11 +378,11 @@ msgstr ""
 msgid "Clients with hours left unbilled for more than %d months:"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:153
+#: templates/techlead/clients_by_tech.html.twig:155
 msgid "Clients without main tech lead"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:177
+#: templates/techlead/clients_by_tech.html.twig:179
 msgid "Clients without tech lead"
 msgstr ""
 
@@ -991,11 +992,11 @@ msgstr ""
 msgid "Estimated number of remaining days"
 msgstr "Stima dei giorni rimanenti"
 
-#: templates/techlead/clients_by_tech.html.twig:191
+#: templates/techlead/clients_by_tech.html.twig:193
 msgid "Every client has a tech lead"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:167
+#: templates/techlead/clients_by_tech.html.twig:169
 msgid "Every client with tech leads has a main one"
 msgstr ""
 
@@ -1304,12 +1305,11 @@ msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG or JPEG)"
 
 #: templates/entity/techleads_card.html.twig:64
-#: templates/techlead/clients_by_tech.html.twig:88
-#: templates/techlead/clients_by_tech.html.twig:120
+#: templates/techlead/clients_by_tech.html.twig:75
 msgid "Main tech lead"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:78
+#: templates/techlead/clients_by_tech.html.twig:92
 msgid "Main tech lead - click to no longer be the main one"
 msgstr ""
 
@@ -1449,6 +1449,8 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+#: templates/techlead/clients_by_tech.html.twig:94
+#: templates/techlead/clients_by_tech.html.twig:100
 #: templates/contract_detail_form.html.twig:85
 msgid "No"
 msgstr ""
@@ -1568,7 +1570,7 @@ msgid "No tasks whose category can be used"
 msgstr "No tasks whose category can be used"
 
 #: templates/entity/techleads_card.html.twig:92
-#: templates/techlead/clients_by_tech.html.twig:141
+#: templates/techlead/clients_by_tech.html.twig:143
 msgid "No tech lead"
 msgstr ""
 
@@ -2110,6 +2112,10 @@ msgstr ""
 msgid "Setup for Generate Intervention report"
 msgstr ""
 
+#: templates/techlead/clients_by_tech.html.twig:119
+msgid "Share"
+msgstr ""
+
 #: templates/entity/editorsubscription_tab.html.twig:50
 msgid "Show expired subscriptions only"
 msgstr ""
@@ -2263,13 +2269,12 @@ msgid "Team"
 msgstr "Team"
 
 #: src/TechLead.php:50 templates/entity/techleads_card.html.twig:34
-#: templates/techlead/clients_by_tech.html.twig:88
 msgid "Tech lead"
 msgid_plural "Tech leads"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/techlead/clients_by_tech.html.twig:78
+#: templates/techlead/clients_by_tech.html.twig:92
 msgid "Tech lead - click to become the main one"
 msgstr ""
 
@@ -2279,7 +2284,7 @@ msgstr "Technical Assistance"
 
 #: src/GenerateCRI.php:750 src/CriPDF.php:401
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
-#: templates/techlead/clients_by_tech.html.twig:103
+#: templates/techlead/clients_by_tech.html.twig:116
 #: templates/report_occupation_form.html.twig:48
 msgid "Technician"
 msgid_plural "Technicians"
@@ -2632,6 +2637,8 @@ msgstr "Tipo di attivita'"
 msgid "Year"
 msgstr "Anno"
 
+#: templates/techlead/clients_by_tech.html.twig:94
+#: templates/techlead/clients_by_tech.html.twig:100
 #: templates/contract_detail_form.html.twig:83
 msgid "Yes"
 msgstr ""
