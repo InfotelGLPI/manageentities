@@ -28,8 +28,9 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use GlpiPlugin\Manageentities\Cri;
 use GlpiPlugin\Manageentities\Config;
+use GlpiPlugin\Manageentities\Cri;
+use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\GenerateCRI;
 
 $GenerateCri = new GenerateCri();
@@ -99,7 +100,37 @@ if (isset($_POST['generatecri'])) {
     if (!$ticket->can($ticket_id, READ)) {
         throw new AccessDeniedHttpException();
     }
-    $GenerateCri->generateCri($_POST, $ticket_id, $Cri);
+    // generateCri() persists: it writes the report Document and upserts the CriDetail row,
+    // which then drives the remaining days of the contract. Ticket READ is not enough for
+    // that, every other report path requires the cri-create right.
+    if (!$Cri->canCreate()) {
+        throw new AccessDeniedHttpException();
+    }
+    // This branch is a GET, which the CSRF listener never validates: a link or an image
+    // pointing here rewrote the report of whoever opened it. The only legitimate caller is
+    // the redirect issued by the addcridetail POST of front/cri.form.php (CSRF-checked),
+    // which arms a one-time token for the ticket; consume it or refuse.
+    $pending = $_SESSION['plugin_manageentities_cri_download'] ?? [];
+    if (!isset($pending[$ticket_id])) {
+        throw new AccessDeniedHttpException();
+    }
+    unset($_SESSION['plugin_manageentities_cri_download'][$ticket_id]);
+
+    // Rebuild the inputs from the report line of the ticket instead of the (empty) $_POST
+    // of a GET, which rewrote the existing report "without contract" and detached it from
+    // its contract balance.
+    $inputs = [
+        'entities_id'                           => (int) $ticket->fields['entities_id'],
+        'contracts_id'                          => 0,
+        'plugin_manageentities_contractdays_id' => 0,
+    ];
+    $cridetails = (new CriDetail())->find(['tickets_id' => $ticket_id]);
+    $cridetail  = reset($cridetails);
+    if (is_array($cridetail) && $cridetail['withcontract']) {
+        $inputs['contracts_id']                          = (int) $cridetail['contracts_id'];
+        $inputs['plugin_manageentities_contractdays_id'] = (int) $cridetail['plugin_manageentities_contractdays_id'];
+    }
+    $GenerateCri->generateCri($inputs, $ticket_id, $Cri);
 } else {
     // The wizard used to be rendered with no authorization whatsoever, while the POST branch
     // that submits it requires ticket CREATE and the sibling listing front/generatecri.php

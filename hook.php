@@ -990,6 +990,7 @@ function plugin_manageentities_pre_item_form($params)
         return;
     }
     switch ($item->getType()) {
+        case 'Ticket':
         case 'Contract':
             Contract::preItemForm($params);
             break;

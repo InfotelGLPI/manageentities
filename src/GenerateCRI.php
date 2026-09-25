@@ -1244,7 +1244,7 @@ class GenerateCRI extends CommonGLPI
             $input['WITHOUTCONTRACT'] = !((isset($inputs['contracts_id']) && $inputs['contracts_id']) > 0);
             $input['REPORT_ACTIVITE'] = $critypes_default;
             $input['REPORT_DESCRIPTION'] = $desc;
-            $input['entities_id'] = $inputs['entities_id'];
+            $input['entities_id'] = $inputs['entities_id'] ?? 0;
             $input['enregistrement'] = true;
             //      $input['download']           = isset($inputs['download']) ? $inputs['download'] : 0;
             $Cri->generatePdf($input);

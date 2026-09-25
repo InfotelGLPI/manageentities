@@ -71,6 +71,9 @@ if (isset($_POST["addcridetail"])) {
         }
     }
     if (strpos($_SERVER['HTTP_REFERER'] ?? '', "generatecri.form.php") > 0) {
+        // One-time token consumed by the GET download branch of generatecri.form.php, so that
+        // the report generation it triggers can only follow this CSRF-checked POST.
+        $_SESSION['plugin_manageentities_cri_download'][(int) $_POST['tickets_id']] = true;
         Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/generatecri.form.php?download=1&tickets_id=" . (int) $_POST['tickets_id']);
     } else {
         Html::back();

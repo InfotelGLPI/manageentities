@@ -38,7 +38,12 @@ if (isset($_POST['update_user_preferences_manageentities'])) {
     if (isset($_POST['id'])
         && $pref->getFromDB((int) $_POST['id'])
         && (int) $pref->fields['users_id'] === (int) Session::getLoginUserID()) {
-        $pref->update($_POST);
+        // Pin the id to the verified row and never let the owner be posted (also stripped by
+        // Preference::prepareInputForUpdate()).
+        $input       = $_POST;
+        $input['id'] = (int) $pref->getID();
+        unset($input['users_id']);
+        $pref->update($input);
     }
     Html::back();
 }

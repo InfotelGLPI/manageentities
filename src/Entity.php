@@ -152,7 +152,7 @@ class Entity extends CommonGLPI
             if (Session::getCurrentInterface() == 'central'
                 && Session::haveRight(DirectHelpdesk::$rightname, READ)) {
                 $tabs[13] = DirectHelpdesk::createTabEntry(
-                    __('Unplanned interventions', 'manageentities'),
+                    __('Unbilled interventions', 'manageentities'),
                     0,
                     self::class,
                     DirectHelpdesk::getIcon(),

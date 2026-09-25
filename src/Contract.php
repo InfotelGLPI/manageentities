@@ -998,16 +998,19 @@ class Contract extends CommonDBTM
             //                return false;
             //            }
 
-            $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
             $contract = new Contract();
-            $out .= $contract->displayAlertforEntity($entities_id);
-            $out .= '</th></tr>';
-
             if (isset($params['item'])
                 && ($item->getType() == 'Ticket')) {
-                $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
+                // The ticket fields panel is a flex grid (div.row), not a table: table rows
+                // would be dropped by the HTML parser, so emit full-width columns instead.
+                $out .= '<div class="col-12">';
+                $out .= $contract->displayAlertforEntity($entities_id);
                 $direct = new DirectHelpdesk();
                 $out .= $direct->displayAlertforEntity($entities_id);
+                $out .= '</div>';
+            } else {
+                $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
+                $out .= $contract->displayAlertforEntity($entities_id);
                 $out .= '</th></tr>';
             }
 
