@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 10:58+0000\n"
+"POT-Creation-Date: 2026-09-25 11:09+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2017\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/infotelGLPI/"
@@ -44,7 +44,7 @@ msgstr[1] ""
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
 
-#: src/EditorSubscription.php:1018
+#: src/EditorSubscription.php:1062
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
@@ -406,7 +406,7 @@ msgid "Cloud"
 msgstr ""
 
 #: src/EditorSubscription.php:157 src/EditorSubscription.php:180
-#: src/EditorSubscription.php:656
+#: src/EditorSubscription.php:700
 #: src/NotificationTargetEditorSubscription.php:120 hook.php:938
 #: templates/wizard/step4_management.html.twig:130
 #: templates/editorsubscription_fields.html.twig:70
@@ -838,7 +838,7 @@ msgstr ""
 msgid "Editor"
 msgstr ""
 
-#: src/EditorSubscription.php:158 src/EditorSubscription.php:648
+#: src/EditorSubscription.php:158 src/EditorSubscription.php:692
 #: src/NotificationTargetEditorSubscription.php:121
 #: templates/editorsubscription_fields.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:81
@@ -1166,7 +1166,7 @@ msgstr "Initial credit"
 msgid "Initial credit is required"
 msgstr ""
 
-#: src/EditorSubscription.php:181 src/EditorSubscription.php:664 hook.php:951
+#: src/EditorSubscription.php:181 src/EditorSubscription.php:708 hook.php:951
 #: templates/editorsubscription_fields.html.twig:78
 #: templates/cridetail_for_ticket.html.twig:422
 #: templates/contract_detail_form.html.twig:80
@@ -1507,7 +1507,7 @@ msgstr ""
 msgid "No hours left unbilled for more than %d months."
 msgstr ""
 
-#: src/EditorSubscription.php:409
+#: src/EditorSubscription.php:453
 msgid "No level"
 msgstr ""
 
@@ -1889,7 +1889,7 @@ msgstr ""
 msgid "Production"
 msgstr "Production"
 
-#: src/EditorSubscription.php:175 src/EditorSubscription.php:632
+#: src/EditorSubscription.php:175 src/EditorSubscription.php:676
 #: src/NotificationTargetEditorSubscription.php:105
 #: src/NotificationTargetEditorSubscription.php:142
 #: templates/entity/editorsubscription_tab.html.twig:71
@@ -1919,7 +1919,7 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:513
+#: src/EditorSubscription.php:557
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
@@ -2092,7 +2092,7 @@ msgstr "Select an existing price"
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 
-#: src/EditorSubscription.php:946
+#: src/EditorSubscription.php:990
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -2204,7 +2204,7 @@ msgid "Subscription"
 msgstr ""
 
 #: src/SubscriptionLevel.php:47 src/EditorSubscription.php:178
-#: src/EditorSubscription.php:640 src/EditorSubscription.php:695
+#: src/EditorSubscription.php:684 src/EditorSubscription.php:739
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
 #: templates/entity/editorsubscription_tab.html.twig:74
