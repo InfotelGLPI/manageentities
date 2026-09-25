@@ -25,7 +25,8 @@
  # --------------------------------------------------------------------------
  #}
 
-<div class="card mt-3">
+{# Search and "expired only" filter: public/scripts/editorsubscription-tab.js #}
+<div class="card mt-3" data-me-sub-tab>
     <div class="card-header d-flex align-items-center gap-2">
         <h3 class="card-title">
             <i class="ti ti-certificate me-2"></i>
@@ -44,13 +45,14 @@
         <div class="card-options ms-auto d-flex gap-2">
             <div class="input-group input-group-sm" style="width: 220px;">
                 <span class="input-group-text"><i class="ti ti-search"></i></span>
-                <input type="text" id="me_sub_search" class="form-control" placeholder="{{ __('Search') }}">
+                <input type="text" class="form-control" placeholder="{{ __('Search') }}" data-me-sub-search>
             </div>
-            <button type="button" id="me_sub_filter_expired" class="btn btn-sm btn-outline-warning"
+            <button type="button" class="btn btn-sm btn-outline-warning" data-me-sub-expired aria-pressed="false"
                     title="{{ __('Show expired subscriptions only', 'manageentities') }}">
                 <i class="ti ti-clock-exclamation me-1"></i>{{ __('Expired only', 'manageentities') }}
             </button>
-            <a href="{{ export_url }}" id="me_sub_export_btn" class="btn btn-sm btn-outline-secondary">
+            <a href="{{ export_url }}" class="btn btn-sm btn-outline-secondary"
+               data-me-sub-export="{{ {'all': export_url, 'expired': export_url ~ '&sub_expired=1'}|json_encode }}">
                 <i class="ti ti-table-export me-1"></i>{{ __('Export CSV', 'manageentities') }}
             </a>
             {% if can_edit %}
@@ -64,7 +66,7 @@
     <div class="card-body p-0">
         {% if rows|length > 0 %}
         <div class="table-responsive">
-            <table class="table table-hover table-sm mb-0" id="me_sub_table">
+            <table class="table table-hover table-sm mb-0">
                 <thead>
                     <tr>
                         <th>{{ _n('Entity', 'Entities', 1) }}</th>
@@ -118,45 +120,3 @@
     </div>
 </div>
 
-<script>
-(function () {
-    /* ---- expired filter + search ---- */
-    var table     = document.getElementById('me_sub_table');
-    var searchBox = document.getElementById('me_sub_search');
-    var btn       = document.getElementById('me_sub_filter_expired');
-    var exportBtn = document.getElementById('me_sub_export_btn');
-
-    var baseExportUrl    = {{ export_url|json_encode|raw }};
-    var expiredExportUrl = baseExportUrl + '&sub_expired=1';
-    var filterActive     = false;
-
-    function applyFilters() {
-        if (!table) {
-            return;
-        }
-        var search = searchBox ? searchBox.value.trim().toLowerCase() : '';
-        table.querySelectorAll('tbody tr').forEach(function (tr) {
-            var matchesExpired = !filterActive || tr.getAttribute('data-expired') === '1';
-            var matchesSearch  = !search || tr.textContent.toLowerCase().indexOf(search) !== -1;
-            tr.style.display = (matchesExpired && matchesSearch) ? '' : 'none';
-        });
-    }
-
-    if (searchBox) {
-        searchBox.addEventListener('input', applyFilters);
-    }
-
-    if (btn) {
-        btn.addEventListener('click', function () {
-            filterActive = !filterActive;
-            btn.classList.toggle('btn-outline-warning', !filterActive);
-            btn.classList.toggle('btn-warning',          filterActive);
-            applyFilters();
-
-            if (exportBtn) {
-                exportBtn.href = filterActive ? expiredExportUrl : baseExportUrl;
-            }
-        });
-    }
-})();
-</script>

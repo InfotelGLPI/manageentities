@@ -30,7 +30,8 @@
  Variables: wizard_url
  #}
 
-<div id="wizard-addelements">
+{# Settings read by public/scripts/wizard.js (_wizardConfig) #}
+<div id="wizard-addelements" data-me-wizard="{{ {'url': wizard_url, 'id': wizard_id|default('')}|json_encode }}">
     <div class="text-center mb-4">
         <h2>{{ __('Entities portal', 'manageentities') }}</h2>
         <p class="text-muted">{{ __('What would you like to do?', 'manageentities') }}</p>
@@ -40,7 +41,7 @@
 
         <div class="col-sm-5">
             <div class="card h-100 border-2 cursor-pointer" style="cursor:pointer"
-                 onclick="wizardChooseMode('new_entity', WIZARD_URL)">
+                 data-me-wizard-action="choose-mode" data-mode="new_entity">
                 <div class="card-body text-center py-5">
                     <i class="ti ti-building-plus text-primary" style="font-size:3rem"></i>
                     <h4 class="mt-3">{{ __('New client', 'manageentities') }}</h4>
@@ -60,7 +61,7 @@
 
         <div class="col-sm-5">
             <div class="card h-100 border-2" style="cursor:pointer"
-                 onclick="wizardChooseMode('existing_entity', WIZARD_URL)">
+                 data-me-wizard-action="choose-mode" data-mode="existing_entity">
                 <div class="card-body text-center py-5">
                     <i class="ti ti-file-plus text-success" style="font-size:3rem"></i>
                     <h4 class="mt-3">{{ __('New contract', 'manageentities') }}</h4>
@@ -91,8 +92,3 @@
 
     </div>
 </div>
-
-<script>
-    var WIZARD_URL = {{ wizard_url|json_encode|raw }};
-    var WIZARD_ID  = {{ wizard_id|default('')|json_encode|raw }};
-</script>

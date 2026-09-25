@@ -25,6 +25,8 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import '@manageentities/wizard/fields.html.twig' as wizard_fields %}
+
 <div class="wizard-criprices-section mt-3" id="criprices-section-{{ intervention_idx }}">
     <div class="d-flex align-items-center gap-2 mb-2">
         <h4 class="mb-0">
@@ -41,7 +43,7 @@
             <strong>{{ cp.price|number_format(2) }}</strong>
             {% if cp.is_default %}<span class="badge bg-primary-lt">{{ __('Default', 'manageentities') }}</span>{% endif %}
             <button type="button" class="btn btn-sm btn-outline-danger"
-                onclick="deleteCriPrice({{ cp.id }}, this, '{{ wizard_url }}')">
+                data-me-wizard-action="delete-criprice" data-id="{{ cp.id }}">
                 <i class="ti ti-trash"></i>
             </button>
         </div>
@@ -53,7 +55,7 @@
     {# Inline add form — hidden when a rate already exists (no d-flex: Bootstrap !important overrides display:none) #}
     <div class="align-items-center gap-2 mt-2 flex-wrap" id="criprices-form-{{ intervention_idx }}"
         style="{{ has_rate ? 'display:none' : 'display:flex' }}">
-        <div style="min-width:200px">{{ critype_html|raw }}</div>
+        <div style="min-width:200px">{{ wizard_fields.field(critype_field) }}</div>
         <input type="number" step="0.01" min="0"
             id="new_price_{{ intervention_idx }}"
             class="form-control" style="width:130px"
@@ -67,7 +69,7 @@
             </label>
         </div>
         <button type="button" class="btn btn-sm btn-outline-primary"
-            onclick="wizardAddCriPrice({{ intervention_idx }}, {{ rand }}, '{{ wizard_url }}')">
+            data-me-wizard-action="add-criprice" data-idx="{{ intervention_idx }}" data-rand="{{ rand }}">
             <i class="ti ti-plus me-1"></i>{{ __('Add rate', 'manageentities') }}
         </button>
     </div>

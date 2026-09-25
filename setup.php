@@ -198,9 +198,10 @@ function plugin_init_manageentities()
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'] ?? [],
                 [
                     'scripts/scripts-manageentities.js',
-                    'scripts/wizard.js',
                 ],
             );
+            // Entity creation wizard (native ES module, delegated listeners, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/wizard.js';
             // Stakeholders tab of a contract day (native ES module, no jQuery)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/interventionstakeholder.js';
             // "+ 12 months" button of the contract form (native ES module, no-op elsewhere)
@@ -209,6 +210,10 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/config-hourorday.js';
             // "Duplicate" button under the ticket tasks (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/tickettask-clone.js';
+            // Publisher subscription fields: subscription page and wizard step 3 (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/editorsubscription-fields.js';
+            // Search and filter of the publisher subscriptions tab (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/editorsubscription-tab.js';
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js';
                 // Contract alert of the unbilled intervention modal (native ES module)

@@ -438,9 +438,19 @@ class Contract extends CommonDBTM
 
     public function displayAlertforEntity($instID)
     {
+        if (!$this->hasNoDaysLeftForEntity((int) $instID)) {
+            return '';
+        }
+        return TemplateRenderer::getInstance()->render('@manageentities/contract_no_days_alert.html.twig');
+    }
+
+    /**
+     * Whether the entity has signed contracts, none of whose open periods has a day left.
+     */
+    public function hasNoDaysLeftForEntity(int $instID): bool
+    {
         global $DB;
 
-        $alert = "";
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_contracts.*',
@@ -519,11 +529,9 @@ class Contract extends CommonDBTM
                 }
             }
 
-            if ($reste == 0) {
-                $alert = TemplateRenderer::getInstance()->render('@manageentities/contract_no_days_alert.html.twig');
-            }
+            return $reste == 0;
         }
-        return $alert;
+        return false;
     }
 
     /**

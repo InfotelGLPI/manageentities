@@ -90,10 +90,6 @@ switch ($action) {
         WizardController::saveIntervention();
         break;
 
-    case 'add_criprice_block':
-        WizardController::renderCriPriceBlock();
-        break;
-
     case 'save_criprice':
         WizardController::saveCriPrice();
         break;

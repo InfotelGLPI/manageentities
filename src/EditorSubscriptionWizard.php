@@ -71,22 +71,12 @@ class EditorSubscriptionWizard
             $condition = [];
         }
 
+        $completename = '';
+        $entity_name  = '';
         if ($entities_id > 0) {
-            $completename        = Dropdown::getDropdownName('glpi_entities', $entities_id);
-            $entity_dropdown_html = '<input type="hidden" name="entities_id" value="' . $entities_id . '">'
-                . '<input type="text" class="form-control" value="' . htmlspecialchars($completename) . '" readonly disabled>';
-            $parts       = explode(' > ', $completename);
-            $entity_name = trim(end($parts));
-        } else {
-            ob_start();
-            Dropdown::show(\Entity::class, [
-                'name'      => 'entities_id',
-                'rand'      => $rand,
-                'value'     => 0,
-                'condition' => $condition,
-            ]);
-            $entity_dropdown_html = ob_get_clean();
-            $entity_name          = '';
+            $completename = Dropdown::getDropdownName('glpi_entities', $entities_id);
+            $parts        = explode(' > ', $completename);
+            $entity_name  = trim(end($parts));
         }
 
         // Existing subscription pre-fill
@@ -105,7 +95,10 @@ class EditorSubscriptionWizard
                 'page_url'                  => $page_url,
                 'entity_list_url'           => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
                 'entities_id'               => $entities_id,
-                'entity_dropdown_html'      => $entity_dropdown_html,
+                'entity_completename'       => $completename,
+                'entity_condition'          => $condition,
+                'change_event_js'           => CriDetail::CHANGE_EVENT_JS,
+                'lookup_url'                => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/getSubscription.php',
                 'sub_id'                    => $sub['id'] ?? 0,
                 'is_new_sub'                => empty($sub),
                 'sub_name'                  => $sub_name,

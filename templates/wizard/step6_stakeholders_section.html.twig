@@ -25,6 +25,8 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import '@manageentities/wizard/fields.html.twig' as wizard_fields %}
+
 <div class="wizard-stakeholders-section mt-3" id="stakeholders-section-{{ intervention_idx }}">
     <div class="d-flex align-items-center gap-2 mb-2">
         <h4 class="mb-0">
@@ -47,7 +49,7 @@
             <span class="badge bg-secondary-lt">{{ sh.user_name }}</span>
             <span class="text-muted small">{{ sh.number_affected_days|number_format(2) }} {{ _n('day', 'days', sh.number_affected_days, 'manageentities') }}</span>
             <button type="button" class="btn btn-sm btn-outline-danger"
-                onclick="wizardDeleteStakeholder({{ sh.id }}, this, '{{ wizard_url }}')">
+                data-me-wizard-action="delete-stakeholder" data-id="{{ sh.id }}">
                 <i class="ti ti-trash"></i>
             </button>
         </div>
@@ -57,13 +59,13 @@
     {# Inline add form — hidden when no days remain (no d-flex: Bootstrap !important would override display:none) #}
     <div class="align-items-center gap-2 mt-2 flex-wrap" id="stakeholders-form-{{ intervention_idx }}"
         style="{{ credit > 0 and remaining_days is not null and remaining_days <= 0 ? 'display:none' : 'display:flex' }}">
-        <div style="min-width:220px">{{ user_html|raw }}</div>
+        <div style="min-width:220px">{{ wizard_fields.field(user_field) }}</div>
         <input type="number" step="0.5" min="0" max="{{ remaining_days }}"
             id="new_nb_days_{{ intervention_idx }}"
             class="form-control" style="width:110px"
             placeholder="{{ __('Days', 'manageentities') }}">
         <button type="button" class="btn btn-sm btn-outline-secondary"
-            onclick="wizardAddStakeholder({{ intervention_idx }}, {{ rand }}, '{{ wizard_url }}')">
+            data-me-wizard-action="add-stakeholder" data-idx="{{ intervention_idx }}" data-rand="{{ rand }}">
             <i class="ti ti-plus me-1"></i>{{ __('Add user', 'manageentities') }}
         </button>
     </div>

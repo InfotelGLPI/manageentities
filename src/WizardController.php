@@ -587,23 +587,10 @@ class WizardController
     {
         $idx  = (int) ($_POST['idx'] ?? 1);
         $rand = mt_rand();
-        $default_contacttype = 0;
-        try {
-            $default_contacttype = (int) (Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
-        } catch (\Throwable $e) {
-        }
-        TemplateRenderer::getInstance()->display('@manageentities/wizard/step2_contact_block.html.twig', [
-            'idx'              => $idx,
-            'rand'             => $rand,
-            'fields'           => [],
-            'usertitles_html'  => self::buildDropdownHtml(
-                fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'display' => false]),
-            ),
-            'contacttype_html' => self::buildDropdownHtml(
-                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false]),
-            ),
-            'entities_html'    => self::buildSessionEntityHtml("contacts[{$idx}][entities_id]", self::getSession()),
-        ]);
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/wizard/step2_contact_block.html.twig',
+            ['idx' => $idx, 'rand' => $rand] + self::buildContactBlockVars($idx, $rand, self::getSession()),
+        );
         exit;
     }
 
@@ -817,29 +804,16 @@ class WizardController
         $rand = mt_rand();
         $idx  = (int) ($_POST['idx'] ?? 1);
 
-        $cfg = Config::getInstance();
-        $doccat_html = self::buildDocumentCategorySelect(
-            "documents[{$idx}][documentcategories_id]",
-            $rand,
-            (int) ($cfg->fields['wizard_documentcategories_id'] ?? 0),
-        );
-
         TemplateRenderer::getInstance()->display('@manageentities/wizard/step3_document_block.html.twig', [
-            'idx'         => $idx,
-            'rand'        => $rand,
-            'doccat_html' => $doccat_html,
+            'idx'          => $idx,
+            'rand'         => $rand,
+            'doccat_field' => self::dropdownField(DocumentCategory::class, [
+                'name'  => "documents[{$idx}][documentcategories_id]",
+                'rand'  => $rand,
+                'value' => (int) (Config::getInstance()->fields['wizard_documentcategories_id'] ?? 0),
+            ]),
         ]);
         exit;
-    }
-
-    private static function buildDocumentCategorySelect(string $name, int $rand, int $value = 0): string
-    {
-        return (string) Dropdown::show(DocumentCategory::class, [
-            'name'    => $name,
-            'rand'    => $rand,
-            'value'   => $value,
-            'display' => false,
-        ]);
     }
 
     /**
@@ -1076,18 +1050,23 @@ class WizardController
         ];
         self::saveSession($session);
 
-        $rand    = mt_rand();
-        $config  = Config::getInstance();
-        $is_day  = ($config->fields['hourorday'] == Config::DAY);
+        $rand     = mt_rand();
+        $is_day   = (Config::getInstance()->fields['hourorday'] == Config::DAY);
+        $iv       = $session['interventions_data'][$idx];
+        $renderer = TemplateRenderer::getInstance();
 
-        $criprices_html    = self::buildCriPricesSectionHtml($idx, $session['interventions_data'][$idx], $rand, $is_day);
-        $stakeholders_html = self::buildStakeholdersSectionHtml($idx, $session['interventions_data'][$idx], $rand, $session['entities_id']);
-
+        // Injected into #intervention-sections-<idx> by wizardSaveIntervention()
         self::jsonOut([
             'success'           => true,
             'intervention_idx'  => $idx,
-            'criprices_html'    => $criprices_html,
-            'stakeholders_html' => $stakeholders_html,
+            'criprices_html'    => $renderer->render(
+                '@manageentities/wizard/step6_criprices_section.html.twig',
+                self::buildCriPricesSectionVars($idx, $iv, $rand, $is_day),
+            ),
+            'stakeholders_html' => $renderer->render(
+                '@manageentities/wizard/step6_stakeholders_section.html.twig',
+                self::buildStakeholdersSectionVars($idx, $iv, $rand, (int) $session['entities_id']),
+            ),
         ]);
         exit;
     }
@@ -1097,41 +1076,17 @@ class WizardController
         $idx     = (int) ($_POST['idx'] ?? 1);
         $rand    = mt_rand();
         $session = self::getSession();
+        $is_day  = (Config::getInstance()->fields['hourorday'] == Config::DAY);
 
-        $config  = Config::getInstance();
-        $is_day  = ($config->fields['hourorday'] == Config::DAY);
-
-        $contractDates = self::getContractDatesFromSession($session);
-        $cfg = Config::getInstance();
-        $wid        = self::currentWizardId();
-        $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid;
-
-        $mode = $session['wizard_mode'] ?? 'new_entity';
-        $tpl  = $mode === 'existing_entity'
-            ? '@manageentities/wizard/step5_intervention_block.html.twig'
-            : '@manageentities/wizard/step6_intervention_block.html.twig';
-
-        TemplateRenderer::getInstance()->display($tpl, [
-            'idx'                  => $idx,
-            'rand'                 => $rand,
-            'is_day'               => $is_day,
-            'contract_begin_date'  => $contractDates['begin_date'],
-            'contract_end_date'    => $contractDates['end_date'],
-            'contractstate_html'   => self::buildContractStateHtml(
-                "interventions[{$idx}][plugin_manageentities_contractstates_id]",
-                $rand,
-                (int) ($cfg->fields['wizard_contractstate_id'] ?? 0),
-            ),
-            'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int) ($cfg->fields['wizard_contract_type'] ?? 0), $rand),
-            ) : '',
-            'entities_html'        => self::buildSessionEntityHtml("interventions[{$idx}][entities_id]", $session),
-            'contracts_html'       => self::buildSessionContractHtml("interventions[{$idx}][contracts_id]", $session, $rand),
-            'intervention_idx'     => $idx,
-            'criprices_section'    => '',
-            'stakeholders_section' => '',
-            'wizard_url'           => $wizard_url,
-        ]);
+        TemplateRenderer::getInstance()->display(
+            '@manageentities/wizard/step6_intervention_block.html.twig',
+            [
+                'idx'        => $idx,
+                'rand'       => $rand,
+                'is_day'     => $is_day,
+                'wizard_url' => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . self::currentWizardId(),
+            ] + self::buildInterventionBlockVars($idx, $rand, $session, $is_day),
+        );
         exit;
     }
 
@@ -1205,12 +1160,6 @@ class WizardController
 
         $has_rate = !empty($session['interventions_data'][$idx]['criprices'] ?? []);
         self::jsonOut(['success' => true, 'has_rate' => $has_rate, 'intervention_idx' => $idx]);
-    }
-
-    public static function renderCriPriceBlock(): void
-    {
-        // Not used in session-only mode (CriPrices are added inline via wizardAddCriPrice)
-        self::jsonOut(['success' => false]);
     }
 
     // -------------------------------------------------------------------------
@@ -2040,7 +1989,7 @@ class WizardController
             $condition = !empty($allowed_ids) ? ['id' => $allowed_ids] : [];
 
             return [
-                'entity_select_html' => self::buildEntityHtml('entities_id', $session['entities_id'], $rand, $condition),
+                'entity_select_field' => self::entityField('entities_id', (int) $session['entities_id'], $rand, $condition),
             ];
         }
 
@@ -2058,7 +2007,7 @@ class WizardController
 
         return [
             'entity_fields'        => $entity_data,
-            'entities_html'        => self::buildEntityHtml('entities_id', $parent_entities_id, $rand),
+            'entity_field'         => self::entityField('entities_id', $parent_entities_id, $rand),
             'parent_entity_locked' => $forced_entities_id > 0,
             'name_suggestions'     => $name_suggestions,
         ];
@@ -2068,41 +2017,47 @@ class WizardController
     {
         $contacts = [];
         foreach ($session['contacts_data'] as $idx => $cData) {
-            $contacts[$idx] = [
-                'fields'           => $cData,
-                'usertitles_html'  => self::buildDropdownHtml(
-                    fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'value' => $cData['usertitles_id'] ?? 0, 'display' => false]),
-                ),
-                'contacttype_html' => self::buildDropdownHtml(
-                    fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $cData['contacttypes_id'] ?? 0, 'display' => false]),
-                ),
-                'entities_html'    => self::buildSessionEntityHtml("contacts[{$idx}][entities_id]", $session),
-            ];
+            $contacts[$idx] = self::buildContactBlockVars((int) $idx, $rand, $session, $cData);
         }
 
         if (empty($contacts)) {
-            $contacts[1] = self::buildEmptyContactVars(1, $rand, $session);
+            $contacts[1] = self::buildContactBlockVars(1, $rand, $session);
         }
 
         return ['contacts' => $contacts];
     }
 
-    private static function buildEmptyContactVars(int $idx, int $rand, array $session): array
+    /**
+     * Variables of one contact block; $cData is the saved contact, null for a new block.
+     *
+     * @param array<string, mixed>|null $cData
+     * @return array<string, mixed>
+     */
+    private static function buildContactBlockVars(int $idx, int $rand, array $session, ?array $cData = null): array
     {
-        $default_contacttype = 0;
-        try {
-            $default_contacttype = (int) (Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
-        } catch (\Throwable $e) {
+        if ($cData === null) {
+            $contacttypes_id = 0;
+            try {
+                $contacttypes_id = (int) (Config::getInstance()->fields['wizard_contacttypes_id'] ?? 0);
+            } catch (\Throwable $e) {
+            }
+        } else {
+            $contacttypes_id = (int) ($cData['contacttypes_id'] ?? 0);
         }
+
         return [
-            'fields'           => [],
-            'usertitles_html'  => self::buildDropdownHtml(
-                fn() => UserTitle::dropdown(['name' => "contacts[{$idx}][usertitles_id]", 'rand' => $rand, 'display' => false]),
-            ),
-            'contacttype_html' => self::buildDropdownHtml(
-                fn() => ContactType::dropdown(['name' => "contacts[{$idx}][contacttypes_id]", 'rand' => $rand, 'value' => $default_contacttype, 'display' => false]),
-            ),
-            'entities_html'    => self::buildSessionEntityHtml("contacts[{$idx}][entities_id]", $session),
+            'fields'            => $cData ?? [],
+            'usertitle_field'   => self::dropdownField(UserTitle::class, [
+                'name'  => "contacts[{$idx}][usertitles_id]",
+                'rand'  => $rand,
+                'value' => (int) ($cData['usertitles_id'] ?? 0),
+            ]),
+            'contacttype_field' => self::dropdownField(ContactType::class, [
+                'name'  => "contacts[{$idx}][contacttypes_id]",
+                'rand'  => $rand,
+                'value' => $contacttypes_id,
+            ]),
+            'entity_field'      => self::sessionEntityField("contacts[{$idx}][entities_id]", $session),
         ];
     }
 
@@ -2144,30 +2099,6 @@ class WizardController
         $fields = array_merge($session['contract_data'] ?? [], $prefill);
         $v = fn(string $key, mixed $default) => $fields[$key] ?? $default;
 
-        ob_start();
-        GlpiContractType::dropdown([
-            'name'  => 'contracttypes_id',
-            'rand'  => $rand,
-            'value' => $v('contracttypes_id', 0),
-        ]);
-        $contracttype_html = ob_get_clean();
-
-        ob_start();
-        State::dropdown([
-            'name'  => 'states_id',
-            'rand'  => $rand,
-            'value' => $v('states_id', 0),
-        ]);
-        $state_html = ob_get_clean();
-
-        ob_start();
-        \Contract::dropdownAlert(['name' => 'alerting', 'rand' => $rand, 'value' => $v('alerting', 0)]);
-        $alert_html = ob_get_clean();
-
-        ob_start();
-        Dropdown::showNumber('duration', ['rand' => $rand, 'value' => $v('duration', 12), 'min' => 0, 'max' => 120]);
-        $duration_html = ob_get_clean();
-
         // Pre-render existing document rows (for Back navigation)
         $existing_docs = [];
         foreach (($session['documents_ids'] ?? []) as $doc_id) {
@@ -2190,29 +2121,38 @@ class WizardController
         }
 
         $rand_tpl = mt_rand();
-        ob_start();
-        $template_condition = self::getContractTemplateCondition();
-        Dropdown::show(\Contract::class, [
-            'name'        => '_contract_template_id',
-            'rand'        => $rand_tpl,
-            'value'       => 0,
-            'emptylabel'  => __('-- Select a template --', 'manageentities'),
-            'condition'   => $template_condition,
-            'displaywith' => ['template_name'],
-        ]);
-        $template_dropdown_html = ob_get_clean();
 
         return [
-            'contract_fields'        => $fields,
-            'contracttype_html'      => $contracttype_html,
-            'state_html'             => $state_html,
-            'alert_html'             => $alert_html,
-            'duration_html'          => $duration_html,
-            'existing_docs'          => $existing_docs,
-            'entities_html'          => self::buildSessionEntityHtml('entities_id', $session),
-            'template_dropdown_html' => $template_dropdown_html,
-            'rand'                   => $rand,
-            'rand_tpl'               => $rand_tpl,
+            'contract_fields'    => $fields,
+            'contracttype_field' => self::dropdownField(GlpiContractType::class, [
+                'name'  => 'contracttypes_id',
+                'rand'  => $rand,
+                'value' => $v('contracttypes_id', 0),
+            ]),
+            'state_field'        => self::dropdownField(State::class, [
+                'name'  => 'states_id',
+                'rand'  => $rand,
+                'value' => $v('states_id', 0),
+            ]),
+            'duration_field'     => self::numberField('duration', [
+                'rand'  => $rand,
+                'value' => $v('duration', 12),
+                'min'   => 0,
+                'max'   => 120,
+            ]),
+            'existing_docs'      => $existing_docs,
+            'entity_field'       => self::sessionEntityField('entities_id', $session),
+            // Its id dropdown__contract_template_id<rand_tpl> is read by wizardLoadContractTemplate()
+            'template_field'     => self::dropdownField(\Contract::class, [
+                'name'        => '_contract_template_id',
+                'rand'        => $rand_tpl,
+                'value'       => 0,
+                'emptylabel'  => __('-- Select a template --', 'manageentities'),
+                'condition'   => self::getContractTemplateCondition(),
+                'displaywith' => ['template_name'],
+            ]),
+            'rand'               => $rand,
+            'rand_tpl'           => $rand_tpl,
         ];
     }
 
@@ -2226,29 +2166,27 @@ class WizardController
             $fields['date_signature'] = $session['contract_data']['begin_date'];
         }
 
-        $management_html    = '';
-        $contract_type_html = '';
+        $management_field    = null;
+        $contract_type_field = null;
         if ($is_hour) {
-            $management_html = self::buildDropdownHtml(
-                fn() => Contract::dropdownContractManagement('management', $fields['management'] ?? 0, $rand),
-            );
-            $contract_type_html = self::buildDropdownHtml(
-                fn() => Contract::dropdownContractType('contract_type', $fields['contract_type'] ?? 0, $rand),
-            );
+            $management_field = self::arrayField('management', Contract::getContractManagements(), [
+                'value' => $fields['management'] ?? 0,
+                'rand'  => $rand,
+            ]);
+            $contract_type_field = self::contractTypeField('contract_type', (int) ($fields['contract_type'] ?? 0), $rand);
         }
-
-        ob_start();
-        Dropdown::showTimeStamp('duration_moving', ['rand' => $rand, 'value' => $fields['duration_moving'] ?? 0]);
-        $duration_moving_html = ob_get_clean();
 
         return [
             'contracts_id'             => 0,  // not in DB yet
             'entities_id'              => $session['entities_id'],
             'plugin_contract_id'       => 0,
             'date_signature'           => $fields['date_signature'] ?? '',
-            'management_html'          => $management_html,
-            'contract_type_html'       => $contract_type_html,
-            'duration_moving_html'     => $duration_moving_html,
+            'management_field'         => $management_field,
+            'contract_type_field'      => $contract_type_field,
+            'duration_moving_field'    => self::timestampField('duration_moving', [
+                'rand'  => $rand,
+                'value' => $fields['duration_moving'] ?? 0,
+            ]),
             'is_hour_mode'             => $is_hour,
             'is_day_price'             => $is_day,
             'show_on_global_gantt' => $is_first ? true : (bool) ($fields['show_on_global_gantt'] ?? false),
@@ -2261,108 +2199,154 @@ class WizardController
 
     private static function buildInterventionsVars(array $session, int $rand, bool $is_day): array
     {
-        $contractDates = self::getContractDatesFromSession($session);
         $interventions = [];
-
         foreach ($session['interventions_data'] as $idx => $iv) {
-            $interventions[$idx] = [
-                'fields'               => $iv['fields'],
-                'contract_begin_date'  => $contractDates['begin_date'],
-                'contract_end_date'    => $contractDates['end_date'],
-                'contractstate_html'   => self::buildContractStateHtml(
-                    "interventions[{$idx}][plugin_manageentities_contractstates_id]",
-                    $rand,
-                    (int) ($iv['fields']['plugin_manageentities_contractstates_id'] ?? 0),
-                ),
-                'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                    fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int) ($iv['fields']['contract_type'] ?? 0), $rand),
-                ) : '',
-                'entities_html'        => self::buildSessionEntityHtml("interventions[{$idx}][entities_id]", $session),
-                'contracts_html'       => self::buildSessionContractHtml("interventions[{$idx}][contracts_id]", $session, $rand),
-                'intervention_idx'     => $idx,
-                'criprices_section'    => self::buildCriPricesSectionHtml($idx, $iv, $rand, $is_day),
-                'stakeholders_section' => self::buildStakeholdersSectionHtml($idx, $iv, $rand, $session['entities_id']),
-            ];
+            $interventions[$idx] = self::buildInterventionBlockVars((int) $idx, $rand, $session, $is_day, $iv);
         }
 
         if (empty($interventions)) {
-            $interventions[1] = self::buildEmptyInterventionVars(1, $rand, $session, $is_day);
+            $interventions[1] = self::buildInterventionBlockVars(1, $rand, $session, $is_day);
         }
 
         return ['interventions' => $interventions];
     }
 
-    private static function buildEmptyInterventionVars(int $idx, int $rand, array $session, bool $is_day): array
+    /**
+     * Variables of one intervention block; $iv is the saved intervention, null for a new block.
+     *
+     * @param array<string, mixed>|null $iv
+     * @return array<string, mixed>
+     */
+    private static function buildInterventionBlockVars(int $idx, int $rand, array $session, bool $is_day, ?array $iv = null): array
     {
         $contractDates = self::getContractDatesFromSession($session);
-        $cfg = Config::getInstance();
+        $cfg           = Config::getInstance();
+        $fields        = $iv['fields'] ?? [];
+
+        // A new block starts from the configured defaults
+        $contractstates_id = $iv === null
+            ? (int) ($cfg->fields['wizard_contractstate_id'] ?? 0)
+            : (int) ($fields['plugin_manageentities_contractstates_id'] ?? 0);
+        $contract_type = $iv === null
+            ? (int) ($cfg->fields['wizard_contract_type'] ?? 0)
+            : (int) ($fields['contract_type'] ?? 0);
+
         return [
-            'fields'               => [],
+            'fields'               => $fields,
             'contract_begin_date'  => $contractDates['begin_date'],
             'contract_end_date'    => $contractDates['end_date'],
-            'contractstate_html'   => self::buildContractStateHtml(
-                "interventions[{$idx}][plugin_manageentities_contractstates_id]",
-                $rand,
-                (int) ($cfg->fields['wizard_contractstate_id'] ?? 0),
-            ),
-            'contract_type_html'   => $is_day ? self::buildDropdownHtml(
-                fn() => Contract::dropdownContractType("interventions[{$idx}][contract_type]", (int) ($cfg->fields['wizard_contract_type'] ?? 0), $rand),
-            ) : '',
-            'entities_html'        => self::buildSessionEntityHtml("interventions[{$idx}][entities_id]", $session),
-            'contracts_html'       => self::buildSessionContractHtml("interventions[{$idx}][contracts_id]", $session, $rand),
+            'contractstate_field'  => self::dropdownField(ContractState::class, [
+                'name'  => "interventions[{$idx}][plugin_manageentities_contractstates_id]",
+                'rand'  => $rand,
+                'value' => $contractstates_id,
+            ]),
+            'contract_type_field'  => $is_day
+                ? self::contractTypeField("interventions[{$idx}][contract_type]", $contract_type, $rand)
+                : null,
+            'entity_field'         => self::sessionEntityField("interventions[{$idx}][entities_id]", $session),
+            'contract_field'       => self::sessionContractField("interventions[{$idx}][contracts_id]", $session, $rand),
             'intervention_idx'     => $idx,
-            'criprices_section'    => '',
-            'stakeholders_section' => '',
+            // Rates and stakeholders only exist once the block has been saved
+            'criprices_section'    => $iv === null ? null : self::buildCriPricesSectionVars($idx, $iv, $rand, $is_day),
+            'stakeholders_section' => $iv === null ? null : self::buildStakeholdersSectionVars($idx, $iv, $rand, (int) $session['entities_id']),
         ];
     }
 
     // -------------------------------------------------------------------------
-    // Dropdown HTML builders
+    // Field descriptors, rendered by templates/wizard/fields.html.twig
     // -------------------------------------------------------------------------
 
-    private static function buildDropdownHtml(callable $fn): string
+    /**
+     * Dropdown of an itemtype, rendered through the itemtype_dropdown Twig filter.
+     *
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param array<string, mixed>      $options  Options of Dropdown::show()
+     * @return array<string, mixed>
+     */
+    private static function dropdownField(string $itemtype, array $options): array
     {
-        ob_start();
-        $returned = $fn();
-        $captured = ob_get_clean();
-        return is_string($returned) && $returned !== '' ? $returned : (string) $captured;
+        return ['kind' => 'dropdown', 'itemtype' => $itemtype, 'options' => $options];
     }
 
-    private static function buildEntityHtml(string $name, int $value = 0, int $rand = 0, array $condition = []): string
+    /**
+     * @param array<int|string, string> $elements
+     * @param array<string, mixed>      $options  Options of Dropdown::showFromArray()
+     * @return array<string, mixed>
+     */
+    private static function arrayField(string $name, array $elements, array $options): array
+    {
+        return ['kind' => 'array', 'name' => $name, 'elements' => $elements, 'options' => $options];
+    }
+
+    /**
+     * @param array<string, mixed> $options Options of Dropdown::showNumber()
+     * @return array<string, mixed>
+     */
+    private static function numberField(string $name, array $options): array
+    {
+        return ['kind' => 'number', 'name' => $name, 'options' => $options];
+    }
+
+    /**
+     * @param array<string, mixed> $options Options of Dropdown::showTimeStamp()
+     * @return array<string, mixed>
+     */
+    private static function timestampField(string $name, array $options): array
+    {
+        return ['kind' => 'timestamp', 'name' => $name, 'options' => $options];
+    }
+
+    /**
+     * Hidden input carrying a value chosen earlier in the wizard, with its read-only label.
+     *
+     * @return array<string, mixed>
+     */
+    private static function readonlyField(string $name, int $value, string $label): array
+    {
+        return ['kind' => 'readonly', 'name' => $name, 'value' => $value, 'label' => $label];
+    }
+
+    /**
+     * Plugin contract types; null when the configuration offers none.
+     *
+     * @return array<string, mixed>|null
+     */
+    private static function contractTypeField(string $name, int $value, int $rand): ?array
+    {
+        $types = Contract::getContractTypes();
+        return $types === [] ? null : self::arrayField($name, $types, ['value' => $value, 'rand' => $rand]);
+    }
+
+    /**
+     * Entity dropdown, read-only once an entity is set.
+     *
+     * @param array<string, mixed> $condition
+     * @return array<string, mixed>
+     */
+    private static function entityField(string $name, int $value, int $rand, array $condition = []): array
     {
         if ($value > 0) {
             $entity = new \Entity();
             $entity->getFromDB($value);
-            return self::buildReadonlyHtml($name, $value, $entity->fields['completename'] ?? $entity->fields['name'] ?? '');
+            return self::readonlyField($name, $value, $entity->fields['completename'] ?? $entity->fields['name'] ?? '');
         }
 
-        ob_start();
-        Dropdown::show(\Entity::class, [
+        return self::dropdownField(\Entity::class, [
             'name'      => $name,
             'rand'      => $rand ?: mt_rand(),
             'value'     => $value,
             'condition' => $condition,
         ]);
-        return ob_get_clean();
-    }
-
-    private static function buildContractStateHtml(string $name, int $rand, int $value = 0): string
-    {
-        ob_start();
-        Dropdown::show(ContractState::class, [
-            'name'  => $name,
-            'rand'  => $rand,
-            'value' => $value,
-        ]);
-        return ob_get_clean();
     }
 
     /**
-     * Entity display for intervention blocks.
+     * Entity display for contact, contract and intervention blocks.
      * When the entity is not in DB yet (new_entity mode, entities_id=0), shows the future name from session.
      * When entities_id>0 (existing_entity mode), shows the real entity name.
+     *
+     * @return array<string, mixed>
      */
-    private static function buildSessionEntityHtml(string $name, array $session): string
+    private static function sessionEntityField(string $name, array $session): array
     {
         $entities_id = (int) ($session['entities_id'] ?? 0);
         if ($entities_id > 0) {
@@ -2372,32 +2356,22 @@ class WizardController
         } else {
             $label = $session['entity_data']['name'] ?? '';
         }
-        return self::buildReadonlyHtml($name, $entities_id, $label);
-    }
-
-    /**
-     * Hidden input carrying a value chosen earlier in the wizard, with its read-only label.
-     */
-    private static function buildReadonlyHtml(string $name, int $value, string $label): string
-    {
-        return TemplateRenderer::getInstance()->render('@manageentities/wizard/readonly_field.html.twig', [
-            'field' => ['name' => $name, 'value' => $value, 'label' => $label],
-        ]);
+        return self::readonlyField($name, $entities_id, $label);
     }
 
     /**
      * In session mode the contract is not in DB yet.
      * We show a read-only representation of the contract name stored in session.
+     *
+     * @return array<string, mixed>
      */
-    private static function buildSessionContractHtml(string $name, array $session, int $rand): string
+    private static function sessionContractField(string $name, array $session, int $rand): array
     {
         $contractName = $session['contract_data']['name'] ?? '';
         if ($contractName !== '') {
-            return self::buildReadonlyHtml($name, 0, $contractName);
+            return self::readonlyField($name, 0, $contractName);
         }
-        ob_start();
-        Dropdown::showFromArray($name, [], ['rand' => $rand, 'value' => 0]);
-        return ob_get_clean();
+        return self::arrayField($name, [], ['rand' => $rand, 'value' => 0]);
     }
 
     private static function linkPluginContact(int $contact_id, int $entities_id, int $is_manager): void
@@ -2429,10 +2403,14 @@ class WizardController
     }
 
     // -------------------------------------------------------------------------
-    // Section HTML builders (session-based, no DB IDs)
+    // Rate and stakeholder sections of an intervention (session-based, no DB IDs)
     // -------------------------------------------------------------------------
 
-    private static function buildCriPricesSectionHtml(int $idx, array $iv, int $rand, bool $is_day): string
+    /**
+     * @param array<string, mixed> $iv
+     * @return array<string, mixed>
+     */
+    private static function buildCriPricesSectionVars(int $idx, array $iv, int $rand, bool $is_day): array
     {
         $criprices   = $iv['criprices'] ?? [];
         $enriched    = [];
@@ -2447,28 +2425,27 @@ class WizardController
             ]);
         }
 
-        ob_start();
-        $wid = self::currentWizardId();
-        TemplateRenderer::getInstance()->display('@manageentities/wizard/step6_criprices_section.html.twig', [
+        return [
             'intervention_idx' => $idx,
             'rand'             => $rand,
             'is_day'           => $is_day,
             'criprices'        => $enriched,
             'has_rate'         => !empty($enriched),
-            'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid,
-            'critype_html'     => self::buildDropdownHtml(
-                fn() => Dropdown::show(CriType::class, [
-                    'name'    => 'new_critype_' . $idx,
-                    'rand'    => $rand,
-                    'value'   => (int) (Config::getInstance()->fields['wizard_critype_id'] ?? 0),
-                    'display' => false,
-                ]),
-            ),
-        ]);
-        return ob_get_clean();
+            'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . self::currentWizardId(),
+            // Its id dropdown_new_critype_<idx><rand> is read by wizardAddCriPrice()
+            'critype_field'    => self::dropdownField(CriType::class, [
+                'name'  => 'new_critype_' . $idx,
+                'rand'  => $rand,
+                'value' => (int) (Config::getInstance()->fields['wizard_critype_id'] ?? 0),
+            ]),
+        ];
     }
 
-    private static function buildStakeholdersSectionHtml(int $idx, array $iv, int $rand, int $entities_id): string
+    /**
+     * @param array<string, mixed> $iv
+     * @return array<string, mixed>
+     */
+    private static function buildStakeholdersSectionVars(int $idx, array $iv, int $rand, int $entities_id): array
     {
         $stakeholders = $iv['stakeholders'] ?? [];
         $credit       = (float) ($iv['fields']['nbday'] ?? 0);
@@ -2485,26 +2462,21 @@ class WizardController
             ]);
         }
 
-        ob_start();
-        $wid = self::currentWizardId();
-        TemplateRenderer::getInstance()->display('@manageentities/wizard/step6_stakeholders_section.html.twig', [
+        return [
             'intervention_idx' => $idx,
             'rand'             => $rand,
             'stakeholders'     => $enriched,
             'credit'           => $credit,
             'remaining_days'   => $remaining,
-            'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid,
-            'user_html'        => self::buildDropdownHtml(
-                fn() => User::dropdown([
-                    'name'    => 'new_user_' . $idx,
-                    'rand'    => $rand,
-                    'entity'  => $entities_id,
-                    'display' => false,
-                    'right'   => 'all',
-                ]),
-            ),
-        ]);
-        return ob_get_clean();
+            'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . self::currentWizardId(),
+            // Its id dropdown_new_user_<idx><rand> is read by wizardAddStakeholder()
+            'user_field'       => self::dropdownField(User::class, [
+                'name'   => 'new_user_' . $idx,
+                'rand'   => $rand,
+                'entity' => $entities_id,
+                'right'  => 'all',
+            ]),
+        ];
     }
 
     // -------------------------------------------------------------------------

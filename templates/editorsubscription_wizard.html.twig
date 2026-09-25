@@ -29,7 +29,7 @@
 <form method="post" id="me-sub-form" action="{{ page_url }}">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="save">
-    <input type="hidden" name="sub_id" id="me_sub_id_{{ rand }}" value="{{ sub_id }}">
+    <input type="hidden" name="sub_id" value="{{ sub_id }}">
 
     {# Entity #}
     <div class="card mb-3">
@@ -42,7 +42,18 @@
             <div class="row g-3">
                 <div class="col-sm-6">
                     <label class="col-form-label fw-bold">{{ _n('Entity', 'Entities', 1) }} <span class="text-danger">*</span></label>
-                    {{ entity_dropdown_html|raw }}
+                    {% if entities_id > 0 %}
+                        <input type="hidden" name="entities_id" value="{{ entities_id }}">
+                        <input type="text" class="form-control" value="{{ entity_completename }}" readonly disabled>
+                    {% else %}
+                        {{ 'Entity'|itemtype_dropdown({
+                            'name': 'entities_id',
+                            'rand': rand,
+                            'value': 0,
+                            'condition': entity_condition,
+                            'on_change': change_event_js,
+                        }) }}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -51,21 +62,32 @@
     {# Subscription fields #}
     <div class="card mb-3">
         <div class="card-header">
-            <h3 class="card-title mb-0" id="me_sub_card_title_{{ rand }}">
+            <h3 class="card-title mb-0">
                 <i class="ti ti-certificate me-2"></i>
-                {% if is_new_sub %}
-                    {{ __('Create publisher subscription', 'manageentities') }}
-                {% else %}
-                    {{ __('Update publisher subscription', 'manageentities') }}
-                {% endif %}
+                <span data-me-sub-title>
+                    {% if is_new_sub %}
+                        {{ __('Create publisher subscription', 'manageentities') }}
+                    {% else %}
+                        {{ __('Update publisher subscription', 'manageentities') }}
+                    {% endif %}
+                </span>
             </h3>
         </div>
         <div class="card-body">
-            <div class="row g-3" id="me-sub-fields-{{ rand }}">
+            {# Behaviour: public/scripts/editorsubscription-fields.js #}
+            <div class="row g-3" data-me-subscription="{{ {
+                'required': true,
+                'lookup_url': entities_id == 0 ? lookup_url : null,
+                'labels': {
+                    'create_title': __('Create publisher subscription', 'manageentities'),
+                    'update_title': __('Update publisher subscription', 'manageentities'),
+                    'add': _x('button', 'Add'),
+                    'update': _x('button', 'Update'),
+                    'level_required': __('Subscription level is required.', 'manageentities'),
+                },
+            }|json_encode }}">
                 {% include '@manageentities/editorsubscription_fields.html.twig' with {
                     fields_required: true,
-                    container_id: 'me-sub-fields-' ~ rand,
-                    load_entity_ajax: entities_id == 0
                 } %}
             </div>
         </div>
@@ -74,32 +96,25 @@
                 <i class="ti ti-x me-1"></i>{{ __('Cancel') }}
             </a>
             <div class="d-flex gap-2">
-                <button type="button" id="me_sub_delete_btn_{{ rand }}" class="btn btn-danger"
-                        style="{% if is_new_sub %}display:none{% endif %}"
-                        onclick="if(confirm('{{ __('Are you sure you want to permanently delete this subscription?', 'manageentities')|e('js') }}')){
-                            var f=document.createElement('form');
-                            f.method='post';f.action='{{ page_url }}';
-                            var t=document.createElement('input');t.type='hidden';t.name='_glpi_csrf_token';t.value=document.querySelector('[name=_glpi_csrf_token]').value;
-                            var a=document.createElement('input');a.type='hidden';a.name='action';a.value='delete';
-                            var i=document.createElement('input');i.type='hidden';i.name='sub_id';i.value=document.getElementById('me_sub_id_{{ rand }}').value;
-                            f.appendChild(t);f.appendChild(a);f.appendChild(i);
-                            document.body.appendChild(f);f.submit();
-                        }">
-                    <i class="ti ti-trash me-1"></i>{{ __('Delete permanently') }}
+                {# Submits the separate delete form below (a form cannot be nested) #}
+                <button type="submit" form="me-sub-delete-form" data-me-sub-delete
+                        class="btn btn-danger{% if is_new_sub %} d-none{% endif %}">
+                    <i class="ti ti-trash me-1"></i>{{ _x('button', 'Delete permanently') }}
                 </button>
-                <button type="submit" id="me_sub_submit_btn_{{ rand }}" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary">
                     <i class="ti ti-device-floppy me-1"></i>
-                    <span id="me_sub_submit_label_{{ rand }}">{% if is_new_sub %}{{ __('Add') }}{% else %}{{ __('Update') }}{% endif %}</span>
+                    <span data-me-sub-submit-label>{% if is_new_sub %}{{ _x('button', 'Add') }}{% else %}{{ _x('button', 'Update') }}{% endif %}</span>
                 </button>
             </div>
         </div>
     </div>
 
 </form>
-</div>
 
-{% include '@manageentities/editorsubscription_fields_js.html.twig' with {
-    container_id: 'me-sub-fields-' ~ rand,
-    fields_required: true,
-    load_entity_ajax: entities_id == 0
-} %}
+<form method="post" id="me-sub-delete-form" action="{{ page_url }}"
+      data-me-sub-delete-form="{{ __('Are you sure you want to permanently delete this subscription?', 'manageentities') }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="action" value="delete">
+    <input type="hidden" name="sub_id" value="{{ sub_id }}">
+</form>
+</div>

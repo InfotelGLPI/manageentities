@@ -25,9 +25,11 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import '@manageentities/wizard/fields.html.twig' as wizard_fields %}
+
 {#
  One contact block — included N times in step2_contacts and injected dynamically.
- Variables: idx, rand, fields (existing contact or {}), usertitles_html, contacttype_html, entities_html
+ Variables: idx, rand, fields (existing contact or {}), usertitle_field, contacttype_field, entity_field
  #}
 
 <div class="card mb-3 contact-block" data-idx="{{ idx }}">
@@ -36,7 +38,7 @@
         <h5 class="card-title mb-0">{{ _n('Contact', 'Contacts', 1) }} #{{ idx }}</h5>
         {% if idx > 1 %}
         <button type="button" class="btn btn-sm btn-outline-danger ms-auto"
-            onclick="removeContactBlock({{ idx }})">
+            data-me-wizard-action="remove-block" data-block="contact" data-idx="{{ idx }}">
             <i class="ti ti-trash"></i>
         </button>
         {% endif %}
@@ -56,7 +58,7 @@
             </div>
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('Title') }}</label>
-                {{ usertitles_html|raw }}
+                {{ wizard_fields.field(usertitle_field) }}
             </div>
 
             <div class="col-sm-4">
@@ -82,12 +84,12 @@
             </div>
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Type') }}</label>
-                {{ contacttype_html|raw }}
+                {{ wizard_fields.field(contacttype_field) }}
             </div>
 
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ _n('Entity', 'Entities', 1) }}</label>
-                {{ entities_html|raw }}
+                {{ wizard_fields.field(entity_field) }}
             </div>
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Comments') }}</label>

@@ -39,7 +39,6 @@ use Html;
 use ITILCategory;
 use Migration;
 use Session;
-use Ticket;
 use Toolbox;
 
 class DirectHelpdesk extends CommonDBTM
@@ -105,72 +104,17 @@ class DirectHelpdesk extends CommonDBTM
      */
     public static function loadModal()
     {
-        // Entity selector: its change refreshes the contract alert (public/scripts/directhelpdesk-modal.js)
-        $entity_dropdown = \Entity::dropdown([
-            'name'      => 'entities_id',
-            'on_change' => CriDetail::CHANGE_EVENT_JS,
-            'display'   => false,
-        ]);
-
         $contract = new Contract();
-        $alert    = $contract->displayAlertforEntity($_SESSION['glpiactive_entity']);
-
-        $category_dropdown = ITILCategory::dropdown([
-            'name'      => 'name',
-            'display'   => false,
-            'condition' => [
-                'OR' => [
-                    'is_incident' => 1,
-                    'is_request'  => 1,
-                ],
-            ],
-        ]);
-
-        $comment_textarea = Html::textarea([
-            'name'            => 'comment',
-            'cols'            => '40',
-            'rows'            => '10',
-            'enable_ricktext' => false,
-            'display'         => false,
-        ]);
-
-        $date_field = Html::showDateField("date", [
-            'value'      => date("Y-m-d"),
-            'maybeempty' => true,
-            'canedit'    => true,
-            'display'    => false,
-        ]);
-
-        $time_field = \Dropdown::showTimeStamp("actiontime", [
-            'min'     => 0,
-            'max'     => 50 * HOUR_TIMESTAMP,
-            'display' => false,
-        ]);
-
-        //TODO only opened tickets for selected entity
-        $ticket_dropdown = Ticket::dropdown([
-            'name'        => 'tickets_id',
-            'displaywith' => ['id'],
-            'display'     => false,
-        ]);
-
-        $users_hidden = Html::hidden('users_id', [
-            'value'   => Session::getLoginUserID(),
-            'display' => false,
-        ]);
 
         TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_modal.html.twig', [
-            'form_url'          => self::getFormURL(),
-            'entity_type'       => \Entity::getTypeName(),
-            'entity_dropdown'   => $entity_dropdown,
-            'alert_url'         => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/showalertbyentity.php',
-            'alert'             => $alert,
-            'category_dropdown' => $category_dropdown,
-            'comment_textarea'  => $comment_textarea,
-            'date_field'        => $date_field,
-            'time_field'        => $time_field,
-            'ticket_dropdown'   => $ticket_dropdown,
-            'users_hidden'      => $users_hidden,
+            'form_url'        => self::getFormURL(),
+            // The entity dropdown relays its change to public/scripts/directhelpdesk-modal.js
+            'change_event_js' => CriDetail::CHANGE_EVENT_JS,
+            'alert_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/showalertbyentity.php',
+            'no_days_left'    => $contract->hasNoDaysLeftForEntity((int) $_SESSION['glpiactive_entity']),
+            'date'            => date('Y-m-d'),
+            'duration_max'    => 50 * HOUR_TIMESTAMP,
+            'users_id'        => Session::getLoginUserID(),
         ]);
     }
 

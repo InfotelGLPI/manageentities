@@ -25,10 +25,12 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import '@manageentities/wizard/fields.html.twig' as wizard_fields %}
+
 {#
  Step 3 — Contract GLPI + PDF upload
- Variables: contract_fields, contracttype_html, state_html, alert_html, duration_html,
-            entities_html, template_dropdown_html, rand, rand_tpl, wizard_url, step
+ Variables: contract_fields, contracttype_field, state_field, duration_field,
+            entity_field, template_field, existing_docs, rand, rand_tpl, wizard_url, step
  #}
 
 <div class="card">
@@ -46,11 +48,11 @@
                     <i class="ti ti-template me-1"></i>{{ __('Pre-fill from a contract template', 'manageentities') }}
                     <small class="text-muted fw-normal ms-1">{{ __('Optional') }}</small>
                 </label>
-                {{ template_dropdown_html|raw }}
+                {{ wizard_fields.field(template_field) }}
             </div>
             <div class="col-sm-4 d-flex align-items-end">
                 <button type="button" class="btn btn-outline-secondary w-100"
-                    onclick="wizardLoadContractTemplate({{ rand_tpl }}, '{{ wizard_url }}')">
+                    data-me-wizard-action="load-template" data-rand="{{ rand_tpl }}">
                     <i class="ti ti-download me-1"></i>{{ __('Load', 'manageentities') }}
                 </button>
             </div>
@@ -76,20 +78,20 @@
 
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('Duration') }} <span class="text-danger">*</span></label>
-                {{ duration_html|raw }}
+                {{ wizard_fields.field(duration_field) }}
             </div>
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('Contract type') }} <span class="text-danger">*</span></label>
-                {{ contracttype_html|raw }}
+                {{ wizard_fields.field(contracttype_field) }}
             </div>
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('Status') }} <span class="text-danger">*</span></label>
-                {{ state_html|raw }}
+                {{ wizard_fields.field(state_field) }}
             </div>
 
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ _n('Entity', 'Entities', 1) }}</label>
-                {{ entities_html|raw }}
+                {{ wizard_fields.field(entity_field) }}
             </div>
 
             <div class="col-sm-12">
@@ -107,7 +109,7 @@
                 <small class="text-muted fw-normal ms-1">{{ __('Optional') }}</small>
             </h5>
             <button type="button" class="btn btn-sm btn-outline-secondary ms-auto"
-                    onclick="addDocumentBlock('{{ wizard_url }}')">
+                    data-me-wizard-action="add-document">
                 <i class="ti ti-plus me-1"></i>{{ __('Add a document', 'manageentities') }}
             </button>
         </div>
@@ -120,7 +122,7 @@
                         <span class="text-muted small">{{ doc.category }}</span>
                     {% endif %}
                     <button type="button" class="btn btn-sm btn-outline-danger"
-                            onclick="wizardDeleteDocument({{ doc.id }}, this, WIZARD_URL)">
+                            data-me-wizard-action="delete-document" data-id="{{ doc.id }}">
                         <i class="ti ti-trash"></i>
                     </button>
                 </div>
@@ -130,11 +132,11 @@
     </div>
     <div class="card-footer d-flex gap-2 justify-content-between">
         <button type="button" class="btn btn-outline-secondary"
-            onclick="wizardBack({{ step }}, '{{ wizard_url }}')">
+            data-me-wizard-action="back" data-step="{{ step }}">
             <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
         </button>
         <button type="button" class="btn btn-primary"
-            onclick="wizardSaveStep(4, '{{ wizard_url }}')">
+            data-me-wizard-action="save-step" data-step="4">
             <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
         </button>
     </div>

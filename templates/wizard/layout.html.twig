@@ -27,7 +27,14 @@
 
 {% set plugin_webdir = config('root_doc') ~ '/marketplace/manageentities' %}
 
-<div id="wizard-addelements">
+{# Settings read by public/scripts/wizard.js (_wizardConfig) #}
+<div id="wizard-addelements" data-me-wizard="{{ {
+    'url': wizard_url,
+    'i18n': wizard_i18n,
+    'mode': wizard_mode,
+    'id': wizard_id|default(''),
+    'use_subscriptions': use_subscriptions ?? true,
+}|json_encode }}">
 
     {# Progress bar #}
     <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
@@ -43,7 +50,7 @@
         <div class="ms-auto">
             <button type="button" class="btn btn-outline-danger btn-sm"
                     data-bs-toggle="modal" data-bs-target="#wizard-reset-modal"
-                    onclick="wizardLoadResetSummary('{{ wizard_url }}')">
+                    data-me-wizard-action="reset-summary">
                 <i class="ti ti-refresh me-1"></i>{{ __('Reinitialize', 'manageentities') }}
             </button>
         </div>
@@ -129,7 +136,7 @@
                 </button>
                 <button type="button" class="btn btn-success" id="wizard-finish-confirm-btn"
                         data-redirect-url="{{ redirect_url }}"
-                        onclick="wizardConfirmFinish(WIZARD_URL)">
+                        data-me-wizard-action="confirm-finish">
                     <i class="ti ti-check me-1"></i>{{ __('Confirm and finish', 'manageentities') }}
                 </button>
             </div>
@@ -159,18 +166,10 @@
                 </button>
                 <button type="button" class="btn btn-danger" id="wizard-reset-confirm-btn"
                         data-label-deleting="{{ __('Deleting…', 'manageentities') }}"
-                        onclick="wizardConfirmReset('{{ wizard_url }}')">
+                        data-me-wizard-action="confirm-reset">
                     <i class="ti ti-trash me-1"></i>{{ __('Delete and reinitialize', 'manageentities') }}
                 </button>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    var WIZARD_URL  = {{ wizard_url|json_encode|raw }};
-    var WIZARD_I18N = {{ wizard_i18n|json_encode|raw }};
-    var WIZARD_MODE = {{ wizard_mode|json_encode|raw }};
-    var WIZARD_ID   = {{ wizard_id|default('')|json_encode|raw }};
-    var WIZARD_USE_SUBSCRIPTIONS = {{ (use_subscriptions ?? true)|json_encode|raw }};
-</script>

@@ -25,9 +25,11 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import '@manageentities/wizard/fields.html.twig' as wizard_fields %}
+
 {#
  Step 1 — Entity
- Variables: entity_fields, entities_html, rand, wizard_url
+ Variables: entity_fields, entity_field, parent_entity_locked, name_suggestions, rand, wizard_url
  #}
 
 <div class="card">
@@ -57,13 +59,13 @@
                 <label class="col-form-label fw-bold">{{ __('Parent entity', 'manageentities') }}</label>
                 {% if parent_entity_locked %}
                     <div class="d-flex align-items-center gap-2">
-                        {{ entities_html|raw }}
+                        {{ wizard_fields.field(entity_field) }}
                         <span class="badge bg-secondary-lt" title="{{ __('Set in configuration', 'manageentities') }}">
                             <i class="ti ti-lock"></i>
                         </span>
                     </div>
                 {% else %}
-                    {{ entities_html|raw }}
+                    {{ wizard_fields.field(entity_field) }}
                 {% endif %}
             </div>
 
@@ -123,7 +125,7 @@
         </div>
     </div>
     <div class="card-footer d-flex gap-2 justify-content-end">
-        <button type="button" class="btn btn-primary" onclick="wizardSaveStep(1, '{{ wizard_url }}')">
+        <button type="button" class="btn btn-primary" data-me-wizard-action="save-step" data-step="1">
             <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
         </button>
     </div>

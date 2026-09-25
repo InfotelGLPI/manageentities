@@ -25,6 +25,8 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import '@manageentities/wizard/fields.html.twig' as wizard_fields %}
+
 <div class="card mb-3 intervention-block" data-idx="{{ idx }}" data-id="{{ intervention_idx }}"
      id="intervention-block-{{ idx }}">
     <div class="card-header d-flex align-items-center gap-2">
@@ -41,7 +43,7 @@
         </h5>
         {% if idx > 1 %}
         <button type="button" class="btn btn-sm btn-outline-danger ms-auto"
-            onclick="removeInterventionBlock({{ idx }})">
+            data-me-wizard-action="remove-block" data-block="intervention" data-idx="{{ idx }}">
             <i class="ti ti-trash"></i>
         </button>
         {% endif %}
@@ -77,12 +79,12 @@
             </div>
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ __('Status') }} <span class="text-danger">*</span></label>
-                {{ contractstate_html|raw }}
+                {{ wizard_fields.field(contractstate_field) }}
             </div>
             {% if is_day %}
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold">{{ _n('Intervention type', 'Intervention types', 2, 'manageentities') }} <span class="text-danger">*</span></label>
-                {{ contract_type_html|raw }}
+                {{ wizard_fields.field(contract_type_field) }}
             </div>
             {% else %}
             <div class="col-sm-3"></div>
@@ -90,11 +92,11 @@
 
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ _n('Entity', 'Entities', 1) }}</label>
-                {{ entities_html|raw }}
+                {{ wizard_fields.field(entity_field) }}
             </div>
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Contract') }}</label>
-                {{ contracts_html|raw }}
+                {{ wizard_fields.field(contract_field) }}
             </div>
 
             <div class="col-sm-6">
@@ -112,7 +114,7 @@
                 <div id="intervention-errors-{{ idx }}" class="text-danger small me-2"></div>
                 <button type="button" class="btn btn-outline-primary"
                     id="save-intervention-btn-{{ idx }}"
-                    onclick="wizardSaveIntervention({{ idx }}, '{{ wizard_url }}')">
+                    data-me-wizard-action="save-intervention" data-idx="{{ idx }}">
                     <i class="ti ti-device-floppy me-1"></i>{{ __('Save this period', 'manageentities') }}
                 </button>
             </div>
@@ -123,9 +125,9 @@
         <div id="intervention-sections-{{ idx }}">
             {% if criprices_section %}
                 <hr class="my-3">
-                {{ criprices_section|raw }}
+                {{ include('@manageentities/wizard/step6_criprices_section.html.twig', criprices_section, with_context = false) }}
                 <hr class="my-3">
-                {{ stakeholders_section|raw }}
+                {{ include('@manageentities/wizard/step6_stakeholders_section.html.twig', stakeholders_section, with_context = false) }}
             {% endif %}
         </div>
 

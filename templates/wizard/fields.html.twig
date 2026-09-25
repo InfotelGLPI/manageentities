@@ -25,7 +25,23 @@
  # --------------------------------------------------------------------------
  #}
 
-{# Value already chosen earlier in the wizard: posted as a hidden input, shown read-only.
-   Variables: field = {name, value, label} #}
-<input type="hidden" name="{{ field.name }}" value="{{ field.value }}">
-<input type="text" class="form-control" value="{{ field.label }}" readonly disabled>
+{#
+ Renders a field descriptor built by WizardController (readonlyField(), dropdownField(),
+ arrayField(), numberField(), timestampField()). A null descriptor renders nothing.
+ #}
+{% macro field(field) %}
+    {% if field is empty %}
+    {% elseif field.kind == 'readonly' %}
+        {# Value already chosen earlier in the wizard: posted as a hidden input, shown read-only #}
+        <input type="hidden" name="{{ field.name }}" value="{{ field.value }}">
+        <input type="text" class="form-control" value="{{ field.label }}" readonly disabled>
+    {% elseif field.kind == 'dropdown' %}
+        {{ field.itemtype|itemtype_dropdown(field.options) }}
+    {% elseif field.kind == 'array' %}
+        {% do call('Dropdown::showFromArray', [field.name, field.elements, field.options]) %}
+    {% elseif field.kind == 'number' %}
+        {% do call('Dropdown::showNumber', [field.name, field.options]) %}
+    {% elseif field.kind == 'timestamp' %}
+        {% do call('Dropdown::showTimeStamp', [field.name, field.options]) %}
+    {% endif %}
+{% endmacro %}

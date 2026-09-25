@@ -43,37 +43,30 @@
     <div class="card-body">
         <div id="step3-errors" class="alert alert-danger d-none"></div>
 
-        <div class="row g-3" id="step3-fields-{{ rand }}">
+        {# Behaviour: public/scripts/editorsubscription-fields.js #}
+        <div class="row g-3" id="step3-fields-{{ rand }}" data-me-subscription="{{ {'required': false}|json_encode }}">
             {% include '@manageentities/editorsubscription_fields.html.twig' with {
                 fields_required: false,
                 dates_required: true,
-                container_id: 'step3-fields-' ~ rand,
-                load_entity_ajax: false
             } %}
         </div>
     </div>
     <div class="card-footer d-flex gap-2 justify-content-between">
         <button type="button" class="btn btn-outline-secondary"
-            onclick="wizardBack({{ step }}, '{{ wizard_url }}')">
+            data-me-wizard-action="back" data-step="{{ step }}">
             <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
         </button>
         <div class="d-flex gap-2">
             {# Early exit: only the entity, its contacts and this subscription get created #}
             <button type="button" class="btn btn-outline-success" id="btn-save-finish"
                 data-label="{{ __('Finish without contract', 'manageentities') }}"
-                onclick="wizardFinishWithoutContract({{ step }}, '{{ wizard_url }}')">
+                data-me-wizard-action="finish-without-contract" data-step="{{ step }}">
                 <i class="ti ti-check me-1"></i>{{ __('Finish without contract', 'manageentities') }}
             </button>
             <button type="button" class="btn btn-primary"
-                onclick="wizardSaveStep(3, '{{ wizard_url }}')">
+                data-me-wizard-action="save-step" data-step="3">
                 <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
             </button>
         </div>
     </div>
 </div>
-
-{% include '@manageentities/editorsubscription_fields_js.html.twig' with {
-    container_id: 'step3-fields-' ~ rand,
-    fields_required: false,
-    load_entity_ajax: false
-} %}

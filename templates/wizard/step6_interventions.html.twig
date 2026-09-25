@@ -50,18 +50,18 @@
         </div>
 
         <button type="button" class="btn btn-outline-secondary mt-2"
-            onclick="addInterventionBlock('{{ wizard_url }}')">
+            data-me-wizard-action="add-intervention">
             <i class="ti ti-plus me-1"></i>{{ __('Add a service period', 'manageentities') }}
         </button>
     </div>
     <div class="card-footer d-flex gap-2 justify-content-between">
         <button type="button" class="btn btn-outline-secondary"
-            onclick="wizardBack({{ step }}, '{{ wizard_url }}')">
+            data-me-wizard-action="back" data-step="{{ step }}">
             <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
         </button>
         <button type="button" class="btn btn-success" id="btn-save-finish"
             data-label="{{ __('Save and finish', 'manageentities') }}"
-            onclick="wizardLoadFinishSummary('{{ wizard_url }}', {{ step }})">
+            data-me-wizard-action="finish-summary" data-step="{{ step }}">
             <i class="ti ti-check me-1"></i>{{ __('Save and finish', 'manageentities') }}
         </button>
     </div>
