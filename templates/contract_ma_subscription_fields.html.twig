@@ -1,0 +1,38 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Subscription switches of the "Update subscription fields" massive action on contracts #}
+<div class="d-flex flex-wrap gap-4 my-2">
+    {% for name, label in fields %}
+        <div class="form-check form-switch">
+            <input type="hidden" name="{{ name }}" value="0">
+            <input type="checkbox" class="form-check-input" name="{{ name }}" value="1" id="ma_{{ name }}">
+            <label class="form-check-label" for="ma_{{ name }}">{{ label }}</label>
+        </div>
+    {% endfor %}
+</div>
+<button type="submit" name="massiveaction" class="btn btn-primary mt-2">{{ _x('button', 'Update') }}</button>

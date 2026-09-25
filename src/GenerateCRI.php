@@ -454,18 +454,19 @@ class GenerateCRI extends CommonGLPI
             ],
         ));
 
+        $duration_rand = mt_rand();
         ob_start();
-        $rand = \Dropdown::showTimeStamp("plan[_duration]", [
+        \Dropdown::showTimeStamp("plan[_duration]", [
+            'rand' => $duration_rand,
             'value' => $config->getField("default_duration"),
             'min' => 0,
             'max' => 50 * HOUR_TIMESTAMP,
             'emptylabel' => __('Specify an end date'),
         ]);
-        echo "<br><div id='date_end$rand'></div>";
         $event_options = ['duration' => '__VALUE__', 'name' => "plan[end]"];
         Ajax::updateItemOnSelectEvent(
-            "dropdown_plan[_duration]$rand",
-            "date_end$rand",
+            "dropdown_plan[_duration]$duration_rand",
+            "date_end$duration_rand",
             "../ajax/taskend.php",
             $event_options,
         );
@@ -621,6 +622,7 @@ class GenerateCRI extends CommonGLPI
             'label_task_category'        => __('Category'),
             'task_datetime_field'        => $task_datetime_field,
             'task_duration_field'        => $task_duration_field,
+            'task_duration_rand'         => $duration_rand,
             'task_user_dropdown'         => $task_user_dropdown,
             'task_taskcategory_dropdown' => $task_taskcategory_dropdown,
             'tasks_config'               => $tasks_config,

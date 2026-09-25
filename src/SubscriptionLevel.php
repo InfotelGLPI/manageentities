@@ -88,12 +88,7 @@ class SubscriptionLevel extends CommonDropdown
     {
         if ($field['type'] === 'subscription_type_select') {
             $current = (int) ($this->fields['subscription_type'] ?? self::TYPE_ALL);
-            echo '<select name="subscription_type" class="form-select">';
-            foreach (self::getTypes() as $val => $label) {
-                $selected = ($val === $current) ? ' selected' : '';
-                echo '<option value="' . $val . '"' . $selected . '>' . htmlspecialchars($label) . '</option>';
-            }
-            echo '</select>';
+            \Dropdown::showFromArray('subscription_type', self::getTypes(), ['value' => $current]);
         }
     }
 

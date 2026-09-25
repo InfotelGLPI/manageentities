@@ -446,7 +446,10 @@ class Entity extends CommonGLPI
         // Contacts and business are fetched once for ALL entities (like the original)
         $contacts_data = $contact->buildContactsForTemplate($entities, $CFG_GLPI['root_doc']);
         $business_data = $businessContact->buildBusinessForTemplate($entities, $CFG_GLPI['root_doc']);
-        $techlead_data = $techLead->buildTechLeadsForTemplate($entities, $CFG_GLPI['root_doc']);
+        // Tech leads are a provider-side information: never shown on the simplified interface
+        $techlead_data = $interface === 'helpdesk'
+            ? []
+            : $techLead->buildTechLeadsForTemplate($entities, $CFG_GLPI['root_doc']);
 
         $contact_dropdown_html = '';
         $user_dropdown_html    = '';

@@ -44,6 +44,9 @@ class InterventionStakeholder extends CommonDBTM
 {
     public static $rightname = 'plugin_manageentities';
 
+    // Granularity of the days affected to a stakeholder (half days)
+    public const NB_DAYS_STEP = 0.5;
+
     public static function getTypeName($nb = 0)
     {
         return _n('User affected', 'Users affected', $nb, 'manageentities');
@@ -211,15 +214,18 @@ class InterventionStakeholder extends CommonDBTM
     }
 
     /**
-     * Show or hide the add form of a contract day, depending on the days left to affect.
+     * Show or hide the add form of a contract day, depending on the days left to affect,
+     * and bound the number of days dropdown to that balance.
      *
-     * @param int $idToUse identifier of the contract day whose form block is toggled
+     * @param int   $idToUse  identifier of the contract day whose form block is toggled
+     * @param float $nbDays   days still available on the contract day
      */
-    public function toggleAddForm(int $idToUse, bool $visible): void
+    public function toggleAddForm(int $idToUse, float $nbDays): void
     {
         $this->renderAction('form', [
             'contractdays_id' => $idToUse,
-            'visible'         => $visible,
+            'visible'         => $nbDays > 0,
+            'max_days'        => max(0, $nbDays),
         ]);
     }
 
@@ -259,7 +265,7 @@ class InterventionStakeholder extends CommonDBTM
             'width' => 100,
             'min'   => 0,
             'max'   => $nbDays,
-            'step'  => '0.5',
+            'step'  => self::NB_DAYS_STEP,
             'rand'  => $rand,
         ]);
         $nbdays_dropdown_html = ob_get_clean();
@@ -272,6 +278,7 @@ class InterventionStakeholder extends CommonDBTM
             'nbdays_dropdown_html' => $nbdays_dropdown_html,
             'user_field'           => Html::cleanId('dropdown_users_id_tech' . $idToUse . $idUser),
             'nbdays_field'         => Html::cleanId('dropdown_nb_days' . $rand),
+            'nbdays_step'          => self::NB_DAYS_STEP,
             'contractdays_id'      => (int) $item->fields['id'],
             'ajax_url'             => $url,
         ]);

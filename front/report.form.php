@@ -54,7 +54,7 @@ if (empty($tab) && isset($_POST)) {
 if (!isset($_POST["tech_num"]) || empty($_POST["tech_num"])) {
     $owner = Session::getLoginUserID();
 } else {
-    $owner = $_POST["tech_num"];
+    $owner = (int) $_POST["tech_num"];
 }
 if (!isset($_GET["usertype"])) {
     $_GET["usertype"] = "user";

@@ -1076,13 +1076,6 @@ class Cri extends CommonDBTM
                 $CriDetail->update($values);
             }
 
-            //         if(isset($p['download']) && $p['download'] == 1){
-            //            echo "<IFRAME style='width:100%;height:90%' src='" . PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' scrolling=none frameborder=1></IFRAME>";
-
-            //         $doc = new Document();
-            //         $doc->getFromDB( $values["documents_id"]);
-            //         $this->send($doc);
-            //         }
 
             $this->CleanFiles($seepath);
         } else {
@@ -1144,11 +1137,6 @@ class Cri extends CommonDBTM
             }
 
 
-            //         if(empty($p['documents_id'])){
-            //         echo "<IFRAME src='".PLUGIN_MANAGEENTITIES_WEBDIR."/front/cri.send.php?file=_plugins/manageentities/$filename&seefile=1' width='1000' height='1000' scrolling=auto frameborder=1></IFRAME>";
-            //         } else {
-            //            echo "<IFRAME src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=$p['documents_id']&tickets_id=$p['REPORT_ID']' width='1000' height='1000' scrolling=auto frameborder=1></IFRAME>";
-            //         }
         }
     }
 

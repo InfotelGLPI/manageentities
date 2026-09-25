@@ -67,6 +67,18 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                 $idUser         = (int) $_POST['users_id_tech'];
                 $idContractdays = (int) $_POST['contractdays_id'];
 
+                // The dropdown only offers the remaining days, but it may be stale (another
+                // user added a stakeholder meanwhile) or the request forged: check the balance.
+                $nbDaysAvailable = (float) $interventionStakeholder->getNbAvailiableDay($idContractdays);
+                if ($nbDays > $nbDaysAvailable) {
+                    $interventionStakeholder->showMessage(sprintf(
+                        __("The number of days exceeds the remaining days of the intervention (%s).", "manageentities"),
+                        $nbDaysAvailable,
+                    ), ERROR);
+                    $interventionStakeholder->toggleAddForm($idContractdays, $nbDaysAvailable);
+                    break;
+                }
+
                 // $checkContractDayAccess() validated the parent contract day, not the value
                 // posted with it: users_id_tech comes from the client and is written as is, so a
                 // forged id attaches a technician of another entity to the intervention and puts
@@ -91,7 +103,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
 
                         $interventionStakeholder->showMessage(__("Stakeholder successfully updated.", "manageentities"), INFO);
                         $interventionStakeholder->reinitListStakeholders($interventionStakeholder);
-                        $interventionStakeholder->toggleAddForm((int) $idContractdays, $nbDaysAfter > 0);
+                        $interventionStakeholder->toggleAddForm((int) $idContractdays, (float) $nbDaysAfter);
 
                     } else {
                         $interventionStakeholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
@@ -106,7 +118,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                         $interventionStakeholder->showMessage(__("Informations successfully added.", "manageentities"), INFO);
                         $interventionStakeholder->reinitListStakeholders($interventionStakeholder);
                         $nbDaysAfter = $interventionStakeholder->getNbAvailiableDay($idContractdays);
-                        $interventionStakeholder->toggleAddForm((int) $idContractdays, $nbDaysAfter > 0);
+                        $interventionStakeholder->toggleAddForm((int) $idContractdays, (float) $nbDaysAfter);
                     } else {
                         $interventionStakeholder->showMessage(__("An error happened while saving the data.", "manageentities"), ERROR);
                     }
@@ -138,7 +150,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                     $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDaysAfter;
                     $interventionStakeholder->showMessage(__("Informations successfully deleted.", "manageentities"), INFO);
                     $interventionStakeholder->reinitListStakeholders($interventionStakeholder, true);
-                    $interventionStakeholder->toggleAddForm((int) $_POST['contractdays_id'], $nbDaysAfter > 0);
+                    $interventionStakeholder->toggleAddForm((int) $_POST['contractdays_id'], (float) $nbDaysAfter);
 
                 } else {
                     $interventionStakeholder->showMessage(__("An error happened while deleting the data.", "manageentities"), ERROR);

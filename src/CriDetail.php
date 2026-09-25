@@ -139,37 +139,31 @@ class CriDetail extends CommonDBTM
         \Dropdown::showFromArray('ticket_state', $status, ['value' => $config->fields['ticket_state']]);
         $ticket_state_html = ob_get_clean();
 
-        ob_start();
-        $rand_duration = \Dropdown::showTimeStamp('default_duration', [
+        $default_duration_html = \Dropdown::showTimeStamp('default_duration', [
+            'display'    => false,
             'value'      => $config->fields['default_duration'],
             'min'        => 0,
             'max'        => 50 * HOUR_TIMESTAMP,
             'emptylabel' => __('Specify an end date'),
         ]);
-        echo "<br><div id='date_end$rand_duration'></div>";
-        $default_duration_html = ob_get_clean();
 
-        ob_start();
-        $rand_am = \Dropdown::showTimeStamp('default_time_am', [
+        $default_time_am_html = \Dropdown::showTimeStamp('default_time_am', [
+            'display'    => false,
             'value'      => $config->fields['default_time_am'],
             'min'        => 0,
             'emptylabel' => '0h',
             'max'        => 23.5 * HOUR_TIMESTAMP,
             'step'       => MINUTE_TIMESTAMP * 30,
         ]);
-        echo "<br><div id='date_end$rand_am'></div>";
-        $default_time_am_html = ob_get_clean();
 
-        ob_start();
-        $rand_pm = \Dropdown::showTimeStamp('default_time_pm', [
+        $default_time_pm_html = \Dropdown::showTimeStamp('default_time_pm', [
+            'display'    => false,
             'value'      => $config->fields['default_time_pm'],
             'min'        => 0,
             'emptylabel' => '0h',
             'max'        => 23.5 * HOUR_TIMESTAMP,
             'step'       => MINUTE_TIMESTAMP * 30,
         ]);
-        echo "<br><div id='date_end$rand_pm'></div>";
-        $default_time_pm_html = ob_get_clean();
 
         ob_start();
         \Dropdown::showYesNo('non_accomplished_tasks', $config->fields['non_accomplished_tasks']);
@@ -477,7 +471,7 @@ class CriDetail extends CommonDBTM
                 'glpi_tickets' => [
                     'ON' => [
                         'glpi_documents' => 'tickets_id',
-                        'glpi_contracts' => 'id',
+                        'glpi_tickets'   => 'id',
                     ],
                 ],
                 'glpi_tickets_users' => [

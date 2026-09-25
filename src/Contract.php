@@ -573,11 +573,7 @@ class Contract extends CommonDBTM
             }
 
             if ($reste == 0) {
-                $alert .= "<div class='alert alert-danger d-flex'>";
-                $alert .= "<b>" . __(
-                    "Please note that there are no more contracts with days available for this customer.",
-                    "manageentities",
-                ) . "</b></div>";
+                $alert = TemplateRenderer::getInstance()->render('@manageentities/contract_no_days_alert.html.twig');
             }
         }
         return $alert;
@@ -988,16 +984,9 @@ class Contract extends CommonDBTM
                 'refacturable_costs'   => __('Refacturable costs', 'manageentities'),
             ];
 
-            echo "<div class='d-flex flex-wrap gap-4 my-2'>";
-            foreach ($fields as $name => $label) {
-                echo "<div class='form-check form-switch'>";
-                echo "<input type='hidden' name='{$name}' value='0'>";
-                echo "<input type='checkbox' class='form-check-input' name='{$name}' value='1' id='ma_{$name}'>";
-                echo "<label class='form-check-label' for='ma_{$name}'>" . htmlspecialchars($label) . "</label>";
-                echo "</div>";
-            }
-            echo "</div>";
-            echo Html::submit(__('Update'), ['name' => 'massiveaction', 'class' => 'btn btn-primary mt-2']);
+            TemplateRenderer::getInstance()->display('@manageentities/contract_ma_subscription_fields.html.twig', [
+                'fields' => $fields,
+            ]);
             return true;
         }
 

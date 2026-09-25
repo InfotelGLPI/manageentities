@@ -578,10 +578,6 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num)
         case CriType::class:
             switch ($table . '.' . $field) {
                 case "glpi_plugin_manageentities_criprices.price":
-                    //               $manageentitiesCritypes = new CriType();
-                    //               $manageentitiesCritypes->getFromDBByCrit(["id = $table.plugin_manageentities_critypes_id
-                    //                                                         AND entities_id IN IN ('" . implode("','", $_SESSION["glpiactiveentities"]) . "')"]);
-
                     $entities_ids = array_map('intval', $_SESSION["glpiactiveentities"]);
                     $iterator = $DB->request([
                         'FROM'  => $table,

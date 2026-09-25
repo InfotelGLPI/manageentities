@@ -131,7 +131,11 @@
             </td>
             <td>
                 {{ task_datetime_field|raw }}
-                <br><div>{{ task_duration_field|raw }}</div><br>
+                <br><div>
+                    {{ task_duration_field|raw }}
+                    {# End date, filled by ajax/taskend.php when no duration is chosen #}
+                    <br><div id="date_end{{ task_duration_rand }}"></div>
+                </div><br>
                 <div id="users_id_tech">{{ task_user_dropdown|raw }}</div><br>
                 <div id="taskcategories_id">{{ task_taskcategory_dropdown|raw }}</div>
             </td>

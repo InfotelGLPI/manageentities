@@ -70,11 +70,35 @@ async function post(url, data) {
                 const form = document.getElementById(`global_form_content${payload.contractdays_id}`);
                 if (form !== null) {
                     form.style.display = payload.visible ? '' : 'none';
+                    resetDaysDropdown(form, payload.max_days);
                 }
                 break;
             }
         }
     });
+}
+
+// The number of days is a select2 AJAX dropdown (Dropdown::showNumber()) whose max is
+// fixed when the tab is rendered: after an add or a delete, its choices are rebuilt locally
+// from 0 to the balance sent back by the server, which also enforces it.
+function resetDaysDropdown(form, max_days) {
+    const button = form.querySelector('[data-me-stakeholder-add]');
+    const field  = button === null ? null : document.getElementById(button.dataset.meNbdaysField);
+    const max    = Number(max_days);
+    if (field === null || !Number.isFinite(max) || window.jQuery === undefined) {
+        return;
+    }
+
+    const step = Number(button.dataset.meNbdaysStep) || 1;
+    const data = [];
+    for (let i = 0; i <= max + 1e-9; i += step) {
+        data.push({id: String(i), text: String(i)});
+    }
+
+    const select2 = window.jQuery(field);
+    select2.select2('destroy');
+    field.replaceChildren();
+    select2.select2({width: '100', data: data}).val('0').trigger('change');
 }
 
 function showMessage(payload) {
