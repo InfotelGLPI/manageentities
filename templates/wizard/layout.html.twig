@@ -33,7 +33,7 @@
     <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
         {% for n, label in steps %}
             <span class="badge fs-6 px-3 py-2
-                {% if n < step %}bg-outline-success{% elseif n == step %}bg-outline-primary{% else %}bg-outline-secondary{% endif %}">
+                {% if n < step %}bg-success-lt{% elseif n == step %}bg-primary-lt{% else %}bg-secondary-lt{% endif %}">
                 {{ n }}. {{ label }}
             </span>
             {% if n < steps|length %}

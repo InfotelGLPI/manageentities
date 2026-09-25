@@ -25,6 +25,10 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
+
 <form name="form" method="post" action="{{ form_url }}">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <div class="card mb-3 mx-auto" style="max-width: 700px;">
@@ -33,14 +37,8 @@
             <strong>{{ __('Helpdesk reports', 'manageentities') }}</strong>
         </div>
         <div class="card-body">
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" for="date1">{{ __('Start date') }}</label>
-                <div class="col-sm-8">{{ date1_field|raw }}</div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" for="date2">{{ __('End date') }}</label>
-                <div class="col-sm-8">{{ date2_field|raw }}</div>
-            </div>
+            {{ fields.dateField('date1', date1, __('Start date'), row) }}
+            {{ fields.dateField('date2', date2, __('End date'), row) }}
 
             <hr>
 
@@ -57,7 +55,14 @@
                         <label class="form-check-label" for="radio_alluser">{{ _n('User', 'Users', 1) }}</label>
                     </div>
                 </div>
-                <div class="col-sm">{{ tech_dropdown|raw }}</div>
+                <div class="col-sm">
+                    {{ 'User'|itemtype_dropdown({
+                        'name': 'tech_num',
+                        'value': owner,
+                        'entity': entity,
+                        'right': 'all',
+                    }) }}
+                </div>
             </div>
         </div>
         <div class="card-footer d-flex justify-content-end">

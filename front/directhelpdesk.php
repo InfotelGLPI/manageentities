@@ -47,14 +47,6 @@ if (Session::getCurrentInterface() == 'central') {
     }
 }
 
-echo Html::scriptBlock("
-    function reloadPageWithParam(namecheck) {
-        var params = new URLSearchParams(window.location.search);
-        params.set('checkbox2', document.getElementById('checkbox2').checked ? '1' : '0');
-        params.set('checkbox3', document.getElementById('checkbox3').checked ? '1' : '0');
-        window.location.href = '?' + params.toString();
-    }");
-
 if (!isset($_GET['checkbox3'])) {
     $_GET['checkbox3'] = 1;
 }

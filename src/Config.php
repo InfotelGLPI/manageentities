@@ -29,7 +29,6 @@
 
 namespace GlpiPlugin\Manageentities;
 
-use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use ContactType;
@@ -147,199 +146,23 @@ class Config extends CommonDBTM
         $decoded = json_decode($this->fields['business_id'] ?? '', true);
         $business_selected = is_array($decoded) ? $decoded : [];
 
-        ob_start();
-        $rand_hourorday = \Dropdown::showFromArray(
-            'hourorday',
-            self::getConfigType(),
-            ['value' => $this->fields['hourorday'], 'display' => true],
-        );
-        Ajax::updateItem(
-            'title_show_hourorday',
-            PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
-            ['hourorday' => $this->fields['hourorday'], 'action' => 'title_show_hourorday'],
-            "dropdown_hourorday$rand_hourorday",
-        );
-        Ajax::updateItem(
-            'value_show_hourorday',
-            PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
-            ['hourorday' => $this->fields['hourorday'], 'action' => 'value_show_hourorday'],
-            "dropdown_hourorday$rand_hourorday",
-        );
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_hourorday$rand_hourorday",
-            'title_show_hourorday',
-            PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
-            ['hourorday' => '__VALUE__', 'action' => 'title_show_hourorday'],
-        );
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_hourorday$rand_hourorday",
-            'value_show_hourorday',
-            PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/linkactions.php',
-            ['hourorday' => '__VALUE__', 'action' => 'value_show_hourorday'],
-        );
-        $hourorday_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::show('DocumentCategory', [
-            'name'  => 'documentcategories_id',
-            'value' => $this->fields['documentcategories_id'],
-        ]);
-        $documentcategory_html = ob_get_clean();
-
-        ob_start();
-        self::dropdownConfigChoiceIntervention('choice_intervention', $this->fields['choice_intervention']);
-        $choice_intervention_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::showFromArray('contract_states', $states, [
-            'multiple' => true,
-            'width'    => 200,
-            'values'   => $states_selected,
-        ]);
-        $contract_states_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::showFromArray('business_id', $users, [
-            'multiple' => true,
-            'width'    => 200,
-            'values'   => $business_selected,
-        ]);
-        $business_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::show(ContractState::class, [
-            'name'  => 'closed_contractstate_id',
-            'value' => $this->fields['closed_contractstate_id'] ?? 0,
-        ]);
-        $closed_contractstate_html = ob_get_clean();
-
-        $glpi_contract = new \Contract();
-        $visibility_criteria = $glpi_contract->getStateVisibilityCriteria();
-        ob_start();
-        \Dropdown::show('State', [
-            'name'      => 'closed_glpi_state_id',
-            'value'     => $this->fields['closed_glpi_state_id'] ?? 0,
-            'condition' => $visibility_criteria,
-        ]);
-        $closed_glpi_state_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::showYesNo('backup', $this->fields['backup']);
-        $backup_html = ob_get_clean();
-        ob_start();
-        \Dropdown::showYesNo('useprice', $this->fields['useprice']);
-        $useprice_html = ob_get_clean();
-        ob_start();
-        \Dropdown::showYesNo('use_publictask', $this->fields['use_publictask']);
-        $use_publictask_html = ob_get_clean();
-        ob_start();
-        \Dropdown::showYesNo('allow_same_periods', $this->fields['allow_same_periods']);
-        $allow_same_periods_html = ob_get_clean();
-        ob_start();
-        \Dropdown::showYesNo('use_editorsubscriptions', $this->fields['use_editorsubscriptions'] ?? 1);
-        $use_editorsubscriptions_html = ob_get_clean();
-        ob_start();
-        \Dropdown::showYesNo('comment', $this->fields['comment']);
-        $comment_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::show(ContractState::class, [
-            'name'  => 'wizard_contractstate_id',
-            'value' => $this->fields['wizard_contractstate_id'] ?? 0,
-        ]);
-        $wizard_contractstate_html = ob_get_clean();
-
-        ob_start();
-        Contract::dropdownContractType('wizard_contract_type', (int) ($this->fields['wizard_contract_type'] ?? 0));
-        $wizard_contract_type_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::show(CriType::class, [
-            'name'  => 'wizard_critype_id',
-            'value' => $this->fields['wizard_critype_id'] ?? 0,
-        ]);
-        $wizard_critype_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::show('DocumentCategory', [
-            'name'  => 'wizard_documentcategories_id',
-            'value' => $this->fields['wizard_documentcategories_id'] ?? 0,
-        ]);
-        $wizard_documentcategory_html = ob_get_clean();
-
-        ob_start();
-        ContactType::dropdown([
-            'name'  => 'wizard_contacttypes_id',
-            'value' => $this->fields['wizard_contacttypes_id'] ?? 0,
-        ]);
-        $wizard_contacttype_html = ob_get_clean();
-
-        $wizard_default_entities_id = (int) ($this->fields['wizard_default_entities_id'] ?? 0);
-        ob_start();
-        \Dropdown::show(\Entity::class, [
-            'name'  => 'wizard_default_entities_id',
-            'value' => $wizard_default_entities_id,
-        ]);
-        $wizard_default_entity_html = ob_get_clean();
-
-        $wizard_archive_entities_id = (int) ($this->fields['wizard_archive_entities_id'] ?? 0);
-        ob_start();
-        \Dropdown::show(\Entity::class, [
-            'name'  => 'wizard_archive_entities_id',
-            'value' => $wizard_archive_entities_id,
-        ]);
-        $wizard_archive_entity_html = ob_get_clean();
-
         TemplateRenderer::getInstance()->display(
             '@manageentities/config_options_form.html.twig',
             [
-                'form_url'                      => Toolbox::getItemTypeFormURL(Config::class),
-                'hourorday_html'                => $hourorday_html,
-                'documentcategory_html'         => $documentcategory_html,
-                'choice_intervention_html'      => $choice_intervention_html,
-                'contract_states_html'          => $contract_states_html,
-                'business_html'                 => $business_html,
-                'backup_html'                   => $backup_html,
-                'useprice_html'                 => $useprice_html,
-                'use_publictask_html'           => $use_publictask_html,
-                'allow_same_periods_html'       => $allow_same_periods_html,
-                'use_editorsubscriptions_html'  => $use_editorsubscriptions_html,
-                'comment_html'                  => $comment_html,
-                'closed_contractstate_html'     => $closed_contractstate_html,
-                'closed_glpi_state_html'        => $closed_glpi_state_html,
-                'wizard_contractstate_html'     => $wizard_contractstate_html,
-                'wizard_contract_type_html'     => $wizard_contract_type_html,
-                'wizard_critype_html'           => $wizard_critype_html,
-                'wizard_documentcategory_html'  => $wizard_documentcategory_html,
-                'wizard_contacttype_html'       => $wizard_contacttype_html,
-                'wizard_default_entity_html'    => $wizard_default_entity_html,
-                'wizard_archive_entity_html'    => $wizard_archive_entity_html,
+                'form_url'                  => Toolbox::getItemTypeFormURL(Config::class),
+                'config'                    => $this->fields,
+                'hourorday_types'           => self::getConfigType(),
+                'hourorday_modes'           => ['day' => self::DAY, 'hour' => self::HOUR],
+                'choice_intervention_types' => self::getChoiceInterventionTypes(),
+                'contract_types'            => Contract::getContractTypes(),
+                'states'                    => $states,
+                'states_selected'           => $states_selected,
+                'users'                     => $users,
+                'business_selected'         => $business_selected,
+                'glpi_state_condition'      => (new \Contract())->getStateVisibilityCriteria(),
+                'change_event_js'           => CriDetail::CHANGE_EVENT_JS,
             ],
         );
-    }
-
-    public function prepareInputForUpdate($input)
-    {
-        if (isset($input['contract_states'])) {
-            $input['contract_states'] = json_encode($input['contract_states']);
-        } else {
-            $input['contract_states'] = 'NULL';
-        }
-        if (isset($input['business_id'])) {
-            $input['business_id'] = json_encode($input['business_id']);
-        } else {
-            $input['business_id'] = 'NULL';
-        }
-        return $input;
-    }
-
-    public function post_updateItem($history = true)
-    {
-        // These settings drive how task durations are converted into consumption: the
-        // stored remaining days of every contract are stale as soon as one of them changes.
-        if (array_intersect(['hourorday', 'hourbyday', 'needvalidationforcri'], $this->updates)) {
-            Contract::updateAllRemainingDays();
-        }
     }
 
     public function isCommentCri()
@@ -349,7 +172,7 @@ class Config extends CommonDBTM
         return $config->fields['comment'];
     }
 
-    public function getConfigType()
+    public static function getConfigType()
     {
         return ([
             self::DAY => _x('periodicity', 'Daily'),
@@ -357,18 +180,17 @@ class Config extends CommonDBTM
         ]);
     }
 
-    public function dropdownConfigChoiceIntervention($name, $value = 0)
+    /**
+     * Client side views offered by the "choice_intervention" setting.
+     *
+     * @return array<int, string>
+     */
+    public static function getChoiceInterventionTypes(): array
     {
-        $configTypes = [
+        return [
             self::REPORT_INTERVENTION => _n('Intervention report', 'Intervention reports', 2, 'manageentities'),
             self::PERIOD_INTERVENTION => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
         ];
-
-        if (!empty($configTypes)) {
-            return \Dropdown::showFromArray($name, $configTypes, ['value' => $value]);
-        } else {
-            return false;
-        }
     }
 
     public static function getInstance()

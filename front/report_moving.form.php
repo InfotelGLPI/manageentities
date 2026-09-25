@@ -78,39 +78,14 @@ foreach ($data as $val) {
     $elements[$val['entities_id']] = Dropdown::getDropdownName("glpi_entities", $val['entities_id']);
 }
 
-// Capture the GLPI form widgets as HTML fragments for the Twig template.
-// Their user-facing values are escaped by the GLPI helpers themselves.
-ob_start();
-Html::showDateField("date1", ['value' => $_POST["date1"]]);
-$date1_field = ob_get_clean();
-
-ob_start();
-Html::showDateField("date2", ['value' => $_POST["date2"]]);
-$date2_field = ob_get_clean();
-
-ob_start();
-Dropdown::showFromArray(
-    'entities_id',
-    $elements,
-    ['values'   => $_POST['entities_id'] ?? [],
-        'multiple'  => true,
-        'entity'    => $_SESSION['glpiactiveentities']],
-);
-$entities_dropdown = ob_get_clean();
-
-ob_start();
-TaskCategory::dropdown(['name' => 'category_id', 'value' => $_POST['category_id'] ?? 0]);
-$category_dropdown = ob_get_clean();
-
-echo "<div class='center'>";
 TemplateRenderer::getInstance()->display('@manageentities/report_moving_form.html.twig', [
     'form_url'          => $_SERVER['REQUEST_URI'],
-    'date1_field'       => $date1_field,
-    'date2_field'       => $date2_field,
-    'entities_dropdown' => $entities_dropdown,
-    'category_dropdown' => $category_dropdown,
+    'date1'             => $_POST["date1"],
+    'date2'             => $_POST["date2"],
+    'entities'          => $elements,
+    'entities_selected' => $_POST['entities_id'] ?? [],
+    'category_id'       => $_POST['category_id'] ?? 0,
 ]);
-echo "</div>";
 
 if (isset($_POST["send"])) {
     $report = new Report();

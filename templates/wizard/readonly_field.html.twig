@@ -25,25 +25,7 @@
  # --------------------------------------------------------------------------
  #}
 
-{% for block in blocks %}
-    <div class="card mb-3">
-        <div class="card-header d-flex align-items-center gap-2">
-            <h3 class="card-title">
-                <i class="ti ti-report-analytics"></i>
-                {{ __('Intervention of contract', 'manageentities') }} : {{ block.contract_name }}
-            </h3>
-            <span class="badge bg-secondary-lt ms-1">{{ block.entries|length }}</span>
-        </div>
-
-        <div class="card-body p-0">
-            {{ include('components/datatable.html.twig', {
-                'entries':       block.entries,
-                'columns':       columns,
-                'formatters':    formatters,
-                'total_number':  block.entries|length,
-                'nosort':        true,
-                'nofilter':      true,
-            }) }}
-        </div>
-    </div>
-{% endfor %}
+{# Value already chosen earlier in the wizard: posted as a hidden input, shown read-only.
+   Variables: field = {name, value, label} #}
+<input type="hidden" name="{{ field.name }}" value="{{ field.value }}">
+<input type="text" class="form-control" value="{{ field.label }}" readonly disabled>

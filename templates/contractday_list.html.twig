@@ -31,7 +31,7 @@
     <h3 class="card-title">
         <i class="ti ti-calendar-stats me-2"></i>
         {{ __('Periods of contract', 'manageentities') }}
-        <span class="badge bg-outline-secondary ms-1">{{ entries|length }}</span>
+        <span class="badge bg-secondary-lt ms-1">{{ entries|length }}</span>
     </h3>
     </div>
     {{ massive_form_open|raw }}
@@ -68,9 +68,9 @@
 
     {{ massive_form_close|raw }}
 
-    {% if add_button_html %}
+    {% if add_form %}
     <div class="card-footer">
-        {{ add_button_html|raw }}
+        {{ include('@manageentities/contractday_add_form.html.twig', add_form) }}
     </div>
     {% endif %}
 </div>

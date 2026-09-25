@@ -33,7 +33,7 @@
             {% set total_count   = rows|length %}
             {% set expired_count = rows|filter(r => r.end_date_expired)|length %}
             {% if total_count > 0 %}
-                <span class="badge bg-outline-secondary ms-2">{{ total_count }}</span>
+                <span class="badge bg-secondary-lt ms-2">{{ total_count }}</span>
             {% endif %}
             {% if expired_count > 0 %}
                 <span class="badge bg-danger-lt ms-1" title="{{ __('Expired subscriptions', 'manageentities') }}">
@@ -85,9 +85,9 @@
                         <td>{{ row.name ?: '—' }}</td>
                         <td class="text-center">
                             {% if row.cloud_client %}
-                                <span class="badge bg-outline-info"><i class="ti ti-cloud me-1"></i>{{ __('Cloud', 'manageentities') }}</span>
+                                <span class="badge bg-info-lt"><i class="ti ti-cloud me-1"></i>{{ __('Cloud', 'manageentities') }}</span>
                             {% else %}
-                                <span class="badge bg-outline-success"><i class="ti ti-certificate me-1"></i>{{ __('Editor', 'manageentities') }}</span>
+                                <span class="badge bg-success-lt"><i class="ti ti-certificate me-1"></i>{{ __('Editor', 'manageentities') }}</span>
                             {% endif %}
                         </td>
                         <td>{{ row.level_name ?: '—' }}</td>

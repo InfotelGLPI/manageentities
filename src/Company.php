@@ -161,23 +161,12 @@ class Company extends CommonDBTM
 
         $this->initForm($ID, $options);
 
-        // Build the logo cell HTML (preview when a logo is set + the file uploader).
-        $logo_html = '';
-        if (!empty($this->fields["logo_id"])) {
-            $logo_html .= "<div id='picture' class='mb-2'>";
-            $logo_html .= "<img height='50px' alt=\"" . __s('Picture') . "\" src='"
-                . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid="
-                . (int) $this->fields["logo_id"] . "'>";
-            $logo_html .= "</div>";
-        }
-        ob_start();
-        Html::file(['multiple' => false, 'onlyimages' => true]);
-        $logo_html .= ob_get_clean();
-
         TemplateRenderer::getInstance()->display('@manageentities/company_form.html.twig', [
-            'item'      => $this,
-            'params'    => $options,
-            'logo_html' => $logo_html,
+            'item'     => $this,
+            'params'   => $options,
+            'logo_url' => !empty($this->fields['logo_id'])
+                ? $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . (int) $this->fields['logo_id']
+                : '',
         ]);
 
         return true;

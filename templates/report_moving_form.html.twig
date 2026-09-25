@@ -25,6 +25,11 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
+
+<div class="center">
 <form name="form" method="post" action="{{ form_url }}">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <div class="card mb-3 mx-auto" style="max-width: 700px;">
@@ -33,25 +38,16 @@
             <strong>{{ __('Moving report', 'manageentities') }}</strong>
         </div>
         <div class="card-body">
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" for="date1">{{ __('Start date') }}</label>
-                <div class="col-sm-8">{{ date1_field|raw }}</div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" for="date2">{{ __('End date') }}</label>
-                <div class="col-sm-8">{{ date2_field|raw }}</div>
-            </div>
+            {{ fields.dateField('date1', date1, __('Start date'), row) }}
+            {{ fields.dateField('date2', date2, __('End date'), row) }}
 
             <hr>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">{{ _n('Entity', 'Entities', 1) }}</label>
-                <div class="col-sm-8">{{ entities_dropdown|raw }}</div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">{{ __('Task category') }}</label>
-                <div class="col-sm-8">{{ category_dropdown|raw }}</div>
-            </div>
+            {{ fields.dropdownArrayField('entities_id', null, entities, _n('Entity', 'Entities', 1), row|merge({
+                'multiple': true,
+                'values': entities_selected,
+            })) }}
+            {{ fields.dropdownField('TaskCategory', 'category_id', category_id, __('Task category'), row) }}
         </div>
         <div class="card-footer d-flex justify-content-end">
             <button type="submit" name="send" class="btn btn-primary">
@@ -60,3 +56,4 @@
         </div>
     </div>
 </form>
+</div>

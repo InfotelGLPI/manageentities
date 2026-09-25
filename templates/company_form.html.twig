@@ -71,10 +71,21 @@
                 {'enable_richtext': false, 'rows': 5}
             ) }}
 
-            {{ fields.htmlField(
-                'logo',
-                logo_html,
-                __('Logo (format JPG or JPEG)', 'manageentities')
+            {% if logo_url %}
+                {{ fields.imageField(
+                    'logo_preview',
+                    logo_url,
+                    __('Picture'),
+                    {'height': 50, 'alt': __('Picture')}
+                ) }}
+            {% endif %}
+
+            {# "filename" is the name Html::file() posts back as _filename #}
+            {{ fields.fileField(
+                'filename',
+                null,
+                __('Logo (format JPG or JPEG)', 'manageentities'),
+                {'multiple': false, 'onlyimages': true}
             ) }}
         </div>
     </div>

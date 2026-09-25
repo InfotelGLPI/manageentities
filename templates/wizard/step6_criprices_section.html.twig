@@ -37,9 +37,9 @@
     <div id="criprices-list-{{ intervention_idx }}">
         {% for cp in criprices %}
         <div class="d-flex align-items-center gap-2 mb-2 criprice-row" data-id="{{ cp.id }}">
-            <span class="badge bg-outline-secondary">{{ cp.critypes_name ?? cp.plugin_manageentities_critypes_id }}</span>
+            <span class="badge bg-secondary-lt">{{ cp.critypes_name ?? cp.plugin_manageentities_critypes_id }}</span>
             <strong>{{ cp.price|number_format(2) }}</strong>
-            {% if cp.is_default %}<span class="badge bg-outline-primary">{{ __('Default', 'manageentities') }}</span>{% endif %}
+            {% if cp.is_default %}<span class="badge bg-primary-lt">{{ __('Default', 'manageentities') }}</span>{% endif %}
             <button type="button" class="btn btn-sm btn-outline-danger"
                 onclick="deleteCriPrice({{ cp.id }}, this, '{{ wizard_url }}')">
                 <i class="ti ti-trash"></i>

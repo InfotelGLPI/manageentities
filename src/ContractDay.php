@@ -407,33 +407,13 @@ class ContractDay extends CommonDBTM
             return false;
         }
 
-        $add_button_html = '';
+        $add_form = [];
         if ($canCreate && Session::haveRight('plugin_manageentities', UPDATE)) {
-            $add_rand       = mt_rand();
-            $add_action_url = Toolbox::getItemTypeFormURL(ContractDay::class) . '?contract_id=' . (int) $contract->fields['id'];
-            $add_button_html  = "<form method='post' name='contractDays_form{$add_rand}' id='contractDays_form{$add_rand}' action='" . htmlspecialchars($add_action_url, ENT_QUOTES) . "'>";
-            $add_button_html .= Html::hidden('_glpi_csrf_token', ['value' => \Session::getNewCSRFToken()]);
-            $add_button_html .= Html::hidden('contract_id', ['value' => $contract->fields['id']]);
-            $add_button_html .= Html::hidden('id', ['value' => '']);
-            $add_button_html .= "<button type='submit' name='addperiod' class='btn btn-primary'>"
-                . "<i class='ti ti-plus me-1'></i>"
-                . __('Add a service period', 'manageentities')
-                . "</button>";
-            $add_button_html .= "</form>";
-        }
-
-        $add_card_html = '';
-        if ($add_button_html) {
-            $add_card_html = "<div class='card mt-3'>"
-                . "<div class='card-body d-flex align-items-center gap-3'>"
-                . "<i class='ti ti-calendar-plus fs-2 text-muted'></i>"
-                . "<div>"
-                . "<div class='fw-bold'>" . _n('Period of contract', 'Periods of contract', 2, 'manageentities') . "</div>"
-                . "<div class='text-muted'>" . __('No service period defined yet.', 'manageentities') . "</div>"
-                . "</div>"
-                . "<div class='ms-auto'>{$add_button_html}</div>"
-                . "</div>"
-                . "</div>";
+            $add_form = [
+                'add_rand'    => mt_rand(),
+                'add_url'     => Toolbox::getItemTypeFormURL(ContractDay::class) . '?contract_id=' . (int) $contract->fields['id'],
+                'contract_id' => (int) $contract->fields['id'],
+            ];
         }
 
         $restrict = [
@@ -454,7 +434,12 @@ class ContractDay extends CommonDBTM
         $pluginContractDays = $dbu->getAllDataFromTable("glpi_plugin_manageentities_contractdays", $restrict_days);
 
         if (!count($pluginContractDays)) {
-            echo $add_card_html;
+            if ($add_form !== []) {
+                TemplateRenderer::getInstance()->display(
+                    '@manageentities/contractday_add_form.html.twig',
+                    $add_form + ['empty_card' => true],
+                );
+            }
             return;
         }
 
@@ -582,7 +567,7 @@ class ContractDay extends CommonDBTM
             'massive_actions_top'   => $massive_actions_top,
             'massive_actions_bottom' => $massive_actions_bottom,
             'massive_form_close'    => $massive_form_close,
-            'add_button_html'       => $add_button_html,
+            'add_form'              => $add_form,
         ]);
     }
 

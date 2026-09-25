@@ -371,7 +371,7 @@ function wizardLoadFinishSummary(url, step) {
                     var html = '<ul class="list-group list-group-flush">';
                     items.forEach(function (item) {
                         html += '<li class="list-group-item d-flex align-items-start gap-2 px-0 py-1">'
-                            + '<span class="badge bg-outline-secondary flex-shrink-0" style="min-width:130px">' + _escHtml(item.type) + '</span>'
+                            + '<span class="badge bg-secondary-lt flex-shrink-0" style="min-width:130px">' + _escHtml(item.type) + '</span>'
                             + '<span>' + _escHtml(item.label) + '</span>'
                             + '</li>';
                     });
@@ -450,7 +450,7 @@ function wizardLoadResetSummary(url) {
                 html = '<ul class="list-group list-group-flush">';
                 res.items.forEach(function (item) {
                     html += '<li class="list-group-item d-flex align-items-center gap-2 px-0 py-1">'
-                        + '<span class="badge bg-outline-secondary" style="min-width:120px">' + _escHtml(item.type) + '</span>'
+                        + '<span class="badge bg-secondary-lt" style="min-width:120px">' + _escHtml(item.type) + '</span>'
                         + '<span>' + _escHtml(item.label) + '</span>'
                         + '</li>';
                 });
@@ -525,7 +525,7 @@ function wizardSaveIntervention(idx, url) {
             // Replace unsaved badge with saved badge
             var badge = block.querySelector('#unsaved-badge-' + idx);
             if (badge) {
-                badge.outerHTML = '<span class="badge bg-outline-success ms-2"><i class="ti ti-check"></i></span>';
+                badge.outerHTML = '<span class="badge bg-success-lt ms-2"><i class="ti ti-check"></i></span>';
             }
 
             // Inject criprices + stakeholders sections
@@ -575,9 +575,9 @@ function wizardAddCriPrice(interventionIdx, rand, url) {
                 // option.text returns the DECODED label, so a type stored as &lt;img ...&gt; comes
                 // back as live markup once reinjected through innerHTML. Both values are database
                 // content, so both go through the helper this file already uses everywhere else.
-                row.innerHTML = '<span class="badge bg-outline-secondary">' + (critypeEl.options[critypeEl.selectedIndex] ? _escHtml(critypeEl.options[critypeEl.selectedIndex].text) : '') + '</span>'
+                row.innerHTML = '<span class="badge bg-secondary-lt">' + (critypeEl.options[critypeEl.selectedIndex] ? _escHtml(critypeEl.options[critypeEl.selectedIndex].text) : '') + '</span>'
                     + '<strong>' + parseFloat(priceEl.value).toFixed(2) + '</strong>'
-                    + (defEl && defEl.checked ? '<span class="badge bg-outline-primary">' + _escHtml(defEl.dataset.labelDefault || 'Default') + '</span>' : '')
+                    + (defEl && defEl.checked ? '<span class="badge bg-primary-lt">' + _escHtml(defEl.dataset.labelDefault || 'Default') + '</span>' : '')
                     + '<button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCriPrice(\'' + res.criprice_id + '\', this, \'' + url + '\')">'
                     + '<i class="ti ti-trash"></i></button>';
                 listEl.appendChild(row);
@@ -649,10 +649,21 @@ function wizardAddStakeholder(interventionIdx, rand, url) {
                 var row = document.createElement('div');
                 row.className = 'd-flex align-items-center gap-2 mb-1 stakeholder-row';
                 row.dataset.id = res.stakeholder_id;
-                row.innerHTML = '<span class="badge bg-outline-secondary">' + res.user_name + '</span>'
-                    + '<span class="text-muted small">' + parseFloat(res.number_affected_days).toFixed(2) + ' day(s)</span>'
-                    + '<button type="button" class="btn btn-sm btn-outline-danger" onclick="wizardDeleteStakeholder(\'' + res.stakeholder_id + '\', this, \'' + url + '\')">'
-                    + '<i class="ti ti-trash"></i></button>';
+                // Built node by node: the user name is plain text
+                var badge = document.createElement('span');
+                badge.className = 'badge bg-secondary-lt';
+                badge.textContent = res.user_name;
+                var days = document.createElement('span');
+                days.className = 'text-muted small';
+                days.textContent = parseFloat(res.number_affected_days).toFixed(2) + ' day(s)';
+                var del = document.createElement('button');
+                del.type = 'button';
+                del.className = 'btn btn-sm btn-outline-danger';
+                del.innerHTML = '<i class="ti ti-trash"></i>';
+                del.addEventListener('click', function () {
+                    wizardDeleteStakeholder(res.stakeholder_id, del, url);
+                });
+                row.append(badge, days, del);
                 listEl.appendChild(row);
                 if (daysEl) daysEl.value = '';
             }

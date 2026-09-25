@@ -71,32 +71,13 @@ if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_
 // same criteria on the posted ids, so the two cannot drift apart.
 $techs = Report::getSelectableTechnicians();
 
-// Capture the GLPI form widgets as HTML fragments for the Twig template.
-// Their user-facing values are escaped by the GLPI helpers themselves.
-ob_start();
-Html::showDateField("date1", ['value' => $_POST["date1"]]);
-$date1_field = ob_get_clean();
-
-ob_start();
-Html::showDateField("date2", ['value' => $_POST["date2"]]);
-$date2_field = ob_get_clean();
-
-ob_start();
-$tech_params = ['multiple' => true];
-if (isset($_POST['techs'])) {
-    $tech_params['values'] = $_POST['techs'];
-}
-Dropdown::showFromArray('techs', $techs, $tech_params);
-$techs_dropdown = ob_get_clean();
-
-echo "<div class='center'>";
 TemplateRenderer::getInstance()->display('@manageentities/report_occupation_form.html.twig', [
     'form_url'       => $_SERVER['REQUEST_URI'],
-    'date1_field'    => $date1_field,
-    'date2_field'    => $date2_field,
-    'techs_dropdown' => $techs_dropdown,
+    'date1'          => $_POST["date1"],
+    'date2'          => $_POST["date2"],
+    'techs'          => $techs,
+    'techs_selected' => $_POST['techs'] ?? [],
 ]);
-echo "</div>";
 
 if (isset($_POST["send"]) && isset($_POST['techs'])) {
     $report = new Report();

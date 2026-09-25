@@ -625,6 +625,33 @@ class Contract extends CommonDBTM
     }
 
     /**
+     * Types of contract allowed by the current configuration (none in daily mode without price).
+     *
+     * @return array<int, string>
+     */
+    public static function getContractTypes(): array
+    {
+        $config = Config::getInstance();
+
+        if ($config->fields['hourorday'] == Config::HOUR) {
+            return [
+                self::CONTRACT_TYPE_NULL => \Dropdown::EMPTY_VALUE,
+                self::CONTRACT_TYPE_HOUR => __('Hourly', 'manageentities'),
+                self::CONTRACT_TYPE_INTERVENTION => __('By intervention', 'manageentities'),
+                self::CONTRACT_TYPE_UNLIMITED => __('Unlimited'),
+            ];
+        }
+        if ($config->fields['hourorday'] == Config::DAY && $config->fields['useprice'] == Config::PRICE) {
+            return [
+                self::CONTRACT_TYPE_NULL => \Dropdown::EMPTY_VALUE,
+                self::CONTRACT_TYPE_AT => __('Technical Assistance', 'manageentities'),
+                self::CONTRACT_TYPE_FORFAIT => __('Package', 'manageentities'),
+            ];
+        }
+        return [];
+    }
+
+    /**
      * dropdown list of the types of contract
      *
      * @param $name
@@ -636,24 +663,9 @@ class Contract extends CommonDBTM
      */
     public static function dropdownContractType($name, $value = 0, $rand = null)
     {
-        $config = Config::getInstance();
+        $contractTypes = self::getContractTypes();
 
-        if ($config->fields['hourorday'] == Config::HOUR) {
-            $contractTypes = [
-                self::CONTRACT_TYPE_NULL => \Dropdown::EMPTY_VALUE,
-                self::CONTRACT_TYPE_HOUR => __('Hourly', 'manageentities'),
-                self::CONTRACT_TYPE_INTERVENTION => __('By intervention', 'manageentities'),
-                self::CONTRACT_TYPE_UNLIMITED => __('Unlimited'),
-            ];
-        } elseif ($config->fields['hourorday'] == Config::DAY && $config->fields['useprice'] == Config::PRICE) {
-            $contractTypes = [
-                self::CONTRACT_TYPE_NULL => \Dropdown::EMPTY_VALUE,
-                self::CONTRACT_TYPE_AT => __('Technical Assistance', 'manageentities'),
-                self::CONTRACT_TYPE_FORFAIT => __('Package', 'manageentities'),
-            ];
-        }
-
-        if (!empty($contractTypes)) {
+        if ($contractTypes !== []) {
             if ($rand == null) {
                 return \Dropdown::showFromArray($name, $contractTypes, ['value' => $value]);
             } else {
@@ -913,7 +925,6 @@ class Contract extends CommonDBTM
             && isset($item->fields['entities_id'])) {
             $entities_id = $item->fields['entities_id'];
         }
-        $out = "";
 
         // Unbilled interventions: shown on top of the ticket to anyone reading the plugin data,
         // not only to those allowed to manage the contracts
@@ -924,7 +935,10 @@ class Contract extends CommonDBTM
             && Session::haveRight('plugin_manageentities', READ)) {
             $alert = DirectHelpdesk::getUnbilledAlert((int) $entities_id);
             if ($alert !== '') {
-                echo '<div class="col-12">' . $alert . '</div>';
+                TemplateRenderer::getInstance()->display('@manageentities/contract_pre_item_alert.html.twig', [
+                    'layout' => 'grid',
+                    'alerts' => [$alert],
+                ]);
             }
             return;
         }
@@ -933,24 +947,18 @@ class Contract extends CommonDBTM
             && $_SESSION['glpiactiveprofile']['interface'] == 'central'
             && Session::haveRight('plugin_manageentities', UPDATE)) {
             $contract = new Contract();
-            if (isset($params['item'])
-                && ($item->getType() == 'Ticket')) {
-                // The ticket fields panel is a flex grid (div.row), not a table: table rows
-                // would be dropped by the HTML parser, so emit full-width columns instead.
-                $out .= '<div class="col-12">';
-                $out .= $contract->displayAlertforEntity($entities_id);
-                $direct = new DirectHelpdesk();
-                $out .= $direct->displayAlertforEntity($entities_id);
-                $out .= '</div>';
-            } else {
-                $out .= '<tr><th colspan="' . (isset($options['colspan']) ? $options['colspan'] * 2 : '4') . '">';
-                $out .= $contract->displayAlertforEntity($entities_id);
-                $out .= '</th></tr>';
+            $alerts   = [$contract->displayAlertforEntity($entities_id)];
+            $is_ticket = isset($params['item']) && $item->getType() == 'Ticket';
+            if ($is_ticket) {
+                $direct   = new DirectHelpdesk();
+                $alerts[] = $direct->displayAlertforEntity($entities_id);
             }
-
+            TemplateRenderer::getInstance()->display('@manageentities/contract_pre_item_alert.html.twig', [
+                'layout'  => $is_ticket ? 'grid' : 'table',
+                'colspan' => isset($options['colspan']) ? $options['colspan'] * 2 : 4,
+                'alerts'  => $alerts,
+            ]);
         }
-
-        echo $out;
     }
 
     public function getSpecificMassiveActions($checkitem = null)

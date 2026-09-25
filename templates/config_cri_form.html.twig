@@ -25,6 +25,16 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
+{% set half_hours = {
+    'min': 0,
+    'max': 23.5 * constant('HOUR_TIMESTAMP'),
+    'step': 30 * constant('MINUTE_TIMESTAMP'),
+    'emptylabel': '0h',
+} %}
+
 <form name="form" method="post" action="{{ form_url }}">
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center gap-2">
@@ -32,68 +42,23 @@
             <strong>{{ __('Setup for Generate Intervention report', 'manageentities') }}</strong>
         </div>
         <div class="card-body">
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Use Non-accomplished tasks informations', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ non_accomplished_tasks_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownYesNo('non_accomplished_tasks', config.non_accomplished_tasks, __('Use Non-accomplished tasks informations', 'manageentities'), row) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Display PDF', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ get_pdf_cri_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownYesNo('get_pdf_cri', config.get_pdf_cri, __('Display PDF', 'manageentities'), row) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('State of ticket created', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ ticket_state_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownArrayField('ticket_state', config.ticket_state, ticket_statuses, __('State of ticket created', 'manageentities'), row) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default duration', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ default_duration_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownTimestampField('default_duration', config.default_duration, __('Default duration', 'manageentities'), row|merge({
+                'min': 0,
+                'max': 50 * constant('HOUR_TIMESTAMP'),
+                'emptylabel': __('Specify an end date'),
+            })) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default time AM', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ default_time_am_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownTimestampField('default_time_am', config.default_time_am, __('Default time AM', 'manageentities'), row|merge(half_hours)) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default time PM', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ default_time_pm_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownTimestampField('default_time_pm', config.default_time_pm, __('Default time PM', 'manageentities'), row|merge(half_hours)) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Disable creation date in header of PDF', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ disable_date_header_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownYesNo('disable_date_header', config.disable_date_header, __('Disable creation date in header of PDF', 'manageentities'), row) }}
 
             <div class="alert alert-warning">
                 <i class="ti ti-alert-triangle me-2"></i>

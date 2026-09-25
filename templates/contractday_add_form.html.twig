@@ -25,34 +25,30 @@
  # --------------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
-{% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
-
-<div class="center">
-<form name="form" method="post" action="{{ form_url }}">
+{# "Add a service period" button; rendered alone in a card when the contract has no period yet #}
+{% set add_form %}
+<form method="post" name="contractDays_form{{ add_rand }}" id="contractDays_form{{ add_rand }}" action="{{ add_url }}">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-    <div class="card mb-3 mx-auto" style="max-width: 700px;">
-        <div class="card-header d-flex align-items-center gap-2">
-            <i class="ti ti-calendar-stats"></i>
-            <strong>{{ __('Occupation report', 'manageentities') }}</strong>
-        </div>
-        <div class="card-body">
-            {{ fields.dateField('date1', date1, __('Start date'), row) }}
-            {{ fields.dateField('date2', date2, __('End date'), row) }}
-
-            <hr>
-
-            {{ fields.dropdownArrayField('techs', null, techs, __('Technician'), row|merge({
-                'multiple': true,
-                'values': techs_selected,
-            })) }}
-        </div>
-        <div class="card-footer d-flex justify-content-end">
-            <button type="submit" name="send" class="btn btn-primary">
-                <i class="ti ti-search me-1"></i>{{ _x('button', 'Post') }}
-            </button>
-        </div>
-    </div>
+    <input type="hidden" name="contract_id" value="{{ contract_id }}">
+    <input type="hidden" name="id" value="">
+    <button type="submit" name="addperiod" class="btn btn-primary">
+        <i class="ti ti-plus me-1"></i>
+        {{ __('Add a service period', 'manageentities') }}
+    </button>
 </form>
+{% endset %}
+
+{% if empty_card|default(false) %}
+<div class="card mt-3">
+    <div class="card-body d-flex align-items-center gap-3">
+        <i class="ti ti-calendar-plus fs-2 text-muted"></i>
+        <div>
+            <div class="fw-bold">{{ _n('Period of contract', 'Periods of contract', 2, 'manageentities') }}</div>
+            <div class="text-muted">{{ __('No service period defined yet.', 'manageentities') }}</div>
+        </div>
+        <div class="ms-auto">{{ add_form }}</div>
+    </div>
 </div>
+{% else %}
+{{ add_form }}
+{% endif %}

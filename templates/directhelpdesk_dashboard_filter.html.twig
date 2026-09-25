@@ -25,16 +25,16 @@
  # --------------------------------------------------------------------------
  #}
 
-{# Read-only display filter: the checkboxes reload the page via GET (JS), no form submit. #}
+{# Read-only display filter: the checkboxes reload the page via GET (public/scripts/directhelpdesk-filters.js), no form submit. #}
 <div class="center d-flex justify-content-center gap-3" style="margin-top: 10px; margin-bottom: 20px;">
     <label class="form-check-label d-inline-flex align-items-center gap-1">
         <input type="checkbox" class="form-check-input mt-0" id="checkbox2"
-               onclick="reloadPageWithParam('checkbox2')"{{ checkbox2 ? ' checked' : '' }}>
+               data-me-dh-filter="checkbox2"{{ checkbox2 ? ' checked' : '' }}>
         {{ __('2 hours minimum', 'manageentities') }}
     </label>
     <label class="form-check-label d-inline-flex align-items-center gap-1">
         <input type="checkbox" class="form-check-input mt-0" id="checkbox3"
-               onclick="reloadPageWithParam('checkbox3')"{{ checkbox3 ? ' checked' : '' }}>
+               data-me-dh-filter="checkbox3"{{ checkbox3 ? ' checked' : '' }}>
         {{ __('3 hours minimum', 'manageentities') }}
     </label>
 </div>

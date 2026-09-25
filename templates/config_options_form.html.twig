@@ -25,6 +25,15 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# Plugin settings. The field depending on hourorday (hours per day in daily mode, validation
+   required in hourly mode) is rendered in both variants: public/scripts/config-hourorday.js
+   shows the one matching the selected mode and disables the other, so only it is posted. #}
+
+{% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
+{% set is_hour = config.hourorday == hourorday_modes.hour %}
+
 <form name="form" method="post" action="{{ form_url }}">
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center gap-2">
@@ -32,129 +41,55 @@
             <strong>{{ __('Setup') }}</strong>
         </div>
         <div class="card-body">
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Customer entities', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ wizard_default_entity_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('List of entities used by the plugin. When set, only tickets belonging to sub-entities of this entity will display the intervention report tab.', 'manageentities') }}
-                    </div>
-                </div>
+            {{ fields.dropdownField('Entity', 'wizard_default_entities_id', config.wizard_default_entities_id|default(0), __('Customer entities', 'manageentities'), row|merge({
+                'helper': __('List of entities used by the plugin. When set, only tickets belonging to sub-entities of this entity will display the intervention report tab.', 'manageentities'),
+            })) }}
+
+            {{ fields.dropdownYesNo('backup', config.backup, __('Save reports in glpi', 'manageentities'), row) }}
+
+            {{ fields.dropdownField('DocumentCategory', 'documentcategories_id', config.documentcategories_id, __('Rubric by default for reports', 'manageentities'), row) }}
+
+            {{ fields.dropdownYesNo('useprice', config.useprice, __('Use of price', 'manageentities'), row) }}
+
+            {{ fields.dropdownArrayField('hourorday', config.hourorday, hourorday_types, __('Configuration daily or hourly', 'manageentities'), row|merge({
+                'on_change': change_event_js,
+            })) }}
+
+            <div data-me-hourorday="{{ hourorday_modes.day }}"{{ is_hour ? ' class="d-none"' : '' }}>
+                {{ fields.numberField('hourbyday', config.hourbyday, __('Number of hours by day', 'manageentities'), row|merge({
+                    'min': 0,
+                    'disabled': is_hour,
+                })) }}
+                <input type="hidden" name="needvalidationforcri" value="0"{{ is_hour ? ' disabled' : '' }}>
+            </div>
+            <div data-me-hourorday="{{ hourorday_modes.hour }}"{{ is_hour ? '' : ' class="d-none"' }}>
+                {{ fields.dropdownYesNo('needvalidationforcri', config.needvalidationforcri, __('Only ticket accepted are taking into account for consumption calculation', 'manageentities'), row|merge({
+                    'disabled': not is_hour,
+                })) }}
+                <input type="hidden" name="hourbyday" value="0"{{ is_hour ? '' : ' disabled' }}>
             </div>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Save reports in glpi', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ backup_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownYesNo('use_publictask', config.use_publictask, __('Only public task are visible on intervention report', 'manageentities'), row) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Rubric by default for reports', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ documentcategory_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownYesNo('allow_same_periods', config.allow_same_periods, __('Allow periods on the same interval of dates', 'manageentities'), row) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Use of price', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ useprice_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownArrayField('choice_intervention', config.choice_intervention, choice_intervention_types, __('Configuring the client side view', 'manageentities'), row) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Configuration daily or hourly', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ hourorday_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownYesNo('use_editorsubscriptions', config.use_editorsubscriptions ?? 1, __('Use editor subscriptions', 'manageentities'), row|merge({
+                'helper': __('When disabled, publisher subscription tabs, blocks, alerts and the wizard subscription step are hidden.', 'manageentities'),
+            })) }}
 
-            <div class="row mb-3">
-                <div class="col-sm-4 col-form-label">
-                    <span id="title_show_hourorday"></span>
-                </div>
-                <div class="col-sm-8">
-                    <span id="value_show_hourorday"></span>
-                </div>
-            </div>
+            {{ fields.dropdownArrayField('contract_states', null, states, __('List of default statuses for general monitoring', 'manageentities'), row|merge({
+                'multiple': true,
+                'values': states_selected,
+            })) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Only public task are visible on intervention report', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ use_publictask_html|raw }}
-                </div>
-            </div>
+            {{ fields.dropdownArrayField('business_id', null, users, __('Default Business list for general monitoring', 'manageentities'), row|merge({
+                'multiple': true,
+                'values': business_selected,
+            })) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Allow periods on the same interval of dates', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ allow_same_periods_html|raw }}
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Configuring the client side view', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ choice_intervention_html|raw }}
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Use editor subscriptions', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ use_editorsubscriptions_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('When disabled, publisher subscription tabs, blocks, alerts and the wizard subscription step are hidden.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('List of default statuses for general monitoring', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ contract_states_html|raw }}
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default Business list for general monitoring', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ business_html|raw }}
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Display comments from the company in the CRI', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ comment_html|raw }}
-                </div>
-            </div>
-
+            {{ fields.dropdownYesNo('comment', config.comment, __('Display comments from the company in the CRI', 'manageentities'), row) }}
         </div>
     </div>
 
@@ -164,77 +99,31 @@
             <strong>{{ __('Wizard defaults', 'manageentities') }}</strong>
         </div>
         <div class="card-body">
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default service period state', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ wizard_contractstate_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('Pre-selected state when creating a service period in the wizard.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
+            {{ fields.dropdownField('GlpiPlugin\\Manageentities\\ContractState', 'wizard_contractstate_id', config.wizard_contractstate_id|default(0), __('Default service period state', 'manageentities'), row|merge({
+                'helper': __('Pre-selected state when creating a service period in the wizard.', 'manageentities'),
+            })) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default service contract type', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ wizard_contract_type_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('Pre-selected service contract type when creating a service period in the wizard.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
+            {% if contract_types is not empty %}
+                {{ fields.dropdownArrayField('wizard_contract_type', config.wizard_contract_type|default(0), contract_types, __('Default service contract type', 'manageentities'), row|merge({
+                    'helper': __('Pre-selected service contract type when creating a service period in the wizard.', 'manageentities'),
+                })) }}
+            {% endif %}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default intervention type', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ wizard_critype_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('Pre-selected intervention type when creating a service period in the wizard.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
+            {{ fields.dropdownField('GlpiPlugin\\Manageentities\\CriType', 'wizard_critype_id', config.wizard_critype_id|default(0), __('Default intervention type', 'manageentities'), row|merge({
+                'helper': __('Pre-selected intervention type when creating a service period in the wizard.', 'manageentities'),
+            })) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default document category', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ wizard_documentcategory_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('Pre-selected document category when attaching a document in the wizard.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
+            {{ fields.dropdownField('DocumentCategory', 'wizard_documentcategories_id', config.wizard_documentcategories_id|default(0), __('Default document category', 'manageentities'), row|merge({
+                'helper': __('Pre-selected document category when attaching a document in the wizard.', 'manageentities'),
+            })) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Default contact type', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ wizard_contacttype_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('Pre-selected contact type when adding a contact in the wizard.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
+            {{ fields.dropdownField('ContactType', 'wizard_contacttypes_id', config.wizard_contacttypes_id|default(0), __('Default contact type', 'manageentities'), row|merge({
+                'helper': __('Pre-selected contact type when adding a contact in the wizard.', 'manageentities'),
+            })) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Customer archiving entity', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ wizard_archive_entity_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('Entity used to archive customers.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
+            {{ fields.dropdownField('Entity', 'wizard_archive_entities_id', config.wizard_archive_entities_id|default(0), __('Customer archiving entity', 'manageentities'), row|merge({
+                'helper': __('Entity used to archive customers.', 'manageentities'),
+            })) }}
         </div>
     </div>
 
@@ -251,29 +140,14 @@
                 </div>
             </div>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Closed GLPI contract state', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ closed_glpi_state_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('GLPI state (visible on contracts) that triggers period closure and is applied to the contract when all periods are closed.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
+            {{ fields.dropdownField('State', 'closed_glpi_state_id', config.closed_glpi_state_id|default(0), __('Closed GLPI contract state', 'manageentities'), row|merge({
+                'condition': glpi_state_condition,
+                'helper': __('GLPI state (visible on contracts) that triggers period closure and is applied to the contract when all periods are closed.', 'manageentities'),
+            })) }}
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                    {{ __('Closed contract period state', 'manageentities') }}
-                </label>
-                <div class="col-sm-8">
-                    {{ closed_contractstate_html|raw }}
-                    <div class="form-text text-muted">
-                        {{ __('State applied to contract periods when the GLPI contract is closed.', 'manageentities') }}
-                    </div>
-                </div>
-            </div>
+            {{ fields.dropdownField('GlpiPlugin\\Manageentities\\ContractState', 'closed_contractstate_id', config.closed_contractstate_id|default(0), __('Closed contract period state', 'manageentities'), row|merge({
+                'helper': __('State applied to contract periods when the GLPI contract is closed.', 'manageentities'),
+            })) }}
         </div>
         <div class="card-footer d-flex justify-content-end">
             <input type="hidden" name="id" value="1">

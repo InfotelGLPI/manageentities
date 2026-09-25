@@ -52,9 +52,9 @@
                 <label class="col-form-label fw-bold">{{ __('Type', 'manageentities') }}</label>
                 <p class="form-control-plaintext">
                     {% if sub_cloud %}
-                        <span class="badge bg-outline-info"><i class="ti ti-cloud me-1"></i>{{ __('Cloud client', 'manageentities') }}</span>
+                        <span class="badge bg-info-lt"><i class="ti ti-cloud me-1"></i>{{ __('Cloud client', 'manageentities') }}</span>
                     {% else %}
-                        <span class="badge bg-outline-success"><i class="ti ti-certificate me-1"></i>{{ __('Editor subscription', 'manageentities') }}</span>
+                        <span class="badge bg-success-lt"><i class="ti ti-certificate me-1"></i>{{ __('Editor subscription', 'manageentities') }}</span>
                     {% endif %}
                 </p>
             </div>
@@ -80,7 +80,7 @@
                 <label class="col-form-label fw-bold">{{ __('Internet publication', 'manageentities') }}</label>
                 <p class="form-control-plaintext">
                     {% if internet_publication %}
-                        <span class="badge bg-outline-cyan"><i class="ti ti-world me-1"></i>{{ __('Yes') }}</span>
+                        <span class="badge bg-cyan-lt"><i class="ti ti-world me-1"></i>{{ __('Yes') }}</span>
                     {% else %}
                         <span class="text-muted">{{ __('No') }}</span>
                     {% endif %}

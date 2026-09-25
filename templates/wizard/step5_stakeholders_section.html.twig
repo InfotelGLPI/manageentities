@@ -44,7 +44,7 @@
     <div id="stakeholders-list-{{ intervention_idx }}">
         {% for sh in stakeholders %}
         <div class="d-flex align-items-center gap-2 mb-1 stakeholder-row" data-id="{{ sh.id }}">
-            <span class="badge bg-outline-secondary">{{ sh.user_name }}</span>
+            <span class="badge bg-secondary-lt">{{ sh.user_name }}</span>
             <span class="text-muted small">{{ sh.number_affected_days|number_format(2) }} {{ _n('day', 'days', sh.number_affected_days, 'manageentities') }}</span>
             <button type="button" class="btn btn-sm btn-outline-danger"
                 onclick="wizardDeleteStakeholder({{ sh.id }}, this, '{{ wizard_url }}')">

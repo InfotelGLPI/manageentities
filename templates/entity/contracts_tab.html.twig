@@ -30,11 +30,11 @@
         <h3 class="card-title">
             <i class="ti ti-file-contract me-2"></i>
             {{ __('Associated assistance contracts', 'manageentities') }}
-            <span class="badge bg-outline-secondary ms-1">{{ rows|length }}</span>
+            <span class="badge bg-secondary-lt ms-1">{{ rows|length }}</span>
         </h3>
         {% if allowed_states is not empty %}
         <div class="card-options">
-            <span class="badge bg-outline-info" title="{{ __('Filtered by default state list', 'manageentities') }}">
+            <span class="badge bg-info-lt" title="{{ __('Filtered by default state list', 'manageentities') }}">
                 <i class="ti ti-filter me-1"></i>{{ __('Filtered', 'manageentities') }}
             </span>
         </div>

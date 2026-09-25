@@ -834,18 +834,12 @@ class WizardController
 
     private static function buildDocumentCategorySelect(string $name, int $rand, int $value = 0): string
     {
-        $cats = (new DocumentCategory())->find([], ['name']);
-        $id   = 'doccat_' . $rand;
-        $html = '<select name="' . htmlspecialchars($name) . '" id="' . $id . '" class="form-select">';
-        $html .= '<option value="0">---</option>';
-        foreach ($cats as $cat) {
-            $selected = ((int) $cat['id'] === $value) ? ' selected' : '';
-            $html .= '<option value="' . (int) $cat['id'] . '"' . $selected . '>'
-                   . htmlspecialchars($cat['completename'] ?? $cat['name'])
-                   . '</option>';
-        }
-        $html .= '</select>';
-        return $html;
+        return (string) Dropdown::show(DocumentCategory::class, [
+            'name'    => $name,
+            'rand'    => $rand,
+            'value'   => $value,
+            'display' => false,
+        ]);
     }
 
     /**
@@ -1304,7 +1298,7 @@ class WizardController
         return [
             'success'              => true,
             'stakeholder_id'       => $virtual_id,
-            'user_name'            => htmlspecialchars($user->getFriendlyName()),
+            'user_name'            => $user->getFriendlyName(),
             'number_affected_days' => $nb_days,
             'remaining_days'       => $remaining_after,
             'credit'               => $nbday_credit,
@@ -2339,9 +2333,7 @@ class WizardController
         if ($value > 0) {
             $entity = new \Entity();
             $entity->getFromDB($value);
-            $label = htmlspecialchars($entity->fields['completename'] ?? $entity->fields['name'] ?? '');
-            return '<input type="hidden" name="' . htmlspecialchars($name) . '" value="' . $value . '">'
-                . '<input type="text" class="form-control" value="' . $label . '" readonly disabled>';
+            return self::buildReadonlyHtml($name, $value, $entity->fields['completename'] ?? $entity->fields['name'] ?? '');
         }
 
         ob_start();
@@ -2376,12 +2368,21 @@ class WizardController
         if ($entities_id > 0) {
             $entity = new \Entity();
             $entity->getFromDB($entities_id);
-            $label = htmlspecialchars($entity->fields['completename'] ?? $entity->fields['name'] ?? '');
+            $label = $entity->fields['completename'] ?? $entity->fields['name'] ?? '';
         } else {
-            $label = htmlspecialchars($session['entity_data']['name'] ?? '');
+            $label = $session['entity_data']['name'] ?? '';
         }
-        return '<input type="hidden" name="' . htmlspecialchars($name) . '" value="' . $entities_id . '">'
-            . '<input type="text" class="form-control" value="' . $label . '" readonly disabled>';
+        return self::buildReadonlyHtml($name, $entities_id, $label);
+    }
+
+    /**
+     * Hidden input carrying a value chosen earlier in the wizard, with its read-only label.
+     */
+    private static function buildReadonlyHtml(string $name, int $value, string $label): string
+    {
+        return TemplateRenderer::getInstance()->render('@manageentities/wizard/readonly_field.html.twig', [
+            'field' => ['name' => $name, 'value' => $value, 'label' => $label],
+        ]);
     }
 
     /**
@@ -2392,8 +2393,7 @@ class WizardController
     {
         $contractName = $session['contract_data']['name'] ?? '';
         if ($contractName !== '') {
-            return '<input type="hidden" name="' . htmlspecialchars($name) . '" value="0">'
-                . '<input type="text" class="form-control" value="' . htmlspecialchars($contractName) . '" readonly disabled>';
+            return self::buildReadonlyHtml($name, 0, $contractName);
         }
         ob_start();
         Dropdown::showFromArray($name, [], ['rand' => $rand, 'value' => 0]);

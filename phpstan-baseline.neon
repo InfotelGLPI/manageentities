@@ -25,12 +25,6 @@ parameters:
 			path: ajax/interventionstakeholderactions.php
 
 		-
-			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
-			identifier: glpi.forbidExit
-			count: 1
-			path: ajax/linkactions.php
-
-		-
 			message: '#^You should not use the `http_response_code` function to change the response code\. Due to a PHP bug, it may not provide the expected result \(see https\://bugs\.php\.net/bug\.php\?id\=81451\)\.$#'
 			identifier: glpi.forbidHttpResponseCode
 			count: 1
@@ -417,12 +411,6 @@ parameters:
 		-
 			message: '#^Call to an undefined method CommonGLPI\:\:showOptionsForm\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: src/Config.php
-
-		-
-			message: '#^Variable \$configTypes in empty\(\) always exists and is not falsy\.$#'
-			identifier: empty.variable
 			count: 1
 			path: src/Config.php
 

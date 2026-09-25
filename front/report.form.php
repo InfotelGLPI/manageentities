@@ -82,25 +82,13 @@ Report::title();
 // The submitted usertype (POST) wins; otherwise fall back to the GET/default value.
 $usertype = $_POST["usertype"] ?? ($_GET["usertype"] ?? "user");
 
-// Capture GLPI's own field/dropdown HTML so the Twig template can inject it (|raw).
-$date1_field = Html::showDateField("date1", ['value' => $_POST["date1"], 'display' => false]);
-$date2_field = Html::showDateField("date2", ['value' => $_POST["date2"], 'display' => false]);
-
-ob_start();
-User::dropdown([
-    'name'   => "tech_num",
-    'value'  => $owner,
-    'entity' => $_SESSION["glpiactive_entity"],
-    'right'  => 'all',
-]);
-$tech_dropdown = ob_get_clean();
-
 TemplateRenderer::getInstance()->display('@manageentities/report_search_form.html.twig', [
-    'form_url'      => $_SERVER['REQUEST_URI'],
-    'date1_field'   => $date1_field,
-    'date2_field'   => $date2_field,
-    'tech_dropdown' => $tech_dropdown,
-    'usertype'      => $usertype,
+    'form_url' => $_SERVER['REQUEST_URI'],
+    'date1'    => $_POST["date1"],
+    'date2'    => $_POST["date2"],
+    'owner'    => $owner,
+    'entity'   => $_SESSION["glpiactive_entity"],
+    'usertype' => $usertype,
 ]);
 
 if (isset($_POST["choice_tech"])) {

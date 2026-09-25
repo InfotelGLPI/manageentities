@@ -25,25 +25,16 @@
  # --------------------------------------------------------------------------
  #}
 
-{% for block in blocks %}
-    <div class="card mb-3">
-        <div class="card-header d-flex align-items-center gap-2">
-            <h3 class="card-title">
-                <i class="ti ti-report-analytics"></i>
-                {{ __('Intervention of contract', 'manageentities') }} : {{ block.contract_name }}
-            </h3>
-            <span class="badge bg-secondary-lt ms-1">{{ block.entries|length }}</span>
-        </div>
-
-        <div class="card-body p-0">
-            {{ include('components/datatable.html.twig', {
-                'entries':       block.entries,
-                'columns':       columns,
-                'formatters':    formatters,
-                'total_number':  block.entries|length,
-                'nosort':        true,
-                'nofilter':      true,
-            }) }}
-        </div>
-    </div>
-{% endfor %}
+{# Entity alerts shown on top of an item form. The ticket fields panel is a flex grid
+   (div.row), the contract form a table: table rows would be dropped in a grid. #}
+{% if layout == 'grid' %}
+<div class="col-12">
+    {% for alert in alerts %}{{ alert|raw }}{% endfor %}
+</div>
+{% else %}
+<tr>
+    <th colspan="{{ colspan }}">
+        {% for alert in alerts %}{{ alert|raw }}{% endfor %}
+    </th>
+</tr>
+{% endif %}

@@ -133,59 +133,12 @@ class CriDetail extends CommonDBTM
 
     public static function showCriForm(Config $config): void
     {
-        $status = Ticket::getAllStatusArray();
-
-        ob_start();
-        \Dropdown::showFromArray('ticket_state', $status, ['value' => $config->fields['ticket_state']]);
-        $ticket_state_html = ob_get_clean();
-
-        $default_duration_html = \Dropdown::showTimeStamp('default_duration', [
-            'display'    => false,
-            'value'      => $config->fields['default_duration'],
-            'min'        => 0,
-            'max'        => 50 * HOUR_TIMESTAMP,
-            'emptylabel' => __('Specify an end date'),
-        ]);
-
-        $default_time_am_html = \Dropdown::showTimeStamp('default_time_am', [
-            'display'    => false,
-            'value'      => $config->fields['default_time_am'],
-            'min'        => 0,
-            'emptylabel' => '0h',
-            'max'        => 23.5 * HOUR_TIMESTAMP,
-            'step'       => MINUTE_TIMESTAMP * 30,
-        ]);
-
-        $default_time_pm_html = \Dropdown::showTimeStamp('default_time_pm', [
-            'display'    => false,
-            'value'      => $config->fields['default_time_pm'],
-            'min'        => 0,
-            'emptylabel' => '0h',
-            'max'        => 23.5 * HOUR_TIMESTAMP,
-            'step'       => MINUTE_TIMESTAMP * 30,
-        ]);
-
-        ob_start();
-        \Dropdown::showYesNo('non_accomplished_tasks', $config->fields['non_accomplished_tasks']);
-        $non_accomplished_tasks_html = ob_get_clean();
-        ob_start();
-        \Dropdown::showYesNo('get_pdf_cri', $config->fields['get_pdf_cri']);
-        $get_pdf_cri_html = ob_get_clean();
-        ob_start();
-        \Dropdown::showYesNo('disable_date_header', $config->fields['disable_date_header']);
-        $disable_date_header_html = ob_get_clean();
-
         TemplateRenderer::getInstance()->display(
             '@manageentities/config_cri_form.html.twig',
             [
-                'form_url'                    => Toolbox::getItemTypeFormURL(Config::class),
-                'ticket_state_html'           => $ticket_state_html,
-                'default_duration_html'       => $default_duration_html,
-                'default_time_am_html'        => $default_time_am_html,
-                'default_time_pm_html'        => $default_time_pm_html,
-                'non_accomplished_tasks_html' => $non_accomplished_tasks_html,
-                'get_pdf_cri_html'            => $get_pdf_cri_html,
-                'disable_date_header_html'    => $disable_date_header_html,
+                'form_url'        => Toolbox::getItemTypeFormURL(Config::class),
+                'config'          => $config->fields,
+                'ticket_statuses' => Ticket::getAllStatusArray(),
             ],
         );
     }
@@ -2057,52 +2010,35 @@ class CriDetail extends CommonDBTM
      **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
-        global $CFG_GLPI;
-
-        $html = "";
-        $rand = mt_rand();
         $dbu = new DbUtils();
+
+        $params = [
+            'complete'    => (bool) $complete,
+            'entity_name' => $val['entities_name'] ?: '',
+            'duration'    => $val['actiontime'] ? Html::timestampToString($val['actiontime'], false) : '',
+            'end_date'    => '',
+            'user_name'   => '',
+            'content'     => (string) $val['content'],
+        ];
         if ($complete) {
-            if ($val["entities_name"]) {
-                $html .= "<strong>" . _n('Entity', 'Entities', 1) . "</strong> : " . htmlescape($val['entities_name']) . "<br>";
+            if ($val['end']) {
+                $params['end_date'] = Html::convDateTime($val['end']);
             }
-
-            if ($val["end"]) {
-                $html .= "<strong>" . __('End date') . "</strong> : " . Html::convdatetime($val["end"]) . "<br>";
+            if ($val['users_id'] && $who != 0) {
+                $params['user_name'] = $dbu->getUserName($val['users_id']);
             }
-            if ($val["users_id"] && $who != 0) {
-                $html .= "<strong>" . __('User') . "</strong> : " . htmlescape($dbu->getUserName($val["users_id"])) . "<br>";
-            }
-            if ($val["actiontime"]) {
-                $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(
-                    $val['actiontime'],
-                    false,
-                ) . "<br>";
-            }
-
-            $html .= "<div class='event-description'>" . htmlspecialchars($val["content"]) . "</div>";
         } else {
-            if ($val["entities_name"]) {
-                $html .= "<strong>" . _n('Entity', 'Entities', 1) . "</strong> : " . htmlescape($val['entities_name']) . "<br>";
-            }
-            if ($val["actiontime"]) {
-                $html .= "<strong>" . __('Total duration') . "</strong> : " . Html::timestampToString(
-                    $val['actiontime'],
-                    false,
-                ) . "<br>";
-            }
-
             // showToolTip() renders its content as HTML: the text comes decoded from the task.
-            $html .= Html::showToolTip(
-                htmlescape((string) $val["content"]),
+            $params['tooltip_html'] = Html::showToolTip(
+                htmlescape((string) $val['content']),
                 [
-                    'applyto' => "cri_" . $val["id"] . $rand,
+                    'applyto' => "cri_" . $val['id'] . mt_rand(),
                     'display' => false,
                 ],
             );
         }
 
-        return $html;
+        return TemplateRenderer::getInstance()->render('@manageentities/cridetail_planning_item.html.twig', $params);
     }
 
     public static function install(Migration $migration)

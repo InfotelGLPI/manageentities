@@ -25,13 +25,22 @@
  # --------------------------------------------------------------------------
  #}
 
-<div class="document-block d-flex align-items-center gap-2 mb-2 flex-wrap" data-idx="{{ idx }}">
-    <div style="min-width:200px">{{ doccat_html|raw }}</div>
-    <input type="file" name="documents[{{ idx }}][file]"
-           class="form-control" style="max-width:320px"
-           accept=".pdf,.doc,.docx,.xls,.xlsx,.odt,.ods">
-    <button type="button" class="btn btn-sm btn-outline-danger"
-            onclick="removeDocumentBlock({{ idx }})">
-        <i class="ti ti-trash"></i>
-    </button>
-</div>
+{# Planning event body of a report detail; the core planning expects an HTML string #}
+{% if entity_name %}
+<strong>{{ _n('Entity', 'Entities', 1) }}</strong> : {{ entity_name }}<br>
+{% endif %}
+{% if end_date %}
+<strong>{{ __('End date') }}</strong> : {{ end_date }}<br>
+{% endif %}
+{% if user_name %}
+<strong>{{ __('User') }}</strong> : {{ user_name }}<br>
+{% endif %}
+{% if duration %}
+<strong>{{ __('Total duration') }}</strong> : {{ duration }}<br>
+{% endif %}
+{% if complete %}
+<div class="event-description">{{ content }}</div>
+{% else %}
+{# showToolTip() output: its content is escaped in PHP before being wrapped #}
+{{ tooltip_html|raw }}
+{% endif %}

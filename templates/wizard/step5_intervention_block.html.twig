@@ -32,9 +32,9 @@
         <h5 class="card-title mb-0">
             {{ _n('Period of contract', 'Periods of contract', 1, 'manageentities') }} #{{ idx }}
             {% if criprices_section %}
-                <span class="badge bg-outline-success ms-2"><i class="ti ti-check"></i></span>
+                <span class="badge bg-success-lt ms-2"><i class="ti ti-check"></i></span>
             {% else %}
-                <span class="badge bg-outline-warning text-dark ms-2" id="unsaved-badge-{{ idx }}">
+                <span class="badge bg-warning-lt text-dark ms-2" id="unsaved-badge-{{ idx }}">
                     {{ __('Not saved', 'manageentities') }}
                 </span>
             {% endif %}
