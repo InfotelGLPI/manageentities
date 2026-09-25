@@ -41,7 +41,6 @@ use Glpi\RichText\RichText;
 use Html;
 use Session;
 use Ticket;
-use User;
 
 class Cri extends CommonDBTM
 {
@@ -61,28 +60,14 @@ class Cri extends CommonDBTM
     }
 
     /**
-     * Build the onclick attribute of a manageentities_loadCriForm() call.
+     * The manageentities_loadCriForm() call, not yet escaped for HTML: meant for a Twig
+     * attribute, where the auto-escaping adds the HTML layer.
      *
      * Two nested contexts for one value: a JavaScript call inside an HTML attribute. The browser
      * decodes the entities of the attribute before handing the content to the JavaScript parser,
      * so escaping for HTML alone would be undone; the arguments have to be valid JS literals
      * first. Both the modal name and the DOM id to refresh come straight from the request, so a
      * quote in either used to close the attribute.
-     *
-     * @param string               $action the manageentities_loadCriForm action
-     * @param string               $modal  the modal to close, as posted
-     * @param array<string, mixed> $params the parameters forwarded to ajax/cri.php
-     *
-     * @return string the attribute value, ready to be placed between single quotes
-     */
-    private static function getLoadCriFormHandler(string $action, string $modal, array $params): string
-    {
-        return htmlspecialchars(self::getLoadCriFormCall($action, $modal, $params));
-    }
-
-    /**
-     * The manageentities_loadCriForm() call itself, not yet escaped for HTML: meant for a Twig
-     * attribute, where the auto-escaping adds the HTML layer
      *
      * @param string               $action the manageentities_loadCriForm action
      * @param string               $modal  the modal to close, as posted
@@ -127,7 +112,7 @@ class Cri extends CommonDBTM
 
         $modal = (string) ($options['modal'] ?? '');
 
-        // Contract block: capture the GLPI-generated dropdown while keeping its return value.
+        // Contract block: the selectors data, and the contract/period they preselect.
         $restrict = [
             "`glpi_plugin_manageentities_cridetails`.`entities_id`" => $job->fields['entities_id'],
             "`glpi_plugin_manageentities_cridetails`.`tickets_id`" => $job->fields['id'],
@@ -136,18 +121,18 @@ class Cri extends CommonDBTM
         $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
         $cridetail = reset($cridetails);
         if (isset($cridetail['withcontract'])) {
-            ob_start();
-            $contractSelected = CriDetail::showContractLinkDropdown(
+            $contract_link    = CriDetail::getContractLinkDropdownData(
                 $cridetail,
                 $job->fields['entities_id'],
                 'cri',
             );
-            $contract_html = ob_get_clean();
+            $contract_data    = $contract_link['template'];
+            $contractSelected = $contract_link['selection'];
         } else {
-            $contract_html = TemplateRenderer::getInstance()->render('@manageentities/contract_link_dropdown.html.twig', [
+            $contract_data = [
                 'layout'          => 'table',
                 'out_of_contract' => true,
-            ]);
+            ];
             $contractSelected = [
                 'contractSelected' => 0,
                 'contractdaySelected' => 0,
@@ -189,48 +174,35 @@ class Cri extends CommonDBTM
             }
         }
         $rand = mt_rand();
-        ob_start();
-        User::dropdown([
-            'name' => "users_id",
-            'entity' => $job->fields["entities_id"],
-            'used' => $used,
-            'right' => 'all',
-            'width' => $width,
-        ]);
-        $add_tech_html    = ob_get_clean();
         $add_tech_onclick = self::getLoadCriFormCall('addTech', $modal, $params);
 
         // Hidden contract fields + optional CRI-type / moving-number dropdowns.
-        $hidden_fields = '';
-        $critype_html = null;
-        $critype_label = CriType::getTypeName(1);
-        $number_moving_html = null;
+        $contract_id       = 0;
+        $contractday_id    = 0;
+        $noprice           = false;
+        $without_contract  = false;
+        $critypes_data     = null;
+        $critypes_default  = 0;
+        $critype_label     = CriType::getTypeName(1);
+        $number_moving     = null;
 
         if ($contractSelected['contractSelected'] && $contractSelected['contractdaySelected']) {
-            $hidden_fields .= Html::hidden('CONTRAT', ['value' => $contractSelected['contractSelected']]);
-            $hidden_fields .= Html::hidden('CONTRACTDAY', ['value' => $contractSelected['contractdaySelected']]);
+            $contract_id    = $contractSelected['contractSelected'];
+            $contractday_id = $contractSelected['contractdaySelected'];
 
             if ($config->fields['useprice'] == Config::PRICE) {
                 $CriPrice = new CriPrice();
                 $critypes = $CriPrice->getItems($contractSelected['contractdaySelected']);
                 $critypes_data = [\Dropdown::EMPTY_VALUE];
-                $critypes_default = 0;
                 foreach ($critypes as $value) {
                     $critypes_data[$value['plugin_manageentities_critypes_id']] = $value['critypes_name'];
                     if ($value['is_default']) {
                         $critypes_default = $value['plugin_manageentities_critypes_id'];
                     }
                 }
-
-                ob_start();
-                \Dropdown::showFromArray('REPORT_ACTIVITE', $critypes_data, [
-                    'value' => $critypes_default,
-                    'width' => $width,
-                ]);
-                $critype_html = ob_get_clean();
                 //configuration do not use price
             } else {
-                $hidden_fields .= Html::hidden('REPORT_ACTIVITE', ['value' => 'noprice']);
+                $noprice = true;
             }
 
             $contract = new Contract();
@@ -239,21 +211,17 @@ class Cri extends CommonDBTM
                 'entities_id' => $job->fields["entities_id"],
             ])) {
                 if ($contract->fields['moving_management']) {
-                    ob_start();
-                    \Dropdown::showNumber('number_moving', [
-                        'value' => $cridetail['number_moving'],
-                        'width' => $width,
-                    ]);
-                    $number_moving_html = ob_get_clean();
+                    $number_moving = $cridetail['number_moving'];
                 }
             }
         } elseif (!isset($cridetail['withcontract']) || $cridetail['withcontract'] == false) {
-            $hidden_fields .= Html::hidden('WITHOUTCONTRACT', ['value' => 1]);
+            $without_contract = true;
         }
 
         $has_tasks = false;
-        $description_html = '';
-        $generate_button_html = '';
+        $description = '';
+        $description_rand = 0;
+        $generate_button = null;
         $no_tasks_message = '';
         $not_task_message = '';
 
@@ -303,34 +271,26 @@ class Cri extends CommonDBTM
                 }
                 $desc = substr($desc, 0, strlen($desc) - 2); // Drop the trailing carriage returns of the last task.
 
-                $rand_text = mt_rand();
-                ob_start();
-                echo Html::script("lib/tinymce.js");
-                Html::textarea([
-                    'name' => 'REPORT_DESCRIPTION',
-                    'value' => RichText::getEnhancedHtml($desc),
-                    'enable_richtext' => true,
-                    'enable_fileupload' => false,
-                    'enable_images' => false,
-                    'rand' => $rand_text,
-                    'editor_id' => 'comment' . $rand_text,
-                ]);
-                $description_html = ob_get_clean();
+                $description      = RichText::getEnhancedHtml($desc);
+                $description_rand = mt_rand();
 
                 // action empty : add cri
                 if (empty($options['action'])) {
                     if (!empty($technicians_id)) {
-                        $generate_button_html = "<input type='button' name='add_cri' value=\""
-                            . __('Generation of the intervention report', 'manageentities')
-                            . "\" class='submit btn btn-primary manageentities_button' onClick='"
-                            . self::getLoadCriFormHandler('addCri', $modal, $params) . "'>";
+                        $generate_button = [
+                            'name'    => 'add_cri',
+                            'label'   => __('Generation of the intervention report', 'manageentities'),
+                            'onclick' => self::getLoadCriFormCall('addCri', $modal, $params),
+                        ];
                     }
                     // action not empty : update cri
                 } elseif ($options['action'] == 'update_cri') {
                     if (!empty($technicians_id)) {
-                        $generate_button_html = "<input type='button' name='update_cri' class='submit btn btn-primary manageentities_button' value=\""
-                            . __('Regenerate the intervention report', 'manageentities') . "\" onClick='"
-                            . self::getLoadCriFormHandler('updateCri', $modal, $params) . "'>";
+                        $generate_button = [
+                            'name'    => 'update_cri',
+                            'label'   => __('Regenerate the intervention report', 'manageentities'),
+                            'onclick' => self::getLoadCriFormCall('updateCri', $modal, $params),
+                        ];
                     }
                 }
             } else {
@@ -347,20 +307,27 @@ class Cri extends CommonDBTM
         TemplateRenderer::getInstance()->display('@manageentities/cri_form.html.twig', [
             'form_action'          => PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.form.php",
             'report_id'            => $ID,
-            'hidden_fields'        => $hidden_fields,
-            'contract_html'        => $contract_html,
+            'contract_id'          => $contract_id,
+            'contractday_id'       => $contractday_id,
+            'noprice'              => $noprice,
+            'without_contract'     => $without_contract,
+            'contract_data'        => $contract_data,
             'is_task_list'         => $is_task,
             'technicians'          => $technicians,
-            'add_tech_html'        => $add_tech_html,
+            'entities_id'          => $job->fields['entities_id'],
+            'used_technicians'     => $used,
+            'width'                => $width,
             'add_tech_onclick'     => $add_tech_onclick,
             'add_tech_rand'        => $rand,
-            'critype_html'         => $critype_html,
+            'critypes'             => $critypes_data,
+            'critype_default'      => $critypes_default,
             'critype_label'        => $critype_label,
-            'number_moving_html'   => $number_moving_html,
+            'number_moving'        => $number_moving,
             'is_task'              => $is_task,
             'has_tasks'            => $has_tasks,
-            'description_html'     => $description_html,
-            'generate_button_html' => $generate_button_html,
+            'description'          => $description,
+            'description_rand'     => $description_rand,
+            'generate_button'      => $generate_button,
             'no_tasks_message'     => $no_tasks_message,
             'not_task_message'     => $not_task_message,
         ]);
@@ -517,7 +484,7 @@ class Cri extends CommonDBTM
         $job = new Ticket();
         if ($job->getfromDB($p['REPORT_ID'])) {
             // Security (cross-entity IDOR): CONTRAT and CONTRACTDAY come back from the client as
-            // hidden fields (see the Html::hidden() calls at the end of this method) and used to
+            // hidden fields (see cri_form.html.twig, rendered by showForm()) and used to
             // be consumed as is, although the only thing that ever restricted them is the list
             // builder of the dropdown. Anchor them on the entity of the ticket before they reach
             // the generated PDF, the CriDetail row and Contract::updateRemainingDays(), which

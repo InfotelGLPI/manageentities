@@ -25,18 +25,29 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+
 <div class="red styleContractTitle" style="display:none" id="manageentities_cri_error"></div>
 
 <form action="{{ form_action }}" method="post" name="formReport">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="REPORT_ID" value="{{ report_id }}">
-    {{ hidden_fields|raw }}
+    {% if contract_id and contractday_id %}
+        <input type="hidden" name="CONTRAT" value="{{ contract_id }}">
+        <input type="hidden" name="CONTRACTDAY" value="{{ contractday_id }}">
+    {% endif %}
+    {% if noprice %}
+        <input type="hidden" name="REPORT_ACTIVITE" value="noprice">
+    {% endif %}
+    {% if without_contract %}
+        <input type="hidden" name="WITHOUTCONTRACT" value="1">
+    {% endif %}
 
     <div class="center">
         <table class="tab_cadre_fixe">
             <tr class="tab_bg_1">
                 <th>{{ _n('Contract', 'Contracts', 1) }}</th>
-                <td colspan="2">{{ contract_html|raw }}</td>
+                <td colspan="2">{{ include('@manageentities/contract_link_dropdown.html.twig', contract_data, with_context = false) }}</td>
             </tr>
 
             <tr class="tab_bg_1">
@@ -57,25 +68,40 @@
                     {% endif %}
                 </td>
                 <td>
-                    {# User dropdown rendered by the core #}
-                    {{ add_tech_html|raw }}
+                    {{ 'User'|itemtype_dropdown({
+                        'name': 'users_id',
+                        'entity': entities_id,
+                        'used': used_technicians,
+                        'right': 'all',
+                        'width': width,
+                    }) }}
                     &nbsp;<a class="pointer" name="add_tech{{ add_tech_rand }}" onclick="{{ add_tech_onclick }}">
                         <i class="ti ti-plus" title="{{ __('Add a technician', 'manageentities') }}"></i>
                     </a>
                 </td>
             </tr>
 
-            {% if critype_html is not null %}
+            {% if critypes is not null %}
                 <tr class="tab_bg_1">
                     <th>{{ critype_label }}</th>
-                    <td colspan="2">{{ critype_html|raw }}</td>
+                    <td colspan="2">
+                        {% do call('Dropdown::showFromArray', ['REPORT_ACTIVITE', critypes, {
+                            'value': critype_default,
+                            'width': width,
+                        }]) %}
+                    </td>
                 </tr>
             {% endif %}
 
-            {% if number_moving_html is not null %}
+            {% if number_moving is not null %}
                 <tr class="tab_bg_1">
                     <th>{{ __('Number of moving', 'manageentities') }}</th>
-                    <td colspan="2">{{ number_moving_html|raw }}</td>
+                    <td colspan="2">
+                        {% do call('Dropdown::showNumber', ['number_moving', {
+                            'value': number_moving,
+                            'width': width,
+                        }]) %}
+                    </td>
                 </tr>
             {% endif %}
 
@@ -83,11 +109,25 @@
                 {% if has_tasks %}
                     <tr class="tab_bg_1">
                         <th>{{ __('Detail of the realized works', 'manageentities') }}</th>
-                        <td colspan="2">{{ description_html|raw }}</td>
+                        <td colspan="2">
+                            {# The report form is loaded over AJAX in a modal: load the editor library it needs #}
+                            <script src="{{ js_path('lib/tinymce.js') }}"></script>
+                            {{ _inputs.textarea('REPORT_DESCRIPTION', description, {
+                                'id': 'comment' ~ description_rand,
+                                'rand': description_rand,
+                                'enable_richtext': true,
+                                'enable_images': false,
+                            }) }}
+                        </td>
                     </tr>
-                    {% if generate_button_html is not empty %}
+                    {% if generate_button is not null %}
                         <tr class="tab_bg_2">
-                            <td class="center" colspan="3">{{ generate_button_html|raw }}</td>
+                            <td class="center" colspan="3">
+                                <button type="button" name="{{ generate_button.name }}" class="submit btn btn-primary manageentities_button"
+                                        onclick="{{ generate_button.onclick }}">
+                                    {{ generate_button.label }}
+                                </button>
+                            </td>
                         </tr>
                     {% endif %}
                 {% else %}

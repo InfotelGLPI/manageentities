@@ -1612,6 +1612,25 @@ class CriDetail extends CommonDBTM
      */
     public static function showContractLinkDropdown($cridetail, $entities_id, $type = 'ticket', string $layout = 'table')
     {
+        $data = self::getContractLinkDropdownData($cridetail, $entities_id, $type, $layout);
+
+        TemplateRenderer::getInstance()->display('@manageentities/contract_link_dropdown.html.twig', $data['template']);
+
+        return $data['selection'];
+    }
+
+    /**
+     * Data of the "Intervention with contract" and "Periods of contract" selectors.
+     *
+     * @param mixed  $cridetail   the CRI detail row, if any
+     * @param mixed  $entities_id the entity (or entities) of the ticket
+     * @param string $type        'ticket' for editable selectors, anything else for read-only names
+     * @param string $layout      'table' or 'rows', see contract_link_dropdown.html.twig
+     *
+     * @return array{template: array<string, mixed>, selection: array{contractSelected: int, contractdaySelected: int, is_contract: int}}
+     */
+    public static function getContractLinkDropdownData($cridetail, $entities_id, $type = 'ticket', string $layout = 'table'): array
+    {
         global $DB;
 
         $cridetail = is_array($cridetail) ? $cridetail : [];
@@ -1733,7 +1752,7 @@ class CriDetail extends CommonDBTM
             ]);
         }
 
-        TemplateRenderer::getInstance()->display('@manageentities/contract_link_dropdown.html.twig', [
+        $template = [
             'layout'            => $layout,
             'type'              => $type,
             'has_contracts'     => $has_contracts,
@@ -1747,12 +1766,15 @@ class CriDetail extends CommonDBTM
             'contractday_name'  => $contractdaySelected
                 ? \Dropdown::getDropdownName('glpi_plugin_manageentities_contractdays', $contractdaySelected)
                 : '',
-        ]);
+        ];
 
         return [
-            'contractSelected'    => $contractSelected,
-            'contractdaySelected' => $contractdaySelected,
-            'is_contract'         => count($iterator),
+            'template'  => $template,
+            'selection' => [
+                'contractSelected'    => $contractSelected,
+                'contractdaySelected' => $contractdaySelected,
+                'is_contract'         => count($iterator),
+            ],
         ];
     }
 

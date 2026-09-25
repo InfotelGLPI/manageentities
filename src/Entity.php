@@ -118,7 +118,7 @@ class Entity extends CommonGLPI
                 $tabs[3] = Gantt::createTabEntry(__('GANTT'));
             }
 
-            // showDescription() issues two queries and one Html::file() capture per entity, so a
+            // showDescription() issues two queries and renders one Html::file() per entity, so a
             // parent entity multiplies the cost by the size of its subtree for a page that is
             // only ever read one customer at a time.
             if ($is_single_entity) {
@@ -414,12 +414,6 @@ class Entity extends CommonGLPI
                 $logos[] = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/logo.send.php?docid=' . $logo['logos_id'];
             }
 
-            $file_input_html = '';
-            if ($can_edit) {
-                ob_start();
-                Html::file();
-                $file_input_html = ob_get_clean();
-            }
 
             $entities_data[] = [
                 'entity_id'           => $f['id'],
@@ -437,7 +431,7 @@ class Entity extends CommonGLPI
                 'entity_country'      => $f['country'] ?? '',
                 'is_root_entity'      => ($instID == 0),
                 'logos'               => $logos,
-                'file_input_html'     => $file_input_html,
+
                 'max_upload'          => Document::getMaxUploadSize(),
             ];
         }
@@ -450,27 +444,9 @@ class Entity extends CommonGLPI
             ? []
             : $techLead->buildTechLeadsForTemplate($entities, $CFG_GLPI['root_doc']);
 
-        $contact_dropdown_html = '';
-        $user_dropdown_html    = '';
-        $techlead_dropdown_html = '';
-        if ($can_edit && $is_single) {
-            ob_start();
-            \Dropdown::show('Contact', ['name' => 'contacts_id']);
-            $contact_dropdown_html = ob_get_clean();
-
-            ob_start();
-            \User::dropdown(['right' => 'interface']);
-            $user_dropdown_html = ob_get_clean();
-
-            // Tech leads are technicians: same right filter as the ticket assignment dropdowns
-            $techlead_dropdown_html = \User::dropdown([
-                'name'    => 'users_id',
-                'right'   => 'own_ticket',
-                'entity'  => $entities,
-                'used'    => array_column($techLead->find(['entities_id' => $entities]), 'users_id'),
-                'display' => false,
-            ]);
-        }
+        $techlead_used = ($can_edit && $is_single)
+            ? array_column($techLead->find(['entities_id' => $entities]), 'users_id')
+            : [];
 
         TemplateRenderer::getInstance()->display(
             '@manageentities/entity/description.html.twig',
@@ -487,11 +463,10 @@ class Entity extends CommonGLPI
                 'business'             => $business_data,
                 'can_edit_contacts'    => $contact->canCreate(),
                 'can_edit_business'    => $businessContact->canCreate(),
-                'contact_dropdown_html' => $contact_dropdown_html,
-                'user_dropdown_html'   => $user_dropdown_html,
                 'techleads'            => $techlead_data,
                 'can_edit_techleads'   => $can_edit && $techLead->canCreate(),
-                'techlead_dropdown_html' => $techlead_dropdown_html,
+                'techlead_entities'    => $entities,
+                'techlead_used'        => $techlead_used,
                 // For the add-contact/business form, use the first (or only) entity id
                 'entity_id'            => $entities[array_key_first($entities)] ?? 0,
             ],

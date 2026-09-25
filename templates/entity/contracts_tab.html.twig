@@ -75,7 +75,13 @@
                         {% endif %}
                         {% if can_edit %}
                         <td class="text-center">
-                            {{ row.delete_form|raw }}
+                            <form method="post" action="{{ entity_url }}" class="d-inline">
+                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="id" value="{{ row.myid }}">
+                                <button type="submit" name="deletecontracts" class="btn btn-sm btn-ghost-danger">
+                                    <i class="ti ti-trash me-1"></i>{{ _x('button', 'Delete permanently') }}
+                                </button>
+                            </form>
                         </td>
                         {% endif %}
                     </tr>
@@ -100,7 +106,7 @@
             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             <div class="d-flex align-items-center gap-2">
                 <input type="hidden" name="entities_id" value="{{ session('glpiactive_entity') }}">
-                {{ add_dropdown_html|raw }}
+                {{ 'Contract'|itemtype_dropdown({'name': 'contracts_id', 'used': used}) }}
                 <a href="{{ path('front/setup.templates.php?itemtype=Contract&add=1') }}" target="_blank">
                     <i title="{{ _x('button', 'Add') }}" class="ti ti-square-plus ms-1"></i>
                 </a>

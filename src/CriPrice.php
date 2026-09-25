@@ -157,39 +157,20 @@ class CriPrice extends CommonDBTM
 
         $this->initForm($ID, $options);
 
-        // Capture CriType dropdown
-        ob_start();
-        \Dropdown::show(CriType::class, [
-            'name'      => 'plugin_manageentities_critypes_id',
-            'value'     => $this->fields['plugin_manageentities_critypes_id'],
-            'entity'    => $options['parent']->getField('entities_id'),
-            'used'      => $used_critypes,
-            'on_change' => CriDetail::CHANGE_EVENT_JS,
-        ]);
-        $critype_html = ob_get_clean();
-
-        // Capture is_default dropdown — default to Yes for new items
-        ob_start();
-        \Dropdown::showYesNo('is_default', $ID <= 0 ? 1 : $this->fields['is_default']);
-        $is_default_html = ob_get_clean();
-
-        // Capture existing price dropdown
-        ob_start();
-        $this->showSelectPriceDropdown(
-            $this->fields['plugin_manageentities_critypes_id'],
-            $options['parent']->getField('entities_id'),
-        );
-        $select_price_html = ob_get_clean();
-
         $ajax_url = PLUGIN_MANAGEENTITIES_WEBDIR . "/ajax/criprice.php";
 
         TemplateRenderer::getInstance()->display('@manageentities/criprice_form.html.twig', [
             'item'               => $this,
             'params'             => $options,
             'is_day'             => $is_day,
-            'critype_html'       => $critype_html,
-            'is_default_html'    => $is_default_html,
-            'select_price_html'  => $select_price_html,
+            'used_critypes'      => $used_critypes,
+            // Default to Yes for new items
+            'is_default'         => $ID <= 0 ? 1 : $this->fields['is_default'],
+            'select_prices'      => $this->getSelectPriceChoices(
+                $this->fields['plugin_manageentities_critypes_id'],
+                $options['parent']->getField('entities_id'),
+            ),
+            'change_event_js'    => CriDetail::CHANGE_EVENT_JS,
             'price'              => Html::formatNumber($this->fields['price']),
             'ajax_url'           => $ajax_url,
             'entities_id'        => $options['parent']->getField('entities_id'),
@@ -209,6 +190,23 @@ class CriPrice extends CommonDBTM
      */
     public function showSelectPriceDropdown($critypes_id, $entities_id)
     {
+        \Dropdown::showFromArray(
+            'select_critype',
+            $this->getSelectPriceChoices($critypes_id, $entities_id),
+            ['on_change' => CriDetail::CHANGE_EVENT_JS],
+        );
+    }
+
+    /**
+     * Prices already used by the entity for an intervention type, keyed by their raw value.
+     *
+     * @param mixed $critypes_id
+     * @param mixed $entities_id
+     *
+     * @return array<int|string, string>
+     */
+    public function getSelectPriceChoices($critypes_id, $entities_id): array
+    {
         $data = [\Dropdown::EMPTY_VALUE];
         if (!empty($critypes_id)) {
             $condition = [
@@ -222,7 +220,7 @@ class CriPrice extends CommonDBTM
                 }
             }
         }
-        \Dropdown::showFromArray('select_critype', $data, ['on_change' => CriDetail::CHANGE_EVENT_JS]);
+        return $data;
     }
 
     /**

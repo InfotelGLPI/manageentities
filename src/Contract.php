@@ -262,29 +262,6 @@ class Contract extends CommonDBTM
         $is_hour_mode  = ($config->fields['hourorday'] == Config::HOUR);
         $is_day_price  = ($config->fields['hourorday'] == Config::DAY && $config->fields['useprice'] == Config::PRICE);
 
-        ob_start();
-        Html::showDateField("date_signature", ['value' => $pluginContract['date_signature'] ?? null]);
-        $date_signature_html = ob_get_clean();
-
-        ob_start();
-        Html::showDateField("date_renewal", ['value' => $pluginContract['date_renewal'] ?? null]);
-        $date_renewal_html = ob_get_clean();
-
-        $management_html  = '';
-        $contract_type_html = '';
-        if ($is_hour_mode) {
-            ob_start();
-            Contract::dropdownContractManagement("management", $pluginContract['management'] ?? 0);
-            $management_html = ob_get_clean();
-
-            ob_start();
-            Contract::dropdownContractType("contract_type", $pluginContract['contract_type'] ?? 0);
-            $contract_type_html = ob_get_clean();
-        }
-
-        ob_start();
-        \Dropdown::showTimeStamp('duration_moving', ['value' => $pluginContract['duration_moving'] ?? null, 'addfirstminutes' => true]);
-        $duration_moving_html = ob_get_clean();
 
         $sub              = EditorSubscription::getForEntity((int) $contract->fields['entities_id']);
         $now              = date('Y-m-d');
@@ -306,15 +283,17 @@ class Contract extends CommonDBTM
             'is_new'                     => empty($pluginContract),
             'is_hour_mode'               => $is_hour_mode,
             'is_day_price'               => $is_day_price,
-            'date_signature_html'        => $date_signature_html,
-            'date_renewal_html'          => $date_renewal_html,
-            'management_html'            => $management_html,
-            'contract_type_html'         => $contract_type_html,
+            'date_signature'             => $pluginContract['date_signature'] ?? null,
+            'date_renewal'               => $pluginContract['date_renewal'] ?? null,
+            'management'                 => (int) ($pluginContract['management'] ?? 0),
+            'management_types'           => self::getContractManagements(),
+            'contract_type'              => (int) ($pluginContract['contract_type'] ?? 0),
+            'contract_types'             => self::getContractTypes(),
             'contract_added'             => (int) ($pluginContract['contract_added'] ?? 0),
             'refacturable_costs'         => (int) ($pluginContract['refacturable_costs'] ?? 0),
             'show_on_global_gantt'       => (int) ($pluginContract['show_on_global_gantt'] ?? 0),
             'moving_management'          => (int) ($pluginContract['moving_management'] ?? 0),
-            'duration_moving_html'       => $duration_moving_html,
+            'duration_moving'            => $pluginContract['duration_moving'] ?? null,
             'internet_publication'       => (int) ($sub['internet_publication'] ?? 0),
             // Publisher subscription — read-only card
             'has_subscription'           => !empty($sub),
@@ -422,27 +401,6 @@ class Contract extends CommonDBTM
                 $label .= ' (' . $data['contracts_id'] . ')';
             }
 
-            ob_start();
-            if ($is_single && !$data['is_default']) {
-                Html::showSimpleForm(
-                    PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
-                    'contractbydefault',
-                    __('No'),
-                    ['myid' => $data['myid'], 'entities_id' => $_SESSION['glpiactive_entity']],
-                );
-            }
-            $default_form = ob_get_clean();
-
-            ob_start();
-            if ($can_edit) {
-                Html::showSimpleForm(
-                    PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
-                    'deletecontracts',
-                    _x('button', 'Delete permanently'),
-                    ['id' => $data['myid']],
-                );
-            }
-            $delete_form = ob_get_clean();
 
             $rows[] = [
                 'contracts_id'  => $data['contracts_id'],
@@ -461,16 +419,9 @@ class Contract extends CommonDBTM
                 'default_label' => $is_single
                     ? ($data['is_default'] ? __('Yes') : '')
                     : \Dropdown::getYesNo($data['is_default']),
-                'default_form'  => $default_form,
-                'delete_form'   => $delete_form,
             ];
         }
 
-        // Add-contract dropdown
-        $add_dropdown_html = '';
-        if ($can_edit) {
-            $add_dropdown_html = \Dropdown::show('Contract', ['name' => 'contracts_id', 'used' => $used, 'display' => false]);
-        }
 
         TemplateRenderer::getInstance()->display('@manageentities/entity/contracts_tab.html.twig', [
             'rows'             => $rows,
@@ -478,7 +429,7 @@ class Contract extends CommonDBTM
             'is_single'        => $is_single,
             'show_management'  => $show_management,
             'show_type'        => $show_type,
-            'add_dropdown_html' => $add_dropdown_html,
+            'used'             => $used,
             'entity_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
             'allowed_states'   => $allowed_states,
             'rand'             => mt_rand(),
@@ -586,11 +537,7 @@ class Contract extends CommonDBTM
      */
     public static function dropdownContractManagement($name, $value = 0, $rand = null)
     {
-        $contractManagements = [
-            self::MANAGEMENT_NONE => \Dropdown::EMPTY_VALUE,
-            self::MANAGEMENT_QUARTERLY => __('Quarterly', 'manageentities'),
-            self::MANAGEMENT_ANNUAL => __('Annual', 'manageentities'),
-        ];
+        $contractManagements = self::getContractManagements();
 
         if (!empty($contractManagements)) {
             if ($rand == null) {
@@ -601,6 +548,20 @@ class Contract extends CommonDBTM
         } else {
             return false;
         }
+    }
+
+    /**
+     * Modes of contract management.
+     *
+     * @return array<int, string>
+     */
+    public static function getContractManagements(): array
+    {
+        return [
+            self::MANAGEMENT_NONE => \Dropdown::EMPTY_VALUE,
+            self::MANAGEMENT_QUARTERLY => __('Quarterly', 'manageentities'),
+            self::MANAGEMENT_ANNUAL => __('Annual', 'manageentities'),
+        ];
     }
 
     /**

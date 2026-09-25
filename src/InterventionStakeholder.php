@@ -253,30 +253,16 @@ class InterventionStakeholder extends CommonDBTM
         $is_day = ($config->fields['hourorday'] == Config::DAY);
         $unit   = $is_day ? _n('Day', 'Days', 2) : _n('Hour', 'Hours', 2);
 
-        ob_start();
-        $idUser = User::dropdown([
-            'name'  => 'users_id_tech' . $idToUse,
-            'right' => 'interface',
-        ]);
-        $user_dropdown_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::showNumber('nb_days', [
-            'width' => 100,
-            'min'   => 0,
-            'max'   => $nbDays,
-            'step'  => self::NB_DAYS_STEP,
-            'rand'  => $rand,
-        ]);
-        $nbdays_dropdown_html = ob_get_clean();
+        // Both dropdown ids are read by public/scripts/interventionstakeholder.js
+        $user_rand = mt_rand();
 
         TemplateRenderer::getInstance()->display('@manageentities/interventionstakeholder_form.html.twig', [
             'id_to_use'            => $idToUse,
             'nb_days'              => $nbDays,
             'unit'                 => $unit,
-            'user_dropdown_html'   => $user_dropdown_html,
-            'nbdays_dropdown_html' => $nbdays_dropdown_html,
-            'user_field'           => Html::cleanId('dropdown_users_id_tech' . $idToUse . $idUser),
+            'user_rand'            => $user_rand,
+            'nbdays_rand'          => $rand,
+            'user_field'           => Html::cleanId('dropdown_users_id_tech' . $idToUse . $user_rand),
             'nbdays_field'         => Html::cleanId('dropdown_nb_days' . $rand),
             'nbdays_step'          => self::NB_DAYS_STEP,
             'contractdays_id'      => (int) $item->fields['id'],

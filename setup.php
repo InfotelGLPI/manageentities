@@ -207,6 +207,8 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/contract-add-months.js';
             // Daily/hourly switch of the plugin setup form (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/config-hourorday.js';
+            // "Duplicate" button under the ticket tasks (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/tickettask-clone.js';
             if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js';
                 // Contract alert of the unbilled intervention modal (native ES module)

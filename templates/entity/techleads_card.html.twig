@@ -97,7 +97,7 @@
             <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="entities_id" value="{{ entity_id }}">
-                <div class="flex-grow-1">{{ techlead_dropdown_html|raw }}</div>
+                <div class="flex-grow-1">{{ 'User'|itemtype_dropdown({'name': 'users_id', 'right': 'own_ticket', 'entity': techlead_entities, 'used': techlead_used}) }}</div>
                 <button type="submit" name="addtechlead" class="btn btn-sm btn-primary">{{ __('Add') }}</button>
             </form>
         </div>

@@ -132,12 +132,6 @@ class Contact extends CommonDBTM
 
         $contacts = $this->buildContactsForTemplate($instID, $CFG_GLPI['root_doc']);
 
-        $contact_dropdown_html = '';
-        if ($can_edit && $is_single) {
-            ob_start();
-            \Dropdown::show('Contact', ['name' => 'contacts_id']);
-            $contact_dropdown_html = ob_get_clean();
-        }
 
         TemplateRenderer::getInstance()->display(
             '@manageentities/entity/contacts_card.html.twig',
@@ -149,7 +143,6 @@ class Contact extends CommonDBTM
                 'can_edit_contacts'    => $can_edit,
                 'is_single'            => $is_single,
                 'interface'            => $interface,
-                'contact_dropdown_html' => $contact_dropdown_html,
             ],
         );
     }

@@ -34,13 +34,6 @@
         <span class="badge bg-secondary-lt ms-1">{{ entries|length }}</span>
     </h3>
     </div>
-    {{ massive_form_open|raw }}
-
-    {% if can_edit and massive_actions_top %}
-    <div class="card-body border-bottom py-2">
-        {{ massive_actions_top|raw }}
-    </div>
-    {% endif %}
 
     <div class="card-body p-0">
         {% if entries|length > 0 %}
@@ -53,20 +46,15 @@
             'entries': entries,
             'total_number': entries|length,
             'filtered_number': entries|length,
-            'table_class_style': 'table-hover table-sm'
+            'table_class_style': 'table-hover table-sm',
+            'showmassiveactions': can_edit,
+            'massiveactionparams': massiveactionparams,
         }) }}
         {% else %}
         <div class="p-3 text-muted">{{ __('No period found', 'manageentities') }}</div>
         {% endif %}
     </div>
 
-    {% if can_edit and massive_actions_bottom %}
-    <div class="card-body border-top py-2">
-        {{ massive_actions_bottom|raw }}
-    </div>
-    {% endif %}
-
-    {{ massive_form_close|raw }}
 
     {% if add_form %}
     <div class="card-footer">

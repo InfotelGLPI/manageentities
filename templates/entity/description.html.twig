@@ -25,6 +25,8 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+
 <div class="row g-3 mt-1">
 
     {# ── Left column — one card per entity ── #}
@@ -55,7 +57,7 @@
                         <form method="post" action="{{ entity_form_url }}" enctype="multipart/form-data" class="d-flex align-items-center gap-2 flex-wrap ms-2">
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="entities_id" value="{{ ent.entity_id }}">
-                            {{ ent.file_input_html|raw }}
+                            {{ _inputs.file('filename', null) }}
                             <small class="text-muted">({{ ent.max_upload }})</small>
                             <button type="submit" name="add" class="btn btn-sm btn-outline-primary">
                                 {{ __('Update logo', 'manageentities') }}
@@ -239,7 +241,7 @@
                     <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="entities_id" value="{{ entity_id }}">
-                        <div class="flex-grow-1">{{ contact_dropdown_html|raw }}</div>
+                        <div class="flex-grow-1">{{ 'Contact'|itemtype_dropdown({'name': 'contacts_id'}) }}</div>
                         <a href="{{ contact_form_url }}" target="_blank" title="{{ __('Add') }}">
                             <i class="ti ti-square-plus"></i>
                         </a>
@@ -311,7 +313,7 @@
                     <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="entities_id" value="{{ entity_id }}">
-                        <div class="flex-grow-1">{{ user_dropdown_html|raw }}</div>
+                        <div class="flex-grow-1">{{ 'User'|itemtype_dropdown({'name': 'users_id', 'right': 'interface'}) }}</div>
                         <a href="{{ user_form_url }}" target="_blank" title="{{ __('Add') }}">
                             <i class="ti ti-square-plus"></i>
                         </a>

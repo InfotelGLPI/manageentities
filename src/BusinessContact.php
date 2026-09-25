@@ -109,12 +109,6 @@ class BusinessContact extends CommonDBTM
 
         $business = $this->buildBusinessForTemplate($instID, $CFG_GLPI['root_doc']);
 
-        $user_dropdown_html = '';
-        if ($can_edit && $is_single) {
-            ob_start();
-            User::dropdown(['right' => 'interface']);
-            $user_dropdown_html = ob_get_clean();
-        }
 
         TemplateRenderer::getInstance()->display(
             '@manageentities/entity/business_card.html.twig',
@@ -125,7 +119,6 @@ class BusinessContact extends CommonDBTM
                 'business'           => $business,
                 'can_edit_business'  => $can_edit,
                 'is_single'          => $is_single,
-                'user_dropdown_html' => $user_dropdown_html,
             ],
         );
     }

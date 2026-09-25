@@ -103,7 +103,7 @@
             <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="entities_id" value="{{ entity_id }}">
-                <div class="flex-grow-1">{{ contact_dropdown_html|raw }}</div>
+                <div class="flex-grow-1">{{ 'Contact'|itemtype_dropdown({'name': 'contacts_id'}) }}</div>
                 <a href="{{ contact_form_url }}" target="_blank" title="{{ __('Add') }}">
                     <i class="ti ti-square-plus"></i>
                 </a>

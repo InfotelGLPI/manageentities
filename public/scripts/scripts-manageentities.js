@@ -52,24 +52,6 @@ function getUrlParam(url, name) {
     return undefined;
 }
 
-function cloneTicketTask(options) {
-    $.ajax({
-        url: options.root_doc + '/ajax/tickettask.php',
-        type: "POST",
-        dataType: "json",
-        data: {
-            'tickets_id': options.tickets_id,
-            'new_date_value': $('input[name=new_date]').val(),
-            'tickettasks_id': options.tickettasks_id,
-            'action': 'cloneTicketTask'
-        },
-        success: function (json, opts) {
-            if (json.tickettasks_id != undefined) {
-                window.location.reload();
-            }
-        }
-    });
-}
 
 function manageentities_loadCriForm(action, modal, params) {
     var formInput;

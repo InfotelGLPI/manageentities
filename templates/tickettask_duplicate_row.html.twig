@@ -25,14 +25,17 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+
 <tr class="tab_bg_1">
     <td colspan="3"></td>
     <td>
         <div class="label right" style="width:300px;margin-right:0;margin-left:auto;">
-            {{ date_field|raw }}
-            <span name="duplicate_{{ tickettask_id }}" onclick='cloneTicketTask({{ params_json|raw }});'>
-                <i class="ti ti-copy pointer" title="{{ _x('button', 'Duplicate') }}"></i>
-            </span>
+            {{ _inputs.datetime('new_date', new_date, {'maybeempty': true}) }}
+            <button type="button" name="duplicate_{{ tickettask_id }}" class="btn btn-sm btn-ghost-secondary"
+                    title="{{ _x('button', 'Duplicate') }}" data-me-clone="{{ clone|json_encode }}">
+                <i class="ti ti-copy"></i>
+            </button>
         </div>
     </td>
 </tr>

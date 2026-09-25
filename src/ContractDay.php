@@ -454,10 +454,6 @@ class ContractDay extends CommonDBTM
         $columns    = [];
         $formatters = [];
 
-        if ($canEdit) {
-            $columns['_checkbox']    = '';
-            $formatters['_checkbox'] = 'raw_html';
-        }
         $columns['name']    = ContractDay::getTypeName(1);
         $formatters['name'] = 'raw_html';
         if ($is_day) {
@@ -505,6 +501,8 @@ class ContractDay extends CommonDBTM
             }
 
             $entry = [
+                'itemtype'   => ContractDay::class,
+                'id'         => $pluginContractDay['id'],
                 'name'       => $contractDay->getLink(),
                 'begin_date' => Html::convDate($pluginContractDay['begin_date']),
                 'end_date'   => Html::convDate($pluginContractDay['end_date']),
@@ -524,37 +522,7 @@ class ContractDay extends CommonDBTM
                 $entry['reste']  = Html::formatNumber($resultCriDetail['resultOther']['reste']);
                 $entry['depass'] = Html::formatNumber($resultCriDetail['resultOther']['depass']);
             }
-            if ($canEdit) {
-                ob_start();
-                Html::showMassiveActionCheckBox(ContractDay::class, $pluginContractDay['id']);
-                $entry['_checkbox'] = ob_get_clean();
-            }
-
             $entries[] = $entry;
-        }
-
-        $massive_form_open   = '';
-        $massive_actions_top = '';
-        $massive_actions_bottom = '';
-        $massive_form_close  = '';
-
-        if ($canEdit) {
-            $massiveactionparams = ['item' => ContractDay::class, 'container' => 'masscontractday' . $rand];
-
-            ob_start();
-            Html::openMassiveActionsForm('masscontractday' . $rand);
-            $massive_form_open = ob_get_clean();
-
-            ob_start();
-            Html::showMassiveActions($massiveactionparams);
-            $massive_actions_top = ob_get_clean();
-
-            ob_start();
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            $massive_actions_bottom = ob_get_clean();
-
-            $massive_form_close = '</form>';
         }
 
         TemplateRenderer::getInstance()->display('@manageentities/contractday_list.html.twig', [
@@ -563,10 +531,10 @@ class ContractDay extends CommonDBTM
             'formatters'            => $formatters,
             'rand'                  => $rand,
             'can_edit'              => $canEdit,
-            'massive_form_open'     => $massive_form_open,
-            'massive_actions_top'   => $massive_actions_top,
-            'massive_actions_bottom' => $massive_actions_bottom,
-            'massive_form_close'    => $massive_form_close,
+            'massiveactionparams'   => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'masscontractday' . $rand,
+            ],
             'add_form'              => $add_form,
         ]);
     }

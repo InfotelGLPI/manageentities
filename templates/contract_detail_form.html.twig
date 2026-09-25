@@ -25,7 +25,10 @@
  # --------------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% set form_id = 'contract_form' ~ rand %}
+{% set col = {'is_horizontal': false, 'field_class': 'col-sm-3', 'label_class': 'fw-bold', 'mb': ''} %}
 
 {# ------------------------------------------------------------------ #}
 {# Publisher subscription — read-only summary                          #}
@@ -130,26 +133,14 @@
     <div class="card-body">
         <div class="row g-3">
 
-            {# Date de signature / Date de renouvellement #}
-            <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Date of signature', 'manageentities') }}</label>
-                {{ date_signature_html|raw }}
-            </div>
-            <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Date of renewal', 'manageentities') }}</label>
-                {{ date_renewal_html|raw }}
-            </div>
+            {# Signature and renewal dates #}
+            {{ fields.dateField('date_signature', date_signature, __('Date of signature', 'manageentities'), col) }}
+            {{ fields.dateField('date_renewal', date_renewal, __('Date of renewal', 'manageentities'), col) }}
 
             {% if is_hour_mode %}
-            {# Mode de gestion / Type de contrat (mode heure) #}
-            <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Mode of management', 'manageentities') }}</label>
-                {{ management_html|raw }}
-            </div>
-            <div class="col-sm-3">
-                <label class="col-form-label fw-bold">{{ __('Type of service contract', 'manageentities') }}</label>
-                {{ contract_type_html|raw }}
-            </div>
+            {# Management mode and contract type (hourly mode) #}
+            {{ fields.dropdownArrayField('management', management, management_types, __('Mode of management', 'manageentities'), col) }}
+            {{ fields.dropdownArrayField('contract_type', contract_type, contract_types, __('Type of service contract', 'manageentities'), col) }}
             {% else %}
             <div class="col-sm-6"></div>
             {% endif %}
@@ -195,8 +186,10 @@
 
             {# Travel duration (conditional) #}
             <div class="col-sm-3" id="movement_block_{{ rand }}"{% if not moving_management %} style="display:none"{% endif %}>
-                <label class="col-form-label fw-bold">{{ __('Duration of moving', 'manageentities') }}</label>
-                {{ duration_moving_html|raw }}
+                {{ fields.dropdownTimestampField('duration_moving', duration_moving, __('Duration of moving', 'manageentities'), col|merge({
+                    'field_class': '',
+                    'addfirstminutes': true,
+                })) }}
             </div>
             <div class="col-sm-9"></div>
 

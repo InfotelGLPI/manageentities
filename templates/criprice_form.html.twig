@@ -39,9 +39,13 @@
             <div class="row flex-row">
 
                 {# Intervention type #}
-                {{ fields.field('plugin_manageentities_critypes_id', critype_html,
+                {{ fields.dropdownField('GlpiPlugin\\Manageentities\\CriType', 'plugin_manageentities_critypes_id',
+                    item.fields['plugin_manageentities_critypes_id'],
                     _n('Intervention type', 'Intervention types', 1, 'manageentities'), {
-                    'required': true
+                    'required': true,
+                    'entity': entities_id,
+                    'used': used_critypes,
+                    'on_change': change_event_js,
                 }) }}
 
                 {# Price #}
@@ -50,11 +54,15 @@
                 }) }}
 
                 {# Is default #}
-                {{ fields.field('is_default', is_default_html, __('Is default', 'manageentities')) }}
+                {{ fields.dropdownYesNo('is_default', is_default, __('Is default', 'manageentities')) }}
 
-                {# Select an existing price #}
+                {# Select an existing price: the container is refilled by ajax/criprice.php #}
                 {% set select_price_with_div %}
-                    <div data-me-criprice-prices>{{ select_price_html|raw }}</div>
+                    <div data-me-criprice-prices>
+                        {% do call('Dropdown::showFromArray', ['select_critype', select_prices, {
+                            'on_change': change_event_js,
+                        }]) %}
+                    </div>
                 {% endset %}
                 {{ fields.field('select_critype', select_price_with_div,
                     __('Select an existing price', 'manageentities')) }}

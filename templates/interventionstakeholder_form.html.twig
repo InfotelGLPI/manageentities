@@ -41,7 +41,11 @@
                     {{ __('User') }}
                     <span class="text-danger">*</span>
                 </label>
-                {{ user_dropdown_html|raw }}
+                {{ 'User'|itemtype_dropdown({
+                    'name': 'users_id_tech' ~ id_to_use,
+                    'right': 'interface',
+                    'rand': user_rand,
+                }) }}
             </div>
 
             <div class="col-sm-4">
@@ -50,7 +54,13 @@
                     <span class="text-danger">*</span>
                 </label>
                 <div class="d-flex align-items-center gap-2">
-                    {{ nbdays_dropdown_html|raw }}
+                    {% do call('Dropdown::showNumber', ['nb_days', {
+                        'width': 100,
+                        'min': 0,
+                        'max': nb_days,
+                        'step': nbdays_step,
+                        'rand': nbdays_rand,
+                    }]) %}
                     <span class="text-muted">{{ unit }}</span>
                 </div>
             </div>

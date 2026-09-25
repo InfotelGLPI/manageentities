@@ -32,7 +32,6 @@ namespace GlpiPlugin\Manageentities;
 use CommonDBTM;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
-use Html;
 use Session;
 
 class TicketTask extends CommonDBTM
@@ -146,32 +145,28 @@ class TicketTask extends CommonDBTM
             return;
         }
 
-        $rand  = mt_rand();
         $value = $tickettask->fields['date'];
         if (!empty($tickettask->fields['begin'])) {
             $value = date('Y-m-d H:i:s', strtotime($tickettask->fields['begin'] . ' + 1 DAY'));
         }
 
-        // Capture GLPI's datetime field so the Twig template can inject it (|raw).
-        ob_start();
-        Html::showDateTimeField('new_date', [
-            'value'   => $value,
-            'rand'    => $rand,
-            'mintime' => $CFG_GLPI["planning_begin"],
-            'maxtime' => $CFG_GLPI["planning_end"],
-        ]);
-        $date_field = ob_get_clean();
-
-        $params_json = json_encode([
-            'root_doc'       => PLUGIN_MANAGEENTITIES_WEBDIR,
-            'tickets_id'     => $tickettask->fields['tickets_id'],
-            'tickettasks_id' => $tickettask->fields['id'],
-        ]);
+        // Keep the proposed time within the planning hours
+        if (!empty($value) && str_contains($value, ' ')) {
+            [$date_value, $hour_value] = explode(' ', $value, 2);
+            $hour_value = max($hour_value, $CFG_GLPI['planning_begin']);
+            $hour_value = min($hour_value, $CFG_GLPI['planning_end']);
+            $value      = $date_value . ' ' . $hour_value;
+        }
 
         TemplateRenderer::getInstance()->display('@manageentities/tickettask_duplicate_row.html.twig', [
-            'date_field'    => $date_field,
-            'params_json'   => $params_json,
+            'new_date'      => $value,
             'tickettask_id' => (int) $tickettask->fields['id'],
+            // Read by public/scripts/tickettask-clone.js
+            'clone'         => [
+                'url'            => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/tickettask.php',
+                'tickets_id'     => (int) $tickettask->fields['tickets_id'],
+                'tickettasks_id' => (int) $tickettask->fields['id'],
+            ],
         ]);
     }
 }
