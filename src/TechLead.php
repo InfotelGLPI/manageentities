@@ -351,6 +351,8 @@ class TechLead extends CommonDBTM
         global $DB;
 
         $entities = self::filterActiveCustomers($entities);
+        // Customers that never had a contract are not followed yet: no tech lead expected
+        $entities = array_values(array_diff($entities, EditorSubscription::getNeverContractEntities($entities)));
         if ($entities === []) {
             return [];
         }
@@ -395,6 +397,8 @@ class TechLead extends CommonDBTM
         global $DB;
 
         $entities = self::filterActiveCustomers($entities);
+        // Customers that never had a contract are not followed yet: no tech lead expected
+        $entities = array_values(array_diff($entities, EditorSubscription::getNeverContractEntities($entities)));
         if ($entities === []) {
             return [];
         }

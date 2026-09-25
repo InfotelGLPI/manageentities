@@ -219,6 +219,50 @@ class EditorSubscription extends CommonDBTM
     // Status overview tab
     // -----------------------------------------------------------------------
 
+    /**
+     * Entities having a publisher subscription but never any contract, same rule as the
+     * "Never had a contract" list of the contracts status overview
+     *
+     * @param int[] $entities_ids
+     *
+     * @return int[]
+     */
+    public static function getNeverContractEntities(array $entities_ids): array
+    {
+        global $DB;
+
+        if ($entities_ids === []) {
+            return [];
+        }
+
+        $iter = $DB->request([
+            'SELECT'   => ['entities_id'],
+            'DISTINCT' => true,
+            'FROM'     => self::getTable(),
+            'WHERE'    => ['entities_id' => $entities_ids],
+        ]);
+        $with_subscription = array_map('intval', array_column(iterator_to_array($iter), 'entities_id'));
+        if ($with_subscription === []) {
+            return [];
+        }
+
+        $iter = $DB->request([
+            'SELECT'     => ['c.entities_id'],
+            'DISTINCT'   => true,
+            'FROM'       => 'glpi_plugin_manageentities_contractdays AS cd',
+            'INNER JOIN' => [
+                'glpi_contracts AS c' => ['FKEY' => ['cd' => 'contracts_id', 'c' => 'id']],
+            ],
+            'WHERE'      => [
+                'c.entities_id' => $with_subscription,
+                'c.is_deleted'  => 0,
+            ],
+        ]);
+        $had_contract = array_map('intval', array_column(iterator_to_array($iter), 'entities_id'));
+
+        return array_values(array_diff($with_subscription, $had_contract));
+    }
+
     public static function showStatusTab(): void
     {
         global $DB;
