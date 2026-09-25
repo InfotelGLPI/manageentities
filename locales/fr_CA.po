@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 16:57+0000\n"
+"POT-Creation-Date: 2026-09-25 17:20+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Tiago Graça, 2022\n"
 "Language-Team: French (Canada) (https://www.transifex.com/infotelGLPI/"
@@ -915,8 +915,8 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/report_occupation.form.php:43 front/directhelpdesk.php:41
 #: front/directhelpdesk.php:44 front/directhelpdesk.php:46
 #: front/report_moving.form.php:43 front/generatecri.form.php:143
-#: front/config.form.php:44 front/directhelpdesk.form.php:133
-#: front/directhelpdesk.form.php:136 front/directhelpdesk.form.php:138
+#: front/config.form.php:44 front/directhelpdesk.form.php:147
+#: front/directhelpdesk.form.php:150 front/directhelpdesk.form.php:152
 #: front/report.form.php:46 front/entity.php:62 front/entity.php:65
 #: front/entity.php:67 front/generatecri.php:35 front/generatecri.php:38
 #: front/generatecri.php:40 front/cridetail.form.php:52
