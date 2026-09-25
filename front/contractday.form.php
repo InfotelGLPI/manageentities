@@ -62,7 +62,12 @@ if (isset($_POST["add"])) {
 
 } elseif (isset($_POST["update"])) {
     $contractday->check($_POST["id"], UPDATE);
-    $contractday->update($_POST);
+    // check() validates the stored row only: pin the ownership columns to it, so the
+    // posted body cannot move the period to another entity or contract
+    $input                 = $_POST;
+    $input['entities_id']  = (int) $contractday->fields['entities_id'];
+    $input['contracts_id'] = (int) $contractday->fields['contracts_id'];
+    $contractday->update($input);
     Html::back();
 
 } elseif (isset($_POST["delete"])) {

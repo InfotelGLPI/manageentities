@@ -112,7 +112,21 @@ if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
         Html::back();
     } elseif (isset($_POST["update"])) {
         $direct->check($_POST["id"], UPDATE);
-        $direct->update($_POST);
+        // check() validates the stored row only: pin the entity to it, and only accept
+        // a linked ticket that lives in that entity
+        $input                = $_POST;
+        $input['entities_id'] = (int) $direct->fields['entities_id'];
+        if ((int) ($input['tickets_id'] ?? 0) > 0) {
+            $linked = new Ticket();
+            if (
+                !$linked->getFromDB((int) $input['tickets_id'])
+                || (int) $linked->fields['entities_id'] !== $input['entities_id']
+                || !$linked->can($linked->getID(), READ)
+            ) {
+                throw new AccessDeniedHttpException();
+            }
+        }
+        $direct->update($input);
 
         Html::back();
     } elseif (isset($_POST["delete"])) {

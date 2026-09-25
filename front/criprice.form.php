@@ -43,7 +43,12 @@ if (Session::haveRight("plugin_manageentities", UPDATE)) {
 
     } elseif (isset($_POST["update"])) {
         $criprice->check($_POST["id"], UPDATE);
-        $criprice->update($_POST);
+        // check() validates the stored row only: pin the ownership columns to it, so the
+        // posted body cannot move the rate to another entity or contract period
+        $input                                          = $_POST;
+        $input['entities_id']                           = (int) $criprice->fields['entities_id'];
+        $input['plugin_manageentities_contractdays_id'] = (int) $criprice->fields['plugin_manageentities_contractdays_id'];
+        $criprice->update($input);
 
         Html::back();
 
