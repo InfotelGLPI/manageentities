@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 10:11+0000\n"
+"POT-Creation-Date: 2026-09-25 10:40+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -34,7 +34,15 @@ msgstr "% de temps justifié"
 msgid "%1$s client(s) followed by %2$s tech lead(s)"
 msgstr "%1$s client(s) suivi par %2$s tech lead(s)"
 
-#: src/Contract.php:1509
+#: templates/directhelpdesk_unbilled_alert.html.twig:34
+#, php-format
+msgid "%1$s intervention"
+msgid_plural "%1$s interventions"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: src/Contract.php:1523
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr "%d contrats arrivant à échéance sont notifiés"
@@ -233,15 +241,15 @@ msgstr "Une erreur est survenue à la sauvegarde."
 msgid "Annual"
 msgstr "Annuel"
 
-#: src/CriDetail.php:881 src/CriDetail.php:1700
+#: src/CriDetail.php:885 src/CriDetail.php:1704
 msgid "Applied daily rate"
 msgstr "Tarif Journalier appliqué"
 
-#: src/CriDetail.php:882 src/CriDetail.php:1701
+#: src/CriDetail.php:886 src/CriDetail.php:1705
 msgid "Applied hourly rate"
 msgstr "Tarif Horaire appliqué"
 
-#: src/CriDetail.php:1701
+#: src/CriDetail.php:1705
 msgid "Applied rate"
 msgstr "Tarif appliqué"
 
@@ -257,7 +265,7 @@ msgstr "Client archivé"
 msgid "Are you sure you want to permanently delete this subscription?"
 msgstr "Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
 
-#: templates/techlead/clients_by_tech.html.twig:52
+#: templates/techlead/clients_by_tech.html.twig:105
 msgid "As main tech lead"
 msgstr "En tant que tech lead responsable"
 
@@ -289,7 +297,7 @@ msgstr[2] "Contacts associés"
 msgid "Associated intervention reports"
 msgstr "Rapports d'intervention associés"
 
-#: src/CriDetail.php:537
+#: src/CriDetail.php:541
 msgid "Associated ticket"
 msgstr "Ticket associé"
 
@@ -354,7 +362,7 @@ msgstr "Ville"
 #: src/Monthly.php:700 src/Monthly.php:731 src/Dashboard.php:249
 #: src/Dashboard.php:313 src/Dashboard.php:368
 #: templates/entity/unbilled_tab.html.twig:122
-#: templates/techlead/clients_by_tech.html.twig:51
+#: templates/techlead/clients_by_tech.html.twig:104
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -381,7 +389,11 @@ msgstr "Clients par tech lead"
 msgid "Clients with hours left unbilled for more than %d months:"
 msgstr "Clients dont les heures restent impayées depuis plus de %d mois :"
 
-#: templates/techlead/clients_by_tech.html.twig:99
+#: templates/techlead/clients_by_tech.html.twig:153
+msgid "Clients without main tech lead"
+msgstr ""
+
+#: templates/techlead/clients_by_tech.html.twig:177
 msgid "Clients without tech lead"
 msgstr "Clients sans tech lead"
 
@@ -462,7 +474,7 @@ msgstr "Configuration de la vue coté client"
 msgid "Confirm and finish"
 msgstr "Confirmer et terminer"
 
-#: src/CriDetail.php:1719
+#: src/CriDetail.php:1723
 msgid "Consumption"
 msgstr "Consommation"
 
@@ -516,7 +528,7 @@ msgstr "Détail du contrat"
 msgid "Contract is imported in GLPI"
 msgstr "Le contrat est importé dans GLPI"
 
-#: src/CriDetail.php:536 src/CriDetail.php:791
+#: src/CriDetail.php:540 src/CriDetail.php:795
 #: src/NotificationTargetContract.php:118
 #: src/NotificationTargetContract.php:153 src/CriPDF.php:540
 #: templates/wizard/step4_contract.html.twig:67
@@ -600,8 +612,8 @@ msgstr "Crédit restant"
 msgid "Crossed time"
 msgstr "Temps passé"
 
-#: src/CriDetail.php:534 src/CriDetail.php:786 src/CriDetail.php:878
-#: src/CriDetail.php:1697 src/CriPDF.php:570
+#: src/CriDetail.php:538 src/CriDetail.php:790 src/CriDetail.php:882
+#: src/CriDetail.php:1701 src/CriPDF.php:570
 msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
@@ -637,7 +649,7 @@ msgstr "Observations du client"
 msgid "Customer entities"
 msgstr "Entités des clients"
 
-#: src/CustomerSheet.php:47
+#: src/CustomerSheet.php:47 templates/techlead/clients_by_tech.html.twig:82
 msgid "Customer sheet"
 msgstr "Fiche client"
 
@@ -1000,9 +1012,13 @@ msgstr "Erreur au désarchivage de l'entité"
 msgid "Estimated number of remaining days"
 msgstr "Estimation Nombre de jours restant"
 
-#: templates/techlead/clients_by_tech.html.twig:113
+#: templates/techlead/clients_by_tech.html.twig:191
 msgid "Every client has a tech lead"
 msgstr "Chaque client a un tech lead"
+
+#: templates/techlead/clients_by_tech.html.twig:167
+msgid "Every client with tech leads has a main one"
+msgstr ""
 
 #: src/Monthly.php:722 src/Monthly.php:763 src/Monthly.php:1169
 msgid "Exceeding"
@@ -1100,7 +1116,7 @@ msgstr "Générer le rapport d'intervention"
 msgid "Generate report intervention"
 msgstr "Générer le rapport d'intervention"
 
-#: front/cri.form.php:42 src/Cri.php:325 src/CriDetail.php:664
+#: front/cri.form.php:42 src/Cri.php:325 src/CriDetail.php:668
 msgid "Generation of the intervention report"
 msgstr "Génération du rapport d'intervention"
 
@@ -1140,7 +1156,7 @@ msgstr "Horaire"
 msgid "Hourly rate"
 msgstr "Tarif horaire"
 
-#: src/CriDetail.php:246 src/CriDetail.php:427
+#: src/CriDetail.php:250 src/CriDetail.php:431
 msgid "Impossible action as an intervention report exists"
 msgstr "Action impossible car un rapport d'intervention existe"
 
@@ -1228,7 +1244,7 @@ msgstr[0] "Type d'intervention"
 msgstr[1] "Types d'intervention"
 msgstr[2] "Types d'intervention"
 
-#: src/CriDetail.php:535 src/CriDetail.php:787 src/CriDetail.php:2018
+#: src/CriDetail.php:539 src/CriDetail.php:791 src/CriDetail.php:2022
 #: src/GenerateCRI.php:1308
 msgid "Intervention with contract"
 msgstr "Intervention sous contrat"
@@ -1318,9 +1334,14 @@ msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
 #: templates/entity/techleads_card.html.twig:64
-#: templates/techlead/clients_by_tech.html.twig:67
+#: templates/techlead/clients_by_tech.html.twig:88
+#: templates/techlead/clients_by_tech.html.twig:120
 msgid "Main tech lead"
 msgstr "Tech lead responsable"
+
+#: templates/techlead/clients_by_tech.html.twig:78
+msgid "Main tech lead - click to no longer be the main one"
+msgstr ""
 
 #: src/Servicecatalog.php:74 src/Servicecatalog.php:80
 msgid "Manage your contracts"
@@ -1396,7 +1417,7 @@ msgstr "Suivi mensuel"
 msgid "More than %d months"
 msgstr "Plus de %d mois"
 
-#: src/Contract.php:1040 templates/wizard/step4_management.html.twig:102
+#: src/Contract.php:1054 templates/wizard/step4_management.html.twig:102
 #: templates/wizard/step5_management.html.twig:102
 #: templates/contract_detail_form.html.twig:188
 msgid "Movement management"
@@ -1463,7 +1484,7 @@ msgstr "Suivant"
 msgid "No"
 msgstr "Non"
 
-#: src/CriDetail.php:2057 src/GenerateCRI.php:1340
+#: src/CriDetail.php:2061 src/GenerateCRI.php:1340
 msgid "No active contracts"
 msgstr "Aucun contrats en cours"
 
@@ -1580,7 +1601,7 @@ msgid "No tasks whose category can be used"
 msgstr "Merci de configurer une catégorie de tâche de ticket avec le plugin"
 
 #: templates/entity/techleads_card.html.twig:92
-#: templates/techlead/clients_by_tech.html.twig:88
+#: templates/techlead/clients_by_tech.html.twig:141
 msgid "No tech lead"
 msgstr "Aucun tech lead"
 
@@ -1631,7 +1652,7 @@ msgstr "Nombre d'heures par jour"
 msgid "Number of moving"
 msgstr "Nombres de déplacements"
 
-#: src/CriDetail.php:875 src/CriDetail.php:1705 src/CriDetail.php:1717
+#: src/CriDetail.php:879 src/CriDetail.php:1709 src/CriDetail.php:1721
 msgid "Object of intervention"
 msgstr "Objet de l'intervention"
 
@@ -1684,7 +1705,7 @@ msgstr "Optionnel"
 msgid "Options"
 msgstr "Options"
 
-#: src/Cri.php:133 src/CriDetail.php:1871 src/CriPDF.php:551
+#: src/Cri.php:133 src/CriDetail.php:1875 src/CriPDF.php:551
 msgid "Out of contract"
 msgstr "Hors contrat"
 
@@ -1724,7 +1745,7 @@ msgstr[2] "Prestations de contrat"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 
-#: src/CriDetail.php:873 src/CriDetail.php:2117 src/CriDetail.php:2155
+#: src/CriDetail.php:877 src/CriDetail.php:2121 src/CriDetail.php:2159
 #: src/GenerateCRI.php:1376 hook.php:889
 #: templates/contractday_list.html.twig:33
 msgid "Periods of contract"
@@ -1789,7 +1810,7 @@ msgstr ""
 "Veuillez noter qu'il n'y a plus de contrats avec des jours disponibles pour "
 "ce client."
 
-#: src/DirectHelpdesk.php:869
+#: templates/directhelpdesk_unbilled_alert.html.twig:32
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 "Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
@@ -1966,7 +1987,7 @@ msgstr "Tarifs"
 msgid "Recursive"
 msgstr "Sous-entités"
 
-#: src/Contract.php:1041 templates/wizard/step4_management.html.twig:82
+#: src/Contract.php:1055 templates/wizard/step4_management.html.twig:82
 #: templates/wizard/step5_management.html.twig:82
 #: templates/contract_detail_form.html.twig:168
 msgid "Refacturable costs"
@@ -1985,7 +2006,7 @@ msgstr "Nom référencé chez l'éditeur"
 msgid "References"
 msgstr "References"
 
-#: src/Cri.php:333 src/CriDetail.php:666
+#: src/Cri.php:333 src/CriDetail.php:670
 msgid "Regenerate the intervention report"
 msgstr "Regénérer le rapport d'intervention"
 
@@ -2096,6 +2117,10 @@ msgctxt "button"
 msgid "Search"
 msgstr "Rechercher"
 
+#: templates/directhelpdesk_unbilled_alert.html.twig:37
+msgid "See the unbilled interventions"
+msgstr ""
+
 #: templates/entity/directhelpdesk_ticket_select.html.twig:37
 msgid "Select"
 msgstr "Sélection"
@@ -2112,7 +2137,7 @@ msgstr "Sélectionner une entité existante"
 msgid "Select an existing price"
 msgstr "Sélectionner un prix existant"
 
-#: src/Contract.php:1368
+#: src/Contract.php:1382
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 "Envoyez la liste des contrats dont le nombre de jours restants arrive à "
@@ -2142,7 +2167,7 @@ msgstr "Configuration pour \"Générer le rapport d'intervention\""
 msgid "Show expired subscriptions only"
 msgstr "Voir les souscriptions expirées uniquement"
 
-#: src/Contract.php:1039 templates/wizard/step4_management.html.twig:74
+#: src/Contract.php:1053 templates/wizard/step4_management.html.twig:74
 #: templates/wizard/step5_management.html.twig:74
 #: templates/contract_detail_form.html.twig:160
 msgid "Show on GANTT"
@@ -2294,12 +2319,17 @@ msgstr "La catégorie de tâche doit être définie"
 msgid "Team"
 msgstr "Equipe"
 
-#: src/TechLead.php:48 templates/entity/techleads_card.html.twig:34
+#: src/TechLead.php:50 templates/entity/techleads_card.html.twig:34
+#: templates/techlead/clients_by_tech.html.twig:88
 msgid "Tech lead"
 msgid_plural "Tech leads"
 msgstr[0] "Tech lead"
 msgstr[1] "Tech leads"
 msgstr[2] "Tech leads"
+
+#: templates/techlead/clients_by_tech.html.twig:78
+msgid "Tech lead - click to become the main one"
+msgstr ""
 
 #: src/Contract.php:726 src/Contract.php:761
 msgid "Technical Assistance"
@@ -2307,7 +2337,7 @@ msgstr "Assistance Technique"
 
 #: src/GenerateCRI.php:750 src/CriPDF.php:401
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
-#: templates/techlead/clients_by_tech.html.twig:50
+#: templates/techlead/clients_by_tech.html.twig:103
 #: templates/report_occupation_form.html.twig:48
 msgid "Technician"
 msgid_plural "Technicians"
@@ -2319,8 +2349,8 @@ msgstr[2] "Intervenants"
 msgid "Technician as assigned"
 msgstr "Technicien assigné"
 
-#: src/CriDetail.php:530 src/CriDetail.php:782 src/CriDetail.php:879
-#: src/CriDetail.php:1709 src/CriDetail.php:1718 src/Report.php:318
+#: src/CriDetail.php:534 src/CriDetail.php:786 src/CriDetail.php:883
+#: src/CriDetail.php:1713 src/CriDetail.php:1722 src/Report.php:318
 #: templates/cri_form.html.twig:43
 msgid "Technicians"
 msgstr "Intervenants"
@@ -2398,7 +2428,7 @@ msgstr ""
 msgid "This action is irreversible. Continue ?"
 msgstr "Cette action est irréversible, Continuer ?"
 
-#: src/CriDetail.php:296
+#: src/CriDetail.php:300
 msgid "This contract is not available for the entity of the ticket"
 msgstr "Ce contrat n'est pas disponible pour l'entité du ticket"
 
@@ -2406,7 +2436,7 @@ msgstr "Ce contrat n'est pas disponible pour l'entité du ticket"
 msgid "Ticket informations"
 msgstr "Informations du ticket"
 
-#: src/CriDetail.php:1659 src/CriDetail.php:2189
+#: src/CriDetail.php:1663 src/CriDetail.php:2193
 msgid "Ticket not validated"
 msgstr "Ticket non validé"
 
@@ -2429,7 +2459,7 @@ msgstr "Titre"
 msgid "To"
 msgstr "au"
 
-#: src/CriDetail.php:883 src/CriDetail.php:1711
+#: src/CriDetail.php:887 src/CriDetail.php:1715
 msgid "To compute"
 msgstr "Décompte"
 
@@ -2517,7 +2547,7 @@ msgstr "Type de contrat"
 msgid "Type of service contract"
 msgstr "Type de contrat de service"
 
-#: src/CriDetail.php:1668 src/CriDetail.php:2196
+#: src/CriDetail.php:1672 src/CriDetail.php:2200
 msgid "Type of service contract missing"
 msgstr "Type de contrat de service manquant"
 
@@ -2560,7 +2590,7 @@ msgstr "Mise à jour des données administratives"
 msgid "Update logo"
 msgstr "Mise à jour du logo"
 
-#: src/Contract.php:1029
+#: src/Contract.php:1043
 msgid "Update management fields"
 msgstr "Mise à jour des champs du type de gestion"
 
@@ -2672,7 +2702,7 @@ msgstr ""
 "Lorsque cette option est désactivée, les onglets, blocs, alertes et l'étape "
 "de souscription de l'assistant de publication sont masqués."
 
-#: src/CriDetail.php:1871
+#: src/CriDetail.php:1875
 msgid "With contrat"
 msgstr "Avec contrat"
 
@@ -2735,7 +2765,7 @@ msgstr "à"
 msgid "of period of contract"
 msgstr "de la prestation de contrat"
 
-#: src/CriDetail.php:1698 src/CriPDF.php:251 src/CriPDF.php:609
+#: src/CriDetail.php:1702 src/CriPDF.php:251 src/CriPDF.php:609
 msgid "of this intervention"
 msgstr "d'intervention"
 
