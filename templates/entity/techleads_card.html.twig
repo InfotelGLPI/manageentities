@@ -62,7 +62,7 @@
                         <td>
                             {% if tl.is_default %}
                                 <span class="badge bg-green-lt">{{ __('Main tech lead', 'manageentities') }}</span>
-                            {% elseif can_edit_techleads and is_single %}
+                            {% elseif can_update_techleads and is_single %}
                                 <form method="post" action="{{ entity_action_url }}" class="d-inline">
                                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="id" value="{{ tl.link_id }}">

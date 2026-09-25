@@ -50,6 +50,59 @@ class BusinessContact extends CommonDBTM
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
+    public function prepareInputForAdd($input)
+    {
+        $entities_id = (int) ($input['entities_id'] ?? -1);
+        $users_id    = (int) ($input['users_id'] ?? 0);
+        if (!Session::haveAccessToEntity($entities_id) || $users_id <= 0) {
+            return false;
+        }
+        // The picker only offers users with a central profile covering the entity: the
+        // posted value is not bound by it, so replay that population here
+        if (!self::isCentralUserOfEntity($users_id, $entities_id)) {
+            return false;
+        }
+        $input['entities_id'] = $entities_id;
+        $input['users_id']    = $users_id;
+
+        return $input;
+    }
+
+    /**
+     * Whether a user belongs to the population offered by the business contact picker:
+     * an active user holding a central profile covering the entity
+     *
+     * @param int $users_id
+     * @param int $entities_id
+     *
+     * @return bool
+     */
+    public static function isCentralUserOfEntity(int $users_id, int $entities_id): bool
+    {
+        global $DB;
+
+        $result = $DB->request([
+            'COUNT'      => 'cpt',
+            'FROM'       => 'glpi_users',
+            'INNER JOIN' => [
+                'glpi_profiles_users' => [
+                    'ON' => ['glpi_profiles_users' => 'users_id', 'glpi_users' => 'id'],
+                ],
+                'glpi_profiles'       => [
+                    'ON' => ['glpi_profiles' => 'id', 'glpi_profiles_users' => 'profiles_id'],
+                ],
+            ],
+            'WHERE'      => [
+                'glpi_users.id'         => $users_id,
+                'glpi_users.is_deleted' => 0,
+                'glpi_users.is_active'  => 1,
+                'glpi_profiles.interface' => 'central',
+            ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entities_id, true),
+        ])->current();
+
+        return (int) ($result['cpt'] ?? 0) > 0;
+    }
+
     public function buildBusinessForTemplate(array $instID, string $root_doc): array
     {
         global $DB;
@@ -87,8 +140,8 @@ class BusinessContact extends CommonDBTM
             $business[] = [
                 'link_id'   => $data['users_id'],
                 'url'       => $root_doc . '/front/user.form.php?id=' . $data['id'],
-                'realname'  => htmlspecialchars($data['realname'] ?? ''),
-                'firstname' => htmlspecialchars($data['firstname'] ?? ''),
+                'realname'  => $data['realname'] ?? '',
+                'firstname' => $data['firstname'] ?? '',
                 'phone'     => $data['phone'] ?? '',
                 'phone2'    => $data['phone2'] ?? '',
                 'mobile'    => $data['mobile'] ?? '',

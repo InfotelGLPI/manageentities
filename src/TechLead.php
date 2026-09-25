@@ -76,6 +76,11 @@ class TechLead extends CommonDBTM
         }
         $input['entities_id'] = (int) $input['entities_id'];
         $input['users_id']    = (int) $input['users_id'];
+        // The picker only offers technicians (own_ticket) of the entity: the posted value
+        // is not bound by it, so replay that population here
+        if (!self::isTechnicianOfEntity($input['users_id'], $input['entities_id'])) {
+            return false;
+        }
         // The first tech lead of a client becomes its main one
         $input['is_default'] = countElementsInTable(
             self::getTable(),
@@ -83,6 +88,46 @@ class TechLead extends CommonDBTM
         ) === 0 ? 1 : 0;
 
         return $input;
+    }
+
+    /**
+     * Whether a user belongs to the population offered by the tech lead picker:
+     * an active user holding the own_ticket right on a central profile covering the entity
+     *
+     * @param int $users_id
+     * @param int $entities_id
+     *
+     * @return bool
+     */
+    public static function isTechnicianOfEntity(int $users_id, int $entities_id): bool
+    {
+        global $DB;
+
+        $result = $DB->request([
+            'COUNT'      => 'cpt',
+            'FROM'       => 'glpi_users',
+            'INNER JOIN' => [
+                'glpi_profiles_users' => [
+                    'ON' => ['glpi_profiles_users' => 'users_id', 'glpi_users' => 'id'],
+                ],
+                'glpi_profiles'       => [
+                    'ON' => ['glpi_profiles' => 'id', 'glpi_profiles_users' => 'profiles_id'],
+                ],
+                'glpi_profilerights'  => [
+                    'ON' => ['glpi_profilerights' => 'profiles_id', 'glpi_profiles' => 'id'],
+                ],
+            ],
+            'WHERE'      => [
+                'glpi_users.id'         => $users_id,
+                'glpi_users.is_deleted' => 0,
+                'glpi_users.is_active'  => 1,
+                'glpi_profiles.interface'   => 'central',
+                'glpi_profilerights.name'   => 'ticket',
+                'glpi_profilerights.rights' => ['&', \Ticket::OWN],
+            ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $entities_id, true),
+        ])->current();
+
+        return (int) ($result['cpt'] ?? 0) > 0;
     }
 
     public function post_purgeItem()

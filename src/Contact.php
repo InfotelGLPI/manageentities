@@ -77,6 +77,28 @@ class Contact extends CommonDBTM
      *
      * @global  $DB
      */
+    public function prepareInputForAdd($input)
+    {
+        $entities_id = (int) ($input['entities_id'] ?? -1);
+        $contacts_id = (int) ($input['contacts_id'] ?? 0);
+        if (!Session::haveAccessToEntity($entities_id) || $contacts_id <= 0) {
+            return false;
+        }
+        // The picker only lists contacts visible from the entity (its own ones or recursive
+        // ones of an ancestor): the posted value is not bound by it, so replay that scope
+        $visible = countElementsInTable('glpi_contacts', [
+            'id'         => $contacts_id,
+            'is_deleted' => 0,
+        ] + getEntitiesRestrictCriteria('glpi_contacts', '', $entities_id, true));
+        if ($visible === 0) {
+            return false;
+        }
+        $input['entities_id'] = $entities_id;
+        $input['contacts_id'] = $contacts_id;
+
+        return $input;
+    }
+
     public function buildContactsForTemplate(array $instID, string $root_doc): array
     {
         global $DB;

@@ -423,6 +423,8 @@ class Entity extends CommonGLPI
                 'entity_phonenumber'  => $f['phonenumber'] ?? '',
                 'entity_fax'          => $f['fax'] ?? '',
                 'entity_website'      => $f['website'] ?? '',
+                // Only http(s) URLs become a link: the field is free text (javascript: scheme)
+                'entity_website_is_url' => \Toolbox::isValidWebUrl($f['website'] ?? ''),
                 'entity_email'        => $f['email'] ?? '',
                 'entity_address'      => $f['address'] ?? '',
                 'entity_postcode'     => $f['postcode'] ?? '',
@@ -465,6 +467,8 @@ class Entity extends CommonGLPI
                 'can_edit_business'    => $businessContact->canCreate(),
                 'techleads'            => $techlead_data,
                 'can_edit_techleads'   => $can_edit && $techLead->canCreate(),
+                // The main tech lead switch requires UPDATE, not any of the canCreate() bits
+                'can_update_techleads' => $can_edit && Session::haveRight(TechLead::$rightname, UPDATE),
                 'techlead_entities'    => $entities,
                 'techlead_used'        => $techlead_used,
                 // For the add-contact/business form, use the first (or only) entity id

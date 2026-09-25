@@ -104,8 +104,10 @@
                         {% if ent.entity_website or can_edit %}
                         <dt class="col-sm-3 text-sm-end text-muted small fw-semibold col-form-label py-1">{{ __('Website') }}</dt>
                         <dd class="col-sm-9 col-form-label py-1">
-                            {% if ent.entity_website %}
+                            {% if ent.entity_website_is_url %}
                                 <a href="{{ ent.entity_website }}" target="_blank" rel="noopener">{{ ent.entity_website }}</a>
+                            {% elseif ent.entity_website %}
+                                {{ ent.entity_website }}
                             {% endif %}
                         </dd>
                         {% endif %}
