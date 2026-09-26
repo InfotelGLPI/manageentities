@@ -29,13 +29,16 @@
    customers are left out, as in the other provider-side overviews #}
 {% set rand = random() %}
 
-{% macro ticket_table(tickets) %}
+{% macro ticket_table(tickets, show_techs = false) %}
     <div class="table-responsive">
         <table class="table table-sm table-hover table-vcenter mb-0">
             <thead>
                 <tr>
                     <th>{{ _n('Ticket', 'Tickets', 1) }}</th>
                     <th>{{ _n('Entity', 'Entities', 1) }}</th>
+                    {% if show_techs %}
+                        <th>{{ __('Assigned technician(s)', 'manageentities') }}</th>
+                    {% endif %}
                     <th>{{ __('Status') }}</th>
                     <th class="text-nowrap">{{ __('Opening date') }}</th>
                     <th class="text-end text-nowrap">{{ __('Age (days)', 'manageentities') }}</th>
@@ -46,6 +49,15 @@
                 <tr>
                     <td><a href="{{ ticket.url }}">{{ ticket.name }} ({{ ticket.id }})</a></td>
                     <td>{{ ticket.entity_name }}</td>
+                    {% if show_techs %}
+                        <td>
+                            {% for tech in ticket.techs %}
+                                <span class="badge bg-blue-lt me-1"><i class="ti ti-user me-1"></i>{{ tech }}</span>
+                            {% else %}
+                                <span class="badge bg-yellow-lt"><i class="ti ti-user-off me-1"></i>{{ __('No technician', 'manageentities') }}</span>
+                            {% endfor %}
+                        </td>
+                    {% endif %}
                     <td>{{ ticket.status }}</td>
                     <td class="text-nowrap">{{ ticket.date|formatted_datetime }}</td>
                     <td class="text-end"><span class="badge bg-red-lt">{{ ticket.age }}</span></td>
@@ -56,7 +68,8 @@
     </div>
 {% endmacro %}
 
-{% macro stale_groups(groups, rand, prefix, empty_label) %}
+{# show_techs: the tickets are not grouped by technician, so list the assigned ones #}
+{% macro stale_groups(groups, rand, prefix, empty_label, show_techs = false) %}
     {% if groups is not empty %}
         {# One badge per person: a click unfolds the overdue tickets below #}
         <div class="d-flex flex-wrap gap-2 p-3 border-bottom">
@@ -89,7 +102,7 @@
                             </a>
                         {% endif %}
                     </div>
-                    {{ _self.ticket_table(group.tickets) }}
+                    {{ _self.ticket_table(group.tickets, show_techs) }}
                 </div>
             {% endfor %}
         </div>
@@ -208,7 +221,7 @@
                 </div>
             </div>
             <div class="card-body p-0">
-                {{ _self.stale_groups(stale_techleads, rand, 'stale_techlead', __('No overdue ticket', 'manageentities')) }}
+                {{ _self.stale_groups(stale_techleads, rand, 'stale_techlead', __('No overdue ticket', 'manageentities'), true) }}
             </div>
         </div>
     </div>

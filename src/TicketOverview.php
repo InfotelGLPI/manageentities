@@ -369,6 +369,7 @@ class TicketOverview
             'status'      => Ticket::getStatus($ticket['status']),
             'entity_name' => $ticket['entity_name'],
             'age'         => (int) floor((strtotime($_SESSION['glpi_currenttime']) - strtotime((string) $ticket['date'])) / DAY_TIMESTAMP),
+            'techs'       => array_values(array_map('getUserName', $ticket['techs'])),
         ];
     }
 
