@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 12:10+0000\n"
+"POT-Creation-Date: 2026-09-26 12:24+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2018\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/infotelGLPI/"
@@ -56,7 +56,7 @@ msgid_plural "%d rules created"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/techlead/assignment_rules.html.twig:52
+#: templates/techlead/assignment_rules.html.twig:59
 #, php-format
 msgid "%s client(s) able to open tickets"
 msgstr ""
@@ -74,7 +74,7 @@ msgstr ""
 msgid "(in hours)"
 msgstr ""
 
-#: src/WizardController.php:1745
+#: src/WizardController.php:1749
 msgid "(no name)"
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:2222
+#: src/WizardController.php:2226
 msgid "-- Select a template --"
 msgstr ""
 
@@ -102,11 +102,11 @@ msgstr ""
 msgid "Accomplished tasks informations"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:104
+#: templates/techlead/assignment_rules.html.twig:111
 msgid "Active"
 msgstr ""
 
-#: src/EditorSubscription.php:179 hook.php:928
+#: src/EditorSubscription.php:179 hook.php:925
 msgid "Active editor subscription"
 msgstr ""
 
@@ -295,16 +295,16 @@ msgstr ""
 msgid "Assigned technician(s)"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:79
+#: templates/techlead/assignment_rules.html.twig:86
 msgid "Assignment rule"
 msgstr ""
 
 #: front/techleadrule.php:56 templates/techlead/clients_by_tech.html.twig:67
-#: templates/techlead/assignment_rules.html.twig:48
+#: templates/techlead/assignment_rules.html.twig:55
 msgid "Assignment rules"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:100
+#: templates/techlead/assignment_rules.html.twig:107
 msgid "Assigns another technician"
 msgstr ""
 
@@ -339,7 +339,7 @@ msgstr ""
 msgid "Associated ticket"
 msgstr ""
 
-#: src/WizardController.php:1443 src/WizardController.php:1472
+#: src/WizardController.php:1447 src/WizardController.php:1476
 msgid "At least one service period with a rate is required"
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/WizardController.php:1297
+#: src/WizardController.php:1299
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -413,7 +413,7 @@ msgstr ""
 #: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:122
 #: templates/techlead/clients_by_tech.html.twig:120
 #: templates/techlead/clients_by_tech.html.twig:166
-#: templates/techlead/assignment_rules.html.twig:76
+#: templates/techlead/assignment_rules.html.twig:83
 #: templates/generatecri_wizard.html.twig:43
 msgid "Client"
 msgid_plural "Clients"
@@ -464,7 +464,7 @@ msgstr ""
 
 #: src/EditorSubscription.php:157 src/EditorSubscription.php:180
 #: src/EditorSubscription.php:699
-#: src/NotificationTargetEditorSubscription.php:120 hook.php:941
+#: src/NotificationTargetEditorSubscription.php:120 hook.php:938
 #: templates/editorsubscription_fields.html.twig:70
 #: templates/cridetail_for_ticket.html.twig:90
 #: templates/contract_detail_form.html.twig:58
@@ -532,7 +532,7 @@ msgid_plural "Contacts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1967
+#: src/WizardController.php:1971
 msgid "Contacts"
 msgstr ""
 
@@ -540,7 +540,7 @@ msgstr ""
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 
-#: src/WizardController.php:1960 src/WizardController.php:1972
+#: src/WizardController.php:1964 src/WizardController.php:1976
 #: templates/wizard/step6_intervention_block.html.twig:98
 #: templates/wizard/step4_contract.html.twig:39
 #: templates/followup_report.html.twig:55
@@ -554,7 +554,7 @@ msgstr[1] ""
 msgid "Contract closure"
 msgstr ""
 
-#: src/WizardController.php:1568
+#: src/WizardController.php:1572
 msgid "Contract data is missing"
 msgstr ""
 
@@ -638,11 +638,11 @@ msgstr ""
 msgid "Create subscription"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:59
+#: templates/techlead/assignment_rules.html.twig:66
 msgid "Create the missing rules"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:122
+#: templates/techlead/assignment_rules.html.twig:129
 msgctxt "button"
 msgid "Create the rule"
 msgstr ""
@@ -912,7 +912,7 @@ msgstr ""
 msgid "Duration of moving"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:69
+#: templates/techlead/assignment_rules.html.twig:76
 #, php-format
 msgid ""
 "Each rule is created in the entity %1$s (recursive) and assigns the main "
@@ -1051,15 +1051,15 @@ msgstr[1] ""
 msgid "Entity already exists"
 msgstr ""
 
-#: src/WizardController.php:1433 src/WizardController.php:1480
+#: src/WizardController.php:1437 src/WizardController.php:1484
 msgid "Entity data is missing"
 msgstr ""
 
 #: src/Company.php:224 src/Company.php:266 src/WizardController.php:346
 #: src/WizardController.php:352 src/WizardController.php:367
 #: src/WizardController.php:445 src/WizardController.php:451
-#: src/WizardController.php:539 src/WizardController.php:1485
-#: src/WizardController.php:1501
+#: src/WizardController.php:539 src/WizardController.php:1489
+#: src/WizardController.php:1505
 msgid "Entity not found"
 msgstr ""
 
@@ -1067,15 +1067,15 @@ msgstr ""
 msgid "Entity used to archive customers."
 msgstr ""
 
-#: src/WizardController.php:1585
+#: src/WizardController.php:1589
 msgid "Error creating contract"
 msgstr ""
 
-#: src/WizardController.php:1496
+#: src/WizardController.php:1500
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:1627
+#: src/WizardController.php:1631
 msgid "Error creating management type"
 msgstr ""
 
@@ -1188,7 +1188,7 @@ msgstr ""
 msgid "Generate report intervention"
 msgstr ""
 
-#: src/TechLeadRule.php:269
+#: src/TechLeadRule.php:280
 msgid "Generated from the clients management portal"
 msgstr ""
 
@@ -1245,7 +1245,7 @@ msgstr ""
 msgid "In progress"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:102
+#: templates/techlead/assignment_rules.html.twig:109
 msgid "Inactive"
 msgstr ""
 
@@ -1268,7 +1268,7 @@ msgstr ""
 msgid "Initial credit is required"
 msgstr ""
 
-#: src/EditorSubscription.php:181 src/EditorSubscription.php:707 hook.php:954
+#: src/EditorSubscription.php:181 src/EditorSubscription.php:707 hook.php:951
 #: templates/editorsubscription_fields.html.twig:78
 #: templates/cridetail_for_ticket.html.twig:52
 #: templates/contract_detail_form.html.twig:83
@@ -1287,7 +1287,7 @@ msgid "Intervention date"
 msgstr ""
 
 #: src/WizardController.php:1183 src/WizardController.php:1194
-#: src/WizardController.php:1277
+#: src/WizardController.php:1279
 msgid "Intervention not saved yet"
 msgstr ""
 
@@ -1416,7 +1416,7 @@ msgstr ""
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
 #: templates/techlead/clients_by_tech.html.twig:121
-#: templates/techlead/assignment_rules.html.twig:78
+#: templates/techlead/assignment_rules.html.twig:85
 msgid "Main tech lead"
 msgstr ""
 
@@ -1424,7 +1424,7 @@ msgstr ""
 msgid "Main tech lead - click to no longer be the main one"
 msgstr ""
 
-#: src/TechLeadRule.php:266
+#: src/TechLeadRule.php:277
 #, php-format
 msgid "Main tech lead of %s"
 msgstr ""
@@ -1433,7 +1433,7 @@ msgstr ""
 msgid "Manage your contracts"
 msgstr ""
 
-#: src/WizardController.php:1615
+#: src/WizardController.php:1619
 msgid "Management data is missing"
 msgstr ""
 
@@ -1443,8 +1443,8 @@ msgid_plural "Management of task categories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:76 src/WizardController.php:1961
-#: src/WizardController.php:1973 templates/wizard/step5_management.html.twig:42
+#: src/Contract.php:76 src/WizardController.php:1965
+#: src/WizardController.php:1977 templates/wizard/step5_management.html.twig:42
 #: templates/contract_detail_form.html.twig:130
 msgid "Management type"
 msgstr ""
@@ -1462,11 +1462,11 @@ msgstr ""
 msgid "Manager (main contact)"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:112
+#: templates/techlead/assignment_rules.html.twig:119
 msgid "Missing"
 msgstr ""
 
-#: src/WizardController.php:1257
+#: src/WizardController.php:1259
 msgid "Missing required fields"
 msgstr ""
 
@@ -1591,7 +1591,7 @@ msgstr ""
 msgid "No business contact"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:131
+#: templates/techlead/assignment_rules.html.twig:138
 msgid "No client has users with a simplified interface profile"
 msgstr ""
 
@@ -1630,7 +1630,7 @@ msgstr ""
 msgid "No level"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:93
+#: templates/techlead/assignment_rules.html.twig:100
 msgid "No main tech lead"
 msgstr ""
 
@@ -1749,7 +1749,7 @@ msgstr ""
 msgid "Nothing to display"
 msgstr ""
 
-#: src/WizardController.php:2002
+#: src/WizardController.php:2006
 msgid "Nothing to display."
 msgstr ""
 
@@ -1758,7 +1758,7 @@ msgctxt "phone"
 msgid "Number"
 msgstr ""
 
-#: src/WizardController.php:1271
+#: src/WizardController.php:1273
 msgid "Number of days must be greater than 0"
 msgstr ""
 
@@ -1817,7 +1817,7 @@ msgstr ""
 msgid "Open in the ticket search"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:107
+#: templates/techlead/assignment_rules.html.twig:114
 msgid "Open the rule"
 msgstr ""
 
@@ -1887,8 +1887,8 @@ msgid "Period comment"
 msgstr ""
 
 #: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:762
-#: src/WizardController.php:1780 src/WizardController.php:1855
-#: src/WizardController.php:1962 src/WizardController.php:1974
+#: src/WizardController.php:1784 src/WizardController.php:1859
+#: src/WizardController.php:1966 src/WizardController.php:1978
 #: src/Config.php:194 src/Entity.php:230
 #: templates/wizard/step6_intervention_block.html.twig:35
 #: templates/wizard/step6_interventions.html.twig:36
@@ -1899,12 +1899,12 @@ msgid_plural "Periods of contract"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1449
+#: src/WizardController.php:1453
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: src/CriDetail.php:831 src/CriDetail.php:1789 hook.php:888
+#: src/CriDetail.php:831 src/CriDetail.php:1789 hook.php:885
 #: templates/contractday_list.html.twig:33
 #: templates/contract_link_dropdown.html.twig:58
 msgid "Periods of contract"
@@ -2241,7 +2241,7 @@ msgstr ""
 msgid "Save this period"
 msgstr ""
 
-#: src/CriType.php:153 hook.php:106 hook.php:125
+#: src/CriType.php:153 hook.php:105 hook.php:124
 msgid "Scheduled intervention"
 msgstr "Intervenção programada"
 
@@ -2322,7 +2322,7 @@ msgstr ""
 msgid "Show on GANTT"
 msgstr ""
 
-#: templates/techlead/assignment_rules.html.twig:77
+#: templates/techlead/assignment_rules.html.twig:84
 msgid "Simplified interface users"
 msgstr ""
 
@@ -2402,11 +2402,11 @@ msgstr ""
 msgid "Status list contract for the general monitoring"
 msgstr ""
 
-#: src/CriType.php:154 hook.php:107 hook.php:126
+#: src/CriType.php:154 hook.php:106 hook.php:125
 msgid "Study and advice"
 msgstr "Estudar e informar"
 
-#: src/WizardController.php:1970
+#: src/WizardController.php:1974
 msgid "Subscription"
 msgstr ""
 
@@ -2532,7 +2532,7 @@ msgstr ""
 msgid "Technicians"
 msgstr ""
 
-#: ajax/cri.php:154 ajax/cri.php:193 ajax/cri.php:223
+#: ajax/cri.php:168 ajax/cri.php:207 ajax/cri.php:237
 msgid "Thanks to select a intervention type"
 msgstr "Obrigado por selecionar o tipo de intervenção"
 
@@ -2541,14 +2541,14 @@ msgstr "Obrigado por selecionar o tipo de intervenção"
 msgid "The contract period %s already exists"
 msgstr ""
 
-#: src/WizardController.php:2004
+#: src/WizardController.php:2008
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
 "place it under the default parent entity to continue?"
 msgstr ""
 
-#: src/WizardController.php:2003
+#: src/WizardController.php:2007
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
@@ -2589,6 +2589,13 @@ msgid ""
 "The queries below are only suggestions built from the differences found. "
 "Review them, back up your database, then run them manually: they are never "
 "run by the plugin."
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:47
+#, php-format
+msgid ""
+"The rules are created in the entity %s: select it in your active entities to "
+"create them"
 msgstr ""
 
 #: templates/interventionstakeholder_list.html.twig:43
@@ -2688,7 +2695,7 @@ msgstr ""
 
 #: src/ContractDay.php:473 src/Followup.php:771 src/Dashboard.php:184
 #: src/Dashboard.php:465 src/NotificationTargetContract.php:120
-#: src/NotificationTargetContract.php:155 hook.php:914
+#: src/NotificationTargetContract.php:155 hook.php:911
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr ""
@@ -2739,7 +2746,7 @@ msgstr ""
 msgid "Type of service contract missing"
 msgstr ""
 
-#: src/WizardController.php:2005
+#: src/WizardController.php:2009
 msgid "Unarchive and continue"
 msgstr ""
 
@@ -2796,7 +2803,7 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1060
+#: hook.php:1057
 msgid "Update subscription fields"
 msgstr ""
 
@@ -2804,7 +2811,7 @@ msgstr ""
 msgid "Urgency"
 msgstr ""
 
-#: src/CriType.php:152 hook.php:105 hook.php:124
+#: src/CriType.php:152 hook.php:104 hook.php:123
 msgid "Urgent intervention"
 msgstr "Intervenção urgente"
 
@@ -2838,14 +2845,14 @@ msgid_plural "Users"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1796 src/InterventionStakeholder.php:52
+#: src/WizardController.php:1800 src/InterventionStakeholder.php:52
 #: templates/wizard/step6_stakeholders_section.html.twig:34
 msgid "User affected"
 msgid_plural "Users affected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1288
+#: src/WizardController.php:1290
 msgid "User already added"
 msgstr ""
 
@@ -2936,12 +2943,12 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1728
+#: src/WizardController.php:1732
 #: templates/wizard/step6_stakeholders_section.html.twig:41
 msgid "days"
 msgstr ""
 
-#: src/WizardController.php:1727
+#: src/WizardController.php:1731
 msgid "hours"
 msgstr ""
 
