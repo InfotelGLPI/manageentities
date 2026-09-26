@@ -1,0 +1,139 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Clients whose users can open tickets from the simplified interface, with their main tech
+   lead and the ticket rule assigning it to these tickets #}
+<div class="container-fluid mt-3">
+    <div class="mb-3">
+        <a href="{{ back_url }}" class="btn btn-sm btn-ghost-secondary">
+            <i class="ti ti-arrow-left me-1"></i>{{ __('Back') }}
+        </a>
+    </div>
+
+    {% if not has_config %}
+        <div class="alert alert-warning">
+            <i class="ti ti-alert-triangle me-1"></i>
+            {{ __('Set the customers entity in the plugin configuration to create the assignment rules', 'manageentities') }}
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="ti ti-route me-1"></i>
+                {{ __('Assignment rules', 'manageentities') }}
+            </h3>
+            <div class="card-actions d-flex flex-wrap align-items-center gap-2">
+                <span class="badge bg-blue-lt">
+                    {{ __('%s client(s) able to open tickets', 'manageentities')|format(clients|length) }}
+                </span>
+                {% if can_create and has_config and missing > 0 %}
+                    <form method="post" action="{{ action_url }}" class="d-inline">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" name="create_all_rules" value="1" class="btn btn-sm btn-primary">
+                            <i class="ti ti-plus me-1"></i>
+                            {{ __('Create the missing rules', 'manageentities') }}
+                            <span class="badge bg-white text-primary ms-1">{{ missing }}</span>
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        {% if has_config %}
+            <div class="card-body border-bottom py-2 text-muted small">
+                <i class="ti ti-info-circle me-1"></i>
+                {{ __('Each rule is created in the entity %1$s (recursive) and assigns the main tech lead to the tickets of the client opened with the request source "%2$s" and not yet assigned to a technician', 'manageentities')|format(rules_entity, requesttype) }}
+            </div>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-sm table-hover table-vcenter mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ _n('Client', 'Clients', 1, 'manageentities') }}</th>
+                        <th class="text-end">{{ __('Simplified interface users', 'manageentities') }}</th>
+                        <th>{{ __('Main tech lead', 'manageentities') }}</th>
+                        <th>{{ __('Assignment rule', 'manageentities') }}</th>
+                        <th class="text-end"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for client in clients %}
+                    <tr>
+                        <td>{{ client.name }}</td>
+                        <td class="text-end">{{ client.nb_users }}</td>
+                        <td>
+                            {% if client.techlead_id > 0 %}
+                                <i class="ti ti-user-star me-1"></i>{{ client.techlead_name }}
+                            {% else %}
+                                <span class="badge bg-yellow-lt">
+                                    <i class="ti ti-star-off me-1"></i>{{ __('No main tech lead', 'manageentities') }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if client.rule_id > 0 %}
+                                {% if client.rule_outdated %}
+                                    {% set rule_badge = {color: 'bg-yellow-lt', icon: 'ti-alert-triangle', label: __('Assigns another technician', 'manageentities')} %}
+                                {% elseif not client.rule_active %}
+                                    {% set rule_badge = {color: 'bg-yellow-lt', icon: 'ti-player-pause', label: __('Inactive')} %}
+                                {% else %}
+                                    {% set rule_badge = {color: 'bg-green-lt', icon: 'ti-check', label: __('Active')} %}
+                                {% endif %}
+                                <a href="{{ client.rule_url }}" class="badge {{ rule_badge.color }}"
+                                   title="{{ __('Open the rule', 'manageentities') }}">
+                                    <i class="ti {{ rule_badge.icon }} me-1"></i>{{ rule_badge.label }}
+                                </a>
+                            {% else %}
+                                <span class="badge bg-red-lt">
+                                    <i class="ti ti-x me-1"></i>{{ __('Missing', 'manageentities') }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if can_create and has_config and client.rule_id == 0 and client.techlead_id > 0 %}
+                                <form method="post" action="{{ action_url }}" class="d-inline">
+                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="entities_id" value="{{ client.entities_id }}">
+                                    <button type="submit" name="create_rule" value="1" class="btn btn-sm btn-outline-primary">
+                                        <i class="ti ti-plus me-1"></i>{{ _x('button', 'Create the rule', 'manageentities') }}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-muted text-center py-3">
+                            {{ __('No client has users with a simplified interface profile', 'manageentities') }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -294,7 +294,7 @@ class TechLead extends CommonDBTM
      *
      * @return int[]
      */
-    private static function filterActiveCustomers(array $entities): array
+    public static function filterActiveCustomers(array $entities): array
     {
         $config = Config::getInstance();
 
@@ -522,7 +522,7 @@ class TechLead extends CommonDBTM
     }
 
     /**
-     * "Clients by tech lead" tab of the portal
+     * "Tech lead by clients" tab of the portal
      *
      * @param array $entities
      *
@@ -532,6 +532,9 @@ class TechLead extends CommonDBTM
     {
         $stats = self::getClientsCountByTech($entities);
 
+        // Button to the assignment rules page, with the number of rules left to create
+        $can_view_rules = TechLeadRule::canView();
+
         TemplateRenderer::getInstance()->display('@manageentities/techlead/clients_by_tech.html.twig', [
             'techs'           => $stats['techs'] ?? [],
             'total_clients'   => $stats['total_clients'] ?? 0,
@@ -539,6 +542,11 @@ class TechLead extends CommonDBTM
             'without_main'     => self::getClientsWithoutMainTechLead($entities),
             'can_toggle_main'  => self::canUpdate(),
             'action_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
+            'can_view_rules'   => $can_view_rules,
+            'missing_rules'    => $can_view_rules
+                ? TechLeadRule::countMissingRules(TechLeadRule::getClients($entities))
+                : 0,
+            'rules_url'        => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/techleadrule.php',
         ]);
     }
 

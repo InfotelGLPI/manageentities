@@ -145,7 +145,7 @@ if ($ManageentitiesEntity->canView()
         Html::back();
 
     } elseif (isset($_POST["toggletechleadbydefault"])) {
-        // One-click switch from the "Clients by tech lead" tab: the main tech lead
+        // One-click switch from the "Tech lead by clients" tab: the main tech lead
         // stops being the main one, any other one becomes the main one
         if ($TechLead->can((int) $_POST["id"], UPDATE)) {
             if ($TechLead->fields['is_default']) {

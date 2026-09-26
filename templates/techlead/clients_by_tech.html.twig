@@ -36,7 +36,7 @@
             <div class="card-header">
                 <h3 class="card-title">
                     <i class="ti ti-user-star me-1"></i>
-                    {{ __('Clients by tech lead', 'manageentities') }}
+                    {{ __('Tech lead by clients', 'manageentities') }}
                 </h3>
                 <div class="card-actions d-flex flex-wrap align-items-center gap-2">
                     {% if techs is not empty %}
@@ -59,6 +59,18 @@
                     <span class="badge bg-blue-lt">
                         {{ __('%1$s client(s) followed by %2$s tech lead(s)', 'manageentities')|format(total_clients, techs|length) }}
                     </span>
+                    {% if can_view_rules %}
+                        {# Clients able to open tickets and the rule assigning them their main tech lead #}
+                        <a href="{{ rules_url }}" class="btn btn-sm btn-outline-secondary"
+                           title="{{ __('Automatic assignment of the main tech lead to the tickets opened by the clients', 'manageentities') }}">
+                            <i class="ti ti-route me-1"></i>
+                            {{ __('Assignment rules', 'manageentities') }}
+                            {% if missing_rules > 0 %}
+                                <span class="badge bg-red-lt ms-1"
+                                      title="{{ __('Rules to create', 'manageentities') }}">{{ missing_rules }}</span>
+                            {% endif %}
+                        </a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body p-0">

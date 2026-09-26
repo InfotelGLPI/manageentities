@@ -78,7 +78,7 @@ class Entity extends CommonGLPI
         $labels[self::TAB_DOCUMENTS] = _n('Document', 'Documents', 2);
         $labels[12]                  = __('References', 'manageentities');
         $labels[13]                  = __('Unbilled interventions', 'manageentities');
-        $labels[14]                  = __('Clients by tech lead', 'manageentities');
+        $labels[14]                  = __('Tech lead by clients', 'manageentities');
         $labels[self::TAB_TICKETS]   = __('Ongoing tickets', 'manageentities');
 
         return $labels;
@@ -194,7 +194,7 @@ class Entity extends CommonGLPI
             // Workload of the tech leads: central only, like the other provider-side overviews
             if (Session::getCurrentInterface() == 'central' && TechLead::canView()) {
                 $tabs[14] = TechLead::createTabEntry(
-                    __('Clients by tech lead', 'manageentities'),
+                    __('Tech lead by clients', 'manageentities'),
                     0,
                     self::class,
                     TechLead::getIcon(),

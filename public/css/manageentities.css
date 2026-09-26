@@ -183,7 +183,7 @@ div#tabcontent {
 }
 
 /*
- * "Clients by tech lead" (templates/techlead/clients_by_tech.html.twig): filter of the client
+ * "Tech lead by clients" (templates/techlead/clients_by_tech.html.twig): filter of the client
  * lists on the "Main tech lead" column, driven by the radio buttons of the card header.
  * The placeholder row only shows when the filter hides every client of a tech lead.
  */
