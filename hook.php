@@ -54,6 +54,7 @@ use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\SubscriptionLevel;
 use GlpiPlugin\Manageentities\TaskCategory;
 use GlpiPlugin\Manageentities\TechLead;
+use GlpiPlugin\Manageentities\TicketOverview;
 use GlpiPlugin\Manageentities\TicketTask;
 
 use function Safe\mkdir;
@@ -893,6 +894,10 @@ function plugin_manageentities_getAddSearchOptions($itemtype)
             $sopt[4456]['joinparams']    = ['beforejoin'
                                          => ['table'      => 'glpi_plugin_manageentities_cridetails',
                                              'joinparams' => ['jointype' => 'child']]];
+        }
+        // Filter of the links of the "Ongoing tickets" tab, matching its counts
+        if (TicketOverview::canView()) {
+            $sopt[TicketOverview::SEARCH_OPTION_OPENED_BY_CUSTOMER] = TicketOverview::getOpenedByCustomerSearchOption();
         }
     }
     return $sopt;

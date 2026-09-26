@@ -54,6 +54,7 @@ class Entity extends CommonGLPI
 
     public const TAB_CONTRACTS = 5;
     public const TAB_DOCUMENTS = 9;
+    public const TAB_TICKETS   = 15;
 
     /**
      * Tabs of the client management dashboard a user can choose to display, by tab number.
@@ -78,6 +79,7 @@ class Entity extends CommonGLPI
         $labels[12]                  = __('References', 'manageentities');
         $labels[13]                  = __('Unbilled interventions', 'manageentities');
         $labels[14]                  = __('Clients by tech lead', 'manageentities');
+        $labels[self::TAB_TICKETS]   = __('Ongoing tickets', 'manageentities');
 
         return $labels;
     }
@@ -196,6 +198,16 @@ class Entity extends CommonGLPI
                     0,
                     self::class,
                     TechLead::getIcon(),
+                );
+            }
+
+            // Open tickets of every customer: central only, and reserved to the users seeing all tickets
+            if (Session::getCurrentInterface() == 'central' && TicketOverview::canView()) {
+                $tabs[self::TAB_TICKETS] = self::createTabEntry(
+                    __('Ongoing tickets', 'manageentities'),
+                    0,
+                    self::class,
+                    'ti ti-ticket',
                 );
             }
 
@@ -382,6 +394,13 @@ class Entity extends CommonGLPI
                     break;
                 case 14:
                     TechLead::showClientsByTech($entities);
+                    break;
+                case self::TAB_TICKETS:
+                    TicketOverview::showOverview(
+                        $entities,
+                        $_GET['stale_weeks'] ?? TicketOverview::DEFAULT_STALE_WEEKS,
+                        $_GET['ticket_type'] ?? TicketOverview::ALL_TYPES,
+                    );
                     break;
                 default:
                     break;

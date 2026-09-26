@@ -71,23 +71,23 @@
 
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Phone') }}</label>
-                <input type="text" name="phonenumber" class="form-control"
+                <input type="text" name="phonenumber" class="form-control" data-me-wizard-format="phone"
                     value="{{ entity_fields.phonenumber ?? '' }}">
             </div>
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Fax') }}</label>
-                <input type="text" name="fax" class="form-control"
+                <input type="text" name="fax" class="form-control" data-me-wizard-format="phone"
                     value="{{ entity_fields.fax ?? '' }}">
             </div>
 
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Email') }}</label>
-                <input type="email" name="email" class="form-control"
+                <input type="email" name="email" class="form-control" data-me-wizard-format="email"
                     value="{{ entity_fields.email ?? '' }}">
             </div>
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Website') }}</label>
-                <input type="text" name="website" class="form-control"
+                <input type="text" name="website" class="form-control" data-me-wizard-format="website"
                     value="{{ entity_fields.website ?? '' }}">
             </div>
 

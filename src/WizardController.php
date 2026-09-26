@@ -40,8 +40,10 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
 use NotificationEvent;
+use NotificationMailing;
 use Session;
 use State;
+use Toolbox;
 use User;
 use UserTitle;
 
@@ -153,14 +155,83 @@ class WizardController
     }
 
     // -------------------------------------------------------------------------
+    // Formatting helpers (mirrored by formatField() in public/scripts/wizard.js)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Phone number with space separators only: dots, dashes, slashes and repeated spaces become
+     * single spaces, and a bare 10-digit number (or +33 followed by 9 digits) is split into pairs
+     */
+    public static function formatPhoneNumber(string $phone): string
+    {
+        $phone = trim((string) preg_replace('/[\s.\-\/]+/u', ' ', $phone));
+        $digits = str_replace(' ', '', $phone);
+
+        if (preg_match('/^\d{10}$/', $digits)) {
+            return implode(' ', str_split($digits, 2));
+        }
+        if (preg_match('/^\+33(\d)(\d{8})$/', $digits, $matches)) {
+            return '+33 ' . $matches[1] . ' ' . implode(' ', str_split($matches[2], 2));
+        }
+        return $phone;
+    }
+
+    /** Last name in capitals, as in the resources plugin */
+    public static function formatLastName(string $name): string
+    {
+        return mb_strtoupper(trim($name));
+    }
+
+    /** First name with an initial capital and the rest in lower case, as in the resources plugin */
+    public static function formatFirstName(string $firstname): string
+    {
+        $firstname = trim($firstname);
+        return mb_strtoupper(mb_substr($firstname, 0, 1)) . mb_strtolower(mb_substr($firstname, 1));
+    }
+
+    /** Website with a scheme: "www.example.com" becomes "https://www.example.com" */
+    public static function formatWebsite(string $website): string
+    {
+        $website = trim($website);
+        if ($website !== '' && !preg_match('~^[a-z][a-z0-9+.\-]*://~i', $website)) {
+            $website = 'https://' . $website;
+        }
+        return $website;
+    }
+
+    // -------------------------------------------------------------------------
     // Validation helpers
     // -------------------------------------------------------------------------
+
+    /**
+     * Optional email: empty, or a valid address
+     *
+     * @param array  $input
+     * @param array  $errors error messages, by field
+     * @param string $field
+     */
+    private static function validateEmailField(array $input, array &$errors, string $field = 'email'): void
+    {
+        $email = trim((string) ($input[$field] ?? ''));
+        // The core accepts a domain without extension ("user@localhost"), never used by a customer
+        if (
+            $email !== ''
+            && (!NotificationMailing::isUserAddressValid($email) || !str_contains(strrchr($email, '@'), '.'))
+        ) {
+            $errors[$field] = __('Invalid email address', 'manageentities');
+        }
+    }
 
     public static function validateEntityInput(array $input): array
     {
         $errors = [];
         if (empty(trim($input['name'] ?? ''))) {
             $errors['name'] = __('Name is required', 'manageentities');
+        }
+        self::validateEmailField($input, $errors);
+        $website = self::formatWebsite((string) ($input['website'] ?? ''));
+        if ($website !== '' && !Toolbox::isValidWebUrl($website)) {
+            $errors['website'] = __('Invalid website address', 'manageentities');
         }
         return ['valid' => empty($errors), 'errors' => $errors];
     }
@@ -174,6 +245,7 @@ class WizardController
         if (empty(trim($input['firstname'] ?? ''))) {
             $errors['firstname'] = __('First name is required', 'manageentities');
         }
+        self::validateEmailField($input, $errors);
         return ['valid' => empty($errors), 'errors' => $errors];
     }
 
@@ -471,10 +543,10 @@ class WizardController
             'name'        => trim($input['name']),
             'entities_id' => $resolved_entities_id,
             'comment'     => $input['comment'] ?? '',
-            'phonenumber' => $input['phonenumber'] ?? '',
-            'fax'         => $input['fax'] ?? '',
-            'email'       => $input['email'] ?? '',
-            'website'     => $input['website'] ?? '',
+            'phonenumber' => self::formatPhoneNumber((string) ($input['phonenumber'] ?? '')),
+            'fax'         => self::formatPhoneNumber((string) ($input['fax'] ?? '')),
+            'email'       => trim((string) ($input['email'] ?? '')),
+            'website'     => self::formatWebsite((string) ($input['website'] ?? '')),
             'address'     => $input['address'] ?? '',
             'postcode'    => $input['postcode'] ?? '',
             'town'        => $input['town'] ?? '',
@@ -554,13 +626,13 @@ class WizardController
             }
 
             $savedData[$idx] = [
-                'name'            => trim($cInput['name']),
-                'firstname'       => $cInput['firstname'] ?? '',
-                'phone'           => $cInput['phone'] ?? '',
-                'phone2'          => $cInput['phone2'] ?? '',
-                'mobile'          => $cInput['mobile'] ?? '',
-                'fax'             => $cInput['fax'] ?? '',
-                'email'           => $cInput['email'] ?? '',
+                'name'            => self::formatLastName((string) $cInput['name']),
+                'firstname'       => self::formatFirstName((string) ($cInput['firstname'] ?? '')),
+                'phone'           => self::formatPhoneNumber((string) ($cInput['phone'] ?? '')),
+                'phone2'          => self::formatPhoneNumber((string) ($cInput['phone2'] ?? '')),
+                'mobile'          => self::formatPhoneNumber((string) ($cInput['mobile'] ?? '')),
+                'fax'             => self::formatPhoneNumber((string) ($cInput['fax'] ?? '')),
+                'email'           => trim((string) ($cInput['email'] ?? '')),
                 'address'         => $cInput['address'] ?? '',
                 'postcode'        => $cInput['postcode'] ?? '',
                 'town'            => $cInput['town'] ?? '',

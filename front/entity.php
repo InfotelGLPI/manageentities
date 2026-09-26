@@ -37,6 +37,7 @@ use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\TechLead;
+use GlpiPlugin\Manageentities\TicketOverview;
 
 // CSV exports — must run before any Html::header() output
 if (isset($_GET['export']) && $_GET['export'] === 'subscriptions') {
@@ -209,7 +210,9 @@ if ($ManageentitiesEntity->canView()
                 "entities_id"       => (isset($_POST['entities_id']) && (!empty($_POST['entities_id']))) ? $_POST['entities_id'] : -1,
                 "business_id"       => isset($_POST['business_id']) ? $_POST['business_id'] : -1,
                 "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
-                "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0];
+                "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0,
+                "stale_weeks"       => TicketOverview::sanitizeStaleWeeks($_POST['stale_weeks'] ?? TicketOverview::DEFAULT_STALE_WEEKS),
+                "ticket_type"       => TicketOverview::sanitizeType($_POST['ticket_type'] ?? TicketOverview::ALL_TYPES)];
 
             $entity = new Entity();
             $entity->display($options);

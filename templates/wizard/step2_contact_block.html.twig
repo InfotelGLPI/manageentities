@@ -48,12 +48,12 @@
 
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('Last name') }} <span class="text-danger">*</span></label>
-                <input type="text" name="contacts[{{ idx }}][name]" class="form-control" required
+                <input type="text" name="contacts[{{ idx }}][name]" class="form-control" required data-me-wizard-format="lastname"
                     value="{{ fields.name ?? '' }}">
             </div>
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('First name') }} <span class="text-danger">*</span></label>
-                <input type="text" name="contacts[{{ idx }}][firstname]" class="form-control" required
+                <input type="text" name="contacts[{{ idx }}][firstname]" class="form-control" required data-me-wizard-format="firstname"
                     value="{{ fields.firstname ?? '' }}">
             </div>
             <div class="col-sm-4">
@@ -63,23 +63,23 @@
 
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('Phone') }}</label>
-                <input type="text" name="contacts[{{ idx }}][phone]" class="form-control"
+                <input type="text" name="contacts[{{ idx }}][phone]" class="form-control" data-me-wizard-format="phone"
                     value="{{ fields.phone ?? '' }}">
             </div>
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('Phone 2') }}</label>
-                <input type="text" name="contacts[{{ idx }}][phone2]" class="form-control"
+                <input type="text" name="contacts[{{ idx }}][phone2]" class="form-control" data-me-wizard-format="phone"
                     value="{{ fields.phone2 ?? '' }}">
             </div>
             <div class="col-sm-4">
                 <label class="col-form-label fw-bold">{{ __('Mobile') }}</label>
-                <input type="text" name="contacts[{{ idx }}][mobile]" class="form-control"
+                <input type="text" name="contacts[{{ idx }}][mobile]" class="form-control" data-me-wizard-format="phone"
                     value="{{ fields.mobile ?? '' }}">
             </div>
 
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">{{ __('Email') }}</label>
-                <input type="email" name="contacts[{{ idx }}][email]" class="form-control"
+                <input type="email" name="contacts[{{ idx }}][email]" class="form-control" data-me-wizard-format="email"
                     value="{{ fields.email ?? '' }}">
             </div>
             <div class="col-sm-6">

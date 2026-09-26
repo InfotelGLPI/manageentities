@@ -907,6 +907,43 @@ document.addEventListener('change', (event) => {
     }
 });
 
+// Field formatting, mirrored server side by the format*() helpers of WizardController
+const FORMATTERS = {
+    // Space separators only; a bare 10-digit number (or +33 and 9 digits) is split into pairs
+    phone: (value) => {
+        const phone = value.replace(/[\s./-]+/g, ' ').trim();
+        const digits = phone.replaceAll(' ', '');
+        if (/^\d{10}$/.test(digits)) {
+            return digits.match(/\d{2}/g).join(' ');
+        }
+        const international = digits.match(/^\+33(\d)(\d{8})$/);
+        if (international !== null) {
+            return `+33 ${international[1]} ${international[2].match(/\d{2}/g).join(' ')}`;
+        }
+        return phone;
+    },
+    // Last name in capitals, first name with an initial capital, as in the resources plugin
+    lastname: (value) => value.trim().toUpperCase(),
+    firstname: (value) => {
+        const firstname = value.trim();
+        return firstname.charAt(0).toUpperCase() + firstname.slice(1).toLowerCase();
+    },
+    email: (value) => value.trim(),
+    // A website without scheme gets https://
+    website: (value) => {
+        const website = value.trim();
+        return website === '' || /^[a-z][a-z0-9+.-]*:\/\//i.test(website) ? website : `https://${website}`;
+    },
+};
+
+document.addEventListener('change', (event) => {
+    const el = event.target.closest('[data-me-wizard-format]');
+    const formatter = FORMATTERS[el?.dataset.meWizardFormat];
+    if (formatter !== undefined) {
+        el.value = formatter(el.value);
+    }
+});
+
 // Module scripts are deferred: the document may already be parsed
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initBlockCounters);

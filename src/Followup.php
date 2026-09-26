@@ -194,7 +194,8 @@ class Followup extends CommonDBTM
         $preferences = $plugin_pref->find(['users_id' => Session::getLoginUserID()]);
         $preferences = reset($preferences) ?: [];
 
-        $is_helpdesk = Session::getCurrentInterface() === 'helpdesk';
+        $is_helpdesk          = Session::getCurrentInterface() === 'helpdesk';
+        $closed_glpi_state_id = (int) ($config->fields['closed_glpi_state_id'] ?? 0);
 
         // Contract states and business contacts: the selection of the form wins, and an
         // emptied one means no filter at all. It used to fall back to the defaults, since the
@@ -316,6 +317,12 @@ class Followup extends CommonDBTM
                         ['glpi_plugin_manageentities_contracts.contract_type AS contract_type'],
                     );
                     $criteriac['WHERE'] = $criteriac['WHERE'] + ['glpi_plugin_manageentities_contracts.contract_type' => $types_contracts];
+                }
+
+                // A customer only follows its open contracts: the closed ones, that is, those
+                // having the GLPI state configured as closed in the plugin setup, are left out.
+                if ($is_helpdesk && $closed_glpi_state_id > 0) {
+                    $criteriac['WHERE'][] = ['NOT' => ['glpi_contracts.states_id' => $closed_glpi_state_id]];
                 }
 
                 $iteratorc = $DB->request($criteriac);
