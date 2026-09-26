@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 10:29+0000\n"
+"POT-Creation-Date: 2026-09-26 11:55+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "% of time justified"
 msgstr "% de temps justifié"
 
-#: templates/techlead/clients_by_tech.html.twig:59
+#: templates/techlead/clients_by_tech.html.twig:60
 #, php-format
 msgid "%1$s client(s) followed by %2$s tech lead(s)"
 msgstr "%1$s client(s) suivi par %2$s tech lead(s)"
@@ -93,7 +93,7 @@ msgstr "Un contrat avec ce numéro existe déjà"
 msgid "Accomplished tasks informations"
 msgstr "Informations sur les tâches accomplies"
 
-#: src/EditorSubscription.php:179 hook.php:929
+#: src/EditorSubscription.php:179 hook.php:928
 msgid "Active editor subscription"
 msgstr "Souscription active éditeur"
 
@@ -190,7 +190,7 @@ msgstr "Affecté à"
 msgid "Age (days)"
 msgstr "Age (jours)"
 
-#: templates/techlead/clients_by_tech.html.twig:45
+#: templates/techlead/clients_by_tech.html.twig:46
 #: templates/report_search_form.html.twig:48
 msgid "All"
 msgstr "Tous"
@@ -277,7 +277,7 @@ msgstr "Client archivé"
 msgid "Are you sure you want to permanently delete this subscription?"
 msgstr "Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
 
-#: templates/techlead/clients_by_tech.html.twig:154
+#: templates/techlead/clients_by_tech.html.twig:155
 msgid "As main tech lead"
 msgstr "En tant que tech lead responsable"
 
@@ -378,8 +378,8 @@ msgstr "Ville"
 #: src/DirectHelpdesk.php:615 src/Followup.php:899 src/Followup.php:909
 #: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
 #: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:122
-#: templates/techlead/clients_by_tech.html.twig:107
-#: templates/techlead/clients_by_tech.html.twig:153
+#: templates/techlead/clients_by_tech.html.twig:108
+#: templates/techlead/clients_by_tech.html.twig:154
 #: templates/generatecri_wizard.html.twig:43
 msgid "Client"
 msgid_plural "Clients"
@@ -399,7 +399,7 @@ msgstr[1] "Gestion des clients"
 msgstr[2] "Gestion des clients"
 
 #: src/Entity.php:81 src/Entity.php:197
-#: templates/techlead/clients_by_tech.html.twig:38
+#: templates/techlead/clients_by_tech.html.twig:39
 msgid "Clients by tech lead"
 msgstr "Clients par tech lead"
 
@@ -408,11 +408,11 @@ msgstr "Clients par tech lead"
 msgid "Clients with hours left unbilled for more than %d months:"
 msgstr "Clients dont les heures restent impayées depuis plus de %d mois :"
 
-#: templates/techlead/clients_by_tech.html.twig:191
+#: templates/techlead/clients_by_tech.html.twig:192
 msgid "Clients without main tech lead"
 msgstr "Clients sans tech lead responsable"
 
-#: templates/techlead/clients_by_tech.html.twig:215
+#: templates/techlead/clients_by_tech.html.twig:216
 msgid "Clients without tech lead"
 msgstr "Clients sans tech lead"
 
@@ -437,7 +437,7 @@ msgstr "Cloud"
 
 #: src/EditorSubscription.php:157 src/EditorSubscription.php:180
 #: src/EditorSubscription.php:699
-#: src/NotificationTargetEditorSubscription.php:120 hook.php:942
+#: src/NotificationTargetEditorSubscription.php:120 hook.php:941
 #: templates/editorsubscription_fields.html.twig:70
 #: templates/cridetail_for_ticket.html.twig:90
 #: templates/contract_detail_form.html.twig:58
@@ -670,7 +670,7 @@ msgstr "Entités des clients"
 msgid "Customer follow-up"
 msgstr "Suivi client"
 
-#: src/CustomerSheet.php:47 templates/techlead/clients_by_tech.html.twig:115
+#: src/CustomerSheet.php:47 templates/techlead/clients_by_tech.html.twig:116
 msgid "Customer sheet"
 msgstr "Fiche client"
 
@@ -963,7 +963,7 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/entity.php:68 front/generatecri.php:35 front/generatecri.php:38
 #: front/generatecri.php:40 front/cridetail.form.php:52
 #: front/cridetail.form.php:55 front/cridetail.form.php:57
-#: front/addelements.form.php:37 setup.php:245 src/Preference.php:147
+#: front/addelements.form.php:37 setup.php:249 src/Preference.php:147
 #: src/GenerateCRI.php:944 src/TaskCategory.php:66 src/Profile.php:51
 #: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
@@ -1053,11 +1053,11 @@ msgstr "Erreur au désarchivage de l'entité"
 msgid "Estimated number of remaining days"
 msgstr "Estimation Nombre de jours restant"
 
-#: templates/techlead/clients_by_tech.html.twig:229
+#: templates/techlead/clients_by_tech.html.twig:230
 msgid "Every client has a tech lead"
 msgstr "Chaque client a un tech lead"
 
-#: templates/techlead/clients_by_tech.html.twig:205
+#: templates/techlead/clients_by_tech.html.twig:206
 msgid "Every client with tech leads has a main one"
 msgstr "Chaque client disposant de tech lead en a un principal"
 
@@ -1230,7 +1230,7 @@ msgstr "Crédit initial"
 msgid "Initial credit is required"
 msgstr "Le crédit initial est obligatoire"
 
-#: src/EditorSubscription.php:181 src/EditorSubscription.php:707 hook.php:955
+#: src/EditorSubscription.php:181 src/EditorSubscription.php:707 hook.php:954
 #: templates/editorsubscription_fields.html.twig:78
 #: templates/cridetail_for_ticket.html.twig:52
 #: templates/contract_detail_form.html.twig:83
@@ -1262,7 +1262,7 @@ msgstr "Intervention des prestations"
 msgid "Intervention periods of contract"
 msgstr "Interventions de la prestation du contrat"
 
-#: setup.php:151 src/Cri.php:54 src/Profile.php:107 src/Config.php:193
+#: setup.php:155 src/Cri.php:54 src/Profile.php:107 src/Config.php:193
 #: templates/cridetail_add_reports.html.twig:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -1382,13 +1382,13 @@ msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
 #: templates/entity/techleads_card.html.twig:64
-#: templates/techlead/clients_by_tech.html.twig:42
 #: templates/techlead/clients_by_tech.html.twig:43
-#: templates/techlead/clients_by_tech.html.twig:108
+#: templates/techlead/clients_by_tech.html.twig:44
+#: templates/techlead/clients_by_tech.html.twig:109
 msgid "Main tech lead"
 msgstr "Tech lead responsable"
 
-#: templates/techlead/clients_by_tech.html.twig:125
+#: templates/techlead/clients_by_tech.html.twig:126
 msgid "Main tech lead - click to no longer be the main one"
 msgstr "Tech lead responsable - cliquez pour ne plus être le responsable"
 
@@ -1524,8 +1524,8 @@ msgstr "Nouvelle souscription"
 msgid "Next"
 msgstr "Suivant"
 
-#: templates/techlead/clients_by_tech.html.twig:127
-#: templates/techlead/clients_by_tech.html.twig:133
+#: templates/techlead/clients_by_tech.html.twig:128
+#: templates/techlead/clients_by_tech.html.twig:134
 #: templates/contract_detail_form.html.twig:88
 msgid "No"
 msgstr "Non"
@@ -1588,7 +1588,7 @@ msgstr "Aucune heure non facturée depuis plus de %d mois."
 msgid "No level"
 msgstr "Pas de niveau"
 
-#: templates/techlead/clients_by_tech.html.twig:47
+#: templates/techlead/clients_by_tech.html.twig:48
 msgid "No only"
 msgstr "Non seulement"
 
@@ -1634,7 +1634,7 @@ msgid "No reports found"
 msgstr "Pas de rapports d'interventions trouvés"
 
 #: templates/entity/references.html.twig:57
-#: templates/techlead/clients_by_tech.html.twig:140
+#: templates/techlead/clients_by_tech.html.twig:141
 #: templates/directhelpdesk_ticket_tab.html.twig:56
 #: templates/company_list.html.twig:70
 msgid "No results found"
@@ -1661,12 +1661,12 @@ msgstr "Pas de souscription enregistrée."
 msgid "No tasks whose category can be used"
 msgstr "Merci de configurer une catégorie de tâche de ticket avec le plugin"
 
-#: src/TicketOverview.php:621 templates/entity/techleads_card.html.twig:92
-#: templates/techlead/clients_by_tech.html.twig:179
+#: src/TicketOverview.php:616 templates/entity/techleads_card.html.twig:92
+#: templates/techlead/clients_by_tech.html.twig:180
 msgid "No tech lead"
 msgstr "Aucun tech lead"
 
-#: src/TicketOverview.php:600 templates/ticket_overview.html.twig:173
+#: src/TicketOverview.php:597 templates/ticket_overview.html.twig:173
 #: templates/ticket_overview.html.twig:252
 msgid "No technician"
 msgstr "Pas de technicien"
@@ -1853,7 +1853,7 @@ msgstr[2] "Prestations de contrat"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 
-#: src/CriDetail.php:831 src/CriDetail.php:1789 hook.php:889
+#: src/CriDetail.php:831 src/CriDetail.php:1789 hook.php:888
 #: templates/contractday_list.html.twig:33
 #: templates/contract_link_dropdown.html.twig:58
 msgid "Periods of contract"
@@ -2149,11 +2149,11 @@ msgstr "Restant au"
 msgid "Remaining total (amount)"
 msgstr "Total restant (montant)"
 
-#: setup.php:154 templates/report_occupation_result.html.twig:34
+#: setup.php:158 templates/report_occupation_result.html.twig:34
 msgid "Report concerning the occupation of the technicians"
 msgstr "Rapport concernant les déplacements des techniciens"
 
-#: setup.php:152 templates/report_moving_result.html.twig:33
+#: setup.php:156 templates/report_moving_result.html.twig:33
 msgid "Report on the movement of technicians"
 msgstr "Rapport concernant l'occupation des techniciens"
 
@@ -2264,7 +2264,7 @@ msgstr "Configuration"
 msgid "Setup for Generate Intervention report"
 msgstr "Configuration pour \"Générer le rapport d'intervention\""
 
-#: templates/techlead/clients_by_tech.html.twig:155
+#: templates/techlead/clients_by_tech.html.twig:156
 msgid "Share"
 msgstr "Répartition"
 
@@ -2448,7 +2448,7 @@ msgstr[0] "Tech lead"
 msgstr[1] "Tech leads"
 msgstr[2] "Tech leads"
 
-#: templates/techlead/clients_by_tech.html.twig:125
+#: templates/techlead/clients_by_tech.html.twig:126
 msgid "Tech lead - click to become the main one"
 msgstr "Tech lead - cliquez pour devenir le principal"
 
@@ -2458,7 +2458,7 @@ msgstr "Assistance Technique"
 
 #: src/CriPDF.php:395
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
-#: templates/techlead/clients_by_tech.html.twig:152
+#: templates/techlead/clients_by_tech.html.twig:153
 #: templates/generatecri_wizard.html.twig:129
 #: templates/generatecri_wizard.html.twig:176
 #: templates/directhelpdesk_ticket_tab.html.twig:36
@@ -2659,7 +2659,7 @@ msgstr "Total consommation mensuelle"
 
 #: src/ContractDay.php:473 src/Followup.php:771 src/Dashboard.php:184
 #: src/Dashboard.php:465 src/NotificationTargetContract.php:120
-#: src/NotificationTargetContract.php:155 hook.php:915
+#: src/NotificationTargetContract.php:155 hook.php:914
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr "Total restant"
@@ -2768,7 +2768,7 @@ msgstr "Mise à jour des champs du type de gestion"
 msgid "Update publisher subscription"
 msgstr "Mise à jour de la souscription éditeur"
 
-#: hook.php:1061
+#: hook.php:1060
 msgid "Update subscription fields"
 msgstr "Mise à jour des champs du type de gestion"
 
@@ -2892,13 +2892,13 @@ msgstr "Libellé des activités"
 msgid "Year"
 msgstr "Année"
 
-#: templates/techlead/clients_by_tech.html.twig:127
-#: templates/techlead/clients_by_tech.html.twig:133
+#: templates/techlead/clients_by_tech.html.twig:128
+#: templates/techlead/clients_by_tech.html.twig:134
 #: templates/contract_detail_form.html.twig:86
 msgid "Yes"
 msgstr "Oui"
 
-#: templates/techlead/clients_by_tech.html.twig:46
+#: templates/techlead/clients_by_tech.html.twig:47
 msgid "Yes only"
 msgstr "Oui seulement"
 
