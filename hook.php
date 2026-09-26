@@ -1020,6 +1020,11 @@ function plugin_manageentities_post_item_form($params)
         return;
     }
     switch ($item->getType()) {
+        case 'Ticket':
+            if ($item instanceof Ticket) {
+                TechLead::showTicketBadge($item);
+            }
+            break;
         case 'TicketTask':
             TicketTask::postForm($params);
             break;

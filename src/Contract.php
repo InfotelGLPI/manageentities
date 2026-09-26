@@ -449,7 +449,49 @@ class Contract extends CommonDBTM
      */
     public function hasNoDaysLeftForEntity(int $instID): bool
     {
+        $remaining = $this->getRemainingForEntity($instID);
+        return $remaining !== null && array_sum($remaining) == 0;
+    }
+
+    /**
+     * Info shown on top of a ticket: what is left on the open periods of the signed contracts
+     * of the entity, by unit (days, or hours / interventions in hourly mode)
+     *
+     * @param int $entities_id
+     *
+     * @return string '' when nothing is left, the "no more days" alert covering that case
+     */
+    public function displayRemainingForEntity(int $entities_id): string
+    {
+        $remaining = $this->getRemainingForEntity($entities_id) ?? [];
+        // Unlimited contracts have no credit to count down
+        unset($remaining[__('Unlimited')]);
+        $remaining = array_filter($remaining, static fn(float $value): bool => $value > 0);
+        if ($remaining === []) {
+            return '';
+        }
+
+        $values = [];
+        foreach ($remaining as $unit => $value) {
+            $values[] = trim(Html::formatNumber($value, false, 2) . ' ' . mb_strtolower($unit));
+        }
+        return TemplateRenderer::getInstance()->render('@manageentities/contract_remaining_alert.html.twig', [
+            'remaining' => implode(', ', $values),
+        ]);
+    }
+
+    /**
+     * Remaining credit of the open periods of the signed contracts of an entity, by unit
+     *
+     * @param int $instID entity
+     *
+     * @return array<string, float>|null null when the entity has no signed contract
+     */
+    public function getRemainingForEntity(int $instID): ?array
+    {
         global $DB;
+
+        $config = Config::getInstance();
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -481,10 +523,12 @@ class Contract extends CommonDBTM
         ]);
 
         $resultCriDetail = [];
-        $reste = 0;
+        $reste = [];
         if (count($iterator) > 0) {
 
             foreach ($iterator as $data) {
+                $unit = (string) self::getUnitContractType($config, $data['contract_type']);
+                $reste[$unit] ??= 0.0;
                 $criteriad = [
                     'SELECT' => [
                         'glpi_plugin_manageentities_contractdays.id AS contractdays_id',
@@ -524,14 +568,14 @@ class Contract extends CommonDBTM
                             $dataContractDay,
                             ["contract_type_id" => $data["contract_type"]],
                         );
-                        $reste += $resultCriDetail['resultOther']['reste'];
+                        $reste[$unit] += (float) $resultCriDetail['resultOther']['reste'];
                     }
                 }
             }
 
-            return $reste == 0;
+            return $reste;
         }
-        return false;
+        return null;
     }
 
     /**
@@ -902,11 +946,14 @@ class Contract extends CommonDBTM
             && !Session::haveRight('plugin_manageentities', UPDATE)
             && Session::getCurrentInterface() == 'central'
             && Session::haveRight('plugin_manageentities', READ)) {
-            $alert = DirectHelpdesk::getUnbilledAlert((int) $entities_id);
-            if ($alert !== '') {
+            $alerts = array_filter([
+                (new Contract())->displayRemainingForEntity((int) $entities_id),
+                DirectHelpdesk::getUnbilledAlert((int) $entities_id),
+            ]);
+            if ($alerts !== []) {
                 TemplateRenderer::getInstance()->display('@manageentities/contract_pre_item_alert.html.twig', [
                     'layout' => 'grid',
-                    'alerts' => [$alert],
+                    'alerts' => $alerts,
                 ]);
             }
             return;
@@ -919,6 +966,7 @@ class Contract extends CommonDBTM
             $alerts   = [$contract->displayAlertforEntity($entities_id)];
             $is_ticket = isset($params['item']) && $item->getType() == 'Ticket';
             if ($is_ticket) {
+                array_unshift($alerts, $contract->displayRemainingForEntity((int) $entities_id));
                 $direct   = new DirectHelpdesk();
                 $alerts[] = $direct->displayAlertforEntity($entities_id);
             }

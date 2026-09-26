@@ -550,6 +550,41 @@ class TechLead extends CommonDBTM
         ]);
     }
 
+    /**
+     * Badge of the main tech lead of the ticket's client, rendered hidden at the end of the
+     * ticket form (POST_ITEM_FORM) and moved under the "Assigned to" actors field by
+     * public/scripts/ticket-techlead.js, the actors block having no hook of its own
+     *
+     * @param \Ticket $ticket
+     *
+     * @return void
+     */
+    public static function showTicketBadge(\Ticket $ticket): void
+    {
+        if (Session::getCurrentInterface() !== 'central'
+            || !self::canView()
+            || !isset($ticket->fields['entities_id'])) {
+            return;
+        }
+
+        // Only the tech lead of the ticket's own entity, as for the assignment rules
+        $entities_id = (int) $ticket->fields['entities_id'];
+        $main        = 0;
+        foreach (self::getTechLeadsByEntity([$entities_id])[$entities_id] ?? [] as $techlead) {
+            if ($techlead['is_default']) {
+                $main = $techlead['users_id'];
+                break;
+            }
+        }
+        if ($main <= 0) {
+            return;
+        }
+
+        TemplateRenderer::getInstance()->display('@manageentities/techlead/ticket_badge.html.twig', [
+            'name' => getUserName($main),
+        ]);
+    }
+
     public static function install(Migration $migration)
     {
         global $DB;

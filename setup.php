@@ -215,6 +215,8 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/config-hourorday.js';
             // "Duplicate" button under the ticket tasks (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/tickettask-clone.js';
+            // Main tech lead badge under the "Assigned to" field of a ticket (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/ticket-techlead.js';
             // Publisher subscription fields: subscription page and wizard step 3 (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/editorsubscription-fields.js';
             // Search and filter of the publisher subscriptions tab (native ES module, no-op elsewhere)
