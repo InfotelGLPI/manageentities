@@ -30,7 +30,8 @@
 {% set rand = random() %}
 <div class="row g-3 mt-1">
     <div class="col-12 col-xl-8">
-        {# The "Main tech lead" filter is pure CSS (.me-techlead-card:has(), public/css/manageentities.css) #}
+        {# The "Main tech lead" filter is pure CSS (.me-techlead-card:has(), public/css/manageentities.css),
+           "Yes only" by default #}
         <div class="card me-techlead-card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -48,7 +49,7 @@
                             ] %}
                                 <input type="radio" class="btn-check" name="techlead_filter{{ rand }}"
                                        id="techlead_filter{{ rand }}_{{ filter.value }}" value="{{ filter.value }}"
-                                       autocomplete="off" {{ filter.value == 'all' ? 'checked' }}>
+                                       autocomplete="off" {{ filter.value == 'main' ? 'checked' }}>
                                 <label class="btn btn-outline-secondary" for="techlead_filter{{ rand }}_{{ filter.value }}">
                                     <i class="ti {{ filter.icon }} me-1"></i>{{ filter.label }}
                                 </label>

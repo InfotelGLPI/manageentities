@@ -247,18 +247,25 @@ class TicketOverview
     }
 
     /**
-     * Search criterion of the tickets opened before the overdue limit
+     * Search criteria of the overdue tickets: opened before the overdue limit, pending ones excluded
      *
      * @param int $weeks
      *
      * @return array
      */
-    private static function getStaleCriterion(int $weeks): array
+    private static function getStaleCriteria(int $weeks): array
     {
         return [
-            'field'      => 15, // opening date
-            'searchtype' => 'lessthan',
-            'value'      => '-' . $weeks . 'WEEK',
+            [
+                'field'      => 15, // opening date
+                'searchtype' => 'lessthan',
+                'value'      => '-' . $weeks . 'WEEK',
+            ],
+            [
+                'field'      => 12, // status
+                'searchtype' => 'notequals',
+                'value'      => Ticket::WAITING,
+            ],
         ];
     }
 
@@ -385,35 +392,24 @@ class TicketOverview
     }
 
     /**
-     * Tech leads of each ticket entity: the ones of the entity itself, or else of its nearest
-     * ancestor having some, a customer being possibly split into sub-entities
+     * Main tech lead of each ticket entity, declared on that entity itself (0 when none). The
+     * other tech leads of a client do not answer for its tickets, and a tech lead set on a
+     * parent entity (grouping level, customers root) is not the one of the clients below it
      *
      * @param int[] $entities
      *
-     * @return array<int, int[]>
+     * @return array<int, int>
      */
-    private static function getTechLeadsOfEntities(array $entities): array
+    private static function getMainTechLeadOfEntities(array $entities): array
     {
-        if ($entities === []) {
-            return [];
-        }
-
-        $ancestors = [];
-        $lookup    = $entities;
-        foreach ($entities as $entities_id) {
-            // getAncestorsOf() lists the ancestors from the root down to the direct parent
-            $ancestors[$entities_id] = array_reverse(array_map('intval', array_values(getAncestorsOf('glpi_entities', $entities_id))));
-            $lookup                  = array_merge($lookup, $ancestors[$entities_id]);
-        }
-
-        $by_entity = TechLead::getTechLeadsByEntity(array_values(array_unique($lookup)));
+        $by_entity = TechLead::getTechLeadsByEntity($entities);
 
         $result = [];
         foreach ($entities as $entities_id) {
-            $result[$entities_id] = [];
-            foreach (array_merge([$entities_id], $ancestors[$entities_id]) as $candidate) {
-                if (isset($by_entity[$candidate])) {
-                    $result[$entities_id] = array_column($by_entity[$candidate], 'users_id');
+            $result[$entities_id] = 0;
+            foreach ($by_entity[$entities_id] ?? [] as $techlead) {
+                if ($techlead['is_default']) {
+                    $result[$entities_id] = $techlead['users_id'];
                     break;
                 }
             }
@@ -545,14 +541,15 @@ class TicketOverview
     {
         $tickets   = self::getOpenTickets(self::getCustomerEntities($entities), $type);
         $limit     = date('Y-m-d H:i:s', strtotime('-' . $weeks . ' weeks', strtotime($_SESSION['glpi_currenttime'])));
-        $stale_criterion = self::getStaleCriterion($weeks);
+        $stale_criteria = self::getStaleCriteria($weeks);
 
         $by_tech        = [];
         $unassigned     = 0;
         $stale_by_tech  = [];
         $stale_tickets  = [];
         foreach ($tickets as $ticket) {
-            $is_stale = $ticket['date'] < $limit;
+            // A pending ticket waits for someone else: it is not late on the technician side
+            $is_stale = $ticket['date'] < $limit && $ticket['status'] !== Ticket::WAITING;
             if ($is_stale) {
                 $stale_tickets[$ticket['id']] = $ticket;
             }
@@ -591,7 +588,7 @@ class TicketOverview
 
         $stale_techs = [];
         foreach ($stale_by_tech as $users_id => $list) {
-            $criteria      = [$stale_criterion];
+            $criteria      = $stale_criteria;
             $criteria[]    = $users_id > 0
                 ? ['field' => 5, 'searchtype' => 'equals', 'value' => $users_id]
                 : ['field' => 5, 'searchtype' => 'empty', 'value' => 'NULL'];
@@ -604,15 +601,13 @@ class TicketOverview
         }
 
         // Tech leads follow a customer, not a ticket: the overdue tickets are grouped by the
-        // tech leads of their entity, a ticket counting for each of them
-        $techleads_of_entity = self::getTechLeadsOfEntities(
+        // main tech lead of their entity, the one answering for the customer
+        $main_techlead_of_entity = self::getMainTechLeadOfEntities(
             array_values(array_unique(array_column($stale_tickets, 'entities_id'))),
         );
         $stale_by_techlead = [];
         foreach ($stale_tickets as $ticket) {
-            foreach ($techleads_of_entity[$ticket['entities_id']] ?: [0] as $users_id) {
-                $stale_by_techlead[$users_id][] = self::formatTicket($ticket);
-            }
+            $stale_by_techlead[$main_techlead_of_entity[$ticket['entities_id']]][] = self::formatTicket($ticket);
         }
         $stale_techleads = [];
         foreach ($stale_by_techlead as $users_id => $list) {
@@ -634,7 +629,7 @@ class TicketOverview
                 'value'      => 'NULL',
             ]]),
             'stale_total'      => count($stale_tickets),
-            'stale_url'        => self::getSearchUrl($type, [$stale_criterion]),
+            'stale_url'        => self::getSearchUrl($type, $stale_criteria),
             'stale_techs'      => self::sortGroups($stale_techs),
             'stale_techleads'  => self::sortGroups($stale_techleads),
             'waiting'          => self::getWaitingForAnswer($tickets),

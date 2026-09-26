@@ -49,6 +49,7 @@ use GlpiPlugin\Manageentities\Servicecatalog;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\SubscriptionLevel;
 use GlpiPlugin\Manageentities\TaskCategory;
+use GlpiPlugin\Manageentities\TechLead;
 use GlpiPlugin\Manageentities\TicketTask;
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
@@ -95,6 +96,9 @@ function plugin_init_manageentities()
     $PLUGIN_HOOKS[Hooks::ITEM_PURGE]['manageentities']['TicketTask']   = [TicketTask::class, 'refreshRemainingDays'];
     $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['Ticket']      = [TicketTask::class, 'refreshTicketRemainingDays'];
     $PLUGIN_HOOKS[Hooks::ITEM_RESTORE]['manageentities']['Ticket']     = [TicketTask::class, 'refreshTicketRemainingDays'];
+
+    // A user sent to the trash stops being the tech lead of its clients
+    $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['User']        = [TechLead::class, 'removeUserLinks'];
 
     $PLUGIN_HOOKS[Hooks::ITEM_TRANSFER]['manageentities'] = 'plugin_item_transfer_manageentities';
 

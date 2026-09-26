@@ -143,6 +143,20 @@ class TechLead extends CommonDBTM
     }
 
     /**
+     * Drop the tech lead links of a user sent to the trash or purged: a deleted user would
+     * otherwise keep following its clients (overdue tickets by tech lead, customer sheet)
+     *
+     * @param \User $user
+     *
+     * @return void
+     */
+    public static function removeUserLinks(\User $user): void
+    {
+        // One by one, so that post_purgeItem() promotes another main tech lead
+        (new self())->deleteByCriteria(['users_id' => (int) $user->getID()], true);
+    }
+
+    /**
      * Flag a tech lead as the main one of its client
      *
      * @param int $id
@@ -205,6 +219,7 @@ class TechLead extends CommonDBTM
             ],
             'WHERE'      => [
                 $table . '.entities_id' => $entities,
+                'glpi_users.is_deleted' => 0,
             ],
             'ORDERBY'    => [$table . '.is_default DESC', 'glpi_users.realname', 'glpi_users.firstname'],
         ]);
@@ -241,11 +256,23 @@ class TechLead extends CommonDBTM
         }
 
         $result   = [];
+        $table    = self::getTable();
         $iterator = $DB->request([
-            'SELECT'  => ['entities_id', 'users_id', 'is_default'],
-            'FROM'    => self::getTable(),
-            'WHERE'   => ['entities_id' => $entities],
-            'ORDERBY' => ['is_default DESC'],
+            'SELECT'     => [$table . '.entities_id', $table . '.users_id', $table . '.is_default'],
+            'FROM'       => $table,
+            'INNER JOIN' => [
+                'glpi_users' => [
+                    'ON' => [
+                        $table       => 'users_id',
+                        'glpi_users' => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'      => [
+                $table . '.entities_id' => $entities,
+                'glpi_users.is_deleted' => 0,
+            ],
+            'ORDERBY'    => [$table . '.is_default DESC'],
         ]);
         foreach ($iterator as $data) {
             $result[(int) $data['entities_id']][] = [
@@ -537,6 +564,30 @@ class TechLead extends CommonDBTM
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
             $DB->doQuery($query);
+        }
+
+        // Links left by users sent to the trash or purged before their removal was handled
+        $orphans = $DB->request([
+            'SELECT'    => [$table . '.id'],
+            'FROM'      => $table,
+            'LEFT JOIN' => [
+                'glpi_users' => [
+                    'ON' => [
+                        $table       => 'users_id',
+                        'glpi_users' => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'     => [
+                'OR' => [
+                    'glpi_users.id'         => null,
+                    'glpi_users.is_deleted' => 1,
+                ],
+            ],
+        ]);
+        $link = new self();
+        foreach ($orphans as $data) {
+            $link->delete(['id' => $data['id']], true);
         }
     }
 

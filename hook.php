@@ -658,8 +658,7 @@ function plugin_pre_item_purge_manageentities($item)
             $temp->deleteByCriteria(['contacts_id' => $item->getField('id')]);
             break;
         case 'User':
-            $temp = new TechLead();
-            $temp->deleteByCriteria(['users_id' => $item->getField('id')]);
+            TechLead::removeUserLinks($item);
             break;
         case 'TaskCategory':
             $temp = new TaskCategory();
