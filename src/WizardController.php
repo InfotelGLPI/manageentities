@@ -1225,10 +1225,12 @@ class WizardController
 
         $session = self::getSession();
 
-        if ($idx >= 0 && isset($session['interventions_data'][$idx]['criprices'][$cp_idx])) {
-            unset($session['interventions_data'][$idx]['criprices'][$cp_idx]);
-            self::saveSession($session);
+        // An unknown rate is reported, so that the page keeps showing what the session holds
+        if ($idx < 0 || !isset($session['interventions_data'][$idx]['criprices'][$cp_idx])) {
+            self::jsonOut(['success' => false]);
         }
+        unset($session['interventions_data'][$idx]['criprices'][$cp_idx]);
+        self::saveSession($session);
 
         $has_rate = !empty($session['interventions_data'][$idx]['criprices'] ?? []);
         self::jsonOut(['success' => true, 'has_rate' => $has_rate, 'intervention_idx' => $idx]);
@@ -1334,18 +1336,20 @@ class WizardController
 
         $session = self::getSession();
 
-        $remaining = null;
-        $credit    = null;
-        if ($idx >= 0 && isset($session['interventions_data'][$idx])) {
-            unset($session['interventions_data'][$idx]['stakeholders'][$sh_idx]);
-            self::saveSession($session);
+        // An unknown stakeholder is reported, so that the page keeps showing what the session holds
+        if ($idx < 0 || !isset($session['interventions_data'][$idx]['stakeholders'][$sh_idx])) {
+            self::jsonOut(['success' => false]);
+        }
+        unset($session['interventions_data'][$idx]['stakeholders'][$sh_idx]);
+        self::saveSession($session);
 
-            $nbday_credit = (float) ($session['interventions_data'][$idx]['fields']['nbday'] ?? 0);
-            if ($nbday_credit > 0) {
-                $assigned  = array_sum(array_column($session['interventions_data'][$idx]['stakeholders'], 'number_affected_days'));
-                $credit    = $nbday_credit;
-                $remaining = $nbday_credit - $assigned;
-            }
+        $remaining    = null;
+        $credit       = null;
+        $nbday_credit = (float) ($session['interventions_data'][$idx]['fields']['nbday'] ?? 0);
+        if ($nbday_credit > 0) {
+            $assigned  = array_sum(array_column($session['interventions_data'][$idx]['stakeholders'], 'number_affected_days'));
+            $credit    = $nbday_credit;
+            $remaining = $nbday_credit - $assigned;
         }
 
         self::jsonOut([

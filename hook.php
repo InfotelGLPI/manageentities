@@ -63,7 +63,6 @@ function plugin_manageentities_install()
 {
     global $DB;
 
-    $dbu       = new DbUtils();
     $update    = false;
     $update190 = false;
 
@@ -203,14 +202,13 @@ function plugin_manageentities_install()
             'FK_contacts_2'  => ['glpi_plugin_manageentities_contacts']];
 
 
+        $legacy_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
         foreach ($index as $oldname => $newnames) {
             foreach ($newnames as $table) {
-                if ($dbu->isIndex($table, $oldname)) {
-                    $query = "ALTER TABLE `$table` DROP INDEX `$oldname`;";
-                    $DB->doQuery($query);
-                }
+                $legacy_migration->dropKey($table, $oldname);
             }
         }
+        $legacy_migration->executeMigration();
 
         foreach ($DB->request(['FROM' => 'glpi_plugin_manageentities_profiles']) as $data) {
             $DB->update(
@@ -220,9 +218,8 @@ function plugin_manageentities_install()
             );
         }
 
-        $query = "ALTER TABLE `glpi_plugin_manageentities_profiles`
-               DROP `name` ;";
-        $DB->doQuery($query);
+        $legacy_migration->dropField('glpi_plugin_manageentities_profiles', 'name');
+        $legacy_migration->executeMigration();
     }
 
     if ($update190) {

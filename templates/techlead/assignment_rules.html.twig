@@ -41,6 +41,13 @@
         </div>
     {% endif %}
 
+    {% if entity_denied %}
+        <div class="alert alert-warning">
+            <i class="ti ti-alert-triangle me-1"></i>
+            {{ __('The rules are created in the entity %s: select it in your active entities to create them', 'manageentities')|format(rules_entity) }}
+        </div>
+    {% endif %}
+
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">
@@ -83,7 +90,7 @@
                 <tbody>
                 {% for client in clients %}
                     <tr>
-                        <td>{{ client.name }}</td>
+                        <td title="{{ client.completename }}">{{ client.name }}</td>
                         <td class="text-end">{{ client.nb_users }}</td>
                         <td>
                             {% if client.techlead_id > 0 %}

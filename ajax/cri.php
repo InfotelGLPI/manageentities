@@ -61,9 +61,23 @@ $assertUserVisible = static function (int $users_id): void {
     }
 };
 
-// Nothing guarantees the parameter is there: reading it directly raised a PHP warning on any
-// call without it, and the switch then fell through silently.
-switch ($_POST['action'] ?? '') {
+// Every action works on params (the ticket and the form display options) and on the modal flag,
+// all of them but showCriForm on the form serialized as JSON: a malformed request is rejected
+// up front instead of raising PHP warnings or type errors further down
+$action = $_POST['action'] ?? '';
+if (!is_string($action)
+    || !is_array($_POST['params'] ?? null)
+    || !is_numeric($_POST['params']['job'] ?? null)
+    || !isset($_POST['modal'])) {
+    throw new BadRequestHttpException();
+}
+$_POST['params'] += ['pdf_action' => '', 'toupdate' => ''];
+if ($action !== 'showCriForm'
+    && !(json_decode((string) ($_POST['formInput'] ?? '')) instanceof stdClass)) {
+    throw new BadRequestHttpException();
+}
+
+switch ($action) {
     case 'showCriForm':
         $Cri = new Cri();
         $params                  = $_POST["params"];

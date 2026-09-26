@@ -63,7 +63,11 @@ class TechLeadRule
      */
     public static function canCreate(): bool
     {
-        return TechLead::canView() && Session::haveRight(RuleTicket::$rightname, UPDATE);
+        // The rules are written in the customers entity: it has to be one of the active ones
+        return TechLead::canView()
+            && Session::haveRight(RuleTicket::$rightname, UPDATE)
+            && self::getRulesEntity() > 0
+            && Session::haveAccessToEntity(self::getRulesEntity());
     }
 
     /**
@@ -147,6 +151,12 @@ class TechLeadRule
         $techleads = TechLead::getTechLeadsByEntity($entities);
         $rules     = self::getExistingRules();
 
+        // Every client sits under the customers entity: the full path adds nothing but length
+        $names = [];
+        foreach ($DB->request(['SELECT' => ['id', 'name', 'completename'], 'FROM' => 'glpi_entities', 'WHERE' => ['id' => $entities]]) as $data) {
+            $names[(int) $data['id']] = $data;
+        }
+
         $clients = [];
         foreach ($entities as $entities_id) {
             $main = 0;
@@ -159,7 +169,8 @@ class TechLeadRule
             $rule = $rules[$entities_id] ?? null;
             $clients[] = [
                 'entities_id'    => $entities_id,
-                'name'           => \Dropdown::getDropdownName('glpi_entities', $entities_id),
+                'name'           => (string) ($names[$entities_id]['name'] ?? ''),
+                'completename'   => (string) ($names[$entities_id]['completename'] ?? ''),
                 'nb_users'       => $helpdesk_users[$entities_id],
                 'techlead_id'    => $main,
                 'techlead_name'  => $main > 0 ? getUserName($main) : '',
@@ -244,7 +255,7 @@ class TechLeadRule
     {
         $rules_entity = self::getRulesEntity();
         $requesttype  = self::getHelpdeskRequestType();
-        if ($rules_entity <= 0 || $requesttype <= 0) {
+        if ($rules_entity <= 0 || $requesttype <= 0 || !self::canCreate()) {
             return false;
         }
 
@@ -343,6 +354,10 @@ class TechLeadRule
             'has_config'    => self::getRulesEntity() > 0 && self::getHelpdeskRequestType() > 0,
             'requesttype'   => \Dropdown::getDropdownName('glpi_requesttypes', self::getHelpdeskRequestType()),
             'can_create'    => self::canCreate(),
+            // Allowed to edit the rules, but not working in the entity holding them
+            'entity_denied' => Session::haveRight(RuleTicket::$rightname, UPDATE)
+                && self::getRulesEntity() > 0
+                && !Session::haveAccessToEntity(self::getRulesEntity()),
             'action_url'    => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/techleadrule.php',
             'back_url'      => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
         ]);

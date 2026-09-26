@@ -59,22 +59,22 @@ if (!isset($_POST["tech_num"]) || empty($_POST["tech_num"])) {
 if (!isset($_GET["usertype"])) {
     $_GET["usertype"] = "user";
 }
-if (empty($_POST["date1"]) && empty($_POST["date2"])) {
+$date1 = (string) ($_POST["date1"] ?? '');
+$date2 = (string) ($_POST["date2"] ?? '');
+if ($date1 === '' && $date2 === '') {
     $lastday = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
     if (date("d") == $lastday) {
-        $_POST["date2"] = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
-        $_POST["date1"] = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y")));
+        $date2 = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+        $date1 = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y")));
     } else {
-        $month          = date("m");
-        $lastday        = $month == 1 ? 31 : cal_days_in_month(CAL_GREGORIAN, $month - 1, date("Y"));
-        $_POST["date2"] = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
-        $_POST["date1"] = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
+        $month   = date("m");
+        $lastday = $month == 1 ? 31 : cal_days_in_month(CAL_GREGORIAN, $month - 1, date("Y"));
+        $date2   = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
+        $date1   = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
     }
 }
-if ($_POST["date1"] != "" && $_POST["date2"] != "" && strcmp($_POST["date2"], $_POST["date1"]) < 0) {
-    $tmp            = $_POST["date1"];
-    $_POST["date1"] = $_POST["date2"];
-    $_POST["date2"] = $tmp;
+if ($date1 !== '' && $date2 !== '' && strcmp($date2, $date1) < 0) {
+    [$date1, $date2] = [$date2, $date1];
 }
 
 Report::title();
@@ -84,8 +84,8 @@ $usertype = $_POST["usertype"] ?? ($_GET["usertype"] ?? "user");
 
 TemplateRenderer::getInstance()->display('@manageentities/report_search_form.html.twig', [
     'form_url' => $_SERVER['REQUEST_URI'],
-    'date1'    => $_POST["date1"],
-    'date2'    => $_POST["date2"],
+    'date1'    => $date1,
+    'date2'    => $date2,
     'owner'    => $owner,
     'entity'   => $_SESSION["glpiactive_entity"],
     'usertype' => $usertype,
@@ -93,7 +93,7 @@ TemplateRenderer::getInstance()->display('@manageentities/report_search_form.htm
 
 if (isset($_POST["choice_tech"])) {
     $CriDetail = new CriDetail();
-    $CriDetail->showHelpdeskReports($_POST["usertype"], $owner, $_POST["date1"], $_POST["date2"]);
+    $CriDetail->showHelpdeskReports($usertype, $owner, $date1, $date2);
 }
 
 Html::footer();
