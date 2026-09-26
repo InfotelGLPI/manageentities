@@ -2,11 +2,11 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 # Translators:
 # Kevin HAINRY <kevin.hainry@infotel.com>, 2021
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2026
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -15,14 +15,12 @@ msgstr ""
 "POT-Creation-Date: 2026-09-26 10:19+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
-"Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
-"teams/79674/fr_FR/)\n"
-"Language: fr_FR\n"
+"Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
-"1000000 == 0 ? 1 : 2;\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: templates/report_occupation_result.html.twig:51
 #, php-format
@@ -55,7 +53,7 @@ msgstr "%d notifications des souscriptions éditeurs expirées"
 #: templates/ticket_overview.html.twig:133
 #, php-format
 msgid "%s open ticket(s)"
-msgstr ""
+msgstr "%s ticket(s) ouverts"
 
 #: src/CriPDF.php:608
 msgid "(in days)"
@@ -188,7 +186,7 @@ msgstr "Affecté à"
 
 #: templates/ticket_overview.html.twig:41
 msgid "Age (days)"
-msgstr ""
+msgstr "Age (jours)"
 
 #: templates/techlead/clients_by_tech.html.twig:45
 #: templates/report_search_form.html.twig:48
@@ -263,7 +261,7 @@ msgstr "Tarif appliqué"
 #: templates/ticket_overview.html.twig:117
 msgctxt "button"
 msgid "Apply"
-msgstr ""
+msgstr "Appliquer"
 
 #: templates/entity/unbilled_tab.html.twig:46
 msgid "Archived clients with unbilled hours:"
@@ -275,7 +273,8 @@ msgstr "Client archivé"
 
 #: templates/editorsubscription_wizard.html.twig:115
 msgid "Are you sure you want to permanently delete this subscription?"
-msgstr "Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
+msgstr ""
+"Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
 
 #: templates/techlead/clients_by_tech.html.twig:154
 msgid "As main tech lead"
@@ -668,7 +667,7 @@ msgstr "Entités des clients"
 
 #: templates/ticket_overview.html.twig:238
 msgid "Customer follow-up"
-msgstr ""
+msgstr "Suivi client"
 
 #: src/CustomerSheet.php:47 templates/techlead/clients_by_tech.html.twig:115
 msgid "Customer sheet"
@@ -1300,11 +1299,11 @@ msgstr "Interventions sur des contrats terminés"
 
 #: src/WizardController.php:221
 msgid "Invalid email address"
-msgstr ""
+msgstr "Courriel invalide"
 
 #: src/WizardController.php:234
 msgid "Invalid website address"
-msgstr ""
+msgstr "Site web invalide"
 
 #: src/WizardController.php:411
 msgid "Invalid wizard mode"
@@ -1353,8 +1352,8 @@ msgstr "Liste par défaut des statuts pour le suivi général"
 
 #: templates/config_options_form.html.twig:45
 msgid ""
-"List of entities used by the plugin. When set, only tickets belonging to sub-"
-"entities of this entity will display the intervention report tab."
+"List of entities used by the plugin. When set, only tickets belonging to "
+"sub-entities of this entity will display the intervention report tab."
 msgstr ""
 "Liste des entités utilisées par le plugin. Si cette option est activée, "
 "seuls les tickets appartenant aux sous-entités de cette entité afficheront "
@@ -1369,7 +1368,8 @@ msgid "Logo"
 msgstr "Logo"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#. No addslashes()/stripslashes() here: GLPI stores raw data since version 10 and
+#. No addslashes()/stripslashes() here: GLPI stores raw data since version 10
+#. and
 #. the query builder escapes on its own, so the pair used to write literal
 #. backslashes into the database and strip legitimate ones back out.
 #: src/Company.php:406
@@ -1408,7 +1408,8 @@ msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
 #: src/Contract.php:76 src/WizardController.php:1961
-#: src/WizardController.php:1973 templates/wizard/step5_management.html.twig:42
+#: src/WizardController.php:1973
+#: templates/wizard/step5_management.html.twig:42
 #: templates/contract_detail_form.html.twig:130
 msgid "Management type"
 msgstr "Type de gestion"
@@ -1568,8 +1569,8 @@ msgstr "Il ne reste plus de jours sur cette période contractuelle"
 #: src/TicketTask.php:101 templates/tickettask_blocked_alert.html.twig:34
 msgid "No days remaining on this contract period. Task addition is blocked."
 msgstr ""
-"Il ne reste plus de jours sur cette période contractuelle. L'ajout de tâches "
-"est bloqué."
+"Il ne reste plus de jours sur cette période contractuelle. L'ajout de tâches"
+" est bloqué."
 
 #: src/EditorSubscriptionWizard.php:128
 msgid "No entity selected."
@@ -1594,12 +1595,12 @@ msgstr "Non seulement"
 
 #: templates/ticket_overview.html.twig:153
 msgid "No open ticket assigned to a technician"
-msgstr ""
+msgstr "Aucun ticket ouvert attribué à un technicien"
 
 #: templates/ticket_overview.html.twig:193
 #: templates/ticket_overview.html.twig:211
 msgid "No overdue ticket"
-msgstr ""
+msgstr "Aucun ticket non traité"
 
 #: templates/contractday_list.html.twig:54
 msgid "No period found"
@@ -1669,11 +1670,11 @@ msgstr "Aucun tech lead"
 #: src/TicketOverview.php:600 templates/ticket_overview.html.twig:173
 #: templates/ticket_overview.html.twig:252
 msgid "No technician"
-msgstr ""
+msgstr "Pas de technicien"
 
 #: templates/ticket_overview.html.twig:263
 msgid "No ticket awaiting an answer"
-msgstr ""
+msgstr "Pas de tickets attendant une réponse"
 
 #: templates/entity/unbilled_tab.html.twig:157
 msgid "No unbilled intervention for a client with an ongoing contract."
@@ -1744,7 +1745,7 @@ msgstr "On-premise"
 
 #: src/Entity.php:82 src/Entity.php:207
 msgid "Ongoing tickets"
-msgstr ""
+msgstr "Tickets en cours"
 
 #: src/WizardController.php:1201
 msgid "Only one rate is allowed per service period"
@@ -1767,19 +1768,19 @@ msgstr ""
 #: templates/ticket_overview.html.twig:170
 #: templates/ticket_overview.html.twig:189
 msgid "Open in the ticket search"
-msgstr ""
+msgstr "Ouvrir depuis la liste des tickets"
 
 #: templates/ticket_overview.html.twig:128
 msgid "Open tickets by technician"
-msgstr ""
+msgstr "Tickets ouverts par techniciens"
 
 #: templates/ticket_overview.html.twig:165
 msgid "Open tickets without technician"
-msgstr ""
+msgstr "Tickets ouverts sans technicien"
 
 #: src/TicketOverview.php:107
 msgid "Opened by a customer"
-msgstr ""
+msgstr "Tickets ouverts par un client"
 
 #: src/Dashboard.php:100 src/Dashboard.php:478
 msgid "Opened contract prestations without remaining days"
@@ -1787,7 +1788,7 @@ msgstr "Prestations de contrat en cours sans jours restants"
 
 #: templates/ticket_overview.html.twig:40
 msgid "Opening date"
-msgstr ""
+msgstr "Date d'ouverture"
 
 #: templates/wizard/step6_stakeholders_section.html.twig:35
 #: templates/wizard/step2_contacts.html.twig:37
@@ -1808,15 +1809,15 @@ msgstr "Hors contrat"
 
 #: templates/ticket_overview.html.twig:204
 msgid "Overdue tickets by tech lead"
-msgstr ""
+msgstr "Tickets en retard par tech lead"
 
 #: templates/ticket_overview.html.twig:185
 msgid "Overdue tickets by technician"
-msgstr ""
+msgstr "Tickets en retard par techniciens"
 
 #: templates/ticket_overview.html.twig:111
 msgid "Overdue tickets: opened for more than"
-msgstr ""
+msgstr "Tickets en retard : ouverts depuis plus de"
 
 #: src/Contract.php:617 src/Contract.php:669
 msgid "Package"
@@ -1881,8 +1882,8 @@ msgid "Phone 2"
 msgstr "Téléphone 2"
 
 #: templates/entity/description.html.twig:54
-#: templates/entity/references.html.twig:46 templates/company_form.html.twig:78
-#: templates/company_form.html.twig:79
+#: templates/entity/references.html.twig:46
+#: templates/company_form.html.twig:78 templates/company_form.html.twig:79
 msgid "Picture"
 msgstr "Logo"
 
@@ -1902,7 +1903,8 @@ msgstr "Merci d'assigner un technicien au ticket"
 #: src/Cri.php:689
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
-"Merci de renseigner les dates de début et de fin de la prestation du contrat."
+"Merci de renseigner les dates de début et de fin de la prestation du "
+"contrat."
 
 #: src/Cri.php:705
 msgid "Please fill the contract period begin date."
@@ -1981,7 +1983,8 @@ msgstr ""
 "Type de contact présélectionné lors de l'ajout d'un contact dans le wizard."
 
 #: templates/config_options_form.html.twig:117
-msgid "Pre-selected document category when attaching a document in the wizard."
+msgid ""
+"Pre-selected document category when attaching a document in the wizard."
 msgstr ""
 "Catégorie de document présélectionnée lors de l'ajout d'un document dans le "
 "wizard."
@@ -1990,8 +1993,8 @@ msgstr ""
 msgid ""
 "Pre-selected intervention type when creating a service period in the wizard."
 msgstr ""
-"Type d'intervention présélectionné lors de la création d'une prestation dans "
-"le wizard."
+"Type d'intervention présélectionné lors de la création d'une prestation dans"
+" le wizard."
 
 #: templates/config_options_form.html.twig:108
 msgid ""
@@ -2509,8 +2512,8 @@ msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
 "contract?"
 msgstr ""
-"L'entité \"%s\" existe déjà. Souhaitez-vous l'utiliser pour créer un nouveau "
-"contrat ?"
+"L'entité \"%s\" existe déjà. Souhaitez-vous l'utiliser pour créer un nouveau"
+" contrat ?"
 
 #: templates/wizard/layout.html.twig:128
 msgid "The following items will be saved. Please review before confirming."
@@ -2524,10 +2527,10 @@ msgid ""
 "expected schema: data will be lost. Check that they are not used by another "
 "plugin or by a custom development before running them."
 msgstr ""
-"Les requêtes suivantes suppriment des colonnes ou des tables qui ne font pas "
-"partie du schéma attendu : des données seront perdues. Avant de les "
-"exécuter, vérifiez qu’elles ne sont pas utilisées par un autre plugin ou par "
-"un développement personnalisé."
+"Les requêtes suivantes suppriment des colonnes ou des tables qui ne font pas"
+" partie du schéma attendu : des données seront perdues. Avant de les "
+"exécuter, vérifiez qu’elles ne sont pas utilisées par un autre plugin ou par"
+" un développement personnalisé."
 
 #: templates/wizard/layout.html.twig:158
 msgid "The following unsaved data from this wizard will be lost:"
@@ -2541,7 +2544,8 @@ msgstr "Le format de l'image doit être en JPG ou JPEG"
 
 #: ajax/interventionstakeholderactions.php:75
 #, php-format
-msgid "The number of days exceeds the remaining days of the intervention (%s)."
+msgid ""
+"The number of days exceeds the remaining days of the intervention (%s)."
 msgstr ""
 "Le nombre de jours dépasse le nombre de jours restants de l'intervention "
 "(%s)."
@@ -2558,8 +2562,8 @@ msgid ""
 msgstr ""
 "Les requêtes ci-dessous ne sont que des suggestions basées sur les "
 "différences constatées. Veuillez les examiner, sauvegarder votre base de "
-"données, puis les exécuter manuellement : elles ne sont jamais exécutées par "
-"l’extension."
+"données, puis les exécuter manuellement : elles ne sont jamais exécutées par"
+" l’extension."
 
 #: templates/interventionstakeholder_list.html.twig:43
 msgid "This action is irreversible. Continue ?"
@@ -2588,7 +2592,7 @@ msgstr "Ticket non validé"
 
 #: templates/ticket_overview.html.twig:222
 msgid "Tickets whose last action is a customer follow-up"
-msgstr ""
+msgstr "Tickets dont la dernière action est un suivi client"
 
 #: src/Dashboard.php:90 src/Dashboard.php:350
 msgid "Tickets without CRI"
@@ -2690,12 +2694,11 @@ msgstr "Déplacement (en jours)"
 #: templates/generatecri_wizard.html.twig:55
 #: templates/contract_detail_form.html.twig:55
 #: templates/ticket_overview.html.twig:104
-#, fuzzy
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "Type"
-msgstr[1] "Type"
-msgstr[2] "Type"
+msgstr[1] "Types"
+msgstr[2] "Types"
 
 #: src/Followup.php:766 src/Monthly.php:430
 msgid "Type of contract"
@@ -2826,8 +2829,8 @@ msgstr "Intervenant déjà ajouté"
 
 #: templates/preference_form.html.twig:78
 msgid ""
-"Warning : If there are more than one plugin which be loaded at startup, then "
-"only the first will be used"
+"Warning : If there are more than one plugin which be loaded at startup, then"
+" only the first will be used"
 msgstr ""
 "Attention : si plusieurs plugins sont lancés au démarrage, seul le premier "
 "sera actif"
@@ -2845,8 +2848,8 @@ msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
 msgstr ""
-"Attention : le changement de la configuration journalière ou horaire impacte "
-"les types de contrat."
+"Attention : le changement de la configuration journalière ou horaire impacte"
+" les types de contrat."
 
 #: templates/entity/description.html.twig:105
 #: templates/wizard/step1_entity.html.twig:89
@@ -2959,11 +2962,12 @@ msgstr "depuis"
 #: templates/entity/contracts_tab.html.twig:97
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
-"Essayez de modifier le filtre sur le statut par défaut dans la configuration."
+"Essayez de modifier le filtre sur le statut par défaut dans la "
+"configuration."
 
 #: templates/ticket_overview.html.twig:115
 msgid "week"
 msgid_plural "weeks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Semaine"
+msgstr[1] "Semaines"
+msgstr[2] "Semaines"
