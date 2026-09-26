@@ -108,8 +108,6 @@ class Config extends CommonDBTM
 
     public function showOptionsForm()
     {
-        global $DB;
-
         $this->getFromDB(1);
 
         $contractstate  = new ContractState();
@@ -121,28 +119,7 @@ class Config extends CommonDBTM
         $decoded = json_decode($this->fields['contract_states'] ?? '', true);
         $states_selected = is_array($decoded) ? $decoded : [];
 
-        $iterator = $DB->request([
-            'SELECT' => [
-                'glpi_plugin_manageentities_businesscontacts.id as users_id',
-                'glpi_users.id',
-                'glpi_users.realname',
-                'glpi_users.firstname',
-            ],
-            'FROM'      => 'glpi_plugin_manageentities_businesscontacts',
-            'LEFT JOIN' => [
-                'glpi_users' => [
-                    'ON' => [
-                        'glpi_plugin_manageentities_businesscontacts' => 'users_id',
-                        'glpi_users'                                  => 'id',
-                    ],
-                ],
-            ],
-            'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
-        ]);
-        $users = [];
-        foreach ($iterator as $data) {
-            $users[$data['id']] = $data['realname'] . ' ' . $data['firstname'];
-        }
+        $users   = BusinessContact::getBusinessUsers();
         $decoded = json_decode($this->fields['business_id'] ?? '', true);
         $business_selected = is_array($decoded) ? $decoded : [];
 
@@ -163,6 +140,31 @@ class Config extends CommonDBTM
                 'change_event_js'           => CriDetail::CHANGE_EVENT_JS,
             ],
         );
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // The two lists of the follow-up defaults are stored as JSON. Only encode them when the
+        // form actually posts them - the CRI tab saves the same row without these fields - and
+        // drop the empty value of the hidden input the core emits before a multiple select,
+        // so that clearing the selection stores NULL rather than [""].
+        foreach (['contract_states', 'business_id'] as $field) {
+            if (!array_key_exists($field, $input)) {
+                continue;
+            }
+            $input[$field] = BusinessContact::encodeIdList($input[$field]);
+        }
+
+        return $input;
+    }
+
+    public function post_updateItem($history = true)
+    {
+        // These settings drive how task durations are converted into consumption: the stored
+        // remaining days of every contract are stale as soon as one of them changes.
+        if (array_intersect(['hourorday', 'hourbyday', 'needvalidationforcri'], $this->updates)) {
+            Contract::updateAllRemainingDays();
+        }
     }
 
     public function isCommentCri()

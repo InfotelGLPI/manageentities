@@ -52,6 +52,36 @@ class Entity extends CommonGLPI
 {
     public static $rightname = 'plugin_manageentities';
 
+    public const TAB_CONTRACTS = 5;
+    public const TAB_DOCUMENTS = 9;
+
+    /**
+     * Tabs of the client management dashboard a user can choose to display, by tab number.
+     *
+     * @return array<int, string>
+     */
+    public static function getDashboardTabLabels(): array
+    {
+        $labels = [
+            1                   => __('General follow-up', 'manageentities'),
+            2                   => __('Monthly follow-up', 'manageentities'),
+            3                   => __('GANTT'),
+            4                   => __('Data administrative', 'manageentities'),
+            self::TAB_CONTRACTS => _n('Contract', 'Contracts', 2),
+        ];
+        if (Config::useEditorSubscriptions()) {
+            $labels[6] = _n('Publisher subscription', 'Publisher subscriptions', 2, 'manageentities');
+            $labels[7] = __('Contracts status overview', 'manageentities');
+        }
+        $labels[8]                   = __('Interventions reports', 'manageentities');
+        $labels[self::TAB_DOCUMENTS] = _n('Document', 'Documents', 2);
+        $labels[12]                  = __('References', 'manageentities');
+        $labels[13]                  = __('Unbilled interventions', 'manageentities');
+        $labels[14]                  = __('Clients by tech lead', 'manageentities');
+
+        return $labels;
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Client management', 'Clients management', $nb, 'manageentities');
@@ -126,7 +156,7 @@ class Entity extends CommonGLPI
             }
 
             if (Session::haveRight("contract", READ)) {
-                $tabs[5] = Contract::createTabEntry(_n('Contract', 'Contracts', 2));
+                $tabs[self::TAB_CONTRACTS] = Contract::createTabEntry(_n('Contract', 'Contracts', 2));
             }
 
             if (Config::useEditorSubscriptions()) {
@@ -191,11 +221,25 @@ class Entity extends CommonGLPI
             }
 
             if (Session::haveRight("document", UPDATE)) {
-                $tabs[9] = Document::createTabEntry(_n('Document', 'Documents', 2));
+                $tabs[self::TAB_DOCUMENTS] = Document::createTabEntry(_n('Document', 'Documents', 2));
             }
 
             if (Session::getCurrentInterface() != 'helpdesk' && $this->canview()) {
                 $tabs[12] = self::createTabEntry(__('References', 'manageentities'));
+            }
+
+            // Tabs the user chose not to display, from the preferences of the plugin. Only the
+            // central interface has these preferences. A hidden tab is refused as well, since
+            // displayTabContentForItem() only serves the tabs offered here. A choice leaving no
+            // tab at all is ignored rather than rendering an empty dashboard.
+            if (Session::getCurrentInterface() == 'central' && Session::getLoginUserID()) {
+                $displayed = array_diff_key(
+                    $tabs,
+                    array_flip(Preference::getHiddenDashboardTabs((int) Session::getLoginUserID())),
+                );
+                if ($displayed !== []) {
+                    $tabs = $displayed;
+                }
             }
 
             return $tabs;

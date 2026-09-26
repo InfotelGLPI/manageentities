@@ -276,23 +276,8 @@ class Monthly extends CommonDBTM
                     $contract_credit += $credit;
                     $tot_credit += $credit;
 
-                    // link of contract
-                    // The anchor is written by hand and HTMLSearchOutput::showItem() writes its
-                    // argument into the cell as is, so the contract number - a raw value of the
-                    // database since GLPI 10 - is escaped before being wrapped, exactly as
-                    // Followup::showFollowup() does for the same column. The id is an integer
-                    // key, so casting it is enough to keep it out of the href and of the label.
-                    $link_contract = Toolbox::getItemTypeFormURL("Contract");
-                    $name_contract = "<a href='" . $link_contract . "?id=" . (int) $dataContractDay["contracts_id"] . "' target='_blank'>";
-                    if ($dataContractDay["num"] == null) {
-                        $name_contract .= "(" . (int) $dataContractDay["contracts_id"] . ")";
-                    } else {
-                        $name_contract .= htmlspecialchars((string) $dataContractDay["num"], ENT_QUOTES);
-                    }
-                    $name_contract .= "</a>";
-
-                    // Contract day informations
-                    $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['name_contract'] = $name_contract;
+                    // Contract day informations. The link of the contract is built by
+                    // monthly_report.html.twig from contracts_id and num.
                     $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['name_contractdays'] = $dataContractDay["name_contractdays"];
                     $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['contracts_id'] = $dataContractDay["contracts_id"];
                     $tabResults[$dataEntity['entities_id']][$dataContractDay['contractdays_id']]['is_closed'] = $dataContractDay["is_closed"];
@@ -387,123 +372,111 @@ class Monthly extends CommonDBTM
     }
 
     /**
-     * Print generic new line
+     * Monthly follow-up report.
      *
-     * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-     * @param $odd          is it a new odd line ? (false by default)
-     * @param $is_deleted   is it a deleted search ? (false by default)
-     * @param $color        color the line with this one
+     * The HTML output is rendered by monthly_report.html.twig from the same cells the CSV and
+     * PDF exports are fed with, so every label reaches the page through Twig auto-escaping. It
+     * used to be concatenated from HTMLSearchOutput::showItem(), which writes its argument into
+     * the cell as is, and each database label had to be escaped by hand on the way.
      *
-     * @return string to display
-     **/
-    public static function showNewLine($type, $odd = false, $is_deleted = false, $color = "")
-    {
-        $out = "";
-        switch ($type) {
-            case Search::PDF_OUTPUT_LANDSCAPE: //pdf
-            case Search::PDF_OUTPUT_PORTRAIT:
-                global $PDF_TABLE;
-                $style = "";
-                if ($odd) {
-                    $style = " style=\"background-color:#DDDDDD;\" ";
-                }
-                $PDF_TABLE .= "<tr $style nobr=\"true\">";
-                break;
-
-            case Search::CSV_OUTPUT: //csv
-                break;
-
-            default:
-                $class = " class='tab_bg_1' ";
-                if ($odd) {
-                    $class = " class='tab_bg_2' ";
-                }
-                $out = "<tr $class >";
-        }
-        return $out;
-    }
-
+     * @param array $values criteria of the report (begin_date, end_date, display_type)
+     *
+     * @return void
+     */
     public static function showMonthly($values = [])
     {
-        global $PDF, $DB;
+        global $DB;
 
-        $results = self::queryMonthly($values);
-        $list = [];
+        $results   = self::queryMonthly($values);
+        $config    = Config::getInstance();
+        $use_price = $config->fields['useprice'] == Config::PRICE;
+        $itemtype  = Contract::class;
 
-        $PDF = new CriPDF('P', 'mm', 'A4');
         $parameters = "begin_date=" . $values['begin_date'] . "&amp;end_date=" . $values['end_date'];
-        $config = Config::getInstance();
 
-        $count_tasks = 0;
-
-        $default_values["start"] = $start = 0;
-        $default_values["id"] = $id = 0;
-        $default_values["export"] = $export = false;
-
-        foreach ($default_values as $key => $val) {
-            if (isset($values[$key])) {
-                $$key = $values[$key];
-            }
-        }
-        $itemtype = Contract::class;
-        // Set display type for export if define
-        $output_type = $values["display_type"] ?? Search::HTML_OUTPUT;
-        $output = SearchEngine::getOutputForLegacyKey($output_type);
+        // Set display type for export if defined
+        $output_type    = $values["display_type"] ?? Search::HTML_OUTPUT;
+        $output         = SearchEngine::getOutputForLegacyKey($output_type);
         $is_html_output = $output instanceof HTMLSearchOutput;
-        $html_output = '';
 
-        if (isset($values["display_type"])) {
-            $output_type = $values["display_type"];
-        }
-
-        $year = date("Y");
-        $month = date('m', mktime(12, 0, 0, date("m"), 0, date("Y")));
-        $date = $year . "-" . $month . "-01";
-        $query = ContractDay::queryOldContractDaywithInterventions($date);
-        $iterator = $DB->request($query);
-        if (count($iterator) > 0 && $output_type == search::HTML_OUTPUT) {
-            $tickets = [];
-            foreach ($iterator as $data) {
-                $ticket = new Ticket();
-                $ticket->getFromDB($data["tickets_id"]);
-                $tickets[] = [
-                    'id'   => (int) $data["tickets_id"],
-                    'link' => $ticket->getLink(),
-                ];
+        if ($is_html_output) {
+            $year     = date("Y");
+            $month    = date('m', mktime(12, 0, 0, date("m"), 0, date("Y")));
+            $date     = $year . "-" . $month . "-01";
+            $query    = ContractDay::queryOldContractDaywithInterventions($date);
+            $iterator = $DB->request($query);
+            if (count($iterator) > 0) {
+                $tickets = [];
+                foreach ($iterator as $data) {
+                    $ticket = new Ticket();
+                    $ticket->getFromDB($data["tickets_id"]);
+                    $tickets[] = [
+                        'id'   => (int) $data["tickets_id"],
+                        'link' => $ticket->getLink(),
+                    ];
+                }
+                TemplateRenderer::getInstance()->display('@manageentities/monthly_old_contractdays_alert.html.twig', [
+                    'tickets' => $tickets,
+                ]);
             }
-            TemplateRenderer::getInstance()->display('@manageentities/monthly_old_contractdays_alert.html.twig', [
-                'tickets' => $tickets,
-            ]);
         }
 
-        $headers = [];
-        $rows = [];
+        $headers = [
+            _n('Client', 'Clients', 1, 'manageentities'),
+            __('Contract'),
+            ContractDay::getTypeName(1),
+            $config->fields['hourorday'] == Config::HOUR
+                ? __('Mode of management', 'manageentities')
+                : __('Type of contract', 'manageentities'),
+            __('Initial credit', 'manageentities'),
+            __('Remaining on ', 'manageentities') . ' ' . Html::convDate($values['begin_date']),
+        ];
+        if ($use_price) {
+            $headers[] = $config->fields['hourorday'] == Config::DAY
+                ? __('Daily rate', 'manageentities')
+                : __('Hourly rate', 'manageentities');
+        }
+        // The total label spans every column in front of the production one. It used to be
+        // followed by six empty cells whatever the configuration, so without the rate column
+        // the totals were shifted one column to the right of their header.
+        $lead_colspan = count($headers);
+        $headers[]    = __('Production', 'manageentities');
+        $headers[]    = _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities');
+        if ($use_price) {
+            $headers[] = __('Total production', 'manageentities');
+        }
+        $headers[] = __('Exceeding', 'manageentities');
+        if ($use_price) {
+            $headers[] = __('Total exceeding', 'manageentities');
+        }
+        $headers[] = __('State of intervention', 'manageentities');
 
-        $i = 0;
+        // One line per technician of each intervention
+        $list = [];
         foreach ($results as $dataEntity) {
             if (is_array($dataEntity) && sizeof($dataEntity) > 2) {
-                foreach ($dataEntity as $idContractDay => $dataContractDay) {
+                foreach ($dataEntity as $dataContractDay) {
                     if (is_array($dataContractDay)) {
-                        // Display details of contract
                         foreach ($dataContractDay as $dataTask) {
                             if (is_array($dataTask)) {
                                 foreach ($dataTask['conso_per_tech'] as $users_id => $conso) {
-                                    $list[$i]["entities_name"] = $dataEntity['entities_name'];
-                                    $list[$i]["name_contract"] = $dataContractDay['name_contract'];
-                                    $list[$i]["name_contractdays"] = $dataContractDay['name_contractdays'];
-                                    $list[$i]["contract_type"] = $dataContractDay['contract_type'];
-                                    $list[$i]["contract_credit"] = $dataContractDay['contract_credit'];
-                                    $list[$i]["contract_remaining"] = $dataContractDay['contract_remaining'];
-                                    $list[$i]["pricecri"] = $dataTask['pricecri'];
-                                    $list[$i]["conso"] = $conso['conso'];
-                                    $list[$i]["users_id"] = $users_id;
-                                    $list[$i]["conso_amount"] = $conso['conso_amount'];
-                                    $list[$i]["depass"] = $conso['depass'];
-                                    $list[$i]["depass_amount"] = $conso['depass_amount'];
-                                    $list[$i]["contractdays_state"] = $dataContractDay['contractdays_state'];
-                                    $list[$i]["is_closed"] = $dataContractDay['is_closed'];
-                                    $list[$i]["contractstates_color"] = $dataContractDay['contractstates_color'];
-                                    $i++;
+                                    $list[] = [
+                                        'entities_name'        => $dataEntity['entities_name'],
+                                        'contracts_id'         => $dataContractDay['contracts_id'],
+                                        'num'                  => $dataContractDay['num'],
+                                        'name_contractdays'    => $dataContractDay['name_contractdays'],
+                                        'contract_type'        => $dataContractDay['contract_type'],
+                                        'contract_credit'      => $dataContractDay['contract_credit'],
+                                        'contract_remaining'   => $dataContractDay['contract_remaining'],
+                                        'pricecri'             => $dataTask['pricecri'],
+                                        'conso'                => $conso['conso'],
+                                        'users_id'             => $users_id,
+                                        'conso_amount'         => $conso['conso_amount'],
+                                        'depass'               => $conso['depass'],
+                                        'depass_amount'        => $conso['depass_amount'],
+                                        'contractdays_state'   => $dataContractDay['contractdays_state'],
+                                        'contractstates_color' => $dataContractDay['contractstates_color'],
+                                    ];
                                 }
                             }
                         }
@@ -511,473 +484,157 @@ class Monthly extends CommonDBTM
                 }
             }
         }
-        $row_num = 0;
-        $numrows = count($list);
 
-        $start = 0;
-        $end_display = $numrows;
+        $contract_url    = Toolbox::getItemTypeFormURL(\Contract::class);
+        $exceeding_color = self::getStyleColor(self::$style[2]);
+        $invoice_color   = self::getStyleColor(self::$style[3]);
 
-        $nbcols = 4;
-        if (!$is_html_output) {
-            $nbcols--;
+        $table_rows = [];
+        foreach ($list as $line) {
+            $contract_label = in_array($line['num'], [null, ''], true)
+                ? '(' . (int) $line['contracts_id'] . ')'
+                : $line['num'];
+
+            $cells = [
+                self::buildCell($line['entities_name']),
+                self::buildCell($contract_label, $contract_url . '?id=' . (int) $line['contracts_id']),
+                self::buildCell($line['name_contractdays']),
+                self::buildCell($line['contract_type']),
+                self::buildCell(Html::formatNumber($line['contract_credit'], false, 2)),
+                self::buildCell(Html::formatNumber($line['contract_remaining'], false, 2)),
+            ];
+            if ($use_price) {
+                $cells[] = self::buildCell(Html::formatNumber($line['pricecri'], false, 2));
+            }
+            $cells[] = self::buildQuantityCell($line['conso']);
+            $cells[] = self::buildCell(getUserName($line['users_id']));
+            if ($use_price) {
+                $cells[] = self::buildCell(Html::formatNumber($line['conso_amount'], false, 2));
+            }
+
+            // The exceeding cells used to test the $conso leftover of the loop building the
+            // lines, so every line displayed - or hid - the exceeding of the last technician.
+            $exceeding = $line['depass'] > 0;
+            $cells[]   = $exceeding ? self::buildQuantityCell($line['depass']) : self::buildCell('');
+            if ($use_price) {
+                $cells[] = self::buildCell($exceeding ? Html::formatNumber($line['depass_amount'], false, 2) : '');
+            }
+            $cells[] = self::buildCell($line['contractdays_state']);
+
+            $color = '';
+            if ($exceeding) {
+                $color = $exceeding_color;
+            } elseif ($line['contractstates_color'] == self::$style[3]) {
+                $color = $invoice_color;
+            }
+
+            $table_rows[] = [
+                'color' => $color,
+                'cells' => $cells,
+            ];
         }
 
-        // Show headers
-        if ($is_html_output) {
-            $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
-        }
-        if (!$is_html_output) {
-            $headers[] = _n('Client', 'Clients', 1, 'manageentities');
-            $headers[] = __('Contract');
-            $headers[] = ContractDay::getTypeName(1);
-            if ($config->fields['hourorday'] == Config::HOUR) {
-                $headers[] = __('Mode of management', 'manageentities');
-            } else {
-                $headers[] = __('Type of contract', 'manageentities');
-            }
-            $headers[] = __('Initial credit', 'manageentities');
-            $headers[] = __('Remaining on ', 'manageentities') . ' ' . Html::convDate($values['begin_date']);
-            if ($config->fields['useprice'] == Config::PRICE) {
-                if ($config->fields['hourorday'] == Config::DAY) {
-                    $headers[] = __('Daily rate', 'manageentities');
-                } else {
-                    $headers[] = __('Hourly rate', 'manageentities');
-                }
-            }
-            $headers[] = __('Production', 'manageentities');
-            $headers[] = _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities');
-            if ($config->fields['useprice'] == Config::PRICE) {
-                $headers[] = __('Total production', 'manageentities');
-            }
-            $headers[] = __('Exceeding', 'manageentities');
-
-            if ($config->fields['useprice'] == Config::PRICE) {
-                $headers[] = __('Total exceeding', 'manageentities');
-            }
-            $headers[] = __('State of intervention', 'manageentities');
-        } else {
-            $header_num = 1;
-            $html_output .= $output::showNewLine();
-            $html_output .= $output::showHeaderItem(_n('Client', 'Clients', 1, 'manageentities'), $header_num);
-            $html_output .= $output::showHeaderItem(__('Contract'), $header_num);
-            $html_output .= $output::showHeaderItem(ContractDay::getTypeName(1), $header_num);
-
-            if ($config->fields['hourorday'] == Config::HOUR) {
-                $html_output .= $output::showHeaderItem(__('Mode of management', 'manageentities'), $header_num);
-            } else {
-                $html_output .= $output::showHeaderItem(__('Type of contract', 'manageentities'), $header_num);
-            }
-            $html_output .= $output::showHeaderItem(__('Initial credit', 'manageentities'), $header_num);
-            $html_output .= $output::showHeaderItem(
-                __('Remaining on ', 'manageentities') . ' ' . Html::convDate($values['begin_date']),
-                $header_num,
-            );
-
-            if ($config->fields['useprice'] == Config::PRICE) {
-                if ($config->fields['hourorday'] == Config::DAY) {
-                    $html_output .= $output::showHeaderItem(__('Daily rate', 'manageentities'), $header_num);
-                } else {
-                    $html_output .= $output::showHeaderItem(__('Hourly rate', 'manageentities'), $header_num);
-                }
-            }
-
-            $html_output .= $output::showHeaderItem(__('Production', 'manageentities'), $header_num);
-            $html_output .= $output::showHeaderItem(
-                _n('Current stakeholder', 'Current stakeholders', 2, 'manageentities'),
-                $header_num,
-            );
-
-            if ($config->fields['useprice'] == Config::PRICE) {
-                $html_output .= $output::showHeaderItem(__('Total production', 'manageentities'), $header_num);
-            }
-            $html_output .= $output::showHeaderItem(__('Exceeding', 'manageentities'), $header_num);
-
-            if ($config->fields['useprice'] == Config::PRICE) {
-                $html_output .= $output::showHeaderItem(__('Total exceeding', 'manageentities'), $header_num);
-            }
-            $html_output .= $output::showHeaderItem(__('State of intervention', 'manageentities'), $header_num);
-            $html_output .= $output::showEndLine();
-        }
-
-        if (!empty($list)) {
-            for ($i = $start; ($i < $numrows) && ($i < $end_display); $i++) {
-                $row_num++;
-                $current_row = [];
-                $item_num = 1;
-                $colnum = 0;
-                $firstEntity = true;
-
-                $count_tasks++;
-
-                if ($list[$i]['depass'] > 0) {
-                    $depassClass = " style='" . self::$style[2] . "' ";
-                } elseif ($list[$i]['contractstates_color'] == self::$style[3]) {
-                    $depassClass = " style='" . self::$style[3] . "' ";
-                } else {
-                    $depassClass = "";
-                }
-
-                if ($is_html_output) {
-                    $html_output .= self::showNewLine(
-                        $output_type,
-                        ($i % 2 === 1),
-                        $list[$i]['is_closed'],
-                        $list[$i]['contractstates_color'],
-                    );
-                }
-                // Client
-                if ($is_html_output) {
-                    // HTMLSearchOutput::showItem() does not escape its $value argument, so every
-                    // database label rendered below is escaped here rather than in $list: the CSV
-                    // and PDF branches below must keep the raw value.
-                    $html_output .= $output::showItem(
-                        htmlspecialchars((string) $list[$i]['entities_name'], ENT_QUOTES),
-                        $item_num,
-                        $row_num,
-                        $depassClass,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['entities_name']];
-                }
-                // Contract
-                if ($is_html_output) {
-                    $html_output .= $output::showItem(
-                        $list[$i]['name_contract'],
-                        $item_num,
-                        $row_num,
-                        $depassClass,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['name_contract']];
-                }
-                //Period
-                if ($is_html_output) {
-                    $html_output .= $output::showItem(
-                        htmlspecialchars((string) $list[$i]['name_contractdays'], ENT_QUOTES),
-                        $item_num,
-                        $row_num,
-                        $depassClass,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['name_contractdays']];
-                }
-                // Management mode
-                if ($is_html_output) {
-                    $html_output .= $output::showItem(
-                        $list[$i]['contract_type'],
-                        $item_num,
-                        $row_num,
-                        $depassClass,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_type']];
-                }
-                // Initial credit
-                if ($is_html_output) {
-                    $html_output .= $output::showItem(
-                        Html::formatNumber($list[$i]['contract_credit'], 0, 2),
-                        $item_num,
-                        $row_num,
-                        $depassClass,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                        'displayname' => Html::formatNumber(
-                            $list[$i]['contract_credit'],
-                            0,
-                            2,
-                        ),
-                    ];
-                }
-                // Remaining on
-                if ($is_html_output) {
-                    $html_output .= $output::showItem(
-                        Html::formatNumber($list[$i]['contract_remaining'], 0, 2),
-                        $item_num,
-                        $row_num,
-                        $depassClass,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                        'displayname' => Html::formatNumber(
-                            $list[$i]['contract_remaining'],
-                            0,
-                            2,
-                        ),
-                    ];
-                }
-                // Price cri
-                if ($config->fields['useprice'] == Config::PRICE) {
-                    if ($is_html_output) {
-                        $html_output .= $output::showItem(
-                            Html::formatNumber($list[$i]['pricecri'], 0, 2),
-                            $item_num,
-                            $row_num,
-                            $depassClass,
-                        );
-                    } else {
-                        $current_row[$itemtype . '_' . (++$colnum)] = [
-                            'displayname' => Html::formatNumber(
-                                $list[$i]['pricecri'],
-                                0,
-                                2,
-                            ),
-                        ];
-                    }
-                }
-                // Conso
-                if ($is_html_output) {
-                    $html_output .= $output::showItem(
-                        self::checkValue($list[$i]['conso'], $output_type),
-                        $item_num,
-                        $row_num,
-                        $depassClass,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                        'displayname' => self::checkValue(
-                            $list[$i]['conso'],
-                            $output_type,
-                        ),
-                    ];
-                }
-                // Stakeholder
-                if ($is_html_output) {
-                    // getUserName() only escapes its result on the deprecated $link branches; with
-                    // $link left to 0 it returns User::getName() verbatim, so the name of the
-                    // technician is a database value reaching an unescaped sink like the others.
-                    $html_output .= $output::showItem(
-                        htmlspecialchars((string) getUserName($list[$i]['users_id']), ENT_QUOTES),
-                        $item_num,
-                        $row_num,
-                        $depassClass,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                        'displayname' => getUserName(
-                            $list[$i]['users_id'],
-                        ),
-                    ];
-                }
-                // Total conso
-                if ($config->fields['useprice'] == Config::PRICE) {
-                    if ($is_html_output) {
-                        $html_output .= $output::showItem(
-                            Html::formatNumber($list[$i]['conso_amount'], 0, 2),
-                            $item_num,
-                            $row_num,
-                            $depassClass,
-                        );
-                    } else {
-                        $current_row[$itemtype . '_' . (++$colnum)] = [
-                            'displayname' => Html::formatNumber(
-                                $list[$i]['conso_amount'],
-                                0,
-                                2,
-                            ),
-                        ];
-                    }
-                }
-                // Depass
-                if (!empty($conso['depass'])) {
-                    if ($is_html_output) {
-                        $html_output .= $output::showItem(
-                            self::checkValue($list[$i]['depass'], $output_type),
-                            $item_num,
-                            $row_num,
-                            $depassClass,
-                        );
-                    } else {
-                        $current_row[$itemtype . '_' . (++$colnum)] = [
-                            'displayname' => self::checkValue(
-                                $list[$i]['depass'],
-                                $output_type,
-                            ),
-                        ];
-                    }
-                    // Total depass
-                    if ($config->fields['useprice'] == Config::PRICE) {
-                        if ($is_html_output) {
-                            $html_output .= $output::showItem(
-                                Html::formatNumber($list[$i]['depass_amount'], 0, 2),
-                                $item_num,
-                                $row_num,
-                                $depassClass,
-                            );
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = [
-                                'displayname' => Html::formatNumber(
-                                    $list[$i]['depass_amount'],
-                                    0,
-                                    2,
-                                ),
-                            ];
-                        }
-                    }
-                } else {
-                    if ($is_html_output) {
-                        $html_output .= $output::showItem('', $item_num, $row_num);
-                    } else {
-                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                    }
-
-                    if ($config->fields['useprice'] == Config::PRICE) {
-                        if ($is_html_output) {
-                            $html_output .= $output::showItem('', $item_num, $row_num);
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-                    }
-                }
-                // Intervention state
-                if ($is_html_output) {
-                    $html_output .= $output::showItem(
-                        $list[$i]['contractdays_state'],
-                        $item_num,
-                        $row_num,
-                    );
-                } else {
-                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contractdays_state']];
-                }
-
-                $rows[$row_num] = $current_row;
-                if ($is_html_output) {
-                    $html_output .= $output::showEndLine(false);
-                }
-            }
-        }
-
-        if ($count_tasks) {
-            // Total
-
-            if ($is_html_output) {
-                $row_num++;
-                $num = 0;
-                $html_output .= self::showNewLine(
-                    $output_type,
-                    ($i % 2 === 1),
-                );
-
-                $html_output .= $output::showItem(
-                    __('Total'),
-                    $item_num,
-                    $row_num,
-                    "style='" . Monthly::$style[1] . "'",
-                );
-
-                for ($i = 0; $i < 6; $i++) {
-                    $html_output .= $output::showItem(
-                        '',
-                        $item_num,
-                        $row_num,
-                        "style='" . Monthly::$style[1] . "'",
-                    );
-                }
-
-                if ($list) {
-                    $html_output .= $output::showItem(
-                        Html::formatNumber($results['tot_conso'], 0, 2),
-                        $item_num,
-                        $row_num,
-                        "style='" . Monthly::$style[1] . "'",
-                    );
-
-                    $html_output .= $output::showItem(
-                        '',
-                        $item_num,
-                        $row_num,
-                        "style='" . Monthly::$style[1] . "'",
-                    );
-
-                    if ($config->fields['useprice'] == Config::PRICE) {
-                        $html_output .= $output::showItem(
-                            Html::formatNumber($results['tot_conso_amount'], 0, 2),
-                            $item_num,
-                            $row_num,
-                            "style='" . Monthly::$style[1] . "'",
-                        );
-                    }
-
-                    $html_output .= $output::showItem(
-                        Html::formatNumber($results['tot_depass'], 0, 2),
-                        $item_num,
-                        $row_num,
-                        "style='" . Monthly::$style[1] . "'",
-                    );
-
-                    if ($config->fields['useprice'] == Config::PRICE) {
-                        $html_output .= $output::showItem(
-                            Html::formatNumber($results['tot_depass_amount'], 0, 2),
-                            $item_num,
-                            $row_num,
-                            "style='" . Monthly::$style[1] . "'",
-                        );
-                    }
-
-                    $html_output .= $output::showItem(
-                        '',
-                        $item_num,
-                        $row_num,
-                        "style='" . Monthly::$style[1] . "'",
-                    );
-
-                    if ($is_html_output) {
-                        Html::closeForm();
-                        $output::showFooter(
-                            __('Entities portal', 'manageentities') . " - " . __('Monthly follow-up', 'manageentities'),
-                            $numrows,
-                        );
-                    }
-                }
-            }
-            if ($is_html_output) {
-                Followup::showExportToolbar($parameters, Monthly::class);
-            }
-
-            if ($is_html_output) {
-                echo $html_output;
-            } else {
-                $params = [
-                    'start' => 0,
-                    'is_deleted' => 0,
-                    'as_map' => 0,
-                    'browse' => 0,
-                    'unpublished' => 1,
-                    'criteria' => [],
-                    'metacriteria' => [],
-                    'display_type' => 0,
-                    'hide_controls' => true,
-                ];
-
-                $accounts_data = SearchEngine::prepareDataForSearch($itemtype, $params);
-                $accounts_data = array_merge($accounts_data, [
-                    'itemtype' => $itemtype,
-                    'data' => [
-                        'totalcount' => $numrows,
-                        'count' => $numrows,
-                        'search' => '',
-                        'cols' => [],
-                        'rows' => $rows,
-                    ],
-                ]);
-
-                $colid = 0;
-                foreach ($headers as $header) {
-                    $accounts_data['data']['cols'][] = [
-                        'name' => $header,
-                        'itemtype' => $itemtype,
-                        'id' => ++$colid,
-                    ];
-                }
-
-                $output->displayData($accounts_data, []);
-            }
-        } else {
+        if ($table_rows === []) {
             echo Search::showError($output_type);
+        } elseif ($is_html_output) {
+            Followup::showExportToolbar($parameters, Monthly::class);
+
+            TemplateRenderer::getInstance()->display('@manageentities/monthly_report.html.twig', [
+                'headers' => $headers,
+                'rows'    => $table_rows,
+                'totals'  => [
+                    'lead_colspan'  => $lead_colspan,
+                    'conso'         => Html::formatNumber($results['tot_conso'] ?? 0, false, 2),
+                    'conso_amount'  => $use_price ? Html::formatNumber($results['tot_conso_amount'] ?? 0, false, 2) : null,
+                    'depass'        => Html::formatNumber($results['tot_depass'] ?? 0, false, 2),
+                    'depass_amount' => $use_price ? Html::formatNumber($results['tot_depass_amount'] ?? 0, false, 2) : null,
+                ],
+            ]);
+        } else {
+            // The exports receive the raw values: the contract column carries its number, no
+            // longer the HTML anchor of the page.
+            $rows = [];
+            foreach ($table_rows as $row_num => $row) {
+                foreach ($row['cells'] as $colnum => $cell) {
+                    $rows[$row_num + 1][$itemtype . '_' . ($colnum + 1)] = ['displayname' => $cell['value']];
+                }
+            }
+
+            $params = [
+                'start' => 0,
+                'is_deleted' => 0,
+                'as_map' => 0,
+                'browse' => 0,
+                'unpublished' => 1,
+                'criteria' => [],
+                'metacriteria' => [],
+                'display_type' => 0,
+                'hide_controls' => true,
+            ];
+
+            $accounts_data = SearchEngine::prepareDataForSearch($itemtype, $params);
+            $accounts_data = array_merge($accounts_data, [
+                'itemtype' => $itemtype,
+                'data' => [
+                    'totalcount' => count($rows),
+                    'count' => count($rows),
+                    'search' => '',
+                    'cols' => [],
+                    'rows' => $rows,
+                ],
+            ]);
+
+            $colid = 0;
+            foreach ($headers as $header) {
+                $accounts_data['data']['cols'][] = [
+                    'name' => $header,
+                    'itemtype' => $itemtype,
+                    'id' => ++$colid,
+                ];
+            }
+
+            $output->displayData($accounts_data, []);
         }
+
         if ($is_html_output) {
             self::showLegendary();
         }
+    }
+
+    /**
+     * One cell of the monthly report, shared by the HTML template and the exports.
+     *
+     * @param mixed       $value     label, escaped by Twig on the HTML side
+     * @param string|null $url       target of the link wrapping the label, if any
+     * @param bool        $highlight whether the HTML report flags the value
+     *
+     * @return array{value: string, url: string|null, highlight: bool}
+     */
+    private static function buildCell($value, ?string $url = null, bool $highlight = false): array
+    {
+        return [
+            'value'     => (string) $value,
+            'url'       => $url,
+            'highlight' => $highlight,
+        ];
+    }
+
+    /**
+     * Cell of a consumed quantity, flagged when it is neither a whole nor a half unit.
+     *
+     * @param mixed $value
+     *
+     * @return array{value: string, url: string|null, highlight: bool}
+     */
+    private static function buildQuantityCell($value): array
+    {
+        $highlight = false;
+        if (!empty($value)) {
+            [, $decimal] = explode('.', number_format((float) $value, 2));
+            $highlight   = $decimal !== '00' && $decimal !== '50';
+        }
+
+        return self::buildCell(Html::formatNumber($value, false, 2), null, $highlight);
     }
 
     /**
@@ -1014,7 +671,7 @@ class Monthly extends CommonDBTM
      *
      * @return string
      */
-    private static function getStyleColor(string $style): string
+    public static function getStyleColor(string $style): string
     {
         $color = '';
         if (preg_match('/background-color[ ]*:[ ]*([^;]+)/', $style, $matches) === 1) {
@@ -1022,17 +679,6 @@ class Monthly extends CommonDBTM
         }
 
         return Followup::sanitizeStateColor($color);
-    }
-
-    public static function checkValue($value, $output_type)
-    {
-        if (!empty($value)) {
-            list($integer, $decimal) = explode('.', number_format($value, 2));
-            if ($decimal != 00 && $decimal != 50 && $output_type == Search::HTML_OUTPUT) {
-                return "<span style='color:red;'>" . html::formatNumber($value, 0, 2) . "</span>";
-            }
-        }
-        return html::formatNumber($value, 0, 2);
     }
 
     public function showHeader($options = [])

@@ -100,12 +100,14 @@ class GenerateCRI extends CommonGLPI
     }
 
     /**
-     * @param $ticket
-     * @param $entities
+     * @param Ticket $ticket
+     * @param int    $entities entity of the client the report is generated for, already
+     *                         checked against the perimeter of the session by the caller
      *
      */
     public function showWizard($ticket, $entities)
     {
+        $entities = (int) $entities;
         $rand = mt_rand();
         $rand_user = mt_rand();
         $tasktemplate = 0;
@@ -116,13 +118,13 @@ class GenerateCRI extends CommonGLPI
             'itilcategories_id' => 0,
             'type' => \Entity::getUsedConfig(
                 'tickettype',
-                $_SESSION['glpiactive_entity'],
+                $entities,
                 '',
                 Ticket::INCIDENT_TYPE,
             ),
             'content' => '',
             'name' => '',
-            'entities_id' => $_SESSION['glpiactive_entity'],
+            'entities_id' => $entities,
             'status' => CommonITILObject::PLANNED,
             'urgency' => 3,
             'impact' => 3,
@@ -160,6 +162,8 @@ class GenerateCRI extends CommonGLPI
                 }
             }
         }
+        // The entity comes from the caller, not from the posted or the saved values
+        $options['entities_id'] = $entities;
         // Check category / type validity
         if ($options['itilcategories_id']) {
             $cat = new ITILCategory();
@@ -185,10 +189,10 @@ class GenerateCRI extends CommonGLPI
 
         // Load ticket template if available :
         $tt = $ticket->getITILTemplateToUse(
-            false,
+            0,
             $options['type'],
             $options['itilcategories_id'],
-            $_SESSION["glpiactive_entity"],
+            $entities,
         );
 
         // Predefined fields from template : reset them
@@ -206,7 +210,7 @@ class GenerateCRI extends CommonGLPI
         $predefined_fields = [];
         $tpl_key = Ticket::getTemplateFormFieldName();
         // override default ticket by predefined fields into ticket & task template
-        if (isset($tt->predefined) && count($tt->predefined) > 0) {
+        if (count($tt->predefined) > 0) {
             foreach ($tt->predefined as $predeffield => $predefvalue) {
                 if (isset($values[$predeffield])) {
                     if ($predeffield == '_tasktemplates_id') {
@@ -220,11 +224,7 @@ class GenerateCRI extends CommonGLPI
                         || (isset($options['_predefined_fields'][$predeffield])
                             && ($options[$predeffield] == $options['_predefined_fields'][$predeffield]))
                         || (isset($options[$tpl_key])
-                            && ($options[$tpl_key] != $tt->getID()))
-                        // user pref for requestype can't overwrite requestype from template
-                        // when change category
-                        || (($predeffield == 'requesttypes_id')
-                            && empty($saved))) {
+                            && ($options[$tpl_key] != $tt->getID()))) {
                         // Load template data
                         $options[$predeffield] = $predefvalue;
                         $predefined_fields[$predeffield] = $predefvalue;
@@ -236,7 +236,7 @@ class GenerateCRI extends CommonGLPI
         }
 
         // override default ticket by hidden fields into ticket
-        if (isset($tt->hidden) && count($tt->hidden) > 0) {
+        if (count($tt->hidden) > 0) {
             foreach ($tt->hidden as $key_hidden => $value_hidden) {
                 if (!array_key_exists($key_hidden, $options)) {
                     $hidden_inputs = array_merge($hidden_inputs, self::flattenHiddenInput($key_hidden, $value_hidden));

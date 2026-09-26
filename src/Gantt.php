@@ -369,9 +369,8 @@ class Gantt extends CommonDBTM
                     $real_end = date('Y/n/j', strtotime($day_data['end_date']) + 86400);
                 }
 
-                // contractdayname is the raw twin of contractday_name, which Followup.php
-                // wraps in an escaped link. The raw one is what belongs here: this tab
-                // hands plain text to FullCalendar and gets the link back through 'url'.
+                // contractdayname is the raw period name: this tab hands plain text to
+                // FullCalendar and gets the link back through 'url'.
                 $title   = $day_data['contractdayname'];
                 $tooltip = __('Name') . ' : ' . $title;
 

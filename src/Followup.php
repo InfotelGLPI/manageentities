@@ -91,6 +91,51 @@ class Followup extends CommonDBTM
         return null;
     }
 
+    /**
+     * Ids a criterion of the follow-up form was submitted with.
+     *
+     * front/entity.php passes -1 for a criterion the form never posted, while a cleared
+     * multiple select posts the empty value of its hidden input (and the export links carry 0).
+     *
+     * @param array  $options criteria of the report
+     * @param string $key     name of the criterion
+     *
+     * @return int[]|null null when not submitted, [] when submitted empty
+     */
+    private static function getSubmittedIds(array $options, string $key): ?array
+    {
+        if (!array_key_exists($key, $options)) {
+            return null;
+        }
+        $value = $options[$key];
+        if (!is_array($value) && (int) $value < 0) {
+            return null;
+        }
+
+        return array_values(array_filter(
+            array_map('intval', (array) $value),
+            static fn(int $id): bool => $id > 0,
+        ));
+    }
+
+    /**
+     * @param string|null $json list of ids stored by the configuration or the preferences
+     *
+     * @return int[]
+     */
+    private static function decodeIds(?string $json): array
+    {
+        $decoded = json_decode((string) $json, true);
+        if (!is_array($decoded)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            array_map('intval', $decoded),
+            static fn(int $id): bool => $id > 0,
+        ));
+    }
+
     public static function queryFollowUp($instID, $options = [])
     {
         global $DB;
@@ -143,11 +188,54 @@ class Followup extends CommonDBTM
 
         $plugin_config = new Config();
         $config_states = $plugin_config->find();
-        $config_states = reset($config_states);
+        $config_states = reset($config_states) ?: [];
 
         $plugin_pref = new Preference();
         $preferences = $plugin_pref->find(['users_id' => Session::getLoginUserID()]);
-        $preferences = reset($preferences);
+        $preferences = reset($preferences) ?: [];
+
+        $is_helpdesk = Session::getCurrentInterface() === 'helpdesk';
+
+        // Contract states and business contacts: the selection of the form wins, and an
+        // emptied one means no filter at all. It used to fall back to the defaults, since the
+        // empty value the core posts for a cleared multiple select is no array, so clearing the
+        // field could never list everything. The defaults only apply when the criterion was not
+        // submitted - the preference then the configuration on the central side, the
+        // configuration alone on the simplified interface, which may not widen it.
+        $contract_states = self::getSubmittedIds($options, 'contract_states');
+        if ($contract_states === null || ($contract_states === [] && $is_helpdesk)) {
+            $contract_states = $is_helpdesk
+                ? self::decodeIds($config_states['contract_states'] ?? null)
+                : (self::decodeIds($preferences['contract_states'] ?? null)
+                    ?: self::decodeIds($config_states['contract_states'] ?? null));
+        }
+
+        $business_ids = self::getSubmittedIds($options, 'business_id');
+        if ($business_ids === null || ($business_ids === [] && $is_helpdesk)) {
+            $business_ids = $is_helpdesk
+                ? self::decodeIds($config_states['business_id'] ?? null)
+                : (self::decodeIds($preferences['business_id'] ?? null)
+                    ?: self::decodeIds($config_states['business_id'] ?? null));
+        }
+
+        // Companies only have a personal default
+        $company_ids = self::getSubmittedIds($options, 'company_id')
+            ?? self::decodeIds($preferences['companies_id'] ?? null);
+        $company_entities = [];
+        foreach ($company_ids as $company_id) {
+            $company = new Company();
+            if (!$company->getFromDB($company_id)) {
+                continue;
+            }
+            if ($company->fields['is_recursive']) {
+                $company_entities = array_merge(
+                    $company_entities,
+                    array_values($dbu->getSonsOf('glpi_entities', $company->fields['entities_id'])),
+                );
+            } else {
+                $company_entities[] = (int) $company->fields['entities_id'];
+            }
+        }
 
         $criteria = [
             'SELECT' => [
@@ -289,100 +377,21 @@ class Followup extends CommonDBTM
                         $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.contract_type' => $types_contracts];
                     }
 
-                    if (isset($options['contract_states'])
-                        && is_array($options['contract_states'])
-                        && count($options['contract_states']) > 0) {
-                        // Explicit selection from the form (both interfaces)
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => $options['contract_states']];
-                    } elseif (Session::getCurrentInterface() === 'helpdesk') {
-                        // Simplified interface: always restrict to config-defined states
-                        if (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
-                            $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
-                                    $config_states['contract_states'],
-                                    true,
-                                ),
-                            ];
-                        }
-                    } else {
-                        // Central interface: user preferences first, then config default, otherwise show all
-                        if (isset($preferences['contract_states']) && $preferences['contract_states'] != null) {
-                            $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
-                                    $preferences['contract_states'],
-                                    true,
-                                ),
-                            ];
-                        } elseif (isset($config_states['contract_states']) && $config_states['contract_states'] != null) {
-                            $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => json_decode(
-                                    $config_states['contract_states'],
-                                    true,
-                                ),
-                            ];
-                        }
-                    }
-
-                    if (isset($options['business_id'])
-                        && is_array($options['business_id'])
-                        && count($options['business_id']) > 0) {
-                        // Explicit selection from the form (both interfaces)
-                        $criteriad['WHERE'] = $criteriad['WHERE'] + ['glpi_plugin_manageentities_businesscontacts.users_id' => $options['business_id']];
-                    } elseif (Session::getCurrentInterface() === 'helpdesk') {
-                        // Simplified interface: always restrict to config-defined business contacts
-                        if (!empty($config_states['business_id'])) {
-                            $decoded_business_id = json_decode($config_states['business_id'], true);
-                            if (is_array($decoded_business_id) && count($decoded_business_id) > 0) {
-                                $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                    'glpi_plugin_manageentities_businesscontacts.users_id' => $decoded_business_id,
-                                ];
-                            }
-                        }
-                    } else {
-                        // Central interface: apply user preferences if set, otherwise show all
-                        if (!empty($preferences['business_id'])) {
-                            $decoded_business_id = json_decode($preferences['business_id'], true);
-                            if (is_array($decoded_business_id) && count($decoded_business_id) > 0) {
-                                $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                                    'glpi_plugin_manageentities_businesscontacts.users_id' => $decoded_business_id,
-                                ];
-                            }
-                        }
-                    }
-                    $sons = [];
-                    if (isset($options['company_id'])
-                        && is_array($options['company_id'])
-                        && count($options['company_id']) > 0) {
-                        $temp = 0;
-                        foreach ($options['company_id'] as $id) {
-                            $plugin_company = new Company();
-                            $company = $plugin_company->find(['id' => $id]);
-                            $company = reset($company);
-                            $sons = [];
-                            if ($company['is_recursive'] == 1) {
-                                $sons = $dbu->getSonsOf('glpi_entities', $company['entities_id']);
-                            } else {
-                                $sons[0] = $company['entities_id'];
-                            }
-                        }
+                    if ($contract_states !== []) {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                            'glpi_entities.id' => $sons,
+                            'glpi_plugin_manageentities_contractdays.plugin_manageentities_contractstates_id' => $contract_states,
                         ];
-                    } elseif (isset($preferences['companies_id'])
-                        && $preferences['companies_id'] != null) {
-                        foreach (json_decode($preferences['companies_id'], true) as $id) {
-                            $sons = [];
-                            $plugin_company = new Company();
-                            $company = $plugin_company->find(['id' => $id]);
-                            $company = reset($company);
-                            if ($company['is_recursive'] == 1) {
-                                $sons = $dbu->getSonsOf('glpi_entities', $company['entities_id']);
-                            } else {
-                                $sons[0] = $company['entities_id'];
-                            }
-                        }
+                    }
+                    if ($business_ids !== []) {
                         $criteriad['WHERE'] = $criteriad['WHERE'] + [
-                            'glpi_entities.id' => $sons,
+                            'glpi_plugin_manageentities_businesscontacts.users_id' => $business_ids,
+                        ];
+                    }
+                    // Only the entities of the last company used to be kept, each company
+                    // overwrote the list of the previous one
+                    if ($company_ids !== []) {
+                        $criteriad['WHERE'] = $criteriad['WHERE'] + [
+                            'glpi_entities.id' => $company_entities !== [] ? array_values(array_unique($company_entities)) : [-1],
                         ];
                     }
 
@@ -439,28 +448,13 @@ class Followup extends CommonDBTM
                     if ($nbContractDay > 0) {
                         $nbContratByEntities++;
                         $contract_reste = 0;
-                        $name_contract = "";
 
-                        if (Session::getCurrentInterface() == 'central') {
-                            $link_contract = Toolbox::getItemTypeFormURL("Contract");
-                            $name_contract .= "<a href='" . $link_contract . "?id=" . $dataContract["contracts_id"] . "'>";
-                        }
-                        if ($dataContract["name"] == null) {
-                            $name = "(" . $dataContract["contracts_id"] . ")";
-                        } else {
-                            $name = $dataContract["name"];
-                        }
-                        if (Session::getCurrentInterface() == 'central') {
-                            // The anchor is written by hand and HTMLSearchOutput::showItem() writes
-                            // its argument into the cell as is, so the contract name - a raw value
-                            // of the database since GLPI 11 - is escaped before being wrapped.
-                            $name_contract .= htmlspecialchars((string) $name, ENT_QUOTES) . "</a>";
-                        }
-
+                        // Raw values only: the report template builds the links and escapes them
                         $list[$num]['entities_name'] = $dataEntity['entities_name'];
                         $list[$num]['entities_id'] = $dataEntity['entities_id'];
-                        $list[$num]['contract_name'] = $name_contract;
-                        $list[$num]['name'] = $name;
+                        $list[$num]['name'] = $dataContract["name"] == null
+                            ? "(" . $dataContract["contracts_id"] . ")"
+                            : $dataContract["name"];
                         $list[$num]['contract_num'] = $dataContract['num'];
                         $list[$num]['management'] = Contract::getContractManagement(
                             $dataContract['management'],
@@ -476,24 +470,14 @@ class Followup extends CommonDBTM
                         $i = 0;
                         foreach ($iteratord as $dataContractDay) {
                             $i++;
-                            $name_period = "";
                             if ($config->fields['hourorday'] == Config::HOUR) {// Hourly
                                 $dataContractDay["contract_type"] = $dataContract["contract_type"];
-                            }
-                            if (Session::getCurrentInterface() == 'central') {
-                                $link_period = Toolbox::getItemTypeFormURL(ContractDay::class);
-                                $name_period = "<a class='ganttWhite' href='" . $link_period . "?id=" . $dataContractDay["contractdays_id"] . "&showFromPlugin=1'>";
-                            } else {
-                                $name_period = htmlspecialchars((string) $dataContractDay["name_contractdays"], ENT_QUOTES);
                             }
 
                             if ($dataContractDay["name_contractdays"] == null) {
                                 $nameperiod = "(" . $dataContractDay["contractdays_id"] . ")";
                             } else {
                                 $nameperiod = $dataContractDay["name_contractdays"];
-                            }
-                            if (Session::getCurrentInterface() == 'central') {
-                                $name_period .= htmlspecialchars((string) $nameperiod, ENT_QUOTES) . "</a>";
                             }
 
                             // We get all cri details
@@ -645,7 +629,6 @@ class Followup extends CommonDBTM
                             }
 
                             $list[$num]['days'][$i]['contract_is_closed'] = $dataContractDay['is_closed'];
-                            $list[$num]['days'][$i]['contractday_name'] = $name_period;
                             $list[$num]['days'][$i]['contractdayname'] = $nameperiod;
                             $list[$num]['days'][$i]['contractstates'] = \Dropdown::getDropdownName(
                                 'glpi_plugin_manageentities_contractstates',
@@ -709,903 +692,291 @@ class Followup extends CommonDBTM
         return $list;
     }
 
+    /**
+     * General follow-up report.
+     *
+     * The HTML output is rendered by followup_report.html.twig from the same cells the CSV and
+     * PDF exports are fed with, so every label - contract, period, entity and contract state
+     * names - reaches the page through Twig auto-escaping. It used to be concatenated from
+     * HTMLSearchOutput::showItem(), which writes its argument into the cell as is, and the
+     * contract state label was the one value left unescaped (stored XSS).
+     *
+     * @param array $values criteria of the report
+     *
+     * @return void
+     */
     public static function showFollowUp($values)
     {
         $results = self::queryFollowUp($_SESSION["glpiactive_entity"], $values);
+        unset($results['tot']);
 
-        $list = [];
-
-        $default_values["start"] = $start = 0;
-        $default_values["id"] = $id = 0;
-        $default_values["export"] = $export = false;
-
-        foreach ($default_values as $key => $val) {
-            if (isset($values[$key])) {
-                $$key = $values[$key];
-            }
-        }
         $itemtype = Contract::class;
-        // Set display type for export if define
-        $output_type = $values["display_type"] ?? Search::HTML_OUTPUT;
-        $output = SearchEngine::getOutputForLegacyKey($output_type);
+        // Set display type for export if defined
+        $output_type    = $values["display_type"] ?? Search::HTML_OUTPUT;
+        $output         = SearchEngine::getOutputForLegacyKey($output_type);
         $is_html_output = $output instanceof HTMLSearchOutput;
-        $html_output = '';
 
-        if (isset($values["display_type"])) {
-            $output_type = $values["display_type"];
+        $config     = Config::getInstance();
+        $is_central = Session::getCurrentInterface() == 'central';
+        $is_hour    = $config->fields['hourorday'] == Config::HOUR;
+        $use_price  = $config->fields['useprice'] == Config::PRICE;
+
+        if ($results === []) {
+            echo Search::showError($output_type);
+            return;
         }
 
-        $headers = [];
-        $rows = [];
-
-        $numrows = count($results);
-        $start = 0;
-        $end_display = $numrows;
-
-        $nbcols = 12;
-        $row_num = 0;
-
-        $config = Config::getInstance();
-
-        $contract_states = null;
-        if (isset($values['contract_states'])
-            && is_array($values['contract_states'])
-            && count($values['contract_states']) > 0) {
-            foreach ($values['contract_states'] as $key => $contract_state) {
-                $contract_states .= "&amp;contract_states[$key]=$contract_state";
+        // The export links replay the criteria as submitted. A criterion emptied in the form is
+        // carried as 0 so that the export lists everything as well, one never submitted is left
+        // out so that the export applies the same defaults as the page.
+        $criteria_parameters = '';
+        foreach (['contract_states', 'business_id', 'company_id'] as $criterion) {
+            $ids = self::getSubmittedIds($values, $criterion);
+            if ($ids === null) {
+                continue;
             }
-        } else {
-            $contract_states .= "&amp;contract_states=0";
-        }
-
-        $business_ids = null;
-        if (isset($values['business_id'])
-            && is_array($values['business_id'])
-            && count($values['business_id']) > 0) {
-            foreach ($values['business_id'] as $key => $id) {
-                $business_ids .= "&amp;business_id[$key]=$id";
+            if ($ids === []) {
+                $criteria_parameters .= "&amp;$criterion=0";
+            }
+            foreach ($ids as $key => $id) {
+                $criteria_parameters .= "&amp;{$criterion}[$key]=$id";
             }
         }
-
-        $company_ids = null;
-        if (isset($values['company_id'])
-            && is_array($values['company_id'])
-            && count($values['company_id']) > 0) {
-            foreach ($values['company_id'] as $key => $id) {
-                $company_ids .= "&amp;company_id[$key]=$id";
-            }
-        }
-
         $parameters = "begin_date_after=" . $values['begin_date_after'] . "&amp;begin_date_before="
             . $values['begin_date_before'] . "&amp;end_date_after=" . $values['end_date_after']
             . "&amp;end_date_before=" . $values['end_date_before']
-            . $contract_states . "&amp;entities_id=" . $values['entities_id'] . "&amp;" . $business_ids . $company_ids;
+            . "&amp;entities_id=" . $values['entities_id'] . $criteria_parameters;
 
-        // Colspan
-        $colspan = '2';
-        if (Session::getCurrentInterface() == 'helpdesk') {
-            $colspan = '6';
+        // Columns of the periods. They depend on the interface and on the configuration only,
+        // so every contract shares them. The helpdesk used to replace "Total remaining" by two
+        // blank columns for the unlimited hourly contracts, shifting that contract's cells
+        // against the others.
+        $headers = [
+            _n('Period of contract', 'Periods of contract', 1, 'manageentities'),
+            ContractState::getTypeName(1),
+        ];
+        if (!$is_hour) {
+            $headers[] = __('Type of contract', 'manageentities');
         }
-        $colspan_contract = $colspan + 1;
+        $headers[] = __('End date');
+        $headers[] = __('Initial credit', 'manageentities');
+        $headers[] = __('Total consummated', 'manageentities');
+        $headers[] = __('Total remaining', 'manageentities');
+        if ($is_central) {
+            $headers[] = __('Total exceeding', 'manageentities');
+            $headers[] = __('Last visit', 'manageentities');
+            if ($use_price) {
+                $headers[] = __('Guaranteed package', 'manageentities');
+                $headers[] = __('Remaining total (amount)', 'manageentities');
+            }
+        }
 
-        if (!empty($results)) {
-            if ($is_html_output && Session::getCurrentInterface() == 'central') {
+        $contract_url    = Toolbox::getItemTypeFormURL(\Contract::class);
+        $contractday_url = Toolbox::getItemTypeFormURL(ContractDay::class);
+
+        $sections  = [];
+        $entity_id = null;
+        foreach ($results as $contract) {
+
+            $details = [
+                ['label' => _x('phone', 'Number'), 'value' => (string) $contract['contract_num']],
+            ];
+            if ($is_central) {
+                if (!$is_hour) {
+                    $details[] = ['label' => __('Contract present', 'manageentities'), 'value' => (string) $contract['contract_added']];
+                }
+                $details[] = ['label' => __('Date of signature', 'manageentities'), 'value' => (string) $contract['date_signature']];
+                $details[] = ['label' => __('Date of renewal', 'manageentities'), 'value' => (string) ($contract['date_renewal'] ?? '')];
+                if ($is_hour) {
+                    $details[] = ['label' => __('Mode of management', 'manageentities'), 'value' => (string) $contract['management']];
+                    $details[] = [
+                        'label' => __('Type of service contract', 'manageentities'),
+                        'value' => (string) Contract::getContractType($contract['contract_type']),
+                    ];
+                }
+            }
+
+            // Unlimited hourly contracts have no remaining credit to show on the helpdesk
+            $hide_remaining = !$is_central && $is_hour
+                && $contract['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED;
+
+            $rows = [];
+            foreach ($contract['days'] as $day) {
+                $cells = [
+                    self::buildCell(
+                        $day['contractdayname'],
+                        $is_central ? $contractday_url . '?id=' . (int) $day['contractdays_id'] . '&showFromPlugin=1' : null,
+                    ),
+                    self::buildCell($day['contractstates']),
+                ];
+                if (!$is_hour) {
+                    $cells[] = self::buildCell(Contract::getContractType($day['contract_type']));
+                }
+                $cells[] = self::buildCell($day['end_date']);
+
+                // Initial credit
+                if ((!$is_central && !$is_hour && $day['contract_type'] == Contract::CONTRACT_TYPE_FORFAIT)
+                    || ($is_hour && $day['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
+                    $cells[] = self::buildCell(\Dropdown::EMPTY_VALUE);
+                } else {
+                    $cells[] = self::buildCell(Html::formatNumber($day['credit'], false, 2));
+                }
+
+                // Consumed: the helpdesk never sees more than the credit of an hourly contract
+                if ($is_central || (!$is_hour && $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
+                    if (!$is_central && $is_hour
+                        && $day['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED
+                        && $day['conso'] > $day['credit']) {
+                        $cells[] = self::buildCell(Html::formatNumber($day['credit'], false, 2));
+                    } else {
+                        $cells[] = self::buildCell(Html::formatNumber($day['conso'], false, 2));
+                    }
+                } else {
+                    $cells[] = self::buildCell(\Dropdown::EMPTY_VALUE);
+                }
+
+                // Remaining
+                if ($hide_remaining) {
+                    $cells[] = self::buildCell('');
+                } elseif ($is_central || $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT) {
+                    $cells[] = self::buildCell(Html::formatNumber($day['reste'], false, 2));
+                } else {
+                    $cells[] = self::buildCell(\Dropdown::EMPTY_VALUE);
+                }
+
+                if ($is_central) {
+                    $cells[] = self::buildCell(Html::formatNumber($day['depass'], false, 2));
+                    $cells[] = self::buildCell($day['last_visit'] ?? '');
+                    if ($use_price) {
+                        $cells[] = self::buildCell($day['forfait']);
+                        $cells[] = self::buildCell($day['reste_montant']);
+                    }
+                }
+
+                $color = (string) ($day['contractstates_color'] ?? '');
+                $rows[] = [
+                    'color' => $color !== '' ? self::sanitizeStateColor($color) : '',
+                    'cells' => $cells,
+                ];
+            }
+
+            // The client heading is only repeated when the entity changes, on the central side
+            $entity_name = null;
+            if ($is_central && $entity_id !== $contract['entities_id']) {
+                $entity_name = (string) $contract['entities_name'];
+            }
+            $entity_id = $contract['entities_id'];
+
+            $sections[] = [
+                'entities_name' => $entity_name,
+                'export_entity' => (string) $contract['entities_name'],
+                'contract'      => [
+                    'name'    => (string) $contract['name'],
+                    'url'     => $is_central ? $contract_url . '?id=' . (int) $contract['contracts_id'] : null,
+                    'num'     => (string) $contract['contract_num'],
+                    'details' => $details,
+                ],
+                'rows'          => $rows,
+            ];
+        }
+
+        if ($is_html_output) {
+            if ($is_central) {
                 self::showLegendary();
                 self::showExportToolbar($parameters, Followup::class);
             }
 
-            // Headers, first line
-            if (1 == 1) {
-                if ($is_html_output) {
-                    $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
-                    $html_output .= $output::showBeginHeader();
-                    $item_num = 0;
-                    $html_output .= $output::showNewLine();
+            TemplateRenderer::getInstance()->display('@manageentities/followup_report.html.twig', [
+                'headers'      => $headers,
+                'sections'     => $sections,
+                'client_label' => _n('Client', 'Clients', 1, 'manageentities'),
+                'client_color' => Monthly::getStyleColor(Monthly::$style[0]),
+            ]);
+            return;
+        }
+
+        // The exports are flat: one line per period, preceded by its client and its contract.
+        // They used to receive only the period cells, accumulated from one period to the next
+        // of the same contract, and headers that did not match them.
+        $export_headers = array_merge(
+            [_n('Client', 'Clients', 1, 'manageentities'), __('Contract'), _x('phone', 'Number')],
+            $headers,
+        );
+        $rows = [];
+        foreach ($sections as $section) {
+            foreach ($section['rows'] as $row) {
+                $values_row = array_merge(
+                    [$section['export_entity'], $section['contract']['name'], $section['contract']['num']],
+                    array_column($row['cells'], 'value'),
+                );
+                $current_row = [];
+                foreach ($values_row as $colnum => $value) {
+                    $current_row[$itemtype . '_' . ($colnum + 1)] = ['displayname' => $value];
                 }
-
-                if ($is_html_output) {
-                    $html_output .= $output::showEndLine();
-
-                    $html_output .= $output::showEndHeader();
-                }
-            }
-            $i = 0;
-            $total = $results['tot'];
-            unset($results['tot']);
-
-
-            foreach ($results as $v => $contract) {
-                $list[$i]["entities_name"] = $contract['entities_name'];
-                $list[$i]["entities_id"] = $contract['entities_id'];
-                $list[$i]["contract_name"] = $contract['contract_name'];
-                $list[$i]["name"] = $contract['name'];
-                $list[$i]["contract_num"] = $contract['contract_num'];
-                $list[$i]["management"] = $contract['management'];
-                $list[$i]["contract_type"] = $contract['contract_type'];
-                $list[$i]["contract_added"] = $contract['contract_added'];
-                $list[$i]["date_signature"] = $contract['date_signature'];
-                $list[$i]["date_renewal"] = $contract['date_renewal'] ?? "";
-                $list[$i]["contract_begin_date"] = $contract['contract_begin_date'];
-                $list[$i]["duration"] = $contract['duration'];
-                $list[$i]["contracts_id"] = $contract['contracts_id'];
-                $list[$i]["show_on_global_gantt"] = $contract['show_on_global_gantt'];
-
-                foreach ($contract["days"] as $w => $days) {
-                    $list[$i]["days"][$w]["contract_is_closed"] = $days["contract_is_closed"];
-                    $list[$i]["days"][$w]["contractday_name"] = $days["contractday_name"];
-                    $list[$i]["days"][$w]["contractdayname"] = $days["contractdayname"];
-                    $list[$i]["days"][$w]["contractstates"] = $days["contractstates"];
-                    $list[$i]["days"][$w]["contractstates_color"] = $days["contractstates_color"];
-                    $list[$i]["days"][$w]["begin_date"] = $days["begin_date"];
-                    $list[$i]["days"][$w]["end_date"] = $days["end_date"];
-                    $list[$i]["days"][$w]["credit"] = $days["credit"];
-                    $list[$i]["days"][$w]["conso"] = $days["conso"];
-                    $list[$i]["days"][$w]["reste"] = $days["reste"];
-                    $list[$i]["days"][$w]["depass"] = $days["depass"];
-                    $list[$i]["days"][$w]["price"] = $days["price"];
-                    $list[$i]["days"][$w]["forfait"] = $days["forfait"];
-                    $list[$i]["days"][$w]["reste_montant"] = $days["reste_montant"];
-                    $list[$i]["days"][$w]["last_visit"] = $days["last_visit"] ?? "";
-                    $list[$i]["days"][$w]["contractdays_id"] = $days["contractdays_id"];
-                    $list[$i]["days"][$w]["contract_type"] = $days["contract_type"];
-                    $list[$i]["days"][$w]["contracts_id"] = $days["contracts_id"];
-                }
-
-                $list[$i]["contract_tot"]["contract_credit"] = $contract["contract_tot"]["contract_credit"];
-                $list[$i]["contract_tot"]["contract_conso"] = $contract["contract_tot"]["contract_conso"];
-                $list[$i]["contract_tot"]["contract_reste"] = $contract["contract_tot"]["contract_reste"];
-                $list[$i]["contract_tot"]["contract_depass"] = $contract["contract_tot"]["contract_depass"];
-                $list[$i]["contract_tot"]["contract_forfait"] = $contract["contract_tot"]["contract_forfait"];
-                $list[$i]["contract_tot"]["contract_reste_montant"] = $contract["contract_tot"]["contract_reste_montant"];
-                $i++;
-            }
-
-            // Second header line, PDF only
-            if (!$is_html_output) {
-                $headers[] = _n('Period of contract', 'Periods of contract', 1, 'manageentities');
-                $headers[] = ContractState::getTypeName(1);
-                $headers[] = __('Type of contract', 'manageentities');
-                if ($config->fields['hourorday'] == Config::HOUR) {
-                    $headers[] = __('End date');
-                    $headers[] = '';
-                } else {
-                    $headers[] = __('End date');
-
-                }
-                $headers[] = __('Initial credit', 'manageentities');
-                $headers[] = __('Total consummated', 'manageentities');
-                if (Session::getCurrentInterface() == 'helpdesk'
-                    && ($config->fields['hourorday'] == Config::HOUR
-                        && $list[$i]['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
-                    $headers[] = '';
-                    $headers[] = '';
-                } else {
-                    $headers[] = __('Total remaining', 'manageentities');
-                    if (Session::getCurrentInterface() == 'central') {
-                        $headers[] = __('Total exceeding', 'manageentities');
-                        if ($config->fields['useprice'] == Config::PRICE) {
-                            $headers[] = __('Last visit', 'manageentities');
-                            $headers[] = __('Guaranteed package', 'manageentities');
-                            $headers[] = __('Remaining total (amount)', 'manageentities');
-                        } else {
-                            $headers[] = __('Last visit', 'manageentities');
-                            $headers[] = '';
-                            $headers[] = '';
-                        }
-                    }
-                }
-                if ($config->fields['hourorday'] == Config::HOUR) {
-                    $headers[] = '';
-                    $headers[] = '';
-                }
-            }
-
-            $entity_id = 0;
-            $first = true;
-
-            $row_num = 0;
-            $numrows = count($list);
-
-            if (!empty($list)) {
-                for ($i = $start; ($i < $numrows) && ($i < $end_display); $i++) {
-                    $row_num++;
-                    $current_row = [];
-                    $item_num = 1;
-                    $colnum = 0;
-
-
-                    if ($config->fields['useprice'] == Config::NOPRICE) {
-                        $colspanNoprice = "colspan='2'";
-                    } else {
-                        $colspanNoprice = "";
-                    }
-
-                    // Display Entity
-                    if ($is_html_output
-                        && Session::getCurrentInterface() == 'central') {
-                        if ($entity_id != $list[$i]['entities_id']) {
-                            $row_num++;
-                            $item_num = 0;
-                            if ($is_html_output) {
-                                $html_output .= $output::showNewLine();
-                            }
-                            $colspanContract = "colspan = '13'";
-                            if (empty($list[$i]['contract_name'])) {
-                                // contract_name already carries the anchor when it is set; the bare
-                                // name does not, so it is escaped before taking its place.
-                                $list[$i]['contract_name'] = htmlspecialchars((string) $list[$i]['name'], ENT_QUOTES);
-                            }
-                            $html_output .= $output::showHeaderItem(
-                                '<b>' . _n(
-                                    'Client',
-                                    'Clients',
-                                    1,
-                                    'manageentities',
-                                ) . ' : </b>' . htmlspecialchars((string) $list[$i]['entities_name'], ENT_QUOTES),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                $colspanContract . " style='" . Monthly::$style[0] . "' ",
-                            );
-                            if ($is_html_output) {
-                                $html_output .= $output::showEndLine();
-                            }
-                        }
-                    }
-
-
-                    // First header line
-                    if (1 == 1 && $is_html_output) {
-                        $row_num++;
-                        $item_num = 0;
-                        if ($is_html_output) {
-                            $html_output .= $output::showNewLine();
-                        }
-                        // Display Entity
-                        if (Session::getCurrentInterface() == 'central') {
-                            if ($entity_id != $list[$i]['entities_id']) {
-                                if (!$is_html_output) {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['entities_name']];
-                                }
-                            } else {
-                                if (!$is_html_output) {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                }
-                            }
-                            $entity_id = $list[$i]['entities_id'];
-                        }
-
-                        // Display Contract title
-                        if (empty($list[$i]['contract_name'])) {
-                            $list[$i]['contract_name'] = htmlspecialchars((string) $list[$i]['name'], ENT_QUOTES);
-                        }
-                        if ($is_html_output) {
-                            $colspanContractName = "colspan='5'";
-
-                            $html_output .= $output::showItem(
-                                '<b>' . __('Contract') . ' : </b>' . $list[$i]['contract_name'],
-                                $item_num,
-                                $row_num,
-                                $colspanContractName,
-                            );
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_name']];
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-
-                        // Display contract Num
-                        if ($is_html_output) {
-                            $html_output .= $output::showItem(
-                                '<b>' . _x('phone', 'Number') . ' : </b>' . htmlspecialchars(
-                                    (string) $list[$i]['contract_num'],
-                                    ENT_QUOTES,
-                                ),
-                                $item_num,
-                                $row_num,
-                                "colspan='" . $colspan . "'",
-                            );
-                        } else {
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_num']];
-                            $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                        }
-
-                        if (Session::getCurrentInterface() == 'central') {
-                            // Display contract added
-                            if ($is_html_output) {
-                                if ($config->fields['hourorday'] == Config::DAY) {
-                                    $html_output .= $output::showItem(
-                                        '<b>' . __(
-                                            'Contract present',
-                                            'manageentities',
-                                        ) . ' : </b>' . $list[$i]['contract_added'],
-                                        $item_num,
-                                        $row_num,
-                                        "colspan='2'",
-                                    );
-                                }
-                            } else {
-                                if ($config->fields['hourorday'] == Config::DAY) {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['contract_added']];
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                }
-                            }
-                            // Display Signature
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(
-                                    '<b>' . __(
-                                        'Date of signature',
-                                        'manageentities',
-                                    ) . ' : </b>' . $list[$i]['date_signature'],
-                                    $item_num,
-                                    $row_num,
-                                    "colspan='2'",
-                                );
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['date_signature']];
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            }
-                            // Display reconduction
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(
-                                    '<b>' . __(
-                                        'Date of renewal',
-                                        'manageentities',
-                                    ) . ' : </b>' . $list[$i]['date_renewal'],
-                                    $item_num,
-                                    $row_num,
-                                    "colspan='2'",
-                                );
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['date_renewal']];
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                            }
-                            // Display contract Type and contract mode
-                            if ($config->fields['hourorday'] == Config::HOUR) {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        '<b>' . __(
-                                            'Mode of management',
-                                            'manageentities',
-                                        ) . ' : </b>' . $list[$i]['management'],
-                                        $item_num,
-                                        $row_num,
-                                    );
-                                    $html_output .= $output::showItem(
-                                        '<b>' . __(
-                                            'Type of service contract',
-                                            'manageentities',
-                                        ) . ' : </b>' . Contract::getContractType(
-                                            $list[$i]['contract_type'],
-                                        ),
-                                        $item_num,
-                                        $row_num,
-                                    );
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $list[$i]['management']];
-                                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                                        'displayname' => Contract::getContractType(
-                                            $list[$i]['contract_type'],
-                                        ),
-                                    ];
-                                }
-                            }
-                        }
-
-                        $rows[$row_num] = $current_row;
-                        if ($is_html_output) {
-                            $html_output .= $output::showEndLine();
-                        }
-                    }
-
-                    if (2 == 2) {
-                        // Contract details headers
-                        $row_num++;
-                        $item_num = 0;
-
-                        // Second header line, HTML only
-                        if ($is_html_output) {
-                            $html_output .= $output::showNewLine();
-                            $html_output .= $output::showHeaderItem(
-                                _n('Period of contract', 'Periods of contract', 1, 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                " $colspanNoprice style='" . Monthly::$style[1] . "'",
-                            );
-                            $html_output .= $output::showHeaderItem(
-                                ContractState::getTypeName(1),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "colspan='2' style='" . Monthly::$style[1] . "'",
-                            );
-                            if ($config->fields['hourorday'] == Config::DAY) {
-                                $html_output .= $output::showHeaderItem(
-                                    __('Type of contract', 'manageentities'),
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "colspan='2' style='" . Monthly::$style[1] . "'",
-                                );
-                            }
-
-                            if ($config->fields['hourorday'] == Config::HOUR) {// Coslpan if type = Hourly
-                                $html_output .= $output::showHeaderItem(
-                                    __('End date'),
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "colspan='2'",
-                                );
-                            } else {
-                                $html_output .= $output::showHeaderItem(__('End date'), $item_num, '');
-                            }
-                            $html_output .= $output::showHeaderItem(
-                                __('Initial credit', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "$colspanNoprice style='" . Monthly::$style[1] . "'",
-                            );
-                            $html_output .= $output::showHeaderItem(
-                                __('Total consummated', 'manageentities'),
-                                $item_num,
-                                '',
-                                0,
-                                '',
-                                "style='" . Monthly::$style[1] . "'",
-                            );
-                            if (Session::getCurrentInterface() == 'helpdesk'
-                                && ($config->fields['hourorday'] == Config::HOUR
-                                    && $list[$i]['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
-                                $html_output .= $output::showHeaderItem(
-                                    '',
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'",
-                                );
-                                $html_output .= $output::showHeaderItem(
-                                    '',
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'",
-                                );
-                            } else {
-                                $html_output .= $output::showHeaderItem(
-                                    __('Total remaining', 'manageentities'),
-                                    $item_num,
-                                    '',
-                                    0,
-                                    '',
-                                    "style='" . Monthly::$style[1] . "'",
-                                );
-                                if (Session::getCurrentInterface() == 'central') {
-                                    $html_output .= $output::showHeaderItem(
-                                        __('Total exceeding', 'manageentities'),
-                                        $item_num,
-                                        '',
-                                        0,
-                                        '',
-                                        "style='" . Monthly::$style[1] . "'",
-                                    );
-                                    if ($config->fields['useprice'] == Config::PRICE) {
-                                        $html_output .= $output::showHeaderItem(
-                                            __('Last visit', 'manageentities'),
-                                            $item_num,
-                                            '',
-                                            0,
-                                            '',
-                                            "style='" . Monthly::$style[1] . "'",
-                                        );
-                                        $html_output .= $output::showHeaderItem(
-                                            __('Guaranteed package', 'manageentities'),
-                                            $item_num,
-                                            '',
-                                            0,
-                                            '',
-                                            "style='" . Monthly::$style[1] . "'",
-                                        );
-                                        $html_output .= $output::showHeaderItem(
-                                            __('Remaining total (amount)', 'manageentities'),
-                                            $item_num,
-                                            '',
-                                            0,
-                                            '',
-                                            "style='" . Monthly::$style[1] . "'",
-                                        );
-                                    } else {
-                                        $html_output .= $output::showHeaderItem(
-                                            __('Last visit', 'manageentities'),
-                                            $item_num,
-                                            '',
-                                            0,
-                                            '',
-                                            " colspan='2' style='" . Monthly::$style[1] . "'",
-                                        );
-                                    }
-                                }
-                            }
-                            if ($is_html_output) {
-                                $html_output .= $output::showEndLine();
-                            }
-                        }
-                        // Result, second line
-                        foreach ($list[$i]['days'] as $w => $day) {
-                            $row_num++;
-                            $item_num = 0;
-                            if ($is_html_output) {
-                                $html_output .= self::showNewLine(
-                                    false,
-                                    $day['contract_is_closed'],
-                                    false,
-                                    $day['contractstates_color'],
-                                );
-                            }
-                            if ($is_html_output) {
-                                $html_output .= $output::showItem(
-                                    $day['contractday_name'],
-                                    $item_num,
-                                    $row_num,
-                                    " $colspanNoprice ",
-                                );
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['contractday_name']];
-                            }
-
-                            if ($is_html_output) {
-                                // showItem() writes its argument into the cell as is: the state
-                                // label is a raw database value, escaped here so exports keep it raw
-                                $html_output .= $output::showItem(
-                                    htmlspecialchars((string) $day['contractstates'], ENT_QUOTES),
-                                    $item_num,
-                                    $row_num,
-                                    "colspan='2' ",
-                                );
-                            } else {
-                                $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['contractstates']];
-                            }
-
-                            if ($config->fields['hourorday'] == Config::DAY) {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        Contract::getContractType($day['contract_type']),
-                                        $item_num,
-                                        $row_num,
-                                        "colspan='2' ",
-                                    );
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                                        'displayname' => Contract::getContractType(
-                                            $day['contract_type'],
-                                        ),
-                                    ];
-                                }
-                            }
-
-                            if ($config->fields['hourorday'] == Config::HOUR) {// Coslpan if type = Hourly
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        $day['end_date'] ?? '',
-                                        $item_num,
-                                        $row_num,
-                                        "colspan='2' ",
-                                    );
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['end_date']];
-                                }
-                            } else {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem($day['end_date'] ?? '', $item_num, $row_num, "");
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['end_date']];
-                                }
-                            }
-
-                            if ((Session::getCurrentInterface() == 'helpdesk' &&
-                                    ($config->fields['hourorday'] == Config::DAY && $day['contract_type'] == Contract::CONTRACT_TYPE_FORFAIT)) ||
-                                ($config->fields['hourorday'] == Config::HOUR && $day['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        \Dropdown::EMPTY_VALUE,
-                                        $item_num,
-                                        $row_num,
-                                        "$colspanNoprice ",
-                                    );
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
-                                }
-                            } else {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(
-                                        Html::formatNumber($day['credit'], 0, 2),
-                                        $item_num,
-                                        $row_num,
-                                        "$colspanNoprice ",
-                                    );
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = [
-                                        'displayname' => Html::formatNumber(
-                                            $day['credit'],
-                                            0,
-                                            2,
-                                        ),
-                                    ];
-                                }
-                            }
-
-                            if (Session::getCurrentInterface() == 'central' ||
-                                ($config->fields['hourorday'] == Config::DAY && $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT)) {
-                                if (Session::getCurrentInterface() == 'helpdesk' &&
-                                    ($config->fields['hourorday'] == Config::HOUR && $day['contract_type'] != Contract::CONTRACT_TYPE_UNLIMITED
-                                        && $day['conso'] > $day['credit'])) {
-                                    if ($is_html_output) {
-                                        $html_output .= $output::showItem(
-                                            Html::formatNumber($day['credit'], 0, 2),
-                                            $item_num,
-                                            $row_num,
-                                            "",
-                                        );
-                                    } else {
-                                        $current_row[$itemtype . '_' . (++$colnum)] = [
-                                            'displayname' => Html::formatNumber(
-                                                $day['credit'],
-                                                0,
-                                                2,
-                                            ),
-                                        ];
-                                    }
-                                } else {
-                                    if ($is_html_output) {
-                                        $html_output .= $output::showItem(
-                                            Html::formatNumber($day['conso'], 0, 2),
-                                            $item_num,
-                                            $row_num,
-                                            "",
-                                        );
-                                    } else {
-                                        $current_row[$itemtype . '_' . (++$colnum)] = [
-                                            'displayname' => Html::formatNumber(
-                                                $day['conso'],
-                                                0,
-                                                2,
-                                            ),
-                                        ];
-                                    }
-                                }
-                            } else {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem(\Dropdown::EMPTY_VALUE, $item_num, $row_num, "");
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
-                                }
-                            }
-                            if (Session::getCurrentInterface() == 'helpdesk'
-                                && ($config->fields['hourorday'] == Config::HOUR && $list[$i]['contract_type'] == Contract::CONTRACT_TYPE_UNLIMITED)) {
-                                if ($is_html_output) {
-                                    $html_output .= $output::showItem('', $item_num, $row_num, "");
-                                    $html_output .= $output::showItem('', $item_num, $row_num, "");
-                                } else {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ""];
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ""];
-                                }
-                            } else {
-                                if (Session::getCurrentInterface(
-                                ) == 'central' || $day['contract_type'] != Contract::CONTRACT_TYPE_FORFAIT) {
-                                    if ($is_html_output) {
-                                        $html_output .= $output::showItem(
-                                            Html::formatNumber($day['reste'], 0, 2),
-                                            $item_num,
-                                            $row_num,
-                                            "",
-                                        );
-                                    } else {
-                                        $current_row[$itemtype . '_' . (++$colnum)] = [
-                                            'displayname' => Html::formatNumber(
-                                                $day['reste'],
-                                                0,
-                                                2,
-                                            ),
-                                        ];
-                                    }
-                                } else {
-                                    if ($is_html_output) {
-                                        $html_output .= $output::showItem(
-                                            \Dropdown::EMPTY_VALUE,
-                                            $item_num,
-                                            $row_num,
-                                            "",
-                                        );
-                                    } else {
-                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => \Dropdown::EMPTY_VALUE];
-                                    }
-                                }
-                                if (Session::getCurrentInterface() == 'central') {
-                                    if ($is_html_output) {
-                                        $html_output .= $output::showItem(
-                                            Html::formatNumber($day['depass'], 0, 2),
-                                            $item_num,
-                                            $row_num,
-                                            "",
-                                        );
-                                    } else {
-                                        $current_row[$itemtype . '_' . (++$colnum)] = [
-                                            'displayname' => Html::formatNumber(
-                                                $day['depass'],
-                                                0,
-                                                2,
-                                            ),
-                                        ];
-                                    }
-                                }
-                            }
-                            if (Session::getCurrentInterface() == 'central') {
-                                if ($config->fields['useprice'] == Config::PRICE) {
-                                    if ($is_html_output) {
-                                        $html_output .= $output::showItem($day['last_visit'] ?? '', $item_num, $row_num, "");
-                                        $html_output .= $output::showItem($day['forfait'], $item_num, $row_num, "");
-                                        $html_output .= $output::showItem(
-                                            $day['reste_montant'],
-                                            $item_num,
-                                            $row_num,
-                                            "",
-                                        );
-                                    } else {
-                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
-                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['forfait']];
-                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['reste_montant']];
-                                    }
-                                } else {
-                                    if ($is_html_output) {
-                                        $html_output .= $output::showItem(
-                                            $day['last_visit'],
-                                            $item_num,
-                                            $row_num,
-                                            "colspan='2' ",
-                                        );
-                                    } else {
-                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $day['last_visit']];
-                                    }
-                                    if ($output_type != Search::HTML_OUTPUT) {
-                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                        $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                    }
-                                }
-                                if ($config->fields['hourorday'] == Config::HOUR
-                                    && $output_type != Search::HTML_OUTPUT) {
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                    $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => ''];
-                                }
-                            }
-                            $rows[$row_num] = $current_row;
-                            if ($is_html_output) {
-                                $html_output .= $output::showEndLine();
-                            }
-                        }
-                    }
-                }
-
-                if ($is_html_output) {
-                    if (Session::getCurrentInterface() == 'central') {
-                        $html_output .= Html::closeForm(false);
-                    }
-                    $html_output .= $output::showFooter(
-                        __('Entities portal', 'manageentities') . " - " . __('General follow-up', 'manageentities'),
-                        $numrows,
-                    );
-                }
-                if ($is_html_output) {
-                    echo $html_output;
-                } else {
-                    $params = [
-                        'start' => 0,
-                        'is_deleted' => 0,
-                        'as_map' => 0,
-                        'browse' => 0,
-                        'unpublished' => 1,
-                        'criteria' => [],
-                        'metacriteria' => [],
-                        'display_type' => 0,
-                        'hide_controls' => true,
-                    ];
-
-                    $accounts_data = SearchEngine::prepareDataForSearch($itemtype, $params);
-                    $accounts_data = array_merge($accounts_data, [
-                        'itemtype' => $itemtype,
-                        'data' => [
-                            'totalcount' => $numrows,
-                            'count' => $numrows,
-                            'search' => '',
-                            'cols' => [],
-                            'rows' => $rows,
-                        ],
-                    ]);
-
-                    $colid = 0;
-                    foreach ($headers as $header) {
-                        $accounts_data['data']['cols'][] = [
-                            'name' => $header,
-                            'itemtype' => $itemtype,
-                            'id' => ++$colid,
-                        ];
-                    }
-
-                    $output->displayData($accounts_data, []);
-                }
-            } else {
-                echo Search::showError($output_type);
+                $rows[count($rows) + 1] = $current_row;
             }
         }
+
+        $params = [
+            'start' => 0,
+            'is_deleted' => 0,
+            'as_map' => 0,
+            'browse' => 0,
+            'unpublished' => 1,
+            'criteria' => [],
+            'metacriteria' => [],
+            'display_type' => 0,
+            'hide_controls' => true,
+        ];
+
+        $accounts_data = SearchEngine::prepareDataForSearch($itemtype, $params);
+        $accounts_data = array_merge($accounts_data, [
+            'itemtype' => $itemtype,
+            'data' => [
+                'totalcount' => count($rows),
+                'count' => count($rows),
+                'search' => '',
+                'cols' => [],
+                'rows' => $rows,
+            ],
+        ]);
+
+        $colid = 0;
+        foreach ($export_headers as $header) {
+            $accounts_data['data']['cols'][] = [
+                'name' => $header,
+                'itemtype' => $itemtype,
+                'id' => ++$colid,
+            ];
+        }
+
+        $output->displayData($accounts_data, []);
     }
 
-
     /**
-     * Print generic new line
+     * One cell of the follow-up report, shared by the HTML template and the exports.
      *
-     * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-     * @param $odd          is it a new odd line ? (false by default)
-     * @param $is_deleted   is it a deleted search ? (false by default)
-     * @param $color        color the line with this one
+     * @param mixed       $value label, escaped by Twig on the HTML side
+     * @param string|null $url   target of the link wrapping the label, if any
      *
-     * @return string to display
-     **/
-    public static function showNewLine($type, $odd = false, $is_deleted = false, $color = "")
+     * @return array{value: string, url: string|null}
+     */
+    private static function buildCell($value, ?string $url = null): array
     {
-        $out = "";
-        switch ($type) {
-            case Search::PDF_OUTPUT_LANDSCAPE: //pdf
-            case Search::PDF_OUTPUT_PORTRAIT:
-                global $PDF_TABLE;
-                $style = "";
-                if ($odd) {
-                    $style = " style=\"background-color:#DDDDDD;\" ";
-                }
-                $PDF_TABLE .= "<tr $style nobr=\"true\">";
-                break;
-
-            case Search::CSV_OUTPUT: //csv
-                break;
-
-            default:
-
-                if ($color != "") {
-                    // The colour comes straight out of the contract state, which is free
-                    // text: it is checked before reaching the style attribute, exactly like
-                    // the swatches of the caption.
-                    $class = " style='background-color:color-mix(in srgb," . self::sanitizeStateColor((string) $color)
-                        . ", var(--tblr-bg-surface) var(--me-state-mix, 0%))' ";
-                } else {
-                    $class = " class='tab_bg_1' ";
-                    if ($odd) {
-                        $class = " class='tab_bg_2' ";
-                    }
-                }
-                $out = "<tr $class >";
-        }
-        return $out;
+        return [
+            'value' => (string) $value,
+            'url'   => $url,
+        ];
     }
 
     /**
      * Restrict a contract state colour to something that can only ever be a colour.
      *
      * ContractState.color is free text typed in the dropdown form and it is written into a
-     * style attribute twice: on every row of the report (showNewLine()) and on every swatch
-     * of the caption. Escaping the quotes keeps the value inside the attribute but still
-     * lets it close the declaration and append its own, so the value itself is checked here
-     * and replaced by a transparent background when it is not a plain CSS colour.
+     * style attribute twice: on every row of the report and on every swatch of the caption.
+     * Escaping the quotes keeps the value inside the attribute but still lets it close the
+     * declaration and append its own, so the value itself is checked here and replaced by a
+     * transparent background when it is not a plain CSS colour.
      *
      * @param string $color
      *
@@ -1691,35 +1062,18 @@ class Followup extends CommonDBTM
         $config_states = $plugin_config->find();
         $config_states = reset($config_states) ?: [];
 
-        // Same cascade as before: what the form posted wins, an explicit 0 means the filter
-        // was cleared and must stay empty, then the personal preference, then the plugin
-        // configuration.
-        $selected_contract_states = [];
-        if (
-            isset($options['contract_states'])
-            && is_array($options['contract_states'])
-            && count($options['contract_states']) > 0
-        ) {
-            $selected_contract_states = $options['contract_states'];
-        } elseif (isset($options['contract_states']) && $options['contract_states'] == 0) {
-            $selected_contract_states = [];
-        } elseif (!empty($preferences['contract_states'])) {
-            $selected_contract_states = json_decode($preferences['contract_states'], true) ?: [];
-        } elseif (!empty($config_states['contract_states'])) {
-            $selected_contract_states = json_decode($config_states['contract_states'], true) ?: [];
-        }
-
-        $selected_companies = [];
-        if (
-            isset($options['company_id'])
-            && is_array($options['company_id'])
-            && count($options['company_id']) > 0
-        ) {
-            $selected_companies = $options['company_id'];
-        } elseif (!empty($preferences['companies_id'])) {
-            $selected_companies = json_decode($preferences['companies_id'], true) ?: [];
-        }
-
+        // Same rule as the report itself: what the form submitted wins, even emptied - an empty
+        // field lists everything - and the defaults only fill a criterion never submitted, the
+        // personal preference first, then the plugin configuration (no configuration for the
+        // companies).
+        $selected_contract_states = self::getSubmittedIds($options, 'contract_states')
+            ?? (self::decodeIds($preferences['contract_states'] ?? null)
+                ?: self::decodeIds($config_states['contract_states'] ?? null));
+        $selected_business = self::getSubmittedIds($options, 'business_id')
+            ?? (self::decodeIds($preferences['business_id'] ?? null)
+                ?: self::decodeIds($config_states['business_id'] ?? null));
+        $selected_companies = self::getSubmittedIds($options, 'company_id')
+            ?? self::decodeIds($preferences['companies_id'] ?? null);
         TemplateRenderer::getInstance()->display('@manageentities/followup_criterias.html.twig', [
             'form_name'                => 'criterias_form' . mt_rand(),
             'form_action'              => './entity.php',
@@ -1730,6 +1084,8 @@ class Followup extends CommonDBTM
             'selected_contract_states' => $selected_contract_states,
             'companies'                => $companies,
             'selected_companies'       => $selected_companies,
+            'business_users'           => BusinessContact::getBusinessUsers(),
+            'selected_business'        => $selected_business,
             'begin_date_after'         => $options['begin_date_after'],
             'begin_date_before'        => $options['begin_date_before'],
             'end_date_after'           => $options['end_date_after'],

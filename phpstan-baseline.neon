@@ -1087,60 +1087,6 @@ parameters:
 			path: src/EntityLogo.php
 
 		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 11
-			path: src/Followup.php
-
-		-
-			message: '#^Loose comparison using \=\= between 1 and 1 will always evaluate to true\.$#'
-			identifier: equal.alwaysTrue
-			count: 2
-			path: src/Followup.php
-
-		-
-			message: '#^Loose comparison using \=\= between 2 and 2 will always evaluate to true\.$#'
-			identifier: equal.alwaysTrue
-			count: 1
-			path: src/Followup.php
-
-		-
-			message: '#^Missing PHPDoc tag @var for global variable \$PDF_TABLE$#'
-			identifier: glpi.missingGlobalVarType
-			count: 1
-			path: src/Followup.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 2
-			path: src/Followup.php
-
-		-
-			message: '#^Offset ''last_visit'' on array\{contract_is_closed\: mixed, contractday_name\: mixed, contractdayname\: mixed, contractstates\: mixed, contractstates_color\: mixed, begin_date\: mixed, end_date\: mixed, credit\: mixed, \.\.\.\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: src/Followup.php
-
-		-
-			message: '#^Parameter \#2 \$edit of static method Html\:\:formatNumber\(\) expects bool, int given\.$#'
-			identifier: argument.type
-			count: 10
-			path: src/Followup.php
-
-		-
-			message: '#^Parameter \#4 \$issort of static method Glpi\\Search\\Output\\HTMLSearchOutput\:\:showHeaderItem\(\) expects bool, int given\.$#'
-			identifier: argument.type
-			count: 15
-			path: src/Followup.php
-
-		-
-			message: '#^Right side of && is always true\.$#'
-			identifier: booleanAnd.rightAlwaysTrue
-			count: 1
-			path: src/Followup.php
-
-		-
 			message: '#^You should not use the `die` function\. It prevents the execution of post\-request/post\-command routines\.$#'
 			identifier: glpi.forbidExit
 			count: 1
@@ -1161,12 +1107,6 @@ parameters:
 		-
 			message: '#^Iterating over an object of an unknown class GlpiPlugin\\Manageentities\\type\.$#'
 			identifier: class.notFound
-			count: 1
-			path: src/GenerateCRI.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''content''\|''entities_id''\|''impact''\|''itilcategories_id''\|''name''\|''priority''\|''status''\|''type''\|''urgency''\|''users_intervenor'' and ''requesttypes_id'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
 			count: 1
 			path: src/GenerateCRI.php
 
@@ -1297,30 +1237,6 @@ parameters:
 			path: src/InterventionStakeholder.php
 
 		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: src/Monthly.php
-
-		-
-			message: '#^Missing PHPDoc tag @var for global variable \$PDF$#'
-			identifier: glpi.missingGlobalVarType
-			count: 1
-			path: src/Monthly.php
-
-		-
-			message: '#^Missing PHPDoc tag @var for global variable \$PDF_TABLE$#'
-			identifier: glpi.missingGlobalVarType
-			count: 1
-			path: src/Monthly.php
-
-		-
-			message: '#^Parameter \#2 \$edit of static method Html\:\:formatNumber\(\) expects bool, int given\.$#'
-			identifier: argument.type
-			count: 16
-			path: src/Monthly.php
-
-		-
 			message: '#^Parameter \#4 \$month of function mktime expects int\|null, string given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1329,12 +1245,6 @@ parameters:
 		-
 			message: '#^Parameter \#6 \$year of function mktime expects int\|null, string given\.$#'
 			identifier: argument.type
-			count: 1
-			path: src/Monthly.php
-
-		-
-			message: '#^Static method Glpi\\Search\\Output\\HTMLSearchOutput\:\:showEndLine\(\) invoked with 1 parameter, 0 required\.$#'
-			identifier: arguments.count
 			count: 1
 			path: src/Monthly.php
 

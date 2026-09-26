@@ -36,6 +36,7 @@ use DBConnection;
 use DbUtils;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\RichText\RichText;
 use Html;
@@ -1840,7 +1841,6 @@ class CriDetail extends CommonDBTM
     {
         global $DB, $CFG_GLPI;
 
-        $dbu = new DbUtils();
         $default_options = [
             'color' => '',
             'event_type_color' => '',
@@ -1848,11 +1848,6 @@ class CriDetail extends CommonDBTM
             'display_done_events' => true,
         ];
         $options = array_merge($default_options, $options);
-        $addcrit = "";
-        if ($options['display_done_events'] == false) {
-            $addcrit = "AND `glpi_tickets`.`status` NOT IN ('" . Ticket::CLOSED . "','" . Ticket::SOLVED . "')
-         AND `glpi_tickettasks`.`state` NOT IN ('" . Planning::DONE . "') ";
-        }
         $interv = [];
 
         if (!isset($options['begin']) || ($options['begin'] == 'NULL')
@@ -1865,66 +1860,63 @@ class CriDetail extends CommonDBTM
         $begin = $options['begin'];
         $end = $options['end'];
 
-        // Reject malformed date bounds before they are concatenated into the SQL below.
+        // A malformed bound would only make the planning empty, but it is not worth a query.
         if (!self::isValidSqlDate((string) $begin) || !self::isValidSqlDate((string) $end)) {
             return $interv;
         }
 
-        $ASSIGN = "";
-
-        if (count($_SESSION["glpigroups"])) {
-            $groups = implode("','", array_map('intval', $_SESSION['glpigroups']));
-            $ASSIGN = "(`glpi_tickettasks`.`users_id_tech`
-                           IN (SELECT DISTINCT `users_id`
-                               FROM `glpi_groups_users`
-                               INNER JOIN `glpi_groups`
-                                  ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                               WHERE `glpi_groups_users`.`groups_id` IN ('$groups')
-                                     AND `glpi_groups`.`is_assign`))
-                      OR (`glpi_plugin_manageentities_critechnicians`.`users_id`
-                           IN (SELECT DISTINCT `users_id`
-                               FROM `glpi_groups_users`
-                               INNER JOIN `glpi_groups`
-                                  ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                               WHERE `glpi_groups_users`.`groups_id` IN ('$groups')
-                                     AND `glpi_groups`.`is_assign`))";
-        } else { // Only personal ones
-            $ASSIGN = " `glpi_tickettasks`.`users_id_tech` =" . $who . "
-         OR `glpi_plugin_manageentities_critechnicians`.`users_id` =" . $who;
-        }
-
-        if ($who > 0) {
-            $ASSIGN = " `glpi_tickettasks`.`users_id_tech` =" . $who . "
-         OR `glpi_plugin_manageentities_critechnicians`.`users_id` =" . $who;
-        }
         if ($who_group > 0) {
-            // The leading " AND " produced " AND  AND " once concatenated below, so this
-            // branch built syntactically invalid SQL and had clearly never been exercised.
-            $ASSIGN = "`users_id` IN (SELECT `users_id`
-                                 FROM `glpi_groups_users`
-                                 WHERE `groups_id` = " . $who_group . ")";
+            // Members of the chosen group. The raw version compared an unqualified `users_id`,
+            // ambiguous with the joined tables, so it failed: the technicians columns are used
+            // here, as in the other branches.
+            $members = new QuerySubQuery([
+                'SELECT' => 'users_id',
+                'FROM'   => 'glpi_groups_users',
+                'WHERE'  => ['groups_id' => $who_group],
+            ]);
+        } elseif ($who <= 0 && count($_SESSION['glpigroups'])) {
+            // Members of the caller's groups having the assignment flag.
+            $members = new QuerySubQuery([
+                'SELECT'     => 'glpi_groups_users.users_id',
+                'DISTINCT'   => true,
+                'FROM'       => 'glpi_groups_users',
+                'INNER JOIN' => [
+                    'glpi_groups' => [
+                        'ON' => [
+                            'glpi_groups_users' => 'groups_id',
+                            'glpi_groups'       => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE'      => [
+                    'glpi_groups_users.groups_id' => array_map('intval', $_SESSION['glpigroups']),
+                    'glpi_groups.is_assign'       => 1,
+                ],
+            ]);
+        } else {
+            // Only personal ones.
+            $members = $who;
         }
 
-        // The WHERE clause relies on IN (SELECT ...) sub-queries (group membership) and on
-        // getEntitiesRestrictRequest(), which do not map cleanly to the query builder criteria.
-        // It is kept as a QueryExpression: every interpolated value is an int (or intval-mapped)
-        // and the date bounds are validated above, so no unsanitized input reaches the raw SQL.
-        $where = "(`glpi_tickettasks`.`begin` >= '" . $begin . "'
-                  AND `glpi_tickettasks`.`end` <= '" . $end . "') "
-            . " AND NOT `glpi_tickets`.`is_deleted` "
-            . " $addcrit "
-            // Security (entity segregation): $ASSIGN carries a top-level OR in two of its
-            // three branches, and it used to be spliced in bare. Since AND binds tighter
-            // than OR in SQL, the effective condition became
-            // (dates AND not deleted AND addcrit AND users_id_tech = X)
-            // OR (critechnicians.users_id = X AND <entity restriction> AND actiontime != 0):
-            // the first alternative lost the getEntitiesRestrictRequest() clause entirely,
-            // so a technician saw the ticket tasks assigned to them even in entities they
-            // have no access to. Wrapping once here rather than in each branch keeps a
-            // single source of truth, and covers any branch added later.
-            . " AND (" . $ASSIGN . ") "
-            . $dbu->getEntitiesRestrictRequest("AND", "glpi_tickets", '', $_SESSION["glpiactiveentities"], false)
-            . " AND `glpi_tickettasks`.`actiontime` != 0";
+        $where = [
+            'glpi_tickettasks.begin'      => ['>=', $begin],
+            'glpi_tickettasks.end'        => ['<=', $end],
+            'glpi_tickets.is_deleted'     => 0,
+            'NOT'                         => ['glpi_tickettasks.actiontime' => 0],
+            // Security (entity segregation): the assignment alternative stays nested in its
+            // own OR, so that it can never escape the entity restriction below.
+            [
+                'OR' => [
+                    'glpi_tickettasks.users_id_tech'                   => $members,
+                    'glpi_plugin_manageentities_critechnicians.users_id' => $members,
+                ],
+            ],
+        ] + getEntitiesRestrictCriteria('glpi_tickets', '', $_SESSION['glpiactiveentities'], false);
+
+        if ($options['display_done_events'] == false) {
+            $where[] = ['NOT' => ['glpi_tickets.status' => [Ticket::CLOSED, Ticket::SOLVED]]];
+            $where[] = ['NOT' => ['glpi_tickettasks.state' => Planning::DONE]];
+        }
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -1971,7 +1963,7 @@ class CriDetail extends CommonDBTM
                     ],
                 ],
             ],
-            'WHERE'     => [new \Glpi\DBAL\QueryExpression($where)],
+            'WHERE'     => $where,
             'GROUPBY'   => 'glpi_tickettasks.id',
         ]);
 

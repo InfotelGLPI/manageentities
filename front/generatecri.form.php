@@ -37,31 +37,15 @@ $GenerateCri = new GenerateCri();
 $Cri         = new Cri();
 $ticket                          = new Ticket();
 
-// Every branch of this controller is about tickets, including the entity switch just below,
-// which writes the active entity into the session. The floor is therefore settled once, before
+// Every branch of this controller is about tickets. The floor is therefore settled once, before
 // any branching, instead of being left to each branch - that is how the display branch ended up
 // with no check at all.
 Session::checkRight('ticket', READ);
 
-if (count($_SESSION["glpiactiveentities"]) > 1
-    && isset($_GET['active_entity'])) {
-
-    if (!isset($_POST["is_recursive"])) {
-        $_POST["is_recursive"] = 0;
-    }
-    if (Session::changeActiveEntities($_GET["active_entity"], $_POST["is_recursive"])) {
-        if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-            global $CFG_GLPI;
-            $referer = $_SERVER['HTTP_REFERER'] ?? '';
-            $cleaned = preg_replace("/entities_id.*/", "", $referer);
-            if (!empty($cleaned) && str_starts_with($cleaned, $CFG_GLPI['url_base'])) {
-                Html::redirect($cleaned);
-            } else {
-                Html::back();
-            }
-        }
-    }
-}
+// The ?active_entity= switch that used to sit here changed the active entity of the session on
+// a plain GET, which the CSRF listener never validates: a link or an image pointing here moved
+// the entity of whoever opened it. Nothing in the plugin produced that parameter any more, the
+// entity selector of the core covers it.
 
 if (isset($_POST['generatecri'])) {
     if (Session::haveRight('ticket', CREATE)) {
@@ -143,15 +127,15 @@ if (isset($_POST['generatecri'])) {
     Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", GenerateCri::class);
     $ticket->fields['itilcategories_id'] = $_POST['itilcategories_id'] ?? 0;
     $ticket->fields['type']              = $_POST['type'] ?? '';
-    // Only switch the display entity when the user actually has access to it, instead of
-    // writing $_POST straight into the session and desyncing the scope of later screens.
-    $posted_entity = (int) ($_POST['entities_id'] ?? 0);
-    if (Session::haveAccessToEntity($posted_entity)) {
-        $_SESSION['glpiactive_entity'] = $posted_entity;
+    // The client picked in the wizard only drives the wizard itself. It used to be written into
+    // $_SESSION['glpiactive_entity'] without glpiactiveentities, which left the session with an
+    // active entity out of sync with its perimeter for every later screen.
+    $entities_id = (int) $_SESSION['glpiactive_entity'];
+    if (isset($_POST['entities_id']) && Session::haveAccessToEntity((int) $_POST['entities_id'])) {
+        $entities_id = (int) $_POST['entities_id'];
     }
 
-    $GenerateCri->showWizard($ticket, $_SESSION['glpiactive_entity']);
-    Html::footer();
+    $GenerateCri->showWizard($ticket, $entities_id);
 
 }
 

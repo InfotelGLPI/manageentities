@@ -1,0 +1,85 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{#
+ # Monthly follow-up (Monthly::showMonthly). The table used to be concatenated from
+ # HTMLSearchOutput::showItem(), which writes its argument into the cell unescaped, so each
+ # database label had to be escaped by hand -- and the contract anchor was assembled in
+ # PHP. Every value is now plain text escaped here; the exports are fed with the same cells.
+ #
+ # A tinted row carries its colour in --me-state-color and the stylesheet blends it into the
+ # theme surface (.manageentities-state-row), like the caption swatches, so the exceeding
+ # and to-invoice backgrounds stay readable in the dark palette.
+ #}
+<div class="table-responsive mb-3">
+    <table class="table card-table table-hover">
+        <thead>
+            <tr>
+                {% for header in headers %}
+                    <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                {% if row.color is not empty %}
+                    <tr class="manageentities-state-row" style="--me-state-color: {{ row.color }}">
+                {% else %}
+                    <tr>
+                {% endif %}
+                    {% for cell in row.cells %}
+                        <td>
+                            {% if cell.url is not empty %}
+                                <a href="{{ cell.url }}" target="_blank" rel="noopener">{{ cell.value }}</a>
+                            {% elseif cell.highlight %}
+                                {# Neither a whole nor a half unit: most likely a typing mistake #}
+                                <span class="text-danger fw-bold">{{ cell.value }}</span>
+                            {% else %}
+                                {{ cell.value }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="fw-bold">
+                <td colspan="{{ totals.lead_colspan }}">{{ __('Total') }}</td>
+                <td>{{ totals.conso }}</td>
+                <td></td>
+                {% if totals.conso_amount is not null %}
+                    <td>{{ totals.conso_amount }}</td>
+                {% endif %}
+                <td>{{ totals.depass }}</td>
+                {% if totals.depass_amount is not null %}
+                    <td>{{ totals.depass_amount }}</td>
+                {% endif %}
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

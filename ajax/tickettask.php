@@ -28,6 +28,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Ramsey\Uuid\Uuid;
 
 Html::header_nocache();
@@ -50,27 +51,64 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
         throw new AccessDeniedHttpException();
     }
 
-    switch ($_POST ['action']) {
+    switch ($_POST['action'] ?? '') {
 
         case "cloneTicketTask":
-            header('Content-Type: application/json; charset=UTF-8"');
+            header('Content-Type: application/json; charset=UTF-8');
 
-            if (isset($_POST['new_date_value']) && !empty($_POST['new_date_value'])) {
-                $tickettask->fields['begin'] = $_POST['new_date_value'];
-
-                unset($tickettask->fields['end']);
-                unset($tickettask->fields['id']);
-                $tickettask->fields['date']    = date("Y-m-d H:i:s", time());
-                // The content is read back from the database, where GLPI 10+ stores it raw:
-                // addslashes() made every clone accumulate one more backslash per apostrophe.
-                $tickettask->fields['plan']    = ['begin'     => $tickettask->fields['begin'],
-                    '_duration' => $tickettask->fields['actiontime'],
-                    'users_id'  => $tickettask->fields['users_id_tech']];
-                $tickettask->fields['uuid']    = Uuid::uuid4();
-
-                if ($id = $tickettask->add($tickettask->fields)) {
-                    echo json_encode(['tickettasks_id' => $id]);
+            $new_date_value = $_POST['new_date_value'] ?? '';
+            if (!is_string($new_date_value) || $new_date_value === '') {
+                break;
+            }
+            // The posted date was copied as is into the planning of the new task. Only accept a
+            // real date, in the formats the datetime picker of the row submits.
+            $begin = null;
+            foreach (['Y-m-d H:i:s', 'Y-m-d H:i'] as $format) {
+                $parsed = DateTime::createFromFormat('!' . $format, $new_date_value);
+                if ($parsed !== false && $parsed->format($format) === $new_date_value) {
+                    $begin = $parsed->format('Y-m-d H:i:s');
+                    break;
                 }
+            }
+            if ($begin === null) {
+                throw new BadRequestHttpException();
+            }
+
+            // The clone used to hand the whole source row over to add(): every column of the
+            // task, including the ones add() never expects from an input (author, timeline
+            // position, source links...). Only the content of the task is copied, the
+            // planning is rebuilt from the new date. The content is read back from the
+            // database, where GLPI 10+ stores it raw, so it is not slashed again.
+            $input = [
+                'tickets_id'  => (int) $tickettask->fields['tickets_id'],
+                'date'        => date('Y-m-d H:i:s'),
+                'uuid'        => Uuid::uuid4()->toString(),
+                'plan'        => [
+                    'begin'     => $begin,
+                    '_duration' => (int) $tickettask->fields['actiontime'],
+                    'users_id'  => (int) $tickettask->fields['users_id_tech'],
+                ],
+            ];
+            foreach (
+                [
+                    'content',
+                    'taskcategories_id',
+                    'tasktemplates_id',
+                    'is_private',
+                    'actiontime',
+                    'state',
+                    'users_id_tech',
+                    'groups_id_tech',
+                ] as $field
+            ) {
+                if (array_key_exists($field, $tickettask->fields)) {
+                    $input[$field] = $tickettask->fields[$field];
+                }
+            }
+
+            $clone = new TicketTask();
+            if ($id = $clone->add($input)) {
+                echo json_encode(['tickettasks_id' => $id]);
             }
             break;
     }

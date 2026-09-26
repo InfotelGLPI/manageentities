@@ -168,25 +168,19 @@ if ($ManageentitiesEntity->canView()
         Html::back();
 
     } else {
-        // Manage entity change
-        if (isset($_GET["active_entity"])) {
-            if (!isset($_GET["is_recursive"])) {
-                $_GET["is_recursive"] = 0;
-            }
-            Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"]);
-            if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-                Html::redirect(preg_replace("/entities_id.*/", "", PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php"));
-            }
-
-        } elseif (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
-            // Same treatment as front/entity.form.php: the posted value used to be
-            // concatenated as is, which let extra parameters be smuggled into the query
-            // string of the target page. Only the integer reaches the URL.
-            $redirect_entities_id = (int) $_POST["entities_id"];
-            if ($redirect_entities_id <= 0) {
+        // Manage entity change. The switch happens right here, in the CSRF-checked POST: it
+        // used to be delegated to a ?active_entity= GET, which the CSRF listener never
+        // validates, so a link or an image pointing at it moved the active entity of whoever
+        // opened it. changeActiveEntities() refuses an entity outside the caller's scope.
+        if (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
+            $active_entity = (int) $_POST["entities_id"];
+            if ($active_entity <= 0) {
                 throw new BadRequestHttpException();
             }
-            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php?active_entity=" . $redirect_entities_id);
+            if (!Session::changeActiveEntities($active_entity)) {
+                throw new AccessDeniedHttpException();
+            }
+            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php");
 
         } else {
             if (Session::getCurrentInterface() == 'central') {

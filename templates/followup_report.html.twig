@@ -1,0 +1,93 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{#
+ # General follow-up (Followup::showFollowUp). The table used to be concatenated from
+ # HTMLSearchOutput::showItem(), which writes its argument into the cell unescaped, with
+ # the contract and period anchors assembled in PHP -- and the contract state label had
+ # been left out of the hand escaping (stored XSS). Every value is now plain text escaped
+ # here; the exports are fed with the same cells.
+ #
+ # One block per contract: client heading (when the entity changes), contract summary,
+ # column headings, then one row per period tinted with the colour of its contract state.
+ # Tinted rows carry the colour in --me-state-color and the stylesheet blends it into the
+ # theme surface (.manageentities-state-row), like the caption swatches.
+ #}
+<div class="table-responsive mb-3">
+    <table class="table card-table table-hover">
+        {% for section in sections %}
+            <tbody>
+                {% if section.entities_name is not null %}
+                    <tr class="manageentities-state-row" style="--me-state-color: {{ client_color }}">
+                        <th colspan="{{ headers|length }}">
+                            {{ client_label }} : {{ section.entities_name }}
+                        </th>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td colspan="{{ headers|length }}">
+                        <div class="d-flex flex-wrap column-gap-4 row-gap-1">
+                            <span>
+                                <strong>{{ __('Contract') }} :</strong>
+                                {% if section.contract.url is not empty %}
+                                    <a href="{{ section.contract.url }}">{{ section.contract.name }}</a>
+                                {% else %}
+                                    {{ section.contract.name }}
+                                {% endif %}
+                            </span>
+                            {% for detail in section.contract.details %}
+                                <span><strong>{{ detail.label }} :</strong> {{ detail.value }}</span>
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+                <tr class="fw-bold">
+                    {% for header in headers %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+                {% for row in section.rows %}
+                    {% if row.color is not empty %}
+                        <tr class="manageentities-state-row" style="--me-state-color: {{ row.color }}">
+                    {% else %}
+                        <tr>
+                    {% endif %}
+                        {% for cell in row.cells %}
+                            <td>
+                                {% if cell.url is not empty %}
+                                    <a href="{{ cell.url }}">{{ cell.value }}</a>
+                                {% else %}
+                                    {{ cell.value }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% endfor %}
+    </table>
+</div>

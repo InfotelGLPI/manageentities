@@ -387,6 +387,9 @@ function plugin_manageentities_install()
     //version 4.2.18 : tech leads of a client (idempotent, creates the table on upgrades)
     TechLead::install(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
 
+    //version 4.2.20 : tabs of the client management dashboard in the preferences (idempotent)
+    Preference::install(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
+
 
     include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {

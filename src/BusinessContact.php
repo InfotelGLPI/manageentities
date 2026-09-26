@@ -103,6 +103,55 @@ class BusinessContact extends CommonDBTM
         return (int) ($result['cpt'] ?? 0) > 0;
     }
 
+    /**
+     * Users declared as business contact of at least one entity, as offered by the default
+     * lists of the general follow-up (configuration, preferences and search criteria).
+     *
+     * @return array<int, string> user name indexed by user id
+     */
+    public static function getBusinessUsers(): array
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT'     => ['glpi_users.id', 'glpi_users.realname', 'glpi_users.firstname'],
+            'FROM'       => self::getTable(),
+            'INNER JOIN' => [
+                'glpi_users' => [
+                    'ON' => [
+                        self::getTable() => 'users_id',
+                        'glpi_users'     => 'id',
+                    ],
+                ],
+            ],
+            'GROUPBY'    => ['glpi_users.id', 'glpi_users.realname', 'glpi_users.firstname'],
+            'ORDERBY'    => ['glpi_users.realname', 'glpi_users.firstname'],
+        ]);
+        $users = [];
+        foreach ($iterator as $data) {
+            $users[(int) $data['id']] = trim($data['realname'] . ' ' . $data['firstname']);
+        }
+
+        return $users;
+    }
+
+    /**
+     * Normalize a posted multiple selection of ids into the JSON stored by the follow-up
+     * defaults, or null when nothing is selected. The core posts an empty hidden value in
+     * front of every multiple select, which used to be stored as [""].
+     *
+     * @param mixed $values
+     */
+    public static function encodeIdList($values): ?string
+    {
+        $ids = array_values(array_unique(array_filter(
+            array_map('intval', (array) $values),
+            static fn(int $id): bool => $id > 0,
+        )));
+
+        return $ids === [] ? null : json_encode($ids);
+    }
+
     public function buildBusinessForTemplate(array $instID, string $root_doc): array
     {
         global $DB;

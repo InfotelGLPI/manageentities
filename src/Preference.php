@@ -96,6 +96,44 @@ class Preference extends CommonDBTM
         return 0;
     }
 
+    /**
+     * Tabs of the client management dashboard hidden by default: until the user saves a choice
+     * of their own (column left to NULL, or no preference row yet).
+     *
+     * @return int[]
+     */
+    public static function getDefaultHiddenDashboardTabs(): array
+    {
+        return [Entity::TAB_CONTRACTS, Entity::TAB_DOCUMENTS];
+    }
+
+    /**
+     * Tabs of the client management dashboard the user chose not to display.
+     *
+     * @return int[]
+     */
+    public static function getHiddenDashboardTabs(int $users_id): array
+    {
+        /** @var array<int, int[]> $cache */
+        static $cache = [];
+
+        if (!isset($cache[$users_id])) {
+            $self = new self();
+            $hidden = null;
+            if ($self->getFromDBByCrit(['users_id' => $users_id])) {
+                $hidden = $self->fields['hidden_dashboard_tabs'] ?? null;
+            }
+            if ($hidden === null) {
+                $cache[$users_id] = self::getDefaultHiddenDashboardTabs();
+            } else {
+                $decoded = json_decode($hidden, true);
+                $cache[$users_id] = is_array($decoded) ? array_map('intval', $decoded) : [];
+            }
+        }
+
+        return $cache[$users_id];
+    }
+
     public static function getIcon()
     {
         return "ti ti-user-pentagon";
@@ -128,8 +166,6 @@ class Preference extends CommonDBTM
 
     public static function showPreferencesForm($target, $ID)
     {
-        global $DB;
-
         $data = plugin_version_manageentities();
         $self = new self();
         $self->getFromDB($ID);
@@ -142,28 +178,7 @@ class Preference extends CommonDBTM
         $states_decoded  = json_decode($self->fields["contract_states"] ?? '', true);
         $states_selected = is_array($states_decoded) ? $states_decoded : [];
 
-        $iterator = $DB->request([
-            'SELECT' => [
-                'glpi_plugin_manageentities_businesscontacts.id as users_id',
-                'glpi_users.*',
-                'glpi_users.realname',
-                'glpi_users.firstname',
-            ],
-            'FROM' => 'glpi_plugin_manageentities_businesscontacts',
-            'LEFT JOIN' => [
-                'glpi_users' => [
-                    'ON' => [
-                        'glpi_plugin_manageentities_businesscontacts' => 'users_id',
-                        'glpi_users' => 'id',
-                    ],
-                ],
-            ],
-            'GROUPBY' => 'glpi_plugin_manageentities_businesscontacts.users_id',
-        ]);
-        $users = [];
-        foreach ($iterator as $row) {
-            $users[$row['id']] = $row['realname'] . " " . $row['firstname'];
-        }
+        $users             = BusinessContact::getBusinessUsers();
         $business_decoded  = json_decode($self->fields["business_id"] ?? '', true);
         $business_selected = is_array($business_decoded) ? $business_decoded : [];
 
@@ -175,43 +190,25 @@ class Preference extends CommonDBTM
         $companies_decoded  = json_decode($self->fields['companies_id'] ?? '', true);
         $companies_selected = is_array($companies_decoded) ? $companies_decoded : [];
 
-        // Capture GLPI's own dropdowns so the Twig template can inject them (|raw).
-        ob_start();
-        \Dropdown::showYesNo("show_on_load", $self->fields["show_on_load"]);
-        $show_on_load_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::showFromArray("contract_states", $states, [
-            'multiple' => true,
-            'width'    => 200,
-            'values'   => $states_selected,
-        ]);
-        $contract_states_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::showFromArray("business_id", $users, [
-            'multiple' => true,
-            'width'    => 200,
-            'values'   => $business_selected,
-        ]);
-        $business_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::showFromArray("companies_id", $company, [
-            'multiple' => true,
-            'width'    => 200,
-            'values'   => $companies_selected,
-        ]);
-        $companies_html = ob_get_clean();
+        $dashboard_tabs = Entity::getDashboardTabLabels();
+        $tabs_selected  = array_values(array_diff(
+            array_keys($dashboard_tabs),
+            self::getHiddenDashboardTabs((int) $self->fields['users_id']),
+        ));
 
         TemplateRenderer::getInstance()->display('@manageentities/preference_form.html.twig', [
-            'form_url'             => $target,
-            'plugin_title'         => $data['name'] . " - " . $data['version'],
-            'id'                   => $ID,
-            'show_on_load_html'    => $show_on_load_html,
-            'contract_states_html' => $contract_states_html,
-            'business_html'        => $business_html,
-            'companies_html'       => $companies_html,
+            'dashboard_tabs'     => $dashboard_tabs,
+            'tabs_selected'      => $tabs_selected,
+            'form_url'           => $target,
+            'plugin_title'       => $data['name'],
+            'id'                 => $ID,
+            'show_on_load'       => (int) ($self->fields['show_on_load'] ?? 0),
+            'states'             => $states,
+            'states_selected'    => $states_selected,
+            'users'              => $users,
+            'business_selected'  => $business_selected,
+            'companies'          => $company,
+            'companies_selected' => $companies_selected,
         ]);
     }
 
@@ -224,21 +221,27 @@ class Preference extends CommonDBTM
         // The owner follows from who is logged in, it is never an input of the form.
         unset($input['users_id']);
 
-        if (isset($input['contract_states'])) {
-            $input['contract_states'] = json_encode($input['contract_states']);
-        } else {
-            $input['contract_states'] = 'NULL';
+        // Clearing a list used to store the string 'NULL', and the empty hidden value the core
+        // posts in front of every multiple select ended up stored as [""]. Only the lists the
+        // update actually carries are touched.
+        foreach (['contract_states', 'business_id', 'companies_id'] as $field) {
+            if (array_key_exists($field, $input)) {
+                $input[$field] = BusinessContact::encodeIdList($input[$field]);
+            }
         }
-        if (isset($input['business_id'])) {
-            $input['business_id'] = json_encode($input['business_id']);
-        } else {
-            $input['business_id'] = 'NULL';
+
+        // The form lists the tabs to display, the row stores the ones to hide: a tab added by a
+        // later version then shows up instead of being hidden. An empty list is stored as []
+        // and not NULL, which stands for the defaults.
+        if (array_key_exists('dashboard_tabs', $input)) {
+            $displayed = array_map('intval', array_filter((array) $input['dashboard_tabs'], 'is_numeric'));
+            $input['hidden_dashboard_tabs'] = json_encode(array_values(array_diff(
+                array_keys(Entity::getDashboardTabLabels()),
+                $displayed,
+            )));
         }
-        if (isset($input['companies_id'])) {
-            $input['companies_id'] = json_encode($input['companies_id']);
-        } else {
-            $input['companies_id'] = 'NULL';
-        }
+        unset($input['dashboard_tabs']);
+
         return $input;
     }
 
@@ -259,11 +262,21 @@ class Preference extends CommonDBTM
                             `contract_states` text DEFAULT NULL,
                             `business_id` text DEFAULT NULL,
                             `companies_id` text DEFAULT NULL,
+                            `hidden_dashboard_tabs` text DEFAULT NULL,
                             PRIMARY KEY  (`id`),
                             KEY `users_id` (`users_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
             $DB->doQuery($query);
+        }
+
+        // 4.2.20: choice of the tabs of the client management dashboard. The users already
+        // having a preference row keep seeing every tab, as before the upgrade: only the new
+        // ones get the defaults, which hide the contracts and the documents.
+        if (!$DB->fieldExists($table, 'hidden_dashboard_tabs')) {
+            $migration->addField($table, 'hidden_dashboard_tabs', 'text', ['after' => 'companies_id']);
+            $migration->migrationOneTable($table);
+            $DB->update($table, ['hidden_dashboard_tabs' => '[]'], ['hidden_dashboard_tabs' => null]);
         }
     }
 

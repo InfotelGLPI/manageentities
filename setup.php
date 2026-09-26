@@ -164,7 +164,8 @@ function plugin_init_manageentities()
             }
         }
 
-        if (Session::haveRight("plugin_manageentities", UPDATE)) {
+        // Same pair of rights as front/config.form.php requires
+        if (Session::haveRight("plugin_manageentities", UPDATE) && Session::haveRight("config", UPDATE)) {
             $PLUGIN_HOOKS[Hooks::CONFIG_PAGE]['manageentities'] = 'front/config.form.php';
         }
 

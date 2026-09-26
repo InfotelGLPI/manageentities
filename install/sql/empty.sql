@@ -81,6 +81,7 @@ CREATE TABLE `glpi_plugin_manageentities_preferences` (
    `contract_states` text DEFAULT NULL,
    `business_id` text DEFAULT NULL,
    `companies_id` text DEFAULT NULL,
+   `hidden_dashboard_tabs` text DEFAULT NULL,
    PRIMARY KEY  (`id`),
    KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

@@ -85,7 +85,7 @@ switch ($_POST['action'] ?? '') {
     case 'addTech':
         $Cri = new Cri();
         if ($Cri->canCreate()) {
-            $input  = json_decode(stripslashes($_POST["formInput"]));
+            $input  = json_decode($_POST["formInput"]);
             $params = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
 
@@ -106,7 +106,7 @@ switch ($_POST['action'] ?? '') {
     case 'deleteTech':
         $Cri = new Cri();
         if ($Cri->canCreate()) {
-            $input                             = json_decode(stripslashes($_POST["formInput"]));
+            $input                             = json_decode($_POST["formInput"]);
             $params                            = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
             $CriTechnician = new CriTechnician();
@@ -127,7 +127,7 @@ switch ($_POST['action'] ?? '') {
         $Cri = new Cri();
         if ($Cri->canCreate()) {
 
-            $input                     = json_decode(stripslashes($_POST["formInput"]));
+            $input                     = json_decode($_POST["formInput"]);
             $input->REPORT_DESCRIPTION = urldecode($input->REPORT_DESCRIPTION);
             $params                    = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
@@ -159,7 +159,7 @@ switch ($_POST['action'] ?? '') {
     case 'updateCri':
         $Cri = new Cri();
         if ($Cri->canCreate()) {
-            $input  = json_decode(stripslashes($_POST["formInput"]));
+            $input  = json_decode($_POST["formInput"]);
             $params = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
             $assertTicketReadable((int) ($input->REPORT_ID ?? 0));
@@ -198,7 +198,7 @@ switch ($_POST['action'] ?? '') {
     case 'saveCri':
         $Cri = new Cri();
         if ($Cri->canCreate()) {
-            $input                 = json_decode(stripslashes($_POST["formInput"]));
+            $input                 = json_decode($_POST["formInput"]);
             $params                = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
             $assertTicketReadable((int) ($input->REPORT_ID ?? 0));

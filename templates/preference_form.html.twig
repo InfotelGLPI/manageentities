@@ -30,32 +30,47 @@
 <form name="form" method="post" action="{{ form_url }}">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="id" value="{{ id }}">
-    <div class="card mb-3 mx-auto" style="max-width: 800px;">
+    <div class="card mb-3">
         <div class="card-header d-flex align-items-center gap-2">
             <i class="ti ti-adjustments"></i>
             <strong>{{ plugin_title }}</strong>
         </div>
         <div class="card-body">
+            {% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
             <div class="row">
-                {{ fields.htmlField(
+                {{ fields.dropdownYesNo(
                     'show_on_load',
-                    show_on_load_html,
-                    __('Launch the plugin Entities portal with GLPI launching', 'manageentities')
+                    show_on_load,
+                    __('Launch the plugin Entities portal with GLPI launching', 'manageentities'),
+                    row
                 ) }}
-                {{ fields.htmlField(
+                {{ fields.dropdownArrayField(
+                    'dashboard_tabs',
+                    null,
+                    dashboard_tabs,
+                    __('Tabs displayed in the clients management', 'manageentities'),
+                    row|merge({'multiple': true, 'values': tabs_selected})
+                ) }}
+                {{ fields.dropdownArrayField(
                     'contract_states',
-                    contract_states_html,
-                    __('Status list contract for the general monitoring', 'manageentities')
+                    null,
+                    states,
+                    __('Status list contract for the general monitoring', 'manageentities'),
+                    row|merge({'multiple': true, 'values': states_selected})
                 ) }}
-                {{ fields.htmlField(
+                {{ fields.dropdownArrayField(
                     'business_id',
-                    business_html,
-                    __('Default list of Business for the general monitoring', 'manageentities')
+                    null,
+                    users,
+                    __('Default list of Business for the general monitoring', 'manageentities'),
+                    row|merge({'multiple': true, 'values': business_selected})
                 ) }}
-                {{ fields.htmlField(
+                {{ fields.dropdownArrayField(
                     'companies_id',
-                    companies_html,
-                    __('Default list of companies for the general monitoring', 'manageentities')
+                    null,
+                    companies,
+                    __('Default list of companies for the general monitoring', 'manageentities'),
+                    row|merge({'multiple': true, 'values': companies_selected})
                 ) }}
             </div>
             <div class="alert alert-warning d-flex align-items-center gap-2 mt-2 mb-0">

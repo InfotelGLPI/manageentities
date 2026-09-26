@@ -88,6 +88,14 @@
                     _n('Company', 'Companies', 2, 'manageentities'),
                     {'multiple': true, 'values': selected_companies}
                 ) }}
+
+                {{ fields.dropdownArrayField(
+                    'business_id',
+                    null,
+                    business_users,
+                    _n('Associated commercial', 'Associated business', 2, 'manageentities'),
+                    {'multiple': true, 'values': selected_business}
+                ) }}
             </div>
         </div>
 

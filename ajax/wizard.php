@@ -133,6 +133,6 @@ switch ($action) {
     default:
         header('Content-Type: application/json');
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Unknown action']);
+        echo json_encode(['success' => false, 'message' => __('Unknown action', 'manageentities')]);
         break;
 }

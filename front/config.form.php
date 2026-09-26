@@ -33,11 +33,12 @@ use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Entity;
 
 if (Plugin::isPluginActive("manageentities")) {
-    if (Session::haveRight("plugin_manageentities", UPDATE)) {
+    // Saving has always required config UPDATE on top of the plugin right: require it to
+    // display the form too, instead of showing a form whose submission is then refused.
+    if (Session::haveRight("plugin_manageentities", UPDATE) && Session::haveRight("config", UPDATE)) {
         $config = new Config();
 
         if (isset($_POST["update_config"])) {
-            Session::checkRight("config", UPDATE);
             $config->update($_POST);
             Html::back();
         } else {
