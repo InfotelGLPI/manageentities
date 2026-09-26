@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 11:55+0000\n"
+"POT-Creation-Date: 2026-09-26 12:09+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/"
@@ -51,6 +51,20 @@ msgstr ""
 #: src/EditorSubscription.php:1061
 #, php-format
 msgid "%d expired publisher subscriptions notified"
+msgstr ""
+
+#: front/techleadrule.php:48
+#, php-format
+msgid "%d rule created"
+msgid_plural "%d rules created"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: templates/techlead/assignment_rules.html.twig:52
+#, php-format
+msgid "%s client(s) able to open tickets"
 msgstr ""
 
 #: templates/ticket_overview.html.twig:133
@@ -93,6 +107,10 @@ msgstr ""
 #: templates/generatecri_wizard.html.twig:158
 msgid "Accomplished tasks informations"
 msgstr "Информация о выполненных задачах"
+
+#: templates/techlead/assignment_rules.html.twig:104
+msgid "Active"
+msgstr ""
 
 #: src/EditorSubscription.php:179 hook.php:928
 msgid "Active editor subscription"
@@ -275,8 +293,21 @@ msgstr ""
 msgid "Are you sure you want to permanently delete this subscription?"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:155
+#: templates/techlead/clients_by_tech.html.twig:167
 msgid "As main tech lead"
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:79
+msgid "Assignment rule"
+msgstr ""
+
+#: front/techleadrule.php:56 templates/techlead/clients_by_tech.html.twig:67
+#: templates/techlead/assignment_rules.html.twig:48
+msgid "Assignment rules"
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:100
+msgid "Assigns another technician"
 msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:58
@@ -320,6 +351,16 @@ msgstr ""
 
 #: templates/wizard/step4_contract.html.twig:108
 msgid "Attach documents"
+msgstr ""
+
+#: templates/techlead/clients_by_tech.html.twig:65
+msgid ""
+"Automatic assignment of the main tech lead to the tickets opened by the "
+"clients"
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:33
+msgid "Back"
 msgstr ""
 
 #: templates/wizard/step6_intervention_block.html.twig:60
@@ -376,8 +417,9 @@ msgstr ""
 #: src/DirectHelpdesk.php:615 src/Followup.php:899 src/Followup.php:909
 #: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
 #: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:122
-#: templates/techlead/clients_by_tech.html.twig:108
-#: templates/techlead/clients_by_tech.html.twig:154
+#: templates/techlead/clients_by_tech.html.twig:120
+#: templates/techlead/clients_by_tech.html.twig:166
+#: templates/techlead/assignment_rules.html.twig:76
 #: templates/generatecri_wizard.html.twig:43
 msgid "Client"
 msgid_plural "Clients"
@@ -398,21 +440,16 @@ msgstr[1] "Управления клиентами"
 msgstr[2] "Управлений клиентами"
 msgstr[3] "Управлений клиентами"
 
-#: src/Entity.php:81 src/Entity.php:197
-#: templates/techlead/clients_by_tech.html.twig:39
-msgid "Clients by tech lead"
-msgstr ""
-
 #: templates/entity/unbilled_tab.html.twig:76
 #, php-format
 msgid "Clients with hours left unbilled for more than %d months:"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:192
+#: templates/techlead/clients_by_tech.html.twig:204
 msgid "Clients without main tech lead"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:216
+#: templates/techlead/clients_by_tech.html.twig:228
 msgid "Clients without tech lead"
 msgstr ""
 
@@ -619,6 +656,15 @@ msgstr ""
 msgid "Create subscription"
 msgstr ""
 
+#: templates/techlead/assignment_rules.html.twig:59
+msgid "Create the missing rules"
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:122
+msgctxt "button"
+msgid "Create the rule"
+msgstr ""
+
 #: src/CriPDF.php:289 src/CriPDF.php:305
 msgid "Created by"
 msgstr "Создано"
@@ -672,7 +718,7 @@ msgstr ""
 msgid "Customer follow-up"
 msgstr ""
 
-#: src/CustomerSheet.php:47 templates/techlead/clients_by_tech.html.twig:116
+#: src/CustomerSheet.php:47 templates/techlead/clients_by_tech.html.twig:128
 msgid "Customer sheet"
 msgstr ""
 
@@ -888,6 +934,14 @@ msgstr ""
 msgid "Duration of moving"
 msgstr "Длительность перемещения"
 
+#: templates/techlead/assignment_rules.html.twig:69
+#, php-format
+msgid ""
+"Each rule is created in the entity %1$s (recursive) and assigns the main "
+"tech lead to the tickets of the client opened with the request source "
+"\"%2$s\" and not yet assigned to a technician"
+msgstr ""
+
 #: templates/entity/editorsubscription_tab.html.twig:105
 #: templates/contract_detail_form.html.twig:47
 msgid "Edit"
@@ -1057,11 +1111,11 @@ msgstr ""
 msgid "Estimated number of remaining days"
 msgstr "Оценочное количество оставшихся дней"
 
-#: templates/techlead/clients_by_tech.html.twig:230
+#: templates/techlead/clients_by_tech.html.twig:242
 msgid "Every client has a tech lead"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:206
+#: templates/techlead/clients_by_tech.html.twig:218
 msgid "Every client with tech leads has a main one"
 msgstr ""
 
@@ -1158,6 +1212,10 @@ msgstr "Сгенерировать отчет о вмешательстве"
 msgid "Generate report intervention"
 msgstr "Сгенерировать отчет о вмешательстве"
 
+#: src/TechLeadRule.php:269
+msgid "Generated from the clients management portal"
+msgstr ""
+
 #: front/cri.form.php:42 src/Cri.php:282 src/CriDetail.php:622
 msgid "Generation of the intervention report"
 msgstr "Генерация отчета о вмешательстве"
@@ -1212,6 +1270,10 @@ msgstr "Невозможно сгенерировать, вы не создал�
 #: src/Monthly.php:350
 msgid "In progress"
 msgstr "В процессе"
+
+#: templates/techlead/assignment_rules.html.twig:102
+msgid "Inactive"
+msgstr ""
 
 #: ajax/interventionstakeholderactions.php:118
 msgid "Informations successfully added."
@@ -1387,12 +1449,18 @@ msgstr "Логотип (формат JPG или JPEG)"
 #: templates/entity/techleads_card.html.twig:64
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
-#: templates/techlead/clients_by_tech.html.twig:109
+#: templates/techlead/clients_by_tech.html.twig:121
+#: templates/techlead/assignment_rules.html.twig:78
 msgid "Main tech lead"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:126
+#: templates/techlead/clients_by_tech.html.twig:138
 msgid "Main tech lead - click to no longer be the main one"
+msgstr ""
+
+#: src/TechLeadRule.php:266
+#, php-format
+msgid "Main tech lead of %s"
 msgstr ""
 
 #: src/Servicecatalog.php:74 src/Servicecatalog.php:80
@@ -1428,6 +1496,10 @@ msgstr ""
 
 #: templates/wizard/step2_contact_block.html.twig:106
 msgid "Manager (main contact)"
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:112
+msgid "Missing"
 msgstr ""
 
 #: src/WizardController.php:1257
@@ -1528,8 +1600,8 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:128
-#: templates/techlead/clients_by_tech.html.twig:134
+#: templates/techlead/clients_by_tech.html.twig:140
+#: templates/techlead/clients_by_tech.html.twig:146
 #: templates/contract_detail_form.html.twig:88
 msgid "No"
 msgstr ""
@@ -1553,6 +1625,10 @@ msgstr ""
 #: templates/entity/description.html.twig:310
 #: templates/entity/business_card.html.twig:78
 msgid "No business contact"
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:131
+msgid "No client has users with a simplified interface profile"
 msgstr ""
 
 #: templates/entity/description.html.twig:238
@@ -1588,6 +1664,10 @@ msgstr ""
 
 #: src/EditorSubscription.php:453
 msgid "No level"
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:93
+msgid "No main tech lead"
 msgstr ""
 
 #: templates/techlead/clients_by_tech.html.twig:48
@@ -1636,10 +1716,14 @@ msgid "No reports found"
 msgstr ""
 
 #: templates/entity/references.html.twig:57
-#: templates/techlead/clients_by_tech.html.twig:141
+#: templates/techlead/clients_by_tech.html.twig:153
 #: templates/directhelpdesk_ticket_tab.html.twig:56
 #: templates/company_list.html.twig:70
 msgid "No results found"
+msgstr ""
+
+#: front/techleadrule.php:49
+msgid "No rule created"
 msgstr ""
 
 #: templates/contractday_add_form.html.twig:47
@@ -1664,7 +1748,7 @@ msgid "No tasks whose category can be used"
 msgstr "Нет задач, категория которых может быть использована"
 
 #: src/TicketOverview.php:616 templates/entity/techleads_card.html.twig:92
-#: templates/techlead/clients_by_tech.html.twig:180
+#: templates/techlead/clients_by_tech.html.twig:192
 msgid "No tech lead"
 msgstr ""
 
@@ -1767,6 +1851,10 @@ msgstr "Для расчета потребления учитываются то
 #: templates/ticket_overview.html.twig:170
 #: templates/ticket_overview.html.twig:189
 msgid "Open in the ticket search"
+msgstr ""
+
+#: templates/techlead/assignment_rules.html.twig:107
+msgid "Open the rule"
 msgstr ""
 
 #: templates/ticket_overview.html.twig:128
@@ -2169,6 +2257,10 @@ msgstr ""
 msgid "Rubric by default for reports"
 msgstr "Рубрика по умолчанию для отчетов"
 
+#: templates/techlead/clients_by_tech.html.twig:70
+msgid "Rules to create"
+msgstr ""
+
 #: templates/taskcategory_form.html.twig:50
 #: templates/config_cri_form.html.twig:73 templates/profile.html.twig:34
 #: templates/config_options_form.html.twig:157
@@ -2247,6 +2339,12 @@ msgstr ""
 msgid "Set in configuration"
 msgstr ""
 
+#: templates/techlead/assignment_rules.html.twig:40
+msgid ""
+"Set the customers entity in the plugin configuration to create the "
+"assignment rules"
+msgstr ""
+
 #: templates/config_options_form.html.twig:41
 msgid "Setup"
 msgstr ""
@@ -2255,7 +2353,7 @@ msgstr ""
 msgid "Setup for Generate Intervention report"
 msgstr ""
 
-#: templates/techlead/clients_by_tech.html.twig:156
+#: templates/techlead/clients_by_tech.html.twig:168
 msgid "Share"
 msgstr ""
 
@@ -2267,6 +2365,10 @@ msgstr ""
 #: templates/contract_detail_form.html.twig:151
 msgid "Show on GANTT"
 msgstr "Показать на диаграмме Ганта"
+
+#: templates/techlead/assignment_rules.html.twig:77
+msgid "Simplified interface users"
+msgstr ""
 
 #: src/CriPDF.php:470
 msgid "Society name"
@@ -2441,8 +2543,13 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: templates/techlead/clients_by_tech.html.twig:126
+#: templates/techlead/clients_by_tech.html.twig:138
 msgid "Tech lead - click to become the main one"
+msgstr ""
+
+#: src/Entity.php:81 src/Entity.php:197
+#: templates/techlead/clients_by_tech.html.twig:39
+msgid "Tech lead by clients"
 msgstr ""
 
 #: src/Contract.php:616 src/Contract.php:667
@@ -2451,7 +2558,7 @@ msgstr "Техническая помощь"
 
 #: src/CriPDF.php:395
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
-#: templates/techlead/clients_by_tech.html.twig:153
+#: templates/techlead/clients_by_tech.html.twig:165
 #: templates/generatecri_wizard.html.twig:129
 #: templates/generatecri_wizard.html.twig:176
 #: templates/directhelpdesk_ticket_tab.html.twig:36
@@ -2865,8 +2972,8 @@ msgstr "Формулировка действий"
 msgid "Year"
 msgstr "Год"
 
-#: templates/techlead/clients_by_tech.html.twig:128
-#: templates/techlead/clients_by_tech.html.twig:134
+#: templates/techlead/clients_by_tech.html.twig:140
+#: templates/techlead/clients_by_tech.html.twig:146
 #: templates/contract_detail_form.html.twig:86
 msgid "Yes"
 msgstr ""
