@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 12:24+0000\n"
+"POT-Creation-Date: 2026-09-26 12:44+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/"
@@ -43,7 +43,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/Contract.php:1413
+#: src/Contract.php:1461
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
@@ -260,7 +260,7 @@ msgstr ""
 msgid "An error occurred while saving."
 msgstr ""
 
-#: src/Contract.php:571 src/Contract.php:590
+#: src/Contract.php:615 src/Contract.php:634
 msgid "Annual"
 msgstr "Годовой"
 
@@ -381,7 +381,7 @@ msgstr ""
 msgid "Begin date is required"
 msgstr ""
 
-#: src/Contract.php:609 src/Contract.php:663
+#: src/Contract.php:653 src/Contract.php:707
 msgid "By intervention"
 msgstr "По вмешательству"
 
@@ -1024,7 +1024,7 @@ msgstr "Дата окончания должна быть позже даты н
 #: front/entity.php:68 front/generatecri.php:35 front/generatecri.php:38
 #: front/generatecri.php:40 front/cridetail.form.php:52
 #: front/cridetail.form.php:55 front/cridetail.form.php:57
-#: front/addelements.form.php:37 setup.php:249 src/Preference.php:147
+#: front/addelements.form.php:37 setup.php:251 src/Preference.php:147
 #: src/GenerateCRI.php:944 src/TaskCategory.php:66 src/Profile.php:51
 #: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
@@ -1249,7 +1249,7 @@ msgstr[3] ""
 msgid "Hour of"
 msgstr "Час"
 
-#: src/Contract.php:608 src/Contract.php:661 src/Config.php:181
+#: src/Contract.php:652 src/Contract.php:705 src/Config.php:181
 msgid "Hourly"
 msgstr "Почасовая"
 
@@ -1305,7 +1305,7 @@ msgstr ""
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:616 src/Contract.php:690
+#: src/DirectHelpdesk.php:616 src/Contract.php:734
 #: templates/entity/unbilled_tab.html.twig:123
 msgid "Intervention"
 msgid_plural "Interventions"
@@ -1467,6 +1467,10 @@ msgstr ""
 msgid "Main tech lead of %s"
 msgstr ""
 
+#: templates/techlead/ticket_badge.html.twig:31
+msgid "Main tech lead of the client"
+msgstr ""
+
 #: src/Servicecatalog.php:74 src/Servicecatalog.php:80
 msgid "Manage your contracts"
 msgstr "Управление вашими контрактами"
@@ -1544,7 +1548,7 @@ msgstr "Ежемесячный мониторинг"
 msgid "More than %d months"
 msgstr ""
 
-#: src/Contract.php:951 templates/wizard/step5_management.html.twig:104
+#: src/Contract.php:999 templates/wizard/step5_management.html.twig:104
 #: templates/contract_detail_form.html.twig:179
 msgid "Movement management"
 msgstr "Управление движением"
@@ -1911,7 +1915,7 @@ msgstr ""
 msgid "Overdue tickets: opened for more than"
 msgstr ""
 
-#: src/Contract.php:617 src/Contract.php:669
+#: src/Contract.php:661 src/Contract.php:713
 msgid "Package"
 msgstr "Пакет"
 
@@ -2165,7 +2169,7 @@ msgstr ""
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
-#: src/Contract.php:570 src/Contract.php:588
+#: src/Contract.php:614 src/Contract.php:632
 msgid "Quarterly"
 msgstr "Ежеквартально"
 
@@ -2181,7 +2185,7 @@ msgstr ""
 msgid "Recursive"
 msgstr ""
 
-#: src/Contract.php:952 templates/wizard/step5_management.html.twig:84
+#: src/Contract.php:1000 templates/wizard/step5_management.html.twig:84
 #: templates/contract_detail_form.html.twig:159
 msgid "Refacturable costs"
 msgstr "Расходы на рефакторинг"
@@ -2229,6 +2233,11 @@ msgstr "Количество оставшихся дней по открытым
 #: src/Monthly.php:432
 msgid "Remaining on "
 msgstr "Осталось "
+
+#: templates/contract_remaining_alert.html.twig:31
+#, php-format
+msgid "Remaining on the contract: %s"
+msgstr ""
 
 #: src/Followup.php:777 templates/contractday_form.html.twig:128
 msgid "Remaining total (amount)"
@@ -2328,7 +2337,7 @@ msgstr ""
 msgid "Select an existing price"
 msgstr "Выберите существующую цену"
 
-#: src/Contract.php:1272
+#: src/Contract.php:1320
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 
@@ -2366,7 +2375,7 @@ msgstr ""
 msgid "Show expired subscriptions only"
 msgstr ""
 
-#: src/Contract.php:950 templates/wizard/step5_management.html.twig:76
+#: src/Contract.php:998 templates/wizard/step5_management.html.twig:76
 #: templates/contract_detail_form.html.twig:151
 msgid "Show on GANTT"
 msgstr "Показать на диаграмме Ганта"
@@ -2557,7 +2566,12 @@ msgstr ""
 msgid "Tech lead by clients"
 msgstr ""
 
-#: src/Contract.php:616 src/Contract.php:667
+#: templates/techlead/ticket_badge.html.twig:32
+#, php-format
+msgid "Tech lead: %s"
+msgstr ""
+
+#: src/Contract.php:660 src/Contract.php:711
 msgid "Technical Assistance"
 msgstr "Техническая помощь"
 
@@ -2857,7 +2871,7 @@ msgstr ""
 msgid "Update logo"
 msgstr ""
 
-#: src/Contract.php:940
+#: src/Contract.php:988
 msgid "Update management fields"
 msgstr ""
 
@@ -2866,7 +2880,7 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1057
+#: hook.php:1062
 msgid "Update subscription fields"
 msgstr ""
 

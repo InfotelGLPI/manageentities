@@ -2,25 +2,27 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Kevin HAINRY <kevin.hainry@infotel.com>, 2021
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2026
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 12:25+0000\n"
+"POT-Creation-Date: 2026-09-26 12:44+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
-"Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
+"Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
+"teams/79674/fr_FR/)\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr_FR\n"
-"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
+"1000000 == 0 ? 1 : 2;\n"
 
 #: templates/report_occupation_result.html.twig:51
 #, php-format
@@ -40,7 +42,7 @@ msgstr[0] "%1$s intervention"
 msgstr[1] "%1$s interventions"
 msgstr[2] "%1$s interventions"
 
-#: src/Contract.php:1413
+#: src/Contract.php:1461
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr "%d contrats arrivant à échéance sont notifiés"
@@ -259,7 +261,7 @@ msgstr "Une erreur est survenue lors de la suppression."
 msgid "An error occurred while saving."
 msgstr "Une erreur est survenue à la sauvegarde."
 
-#: src/Contract.php:571 src/Contract.php:590
+#: src/Contract.php:615 src/Contract.php:634
 msgid "Annual"
 msgstr "Annuel"
 
@@ -290,8 +292,7 @@ msgstr "Client archivé"
 
 #: templates/editorsubscription_wizard.html.twig:115
 msgid "Are you sure you want to permanently delete this subscription?"
-msgstr ""
-"Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
+msgstr "Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
 
 #: templates/techlead/clients_by_tech.html.twig:167
 msgid "As main tech lead"
@@ -381,7 +382,7 @@ msgstr "Date de début"
 msgid "Begin date is required"
 msgstr "La date de début est obligatoire"
 
-#: src/Contract.php:609 src/Contract.php:663
+#: src/Contract.php:653 src/Contract.php:707
 msgid "By intervention"
 msgstr "A l'intervention"
 
@@ -943,8 +944,8 @@ msgid ""
 "\"%2$s\" and not yet assigned to a technician"
 msgstr ""
 "Chaque règle est créée dans l'entité %1$s (récursive) et attribue le "
-"responsable technique principal aux tickets du client ouverts avec la source"
-" de demande \"%2$s\" et non encore attribués à un technicien"
+"responsable technique principal aux tickets du client ouverts avec la source "
+"de demande \"%2$s\" et non encore attribués à un technicien"
 
 #: templates/entity/editorsubscription_tab.html.twig:105
 #: templates/contract_detail_form.html.twig:47
@@ -1024,7 +1025,7 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/entity.php:68 front/generatecri.php:35 front/generatecri.php:38
 #: front/generatecri.php:40 front/cridetail.form.php:52
 #: front/cridetail.form.php:55 front/cridetail.form.php:57
-#: front/addelements.form.php:37 setup.php:249 src/Preference.php:147
+#: front/addelements.form.php:37 setup.php:251 src/Preference.php:147
 #: src/GenerateCRI.php:944 src/TaskCategory.php:66 src/Profile.php:51
 #: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
@@ -1250,7 +1251,7 @@ msgstr[2] "Heures"
 msgid "Hour of"
 msgstr "Heure de"
 
-#: src/Contract.php:608 src/Contract.php:661 src/Config.php:181
+#: src/Contract.php:652 src/Contract.php:705 src/Config.php:181
 msgid "Hourly"
 msgstr "Horaire"
 
@@ -1306,7 +1307,7 @@ msgstr "Le crédit initial est obligatoire"
 msgid "Internet publication"
 msgstr "Publié sur internet"
 
-#: src/DirectHelpdesk.php:616 src/Contract.php:690
+#: src/DirectHelpdesk.php:616 src/Contract.php:734
 #: templates/entity/unbilled_tab.html.twig:123
 msgid "Intervention"
 msgid_plural "Interventions"
@@ -1422,8 +1423,8 @@ msgstr "Liste par défaut des statuts pour le suivi général"
 
 #: templates/config_options_form.html.twig:45
 msgid ""
-"List of entities used by the plugin. When set, only tickets belonging to "
-"sub-entities of this entity will display the intervention report tab."
+"List of entities used by the plugin. When set, only tickets belonging to sub-"
+"entities of this entity will display the intervention report tab."
 msgstr ""
 "Liste des entités utilisées par le plugin. Si cette option est activée, "
 "seuls les tickets appartenant aux sous-entités de cette entité afficheront "
@@ -1438,8 +1439,7 @@ msgid "Logo"
 msgstr "Logo"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#. No addslashes()/stripslashes() here: GLPI stores raw data since version 10
-#. and
+#. No addslashes()/stripslashes() here: GLPI stores raw data since version 10 and
 #. the query builder escapes on its own, so the pair used to write literal
 #. backslashes into the database and strip legitimate ones back out.
 #: src/Company.php:406
@@ -1468,6 +1468,10 @@ msgstr "Tech lead responsable - cliquez pour ne plus être le responsable"
 msgid "Main tech lead of %s"
 msgstr "Tech lead responsable de %s"
 
+#: templates/techlead/ticket_badge.html.twig:31
+msgid "Main tech lead of the client"
+msgstr ""
+
 #: src/Servicecatalog.php:74 src/Servicecatalog.php:80
 msgid "Manage your contracts"
 msgstr "Gérer vos contrats"
@@ -1484,8 +1488,7 @@ msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
 #: src/Contract.php:76 src/WizardController.php:1965
-#: src/WizardController.php:1977
-#: templates/wizard/step5_management.html.twig:42
+#: src/WizardController.php:1977 templates/wizard/step5_management.html.twig:42
 #: templates/contract_detail_form.html.twig:130
 msgid "Management type"
 msgstr "Type de gestion"
@@ -1545,7 +1548,7 @@ msgstr "Suivi mensuel"
 msgid "More than %d months"
 msgstr "Plus de %d mois"
 
-#: src/Contract.php:951 templates/wizard/step5_management.html.twig:104
+#: src/Contract.php:999 templates/wizard/step5_management.html.twig:104
 #: templates/contract_detail_form.html.twig:179
 msgid "Movement management"
 msgstr "Gestion des déplacements"
@@ -1654,8 +1657,8 @@ msgstr "Il ne reste plus de jours sur cette période contractuelle"
 #: src/TicketTask.php:101 templates/tickettask_blocked_alert.html.twig:34
 msgid "No days remaining on this contract period. Task addition is blocked."
 msgstr ""
-"Il ne reste plus de jours sur cette période contractuelle. L'ajout de tâches"
-" est bloqué."
+"Il ne reste plus de jours sur cette période contractuelle. L'ajout de tâches "
+"est bloqué."
 
 #: src/EditorSubscriptionWizard.php:128
 msgid "No entity selected."
@@ -1917,7 +1920,7 @@ msgstr "Tickets en retard par techniciens"
 msgid "Overdue tickets: opened for more than"
 msgstr "Tickets en retard : ouverts depuis plus de"
 
-#: src/Contract.php:617 src/Contract.php:669
+#: src/Contract.php:661 src/Contract.php:713
 msgid "Package"
 msgstr "Forfait"
 
@@ -1980,8 +1983,8 @@ msgid "Phone 2"
 msgstr "Téléphone 2"
 
 #: templates/entity/description.html.twig:54
-#: templates/entity/references.html.twig:46
-#: templates/company_form.html.twig:78 templates/company_form.html.twig:79
+#: templates/entity/references.html.twig:46 templates/company_form.html.twig:78
+#: templates/company_form.html.twig:79
 msgid "Picture"
 msgstr "Logo"
 
@@ -2001,8 +2004,7 @@ msgstr "Merci d'assigner un technicien au ticket"
 #: src/Cri.php:689
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
-"Merci de renseigner les dates de début et de fin de la prestation du "
-"contrat."
+"Merci de renseigner les dates de début et de fin de la prestation du contrat."
 
 #: src/Cri.php:705
 msgid "Please fill the contract period begin date."
@@ -2081,8 +2083,7 @@ msgstr ""
 "Type de contact présélectionné lors de l'ajout d'un contact dans le wizard."
 
 #: templates/config_options_form.html.twig:117
-msgid ""
-"Pre-selected document category when attaching a document in the wizard."
+msgid "Pre-selected document category when attaching a document in the wizard."
 msgstr ""
 "Catégorie de document présélectionnée lors de l'ajout d'un document dans le "
 "wizard."
@@ -2091,8 +2092,8 @@ msgstr ""
 msgid ""
 "Pre-selected intervention type when creating a service period in the wizard."
 msgstr ""
-"Type d'intervention présélectionné lors de la création d'une prestation dans"
-" le wizard."
+"Type d'intervention présélectionné lors de la création d'une prestation dans "
+"le wizard."
 
 #: templates/config_options_form.html.twig:108
 msgid ""
@@ -2181,7 +2182,7 @@ msgstr "Souscriptions éditeurs"
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr "La souscription éditeur ne peut pas être créé pour l'entité racine."
 
-#: src/Contract.php:570 src/Contract.php:588
+#: src/Contract.php:614 src/Contract.php:632
 msgid "Quarterly"
 msgstr "Trimestriel"
 
@@ -2197,7 +2198,7 @@ msgstr "Tarifs"
 msgid "Recursive"
 msgstr "Sous-entités"
 
-#: src/Contract.php:952 templates/wizard/step5_management.html.twig:84
+#: src/Contract.php:1000 templates/wizard/step5_management.html.twig:84
 #: templates/contract_detail_form.html.twig:159
 msgid "Refacturable costs"
 msgstr "Frais refacturables"
@@ -2245,6 +2246,11 @@ msgstr "Nombre de jours restants par contrat client"
 #: src/Monthly.php:432
 msgid "Remaining on "
 msgstr "Restant au"
+
+#: templates/contract_remaining_alert.html.twig:31
+#, php-format
+msgid "Remaining on the contract: %s"
+msgstr ""
 
 #: src/Followup.php:777 templates/contractday_form.html.twig:128
 msgid "Remaining total (amount)"
@@ -2343,7 +2349,7 @@ msgstr "Sélectionner une entité existante"
 msgid "Select an existing price"
 msgstr "Sélectionner un prix existant"
 
-#: src/Contract.php:1272
+#: src/Contract.php:1320
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 "Envoyez la liste des contrats dont le nombre de jours restants arrive à "
@@ -2385,7 +2391,7 @@ msgstr "Répartition"
 msgid "Show expired subscriptions only"
 msgstr "Voir les souscriptions expirées uniquement"
 
-#: src/Contract.php:950 templates/wizard/step5_management.html.twig:76
+#: src/Contract.php:998 templates/wizard/step5_management.html.twig:76
 #: templates/contract_detail_form.html.twig:151
 msgid "Show on GANTT"
 msgstr "Voir sur le GANTT"
@@ -2574,7 +2580,12 @@ msgstr "Tech lead - cliquez pour devenir le principal"
 msgid "Tech lead by clients"
 msgstr "Tech lead par clients"
 
-#: src/Contract.php:616 src/Contract.php:667
+#: templates/techlead/ticket_badge.html.twig:32
+#, php-format
+msgid "Tech lead: %s"
+msgstr ""
+
+#: src/Contract.php:660 src/Contract.php:711
 msgid "Technical Assistance"
 msgstr "Assistance Technique"
 
@@ -2631,8 +2642,8 @@ msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
 "contract?"
 msgstr ""
-"L'entité \"%s\" existe déjà. Souhaitez-vous l'utiliser pour créer un nouveau"
-" contrat ?"
+"L'entité \"%s\" existe déjà. Souhaitez-vous l'utiliser pour créer un nouveau "
+"contrat ?"
 
 #: templates/wizard/layout.html.twig:128
 msgid "The following items will be saved. Please review before confirming."
@@ -2646,10 +2657,10 @@ msgid ""
 "expected schema: data will be lost. Check that they are not used by another "
 "plugin or by a custom development before running them."
 msgstr ""
-"Les requêtes suivantes suppriment des colonnes ou des tables qui ne font pas"
-" partie du schéma attendu : des données seront perdues. Avant de les "
-"exécuter, vérifiez qu’elles ne sont pas utilisées par un autre plugin ou par"
-" un développement personnalisé."
+"Les requêtes suivantes suppriment des colonnes ou des tables qui ne font pas "
+"partie du schéma attendu : des données seront perdues. Avant de les "
+"exécuter, vérifiez qu’elles ne sont pas utilisées par un autre plugin ou par "
+"un développement personnalisé."
 
 #: templates/wizard/layout.html.twig:158
 msgid "The following unsaved data from this wizard will be lost:"
@@ -2663,8 +2674,7 @@ msgstr "Le format de l'image doit être en JPG ou JPEG"
 
 #: ajax/interventionstakeholderactions.php:75
 #, php-format
-msgid ""
-"The number of days exceeds the remaining days of the intervention (%s)."
+msgid "The number of days exceeds the remaining days of the intervention (%s)."
 msgstr ""
 "Le nombre de jours dépasse le nombre de jours restants de l'intervention "
 "(%s)."
@@ -2681,14 +2691,14 @@ msgid ""
 msgstr ""
 "Les requêtes ci-dessous ne sont que des suggestions basées sur les "
 "différences constatées. Veuillez les examiner, sauvegarder votre base de "
-"données, puis les exécuter manuellement : elles ne sont jamais exécutées par"
-" l’extension."
+"données, puis les exécuter manuellement : elles ne sont jamais exécutées par "
+"l’extension."
 
 #: templates/techlead/assignment_rules.html.twig:47
 #, php-format
 msgid ""
-"The rules are created in the entity %s: select it in your active entities to"
-" create them"
+"The rules are created in the entity %s: select it in your active entities to "
+"create them"
 msgstr ""
 "Les règles sont créées dans l'entité %s: sélectionnez là dans vos entités "
 "actives pour les créer"
@@ -2891,7 +2901,7 @@ msgstr "Mise à jour des données administratives"
 msgid "Update logo"
 msgstr "Mise à jour du logo"
 
-#: src/Contract.php:940
+#: src/Contract.php:988
 msgid "Update management fields"
 msgstr "Mise à jour des champs du type de gestion"
 
@@ -2900,7 +2910,7 @@ msgstr "Mise à jour des champs du type de gestion"
 msgid "Update publisher subscription"
 msgstr "Mise à jour de la souscription éditeur"
 
-#: hook.php:1057
+#: hook.php:1062
 msgid "Update subscription fields"
 msgstr "Mise à jour des champs du type de gestion"
 
@@ -2957,8 +2967,8 @@ msgstr "Intervenant déjà ajouté"
 
 #: templates/preference_form.html.twig:78
 msgid ""
-"Warning : If there are more than one plugin which be loaded at startup, then"
-" only the first will be used"
+"Warning : If there are more than one plugin which be loaded at startup, then "
+"only the first will be used"
 msgstr ""
 "Attention : si plusieurs plugins sont lancés au démarrage, seul le premier "
 "sera actif"
@@ -2976,8 +2986,8 @@ msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
 msgstr ""
-"Attention : le changement de la configuration journalière ou horaire impacte"
-" les types de contrat."
+"Attention : le changement de la configuration journalière ou horaire impacte "
+"les types de contrat."
 
 #: templates/entity/description.html.twig:105
 #: templates/wizard/step1_entity.html.twig:89
@@ -3090,8 +3100,7 @@ msgstr "depuis"
 #: templates/entity/contracts_tab.html.twig:97
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
-"Essayez de modifier le filtre sur le statut par défaut dans la "
-"configuration."
+"Essayez de modifier le filtre sur le statut par défaut dans la configuration."
 
 #: templates/ticket_overview.html.twig:128
 msgid "week"
