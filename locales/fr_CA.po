@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 12:09+0000\n"
+"POT-Creation-Date: 2026-09-26 12:10+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Tiago Graça, 2022\n"
 "Language-Team: French (Canada) (https://www.transifex.com/infotelGLPI/"
@@ -62,7 +62,7 @@ msgstr[1] ""
 msgid "%s client(s) able to open tickets"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:133
+#: templates/ticket_overview.html.twig:146
 #, php-format
 msgid "%s open ticket(s)"
 msgstr ""
@@ -199,7 +199,7 @@ msgstr ""
 msgid "Affected to"
 msgstr "Affecté à"
 
-#: templates/ticket_overview.html.twig:41
+#: templates/ticket_overview.html.twig:44
 msgid "Age (days)"
 msgstr ""
 
@@ -271,7 +271,7 @@ msgstr "Tarif horaire appliqué"
 msgid "Applied rate"
 msgstr "Tarif appliqué"
 
-#: templates/ticket_overview.html.twig:117
+#: templates/ticket_overview.html.twig:130
 msgctxt "button"
 msgid "Apply"
 msgstr ""
@@ -290,6 +290,10 @@ msgstr ""
 
 #: templates/techlead/clients_by_tech.html.twig:167
 msgid "As main tech lead"
+msgstr ""
+
+#: templates/ticket_overview.html.twig:40
+msgid "Assigned technician(s)"
 msgstr ""
 
 #: templates/techlead/assignment_rules.html.twig:79
@@ -692,7 +696,7 @@ msgstr "Commentaires du client"
 msgid "Customer entities"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:238
+#: templates/ticket_overview.html.twig:251
 msgid "Customer follow-up"
 msgstr ""
 
@@ -728,7 +732,7 @@ msgstr "Données administratives"
 #: templates/directhelpdesk_modal.html.twig:79
 #: templates/directhelpdesk_form.html.twig:96
 #: templates/directhelpdesk_ticket_tab.html.twig:35
-#: templates/ticket_overview.html.twig:239
+#: templates/ticket_overview.html.twig:252
 msgid "Date"
 msgstr ""
 
@@ -1039,7 +1043,7 @@ msgstr ""
 #: templates/editorsubscription_wizard.html.twig:44
 #: templates/cridetail_planning_item.html.twig:30
 #: templates/ticket_overview.html.twig:38
-#: templates/ticket_overview.html.twig:235
+#: templates/ticket_overview.html.twig:248
 msgid "Entity"
 msgid_plural "Entities"
 msgstr[0] ""
@@ -1636,12 +1640,12 @@ msgstr ""
 msgid "No only"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:153
+#: templates/ticket_overview.html.twig:166
 msgid "No open ticket assigned to a technician"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:193
-#: templates/ticket_overview.html.twig:211
+#: templates/ticket_overview.html.twig:206
+#: templates/ticket_overview.html.twig:224
 msgid "No overdue ticket"
 msgstr ""
 
@@ -1709,17 +1713,18 @@ msgstr ""
 msgid "No tasks whose category can be used"
 msgstr "Merci de configurer une catégorie de tâche de billet avec le plugin"
 
-#: src/TicketOverview.php:616 templates/entity/techleads_card.html.twig:92
+#: src/TicketOverview.php:617 templates/entity/techleads_card.html.twig:92
 #: templates/techlead/clients_by_tech.html.twig:192
 msgid "No tech lead"
 msgstr ""
 
-#: src/TicketOverview.php:597 templates/ticket_overview.html.twig:173
-#: templates/ticket_overview.html.twig:252
+#: src/TicketOverview.php:598 templates/ticket_overview.html.twig:57
+#: templates/ticket_overview.html.twig:186
+#: templates/ticket_overview.html.twig:265
 msgid "No technician"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:263
+#: templates/ticket_overview.html.twig:276
 msgid "No ticket awaiting an answer"
 msgstr ""
 
@@ -1808,11 +1813,11 @@ msgstr ""
 "Seuls les tickets avec la validation « acceptée » sont concernés pour le "
 "calcul des consommés"
 
-#: templates/ticket_overview.html.twig:88
-#: templates/ticket_overview.html.twig:132
-#: templates/ticket_overview.html.twig:142
-#: templates/ticket_overview.html.twig:170
-#: templates/ticket_overview.html.twig:189
+#: templates/ticket_overview.html.twig:101
+#: templates/ticket_overview.html.twig:145
+#: templates/ticket_overview.html.twig:155
+#: templates/ticket_overview.html.twig:183
+#: templates/ticket_overview.html.twig:202
 msgid "Open in the ticket search"
 msgstr ""
 
@@ -1820,11 +1825,11 @@ msgstr ""
 msgid "Open the rule"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:128
+#: templates/ticket_overview.html.twig:141
 msgid "Open tickets by technician"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:165
+#: templates/ticket_overview.html.twig:178
 msgid "Open tickets without technician"
 msgstr ""
 
@@ -1836,7 +1841,7 @@ msgstr ""
 msgid "Opened contract prestations without remaining days"
 msgstr "Prestations de contrat en cours sans jours restants"
 
-#: templates/ticket_overview.html.twig:40
+#: templates/ticket_overview.html.twig:43
 msgid "Opening date"
 msgstr ""
 
@@ -1857,15 +1862,15 @@ msgstr "Options"
 msgid "Out of contract"
 msgstr "Hors contrat"
 
-#: templates/ticket_overview.html.twig:204
+#: templates/ticket_overview.html.twig:217
 msgid "Overdue tickets by tech lead"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:185
+#: templates/ticket_overview.html.twig:198
 msgid "Overdue tickets by technician"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:111
+#: templates/ticket_overview.html.twig:124
 msgid "Overdue tickets: opened for more than"
 msgstr ""
 
@@ -2389,8 +2394,8 @@ msgstr "État du ticket créé"
 #: templates/entity/contracts_tab.html.twig:53
 #: templates/wizard/step6_intervention_block.html.twig:81
 #: templates/wizard/step4_contract.html.twig:88
-#: templates/ticket_overview.html.twig:39
-#: templates/ticket_overview.html.twig:236
+#: templates/ticket_overview.html.twig:42
+#: templates/ticket_overview.html.twig:249
 msgid "Status"
 msgstr ""
 
@@ -2510,7 +2515,7 @@ msgstr "Assistance Technique"
 #: templates/generatecri_wizard.html.twig:129
 #: templates/generatecri_wizard.html.twig:176
 #: templates/directhelpdesk_ticket_tab.html.twig:36
-#: templates/ticket_overview.html.twig:237
+#: templates/ticket_overview.html.twig:250
 #: templates/report_occupation_form.html.twig:46
 msgid "Technician"
 msgid_plural "Technicians"
@@ -2601,7 +2606,7 @@ msgstr ""
 
 #: templates/monthly_old_contractdays_alert.html.twig:33
 #: templates/ticket_overview.html.twig:37
-#: templates/ticket_overview.html.twig:234
+#: templates/ticket_overview.html.twig:247
 msgid "Ticket"
 msgid_plural "Tickets"
 msgstr[0] ""
@@ -2615,7 +2620,7 @@ msgstr "Informations du ticket"
 msgid "Ticket not validated"
 msgstr "Ticket non validé"
 
-#: templates/ticket_overview.html.twig:222
+#: templates/ticket_overview.html.twig:235
 msgid "Tickets whose last action is a customer follow-up"
 msgstr ""
 
@@ -2718,7 +2723,7 @@ msgstr "Déplacement (en jours)"
 #: templates/wizard/step2_contact_block.html.twig:86
 #: templates/generatecri_wizard.html.twig:55
 #: templates/contract_detail_form.html.twig:55
-#: templates/ticket_overview.html.twig:104
+#: templates/ticket_overview.html.twig:117
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] ""
@@ -2976,7 +2981,7 @@ msgstr ""
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:115
+#: templates/ticket_overview.html.twig:128
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] ""
