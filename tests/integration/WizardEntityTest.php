@@ -143,9 +143,85 @@ class WizardEntityTest extends DbTestCase
         $this->assertTrue($result['success']);
 
         $session = WizardController::getSession();
-        $this->assertSame('0123456789', $session['entity_data']['phonenumber']);
+        // Phone numbers are stored with space separators
+        $this->assertSame('01 23 45 67 89', $session['entity_data']['phonenumber']);
         $this->assertSame('test@example.com', $session['entity_data']['email']);
         $this->assertSame('Paris', $session['entity_data']['town']);
+    }
+
+    public function testSaveEntityNormalizesPhoneAndWebsite(): void
+    {
+        $this->login();
+
+        $result = WizardController::saveEntityAndReturn([
+            'name'        => 'Entity Normalized',
+            'entities_id' => $this->wizardParentEntity(),
+            'phonenumber' => '+33.1.23.45.67.89',
+            'fax'         => '01-23-45-67-89',
+            'email'       => ' contact@example.com ',
+            'website'     => 'www.example.com',
+        ]);
+
+        $this->assertTrue($result['success']);
+
+        $session = WizardController::getSession();
+        $this->assertSame('+33 1 23 45 67 89', $session['entity_data']['phonenumber']);
+        $this->assertSame('01 23 45 67 89', $session['entity_data']['fax']);
+        $this->assertSame('contact@example.com', $session['entity_data']['email']);
+        $this->assertSame('https://www.example.com', $session['entity_data']['website']);
+    }
+
+    public function testSaveEntityRejectsInvalidEmailAndWebsite(): void
+    {
+        $this->login();
+
+        $result = WizardController::saveEntityAndReturn([
+            'name'        => 'Entity Invalid',
+            'entities_id' => $this->wizardParentEntity(),
+            'email'       => 'contact@example',
+            'website'     => 'javascript:alert(1)',
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertArrayHasKey('email', $result['errors']);
+        $this->assertArrayHasKey('website', $result['errors']);
+        $this->assertEmpty(WizardController::getSession()['entity_data']);
+    }
+
+    public function testSaveContactsNormalizesNamesAndPhones(): void
+    {
+        $this->login();
+
+        $result = WizardController::saveContactsAndReturn(['contacts' => [
+            1 => [
+                'name'      => 'dupont-martin',
+                'firstname' => 'éLODIE',
+                'phone'     => '01.23.45.67.89',
+                'mobile'    => '0612345678',
+                'email'     => 'elodie@example.com',
+            ],
+        ]]);
+
+        $this->assertTrue($result['success']);
+
+        $contact = WizardController::getSession()['contacts_data'][1];
+        $this->assertSame('DUPONT-MARTIN', $contact['name']);
+        $this->assertSame('Élodie', $contact['firstname']);
+        $this->assertSame('01 23 45 67 89', $contact['phone']);
+        $this->assertSame('06 12 34 56 78', $contact['mobile']);
+    }
+
+    public function testSaveContactsRejectsInvalidEmail(): void
+    {
+        $this->login();
+
+        $result = WizardController::saveContactsAndReturn(['contacts' => [
+            1 => ['name' => 'Durand', 'firstname' => 'Paul', 'email' => 'paul@'],
+        ]]);
+
+        $this->assertFalse($result['success']);
+        $this->assertArrayHasKey('email', $result['errors']);
+        $this->assertSame(1, $result['contact_idx']);
     }
 
     public function testCommitCreatesEntityInDb(): void
