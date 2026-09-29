@@ -1321,7 +1321,7 @@ msgstr "Date d'intervention"
 #: src/WizardController.php:1183 src/WizardController.php:1194
 #: src/WizardController.php:1279
 msgid "Intervention not saved yet"
-msgstr "La prestation n'est pas encore sauvée"
+msgstr "La prestation n'est pas encore sauvegardée"
 
 #: templates/cridetail_periods.html.twig:33
 msgid "Intervention of contract"
@@ -1793,7 +1793,7 @@ msgstr[2] "Interventions non facturées"
 
 #: templates/wizard/step6_intervention_block.html.twig:40
 msgid "Not saved"
-msgstr "Non sauvé"
+msgstr "Non sauvegardé"
 
 #: src/Gantt.php:89 src/Gantt.php:162
 msgid "Nothing to display"
@@ -2175,7 +2175,7 @@ msgstr "La souscription éditeur a été supprimée avec succès."
 
 #: front/editorsubscription.form.php:52
 msgid "Publisher subscription saved successfully."
-msgstr "La souscription éditeur a été sauvée avec succès."
+msgstr "La souscription éditeur a été sauvegardée avec succès."
 
 #: templates/entity/editorsubscription_tab.html.twig:33
 msgid "Publisher subscriptions"
@@ -2295,12 +2295,12 @@ msgstr "Règles à créer"
 #: templates/config_options_form.html.twig:157
 msgctxt "button"
 msgid "Save"
-msgstr "Sauver"
+msgstr "Sauvegarder"
 
 #: templates/wizard/step6_interventions.html.twig:63
 #: templates/wizard/step6_interventions.html.twig:65
 msgid "Save and finish"
-msgstr "Sauver et terminer"
+msgstr "Sauvegarder et terminer"
 
 #: templates/config_options_form.html.twig:48
 msgid "Save reports in glpi"
@@ -2312,7 +2312,7 @@ msgstr "Enregistrer le compte-rendu d'intervention"
 
 #: templates/wizard/step6_intervention_block.html.twig:118
 msgid "Save this period"
-msgstr "Sauver cette prestation"
+msgstr "Sauvegarder cette prestation"
 
 #: src/CriType.php:153 hook.php:105 hook.php:124
 msgid "Scheduled intervention"
