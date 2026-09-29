@@ -1768,7 +1768,12 @@ class WizardController
         }
 
         if (!empty($session['contract_data']['name'])) {
-            $items[] = ['type' => __('Contract'), 'label' => $session['contract_data']['name']];
+            $contract_label = $session['contract_data']['name'];
+            $contract_num   = trim((string) ($session['contract_data']['num'] ?? ''));
+            if ($contract_num !== '') {
+                $contract_label .= ' — ' . $contract_num;
+            }
+            $items[] = ['type' => __('Contract'), 'label' => $contract_label];
         }
 
         $docCount = count($session['documents_ids'] ?? []);
@@ -2219,7 +2224,9 @@ class WizardController
             'existing_docs'      => $existing_docs,
             'entity_field'       => self::sessionEntityField('entities_id', $session),
             // Its id dropdown__contract_template_id<rand_tpl> is read by wizardLoadContractTemplate()
-            'template_field'     => self::dropdownField(\Contract::class, [
+            // Contract::dropdown() lists the active contracts only, whatever its options: the
+            // generic dropdown is the one honouring the is_template condition.
+            'template_field'     => self::genericDropdownField(\Contract::class, [
                 'name'        => '_contract_template_id',
                 'rand'        => $rand_tpl,
                 'value'       => 0,
@@ -2342,6 +2349,19 @@ class WizardController
     private static function dropdownField(string $itemtype, array $options): array
     {
         return ['kind' => 'dropdown', 'itemtype' => $itemtype, 'options' => $options];
+    }
+
+    /**
+     * Dropdown of an itemtype rendered by Dropdown::show() itself, bypassing the dropdown()
+     * override of the itemtype (which may ignore the 'condition' option).
+     *
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param array<string, mixed>      $options  Options of Dropdown::show()
+     * @return array<string, mixed>
+     */
+    private static function genericDropdownField(string $itemtype, array $options): array
+    {
+        return ['kind' => 'generic_dropdown', 'itemtype' => $itemtype, 'options' => $options];
     }
 
     /**

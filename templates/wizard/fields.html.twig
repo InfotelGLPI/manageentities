@@ -27,7 +27,7 @@
 
 {#
  Renders a field descriptor built by WizardController (readonlyField(), dropdownField(),
- arrayField(), numberField(), timestampField()). A null descriptor renders nothing.
+ genericDropdownField(), arrayField(), numberField(), timestampField()). A null descriptor renders nothing.
  #}
 {% macro field(field) %}
     {% if field is empty %}
@@ -37,6 +37,8 @@
         <input type="text" class="form-control" value="{{ field.label }}" readonly disabled>
     {% elseif field.kind == 'dropdown' %}
         {{ field.itemtype|itemtype_dropdown(field.options) }}
+    {% elseif field.kind == 'generic_dropdown' %}
+        {% do call('Dropdown::show', [field.itemtype, field.options]) %}
     {% elseif field.kind == 'array' %}
         {% do call('Dropdown::showFromArray', [field.name, field.elements, field.options]) %}
     {% elseif field.kind == 'number' %}
