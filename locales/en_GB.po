@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 12:44+0000\n"
+"POT-Creation-Date: 2026-09-29 10:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:2226
+#: src/WizardController.php:2233
 msgid "-- Select a template --"
 msgstr ""
 
@@ -528,7 +528,7 @@ msgid_plural "Contacts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1971
+#: src/WizardController.php:1976
 msgid "Contacts"
 msgstr ""
 
@@ -536,7 +536,7 @@ msgstr ""
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr "Content, end and begin date are mandatory for a task !"
 
-#: src/WizardController.php:1964 src/WizardController.php:1976
+#: src/WizardController.php:1969 src/WizardController.php:1981
 #: templates/wizard/step6_intervention_block.html.twig:98
 #: templates/wizard/step4_contract.html.twig:39
 #: templates/followup_report.html.twig:55
@@ -1443,8 +1443,8 @@ msgid_plural "Management of task categories"
 msgstr[0] "Management of task category"
 msgstr[1] "Management of task categories"
 
-#: src/Contract.php:76 src/WizardController.php:1965
-#: src/WizardController.php:1977 templates/wizard/step5_management.html.twig:42
+#: src/Contract.php:76 src/WizardController.php:1970
+#: src/WizardController.php:1982 templates/wizard/step5_management.html.twig:42
 #: templates/contract_detail_form.html.twig:130
 msgid "Management type"
 msgstr ""
@@ -1749,7 +1749,7 @@ msgstr ""
 msgid "Nothing to display"
 msgstr "Nothing to display"
 
-#: src/WizardController.php:2006
+#: src/WizardController.php:2011
 msgid "Nothing to display."
 msgstr ""
 
@@ -1887,8 +1887,8 @@ msgid "Period comment"
 msgstr ""
 
 #: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:762
-#: src/WizardController.php:1784 src/WizardController.php:1859
-#: src/WizardController.php:1966 src/WizardController.php:1978
+#: src/WizardController.php:1789 src/WizardController.php:1864
+#: src/WizardController.php:1971 src/WizardController.php:1983
 #: src/Config.php:194 src/Entity.php:230
 #: templates/wizard/step6_intervention_block.html.twig:35
 #: templates/wizard/step6_interventions.html.twig:36
@@ -2411,7 +2411,7 @@ msgstr "Status list contract for the general monitoring"
 msgid "Study and advice"
 msgstr "Study and advice"
 
-#: src/WizardController.php:1974
+#: src/WizardController.php:1979
 msgid "Subscription"
 msgstr ""
 
@@ -2551,14 +2551,14 @@ msgstr "Thanks to select a intervention type"
 msgid "The contract period %s already exists"
 msgstr "The contract period %s already exists"
 
-#: src/WizardController.php:2008
+#: src/WizardController.php:2013
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
 "place it under the default parent entity to continue?"
 msgstr ""
 
-#: src/WizardController.php:2007
+#: src/WizardController.php:2012
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
@@ -2756,7 +2756,7 @@ msgstr "Type of service contract"
 msgid "Type of service contract missing"
 msgstr "Type of service contract missing"
 
-#: src/WizardController.php:2009
+#: src/WizardController.php:2014
 msgid "Unarchive and continue"
 msgstr ""
 
@@ -2855,7 +2855,7 @@ msgid_plural "Users"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1800 src/InterventionStakeholder.php:52
+#: src/WizardController.php:1805 src/InterventionStakeholder.php:52
 #: templates/wizard/step6_stakeholders_section.html.twig:34
 msgid "User affected"
 msgid_plural "Users affected"
