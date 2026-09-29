@@ -171,4 +171,69 @@ class WizardContractTest extends DbTestCase
         $this->assertEquals(1, countElementsInTable('glpi_contracts', ['name' => "CTR-{$uid}"]));
         $this->assertEquals(1, countElementsInTable('glpi_entities', ['name' => "Ent-{$uid}"]));
     }
+
+    public function testFinishSummaryShowsContractNumber(): void
+    {
+        $this->login();
+        $this->prepareEntityInSession();
+
+        $input = $this->minimalContractInput();
+        WizardController::saveContractAndReturn($input);
+
+        // Same list as the one sent by the WizardCreation notification.
+        $labels = array_column(WizardController::getFinishSummaryAndReturn()['items'], 'label', 'type');
+        $this->assertSame($input['name'] . ' — ' . $input['num'], $labels[__('Contract')]);
+    }
+
+    public function testTemplateDropdownOnlyListsContractTemplates(): void
+    {
+        $this->login();
+        $this->prepareEntityInSession();
+        WizardController::saveContractAndReturn($this->minimalContractInput());
+
+        $uid      = $this->getUniqueString();
+        $entities = $this->wizardParentEntity();
+        $template = $this->createItem(\Contract::class, [
+            'name'          => "TPL-{$uid}",
+            'template_name' => "TPL-{$uid}",
+            'is_template'   => 1,
+            'entities_id'   => $entities,
+        ]);
+        $contract = $this->createItem(\Contract::class, [
+            'name'        => "CTR-real-{$uid}",
+            'entities_id' => $entities,
+        ]);
+
+        // Field descriptor of the "Prefill from a contract template" dropdown of step 4.
+        $build = new \ReflectionMethod(WizardController::class, 'buildContractVars');
+        $field = $build->invoke(null, WizardController::getSession(), mt_rand())['template_field'];
+
+        // Contract::dropdown() ignores the 'condition' option and lists active contracts only:
+        // the field must go through the generic Dropdown::show().
+        $this->assertSame('generic_dropdown', $field['kind']);
+
+        $condition_key = \Dropdown::addNewCondition($field['options']['condition']);
+        $values = json_decode(\Dropdown::getDropdownValue([
+            'itemtype'        => \Contract::class,
+            'condition'       => $condition_key,
+            'entity_restrict' => -1,
+            'searchText'      => $uid,
+            'page'            => 1,
+            'page_limit'      => 100,
+            '_idor_token'     => \Session::getNewIDORToken(\Contract::class, [
+                'condition'       => $condition_key,
+                'entity_restrict' => -1,
+            ]),
+        ]), true);
+        $this->assertIsArray($values, 'IDOR token or parameters rejected');
+
+        $ids = [];
+        array_walk_recursive($values['results'], static function ($value, $key) use (&$ids) {
+            if ($key === 'id') {
+                $ids[] = (int) $value;
+            }
+        });
+        $this->assertContains($template->getID(), $ids);
+        $this->assertNotContains($contract->getID(), $ids);
+    }
 }
