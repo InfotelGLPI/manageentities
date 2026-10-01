@@ -397,15 +397,50 @@ class DirectHelpdesk extends CommonDBTM
     }
 
     /**
+     * Convert unbilled hours to man-days, rounded up to the next quarter of a day: the steps
+     * the CRI bills in (see CriPDF::TotalTpsPassesArrondis(), whose 0.001 tolerance is kept so
+     * that float noise does not push an exact quarter to the next one).
+     */
+    public static function toManDays(float $hours, float $hours_per_day): float
+    {
+        if ($hours <= 0 || $hours_per_day <= 0) {
+            return 0.0;
+        }
+
+        return ceil(($hours / $hours_per_day - 0.001) * 4) / 4;
+    }
+
+    /**
+     * Display a man-day count with only the decimals it needs (1, 0,5, 0,25), in the number
+     * format of the user.
+     */
+    public static function formatManDays(float $days): string
+    {
+        $decimals = match (true) {
+            fmod($days, 1) == 0     => 0,
+            fmod($days * 2, 1) == 0 => 1,
+            default                 => 2,
+        };
+
+        return Html::formatNumber($days, false, $decimals);
+    }
+
+    /**
      * The data behind showUnbilledOverview(), extracted so the screen and the CSV export cannot
      * drift apart: both read the very same rows, built once here.
+     *
+     * In daily mode the main table and its export speak in man-days (the unit the customer is
+     * billed in) rather than in hours; the two alert lists keep the hours.
      *
      * @return array{
      *     rows: array<int, array<string, mixed>>,
      *     archived: array<int, array<string, mixed>>,
      *     stale: array<int, array<string, mixed>>,
      *     total_hours: float,
-     *     total_nb: int
+     *     total_days: float,
+     *     total_days_label: string,
+     *     total_nb: int,
+     *     is_day_mode: bool
      * }
      */
     private static function buildUnbilledOverview(): array
@@ -536,21 +571,26 @@ class DirectHelpdesk extends CommonDBTM
             $hours_per_day = 8.0;
         }
         $half_day_hours = $hours_per_day / 2;
+        $is_day_mode    = (int) ($config->fields['hourorday'] ?? Config::DAY) === Config::DAY;
 
         $rows        = [];
         $archived    = [];
         $stale       = [];
         $total_hours = 0.0;
+        $total_days  = 0.0;
         $total_nb    = 0;
 
         foreach ($aggregates as $entities_id => $data) {
             $techlead_id = $main_techleads[$entities_id] ?? 0;
+            $days        = self::toManDays($data['hours'], $hours_per_day);
             $row = [
                 'entities_id' => $entities_id,
                 'name'        => $names[$entities_id] ?? '',
                 'techlead'    => $techlead_id > 0 ? getUserName($techlead_id) : '',
                 'techlead_url' => $techlead_id > 0 ? User::getFormURLWithID($techlead_id) : '',
                 'hours'       => $data['hours'],
+                'days'        => $days,
+                'days_label'  => self::formatManDays($days),
                 'nb'          => $data['nb'],
                 'oldest'      => $data['oldest'] !== null ? Html::convDate($data['oldest']) : '',
                 // Kept alongside the formatted date: the lists are ordered on it, and the
@@ -573,6 +613,7 @@ class DirectHelpdesk extends CommonDBTM
             if (in_array($entities_id, $with_active_contract, true)) {
                 $rows[]       = $row;
                 $total_hours += $data['hours'];
+                $total_days  += $days;
                 $total_nb    += $data['nb'];
             }
 
@@ -599,7 +640,10 @@ class DirectHelpdesk extends CommonDBTM
             'archived'    => $archived,
             'stale'       => $stale,
             'total_hours' => round($total_hours, 2),
+            'total_days'  => $total_days,
+            'total_days_label' => self::formatManDays($total_days),
             'total_nb'    => $total_nb,
+            'is_day_mode' => $is_day_mode,
         ];
     }
 
@@ -632,7 +676,9 @@ class DirectHelpdesk extends CommonDBTM
             _n('Client', 'Clients', 1, 'manageentities'),
             __('Main tech lead', 'manageentities'),
             _n('Intervention', 'Interventions', 2, 'manageentities'),
-            __('Unbilled hours', 'manageentities'),
+            $data['is_day_mode']
+                ? __('Unbilled man-days', 'manageentities')
+                : __('Unbilled hours', 'manageentities'),
             __('Oldest intervention', 'manageentities'),
             sprintf(__('More than %d months', 'manageentities'), self::UNBILLED_ALERT_MONTHS),
         ], ';');
@@ -654,7 +700,7 @@ class DirectHelpdesk extends CommonDBTM
                 $csvSafe($row['name'] ?? ''),
                 $csvSafe($row['techlead'] ?? ''),
                 (string) $row['nb'],
-                (string) $row['hours'],
+                (string) ($data['is_day_mode'] ? $row['days'] : $row['hours']),
                 // Raw date rather than the displayed one: a spreadsheet sorts an ISO date and
                 // cannot sort dd/mm/yyyy.
                 !empty($row['oldest_raw']) ? substr((string) $row['oldest_raw'], 0, 10) : '',
@@ -666,7 +712,7 @@ class DirectHelpdesk extends CommonDBTM
             __('Total'),
             '',
             (string) $data['total_nb'],
-            (string) $data['total_hours'],
+            (string) ($data['is_day_mode'] ? $data['total_days'] : $data['total_hours']),
             '',
             '',
         ], ';');
