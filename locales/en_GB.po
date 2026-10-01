@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 13:38+0000\n"
+"POT-Creation-Date: 2026-10-01 13:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1910,7 +1910,7 @@ msgstr[1] "Periods of contract"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: src/CriDetail.php:831 src/CriDetail.php:1790 hook.php:885
+#: src/CriDetail.php:831 src/CriDetail.php:1791 hook.php:885
 #: templates/contractday_list.html.twig:33
 #: templates/contract_link_dropdown.html.twig:58
 msgid "Periods of contract"
@@ -2635,7 +2635,7 @@ msgstr[1] ""
 msgid "Ticket informations"
 msgstr "Ticket informations"
 
-#: src/CriDetail.php:1298 src/CriDetail.php:1824
+#: src/CriDetail.php:1298 src/CriDetail.php:1825
 msgid "Ticket not validated"
 msgstr "Ticket not validated"
 
@@ -2759,7 +2759,7 @@ msgstr "Type of contract"
 msgid "Type of service contract"
 msgstr "Type of service contract"
 
-#: src/CriDetail.php:1307 src/CriDetail.php:1831
+#: src/CriDetail.php:1307 src/CriDetail.php:1832
 msgid "Type of service contract missing"
 msgstr "Type of service contract missing"
 
