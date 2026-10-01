@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 13:53+0000\n"
+"POT-Creation-Date: 2026-10-01 16:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -404,7 +404,7 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/DirectHelpdesk.php:632 src/Followup.php:899 src/Followup.php:909
+#: src/DirectHelpdesk.php:676 src/Followup.php:899 src/Followup.php:909
 #: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
 #: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:122
 #: templates/techlead/clients_by_tech.html.twig:120
@@ -1272,7 +1272,7 @@ msgstr ""
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:634 src/Contract.php:734
+#: src/DirectHelpdesk.php:678 src/Contract.php:734
 #: templates/entity/unbilled_tab.html.twig:124
 msgid "Intervention"
 msgid_plural "Interventions"
@@ -1341,7 +1341,7 @@ msgstr ""
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:761 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:807 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr ""
 
@@ -1409,7 +1409,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG or JPEG)"
 
-#: src/DirectHelpdesk.php:633 templates/entity/unbilled_tab.html.twig:123
+#: src/DirectHelpdesk.php:677 templates/entity/unbilled_tab.html.twig:123
 #: templates/entity/techleads_card.html.twig:64
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
@@ -1501,7 +1501,7 @@ msgstr "Mode of management"
 msgid "Monthly follow-up"
 msgstr "Monthly follow-up"
 
-#: src/DirectHelpdesk.php:637 templates/entity/unbilled_tab.html.twig:147
+#: src/DirectHelpdesk.php:683 templates/entity/unbilled_tab.html.twig:147
 #, php-format
 msgid "More than %d months"
 msgstr ""
@@ -1784,7 +1784,7 @@ msgstr "Object of intervention"
 msgid "Occupation report"
 msgstr ""
 
-#: src/DirectHelpdesk.php:636 templates/entity/unbilled_tab.html.twig:126
+#: src/DirectHelpdesk.php:682 templates/entity/unbilled_tab.html.twig:126
 msgid "Oldest intervention"
 msgstr ""
 
@@ -2767,7 +2767,7 @@ msgstr "Type of service contract missing"
 msgid "Unarchive and continue"
 msgstr ""
 
-#: src/DirectHelpdesk.php:635 templates/entity/unbilled_tab.html.twig:125
+#: src/DirectHelpdesk.php:681 templates/entity/unbilled_tab.html.twig:125
 msgid "Unbilled hours"
 msgstr ""
 
@@ -2777,6 +2777,10 @@ msgstr ""
 
 #: src/Entity.php:80 src/Entity.php:187
 msgid "Unbilled interventions"
+msgstr ""
+
+#: src/DirectHelpdesk.php:680
+msgid "Unbilled man-days"
 msgstr ""
 
 #: ajax/wizard.php:136
