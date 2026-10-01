@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 13:38+0000\n"
+"POT-Creation-Date: 2026-10-01 13:53+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -1961,7 +1961,7 @@ msgstr[2] "Prestations de contrat"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 
-#: src/CriDetail.php:831 src/CriDetail.php:1790 hook.php:885
+#: src/CriDetail.php:831 src/CriDetail.php:1791 hook.php:885
 #: templates/contractday_list.html.twig:33
 #: templates/contract_link_dropdown.html.twig:58
 msgid "Periods of contract"
@@ -2731,7 +2731,7 @@ msgstr[2] "Tickets"
 msgid "Ticket informations"
 msgstr "Informations du ticket"
 
-#: src/CriDetail.php:1298 src/CriDetail.php:1824
+#: src/CriDetail.php:1298 src/CriDetail.php:1825
 msgid "Ticket not validated"
 msgstr "Ticket non validé"
 
@@ -2856,7 +2856,7 @@ msgstr "Type de contrat"
 msgid "Type of service contract"
 msgstr "Type de contrat de service"
 
-#: src/CriDetail.php:1307 src/CriDetail.php:1831
+#: src/CriDetail.php:1307 src/CriDetail.php:1832
 msgid "Type of service contract missing"
 msgstr "Type de contrat de service manquant"
 
