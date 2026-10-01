@@ -827,8 +827,15 @@ class WizardController
         $name              = trim($input['name'] ?? '');
         $begin_date        = ($input['begin_date'] ?? '') !== '' ? $input['begin_date'] : null;
 
-        // Only store subscription data if the user actually filled something meaningful
-        $has_content = $active_sub || $cloud_client || $name !== '' || $begin_date !== null;
+        // Only store subscription data if the user actually filled something meaningful.
+        // Neither the name (pre-filled with the entity name) nor the publisher type (checked
+        // by default) count: the optional step could otherwise never be skipped.
+        $has_content = $cloud_client
+            || $begin_date !== null
+            || ($input['end_date'] ?? '') !== ''
+            || trim($input['customer_account_id'] ?? '') !== ''
+            || (int) ($input['plugin_manageentities_subscriptionlevels_id'] ?? 0) > 0
+            || trim($input['comment'] ?? '') !== '';
 
         if (!$has_content) {
             $session['subscription_data'] = [];
@@ -2564,6 +2571,7 @@ class WizardController
             'stakeholders'     => $enriched,
             'credit'           => $credit,
             'remaining_days'   => $remaining,
+            'is_day'           => Config::getInstance()->fields['hourorday'] == Config::DAY,
             'wizard_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . self::currentWizardId(),
             // Its id dropdown_new_user_<idx><rand> is read by wizardAddStakeholder()
             'user_field'       => self::dropdownField(User::class, [

@@ -27,7 +27,9 @@
 
 {% import '@manageentities/wizard/fields.html.twig' as wizard_fields %}
 
-<div class="wizard-stakeholders-section mt-3" id="stakeholders-section-{{ intervention_idx }}">
+{% set unit_label = is_day ? __('days', 'manageentities') : __('hours', 'manageentities') %}
+<div class="wizard-stakeholders-section mt-3" id="stakeholders-section-{{ intervention_idx }}"
+    data-unit="{{ unit_label }}">
     <div class="d-flex align-items-center gap-2 mb-2">
         <h4 class="mb-0">
             <i class="ti ti-users me-1"></i>
@@ -38,7 +40,7 @@
         <span class="ms-auto text-muted small" id="remaining-label-{{ intervention_idx }}">
             {{ __('Remaining', 'manageentities') }} :
             <strong id="remaining-days-{{ intervention_idx }}">{{ remaining_days|number_format(2) }}</strong>
-            / {{ credit|number_format(2) }} {{ __('days', 'manageentities') }}
+            / {{ credit|number_format(2) }} {{ unit_label }}
         </span>
         {% endif %}
     </div>
@@ -47,7 +49,7 @@
         {% for sh in stakeholders %}
         <div class="d-flex align-items-center gap-2 mb-1 stakeholder-row" data-id="{{ sh.id }}">
             <span class="badge bg-secondary-lt">{{ sh.user_name }}</span>
-            <span class="text-muted small">{{ sh.number_affected_days|number_format(2) }} {{ _n('day', 'days', sh.number_affected_days, 'manageentities') }}</span>
+            <span class="text-muted small">{{ sh.number_affected_days|number_format(2) }} {{ is_day ? _n('day', 'days', sh.number_affected_days, 'manageentities') : unit_label }}</span>
             <button type="button" class="btn btn-sm btn-outline-danger"
                 data-me-wizard-action="delete-stakeholder" data-id="{{ sh.id }}">
                 <i class="ti ti-trash"></i>
@@ -63,7 +65,7 @@
         <input type="number" step="0.5" min="0" max="{{ remaining_days }}"
             id="new_nb_days_{{ intervention_idx }}"
             class="form-control" style="width:110px"
-            placeholder="{{ __('Days', 'manageentities') }}">
+            placeholder="{{ is_day ? __('Days', 'manageentities') : _n('Hour', 'Hours', 2) }}">
         <button type="button" class="btn btn-sm btn-outline-secondary"
             data-me-wizard-action="add-stakeholder" data-idx="{{ intervention_idx }}" data-rand="{{ rand }}">
             <i class="ti ti-plus me-1"></i>{{ __('Add user', 'manageentities') }}

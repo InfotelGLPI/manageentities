@@ -1574,6 +1574,7 @@ class CriDetail extends CommonDBTM
             'is_new'                    => empty($cridetail),
             'cridetail_id'              => $cridetail['id'] ?? 0,
             'remaining_days'            => $remaining_days,
+            'is_day'                    => $me_config->fields['hourorday'] == Config::DAY,
             'contractdays_id_selected'  => $contractdays_id_selected,
             'ajax_url'                  => PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/getRemainingDays.php',
             'contract_comment'          => $contract_comment,

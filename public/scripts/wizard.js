@@ -730,7 +730,7 @@ function addStakeholder(intervention_idx, rand, url) {
     }
     const nb_days = days_el ? parseFloat(days_el.value) : 0;
     if (!nb_days || nb_days <= 0) {
-        alert('Please enter a number of days greater than 0');
+        alert('Please enter a value greater than 0');
         return;
     }
 
@@ -756,7 +756,8 @@ function addStakeholder(intervention_idx, rand, url) {
                 row.dataset.id = res.stakeholder_id;
                 row.append(
                     makeElement('span', 'badge bg-secondary-lt', res.user_name),
-                    makeElement('span', 'text-muted small', `${parseFloat(res.number_affected_days).toFixed(2)} day(s)`),
+                    // Days or hours, depending on the plugin configuration
+                    makeElement('span', 'text-muted small', `${parseFloat(res.number_affected_days).toFixed(2)} ${list_el.closest('.wizard-stakeholders-section')?.dataset.unit ?? ''}`),
                     trashButton('delete-stakeholder', res.stakeholder_id),
                 );
                 list_el.append(row);

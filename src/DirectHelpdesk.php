@@ -40,6 +40,7 @@ use ITILCategory;
 use Migration;
 use Session;
 use Toolbox;
+use User;
 
 class DirectHelpdesk extends CommonDBTM
 {
@@ -508,6 +509,19 @@ class DirectHelpdesk extends CommonDBTM
             }
         }
 
+        // Main tech lead of each customer: the person to chase for the billing
+        $main_techleads = [];
+        if (!empty($aggregates)) {
+            foreach (TechLead::getTechLeadsByEntity(array_keys($aggregates)) as $entities_id => $techleads) {
+                foreach ($techleads as $techlead) {
+                    if ($techlead['is_default']) {
+                        $main_techleads[$entities_id] = $techlead['users_id'];
+                        break;
+                    }
+                }
+            }
+        }
+
         $threshold = date(
             'Y-m-d H:i:s',
             strtotime('-' . self::UNBILLED_ALERT_MONTHS . ' months'),
@@ -530,9 +544,12 @@ class DirectHelpdesk extends CommonDBTM
         $total_nb    = 0;
 
         foreach ($aggregates as $entities_id => $data) {
+            $techlead_id = $main_techleads[$entities_id] ?? 0;
             $row = [
                 'entities_id' => $entities_id,
                 'name'        => $names[$entities_id] ?? '',
+                'techlead'    => $techlead_id > 0 ? getUserName($techlead_id) : '',
+                'techlead_url' => $techlead_id > 0 ? User::getFormURLWithID($techlead_id) : '',
                 'hours'       => $data['hours'],
                 'nb'          => $data['nb'],
                 'oldest'      => $data['oldest'] !== null ? Html::convDate($data['oldest']) : '',
@@ -613,6 +630,7 @@ class DirectHelpdesk extends CommonDBTM
 
         fputcsv($out, [
             _n('Client', 'Clients', 1, 'manageentities'),
+            __('Main tech lead', 'manageentities'),
             _n('Intervention', 'Interventions', 2, 'manageentities'),
             __('Unbilled hours', 'manageentities'),
             __('Oldest intervention', 'manageentities'),
@@ -634,6 +652,7 @@ class DirectHelpdesk extends CommonDBTM
         foreach ($data['rows'] as $row) {
             fputcsv($out, [
                 $csvSafe($row['name'] ?? ''),
+                $csvSafe($row['techlead'] ?? ''),
                 (string) $row['nb'],
                 (string) $row['hours'],
                 // Raw date rather than the displayed one: a spreadsheet sorts an ISO date and
@@ -645,6 +664,7 @@ class DirectHelpdesk extends CommonDBTM
 
         fputcsv($out, [
             __('Total'),
+            '',
             (string) $data['total_nb'],
             (string) $data['total_hours'],
             '',

@@ -120,6 +120,7 @@
                 <thead>
                     <tr>
                         <th>{{ _n('Client', 'Clients', 1, 'manageentities') }}</th>
+                        <th>{{ __('Main tech lead', 'manageentities') }}</th>
                         <th class="text-end">{{ _n('Intervention', 'Interventions', 2, 'manageentities') }}</th>
                         <th class="text-end">{{ __('Unbilled hours', 'manageentities') }}</th>
                         <th>{{ __('Oldest intervention', 'manageentities') }}</th>
@@ -129,6 +130,13 @@
                     {% for row in rows %}
                     <tr>
                         <td><a href="{{ row.url }}">{{ row.name }}</a></td>
+                        <td>
+                            {% if row.techlead is not empty %}
+                                <a href="{{ row.techlead_url }}">{{ row.techlead }}</a>
+                            {% else %}
+                                <span class="text-muted fst-italic">{{ __('No main tech lead', 'manageentities') }}</span>
+                            {% endif %}
+                        </td>
                         <td class="text-end">{{ row.nb }}</td>
                         <td class="text-end fw-bold">{{ row.hours }}</td>
                         <td>
@@ -146,6 +154,7 @@
                 <tfoot>
                     <tr class="fw-bold">
                         <td>{{ __('Total') }}</td>
+                        <td></td>
                         <td class="text-end">{{ total_nb }}</td>
                         <td class="text-end">{{ total_hours }}</td>
                         <td></td>

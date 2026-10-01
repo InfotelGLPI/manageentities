@@ -164,7 +164,8 @@ class InterventionStakeholder extends CommonDBTM
                 $user->fields['realname'] ?? '',
                 $user->fields['firstname'] ?? '',
             ),
-            'nb_days'        => (float) $item->fields['number_affected_days'] . "\u{00A0}" . _n('Day', 'Days', 2),
+            'nb_days'        => (float) $item->fields['number_affected_days'] . "\u{00A0}"
+                . (Config::getInstance()->fields['hourorday'] == Config::DAY ? _n('Day', 'Days', 2) : _n('Hour', 'Hours', 2)),
         ]);
     }
 

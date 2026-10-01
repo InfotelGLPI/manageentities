@@ -40,14 +40,18 @@
     {% endif %}
 {% endif %}
 
+{% set remaining_label = is_day ? __('Remaining days', 'manageentities') : __('Remaining hours', 'manageentities') %}
+{% set no_remaining_label = is_day
+    ? __('No days remaining on this contract period', 'manageentities')
+    : __('No hours remaining on this contract period', 'manageentities') %}
 {# Behaviour: public/scripts/cridetail-contract.js, configured by data-me-cridetail #}
 <div class="card w-100" data-me-cridetail="{{ {
     ajax_url: ajax_url,
     closed_state_id: closed_glpi_state_id|default(0),
     contractdays_id: contractdays_id_selected,
     labels: {
-        no_days_left: __('No days remaining on this contract period', 'manageentities'),
-        remaining_days: __('Remaining days', 'manageentities'),
+        no_days_left: no_remaining_label,
+        remaining_days: remaining_label,
         anticipate: __('Please anticipate the end of the service period if necessary', 'manageentities'),
         internet_publication: __('Internet publication', 'manageentities'),
     },
@@ -221,16 +225,16 @@
             <div id="remaining_days_alert" class="alert alert-danger d-flex align-items-center gap-2 mb-0" role="alert">
                 <i class="ti ti-alert-triangle fs-4"></i>
                 <div>
-                    <strong>{{ __('No days remaining on this contract period', 'manageentities') }}</strong>
+                    <strong>{{ no_remaining_label }}</strong>
                     <br>
-                    <span class="text-muted">{{ __('Remaining days', 'manageentities') }}: <strong>0</strong></span>
+                    <span class="text-muted">{{ remaining_label }}: <strong>0</strong></span>
                 </div>
             </div>
             {% elseif remaining_days is not null and remaining_days == 1 %}
             <div id="remaining_days_alert" class="alert alert-warning d-flex align-items-center gap-2 mb-0" role="alert">
                 <i class="ti ti-alert-circle fs-4"></i>
                 <div>
-                    <span>{{ __('Remaining days', 'manageentities') }}:</span>
+                    <span>{{ remaining_label }}:</span>
                     <strong id="remaining_days_value">1</strong>
                     <br>
                     <span class="text-muted fst-italic">{{ __('Please anticipate the end of the service period if necessary', 'manageentities') }}</span>
@@ -240,7 +244,7 @@
             <div id="remaining_days_alert" class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
                 <i class="ti ti-calendar-stats fs-4"></i>
                 <div>
-                    <span>{{ __('Remaining days', 'manageentities') }}:</span>
+                    <span>{{ remaining_label }}:</span>
                     <strong id="remaining_days_value">
                         {% if remaining_days is not null %}
                             {{ remaining_days|number_format(1) }}

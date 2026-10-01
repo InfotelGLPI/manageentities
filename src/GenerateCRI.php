@@ -860,29 +860,27 @@ class GenerateCRI extends CommonGLPI
         $desc = "";
         $criteria = [
             'SELECT' => [
-                'begin',
-                'content',
-                'end',
+                'glpi_tickettasks.begin',
+                'glpi_tickettasks.content',
+                'glpi_tickettasks.end',
             ],
             'FROM' => 'glpi_tickettasks',
 
             'WHERE' => [
-                'tickets_id' => $ticket_id,
+                'glpi_tickettasks.tickets_id' => $ticket_id,
             ],
         ];
 
         if ($config->fields['use_publictask'] == Config::HOUR) {
-            $criteria['WHERE'] = $criteria['WHERE'] + ['is_private' => 0];
+            $criteria['WHERE'] = $criteria['WHERE'] + ['glpi_tickettasks.is_private' => 0];
         }
 
         if ($config->fields['hourorday'] == Config::HOUR) {
-            $criteria['LEFT JOIN'] = $criteria['LEFT JOIN'] + [
-                'LEFT JOIN' => [
-                    'glpi_plugin_manageentities_taskcategories' => [
-                        'ON' => [
-                            'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
-                            'glpi_tickettasks' => 'taskcategories_id',
-                        ],
+            $criteria['LEFT JOIN'] = [
+                'glpi_plugin_manageentities_taskcategories' => [
+                    'ON' => [
+                        'glpi_plugin_manageentities_taskcategories' => 'taskcategories_id',
+                        'glpi_tickettasks' => 'taskcategories_id',
                     ],
                 ],
             ];
