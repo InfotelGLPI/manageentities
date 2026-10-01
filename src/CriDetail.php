@@ -1731,7 +1731,8 @@ class CriDetail extends CommonDBTM
         }
 
         if (!empty($contractSelected) && $contract->getFromDB($contractSelected)) {
-            $contract_tooltip = Html::showToolTip($contract->fields['comment'], [
+            // showToolTip() outputs its content as HTML: the comment is plain text
+            $contract_tooltip = Html::showToolTip(htmlescape($contract->fields['comment'] ?? ''), [
                 'link'       => $contract->getLinkURL(),
                 'linktarget' => '_blank',
                 'display'    => false,
