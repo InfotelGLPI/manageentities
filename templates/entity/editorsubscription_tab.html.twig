@@ -72,6 +72,7 @@
                         <th>{{ _n('Entity', 'Entities', 1) }}</th>
                         <th>{{ __('Publisher customer account ID', 'manageentities') }}</th>
                         <th>{{ __('Referenced name at the publisher', 'manageentities') }}</th>
+                        <th>{{ __('Last intervention', 'manageentities') }}</th>
                         <th class="text-center">{{ __('Type', 'manageentities') }}</th>
                         <th>{{ __('Subscription level', 'manageentities') }}</th>
                         <th>{{ __('Start date', 'manageentities') }}</th>
@@ -85,6 +86,7 @@
                         <td>{{ row.entity_completename ?: '—' }}</td>
                         <td>{{ row.customer_account_id ?: '—' }}</td>
                         <td>{{ row.name ?: '—' }}</td>
+                        <td>{{ row.last_intervention ? row.last_intervention|date('d/m/Y') : '—' }}</td>
                         <td class="text-center">
                             {% if row.cloud_client %}
                                 <span class="badge bg-info-lt"><i class="ti ti-cloud me-1"></i>{{ __('Cloud', 'manageentities') }}</span>

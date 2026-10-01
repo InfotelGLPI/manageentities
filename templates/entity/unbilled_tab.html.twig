@@ -51,7 +51,11 @@
                                     {# Red past half a working day, neutral below: the badge has
                                        to say how much is at stake, not just repeat the alert. #}
                                     <span class="badge ms-1 {{ row.over_half_day ? 'bg-red-lt' : 'bg-secondary-lt' }}">
-                                        {{ row.hours }} {{ _n('Hour', 'Hours', 2)|lower }}
+                                        {% if is_day_mode %}
+                                            {{ row.days_label }} {{ _n('day', 'days', row.days, 'manageentities') }}
+                                        {% else %}
+                                            {{ row.hours }} {{ _n('Hour', 'Hours', 2)|lower }}
+                                        {% endif %}
                                     </span>
                                 </li>
                             {% endfor %}
@@ -81,7 +85,11 @@
                                     <a href="{{ row.url }}">{{ row.name }}</a>
                                     {# Same rule as the archived list above. #}
                                     <span class="badge ms-1 {{ row.over_half_day ? 'bg-red-lt' : 'bg-secondary-lt' }}">
-                                        {{ row.hours }} {{ _n('Hour', 'Hours', 2)|lower }}
+                                        {% if is_day_mode %}
+                                            {{ row.days_label }} {{ _n('day', 'days', row.days, 'manageentities') }}
+                                        {% else %}
+                                            {{ row.hours }} {{ _n('Hour', 'Hours', 2)|lower }}
+                                        {% endif %}
                                     </span>
                                     <span class="text-muted small ms-1">
                                         {{ __('since', 'manageentities') }} {{ row.oldest }}

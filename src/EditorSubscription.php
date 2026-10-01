@@ -36,6 +36,7 @@ use DBConnection;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Migration;
 use Notification;
@@ -160,6 +161,8 @@ class EditorSubscription extends CommonDBTM
             }
         }
 
+        $last_interventions = self::getLastInterventionDates(array_column($rows, 'entities_id'));
+
         $filename = ($only_expired ? 'subscriptions_expired_' : 'subscriptions_') . date('Ymd_His') . '.csv';
         header('Content-Type: text/csv; charset=UTF-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -174,6 +177,7 @@ class EditorSubscription extends CommonDBTM
             __('Entity', 'manageentities'),
             __('Publisher customer account ID', 'manageentities'),
             __('Referenced name at the publisher', 'manageentities'),
+            __('Last intervention', 'manageentities'),
             __('Type', 'manageentities'),
             __('Subscription level', 'manageentities'),
             __('Active editor subscription', 'manageentities'),
@@ -200,6 +204,7 @@ class EditorSubscription extends CommonDBTM
                 $csvSafe($row['entity_completename'] ?? ''),
                 $csvSafe($row['customer_account_id'] ?? ''),
                 $csvSafe($row['name'] ?? ''),
+                $last_interventions[(int) $row['entities_id']] ?? '',
                 $row['type_label'],
                 $csvSafe($row['level_name']),
                 $row['active_editor_suscription'] ? '1' : '0',
@@ -309,10 +314,7 @@ class EditorSubscription extends CommonDBTM
             );
         }
 
-        $active_states = json_decode($config->fields['contract_states'] ?? '', true);
-        $active_states = is_array($active_states) && !empty($active_states)
-            ? array_map('intval', $active_states)
-            : [];
+        $active_states = $config->getActiveContractStates();
 
         // Entities that have at least one active contract (matching contract_states)
         $with_active_contract = [];
@@ -485,6 +487,50 @@ class EditorSubscription extends CommonDBTM
         );
     }
 
+    /**
+     * Date of the latest intervention of each entity, whichever way it was recorded: an
+     * intervention report on a contract (CriDetail) or an unbilled intervention (DirectHelpdesk).
+     *
+     * @param array<int|string> $entities_ids
+     *
+     * @return array<int, string> entities_id => Y-m-d
+     */
+    private static function getLastInterventionDates(array $entities_ids): array
+    {
+        global $DB;
+
+        $entities_ids = array_values(array_unique(array_map('intval', $entities_ids)));
+        if (empty($entities_ids)) {
+            return [];
+        }
+
+        $last = [];
+        foreach ([CriDetail::getTable(), DirectHelpdesk::getTable()] as $table) {
+            $iterator = $DB->request([
+                'SELECT'  => [
+                    'entities_id',
+                    QueryFunction::max('date', 'last_date'),
+                ],
+                'FROM'    => $table,
+                'WHERE'   => ['entities_id' => $entities_ids],
+                'GROUPBY' => ['entities_id'],
+            ]);
+            foreach ($iterator as $data) {
+                if (empty($data['last_date'])) {
+                    continue;
+                }
+                $entities_id = (int) $data['entities_id'];
+                // DirectHelpdesk stores a timestamp and CriDetail a date: compare on the day
+                $date = substr((string) $data['last_date'], 0, 10);
+                if (!isset($last[$entities_id]) || $date > $last[$entities_id]) {
+                    $last[$entities_id] = $date;
+                }
+            }
+        }
+
+        return $last;
+    }
+
     // -----------------------------------------------------------------------
     // Display
     // -----------------------------------------------------------------------
@@ -531,6 +577,12 @@ class EditorSubscription extends CommonDBTM
             $row['end_date_expired'] = !empty($row['end_date']) && substr($row['end_date'], 0, 10) < $now;
             $rows[]                  = $row;
         }
+
+        $last_interventions = self::getLastInterventionDates(array_column($rows, 'entities_id'));
+        foreach ($rows as &$row) {
+            $row['last_intervention'] = $last_interventions[(int) $row['entities_id']] ?? null;
+        }
+        unset($row);
 
         $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php';
         $export_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php?export=subscriptions';

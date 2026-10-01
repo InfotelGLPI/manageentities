@@ -479,10 +479,7 @@ class DirectHelpdesk extends CommonDBTM
             ));
         }
 
-        $active_states = json_decode($config->fields['contract_states'] ?? '', true);
-        $active_states = is_array($active_states) && !empty($active_states)
-            ? array_map('intval', $active_states)
-            : [];
+        $active_states = $config->getActiveContractStates();
 
         // Customers holding at least one contract day in an active state: the "contract with
         // ongoing services" the main table is restricted to.

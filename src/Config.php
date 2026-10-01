@@ -106,6 +106,24 @@ class Config extends CommonDBTM
         return true;
     }
 
+    /**
+     * Contract states that make a contract "ongoing" for the dashboards: the states selected in
+     * the configuration or, when none is selected (the field is optional and NULL by default),
+     * the states flagged as active, as the contract screens do. Without that fallback every
+     * dashboard filtering on it silently stays empty on a base left with the default config.
+     *
+     * @return int[]
+     */
+    public function getActiveContractStates(): array
+    {
+        $states = json_decode($this->fields['contract_states'] ?? '', true);
+        if (!is_array($states) || empty($states)) {
+            $states = ContractState::getOpenedStates();
+        }
+
+        return array_map('intval', $states);
+    }
+
     public function showOptionsForm()
     {
         $this->getFromDB(1);
