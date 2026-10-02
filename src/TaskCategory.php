@@ -57,6 +57,40 @@ class TaskCategory extends CommonDBTM
         return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
     }
 
+    /*
+     * The table has no entities_id, so the default checkEntity() of the item rights is a
+     * no-op: the global dropdown right alone would let a manager of one entity change how the
+     * task categories of another one count against the contracts. Each item right replays
+     * the right on the core task category the row extends instead.
+     */
+    private function canOnCoreCategory(int $right): bool
+    {
+        $taskcategories_id = (int) ($this->fields['taskcategories_id'] ?? 0);
+        $category          = new \TaskCategory();
+
+        return $taskcategories_id > 0 && $category->can($taskcategories_id, $right);
+    }
+
+    public function canViewItem(): bool
+    {
+        return $this->canOnCoreCategory(READ);
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->canOnCoreCategory(UPDATE);
+    }
+
+    public function canDeleteItem(): bool
+    {
+        return $this->canOnCoreCategory(UPDATE);
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canOnCoreCategory(UPDATE);
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $config = Config::getInstance();

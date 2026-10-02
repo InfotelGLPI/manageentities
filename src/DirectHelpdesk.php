@@ -39,6 +39,7 @@ use Html;
 use ITILCategory;
 use Migration;
 use Session;
+use Ticket;
 use Toolbox;
 use User;
 
@@ -136,9 +137,33 @@ class DirectHelpdesk extends CommonDBTM
         return $search;
     }
 
+    /**
+     * The linked ticket is a posted id: check() on the intervention vets its own entity, not
+     * the value. Accept only a ticket the caller can read, so that an intervention cannot be
+     * hung on (and shown in) a ticket of an entity the caller does not see.
+     *
+     * @param array $input
+     */
+    private function isLinkableTicket(array $input): bool
+    {
+        $tickets_id = (int) ($input['tickets_id'] ?? 0);
+        if ($tickets_id <= 0) {
+            return true;
+        }
+
+        $ticket = new Ticket();
+
+        return $ticket->getFromDB($tickets_id) && $ticket->can($tickets_id, READ);
+    }
+
     public function prepareInputForAdd($input)
     {
         if (!$this->checkMandatoryFields($input)) {
+            return false;
+        }
+
+        if (!$this->isLinkableTicket($input)) {
+            Session::addMessageAfterRedirect(__('You are not allowed to do this action'), false, ERROR);
             return false;
         }
 
@@ -146,6 +171,16 @@ class DirectHelpdesk extends CommonDBTM
             $cat = new ITILCategory();
             $cat->getFromDB($input['name']);
             $input['name'] = $cat->getName();
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        if (!$this->isLinkableTicket($input)) {
+            Session::addMessageAfterRedirect(__('You are not allowed to do this action'), false, ERROR);
+            return false;
         }
 
         return $input;

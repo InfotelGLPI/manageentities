@@ -37,7 +37,12 @@ $taskCategory = new TaskCategory();
 
 //Save profile
 if (isset($_POST['update'])) {
+    // check() replays UPDATE on the core task category the row extends (entity included)
     $taskCategory->check((int) $_POST['id'], UPDATE);
-    $taskCategory->update($_POST);
+    // The form only edits the flag: the link to the core category is not a posted value
+    $taskCategory->update([
+        'id'              => $taskCategory->getID(),
+        'is_usedforcount' => (int) ($_POST['is_usedforcount'] ?? 0),
+    ]);
     Html::back();
 }
