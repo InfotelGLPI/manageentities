@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 17:02+0000\n"
+"POT-Creation-Date: 2026-10-02 08:31+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/"
@@ -418,7 +418,7 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/DirectHelpdesk.php:673 src/Followup.php:899 src/Followup.php:909
+#: src/DirectHelpdesk.php:708 src/Followup.php:899 src/Followup.php:909
 #: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
 #: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:130
 #: templates/techlead/clients_by_tech.html.twig:120
@@ -1025,7 +1025,7 @@ msgstr "Дата окончания должна быть позже даты н
 #: front/generatecri.php:40 front/cridetail.form.php:52
 #: front/cridetail.form.php:55 front/cridetail.form.php:57
 #: front/addelements.form.php:37 setup.php:251 src/Preference.php:147
-#: src/GenerateCRI.php:942 src/TaskCategory.php:66 src/Profile.php:51
+#: src/GenerateCRI.php:942 src/TaskCategory.php:100 src/Profile.php:51
 #: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
 msgstr "Портал организаций"
@@ -1306,7 +1306,7 @@ msgstr ""
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:675 src/Contract.php:734
+#: src/DirectHelpdesk.php:710 src/Contract.php:734
 #: templates/entity/unbilled_tab.html.twig:132
 msgid "Intervention"
 msgid_plural "Interventions"
@@ -1383,7 +1383,7 @@ msgstr ""
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:804 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:839 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr "Оплачено"
 
@@ -1456,7 +1456,7 @@ msgstr "Логотип %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Логотип (формат JPG или JPEG)"
 
-#: src/DirectHelpdesk.php:674 templates/entity/unbilled_tab.html.twig:131
+#: src/DirectHelpdesk.php:709 templates/entity/unbilled_tab.html.twig:131
 #: templates/entity/techleads_card.html.twig:64
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
@@ -1550,7 +1550,7 @@ msgstr "Режим управления"
 msgid "Monthly follow-up"
 msgstr "Ежемесячный мониторинг"
 
-#: src/DirectHelpdesk.php:680 templates/entity/unbilled_tab.html.twig:155
+#: src/DirectHelpdesk.php:715 templates/entity/unbilled_tab.html.twig:155
 #, php-format
 msgid "More than %d months"
 msgstr ""
@@ -1789,7 +1789,7 @@ msgstr ""
 msgid "Non-accomplished tasks informations"
 msgstr "Информация о невыполненных задачах"
 
-#: src/DirectHelpdesk.php:63 src/DirectHelpdesk_Ticket.php:48
+#: src/DirectHelpdesk.php:64 src/DirectHelpdesk_Ticket.php:48
 #: src/DirectHelpdesk_Ticket.php:85
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
@@ -1835,7 +1835,7 @@ msgstr "Объект вмешательства"
 msgid "Occupation report"
 msgstr ""
 
-#: src/DirectHelpdesk.php:679 templates/entity/unbilled_tab.html.twig:134
+#: src/DirectHelpdesk.php:714 templates/entity/unbilled_tab.html.twig:134
 msgid "Oldest intervention"
 msgstr ""
 
@@ -2839,7 +2839,7 @@ msgstr "Отсутствует тип контрактной услуги"
 msgid "Unarchive and continue"
 msgstr ""
 
-#: src/DirectHelpdesk.php:678 templates/entity/unbilled_tab.html.twig:133
+#: src/DirectHelpdesk.php:713 templates/entity/unbilled_tab.html.twig:133
 msgid "Unbilled hours"
 msgstr ""
 
@@ -2851,7 +2851,7 @@ msgstr ""
 msgid "Unbilled interventions"
 msgstr ""
 
-#: src/DirectHelpdesk.php:677
+#: src/DirectHelpdesk.php:712
 msgid "Unbilled man-days"
 msgstr ""
 
@@ -3024,7 +3024,7 @@ msgstr ""
 msgid "Yes only"
 msgstr ""
 
-#: src/DirectHelpdesk.php:221
+#: src/DirectHelpdesk.php:256
 msgid "You cannot add an intervention on this entity"
 msgstr "Нельзя добавить вмешательство в эту организацию"
 
