@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 16:42+0000\n"
+"POT-Creation-Date: 2026-10-01 17:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr[1] ""
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
 
-#: src/EditorSubscription.php:1061
+#: src/EditorSubscription.php:1113
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
@@ -102,7 +102,7 @@ msgstr "Accomplished tasks informations"
 msgid "Active"
 msgstr ""
 
-#: src/EditorSubscription.php:179 hook.php:925
+#: src/EditorSubscription.php:183 hook.php:925
 msgid "Active editor subscription"
 msgstr ""
 
@@ -404,9 +404,9 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/DirectHelpdesk.php:676 src/Followup.php:899 src/Followup.php:909
+#: src/DirectHelpdesk.php:673 src/Followup.php:899 src/Followup.php:909
 #: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
-#: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:122
+#: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:130
 #: templates/techlead/clients_by_tech.html.twig:120
 #: templates/techlead/clients_by_tech.html.twig:166
 #: templates/techlead/assignment_rules.html.twig:83
@@ -426,7 +426,7 @@ msgid_plural "Clients management"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/entity/unbilled_tab.html.twig:76
+#: templates/entity/unbilled_tab.html.twig:80
 #, php-format
 msgid "Clients with hours left unbilled for more than %d months:"
 msgstr ""
@@ -452,14 +452,14 @@ msgid "Closed contract period state"
 msgstr ""
 
 #: src/SubscriptionLevel.php:71
-#: templates/entity/editorsubscription_tab.html.twig:90
+#: templates/entity/editorsubscription_tab.html.twig:92
 #: templates/entity/status_tab.html.twig:71
 #: templates/entity/status_tab.html.twig:158
 msgid "Cloud"
 msgstr ""
 
-#: src/EditorSubscription.php:157 src/EditorSubscription.php:180
-#: src/EditorSubscription.php:699
+#: src/EditorSubscription.php:158 src/EditorSubscription.php:184
+#: src/EditorSubscription.php:751
 #: src/NotificationTargetEditorSubscription.php:120 hook.php:938
 #: templates/editorsubscription_fields.html.twig:70
 #: templates/cridetail_for_ticket.html.twig:94
@@ -916,16 +916,16 @@ msgid ""
 "\"%2$s\" and not yet assigned to a technician"
 msgstr ""
 
-#: templates/entity/editorsubscription_tab.html.twig:105
+#: templates/entity/editorsubscription_tab.html.twig:107
 #: templates/contract_detail_form.html.twig:47
 msgid "Edit"
 msgstr ""
 
-#: templates/entity/editorsubscription_tab.html.twig:92
+#: templates/entity/editorsubscription_tab.html.twig:94
 msgid "Editor"
 msgstr ""
 
-#: src/EditorSubscription.php:158 src/EditorSubscription.php:691
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:743
 #: src/NotificationTargetEditorSubscription.php:121
 #: templates/editorsubscription_fields.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:96
@@ -952,10 +952,10 @@ msgstr ""
 msgid "Email address"
 msgstr ""
 
-#: src/EditorSubscription.php:183
+#: src/EditorSubscription.php:187
 #: src/NotificationTargetEditorSubscription.php:110
 #: src/NotificationTargetEditorSubscription.php:147
-#: templates/entity/editorsubscription_tab.html.twig:78
+#: templates/entity/editorsubscription_tab.html.twig:79
 #: templates/wizard/step6_intervention_block.html.twig:65
 #: templates/report_moving_form.html.twig:42
 #: templates/report_search_form.html.twig:41
@@ -1012,7 +1012,7 @@ msgstr ""
 msgid "Entities with an expired publisher subscription:"
 msgstr ""
 
-#: src/EditorSubscription.php:174
+#: src/EditorSubscription.php:177
 #: src/NotificationTargetEditorSubscription.php:104
 #: src/NotificationTargetEditorSubscription.php:141
 #: src/NotificationTargetContract.php:116
@@ -1117,7 +1117,7 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:112
+#: templates/entity/unbilled_tab.html.twig:120
 #: templates/entity/editorsubscription_tab.html.twig:56
 msgid "Export CSV"
 msgstr ""
@@ -1204,8 +1204,8 @@ msgstr "Help on contract"
 msgid "Helpdesk reports"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:54
-#: templates/entity/unbilled_tab.html.twig:84
+#: templates/entity/unbilled_tab.html.twig:57
+#: templates/entity/unbilled_tab.html.twig:91
 #: templates/wizard/step6_stakeholders_section.html.twig:68
 msgid "Hour"
 msgid_plural "Hours"
@@ -1216,7 +1216,7 @@ msgstr[1] ""
 msgid "Hour of"
 msgstr "Hour of"
 
-#: src/Contract.php:652 src/Contract.php:705 src/Config.php:181
+#: src/Contract.php:652 src/Contract.php:705 src/Config.php:199
 msgid "Hourly"
 msgstr "Hourly"
 
@@ -1265,15 +1265,15 @@ msgstr "Initial credit"
 msgid "Initial credit is required"
 msgstr ""
 
-#: src/EditorSubscription.php:181 src/EditorSubscription.php:707 hook.php:951
+#: src/EditorSubscription.php:185 src/EditorSubscription.php:759 hook.php:951
 #: templates/editorsubscription_fields.html.twig:78
 #: templates/cridetail_for_ticket.html.twig:56
 #: templates/contract_detail_form.html.twig:83
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:678 src/Contract.php:734
-#: templates/entity/unbilled_tab.html.twig:124
+#: src/DirectHelpdesk.php:675 src/Contract.php:734
+#: templates/entity/unbilled_tab.html.twig:132
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] "Intervention"
@@ -1296,7 +1296,7 @@ msgstr "Intervention of contract"
 msgid "Intervention periods of contract"
 msgstr "Intervention periods of contract"
 
-#: setup.php:155 src/Cri.php:54 src/Profile.php:107 src/Config.php:193
+#: setup.php:155 src/Cri.php:54 src/Profile.php:107 src/Config.php:211
 #: templates/cridetail_add_reports.html.twig:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -1341,7 +1341,7 @@ msgstr ""
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:807 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:804 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr ""
 
@@ -1352,6 +1352,11 @@ msgstr "Is default"
 
 #: templates/followup_export_toolbar.html.twig:48
 msgid "Landscape PDF"
+msgstr ""
+
+#: src/EditorSubscription.php:180
+#: templates/entity/editorsubscription_tab.html.twig:75
+msgid "Last intervention"
 msgstr ""
 
 #: templates/wizard/step2_contact_block.html.twig:50
@@ -1409,7 +1414,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG or JPEG)"
 
-#: src/DirectHelpdesk.php:677 templates/entity/unbilled_tab.html.twig:123
+#: src/DirectHelpdesk.php:674 templates/entity/unbilled_tab.html.twig:131
 #: templates/entity/techleads_card.html.twig:64
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
@@ -1501,7 +1506,7 @@ msgstr "Mode of management"
 msgid "Monthly follow-up"
 msgstr "Monthly follow-up"
 
-#: src/DirectHelpdesk.php:683 templates/entity/unbilled_tab.html.twig:147
+#: src/DirectHelpdesk.php:680 templates/entity/unbilled_tab.html.twig:155
 #, php-format
 msgid "More than %d months"
 msgstr ""
@@ -1584,7 +1589,7 @@ msgstr ""
 msgid "No active subscription"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:64
+#: templates/entity/unbilled_tab.html.twig:68
 msgid "No archived client with unbilled hours."
 msgstr ""
 
@@ -1622,7 +1627,7 @@ msgstr ""
 msgid "No expired publisher subscription."
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:97
+#: templates/entity/unbilled_tab.html.twig:105
 #, php-format
 msgid "No hours left unbilled for more than %d months."
 msgstr ""
@@ -1631,11 +1636,11 @@ msgstr ""
 msgid "No hours remaining on this contract period"
 msgstr ""
 
-#: src/EditorSubscription.php:453
+#: src/EditorSubscription.php:455
 msgid "No level"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:137
+#: templates/entity/unbilled_tab.html.twig:145
 #: templates/techlead/assignment_rules.html.twig:100
 msgid "No main tech lead"
 msgstr ""
@@ -1665,7 +1670,7 @@ msgstr "No picture uploaded"
 msgid "No publisher subscription"
 msgstr ""
 
-#: templates/entity/editorsubscription_tab.html.twig:117
+#: templates/entity/editorsubscription_tab.html.twig:119
 msgid "No publisher subscription recorded for this entity."
 msgstr ""
 
@@ -1732,7 +1737,7 @@ msgstr ""
 msgid "No ticket awaiting an answer"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:166
+#: templates/entity/unbilled_tab.html.twig:174
 msgid "No unbilled intervention for a client with an ongoing contract."
 msgstr ""
 
@@ -1784,7 +1789,7 @@ msgstr "Object of intervention"
 msgid "Occupation report"
 msgstr ""
 
-#: src/DirectHelpdesk.php:682 templates/entity/unbilled_tab.html.twig:126
+#: src/DirectHelpdesk.php:679 templates/entity/unbilled_tab.html.twig:134
 msgid "Oldest intervention"
 msgstr ""
 
@@ -1895,7 +1900,7 @@ msgstr ""
 #: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:762
 #: src/WizardController.php:1796 src/WizardController.php:1871
 #: src/WizardController.php:1978 src/WizardController.php:1990
-#: src/Config.php:194 src/Entity.php:230
+#: src/Config.php:212 src/Entity.php:230
 #: templates/wizard/step6_intervention_block.html.twig:35
 #: templates/wizard/step6_interventions.html.twig:36
 #: templates/contractday_add_form.html.twig:46
@@ -2089,7 +2094,7 @@ msgstr ""
 msgid "Production"
 msgstr "Production"
 
-#: src/EditorSubscription.php:175 src/EditorSubscription.php:676
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:728
 #: src/NotificationTargetEditorSubscription.php:105
 #: src/NotificationTargetEditorSubscription.php:142
 #: templates/entity/editorsubscription_tab.html.twig:73
@@ -2098,7 +2103,7 @@ msgstr "Production"
 msgid "Publisher customer account ID"
 msgstr ""
 
-#: front/editorsubscription.form.php:91 src/EditorSubscription.php:54
+#: front/editorsubscription.form.php:91 src/EditorSubscription.php:55
 #: src/Entity.php:74 src/Entity.php:166
 #: templates/wizard/step3_subscription.html.twig:39
 #: templates/cridetail_for_ticket.html.twig:84
@@ -2120,7 +2125,7 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:557
+#: src/EditorSubscription.php:609
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
@@ -2145,7 +2150,7 @@ msgstr ""
 msgid "Refacturable costs"
 msgstr "Refacturable costs"
 
-#: src/EditorSubscription.php:176
+#: src/EditorSubscription.php:179
 #: src/NotificationTargetEditorSubscription.php:106
 #: src/NotificationTargetEditorSubscription.php:143
 #: templates/entity/editorsubscription_tab.html.twig:74
@@ -2295,7 +2300,7 @@ msgstr "Select an existing price"
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 
-#: src/EditorSubscription.php:989
+#: src/EditorSubscription.php:1041
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -2342,7 +2347,7 @@ msgstr ""
 msgid "Society name"
 msgstr "Society name"
 
-#: templates/entity/editorsubscription_tab.html.twig:78
+#: templates/entity/editorsubscription_tab.html.twig:79
 msgid "Sorted by oldest end date first"
 msgstr ""
 
@@ -2361,10 +2366,10 @@ msgstr "Stakeholder successfully updated."
 msgid "Start"
 msgstr ""
 
-#: src/EditorSubscription.php:182
+#: src/EditorSubscription.php:186
 #: src/NotificationTargetEditorSubscription.php:109
 #: src/NotificationTargetEditorSubscription.php:146
-#: templates/entity/editorsubscription_tab.html.twig:77
+#: templates/entity/editorsubscription_tab.html.twig:78
 #: templates/wizard/step4_contract.html.twig:74
 #: templates/report_moving_form.html.twig:41
 #: templates/report_search_form.html.twig:40
@@ -2422,11 +2427,11 @@ msgstr "Study and advice"
 msgid "Subscription"
 msgstr ""
 
-#: src/SubscriptionLevel.php:47 src/EditorSubscription.php:178
-#: src/EditorSubscription.php:683 src/EditorSubscription.php:738
+#: src/SubscriptionLevel.php:47 src/EditorSubscription.php:182
+#: src/EditorSubscription.php:735 src/EditorSubscription.php:790
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
-#: templates/entity/editorsubscription_tab.html.twig:76
+#: templates/entity/editorsubscription_tab.html.twig:77
 #: templates/editorsubscription_fields.html.twig:90
 #: templates/contract_detail_form.html.twig:78
 msgid "Subscription level"
@@ -2675,7 +2680,7 @@ msgstr "To present an invoice"
 
 #: templates/monthly_report.html.twig:71
 #: templates/report_moving_result.html.twig:43
-#: templates/entity/unbilled_tab.html.twig:156
+#: templates/entity/unbilled_tab.html.twig:164
 #: templates/report_occupation_result.html.twig:50
 msgid "Total"
 msgstr ""
@@ -2733,12 +2738,12 @@ msgstr "Travel"
 msgid "Travel (in days)"
 msgstr "Travel (in days)"
 
-#: src/EditorSubscription.php:177
+#: src/EditorSubscription.php:181
 #: src/NotificationTargetEditorSubscription.php:107
 #: src/NotificationTargetEditorSubscription.php:144
 #: templates/entity/description.html.twig:189
 #: templates/entity/contacts_card.html.twig:45
-#: templates/entity/editorsubscription_tab.html.twig:75
+#: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/wizard/step2_contact_block.html.twig:86
 #: templates/generatecri_wizard.html.twig:55
 #: templates/contract_detail_form.html.twig:55
@@ -2767,11 +2772,11 @@ msgstr "Type of service contract missing"
 msgid "Unarchive and continue"
 msgstr ""
 
-#: src/DirectHelpdesk.php:681 templates/entity/unbilled_tab.html.twig:125
+#: src/DirectHelpdesk.php:678 templates/entity/unbilled_tab.html.twig:133
 msgid "Unbilled hours"
 msgstr ""
 
-#: templates/entity/unbilled_tab.html.twig:108
+#: templates/entity/unbilled_tab.html.twig:116
 msgid "Unbilled hours by client with an ongoing contract"
 msgstr ""
 
@@ -2779,7 +2784,7 @@ msgstr ""
 msgid "Unbilled interventions"
 msgstr ""
 
-#: src/DirectHelpdesk.php:680
+#: src/DirectHelpdesk.php:677
 msgid "Unbilled man-days"
 msgstr ""
 
@@ -2962,6 +2967,8 @@ msgstr ""
 msgid "before"
 msgstr ""
 
+#: templates/entity/unbilled_tab.html.twig:55
+#: templates/entity/unbilled_tab.html.twig:89
 #: templates/wizard/step6_stakeholders_section.html.twig:52
 msgid "day"
 msgid_plural "days"
@@ -2997,7 +3004,7 @@ msgstr "of this intervention"
 msgid "on"
 msgstr "on"
 
-#: templates/entity/unbilled_tab.html.twig:87
+#: templates/entity/unbilled_tab.html.twig:95
 msgid "since"
 msgstr ""
 
