@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:31+0000\n"
+"POT-Creation-Date: 2026-10-03 09:00+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Soporte Infraestructura Standby, 2024\n"
 "Language-Team: Spanish (Ecuador) (https://app.transifex.com/infotelGLPI/"
@@ -41,12 +41,12 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/Contract.php:1461
+#: src/Contract.php:1459
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
 
-#: src/EditorSubscription.php:1113
+#: src/EditorSubscription.php:1111
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
@@ -77,7 +77,7 @@ msgstr "(en días)"
 msgid "(in hours)"
 msgstr "(en horas)"
 
-#: src/WizardController.php:1756
+#: src/WizardController.php:1774
 msgid "(no name)"
 msgstr ""
 
@@ -85,7 +85,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:2240
+#: src/WizardController.php:2258
 msgid "-- Select a template --"
 msgstr ""
 
@@ -109,7 +109,7 @@ msgstr "Información sobre las tareas realizadas"
 msgid "Active"
 msgstr ""
 
-#: src/EditorSubscription.php:183 hook.php:925
+#: src/EditorSubscription.php:183 hook.php:928
 msgid "Active editor subscription"
 msgstr ""
 
@@ -344,7 +344,7 @@ msgstr "Informes de intervención asociados"
 msgid "Associated ticket"
 msgstr "Caso asociado"
 
-#: src/WizardController.php:1454 src/WizardController.php:1483
+#: src/WizardController.php:1463 src/WizardController.php:1492
 msgid "At least one service period with a rate is required"
 msgstr ""
 
@@ -394,7 +394,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/WizardController.php:1306
+#: src/WizardController.php:1315
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -413,7 +413,7 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/DirectHelpdesk.php:708 src/Followup.php:899 src/Followup.php:909
+#: src/DirectHelpdesk.php:726 src/Followup.php:745 src/Followup.php:979
 #: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
 #: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:130
 #: templates/techlead/clients_by_tech.html.twig:120
@@ -471,7 +471,7 @@ msgstr ""
 
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
 #: src/EditorSubscription.php:751
-#: src/NotificationTargetEditorSubscription.php:120 hook.php:938
+#: src/NotificationTargetEditorSubscription.php:120 hook.php:941
 #: templates/editorsubscription_fields.html.twig:70
 #: templates/cridetail_for_ticket.html.twig:94
 #: templates/contract_detail_form.html.twig:58
@@ -542,7 +542,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/WizardController.php:1983
+#: src/WizardController.php:2001
 msgid "Contacts"
 msgstr ""
 
@@ -552,7 +552,7 @@ msgstr ""
 "¡El contenido, la fecha de finalización y la fecha de inicio son "
 "obligatorios para una tarea!"
 
-#: src/WizardController.php:1976 src/WizardController.php:1988
+#: src/WizardController.php:1994 src/WizardController.php:2006
 #: templates/wizard/step6_intervention_block.html.twig:98
 #: templates/wizard/step4_contract.html.twig:39
 #: templates/followup_report.html.twig:55
@@ -567,7 +567,7 @@ msgstr[2] ""
 msgid "Contract closure"
 msgstr ""
 
-#: src/WizardController.php:1579
+#: src/WizardController.php:1588
 msgid "Contract data is missing"
 msgstr ""
 
@@ -591,7 +591,7 @@ msgstr "Número de contrato"
 msgid "Contract number is required"
 msgstr ""
 
-#: src/Gantt.php:302 src/Followup.php:793
+#: src/Gantt.php:302 src/Followup.php:879
 msgid "Contract present"
 msgstr "Contrato presente"
 
@@ -677,7 +677,7 @@ msgstr "Tiempo de esfuerzo"
 msgid "Crossed time (itinerary including)"
 msgstr "Tiempo transcurrido (incluido el trayecto)"
 
-#: templates/entity/followup_helpdesk.html.twig:35
+#: templates/entity/followup_helpdesk.html.twig:36
 msgid "Current contracts"
 msgstr ""
 
@@ -752,20 +752,20 @@ msgstr ""
 msgid "Date of"
 msgstr "Fecha de"
 
-#: src/Gantt.php:310 src/Followup.php:796
+#: src/Gantt.php:310 src/Followup.php:882
 #: templates/wizard/step5_management.html.twig:57
 #: templates/contract_detail_form.html.twig:138
 msgid "Date of renewal"
 msgstr "Fecha de la renovación"
 
-#: src/Gantt.php:306 src/Followup.php:795
+#: src/Gantt.php:306 src/Followup.php:881
 #: templates/entity/references.html.twig:70
 #: templates/wizard/step5_management.html.twig:53
 #: templates/contract_detail_form.html.twig:137
 msgid "Date of signature"
 msgstr "Fecha de la firma"
 
-#: src/WizardController.php:1010
+#: src/WizardController.php:1019
 msgid "Date of signature is required"
 msgstr ""
 
@@ -1067,15 +1067,15 @@ msgstr[2] ""
 msgid "Entity already exists"
 msgstr ""
 
-#: src/WizardController.php:1444 src/WizardController.php:1491
+#: src/WizardController.php:1453 src/WizardController.php:1500
 msgid "Entity data is missing"
 msgstr ""
 
 #: src/Company.php:224 src/Company.php:266 src/WizardController.php:346
 #: src/WizardController.php:352 src/WizardController.php:367
 #: src/WizardController.php:445 src/WizardController.php:451
-#: src/WizardController.php:539 src/WizardController.php:1496
-#: src/WizardController.php:1512
+#: src/WizardController.php:539 src/WizardController.php:917
+#: src/WizardController.php:1505 src/WizardController.php:1521
 msgid "Entity not found"
 msgstr ""
 
@@ -1083,15 +1083,15 @@ msgstr ""
 msgid "Entity used to archive customers."
 msgstr ""
 
-#: src/WizardController.php:1596
+#: src/WizardController.php:1605
 msgid "Error creating contract"
 msgstr ""
 
-#: src/WizardController.php:1507
+#: src/WizardController.php:1516
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:1638
+#: src/WizardController.php:1656
 msgid "Error creating management type"
 msgstr ""
 
@@ -1212,7 +1212,7 @@ msgstr ""
 msgid "Generation of the intervention report"
 msgstr "Generar informe de intervención"
 
-#: src/Followup.php:776 templates/contractday_form.html.twig:127
+#: src/Followup.php:862 templates/contractday_form.html.twig:127
 msgid "Guaranteed package"
 msgstr "Garantía"
 
@@ -1276,7 +1276,7 @@ msgid "Informations successfully deleted."
 msgstr "Informaciones apagadas con suceso."
 
 #: src/Gantt.php:381 src/ContractDay.php:119 src/ContractDay.php:465
-#: src/Followup.php:769 src/Monthly.php:431
+#: src/Followup.php:855 src/Monthly.php:431
 #: templates/wizard/step6_intervention_block.html.twig:71
 #: templates/contractday_form.html.twig:94
 msgid "Initial credit"
@@ -1286,14 +1286,14 @@ msgstr "Credito Inicial"
 msgid "Initial credit is required"
 msgstr ""
 
-#: src/EditorSubscription.php:185 src/EditorSubscription.php:759 hook.php:951
+#: src/EditorSubscription.php:185 src/EditorSubscription.php:759 hook.php:954
 #: templates/editorsubscription_fields.html.twig:78
 #: templates/cridetail_for_ticket.html.twig:56
 #: templates/contract_detail_form.html.twig:83
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:710 src/Contract.php:734
+#: src/DirectHelpdesk.php:728 src/Contract.php:734
 #: templates/entity/unbilled_tab.html.twig:132
 msgid "Intervention"
 msgid_plural "Interventions"
@@ -1305,8 +1305,8 @@ msgstr[2] "Intervenciones"
 msgid "Intervention date"
 msgstr "Fecha de Intervención"
 
-#: src/WizardController.php:1190 src/WizardController.php:1201
-#: src/WizardController.php:1286
+#: src/WizardController.php:1199 src/WizardController.php:1210
+#: src/WizardController.php:1295
 msgid "Intervention not saved yet"
 msgstr ""
 
@@ -1366,7 +1366,7 @@ msgstr ""
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:839 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:857 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr "Sí se factura"
 
@@ -1392,7 +1392,7 @@ msgstr ""
 msgid "Last name is required"
 msgstr ""
 
-#: src/Followup.php:774
+#: src/Followup.php:860
 msgid "Last visit"
 msgstr "Última visita"
 
@@ -1439,7 +1439,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (formato JPG o JPEG)"
 
-#: src/DirectHelpdesk.php:709 templates/entity/unbilled_tab.html.twig:131
+#: src/DirectHelpdesk.php:727 templates/entity/unbilled_tab.html.twig:131
 #: templates/entity/techleads_card.html.twig:64
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
@@ -1465,7 +1465,7 @@ msgstr ""
 msgid "Manage your contracts"
 msgstr "Administra tus contratos"
 
-#: src/WizardController.php:1626
+#: src/WizardController.php:1644
 msgid "Management data is missing"
 msgstr ""
 
@@ -1476,8 +1476,8 @@ msgstr[0] "Gestión de categorías de tareas"
 msgstr[1] "Gestión de categorías de tareas"
 msgstr[2] "Gestión de categorías de tareas"
 
-#: src/Contract.php:76 src/WizardController.php:1977
-#: src/WizardController.php:1989 templates/wizard/step5_management.html.twig:42
+#: src/Contract.php:76 src/WizardController.php:1995
+#: src/WizardController.php:2007 templates/wizard/step5_management.html.twig:42
 #: templates/contract_detail_form.html.twig:130
 msgid "Management type"
 msgstr ""
@@ -1499,7 +1499,7 @@ msgstr ""
 msgid "Missing"
 msgstr ""
 
-#: src/WizardController.php:1266
+#: src/WizardController.php:1275
 msgid "Missing required fields"
 msgstr ""
 
@@ -1519,7 +1519,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/Followup.php:798 src/Monthly.php:429
+#: src/Followup.php:884 src/Monthly.php:429
 #: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step5_management.html.twig:63
 #: templates/contract_detail_form.html.twig:142
@@ -1532,7 +1532,7 @@ msgstr "Modo de gestión"
 msgid "Monthly follow-up"
 msgstr "Seguimiento mensual"
 
-#: src/DirectHelpdesk.php:715 templates/entity/unbilled_tab.html.twig:155
+#: src/DirectHelpdesk.php:733 templates/entity/unbilled_tab.html.twig:155
 #, php-format
 msgid "More than %d months"
 msgstr ""
@@ -1717,6 +1717,7 @@ msgid "No reports found"
 msgstr ""
 
 #: templates/entity/references.html.twig:57
+#: templates/entity/followup_helpdesk.html.twig:42
 #: templates/techlead/clients_by_tech.html.twig:153
 #: templates/directhelpdesk_ticket_tab.html.twig:56
 #: templates/company_list.html.twig:70
@@ -1787,7 +1788,7 @@ msgstr ""
 msgid "Nothing to display"
 msgstr "Nada para mostrar"
 
-#: src/WizardController.php:2018
+#: src/WizardController.php:2036
 msgid "Nothing to display."
 msgstr ""
 
@@ -1796,7 +1797,7 @@ msgctxt "phone"
 msgid "Number"
 msgstr ""
 
-#: src/WizardController.php:1280
+#: src/WizardController.php:1289
 msgid "Number of days must be greater than 0"
 msgstr ""
 
@@ -1816,7 +1817,7 @@ msgstr "Objeto de la intervención"
 msgid "Occupation report"
 msgstr ""
 
-#: src/DirectHelpdesk.php:714 templates/entity/unbilled_tab.html.twig:134
+#: src/DirectHelpdesk.php:732 templates/entity/unbilled_tab.html.twig:134
 msgid "Oldest intervention"
 msgstr ""
 
@@ -1833,7 +1834,7 @@ msgstr ""
 msgid "Ongoing tickets"
 msgstr ""
 
-#: src/WizardController.php:1208
+#: src/WizardController.php:1217
 msgid "Only one rate is allowed per service period"
 msgstr ""
 
@@ -1923,9 +1924,9 @@ msgstr ""
 msgid "Period comment"
 msgstr ""
 
-#: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:762
-#: src/WizardController.php:1796 src/WizardController.php:1871
-#: src/WizardController.php:1978 src/WizardController.php:1990
+#: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:848
+#: src/WizardController.php:1814 src/WizardController.php:1889
+#: src/WizardController.php:1996 src/WizardController.php:2008
 #: src/Config.php:212 src/Entity.php:230
 #: templates/wizard/step6_intervention_block.html.twig:35
 #: templates/wizard/step6_interventions.html.twig:36
@@ -1937,12 +1938,12 @@ msgstr[0] "Períodos de contrato"
 msgstr[1] "Períodos de contrato"
 msgstr[2] "Períodos de contrato"
 
-#: src/WizardController.php:1460
+#: src/WizardController.php:1469
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: src/CriDetail.php:831 src/CriDetail.php:1791 hook.php:885
+#: src/CriDetail.php:831 src/CriDetail.php:1791 hook.php:888
 #: templates/contractday_list.html.twig:33
 #: templates/contract_link_dropdown.html.twig:58
 msgid "Periods of contract"
@@ -2111,7 +2112,7 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: src/WizardController.php:1195
+#: src/WizardController.php:1204
 msgid "Price must be greater than 0"
 msgstr ""
 
@@ -2189,7 +2190,7 @@ msgstr "Tarifas Refacturables"
 msgid "Referenced name at the publisher"
 msgstr ""
 
-#: src/Entity.php:79 src/Entity.php:240 src/Entity.php:597
+#: src/Entity.php:79 src/Entity.php:240 src/Entity.php:587
 msgid "References"
 msgstr "Referencias"
 
@@ -2230,7 +2231,7 @@ msgstr "Permanecer en "
 msgid "Remaining on the contract: %s"
 msgstr ""
 
-#: src/Followup.php:777 templates/contractday_form.html.twig:128
+#: src/Followup.php:863 templates/contractday_form.html.twig:128
 msgid "Remaining total (amount)"
 msgstr "Total restante (cantidad)"
 
@@ -2327,11 +2328,11 @@ msgstr ""
 msgid "Select an existing price"
 msgstr "Seleccionar un precio existente"
 
-#: src/Contract.php:1320
+#: src/Contract.php:1318
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 
-#: src/EditorSubscription.php:1041
+#: src/EditorSubscription.php:1039
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -2455,7 +2456,7 @@ msgstr "Contrato de lista de control general"
 msgid "Study and advice"
 msgstr "Estudio y asesoramiento"
 
-#: src/WizardController.php:1986
+#: src/WizardController.php:2004
 msgid "Subscription"
 msgstr ""
 
@@ -2599,14 +2600,14 @@ msgstr "Por favor, seleccione un tipo de intervención"
 msgid "The contract period %s already exists"
 msgstr "El período de contrato 1%s ya existe"
 
-#: src/WizardController.php:2020
+#: src/WizardController.php:2038
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
 "place it under the default parent entity to continue?"
 msgstr ""
 
-#: src/WizardController.php:2019
+#: src/WizardController.php:2037
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
@@ -2730,7 +2731,7 @@ msgstr "Total (en días)"
 msgid "Total (in hours)"
 msgstr "Total (en horas)"
 
-#: src/Gantt.php:382 src/ContractDay.php:471 src/Followup.php:770
+#: src/Gantt.php:382 src/ContractDay.php:471 src/Followup.php:856
 #: templates/contractday_form.html.twig:119
 msgid "Total consummated"
 msgstr "Total consumido"
@@ -2739,7 +2740,7 @@ msgstr "Total consumido"
 msgid "Total duration"
 msgstr ""
 
-#: src/ContractDay.php:474 src/Followup.php:773 src/Monthly.php:450
+#: src/ContractDay.php:474 src/Followup.php:859 src/Monthly.php:450
 #: templates/contractday_form.html.twig:123
 msgid "Total exceeding"
 msgstr "Total excedente"
@@ -2752,9 +2753,9 @@ msgstr "Paquetes movidos en total"
 msgid "Total production"
 msgstr "Producción total"
 
-#: src/ContractDay.php:473 src/Followup.php:771 src/Dashboard.php:184
+#: src/ContractDay.php:473 src/Followup.php:857 src/Dashboard.php:184
 #: src/Dashboard.php:465 src/NotificationTargetContract.php:120
-#: src/NotificationTargetContract.php:155 hook.php:911
+#: src/NotificationTargetContract.php:155 hook.php:914
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr "Total restante"
@@ -2791,11 +2792,11 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/Followup.php:766 src/Monthly.php:430
+#: src/Followup.php:852 src/Monthly.php:430
 msgid "Type of contract"
 msgstr "Tipo de contrato"
 
-#: src/ContractDay.php:161 src/ContractDay.php:803 src/Followup.php:800
+#: src/ContractDay.php:161 src/ContractDay.php:803 src/Followup.php:886
 #: templates/wizard/step5_management.html.twig:67
 #: templates/contractday_form.html.twig:58
 #: templates/contract_detail_form.html.twig:143
@@ -2806,11 +2807,11 @@ msgstr "Tipo de contrato de servicio"
 msgid "Type of service contract missing"
 msgstr "Falta el tipo de contrato de servicios"
 
-#: src/WizardController.php:2021
+#: src/WizardController.php:2039
 msgid "Unarchive and continue"
 msgstr ""
 
-#: src/DirectHelpdesk.php:713 templates/entity/unbilled_tab.html.twig:133
+#: src/DirectHelpdesk.php:731 templates/entity/unbilled_tab.html.twig:133
 msgid "Unbilled hours"
 msgstr ""
 
@@ -2822,7 +2823,7 @@ msgstr ""
 msgid "Unbilled interventions"
 msgstr ""
 
-#: src/DirectHelpdesk.php:712
+#: src/DirectHelpdesk.php:730
 msgid "Unbilled man-days"
 msgstr ""
 
@@ -2867,7 +2868,7 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1062
+#: hook.php:1065
 msgid "Update subscription fields"
 msgstr ""
 
@@ -2910,7 +2911,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/WizardController.php:1812 src/InterventionStakeholder.php:52
+#: src/WizardController.php:1830 src/InterventionStakeholder.php:52
 #: templates/wizard/step6_stakeholders_section.html.twig:36
 msgid "User affected"
 msgid_plural "Users affected"
@@ -2918,7 +2919,7 @@ msgstr[0] "Usuario afectado"
 msgstr[1] "Usuarios afectados"
 msgstr[2] "Usuarios afectados"
 
-#: src/WizardController.php:1297
+#: src/WizardController.php:1306
 msgid "User already added"
 msgstr ""
 
@@ -3016,12 +3017,12 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/WizardController.php:1739
+#: src/WizardController.php:1757
 #: templates/wizard/step6_stakeholders_section.html.twig:30
 msgid "days"
 msgstr ""
 
-#: src/WizardController.php:1738
+#: src/WizardController.php:1756
 #: templates/wizard/step6_stakeholders_section.html.twig:30
 msgid "hours"
 msgstr ""
