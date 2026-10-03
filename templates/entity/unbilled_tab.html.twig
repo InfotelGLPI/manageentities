@@ -109,16 +109,27 @@
 
         </div>
 
-        {# Main table: active clients holding a contract with ongoing services #}
+        {# Main table: active clients holding a contract with ongoing services. The search box
+           filters its rows in the browser (public/scripts/editorsubscription-tab.js, shared with
+           the publisher subscriptions tab); the alerts above are outside its scope. #}
+        <div data-me-sub-tab>
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
             <h4 class="text-muted mb-0 fs-5">
                 <i class="ti ti-clock-dollar me-1"></i>
                 {{ __('Unbilled hours by client with an ongoing contract', 'manageentities') }}
             </h4>
             {% if rows|length > 0 %}
-                <a href="{{ export_url }}" class="btn btn-sm btn-outline-secondary">
-                    <i class="ti ti-table-export me-1"></i>{{ __('Export CSV', 'manageentities') }}
-                </a>
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="input-group input-group-sm" style="width: 260px;">
+                        <span class="input-group-text"><i class="ti ti-search"></i></span>
+                        <input type="search" class="form-control" data-me-sub-search
+                               placeholder="{{ _n('Client', 'Clients', 1, 'manageentities') }}"
+                               aria-label="{{ __('Search') }}">
+                    </div>
+                    <a href="{{ export_url }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="ti ti-table-export me-1"></i>{{ __('Export CSV', 'manageentities') }}
+                    </a>
+                </div>
             {% endif %}
         </div>
 
@@ -173,6 +184,7 @@
         {% else %}
         <p class="text-muted">{{ __('No unbilled intervention for a client with an ongoing contract.', 'manageentities') }}</p>
         {% endif %}
+        </div>
 
     </div>
 </div>

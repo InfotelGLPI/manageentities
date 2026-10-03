@@ -244,3 +244,20 @@ document.addEventListener('submit', (event) => {
         delete_form.querySelector('input[name="sub_id"]').value = sub_id.value;
     }
 });
+
+// "Transfer" posts its own form: refuse an empty target, then confirm
+document.addEventListener('submit', (event) => {
+    const transfer_form = event.target.closest('[data-me-sub-transfer-form]');
+    if (transfer_form === null) {
+        return;
+    }
+    const target = transfer_form.querySelector('[name="target_entities_id"]');
+    if (target === null || !target.value || target.value === '0') {
+        event.preventDefault();
+        target?.focus();
+        return;
+    }
+    if (!window.confirm(transfer_form.dataset.meSubTransferForm)) {
+        event.preventDefault();
+    }
+});

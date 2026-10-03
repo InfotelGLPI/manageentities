@@ -64,6 +64,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($action === 'transfer') {
+        $result = EditorSubscriptionWizard::transferAndReturn($_POST);
+        if ($result['success']) {
+            Session::addMessageAfterRedirect(
+                __('Publisher subscription transferred successfully.', 'manageentities'),
+                true,
+                INFO,
+            );
+            // Back on the form, now showing the subscription under its new entity
+            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php?entities_id=' . $result['entities_id']);
+        }
+        Session::addMessageAfterRedirect(
+            $result['message'] ?? __('An error occurred while saving.', 'manageentities'),
+            true,
+            ERROR,
+        );
+        Html::back();
+    }
+
     if ($action === 'delete') {
         if (!Session::haveRight('plugin_manageentities', DELETE)) {
             Session::addMessageAfterRedirect(__("You don't have permission to perform this action."), true, ERROR);
@@ -89,5 +108,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 Html::header(__('Publisher subscription', 'manageentities'), '', 'management', Entity::class);
-EditorSubscriptionWizard::render();
+if (isset($_GET['transfer'])) {
+    EditorSubscriptionWizard::renderTransfer((int) $_GET['transfer']);
+} else {
+    EditorSubscriptionWizard::render();
+}
 Html::footer();

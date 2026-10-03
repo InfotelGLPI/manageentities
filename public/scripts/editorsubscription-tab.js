@@ -27,7 +27,8 @@
 
 
 // Search box and "Expired only" filter of the publisher subscriptions tab of an entity
-// (templates/entity/editorsubscription_tab.html.twig). The tab is loaded asynchronously, hence the
+// (templates/entity/editorsubscription_tab.html.twig). The search box alone is reused by the
+// unbilled interventions table of the dashboard (templates/entity/unbilled_tab.html.twig). The tab is loaded asynchronously, hence the
 // delegated listeners; the filter state lives in the aria-pressed attribute of its button. The CSV
 // export link follows the filter: its data-me-sub-export attribute carries both URLs as { all, expired }.
 

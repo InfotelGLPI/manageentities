@@ -61,7 +61,7 @@
 
     {# Subscription fields #}
     <div class="card mb-3">
-        <div class="card-header">
+        <div class="card-header d-flex align-items-center">
             <h3 class="card-title mb-0">
                 <i class="ti ti-certificate me-2"></i>
                 <span data-me-sub-title>
@@ -72,6 +72,11 @@
                     {% endif %}
                 </span>
             </h3>
+            {% if transfer_url is not empty %}
+                <a href="{{ transfer_url }}" class="btn btn-sm btn-outline-primary ms-auto">
+                    <i class="ti ti-transfer me-2"></i>{{ __('Transfer') }}
+                </a>
+            {% endif %}
         </div>
         <div class="card-body">
             {# Behaviour: public/scripts/editorsubscription-fields.js #}

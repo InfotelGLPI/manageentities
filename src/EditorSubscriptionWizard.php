@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Session;
 
 /**
@@ -113,6 +114,10 @@ class EditorSubscriptionWizard
                 'comment'                   => $sub['comment'] ?? '',
                 'all_levels'                => $all_levels,
                 'rand'                      => $rand,
+                // Transfer button: existing subscription of a known entity only
+                'transfer_url'              => !empty($sub) && $entities_id > 0 && self::canTransfer()
+                    ? $page_url . '?transfer=' . (int) $sub['id']
+                    : '',
             ],
         );
     }
@@ -188,6 +193,124 @@ class EditorSubscriptionWizard
         return $result
             ? ['success' => true]
             : ['success' => false, 'message' => __('An error occurred while saving.', 'manageentities')];
+    }
+
+    // -----------------------------------------------------------------------
+    // Transfer
+    // -----------------------------------------------------------------------
+
+    /**
+     * Move a subscription to another client entity (e.g. after a merger or an entity
+     * re-creation). An entity holds at most one subscription (unique key on entities_id),
+     * so the target must not have one yet.
+     *
+     * @return array{success: bool, message?: string, entities_id?: int}
+     */
+    public static function transferAndReturn(array $input = []): array
+    {
+        if (!self::canTransfer()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $sub_id    = (int) ($input['sub_id'] ?? 0);
+        $target_id = (int) ($input['target_entities_id'] ?? 0);
+
+        $sub = new EditorSubscription();
+        if ($sub_id <= 0 || !$sub->getFromDB($sub_id)) {
+            return ['success' => false, 'message' => __('No subscription found.', 'manageentities')];
+        }
+
+        // Both ends are attacker-supplied: the caller must reach the entity the subscription
+        // leaves and the one it goes to
+        $source_id = (int) $sub->fields['entities_id'];
+        if (!Session::haveAccessToEntity($source_id) || !Session::haveAccessToEntity($target_id)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if ($target_id <= 0) {
+            return ['success' => false, 'message' => __('No entity selected.', 'manageentities')];
+        }
+        if ($target_id === $source_id) {
+            return ['success' => false, 'message' => __('The subscription already belongs to this entity.', 'manageentities')];
+        }
+        // Same perimeter as the entity dropdown of the form: a client under the configured root
+        $allowed = self::getAllowedEntityIds();
+        if ($allowed !== null && !in_array($target_id, $allowed, true)) {
+            return ['success' => false, 'message' => __('Entity not found', 'manageentities')];
+        }
+        if (!empty(EditorSubscription::getForEntity($target_id))) {
+            return ['success' => false, 'message' => __('The target entity already has a publisher subscription.', 'manageentities')];
+        }
+
+        // post_updateItem() propagates the subscription flags to the contracts of the new entity
+        if (!$sub->update(['id' => $sub_id, 'entities_id' => $target_id])) {
+            return ['success' => false, 'message' => __('An error occurred while saving.', 'manageentities')];
+        }
+
+        return ['success' => true, 'entities_id' => $target_id];
+    }
+
+    /**
+     * Moving a subscription is an entity transfer: it takes the core transfer right, as
+     * the core transfer action does, on top of the plugin right to modify a subscription.
+     */
+    public static function canTransfer(): bool
+    {
+        return Session::haveRight('plugin_manageentities', UPDATE)
+            && Session::haveRight('transfer', READ);
+    }
+
+    /**
+     * Transfer page of a subscription: its entity, its name and the target entity dropdown.
+     */
+    public static function renderTransfer(int $sub_id): void
+    {
+        if (!self::canTransfer()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $sub = new EditorSubscription();
+        if ($sub_id <= 0 || !$sub->getFromDB($sub_id)) {
+            throw new NotFoundHttpException();
+        }
+        $entities_id = (int) $sub->fields['entities_id'];
+        if (!Session::haveAccessToEntity($entities_id)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $condition = ['NOT' => ['id' => $entities_id]];
+        $allowed   = self::getAllowedEntityIds();
+        if ($allowed !== null) {
+            $condition['id'] = $allowed !== [] ? $allowed : [-1];
+        }
+
+        TemplateRenderer::getInstance()->display('@manageentities/editorsubscription_transfer.html.twig', [
+            'page_url'            => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php',
+            'back_url'            => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/editorsubscription.form.php?entities_id=' . $entities_id,
+            'sub_id'              => $sub_id,
+            'sub_name'            => (string) $sub->fields['name'],
+            'entity_completename' => Dropdown::getDropdownName('glpi_entities', $entities_id),
+            'transfer_condition'  => $condition,
+            'rand'                => mt_rand(),
+        ]);
+    }
+
+    /**
+     * Client entities a subscription may belong to: the children of the configured wizard
+     * root, or every entity when none is configured.
+     *
+     * @return int[]|null ids, null meaning "no restriction"
+     */
+    private static function getAllowedEntityIds(): ?array
+    {
+        $forced_id = (int) (Config::getInstance()->fields['wizard_default_entities_id'] ?? 0);
+        if ($forced_id <= 0) {
+            return null;
+        }
+        $sons = getSonsOf('glpi_entities', $forced_id);
+        unset($sons[$forced_id]);
+
+        return array_map('intval', array_keys($sons));
     }
 
     // -----------------------------------------------------------------------
