@@ -126,32 +126,53 @@ class DirectHelpdesk_Ticket extends CommonDBTM
 
     public static function selectDirectHeldeskForTicket($entities_id)
     {
-        $direct = new DirectHelpdesk();
-        if ($items = $direct->find(['is_billed' => 0, 'entities_id' => $entities_id], ['date'])) {
-            $rows = [];
-            foreach ($items as $item) {
-                $rows[] = [
-                    'id'         => $item['id'],
-                    'name'       => $item['name'],
-                    'date'       => Html::convDate($item['date']),
-                    'technician' => getUserName($item['users_id']),
-                    'duration'   => CommonITILObject::getActionTime($item['actiontime']),
-                    'comment'    => $item['comment'],
-                ];
-            }
-
-            // Callers may pass either a single entity id (ajax) or an array of active
-            // entities (helpdesk tab). The hidden form field must be a scalar, so
-            // normalize it here while find() above still accepts both forms.
-            $form_entities_id = is_array($entities_id) ? (int) reset($entities_id) : (int) $entities_id;
-
-            TemplateRenderer::getInstance()->display('@manageentities/entity/directhelpdesk_ticket_select.html.twig', [
-                'rows'        => $rows,
-                'is_central'  => (Session::getCurrentInterface() == 'central'),
-                'entities_id' => $form_entities_id,
-                'form_url'    => $direct->getFormURL(),
-            ]);
+        $select = self::getTicketSelectData($entities_id);
+        if ($select !== null) {
+            TemplateRenderer::getInstance()->display('@manageentities/entity/directhelpdesk_ticket_select.html.twig', $select);
         }
+    }
+
+    /**
+     * Data of entity/directhelpdesk_ticket_select.html.twig, shared by
+     * selectDirectHeldeskForTicket() and by the helpdesk "General follow-up" tab, which
+     * includes the template instead of capturing the output.
+     *
+     * @param int|int[] $entities_id
+     *
+     * @return array{rows: list<array<string, mixed>>, is_central: bool, entities_id: int, form_url: string}|null
+     *         null when no unbilled intervention is left
+     */
+    public static function getTicketSelectData($entities_id): ?array
+    {
+        $direct = new DirectHelpdesk();
+        $items  = $direct->find(['is_billed' => 0, 'entities_id' => $entities_id], ['date']);
+        if (!$items) {
+            return null;
+        }
+
+        $rows = [];
+        foreach ($items as $item) {
+            $rows[] = [
+                'id'         => $item['id'],
+                'name'       => $item['name'],
+                'date'       => Html::convDate($item['date']),
+                'technician' => getUserName($item['users_id']),
+                'duration'   => CommonITILObject::getActionTime($item['actiontime']),
+                'comment'    => $item['comment'],
+            ];
+        }
+
+        // Callers may pass either a single entity id (ajax) or an array of active
+        // entities (helpdesk tab). The hidden form field must be a scalar, so
+        // normalize it here while find() above still accepts both forms.
+        $form_entities_id = is_array($entities_id) ? (int) reset($entities_id) : (int) $entities_id;
+
+        return [
+            'rows'        => $rows,
+            'is_central'  => (Session::getCurrentInterface() == 'central'),
+            'entities_id' => $form_entities_id,
+            'form_url'    => $direct->getFormURL(),
+        ];
     }
 
     public static function install(Migration $migration)

@@ -42,13 +42,6 @@ if (!$Entity->canView() && !Session::haveRight("config", UPDATE)) {
 
 Html::header(__('Entities portal', 'manageentities'), '', "plugins", "manageentities");
 
-if (isset($_GET)) {
-    $tab = $_GET;
-}
-if (empty($tab) && isset($_POST)) {
-    $tab = $_POST;
-}
-
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
     $lastday = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
     if (date("d") == $lastday) {

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <psalm
+    noCache="true"
     errorLevel="8"
     resolveFromConfigFile="true"
     findUnusedCode="false"

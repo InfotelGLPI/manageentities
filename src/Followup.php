@@ -714,24 +714,110 @@ class Followup extends CommonDBTM
      */
     public static function showFollowUp($values)
     {
-        $results = self::queryFollowUp($_SESSION["glpiactive_entity"], $values);
-        unset($results['tot']);
-
         $itemtype = Contract::class;
         // Set display type for export if defined
         $output_type    = $values["display_type"] ?? Search::HTML_OUTPUT;
         $output         = SearchEngine::getOutputForLegacyKey($output_type);
         $is_html_output = $output instanceof HTMLSearchOutput;
 
+        $report = self::getFollowUpReportData($values);
+        if ($report === null) {
+            echo Search::showError($output_type);
+            return;
+        }
+        $headers  = $report['headers'];
+        $sections = $report['sections'];
+
+        if ($is_html_output) {
+            if (Session::getCurrentInterface() == 'central') {
+                self::showLegendary();
+                self::showExportToolbar($report['parameters'], Followup::class);
+            }
+
+            TemplateRenderer::getInstance()->display('@manageentities/followup_report.html.twig', $report);
+            return;
+        }
+
+        // The exports are flat: one line per period, preceded by its client and its contract.
+        // They used to receive only the period cells, accumulated from one period to the next
+        // of the same contract, and headers that did not match them.
+        $export_headers = array_merge(
+            [_n('Client', 'Clients', 1, 'manageentities'), __('Contract'), _x('phone', 'Number')],
+            $headers,
+        );
+        $rows = [];
+        foreach ($sections as $section) {
+            foreach ($section['rows'] as $row) {
+                $values_row = array_merge(
+                    [$section['export_entity'], $section['contract']['name'], $section['contract']['num']],
+                    array_column($row['cells'], 'value'),
+                );
+                $current_row = [];
+                foreach ($values_row as $colnum => $value) {
+                    $current_row[$itemtype . '_' . ($colnum + 1)] = ['displayname' => $value];
+                }
+                $rows[count($rows) + 1] = $current_row;
+            }
+        }
+
+        $params = [
+            'start' => 0,
+            'is_deleted' => 0,
+            'as_map' => 0,
+            'browse' => 0,
+            'unpublished' => 1,
+            'criteria' => [],
+            'metacriteria' => [],
+            'display_type' => 0,
+            'hide_controls' => true,
+        ];
+
+        $accounts_data = SearchEngine::prepareDataForSearch($itemtype, $params);
+        $accounts_data = array_merge($accounts_data, [
+            'itemtype' => $itemtype,
+            'data' => [
+                'totalcount' => count($rows),
+                'count' => count($rows),
+                'search' => '',
+                'cols' => [],
+                'rows' => $rows,
+            ],
+        ]);
+
+        $colid = 0;
+        foreach ($export_headers as $header) {
+            $accounts_data['data']['cols'][] = [
+                'name' => $header,
+                'itemtype' => $itemtype,
+                'id' => ++$colid,
+            ];
+        }
+
+        $output->displayData($accounts_data, []);
+    }
+
+    /**
+     * Data of the general follow-up report: the variables of followup_report.html.twig, plus
+     * the query string of the export links. Shared by showFollowUp() and by the helpdesk
+     * "General follow-up" tab, which includes the template instead of capturing the output.
+     *
+     * @param array $values criteria of the report
+     *
+     * @return array{headers: list<string>, sections: list<array<string, mixed>>, client_label: string, client_color: string, parameters: string}|null
+     *         null when no contract matches
+     */
+    public static function getFollowUpReportData($values): ?array
+    {
+        $results = self::queryFollowUp($_SESSION["glpiactive_entity"], $values);
+        unset($results['tot']);
+        if ($results === []) {
+            return null;
+        }
+
         $config     = Config::getInstance();
         $is_central = Session::getCurrentInterface() == 'central';
         $is_hour    = $config->fields['hourorday'] == Config::HOUR;
         $use_price  = $config->fields['useprice'] == Config::PRICE;
-
-        if ($results === []) {
-            echo Search::showError($output_type);
-            return;
-        }
 
         // The export links replay the criteria as submitted. A criterion emptied in the form is
         // carried as 0 so that the export lists everything as well, one never submitted is left
@@ -887,77 +973,13 @@ class Followup extends CommonDBTM
             ];
         }
 
-        if ($is_html_output) {
-            if ($is_central) {
-                self::showLegendary();
-                self::showExportToolbar($parameters, Followup::class);
-            }
-
-            TemplateRenderer::getInstance()->display('@manageentities/followup_report.html.twig', [
-                'headers'      => $headers,
-                'sections'     => $sections,
-                'client_label' => _n('Client', 'Clients', 1, 'manageentities'),
-                'client_color' => Monthly::getStyleColor(Monthly::$style[0]),
-            ]);
-            return;
-        }
-
-        // The exports are flat: one line per period, preceded by its client and its contract.
-        // They used to receive only the period cells, accumulated from one period to the next
-        // of the same contract, and headers that did not match them.
-        $export_headers = array_merge(
-            [_n('Client', 'Clients', 1, 'manageentities'), __('Contract'), _x('phone', 'Number')],
-            $headers,
-        );
-        $rows = [];
-        foreach ($sections as $section) {
-            foreach ($section['rows'] as $row) {
-                $values_row = array_merge(
-                    [$section['export_entity'], $section['contract']['name'], $section['contract']['num']],
-                    array_column($row['cells'], 'value'),
-                );
-                $current_row = [];
-                foreach ($values_row as $colnum => $value) {
-                    $current_row[$itemtype . '_' . ($colnum + 1)] = ['displayname' => $value];
-                }
-                $rows[count($rows) + 1] = $current_row;
-            }
-        }
-
-        $params = [
-            'start' => 0,
-            'is_deleted' => 0,
-            'as_map' => 0,
-            'browse' => 0,
-            'unpublished' => 1,
-            'criteria' => [],
-            'metacriteria' => [],
-            'display_type' => 0,
-            'hide_controls' => true,
+        return [
+            'headers'      => $headers,
+            'sections'     => $sections,
+            'client_label' => _n('Client', 'Clients', 1, 'manageentities'),
+            'client_color' => Monthly::getStyleColor(Monthly::$style[0]),
+            'parameters'   => $parameters,
         ];
-
-        $accounts_data = SearchEngine::prepareDataForSearch($itemtype, $params);
-        $accounts_data = array_merge($accounts_data, [
-            'itemtype' => $itemtype,
-            'data' => [
-                'totalcount' => count($rows),
-                'count' => count($rows),
-                'search' => '',
-                'cols' => [],
-                'rows' => $rows,
-            ],
-        ]);
-
-        $colid = 0;
-        foreach ($export_headers as $header) {
-            $accounts_data['data']['cols'][] = [
-                'name' => $header,
-                'itemtype' => $itemtype,
-                'id' => ++$colid,
-            ];
-        }
-
-        $output->displayData($accounts_data, []);
     }
 
     /**

@@ -45,12 +45,6 @@ if (!Session::haveRight(Entity::$rightname, READ) && !Session::haveRight("config
 
 Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
 
-if (isset($_GET)) {
-    $tab = $_GET;
-}
-if (empty($tab) && isset($_POST)) {
-    $tab = $_POST;
-}
 if (!isset($_POST["tech_num"]) || empty($_POST["tech_num"])) {
     $owner = Session::getLoginUserID();
 } else {

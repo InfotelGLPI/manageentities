@@ -1297,8 +1297,6 @@ class Contract extends CommonDBTM
             $template->delete($data);
         }
 
-        CronTask::unregister('manageentities');
-
         $DB->dropTable(self::getTable(), true);
     }
 

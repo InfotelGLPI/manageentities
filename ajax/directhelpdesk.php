@@ -49,7 +49,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'createticket') {
         throw new AccessDeniedHttpException();
     }
 
-    Html::popHeader(__('Create a ticket'), $_SERVER['PHP_SELF']);
+    Html::popHeader(__('Create a ticket'));
 
     DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($entities_id);
 

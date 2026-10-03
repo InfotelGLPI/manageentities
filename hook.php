@@ -523,6 +523,9 @@ function plugin_manageentities_uninstall()
 
     $DB->delete('glpi_displaypreferences', ['itemtype' => $itemtypes]);
     $DB->delete('glpi_logs', ['itemtype' => $itemtypes]);
+    // CronTask::unregister() matches no namespaced itemtype: delete the automatic actions
+    // (Contract, EditorSubscription) by their exact class names instead
+    $DB->delete('glpi_crontasks', ['itemtype' => $itemtypes]);
 
     Profile::removeRightsFromSession();
     Profile::removeRightsFromDB();

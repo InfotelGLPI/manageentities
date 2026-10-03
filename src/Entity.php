@@ -300,26 +300,16 @@ class Entity extends CommonGLPI
                 case 1:
                     $followUp->showCriteriasForm($_GET);
                     if (Session::getCurrentInterface() == 'helpdesk') {
-                        $direct = new DirectHelpdesk();
-                        $items  = $direct->find(['is_billed' => 0, 'entities_id' => $entities], ['date']);
-
-                        // Both panels are rendered by legacy methods which echo their output
-                        ob_start();
-                        Followup::showFollowUp($_GET);
-                        $followup_html = ob_get_clean();
-
-                        $directhelpdesk_html = '';
-                        if ($items) {
-                            ob_start();
-                            DirectHelpdesk::showDashboard();
-                            DirectHelpdesk_Ticket::selectDirectHeldeskForTicket($entities);
-                            $directhelpdesk_html = ob_get_clean();
-                        }
+                        // The panels include the templates of the follow-up report, of the gauges
+                        // and of the unbilled interventions, fed with the data of their methods.
+                        // The gauges are only drawn next to a list of unbilled interventions.
+                        $directhelpdesk_select = DirectHelpdesk_Ticket::getTicketSelectData($entities);
 
                         TemplateRenderer::getInstance()->display('@manageentities/entity/followup_helpdesk.html.twig', [
-                            'followup_html'       => $followup_html,
-                            'directhelpdesk_title' => DirectHelpdesk::getTypeName(2),
-                            'directhelpdesk_html' => $directhelpdesk_html,
+                            'followup'              => Followup::getFollowUpReportData($_GET),
+                            'directhelpdesk_title'  => DirectHelpdesk::getTypeName(2),
+                            'directhelpdesk_gauges' => $directhelpdesk_select !== null ? DirectHelpdesk::getDashboardData() : null,
+                            'directhelpdesk_select' => $directhelpdesk_select,
                         ]);
                     } else {
                         Followup::showFollowUp($_GET);

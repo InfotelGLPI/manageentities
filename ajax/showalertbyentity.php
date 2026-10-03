@@ -41,5 +41,5 @@ if (isset($_POST["entities_id"])) {
         throw new AccessDeniedHttpException();
     }
     $contract = new Contract();
-    echo $alert = $contract->displayAlertforEntity($entities_id);
+    echo $contract->displayAlertforEntity($entities_id);
 }

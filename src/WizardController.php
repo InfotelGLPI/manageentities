@@ -904,9 +904,18 @@ class WizardController
         header('Content-Type: application/json');
         $session = self::getSession();
 
-        // We don't have a real entities_id yet in new_entity mode — use 0 (root entity).
-        // The document will be re-linked with the correct entity inside finishWizard().
-        $entities_id = (int) ($session['entities_id'] ?? 0);
+        // Stage the documents in the entity picked at step 1: the existing client, or the parent
+        // chosen for the new one (the client entity is only created by finishWizard(), which
+        // then moves the documents into it). Staging them in the root entity made the upload
+        // fail for any user without access to it.
+        if ($session['wizard_mode'] === 'existing_entity') {
+            $entities_id = (int) ($session['entities_id'] ?? -1);
+        } else {
+            $entities_id = (int) ($session['entity_data']['entities_id'] ?? -1);
+        }
+        if ($entities_id < 0 || !Session::haveAccessToEntity($entities_id)) {
+            self::jsonOut(['success' => false, 'added' => 0, 'errors' => [__('Entity not found', 'manageentities')]]);
+        }
 
         $fileNames    = $_FILES['documents']['name']     ?? [];
         $fileTmpNames = $_FILES['documents']['tmp_name'] ?? [];
@@ -1606,10 +1615,19 @@ class WizardController
             // itself uses to answer "may this document be attached to that item"
             // (see Document::canCreateItem()); Document_Item::can() is deliberately not used
             // here because it also demands both ends share an entity, and the wizard stages its
-            // uploads in the root entity before the client entity even exists
+            // uploads in the parent entity before the client entity even exists
             // (see uploadDocuments()).
             if (!$glpiContract->canAddItem(\Document::class)) {
                 throw new AccessDeniedHttpException();
+            }
+            // Move the staged document into the client entity, next to its contract
+            $staged_doc = new Document();
+            if (
+                $staged_doc->getFromDB($doc_id)
+                && (int) $staged_doc->fields['entities_id'] !== $entities_id
+                && $staged_doc->can($doc_id, UPDATE)
+            ) {
+                $staged_doc->update(['id' => $doc_id, 'entities_id' => $entities_id]);
             }
             $di = new \Document_Item();
             $di->add([

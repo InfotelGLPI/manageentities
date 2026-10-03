@@ -282,8 +282,26 @@ class DirectHelpdesk extends CommonDBTM
      */
     public static function showDashboard($min_sum = 0, int $entities_id = 0)
     {
-        global $CFG_GLPI;
+        $dashboard = self::getDashboardData($min_sum, $entities_id);
+        if ($dashboard === null) {
+            return;
+        }
 
+        TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_dashboard.html.twig', $dashboard);
+    }
+
+    /**
+     * Data of directhelpdesk_dashboard.html.twig, shared by showDashboard() and by the helpdesk
+     * "General follow-up" tab, which includes the template instead of capturing the output.
+     *
+     * @param int|float $min_sum     see showDashboard()
+     * @param int       $entities_id see showDashboard()
+     *
+     * @return array{rows: list<list<array<string, mixed>>>, last_pad: int, hour: string, hours: string, tag_url: string}|null
+     *         null when there is no gauge to draw
+     */
+    public static function getDashboardData($min_sum = 0, int $entities_id = 0): ?array
+    {
         // ECharts comes from core (public/lib/echarts.js): ask core to emit it in the page
         // footer, ahead of the gauge script registered in setup.php. An AJAX tab response
         // renders no footer, so the request would not be honoured there -- it would just sit
@@ -297,7 +315,7 @@ class DirectHelpdesk extends CommonDBTM
 
         $items = $direct->find(['is_billed' => 0]);
         if (!$items) {
-            return;
+            return null;
         }
 
         $entities = $_SESSION["glpiactiveentities"];
@@ -382,7 +400,7 @@ class DirectHelpdesk extends CommonDBTM
         }
 
         if (empty($cards)) {
-            return;
+            return null;
         }
 
         $nbcol = 4;
@@ -391,13 +409,13 @@ class DirectHelpdesk extends CommonDBTM
         $last_count = count(end($rows));
         $last_pad   = ($last_count % $nbcol != 0) ? ($nbcol - ($last_count % $nbcol)) : 0;
 
-        TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_dashboard.html.twig', [
+        return [
             'rows'     => $rows,
             'last_pad' => $last_pad,
             'hour'     => lcfirst(_n('Hour', 'Hours', 1)),
             'hours'    => lcfirst(_n('Hour', 'Hours', 2)),
             'tag_url'  => PLUGIN_MANAGEENTITIES_WEBDIR . "/pics/tag.png",
-        ]);
+        ];
     }
 
     /**
