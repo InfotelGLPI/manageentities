@@ -299,17 +299,18 @@ class CriPrice extends CommonDBTM
         $massive_form_close   = '';
 
         if ($canedit) {
-            ob_start();
-            Html::openMassiveActionsForm('masscriprice' . $rand);
-            $massive_form_open = ob_get_clean();
-
-            ob_start();
-            Html::showMassiveActions(['item' => __CLASS__, 'container' => 'masscriprice' . $rand]);
-            $massive_actions_top = ob_get_clean();
-
-            ob_start();
-            Html::showMassiveActions(['item' => __CLASS__, 'container' => 'masscriprice' . $rand, 'ontop' => false]);
-            $massive_actions_bottom = ob_get_clean();
+            $massive_form_open      = Html::getOpenMassiveActionsForm('masscriprice' . $rand);
+            $massive_actions_top    = Html::showMassiveActions([
+                'item'      => __CLASS__,
+                'container' => 'masscriprice' . $rand,
+                'display'   => false,
+            ]);
+            $massive_actions_bottom = Html::showMassiveActions([
+                'item'      => __CLASS__,
+                'container' => 'masscriprice' . $rand,
+                'ontop'     => false,
+                'display'   => false,
+            ]);
 
             $massive_form_close = '</form>';
         }
@@ -334,9 +335,7 @@ class CriPrice extends CommonDBTM
         foreach ($data as $field) {
             $checkbox_html = '';
             if ($canedit) {
-                ob_start();
-                Html::showMassiveActionCheckBox(__CLASS__, $field['id']);
-                $checkbox_html = ob_get_clean();
+                $checkbox_html = Html::getMassiveActionCheckBox(__CLASS__, $field['id']);
             }
 
             $row = [

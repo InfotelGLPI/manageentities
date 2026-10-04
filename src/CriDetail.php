@@ -565,6 +565,16 @@ class CriDetail extends CommonDBTM
      */
     public static function addReports(Ticket $ticket, $options = [])
     {
+        echo self::renderAddReports($ticket, $options);
+    }
+
+    /**
+     * Same as addReports(), returned as a string
+     *
+     * @param array<string, mixed> $options
+     */
+    public static function renderAddReports(Ticket $ticket, $options = []): string
+    {
 
         $rand = mt_rand();
         $toupdate = 'showCriDetail' . $rand;
@@ -641,7 +651,7 @@ class CriDetail extends CommonDBTM
         $show_delete = Session::haveRight("plugin_manageentities_cri_create", UPDATE)
                        && ($cridetail['documents_id'] ?? 0) != 0;
 
-        TemplateRenderer::getInstance()->display('@manageentities/cridetail_add_reports.html.twig', [
+        return TemplateRenderer::getInstance()->render('@manageentities/cridetail_add_reports.html.twig', [
             'wrapper_id'   => $options['toupdate'] ?? "showCriDetail$rand",
             'show_wrapper' => $generation_ok,
             'show_action'  => $show_action,
@@ -789,11 +799,7 @@ class CriDetail extends CommonDBTM
                 $entries[] = $entry;
             }
 
-            ob_start();
-            if ($entity == -1) {
-                self::addReports($item);
-            }
-            $add_reports_html = ob_get_clean();
+            $add_reports_html = $entity == -1 ? self::renderAddReports($item) : '';
 
             $all_reports_url = $can_read_doc
                 ? $CFG_GLPI["root_doc"] . "/front/document.php?" . http_build_query([
@@ -1503,19 +1509,26 @@ class CriDetail extends CommonDBTM
         $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
         $cridetail = reset($cridetails);
 
-        // Capture the withcontract dropdown HTML
-        ob_start();
-        $rand = \Dropdown::showFromArray(
+        // "With contract" switch
+        $rand = mt_rand();
+        $contract_type_dropdown = \Dropdown::showFromArray(
             'withcontract',
             [0 => __('Out of contract', 'manageentities'), 1 => __('With contrat', 'manageentities')],
-            ['value' => ($cridetail) ? $cridetail['withcontract'] : 1, 'on_change' => self::CHANGE_EVENT_JS],
+            [
+                'value'     => ($cridetail) ? $cridetail['withcontract'] : 1,
+                'on_change' => self::CHANGE_EVENT_JS,
+                'rand'      => $rand,
+                'display'   => false,
+            ],
         );
-        $contract_type_dropdown = ob_get_clean();
 
-        // Capture the contract link dropdown HTML + retrieve the preselected contractday
-        ob_start();
-        $contract_link_info = self::showContractLinkDropdown($cridetail, $ticket->fields['entities_id']);
-        $contract_link_dropdown = ob_get_clean();
+        // Contract link dropdown + the preselected contractday
+        $contract_link_data     = self::getContractLinkDropdownData($cridetail, $ticket->fields['entities_id']);
+        $contract_link_info     = $contract_link_data['selection'];
+        $contract_link_dropdown = TemplateRenderer::getInstance()->render(
+            '@manageentities/contract_link_dropdown.html.twig',
+            $contract_link_data['template'],
+        );
 
         // Compute remaining days and load ContractDay fields from the preselected period
         $remaining_days = null;

@@ -674,16 +674,16 @@ class Contract extends CommonDBTM
      *
      * @return boolean
      */
-    public static function dropdownContractType($name, $value = 0, $rand = null)
+    public static function dropdownContractType($name, $value = 0, $rand = null, bool $display = true)
     {
         $contractTypes = self::getContractTypes();
 
         if ($contractTypes !== []) {
-            if ($rand == null) {
-                return \Dropdown::showFromArray($name, $contractTypes, ['value' => $value]);
-            } else {
-                return \Dropdown::showFromArray($name, $contractTypes, ['value' => $value, 'rand' => $rand]);
+            $options = ['value' => $value, 'display' => $display];
+            if ($rand != null) {
+                $options['rand'] = $rand;
             }
+            return \Dropdown::showFromArray($name, $contractTypes, $options);
         } else {
             return false;
         }

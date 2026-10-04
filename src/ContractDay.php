@@ -330,26 +330,18 @@ class ContractDay extends CommonDBTM
 
         $contract_link = Toolbox::getItemTypeFormURL('Contract') . '?id=' . (int) $contract->fields['id'];
 
-        ob_start();
-        if ($is_day) {
-            Contract::dropdownContractType("contract_type", $this->fields['contract_type'] ?? 0);
-        }
-        $contract_type_html = ob_get_clean();
+        $contract_type_html = $is_day
+            ? (string) Contract::dropdownContractType("contract_type", $this->fields['contract_type'] ?? 0, null, false)
+            : '';
 
-        ob_start();
-        Html::showDateField("begin_date", ['value' => $this->fields["begin_date"]]);
-        $begin_date_html = ob_get_clean();
+        $begin_date_html = Html::showDateField("begin_date", ['value' => $this->fields["begin_date"], 'display' => false]);
+        $end_date_html   = Html::showDateField("end_date", ['value' => $this->fields["end_date"], 'display' => false]);
 
-        ob_start();
-        Html::showDateField("end_date", ['value' => $this->fields["end_date"]]);
-        $end_date_html = ob_get_clean();
-
-        ob_start();
-        \Dropdown::show(ContractState::class, [
-            'value'  => $this->fields['plugin_manageentities_contractstates_id'],
-            'entity' => $this->fields["entities_id"],
+        $contractstate_html = \Dropdown::show(ContractState::class, [
+            'value'   => $this->fields['plugin_manageentities_contractstates_id'],
+            'entity'  => $this->fields["entities_id"],
+            'display' => false,
         ]);
-        $contractstate_html = ob_get_clean();
 
         $this->fields['contractdays_id'] = $this->fields['id'];
         $resultCriDetail = CriDetail::getCriDetailData($this->fields);
