@@ -70,7 +70,7 @@ class Gantt extends CommonDBTM
      * (public/lib/fullcalendar.js) in its resourceTimeline view: one parent row per
      * contract, one child row per contract day. This tab is served through
      * ajax/common.tabs.php, which emits no page footer, so Html::requireJs() would be
-     * silently dropped; the assets are echoed here instead, exactly as the library they
+     * silently dropped; the assets are output by the template instead, exactly as the library they
      * replace used to be. jQuery evaluates them in document order once the container
      * below is in the DOM, so scripts/gantt.js always finds both FullCalendar and its
      * payload.
@@ -86,7 +86,7 @@ class Gantt extends CommonDBTM
         $todisplay = self::getDataToDisplayOnGantt($_SESSION["glpiactiveentities"], true);
 
         if (count($todisplay) == 0) {
-            echo htmlescape(__('Nothing to display', 'manageentities'));
+            TemplateRenderer::getInstance()->display('@manageentities/gantt.html.twig', ['config' => null]);
             return;
         }
 
@@ -159,15 +159,15 @@ class Gantt extends CommonDBTM
         }
 
         if (count($events) == 0) {
-            echo htmlescape(__('Nothing to display', 'manageentities'));
+            TemplateRenderer::getInstance()->display('@manageentities/gantt.html.twig', ['config' => null]);
             return;
         }
 
-        echo Html::css('lib/fullcalendar.css');
-        echo Html::script('lib/fullcalendar.js');
+        // Assets of the chart, output by the template ahead of its container
+        $assets = Html::css('lib/fullcalendar.css') . Html::script('lib/fullcalendar.js');
         $locale_file = self::getFullCalendarLocaleFile();
         if ($locale_file !== null) {
-            echo Html::script($locale_file);
+            $assets .= Html::script($locale_file);
         }
         // Stamped with the modification time of the file on top of the version of the
         // plugin: Html::script() otherwise falls back to GLPI_VERSION, and the version of
@@ -178,13 +178,14 @@ class Gantt extends CommonDBTM
         if (file_exists($script)) {
             $script_stamp .= '.' . filemtime($script);
         }
-        echo Html::script(
+        $assets .= Html::script(
             'plugins/manageentities/scripts/gantt.js',
             ['version' => $script_stamp],
             false,
         );
 
         TemplateRenderer::getInstance()->display('@manageentities/gantt.html.twig', [
+            'assets' => $assets,
             'config' => [
                 'resources'      => $resources,
                 'events'         => $events,

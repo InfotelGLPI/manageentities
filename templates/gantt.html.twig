@@ -28,4 +28,11 @@
 {# The chart is built by public/scripts/gantt.js, which reads the payload back from the
  # attribute below. json_encode is declared safe for the "json" strategy only, so Twig
  # still HTML-escapes it here, in attribute context. #}
-<div class="manageentities-gantt" data-me-gantt="{{ config|json_encode }}"></div>
+{% if config is empty %}
+    <div class="alert alert-info">{{ __('Nothing to display', 'manageentities') }}</div>
+{% else %}
+    {# Core asset tags (Html::css() / Html::script()): this tab is loaded by
+     # ajax/common.tabs.php, which has no footer to collect Html::requireJs() #}
+    {{ assets|raw }}
+    <div class="manageentities-gantt" data-me-gantt="{{ config|json_encode }}"></div>
+{% endif %}

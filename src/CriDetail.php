@@ -119,13 +119,13 @@ class CriDetail extends CommonDBTM
             if (Session::getCurrentInterface() == 'central') {
                 // Billing information: the customer still has interventions to be billed
                 if ($item instanceof Ticket) {
-                    echo DirectHelpdesk::getUnbilledAlert((int) $item->fields['entities_id']);
+                    DirectHelpdesk::showUnbilledAlert((int) $item->fields['entities_id']);
                 }
                 self::showForTicket($item);
             }
             self::showReports($item, $item->getField('id'));
         } elseif ($item->getType() == ContractDay::class) {
-            echo self::showForContractDay($item);
+            self::showForContractDay($item);
         } elseif ($item->getType() == Config::class) {
             self::showCriForm($item);
         }
@@ -560,16 +560,7 @@ class CriDetail extends CommonDBTM
     }
 
     /**
-     * @param Ticket $ticket
-     * @param array $options
-     */
-    public static function addReports(Ticket $ticket, $options = [])
-    {
-        echo self::renderAddReports($ticket, $options);
-    }
-
-    /**
-     * Same as addReports(), returned as a string
+     * Generation / regeneration / deletion of the intervention report of a ticket
      *
      * @param array<string, mixed> $options
      */

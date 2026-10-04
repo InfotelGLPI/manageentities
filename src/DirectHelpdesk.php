@@ -907,6 +907,14 @@ class DirectHelpdesk extends CommonDBTM
      *
      * @return string '' when the customer has no unbilled intervention
      */
+    /**
+     * Display the alert of getUnbilledAlert()
+     */
+    public static function showUnbilledAlert(int $entities_id): void
+    {
+        echo self::getUnbilledAlert($entities_id);
+    }
+
     public static function getUnbilledAlert(int $entities_id): string
     {
         global $DB;
