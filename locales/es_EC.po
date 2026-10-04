@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-04 15:59+0000\n"
+"POT-Creation-Date: 2026-10-04 18:28+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Soporte Infraestructura Standby, 2024\n"
 "Language-Team: Spanish (Ecuador) (https://app.transifex.com/infotelGLPI/"
@@ -262,15 +262,15 @@ msgstr ""
 msgid "Annual"
 msgstr "Anual"
 
-#: src/CriDetail.php:845 src/CriDetail.php:1345
+#: src/CriDetail.php:836 src/CriDetail.php:1336
 msgid "Applied daily rate"
 msgstr "Tarifa diaria aplicada"
 
-#: src/CriDetail.php:846 src/CriDetail.php:1346
+#: src/CriDetail.php:837 src/CriDetail.php:1337
 msgid "Applied hourly rate"
 msgstr "Tarifa por hora aplicada"
 
-#: src/CriDetail.php:1346
+#: src/CriDetail.php:1337
 msgid "Applied rate"
 msgstr "Tarifa aplicada"
 
@@ -529,7 +529,7 @@ msgstr "Configuración de la vista del cliente"
 msgid "Confirm and finish"
 msgstr ""
 
-#: src/CriDetail.php:1364
+#: src/CriDetail.php:1355
 msgid "Consumption"
 msgstr "Consumo"
 
@@ -583,7 +583,7 @@ msgstr "Detalles del contrato"
 msgid "Contract is imported in GLPI"
 msgstr "El contrato se importa a GLPI"
 
-#: src/CriDetail.php:494 src/CriDetail.php:759
+#: src/CriDetail.php:494 src/CriDetail.php:750
 #: src/NotificationTargetContract.php:118
 #: src/NotificationTargetContract.php:153 src/CriPDF.php:532
 #: templates/wizard/step4_contract.html.twig:69
@@ -594,7 +594,7 @@ msgstr "Número de contrato"
 msgid "Contract number is required"
 msgstr ""
 
-#: src/Gantt.php:302 src/Followup.php:879
+#: src/Gantt.php:303 src/Followup.php:879
 msgid "Contract present"
 msgstr "Contrato presente"
 
@@ -675,8 +675,8 @@ msgstr "Credito restante"
 msgid "Crossed time"
 msgstr "Tiempo de esfuerzo"
 
-#: src/CriDetail.php:492 src/CriDetail.php:754 src/CriDetail.php:842
-#: src/CriDetail.php:1342 src/CriPDF.php:562
+#: src/CriDetail.php:492 src/CriDetail.php:745 src/CriDetail.php:833
+#: src/CriDetail.php:1333 src/CriPDF.php:562
 msgid "Crossed time (itinerary including)"
 msgstr "Tiempo transcurrido (incluido el trayecto)"
 
@@ -759,13 +759,13 @@ msgstr ""
 msgid "Date of"
 msgstr "Fecha de"
 
-#: src/Gantt.php:310 src/Followup.php:882
+#: src/Gantt.php:311 src/Followup.php:882
 #: templates/wizard/step5_management.html.twig:57
 #: templates/contract_detail_form.html.twig:138
 msgid "Date of renewal"
 msgstr "Fecha de la renovación"
 
-#: src/Gantt.php:306 src/Followup.php:881
+#: src/Gantt.php:307 src/Followup.php:881
 #: templates/entity/references.html.twig:70
 #: templates/wizard/step5_management.html.twig:53
 #: templates/contract_detail_form.html.twig:137
@@ -1216,7 +1216,7 @@ msgstr "Generar informe de intervención"
 msgid "Generated from the clients management portal"
 msgstr ""
 
-#: front/cri.form.php:42 src/Cri.php:280 src/CriDetail.php:632
+#: front/cri.form.php:42 src/Cri.php:280 src/CriDetail.php:623
 msgid "Generation of the intervention report"
 msgstr "Generar informe de intervención"
 
@@ -1283,7 +1283,7 @@ msgstr "Información añadida correctamente."
 msgid "Informations successfully deleted."
 msgstr "Informaciones apagadas con suceso."
 
-#: src/Gantt.php:381 src/ContractDay.php:119 src/ContractDay.php:457
+#: src/Gantt.php:382 src/ContractDay.php:119 src/ContractDay.php:457
 #: src/Followup.php:855 src/Monthly.php:431
 #: templates/wizard/step6_intervention_block.html.twig:71
 #: templates/contractday_form.html.twig:94
@@ -1349,7 +1349,7 @@ msgstr[0] "Tipo de intervención"
 msgstr[1] "Tipo de intervención"
 msgstr[2] "Tipo de intervención"
 
-#: src/CriDetail.php:493 src/CriDetail.php:755
+#: src/CriDetail.php:493 src/CriDetail.php:746
 #: templates/contract_link_dropdown.html.twig:44
 msgid "Intervention with contract"
 msgstr "Intervención con contrato"
@@ -1793,7 +1793,7 @@ msgstr[2] "Intervenciones no facturadas"
 msgid "Not saved"
 msgstr ""
 
-#: src/Gantt.php:89 src/Gantt.php:162
+#: templates/gantt.html.twig:32
 msgid "Nothing to display"
 msgstr "Nada para mostrar"
 
@@ -1818,7 +1818,7 @@ msgstr "Número de horas por día"
 msgid "Number of moving"
 msgstr "Cantidad de movilización"
 
-#: src/CriDetail.php:839 src/CriDetail.php:1350 src/CriDetail.php:1362
+#: src/CriDetail.php:830 src/CriDetail.php:1341 src/CriDetail.php:1353
 msgid "Object of intervention"
 msgstr "Objeto de la intervención"
 
@@ -1900,7 +1900,7 @@ msgstr ""
 msgid "Options"
 msgstr "Opciones"
 
-#: src/CriDetail.php:1516 src/CriPDF.php:543
+#: src/CriDetail.php:1507 src/CriPDF.php:543
 #: templates/contract_link_dropdown.html.twig:40
 msgid "Out of contract"
 msgstr "Fuera de contrato"
@@ -1952,7 +1952,7 @@ msgstr[2] "Períodos de contrato"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: src/CriDetail.php:837 src/CriDetail.php:1804 hook.php:888
+#: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:888
 #: templates/contractday_list.html.twig:33
 #: templates/contract_link_dropdown.html.twig:58
 msgid "Periods of contract"
@@ -2208,7 +2208,7 @@ msgstr ""
 msgid "References"
 msgstr "Referencias"
 
-#: src/Cri.php:289 src/CriDetail.php:634
+#: src/Cri.php:289 src/CriDetail.php:625
 msgid "Regenerate the intervention report"
 msgstr "Regenerar el informe de intervención"
 
@@ -2603,8 +2603,8 @@ msgstr "Técnico asignado"
 msgid "Technician group"
 msgstr ""
 
-#: src/CriDetail.php:488 src/CriDetail.php:750 src/CriDetail.php:843
-#: src/CriDetail.php:1354 src/CriDetail.php:1363
+#: src/CriDetail.php:488 src/CriDetail.php:741 src/CriDetail.php:834
+#: src/CriDetail.php:1345 src/CriDetail.php:1354
 #: templates/report_occupation_result.html.twig:42
 #: templates/cri_form.html.twig:54
 msgid "Technicians"
@@ -2709,7 +2709,7 @@ msgstr[2] ""
 msgid "Ticket informations"
 msgstr "Información sobre los Casos"
 
-#: src/CriDetail.php:1304 src/CriDetail.php:1838
+#: src/CriDetail.php:1295 src/CriDetail.php:1829
 msgid "Ticket not validated"
 msgstr "Caso no validado"
 
@@ -2738,7 +2738,7 @@ msgstr ""
 msgid "To"
 msgstr "Hasta el"
 
-#: src/CriDetail.php:847 src/CriDetail.php:1356
+#: src/CriDetail.php:838 src/CriDetail.php:1347
 msgid "To compute"
 msgstr "Recuento"
 
@@ -2762,7 +2762,7 @@ msgstr "Total (en días)"
 msgid "Total (in hours)"
 msgstr "Total (en horas)"
 
-#: src/Gantt.php:382 src/ContractDay.php:463 src/Followup.php:856
+#: src/Gantt.php:383 src/ContractDay.php:463 src/Followup.php:856
 #: templates/contractday_form.html.twig:119
 msgid "Total consummated"
 msgstr "Total consumido"
@@ -2847,7 +2847,7 @@ msgstr "Tipo de contrato"
 msgid "Type of service contract"
 msgstr "Tipo de contrato de servicio"
 
-#: src/CriDetail.php:1313 src/CriDetail.php:1845
+#: src/CriDetail.php:1304 src/CriDetail.php:1836
 msgid "Type of service contract missing"
 msgstr "Falta el tipo de contrato de servicios"
 
@@ -3012,7 +3012,7 @@ msgid ""
 "subscription step are hidden."
 msgstr ""
 
-#: src/CriDetail.php:1516
+#: src/CriDetail.php:1507
 msgid "With contrat"
 msgstr "Con contrato"
 
@@ -3082,7 +3082,7 @@ msgstr "a las"
 msgid "of period of contract"
 msgstr "del periodo de contrato"
 
-#: src/CriDetail.php:1343 src/CriPDF.php:245 src/CriPDF.php:601
+#: src/CriDetail.php:1334 src/CriPDF.php:245 src/CriPDF.php:601
 msgid "of this intervention"
 msgstr "de esta intervención"
 
