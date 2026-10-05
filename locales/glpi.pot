@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-05 22:36+0000\n"
+"POT-Creation-Date: 2026-10-05 23:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -577,7 +577,7 @@ msgstr ""
 msgid "Contract number is required"
 msgstr ""
 
-#: src/Gantt.php:303 src/Followup.php:879
+#: src/Gantt.php:296 src/Followup.php:879
 msgid "Contract present"
 msgstr ""
 
@@ -741,13 +741,13 @@ msgstr ""
 msgid "Date of"
 msgstr ""
 
-#: src/Gantt.php:311 src/Followup.php:882
+#: src/Gantt.php:304 src/Followup.php:882
 #: templates/wizard/step5_management.html.twig:57
 #: templates/contract_detail_form.html.twig:137
 msgid "Date of renewal"
 msgstr ""
 
-#: src/Gantt.php:307 src/Followup.php:881
+#: src/Gantt.php:300 src/Followup.php:881
 #: templates/entity/references.html.twig:70
 #: templates/wizard/step5_management.html.twig:53
 #: templates/contract_detail_form.html.twig:136
@@ -1164,7 +1164,7 @@ msgstr ""
 msgid "From"
 msgstr ""
 
-#: src/Gantt.php:84
+#: src/Gantt.php:85
 msgid "GANTT"
 msgstr ""
 
@@ -1262,7 +1262,7 @@ msgstr ""
 msgid "Informations successfully deleted."
 msgstr ""
 
-#: src/Gantt.php:382 src/ContractDay.php:119 src/ContractDay.php:457
+#: src/Gantt.php:375 src/ContractDay.php:119 src/ContractDay.php:457
 #: src/Followup.php:855 src/Monthly.php:431
 #: templates/wizard/step6_intervention_block.html.twig:71
 #: templates/contractday_form.html.twig:94
@@ -2724,7 +2724,7 @@ msgstr ""
 msgid "Total (in hours)"
 msgstr ""
 
-#: src/Gantt.php:383 src/ContractDay.php:463 src/Followup.php:856
+#: src/Gantt.php:376 src/ContractDay.php:463 src/Followup.php:856
 #: templates/contractday_form.html.twig:119
 msgid "Total consummated"
 msgstr ""
