@@ -421,7 +421,7 @@ class TicketOverview
 
     /**
      * Open tickets whose last follow-up was written by one of their requesters, with no task
-     * added since: the customer is waiting for an answer
+     * added since: the customer is waiting for an answer. Pending tickets are left out.
      *
      * @param array $tickets open tickets, by id
      *
@@ -486,6 +486,11 @@ class TicketOverview
         $waiting = [];
         foreach ($iterator as $data) {
             $tickets_id = (int) $data['items_id'];
+            // A pending ticket waits on someone else, the customer follow-up included: there is
+            // no answer due from the technicians (same rule as the overdue tickets)
+            if ($tickets[$tickets_id]['status'] === Ticket::WAITING) {
+                continue;
+            }
             // A requester who is also assigned to the ticket answers as a technician
             if (isset($tickets[$tickets_id]['techs'][(int) $data['users_id']])) {
                 continue;
