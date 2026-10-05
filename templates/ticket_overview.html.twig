@@ -112,7 +112,6 @@
 {% endmacro %}
 
 <form method="post" action="{{ action_url }}" class="d-flex flex-wrap align-items-center gap-2 mt-2 mb-3">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     {# Incidents, requests or both: applies to every card and to the search links #}
     <label for="ticket_type{{ rand }}" class="form-label mb-0">{{ _n('Type', 'Types', 1) }}</label>
     <select class="form-select w-auto me-3" name="ticket_type" id="ticket_type{{ rand }}">

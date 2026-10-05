@@ -38,7 +38,7 @@ use GlpiPlugin\Manageentities\Config;
 
 class Report extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     /**
      * Report on the movement of technicians

@@ -36,7 +36,7 @@ use Session;
 
 class SubscriptionLevel extends CommonDropdown
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     public const TYPE_ALL         = 0;
     public const TYPE_ON_PREMISE  = 1;

@@ -40,10 +40,10 @@ use Toolbox;
 
 class ContractDay extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -400,7 +400,7 @@ class ContractDay extends CommonDBTM
         }
 
         $add_form = [];
-        if ($canCreate && Session::haveRight('plugin_manageentities', UPDATE)) {
+        if ($canCreate && Session::haveRight(Contract::$rightname, UPDATE)) {
             $add_form = [
                 'add_rand'    => mt_rand(),
                 'add_url'     => Toolbox::getItemTypeFormURL(ContractDay::class) . '?contract_id=' . (int) $contract->fields['id'],

@@ -137,7 +137,6 @@ async function loadSubscription(container, config, entity_select) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             'X-Requested-With': 'XMLHttpRequest',
         },
         body: new URLSearchParams({ entities_id }),

@@ -869,7 +869,7 @@ function plugin_manageentities_getAddSearchOptions($itemtype)
     $sopt = [];
 
     if ($itemtype == "Ticket") {
-        if (Session::haveRight("plugin_manageentities", READ)) {
+        if (Session::haveRight(Contract::$rightname, READ)) {
             $sopt[4455]['table']         = 'glpi_contracts';
             $sopt[4455]['field']         = 'name';
             $sopt[4455]['linkfield']     = 'contracts_id';
@@ -906,7 +906,7 @@ function plugin_manageentities_getAddSearchOptionsNew($itemtype)
 {
     $options = [];
 
-    if ($itemtype === 'Contract' && Session::haveRight('plugin_manageentities', READ)) {
+    if ($itemtype === 'Contract' && Session::haveRight(Contract::$rightname, READ)) {
         $options[] = [
             'id'             => '4460',
             'table'          => 'glpi_plugin_manageentities_contracts',

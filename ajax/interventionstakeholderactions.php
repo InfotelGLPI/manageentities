@@ -30,11 +30,12 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
+use GlpiPlugin\Manageentities\Contract;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight('plugin_manageentities', UPDATE);
+Session::checkRight(Contract::$rightname, UPDATE);
 $interventionStakeholder = new InterventionStakeholder();
 
 /**

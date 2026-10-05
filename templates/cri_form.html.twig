@@ -30,7 +30,6 @@
 <div class="red styleContractTitle" style="display:none" id="manageentities_cri_error"></div>
 
 <form action="{{ form_action }}" method="post" name="formReport">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="REPORT_ID" value="{{ report_id }}">
     {% if contract_id and contractday_id %}
         <input type="hidden" name="CONTRAT" value="{{ contract_id }}">

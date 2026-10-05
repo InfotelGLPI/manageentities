@@ -28,7 +28,6 @@
 {# "Add a service period" button; rendered alone in a card when the contract has no period yet #}
 {% set add_form %}
 <form method="post" name="contractDays_form{{ add_rand }}" id="contractDays_form{{ add_rand }}" action="{{ add_url }}">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="contract_id" value="{{ contract_id }}">
     <input type="hidden" name="id" value="">
     <button type="submit" name="addperiod" class="btn btn-primary">

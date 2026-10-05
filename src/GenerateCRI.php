@@ -56,7 +56,7 @@ use User;
  */
 class GenerateCRI extends CommonGLPI
 {
-    public static $rightname = "ticket";
+    public static string $rightname = "ticket";
 
     public const TASK_TO_DO = 1;
     public const TASK_DONE = 2;

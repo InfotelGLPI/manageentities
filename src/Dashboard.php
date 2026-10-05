@@ -70,7 +70,7 @@ class Dashboard extends CommonGLPI
         // Authorisation belongs to the data provider, not to the host dashboard plugin that calls
         // it: without this the widgets were offered - and served - to a user who does not hold the
         // plugin right at all, while every front/ page of the plugin requires checkGlobal(READ).
-        if (!Session::haveRight('plugin_manageentities', READ)) {
+        if (!Session::haveRight(Contract::$rightname, READ)) {
             return [];
         }
 
@@ -114,7 +114,7 @@ class Dashboard extends CommonGLPI
 
         // Same reasoning as getWidgetsForItem(): the entity perimeter was honoured but the
         // functional right was not, and a widget identifier can be requested directly.
-        if (!Session::haveRight('plugin_manageentities', READ)) {
+        if (!Session::haveRight(Contract::$rightname, READ)) {
             return new MydashboardHtml();
         }
 

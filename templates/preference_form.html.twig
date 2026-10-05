@@ -28,7 +28,6 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 
 <form name="form" method="post" action="{{ form_url }}">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="id" value="{{ id }}">
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center gap-2">

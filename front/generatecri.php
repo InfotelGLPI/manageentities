@@ -40,7 +40,7 @@ if (Session::getCurrentInterface() == 'central') {
         Html::helpHeader(__('Entities portal', 'manageentities'));
     }
 }
-if (Session::haveRight("ticket", CREATE)) {
+if (Session::haveRight(\Ticket::$rightname, CREATE)) {
     $generatecri = new GenerateCRI();
     $generatecri->showWizard($ticket = new Ticket(), $_SESSION['glpiactive_entity']);
 } else {

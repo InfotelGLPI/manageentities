@@ -42,7 +42,7 @@ use User;
 
 class InterventionStakeholder extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     // Granularity of the days affected to a stakeholder (half days)
     public const NB_DAYS_STEP = 0.5;

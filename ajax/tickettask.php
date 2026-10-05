@@ -44,7 +44,7 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
     // and a READ on the target only proved the caller could look at it: a technician able to
     // consult another service's tickets could plant tasks on them - and trigger the notifications
     // that go with them. can($id, UPDATE) carries the object right and the entity boundary.
-    Session::checkRight('task', CREATE);
+    Session::checkRight(\TicketTask::$rightname, CREATE);
     $ticket = new Ticket();
     if (!$ticket->can((int) $_POST['tickets_id'], UPDATE)
         || (int) $tickettask->fields['tickets_id'] !== (int) $_POST['tickets_id']) {

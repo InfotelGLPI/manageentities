@@ -47,7 +47,6 @@ document.addEventListener('manageentities:change', async (event) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             'X-Requested-With': 'XMLHttpRequest',
         },
         body: new URLSearchParams({entities_id: field.value}),

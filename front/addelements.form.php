@@ -30,9 +30,10 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\WizardController;
+use GlpiPlugin\Manageentities\Contract;
 
 if (Plugin::isPluginActive("manageentities")
-    && Session::haveRight('plugin_manageentities', UPDATE)) {
+    && Session::haveRight(Contract::$rightname, UPDATE)) {
 
     Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
     WizardController::renderStep();

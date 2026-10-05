@@ -28,7 +28,6 @@
    (EditorSubscriptionWizard::renderTransfer(), confirmation: public/scripts/editorsubscription-fields.js) #}
 <form method="post" action="{{ page_url }}"
       data-me-sub-transfer-form="{{ __('Transfer this subscription to the selected entity?', 'manageentities') }}">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="transfer">
     <input type="hidden" name="sub_id" value="{{ sub_id }}">
 

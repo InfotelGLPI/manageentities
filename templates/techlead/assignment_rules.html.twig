@@ -60,7 +60,6 @@
                 </span>
                 {% if can_create and has_config and missing > 0 %}
                     <form method="post" action="{{ action_url }}" class="d-inline">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" name="create_all_rules" value="1" class="btn btn-sm btn-primary">
                             <i class="ti ti-plus me-1"></i>
                             {{ __('Create the missing rules', 'manageentities') }}
@@ -123,7 +122,6 @@
                         <td class="text-end">
                             {% if can_create and has_config and client.rule_id == 0 and client.techlead_id > 0 %}
                                 <form method="post" action="{{ action_url }}" class="d-inline">
-                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="entities_id" value="{{ client.entities_id }}">
                                     <button type="submit" name="create_rule" value="1" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-plus me-1"></i>{{ _x('button', 'Create the rule', 'manageentities') }}

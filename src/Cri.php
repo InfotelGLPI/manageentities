@@ -44,7 +44,7 @@ use Ticket;
 
 class Cri extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities_cri_create';
+    public static string $rightname = 'plugin_manageentities_cri_create';
 
     // Seconds a report preview is kept on disk before CleanFiles() removes it
     public const PREVIEW_LIFETIME = 3600;

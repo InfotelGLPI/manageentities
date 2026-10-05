@@ -34,9 +34,9 @@ use GlpiPlugin\Manageentities\Entity;
 
 class Servicecatalog extends CommonGLPI
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
-    public $dohistory = false;
+    public bool $dohistory = false;
 
     public static function canUse()
     {

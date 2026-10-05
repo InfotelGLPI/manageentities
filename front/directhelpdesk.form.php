@@ -31,7 +31,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Servicecatalog\Main;
 
-if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
+if (Session::haveRight(DirectHelpdesk::$rightname, UPDATE)) {
     $direct = new DirectHelpdesk();
 
     if (isset($_POST["create_ticket"])) {

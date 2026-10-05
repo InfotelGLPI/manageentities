@@ -154,7 +154,6 @@ async function updateRemainingDays(config, contractdays_id) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             'X-Requested-With': 'XMLHttpRequest',
         },
         body: new URLSearchParams({contractdays_id: contractdays_id}),

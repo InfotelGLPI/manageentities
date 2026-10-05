@@ -31,11 +31,12 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\Contract;
 
 if (Plugin::isPluginActive("manageentities")) {
     // Saving has always required config UPDATE on top of the plugin right: require it to
     // display the form too, instead of showing a form whose submission is then refused.
-    if (Session::haveRight("plugin_manageentities", UPDATE) && Session::haveRight("config", UPDATE)) {
+    if (Session::haveRight(Contract::$rightname, UPDATE) && Session::haveRight(\Config::$rightname, UPDATE)) {
         $config = new Config();
 
         if (isset($_POST["update_config"])) {

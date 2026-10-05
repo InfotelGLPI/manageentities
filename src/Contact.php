@@ -38,7 +38,7 @@ use Session;
 
 class Contact extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     public static function canView(): bool
     {

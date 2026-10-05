@@ -36,9 +36,9 @@ use Session;
 
 class TicketTask extends CommonDBTM
 {
-    public $dohistory = false;
+    public bool $dohistory = false;
 
-    public static $rightname = "plugin_manageentities";
+    public static string $rightname = "plugin_manageentities";
 
     public static function preItemForm(array $params): void
     {

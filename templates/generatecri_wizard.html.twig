@@ -30,7 +30,6 @@
 {% macro mandatory(is_mandatory) %}{% if is_mandatory %}<span class="required">*</span>{% endif %}{% endmacro %}
 
 <form name="generate" method="post" action="{{ form_action }}">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     {% for input in hidden_inputs %}
         <input type="hidden" name="{{ input.name }}" value="{{ input.value }}">
     {% endfor %}

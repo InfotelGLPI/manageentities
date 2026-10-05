@@ -25,7 +25,7 @@
  * --------------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, bootstrap */
+/* global bootstrap */
 
 // Navigation and dynamic blocks of the AddElements wizard (templates/wizard/*). Buttons carry a
 // data-me-wizard-action attribute, dispatched by a single delegated click listener, plus the
@@ -75,7 +75,6 @@ function execScripts(container) {
 function wizardFetch(url, body) {
     const headers = {
         'X-Requested-With': 'XMLHttpRequest',
-        'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
     };
     let init;
     if (body instanceof FormData) {

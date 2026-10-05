@@ -29,6 +29,7 @@
 
 use GlpiPlugin\Servicecatalog\Main;
 use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\Contract;
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = 0;
@@ -44,7 +45,7 @@ if (!isset($_GET["id"])) {
 // in, while a plugin manager without it was refused. Check the business right of the
 // plugin, the same one the rest of the portal requires, and keep the core class checks
 // underneath as the object-level boundary.
-Session::checkRight('plugin_manageentities', READ);
+Session::checkRight(Contract::$rightname, READ);
 
 $cri = new \TicketTask();
 

@@ -38,7 +38,7 @@ use GlpiPlugin\Manageentities\Config;
 
 class CriType extends CommonDropdown
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     public static function getTypeName($nb = 0)
     {

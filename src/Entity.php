@@ -50,7 +50,7 @@ use GlpiPlugin\Manageentities\EditorSubscription;
 
 class Entity extends CommonGLPI
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     public const TAB_CONTRACTS = 5;
     public const TAB_DOCUMENTS = 9;
@@ -157,7 +157,7 @@ class Entity extends CommonGLPI
                 $tabs[4] = self::createTabEntry(__('Data administrative', 'manageentities'));
             }
 
-            if (Session::haveRight("contract", READ)) {
+            if (Session::haveRight(\Contract::$rightname, READ)) {
                 $tabs[self::TAB_CONTRACTS] = Contract::createTabEntry(_n('Contract', 'Contracts', 2));
             }
 
@@ -232,7 +232,7 @@ class Entity extends CommonGLPI
                 }
             }
 
-            if (Session::haveRight("document", UPDATE)) {
+            if (Session::haveRight(\Document::$rightname, UPDATE)) {
                 $tabs[self::TAB_DOCUMENTS] = Document::createTabEntry(_n('Document', 'Documents', 2));
             }
 
@@ -275,7 +275,7 @@ class Entity extends CommonGLPI
             // tabs, and the second one asks the menu builder itself whether the tab is
             // currently offered, which enforces every per-tab condition exactly once and
             // cannot drift from the menu.
-            if (!self::canView() && !Session::haveRight('config', UPDATE)) {
+            if (!self::canView() && !Session::haveRight(\Config::$rightname, UPDATE)) {
                 throw new AccessDeniedHttpException();
             }
 
@@ -538,7 +538,7 @@ class Entity extends CommonGLPI
         $menu['title'] = self::getTypeName(2);
         $menu['page'] = self::getSearchURL(false);
         $menu['links']['search'] = self::getSearchURL(false);
-        if (Session::haveRightsOr("plugin_manageentities", [CREATE, UPDATE]) || Session::haveRight("config", UPDATE)) {
+        if (Session::haveRightsOr(Contract::$rightname, [CREATE, UPDATE]) || Session::haveRight(\Config::$rightname, UPDATE)) {
             //Entry icon in breadcrumb
             $menu['links']['config'] = Config::getFormURL(false);
             //Link to config page in admin plugins list

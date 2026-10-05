@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
     Html::redirect(Toolbox::getItemTypeFormURL('Contract') . "?id=" . $contracts_id);
 
 } elseif (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
-    Session::checkRight("contract", UPDATE);
+    Session::checkRight(\Contract::$rightname, UPDATE);
     // addNbDay() writes contracts_id/entities_id straight from the POST body: enforce access
     // to the target entity and that the contract really belongs to it before inserting (IDOR).
     $entities_id  = (int) ($_POST['entities_id'] ?? -1);
@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
 
 } else {
     Html::header(ContractDay::getTypeName(2), '', "management", Entity::class, "contractday");
-    if (Session::haveRight("contract", READ)) {
+    if (Session::haveRight(\Contract::$rightname, READ)) {
         $contractday->display($_GET);
     }
     Html::footer();

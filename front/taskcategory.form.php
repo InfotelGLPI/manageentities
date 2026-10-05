@@ -31,7 +31,7 @@ use GlpiPlugin\Manageentities\TaskCategory;
 
 // This is a write endpoint: require the UPDATE right, not READ. update() itself enforces
 // no right, so a read-only "dropdown" right would otherwise be enough to write.
-Session::checkRight("dropdown", UPDATE);
+Session::checkRight(\CommonDropdown::$rightname, UPDATE);
 
 $taskCategory = new TaskCategory();
 

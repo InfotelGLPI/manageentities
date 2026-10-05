@@ -61,7 +61,6 @@
                         {% if can_edit_business and is_single %}
                         <td class="text-center">
                             <form method="post" action="{{ entity_action_url }}" class="d-inline">
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="id" value="{{ bc.link_id }}">
                                 <button type="submit" name="deletebusiness" class="btn btn-link text-danger p-0" title="{{ __('Delete permanently') }}">
                                     <i class="ti ti-circle-x"></i>
@@ -81,7 +80,6 @@
         {% if can_edit_business and is_single %}
         <div class="card-footer">
             <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="entities_id" value="{{ entity_id }}">
                 <div class="flex-grow-1">{{ 'User'|itemtype_dropdown({'name': 'users_id', 'right': 'interface'}) }}</div>
                 <a href="{{ user_form_url }}" target="_blank" title="{{ __('Add') }}">

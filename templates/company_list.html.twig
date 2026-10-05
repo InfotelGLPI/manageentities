@@ -27,7 +27,6 @@
 
 {% if can_add %}
     <form method="post" name="company_add_form" action="{{ form_url }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="company_id" value="company">
         <input type="hidden" name="id" value="">
         <div class="card mb-3">

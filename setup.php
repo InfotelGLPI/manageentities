@@ -133,7 +133,7 @@ function plugin_init_manageentities()
         if (Plugin::isPluginActive('servicecatalog')) {
             $PLUGIN_HOOKS['servicecatalog']['manageentities'] = [Servicecatalog::class];
         }
-        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
+        if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])) {
             $PLUGIN_HOOKS[Hooks::MENU_TOADD]['manageentities'] = [
                 'helpdesk' => [
                     GenerateCRI::class,
@@ -141,12 +141,12 @@ function plugin_init_manageentities()
                 ],
             ];
         }
-        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
+        if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])
             && !Plugin::isPluginActive('servicecatalog')) {
             $PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY]['manageentities'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
             $PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY_ICON]['manageentities'] = Entity::getIcon();
         }
-        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
+        if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])) {
             Plugin::registerClass(Preference::class, ['addtabon' => 'Preference']); //See #413
             $PLUGIN_HOOKS[Hooks::MENU_TOADD]['manageentities']['management'] = Entity::class;
 
@@ -169,7 +169,7 @@ function plugin_init_manageentities()
         }
 
         // Same pair of rights as front/config.form.php requires
-        if (Session::haveRight("plugin_manageentities", UPDATE) && Session::haveRight("config", UPDATE)) {
+        if (Session::haveRight(Contract::$rightname, UPDATE) && Session::haveRight(\Config::$rightname, UPDATE)) {
             $PLUGIN_HOOKS[Hooks::CONFIG_PAGE]['manageentities'] = 'front/config.form.php';
         }
 
@@ -221,7 +221,7 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/editorsubscription-fields.js';
             // Search and filter of the publisher subscriptions tab (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/editorsubscription-tab.js';
-            if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
+            if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])) {
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js';
                 // Contract alert of the unbilled intervention modal (native ES module)
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/directhelpdesk-modal.js';
@@ -235,7 +235,7 @@ function plugin_init_manageentities()
 
         $PLUGIN_HOOKS[Hooks::USE_MASSIVE_ACTION]['manageentities'] = true;
         $PLUGIN_HOOKS[Hooks::POST_INIT]['manageentities'] = 'plugin_manageentities_postinit';
-        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
+        if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
             $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities'] = 'plugin_manageentities_pre_item_form';
@@ -256,8 +256,8 @@ function plugin_version_manageentities()
         'homepage' => 'https://github.com/InfotelGLPI/manageentities',
         'requirements' => [
             'glpi' => [
-                'min' => '11.0',
-                'max' => '12.0',
+                'min' => '11.0.99',
+                'max' => '12.0.99',
                 'dev' => false,
             ],
         ],

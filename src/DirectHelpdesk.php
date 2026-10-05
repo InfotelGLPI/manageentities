@@ -45,9 +45,9 @@ use User;
 
 class DirectHelpdesk extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities_directhelpdesk';
+    public static string $rightname = 'plugin_manageentities_directhelpdesk';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public const ONE_HOUR = 3600;
     public const TWO_HOUR = 7200;

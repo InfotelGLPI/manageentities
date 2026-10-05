@@ -63,7 +63,7 @@ if (isset($_POST["addcontract"])) {
     Html::back();
 
 } elseif (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
-    Session::checkRight("contract", UPDATE);
+    Session::checkRight(\Contract::$rightname, UPDATE);
     // addNbDay() writes contracts_id/entities_id straight from the POST body: enforce access
     // to the target entity and that the contract really belongs to it before inserting (IDOR).
     $entities_id  = (int) ($_POST['entities_id'] ?? -1);

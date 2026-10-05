@@ -131,7 +131,6 @@
                                             {% if can_toggle_main %}
                                                 {# A click switches the main tech lead of the client directly #}
                                                 <form method="post" action="{{ action_url }}" class="d-inline">
-                                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                                     <input type="hidden" name="id" value="{{ client.link_id }}">
                                                     <button type="submit" name="toggletechleadbydefault" value="1"
                                                             class="badge border-0 {{ client.is_main ? 'bg-green-lt' : 'bg-secondary-lt' }}"

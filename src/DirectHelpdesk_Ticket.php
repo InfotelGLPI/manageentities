@@ -41,7 +41,7 @@ use Session;
 
 class DirectHelpdesk_Ticket extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities_directhelpdesk';
+    public static string $rightname = 'plugin_manageentities_directhelpdesk';
 
     public static function getTypeName($nb = 0)
     {

@@ -27,7 +27,6 @@
 
 <div id="me-sub-wizard">
 <form method="post" id="me-sub-form" action="{{ page_url }}">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="save">
     <input type="hidden" name="sub_id" value="{{ sub_id }}">
 
@@ -118,7 +117,6 @@
 
 <form method="post" id="me-sub-delete-form" action="{{ page_url }}"
       data-me-sub-delete-form="{{ __('Are you sure you want to permanently delete this subscription?', 'manageentities') }}">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="action" value="delete">
     <input type="hidden" name="sub_id" value="{{ sub_id }}">
 </form>

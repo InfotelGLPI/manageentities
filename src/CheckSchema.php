@@ -41,7 +41,7 @@ use Session;
  */
 class CheckSchema extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
     private $table = "";
 
     /**
@@ -134,7 +134,7 @@ class CheckSchema extends CommonDBTM
     ): bool {
         global $DB;
 
-        Session::checkRight('plugin_manageentities', UPDATE);
+        Session::checkRight(Contract::$rightname, UPDATE);
 
         $schemaFile = $this->getSchemaPath($version);
 

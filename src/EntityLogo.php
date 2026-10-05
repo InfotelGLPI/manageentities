@@ -39,7 +39,7 @@ use Toolbox;
 
 class EntityLogo extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     /**
      * Add a logo for entity

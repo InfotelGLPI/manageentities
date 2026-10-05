@@ -39,7 +39,7 @@ Html::header_nocache();
 // restricted to profiles holding the dedicated right. Without this top-level
 // gate, the else branch let any central user reach loadModal(), which twin
 // endpoint ajax/showalertbyentity.php already protects.
-Session::checkRight('plugin_manageentities_directhelpdesk', READ);
+Session::checkRight(DirectHelpdesk::$rightname, READ);
 
 if (isset($_GET['action']) && $_GET['action'] == 'createticket') {
     // Enforce entity scope: without this, a helpdesk user could iterate entities_id

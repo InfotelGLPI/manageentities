@@ -48,7 +48,7 @@ use Session;
 
 class EditorSubscription extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     public static function getTypeName($nb = 0)
     {

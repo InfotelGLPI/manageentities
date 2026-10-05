@@ -69,7 +69,7 @@ class Contract extends CommonDBTM
      */
     public const LOW_REMAINING_DAYS_THRESHOLD = 1;
 
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     public static function getTypeName($nb = 1)
     {
@@ -943,9 +943,9 @@ class Contract extends CommonDBTM
         // not only to those allowed to manage the contracts
         if (isset($entities_id, $item)
             && $item->getType() == 'Ticket'
-            && !Session::haveRight('plugin_manageentities', UPDATE)
+            && !Session::haveRight(Contract::$rightname, UPDATE)
             && Session::getCurrentInterface() == 'central'
-            && Session::haveRight('plugin_manageentities', READ)) {
+            && Session::haveRight(Contract::$rightname, READ)) {
             $alerts = array_filter([
                 (new Contract())->displayRemainingForEntity((int) $entities_id),
                 DirectHelpdesk::getUnbilledAlert((int) $entities_id),
@@ -961,7 +961,7 @@ class Contract extends CommonDBTM
 
         if (isset($entities_id)
             && $_SESSION['glpiactiveprofile']['interface'] == 'central'
-            && Session::haveRight('plugin_manageentities', UPDATE)) {
+            && Session::haveRight(Contract::$rightname, UPDATE)) {
             $contract = new Contract();
             $alerts   = [$contract->displayAlertforEntity($entities_id)];
             $is_ticket = isset($params['item']) && $item->getType() == 'Ticket';

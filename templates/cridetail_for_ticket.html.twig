@@ -31,7 +31,6 @@
 <form method="post" name="{{ form_id }}" id="{{ form_id }}"
       action="{{ form_url }}"
       data-submit-once>
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="tickets_id"  value="{{ tickets_id }}">
     <input type="hidden" name="entities_id" value="{{ entities_id }}">
     <input type="hidden" name="date"        value="{{ ticket_date }}">

@@ -64,7 +64,6 @@
                                 <span class="badge bg-green-lt">{{ __('Main tech lead', 'manageentities') }}</span>
                             {% elseif can_update_techleads and is_single %}
                                 <form method="post" action="{{ entity_action_url }}" class="d-inline">
-                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="id" value="{{ tl.link_id }}">
                                     <button type="submit" name="techleadbydefault" class="btn btn-link btn-sm p-0">
                                         {{ __('Set as main tech lead', 'manageentities') }}
@@ -75,7 +74,6 @@
                         {% if can_edit_techleads and is_single %}
                         <td class="text-center">
                             <form method="post" action="{{ entity_action_url }}" class="d-inline">
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="id" value="{{ tl.link_id }}">
                                 <button type="submit" name="deletetechlead" class="btn btn-link text-danger p-0" title="{{ __('Delete permanently') }}">
                                     <i class="ti ti-circle-x"></i>
@@ -95,7 +93,6 @@
         {% if can_edit_techleads and is_single %}
         <div class="card-footer">
             <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="entities_id" value="{{ entity_id }}">
                 <div class="flex-grow-1">{{ 'User'|itemtype_dropdown({'name': 'users_id', 'right': 'own_ticket', 'entity': techlead_entities, 'used': techlead_used}) }}</div>
                 <button type="submit" name="addtechlead" class="btn btn-sm btn-primary">{{ __('Add') }}</button>

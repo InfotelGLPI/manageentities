@@ -55,7 +55,6 @@
                         {% endfor %}
                         {% if can_edit %}
                         <form method="post" action="{{ entity_form_url }}" enctype="multipart/form-data" class="d-flex align-items-center gap-2 flex-wrap ms-2">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="entities_id" value="{{ ent.entity_id }}">
                             {{ _inputs.file('filename', null) }}
                             <small class="text-muted">({{ ent.max_upload }})</small>
@@ -71,7 +70,6 @@
 
                 {# Entity fields #}
                 <form method="post" action="{{ entity_form_url }}">
-                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="entities_id" value="{{ ent.entity_id }}">
 
                     <dl class="row mb-0">
@@ -208,7 +206,6 @@
                                             <span class="badge bg-green-lt">{{ __('Manager') }}</span>
                                         {% elseif can_edit_contacts %}
                                             <form method="post" action="{{ entity_action_url }}" class="d-inline">
-                                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="contacts_id" value="{{ contact.link_id }}">
                                                 <input type="hidden" name="entities_id" value="{{ entity_id }}">
                                                 <button type="submit" name="contactbydefault" class="btn btn-link btn-sm p-0">{{ __('Manager') }}</button>
@@ -221,7 +218,6 @@
                                 {% if can_edit_contacts and is_single %}
                                 <td class="text-center">
                                     <form method="post" action="{{ entity_action_url }}" class="d-inline">
-                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                         <input type="hidden" name="id" value="{{ contact.link_id }}">
                                         <button type="submit" name="deletecontacts" class="btn btn-link text-danger p-0" title="{{ __('Delete permanently') }}">
                                             <i class="ti ti-circle-x"></i>
@@ -241,7 +237,6 @@
                 {% if can_edit_contacts and is_single %}
                 <div class="card-footer">
                     <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="entities_id" value="{{ entity_id }}">
                         <div class="flex-grow-1">{{ 'Contact'|itemtype_dropdown({'name': 'contacts_id'}) }}</div>
                         <a href="{{ contact_form_url }}" target="_blank" title="{{ __('Add') }}">
@@ -293,7 +288,6 @@
                                 {% if can_edit_business and is_single %}
                                 <td class="text-center">
                                     <form method="post" action="{{ entity_action_url }}" class="d-inline">
-                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                         <input type="hidden" name="id" value="{{ bc.link_id }}">
                                         <button type="submit" name="deletebusiness" class="btn btn-link text-danger p-0" title="{{ __('Delete permanently') }}">
                                             <i class="ti ti-circle-x"></i>
@@ -313,7 +307,6 @@
                 {% if can_edit_business and is_single %}
                 <div class="card-footer">
                     <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="entities_id" value="{{ entity_id }}">
                         <div class="flex-grow-1">{{ 'User'|itemtype_dropdown({'name': 'users_id', 'right': 'interface'}) }}</div>
                         <a href="{{ user_form_url }}" target="_blank" title="{{ __('Add') }}">

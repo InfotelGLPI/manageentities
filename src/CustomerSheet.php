@@ -40,7 +40,7 @@ use Session;
  */
 class CustomerSheet extends CommonGLPI
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
 
     public static function getTypeName($nb = 0)
     {

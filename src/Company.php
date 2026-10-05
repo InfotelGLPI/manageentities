@@ -44,9 +44,9 @@ use Toolbox;
 
 class Company extends CommonDBTM
 {
-    public static $rightname = 'plugin_manageentities';
+    public static string $rightname = 'plugin_manageentities';
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -104,7 +104,7 @@ class Company extends CommonDBTM
             '@manageentities/company_list.html.twig',
             [
                 'companies' => $companies,
-                'can_add'   => Session::haveRight('plugin_manageentities', UPDATE),
+                'can_add'   => Session::haveRight(Contract::$rightname, UPDATE),
                 'add_title' => __('Add a company', 'manageentities'),
                 'form_url'  => $link,
             ],

@@ -27,7 +27,6 @@
 
 {# Preview of the generated intervention report, and the button saving it (manageentities_loadCriForm) #}
 <form method="post" name="formReport">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
     {% for name, value in hidden_fields %}
         <input type="hidden" name="{{ name }}" value="{{ value }}">
     {% endfor %}

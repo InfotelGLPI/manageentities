@@ -45,7 +45,6 @@
                 {% if show_delete %}
                     <form method="post" name="cridetail_form{{ rand }}" id="cridetail_form{{ rand }}"
                           action="{{ delete_url }}" style="display:inline">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="documents_id" value="{{ documents_id }}">
                         <button type="submit" name="purgedoc" class="btn btn-danger">
                             {{ _x('button', 'Delete permanently') }}

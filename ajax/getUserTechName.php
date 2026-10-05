@@ -28,12 +28,13 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\Contract;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 // Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
-if (!Session::haveRight('plugin_manageentities', READ) && !Session::haveRight('ticket', CREATE)) {
+if (!Session::haveRight(Contract::$rightname, READ) && !Session::haveRight(\Ticket::$rightname, CREATE)) {
     throw new AccessDeniedHttpException();
 }
 

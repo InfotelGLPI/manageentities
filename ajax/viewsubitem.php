@@ -31,12 +31,13 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\CriPrice;
+use GlpiPlugin\Manageentities\Contract;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 $AJAX_INCLUDE = 1;
 
-Session::checkRight('plugin_manageentities', READ);
+Session::checkRight(Contract::$rightname, READ);
 
 if (!isset($_POST['type'])) {
     throw new NotFoundHttpException();

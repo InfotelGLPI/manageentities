@@ -29,8 +29,9 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\CriPrice;
+use GlpiPlugin\Manageentities\Contract;
 
-if (Session::haveRight("plugin_manageentities", UPDATE)) {
+if (Session::haveRight(Contract::$rightname, UPDATE)) {
     $criprice = new CriPrice();
 
     if (isset($_POST["add"])) {

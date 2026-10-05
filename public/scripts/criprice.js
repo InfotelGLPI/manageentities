@@ -51,7 +51,6 @@ async function postHtml(url, params) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             'X-Requested-With': 'XMLHttpRequest',
         },
         body: new URLSearchParams(params),

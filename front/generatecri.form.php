@@ -40,7 +40,7 @@ $ticket                          = new Ticket();
 // Every branch of this controller is about tickets. The floor is therefore settled once, before
 // any branching, instead of being left to each branch - that is how the display branch ended up
 // with no check at all.
-Session::checkRight('ticket', READ);
+Session::checkRight(\Ticket::$rightname, READ);
 
 // The ?active_entity= switch that used to sit here changed the active entity of the session on
 // a plain GET, which the CSRF listener never validates: a link or an image pointing here moved
@@ -48,7 +48,7 @@ Session::checkRight('ticket', READ);
 // entity selector of the core covers it.
 
 if (isset($_POST['generatecri'])) {
-    if (Session::haveRight('ticket', CREATE)) {
+    if (Session::haveRight(\Ticket::$rightname, CREATE)) {
 
         $ko = $GenerateCri->checkMandatoryFields($_POST);
         if (!$ko) {
@@ -122,7 +122,7 @@ if (isset($_POST['generatecri'])) {
     // entity through showContractLinkDropdown(), and have $_SESSION['glpiactive_entity']
     // rewritten on the way. The check comes before Html::header() so a refusal does not ship a
     // rendered page shell.
-    Session::checkRight('ticket', CREATE);
+    Session::checkRight(\Ticket::$rightname, CREATE);
 
     Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", GenerateCri::class);
     $ticket->fields['itilcategories_id'] = $_POST['itilcategories_id'] ?? 0;

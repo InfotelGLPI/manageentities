@@ -70,7 +70,7 @@ if (Session::getCurrentInterface() == 'central') {
 }
 
 if ($ManageentitiesEntity->canView()
-    || Session::haveRight("config", UPDATE)) {
+    || Session::haveRight(\Config::$rightname, UPDATE)) {
 
     if (isset($_POST["addcontracts"])) {
         // can(-1, CREATE, $input) enforces the CREATE right AND the target entity from
