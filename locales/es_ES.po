@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-04 18:28+0000\n"
+"POT-Creation-Date: 2026-10-05 10:36+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2019\n"
 "Language-Team: Spanish (Spain) (https://www.transifex.com/infotelGLPI/"
@@ -1736,12 +1736,12 @@ msgstr ""
 msgid "No tasks whose category can be used"
 msgstr ""
 
-#: src/TicketOverview.php:617 templates/entity/techleads_card.html.twig:92
+#: src/TicketOverview.php:622 templates/entity/techleads_card.html.twig:92
 #: templates/techlead/clients_by_tech.html.twig:192
 msgid "No tech lead"
 msgstr ""
 
-#: src/TicketOverview.php:598 templates/ticket_overview.html.twig:57
+#: src/TicketOverview.php:603 templates/ticket_overview.html.twig:57
 #: templates/ticket_overview.html.twig:186
 #: templates/ticket_overview.html.twig:265
 msgid "No technician"
