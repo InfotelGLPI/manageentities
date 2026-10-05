@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Locale\LanguageRegistry;
 use Html;
 use Infocom;
 use Session;
@@ -226,21 +227,13 @@ class Gantt extends CommonDBTM
      */
     private static function getFullCalendarLocaleFile(): ?string
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $language = $_SESSION['glpilanguage'] ?? null;
-        if ($language === null || !isset($CFG_GLPI['languages'][$language])) {
+        $language = LanguageRegistry::tryGet($_SESSION['glpilanguage'] ?? '');
+        if ($language === null) {
             return null;
         }
 
-        foreach ([2, 3] as $index) {
-            if (!isset($CFG_GLPI['languages'][$language][$index])) {
-                continue;
-            }
-
-            $filename = 'lib/fullcalendar/core/locales/'
-                . strtolower((string) $CFG_GLPI['languages'][$language][$index]) . '.js';
+        foreach ([$language->jquery_code, $language->js_code] as $code) {
+            $filename = 'lib/fullcalendar/core/locales/' . strtolower($code) . '.js';
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 return $filename;
             }
