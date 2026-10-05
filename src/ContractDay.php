@@ -416,7 +416,7 @@ class ContractDay extends CommonDBTM
         $restrict_days = [
             "`entities_id`"  => $contract->fields['entities_id'],
             "`contracts_id`" => $contract->fields['id'],
-            'ORDER'          => '`begin_date` ASC, `name`',
+            'ORDER'          => ['begin_date ASC', 'name'],
         ];
 
         $dbu             = new DbUtils();
