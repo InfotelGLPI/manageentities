@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 14:31+0000\n"
+"POT-Creation-Date: 2026-10-06 23:29+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
@@ -90,11 +90,11 @@ msgstr "+ 12 mois"
 msgid "-- Select a template --"
 msgstr "-- Sélectionner un gabarit --"
 
-#: templates/directhelpdesk_dashboard_filter.html.twig:33
+#: templates/directhelpdesk_dashboard_filter.html.twig:36
 msgid "2 hours minimum"
 msgstr "2 heures minimum"
 
-#: templates/directhelpdesk_dashboard_filter.html.twig:38
+#: templates/directhelpdesk_dashboard_filter.html.twig:41
 msgid "3 hours minimum"
 msgstr "3 heures minimum"
 
@@ -102,7 +102,7 @@ msgstr "3 heures minimum"
 msgid "A contract with this number already exists"
 msgstr "Un contrat avec ce numéro existe déjà"
 
-#: templates/generatecri_wizard.html.twig:157
+#: templates/generatecri_wizard.html.twig:175
 msgid "Accomplished tasks informations"
 msgstr "Informations sur les tâches accomplies"
 
@@ -184,7 +184,7 @@ msgstr "Ajouter un tarif"
 msgid "Add stakeholders"
 msgstr "Ajout d'intervenants"
 
-#: templates/generatecri_wizard.html.twig:157
+#: templates/generatecri_wizard.html.twig:233
 msgid "Add this Task"
 msgstr "Ajouter cette tâche"
 
@@ -413,8 +413,8 @@ msgstr ""
 msgid "Caption"
 msgstr "Légende"
 
-#: templates/generatecri_wizard.html.twig:71
-#: templates/generatecri_wizard.html.twig:176
+#: templates/generatecri_wizard.html.twig:77
+#: templates/generatecri_wizard.html.twig:220
 msgid "Category"
 msgstr "Catégorie"
 
@@ -423,14 +423,14 @@ msgstr "Catégorie"
 msgid "City"
 msgstr "Ville"
 
-#: src/DirectHelpdesk.php:726 src/Followup.php:745 src/Followup.php:979
+#: src/DirectHelpdesk.php:719 src/Followup.php:745 src/Followup.php:979
 #: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
 #: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:126
 #: templates/entity/unbilled_tab.html.twig:141
 #: templates/techlead/clients_by_tech.html.twig:120
 #: templates/techlead/clients_by_tech.html.twig:165
 #: templates/techlead/assignment_rules.html.twig:82
-#: templates/generatecri_wizard.html.twig:42
+#: templates/generatecri_wizard.html.twig:48
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -557,7 +557,7 @@ msgstr[2] "Contacts"
 msgid "Contacts"
 msgstr "Contacts"
 
-#: src/GenerateCRI.php:367
+#: src/GenerateCRI.php:365
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 "Le contenu, la date de fin et de début sont obligatoires pour une tâche!"
@@ -645,8 +645,8 @@ msgstr ""
 "Créer un nouveau client, des contacts, une souscription, un contrat et des "
 "prestations."
 
-#: templates/directhelpdesk_dashboard.html.twig:44
-#: templates/directhelpdesk_dashboard.html.twig:47
+#: templates/directhelpdesk_dashboard.html.twig:61
+#: templates/directhelpdesk_dashboard.html.twig:65
 msgid "Create a ticket"
 msgstr "Créer un ticket"
 
@@ -882,10 +882,10 @@ msgid "Deleting…"
 msgstr "Suppression..."
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:43
-#: templates/generatecri_wizard.html.twig:95
-#: templates/generatecri_wizard.html.twig:144
-#: templates/generatecri_wizard.html.twig:162
-#: templates/generatecri_wizard.html.twig:220
+#: templates/generatecri_wizard.html.twig:103
+#: templates/generatecri_wizard.html.twig:158
+#: templates/generatecri_wizard.html.twig:181
+#: templates/generatecri_wizard.html.twig:252
 #: templates/directhelpdesk_modal.html.twig:74
 #: templates/directhelpdesk_ticket_tab.html.twig:38
 msgid "Description"
@@ -926,8 +926,8 @@ msgstr "Dupliquer"
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
 #: templates/wizard/step4_contract.html.twig:80
-#: templates/generatecri_wizard.html.twig:145
-#: templates/generatecri_wizard.html.twig:174
+#: templates/generatecri_wizard.html.twig:160
+#: templates/generatecri_wizard.html.twig:196
 #: templates/directhelpdesk_modal.html.twig:83
 #: templates/directhelpdesk_form.html.twig:105
 #: templates/directhelpdesk_ticket_tab.html.twig:37
@@ -1019,7 +1019,7 @@ msgstr "La date de début ne peut pas être inférieure à la date de fin"
 msgid "End date is required"
 msgstr "La date de fin est obligatoire"
 
-#: src/GenerateCRI.php:369
+#: src/GenerateCRI.php:367
 msgid "End date must be after the begin date !"
 msgstr "La date de fin doit être postérieure à la date de début!"
 
@@ -1033,7 +1033,7 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/generatecri.php:40 front/cridetail.form.php:53
 #: front/cridetail.form.php:56 front/cridetail.form.php:58
 #: front/addelements.form.php:38 setup.php:251 src/Preference.php:147
-#: src/GenerateCRI.php:942 src/TaskCategory.php:100 src/Profile.php:51
+#: src/GenerateCRI.php:940 src/TaskCategory.php:100 src/Profile.php:51
 #: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
 msgstr "Portail Clients"
@@ -1214,14 +1214,10 @@ msgstr ""
 msgid "General follow-up"
 msgstr "Suivi général"
 
-#: templates/generatecri_wizard.html.twig:235
+#: templates/generatecri_wizard.html.twig:265
 msgctxt "button"
 msgid "Generate"
 msgstr "Générer"
-
-#: src/GenerateCRI.php:206
-msgid "Generate Intervention report"
-msgstr "Générer le rapport d'intervention"
 
 #: src/GenerateCRI.php:76
 msgid "Generate report intervention"
@@ -1270,7 +1266,7 @@ msgstr "Horaire"
 msgid "Hourly rate"
 msgstr "Tarif horaire"
 
-#: templates/generatecri_wizard.html.twig:115
+#: templates/generatecri_wizard.html.twig:124
 msgid "Impact"
 msgstr "Impact"
 
@@ -1316,7 +1312,7 @@ msgstr "Le crédit initial est obligatoire"
 msgid "Internet publication"
 msgstr "Publié sur internet"
 
-#: src/DirectHelpdesk.php:728 src/Contract.php:734
+#: src/DirectHelpdesk.php:721 src/Contract.php:734
 #: templates/entity/unbilled_tab.html.twig:143
 msgid "Intervention"
 msgid_plural "Interventions"
@@ -1365,7 +1361,8 @@ msgstr[1] "Types d'intervention"
 msgstr[2] "Types d'intervention"
 
 #: src/CriDetail.php:493 src/CriDetail.php:746
-#: templates/contract_link_dropdown.html.twig:44
+#: templates/contract_link_dropdown.html.twig:62
+#: templates/contract_link_dropdown.html.twig:78
 msgid "Intervention with contract"
 msgstr "Intervention sous contrat"
 
@@ -1389,7 +1386,7 @@ msgstr "Site web invalide"
 msgid "Invalid wizard mode"
 msgstr "Mode wizard invalide"
 
-#: src/DirectHelpdesk.php:857 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:850 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr "Est facturée"
 
@@ -1465,7 +1462,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
-#: src/DirectHelpdesk.php:727 templates/entity/unbilled_tab.html.twig:142
+#: src/DirectHelpdesk.php:720 templates/entity/unbilled_tab.html.twig:142
 #: templates/entity/techleads_card.html.twig:64
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
@@ -1558,7 +1555,7 @@ msgstr "Mode de gestion"
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
 
-#: src/DirectHelpdesk.php:733 templates/entity/unbilled_tab.html.twig:166
+#: src/DirectHelpdesk.php:726 templates/entity/unbilled_tab.html.twig:166
 #, php-format
 msgid "More than %d months"
 msgstr "Plus de %d mois"
@@ -1629,7 +1626,7 @@ msgstr "Suivant"
 msgid "No"
 msgstr "Non"
 
-#: templates/contract_link_dropdown.html.twig:47
+#: templates/contract_link_dropdown.html.twig:38
 msgid "No active contracts"
 msgstr "Aucun contrats en cours"
 
@@ -1799,7 +1796,7 @@ msgid "No unbilled intervention for a client with an ongoing contract."
 msgstr ""
 "Aucune intervention non facturée pour un client ayant un contrat en cours."
 
-#: templates/generatecri_wizard.html.twig:217
+#: templates/generatecri_wizard.html.twig:248
 msgid "Non-accomplished tasks informations"
 msgstr "Informations sur les tâches non accomplies"
 
@@ -1848,7 +1845,7 @@ msgstr "Objet de l'intervention"
 msgid "Occupation report"
 msgstr "Rapport d'occupations"
 
-#: src/DirectHelpdesk.php:732 templates/entity/unbilled_tab.html.twig:145
+#: src/DirectHelpdesk.php:725 templates/entity/unbilled_tab.html.twig:145
 msgid "Oldest intervention"
 msgstr "Intervention la plus ancienne"
 
@@ -1925,7 +1922,8 @@ msgid "Options"
 msgstr "Options"
 
 #: src/CriDetail.php:1507 src/CriPDF.php:543
-#: templates/contract_link_dropdown.html.twig:40
+#: templates/contract_link_dropdown.html.twig:59
+#: templates/contract_link_dropdown.html.twig:74
 msgid "Out of contract"
 msgstr "Hors contrat"
 
@@ -1978,7 +1976,8 @@ msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 
 #: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:888
 #: templates/contractday_list.html.twig:33
-#: templates/contract_link_dropdown.html.twig:58
+#: templates/contract_link_dropdown.html.twig:66
+#: templates/contract_link_dropdown.html.twig:80
 msgid "Periods of contract"
 msgstr "Prestations du contrat"
 
@@ -2129,7 +2128,7 @@ msgid "Pre-selected state when creating a service period in the wizard."
 msgstr ""
 "Statut présélectionné lors de la création d'une prestation dans le wizard."
 
-#: templates/generatecri_wizard.html.twig:138
+#: templates/generatecri_wizard.html.twig:153
 msgid "Predefined task informations"
 msgstr "Informations de tâches prédéfinies"
 
@@ -2159,7 +2158,7 @@ msgstr "Prix"
 msgid "Price must be greater than 0"
 msgstr "Le prix doit être supérieur à 0"
 
-#: templates/generatecri_wizard.html.twig:122
+#: templates/generatecri_wizard.html.twig:130
 msgid "Priority"
 msgstr "Priorité"
 
@@ -2437,7 +2436,7 @@ msgid "Sorted by oldest end date first"
 msgstr "Trié par date de fin la plus ancienne en premier"
 
 #: templates/config_cri_form.html.twig:54
-#: templates/generatecri_wizard.html.twig:186
+#: templates/generatecri_wizard.html.twig:202
 msgid "Specify an end date"
 msgstr "Indiquez une date de fin"
 
@@ -2458,7 +2457,7 @@ msgstr "Commencer"
 #: templates/wizard/step4_contract.html.twig:74
 #: templates/report_moving_form.html.twig:40
 #: templates/report_search_form.html.twig:39
-#: templates/generatecri_wizard.html.twig:173
+#: templates/generatecri_wizard.html.twig:192
 #: templates/editorsubscription_fields.html.twig:111
 #: templates/contract_detail_form.html.twig:93
 #: templates/report_occupation_form.html.twig:40
@@ -2573,13 +2572,6 @@ msgstr "Onglets affichés dans la gestion des clients"
 msgid "Target entity"
 msgstr "Entité cible"
 
-#: templates/generatecri_wizard.html.twig:143
-msgid "Task"
-msgid_plural "Tasks"
-msgstr[0] "Tache"
-msgstr[1] "Tâches"
-msgstr[2] "Tâches"
-
 #: templates/tickettask_blocked_alert.html.twig:32
 msgid "Task addition blocked"
 msgstr "L'ajout de tâches est bloqué"
@@ -2588,7 +2580,7 @@ msgstr "L'ajout de tâches est bloqué"
 msgid "Task category"
 msgstr "Catégorie de tâche"
 
-#: src/GenerateCRI.php:368
+#: src/GenerateCRI.php:366
 msgid "Task category must be defined"
 msgstr "La catégorie de tâche doit être définie"
 
@@ -2624,8 +2616,8 @@ msgstr "Assistance Technique"
 #: src/CriPDF.php:395
 #: templates/entity/directhelpdesk_ticket_select.html.twig:40
 #: templates/techlead/clients_by_tech.html.twig:164
-#: templates/generatecri_wizard.html.twig:128
-#: templates/generatecri_wizard.html.twig:175
+#: templates/generatecri_wizard.html.twig:138
+#: templates/generatecri_wizard.html.twig:215
 #: templates/directhelpdesk_ticket_tab.html.twig:36
 #: templates/ticket_overview.html.twig:249
 #: templates/report_occupation_form.html.twig:45
@@ -2635,11 +2627,11 @@ msgstr[0] "Intervenant"
 msgstr[1] "Intervenants"
 msgstr[2] "Intervenants"
 
-#: src/GenerateCRI.php:372
+#: src/GenerateCRI.php:370
 msgid "Technician as assigned"
 msgstr "Technicien assigné"
 
-#: templates/generatecri_wizard.html.twig:147
+#: templates/generatecri_wizard.html.twig:163
 msgid "Technician group"
 msgstr "Groupe de technicien"
 
@@ -2764,7 +2756,7 @@ msgstr[0] "Ticket"
 msgstr[1] "Tickets"
 msgstr[2] "Tickets"
 
-#: templates/generatecri_wizard.html.twig:38
+#: templates/generatecri_wizard.html.twig:43
 msgid "Ticket informations"
 msgstr "Informations du ticket"
 
@@ -2786,7 +2778,7 @@ msgstr "Temps justifé"
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:38
 #: templates/wizard/step2_contact_block.html.twig:60
-#: templates/generatecri_wizard.html.twig:81
+#: templates/generatecri_wizard.html.twig:89
 #: templates/directhelpdesk_modal.html.twig:60
 #: templates/directhelpdesk_form.html.twig:114
 #: templates/directhelpdesk_ticket_tab.html.twig:34
@@ -2886,7 +2878,7 @@ msgstr "Déplacement (en jours)"
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/wizard/step2_contact_block.html.twig:86
-#: templates/generatecri_wizard.html.twig:54
+#: templates/generatecri_wizard.html.twig:60
 #: templates/contract_detail_form.html.twig:55
 #: templates/ticket_overview.html.twig:116
 msgid "Type"
@@ -2914,7 +2906,7 @@ msgstr "Type de contrat de service manquant"
 msgid "Unarchive and continue"
 msgstr "Désarchiver et continuer"
 
-#: src/DirectHelpdesk.php:731 templates/entity/unbilled_tab.html.twig:144
+#: src/DirectHelpdesk.php:724 templates/entity/unbilled_tab.html.twig:144
 msgid "Unbilled hours"
 msgstr "Heures non facturées"
 
@@ -2926,7 +2918,7 @@ msgstr "Heures non facturées par un client ayant un contrat en cours"
 msgid "Unbilled interventions"
 msgstr "Interventions non facturées"
 
-#: src/DirectHelpdesk.php:730
+#: src/DirectHelpdesk.php:723
 msgid "Unbilled man-days"
 msgstr "Jours-hommes non facturées"
 
@@ -2975,7 +2967,7 @@ msgstr "Mise à jour de la souscription éditeur"
 msgid "Update subscription fields"
 msgstr "Mise à jour des champs du type de gestion"
 
-#: templates/generatecri_wizard.html.twig:108
+#: templates/generatecri_wizard.html.twig:118
 msgid "Urgency"
 msgstr "Urgence"
 
@@ -3005,7 +2997,6 @@ msgstr "Utiliser cette entité"
 
 #: templates/report_search_form.html.twig:54
 #: templates/interventionstakeholder_list.html.twig:46
-#: templates/generatecri_wizard.html.twig:175
 #: templates/interventionstakeholder_form.html.twig:41
 #: templates/cridetail_planning_item.html.twig:36
 msgid "User"
@@ -3172,3 +3163,12 @@ msgid_plural "weeks"
 msgstr[0] "Semaine"
 msgstr[1] "Semaines"
 msgstr[2] "Semaines"
+
+#~ msgid "Generate Intervention report"
+#~ msgstr "Générer le rapport d'intervention"
+
+#~ msgid "Task"
+#~ msgid_plural "Tasks"
+#~ msgstr[0] "Tache"
+#~ msgstr[1] "Tâches"
+#~ msgstr[2] "Tâches"
