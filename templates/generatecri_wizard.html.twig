@@ -25,216 +25,245 @@
  # --------------------------------------------------------------------------
  #}
 
+{# CRI generation wizard (GenerateCRI::showWizard()). The accomplished tasks are added to
+   #tasks by public/scripts/generatecri-tasks.js, which reads the form fields by name. #}
 {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
 
 {% macro mandatory(is_mandatory) %}{% if is_mandatory %}<span class="required">*</span>{% endif %}{% endmacro %}
 
-<form name="generate" method="post" action="{{ form_action }}">
-    {% for input in hidden_inputs %}
-        <input type="hidden" name="{{ input.name }}" value="{{ input.value }}">
-    {% endfor %}
-    <table class="tab_cadre" width="60%">
-        <tr class="tab_bg_1">
-            <th colspan="4" style="padding-top:16px; font-weight: bold;">{{ __('Ticket informations', 'manageentities') }}</th>
-        </tr>
+<div class="container-lg my-3">
+    <form name="generate" method="post" action="{{ form_action }}">
+        {% for input in hidden_inputs %}
+            <input type="hidden" name="{{ input.name }}" value="{{ input.value }}">
+        {% endfor %}
 
-        <tr class="tab_bg_1">
-            <td>{{ _n('Client', 'Clients', 2, 'manageentities') }}</td>
-            <td colspan="3">
-                {{ 'Entity'|itemtype_dropdown({
-                    'name': 'entities_id',
-                    'rand': entity_rand,
-                    'on_change': 'this.form.submit()',
-                    'value': values.entities_id,
-                }) }}
-            </td>
-        </tr>
-
-        <tr class="tab_bg_1">
-            <td>{{ __('Type') }}</td>
-            <td colspan="3">
-                {% do call('Ticket::dropdownType', ['type', {
-                    'rand': type_rand,
-                    'on_change': 'this.form.submit()',
-                    'value': values.type,
-                }]) %}
-                {% do call('Ajax::updateItemOnSelectEvent', [
-                    'dropdown_type' ~ type_rand,
-                    'show_category_by_type',
-                    '../ajax/dropdownGenerateCriCategories.php',
-                    category_reload,
-                ]) %}
-            </td>
-        </tr>
-
-        <tr class="tab_bg_1">
-            <td>{{ __('Category') }}{{ _self.mandatory(mandatory.itilcategories_id) }}</td>
-            <td colspan="3"><span id="show_category_by_type">{{ 'ITILCategory'|itemtype_dropdown(category_options) }}</span></td>
-        </tr>
-
-        {% if show_contract %}
-            {{ include('@manageentities/contract_link_dropdown.html.twig', contract_data, with_context = false) }}
-        {% endif %}
-
-        {% if show_title %}
-            <tr class="tab_bg_1">
-                <td>{{ __('Title') }}{{ _self.mandatory(mandatory.name) }}</td>
-                <td colspan="3">
-                    {% if hidden.name %}
-                        {{ values.name }}
-                        <input type="hidden" name="name" value="{{ values.name }}">
-                    {% else %}
-                        <input type="text" name="name" class="form-control" value="{{ values.name }}"
-                               maxlength="250" size="80" {{ mandatory.name ? 'required' : '' }}>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endif %}
-
-        <tr class="tab_bg_1">
-            <td>{{ __('Description') }}{{ _self.mandatory(mandatory.content) }}</td>
-            <td colspan="3">
-                {{ _inputs.textarea('content', values.content, {
-                    'rows': 5,
-                    'required': mandatory.content,
-                    'enable_richtext': true,
-                    'enable_images': false,
-                }) }}
-            </td>
-        </tr>
-
-        {% if show_urgency %}
-            <tr class="tab_bg_1">
-                <td>{{ __('Urgency') }}{{ _self.mandatory(mandatory.urgency) }}</td>
-                <td colspan="3">{% do call('Ticket::dropdownUrgency', [{'value': values.urgency}]) %}</td>
-            </tr>
-        {% endif %}
-
-        {% if show_impact %}
-            <tr class="tab_bg_1">
-                <td>{{ __('Impact') }}{{ _self.mandatory(mandatory.impact) }}</td>
-                <td colspan="3">{% do call('Ticket::dropdownImpact', [{'value': values.impact}]) %}</td>
-            </tr>
-        {% endif %}
-
-        {% if show_priority %}
-            <tr class="tab_bg_1">
-                <td>{{ __('Priority') }}{{ _self.mandatory(mandatory.priority) }}</td>
-                <td colspan="3">{% do call('Ticket::dropdownPriority', [{'value': values.priority}]) %}</td>
-            </tr>
-        {% endif %}
-
-        <tr class="tab_bg_1">
-            <td>{{ __('Technician') }}</td>
-            <td colspan="3">
-                {% do call('Dropdown::showFromArray', ['users_intervenor', techs, {
-                    'values': values.users_intervenor,
-                    'multiple': true,
-                }]) %}
-            </td>
-        </tr>
-        {% if tasktemplate %}
-            <tr class="tab_bg_1">
-                <th colspan="4">{{ __('Predefined task informations', 'manageentities') }}</th>
-            </tr>
-            <tr class="tab_bg_1">
-                <td colspan="4">
-                    <div class="rounded p-2 m-2" style="border: 1px dashed; max-width: 400px;">
-                        <div class="fw-bold fs-4">{{ _n('Task', 'Tasks', 1) }} :</div>
-                        <div><span class="fw-bold">{{ __('Description') }} :</span> {{ tasktemplate.description }}</div>
-                        <div><span class="fw-bold">{{ __('Duration') }} :</span> {{ tasktemplate.duration }}</div>
-                        {% if tasktemplate.group_name is not null %}
-                            <div><span class="fw-bold">{{ __('Technician group') }} :</span> {{ tasktemplate.group_name }}</div>
-                        {% endif %}
-                        <input type="hidden" name="predefined-task" value="{{ tasktemplate.id }}">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="ti ti-ticket me-2"></i>{{ __('Ticket informations', 'manageentities') }}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3 align-items-center">
+                    <label class="col-12 col-md-3 col-form-label">{{ _n('Client', 'Clients', 2, 'manageentities') }}</label>
+                    <div class="col-12 col-md-9">
+                        {{ 'Entity'|itemtype_dropdown({
+                            'name': 'entities_id',
+                            'rand': entity_rand,
+                            'on_change': 'this.form.submit()',
+                            'value': values.entities_id,
+                        }) }}
                     </div>
-                </td>
-            </tr>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                    <label class="col-12 col-md-3 col-form-label">{{ __('Type') }}</label>
+                    <div class="col-12 col-md-9">
+                        {% do call('Ticket::dropdownType', ['type', {
+                            'rand': type_rand,
+                            'on_change': 'this.form.submit()',
+                            'value': values.type,
+                        }]) %}
+                        {% do call('Ajax::updateItemOnSelectEvent', [
+                            'dropdown_type' ~ type_rand,
+                            'show_category_by_type',
+                            '../ajax/dropdownGenerateCriCategories.php',
+                            category_reload,
+                        ]) %}
+                    </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                    <label class="col-12 col-md-3 col-form-label">{{ __('Category') }}{{ _self.mandatory(mandatory.itilcategories_id) }}</label>
+                    <div class="col-12 col-md-9">
+                        <span id="show_category_by_type">{{ 'ITILCategory'|itemtype_dropdown(category_options) }}</span>
+                    </div>
+                </div>
+
+                {% if show_contract %}
+                    {{ include('@manageentities/contract_link_dropdown.html.twig', contract_data, with_context = false) }}
+                {% endif %}
+
+                {% if show_title %}
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-12 col-md-3 col-form-label">{{ __('Title') }}{{ _self.mandatory(mandatory.name) }}</label>
+                        <div class="col-12 col-md-9">
+                            {% if hidden.name %}
+                                {{ values.name }}
+                                <input type="hidden" name="name" value="{{ values.name }}">
+                            {% else %}
+                                <input type="text" name="name" class="form-control" value="{{ values.name }}"
+                                       maxlength="250" {{ mandatory.name ? 'required' : '' }}>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row mb-3">
+                    <label class="col-12 col-md-3 col-form-label">{{ __('Description') }}{{ _self.mandatory(mandatory.content) }}</label>
+                    <div class="col-12 col-md-9">
+                        {{ _inputs.textarea('content', values.content, {
+                            'rows': 5,
+                            'required': mandatory.content,
+                            'enable_richtext': true,
+                            'enable_images': false,
+                        }) }}
+                    </div>
+                </div>
+
+                {% if show_urgency or show_impact or show_priority %}
+                    <div class="row mb-3 g-3">
+                        {% if show_urgency %}
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">{{ __('Urgency') }}{{ _self.mandatory(mandatory.urgency) }}</label>
+                                {% do call('Ticket::dropdownUrgency', [{'value': values.urgency}]) %}
+                            </div>
+                        {% endif %}
+                        {% if show_impact %}
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">{{ __('Impact') }}{{ _self.mandatory(mandatory.impact) }}</label>
+                                {% do call('Ticket::dropdownImpact', [{'value': values.impact}]) %}
+                            </div>
+                        {% endif %}
+                        {% if show_priority %}
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">{{ __('Priority') }}{{ _self.mandatory(mandatory.priority) }}</label>
+                                {% do call('Ticket::dropdownPriority', [{'value': values.priority}]) %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="row align-items-center">
+                    <label class="col-12 col-md-3 col-form-label">{{ __('Technician') }}</label>
+                    <div class="col-12 col-md-9">
+                        {% do call('Dropdown::showFromArray', ['users_intervenor', techs, {
+                            'values': values.users_intervenor,
+                            'multiple': true,
+                        }]) %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if tasktemplate %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="ti ti-template me-2"></i>{{ __('Predefined task informations', 'manageentities') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-12 col-md-3">{{ __('Description') }}</dt>
+                        <dd class="col-12 col-md-9">{{ tasktemplate.description }}</dd>
+                        <dt class="col-12 col-md-3">{{ __('Duration') }}</dt>
+                        <dd class="col-12 col-md-9">{{ tasktemplate.duration }}</dd>
+                        {% if tasktemplate.group_name is not null %}
+                            <dt class="col-12 col-md-3">{{ __('Technician group') }}</dt>
+                            <dd class="col-12 col-md-9 mb-0">{{ tasktemplate.group_name }}</dd>
+                        {% endif %}
+                    </dl>
+                    <input type="hidden" name="predefined-task" value="{{ tasktemplate.id }}">
+                </div>
+            </div>
         {% endif %}
 
-        <tr class="tab_bg_1">
-            <th colspan="4">
-                {{ __('Accomplished tasks informations', 'manageentities') }}&nbsp;&nbsp;<a onclick="addTaskOnView(false);" style="cursor:pointer;" id="img_add_cci" title="{{ __('Add this Task', 'manageentities') }}"><i class="ti ti-circle-plus"></i></a>
-            </th>
-        </tr>
-
-        <tr class="tab_bg_1">
-            <td>{{ __('Description') }}</td>
-            <td>
-                {# Read by public/scripts/generatecri-tasks.js through its name #}
-                {{ _inputs.textarea('description', task_description, {
-                    'rows': 5,
-                    'required': mandatory.description,
-                    'enable_richtext': true,
-                    'enable_images': false,
-                }) }}
-            </td>
-            <td>
-                {{ __('Start date') }}
-                <br><br><span>{{ __('Duration') }}</span>
-                <br><br><br><i class="ti ti-user" title="{{ _n('User', 'Users', 1) }}"></i>{{ _n('Technician', 'Technicians', 1, 'manageentities') }}
-                <br><br><span>{{ __('Category') }}</span>
-            </td>
-            <td>
-                {{ _inputs.datetime('plan[begin]', task_begin) }}
-                <br><div>
-                    {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
-                        'rand': duration_rand,
-                        'value': default_duration,
-                        'min': 0,
-                        'max': duration_max,
-                        'emptylabel': __('Specify an end date'),
-                    }]) %}
-                    {% do call('Ajax::updateItemOnSelectEvent', [
-                        'dropdown_plan[_duration]' ~ duration_rand,
-                        'date_end' ~ duration_rand,
-                        '../ajax/taskend.php',
-                        {'duration': '__VALUE__', 'name': 'plan[end]'},
-                    ]) %}
-                    {# End date, filled by ajax/taskend.php when no duration is chosen #}
-                    <br><div id="date_end{{ duration_rand }}"></div>
-                </div><br>
-                <div id="users_id_tech">{{ 'User'|itemtype_dropdown(task_user_options) }}</div><br>
-                <div id="taskcategories_id">
-                    {{ 'TaskCategory'|itemtype_dropdown({
-                        'name': 'taskcategories_id',
-                        'entity': values.entities_id,
-                        'value': taskcategories_id,
-                    }) }}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="ti ti-checklist me-2"></i>{{ __('Accomplished tasks informations', 'manageentities') }}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12 col-xl-7">
+                        <label class="form-label">{{ __('Description') }}{{ _self.mandatory(mandatory.description) }}</label>
+                        {# Read by public/scripts/generatecri-tasks.js through its name #}
+                        {{ _inputs.textarea('description', task_description, {
+                            'rows': 5,
+                            'required': mandatory.description,
+                            'enable_richtext': true,
+                            'enable_images': false,
+                        }) }}
+                    </div>
+                    <div class="col-12 col-xl-5">
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('Start date') }}</label>
+                            {{ _inputs.datetime('plan[begin]', task_begin) }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('Duration') }}</label>
+                            {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
+                                'rand': duration_rand,
+                                'value': default_duration,
+                                'min': 0,
+                                'max': duration_max,
+                                'emptylabel': __('Specify an end date'),
+                            }]) %}
+                            {% do call('Ajax::updateItemOnSelectEvent', [
+                                'dropdown_plan[_duration]' ~ duration_rand,
+                                'date_end' ~ duration_rand,
+                                '../ajax/taskend.php',
+                                {'duration': '__VALUE__', 'name': 'plan[end]'},
+                            ]) %}
+                            {# End date, filled by ajax/taskend.php when no duration is chosen #}
+                            <div id="date_end{{ duration_rand }}" class="mt-2"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="ti ti-user me-1"></i>{{ _n('Technician', 'Technicians', 1, 'manageentities') }}
+                            </label>
+                            <div id="users_id_tech">{{ 'User'|itemtype_dropdown(task_user_options) }}</div>
+                        </div>
+                        <div>
+                            <label class="form-label">{{ __('Category') }}</label>
+                            <div id="taskcategories_id">
+                                {{ 'TaskCategory'|itemtype_dropdown({
+                                    'name': 'taskcategories_id',
+                                    'entity': values.entities_id,
+                                    'value': taskcategories_id,
+                                }) }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </td>
-        </tr>
+                <div class="text-end mt-3">
+                    <button type="button" class="btn btn-outline-primary" id="img_add_cci" onclick="addTaskOnView(false);">
+                        <i class="ti ti-circle-plus me-1"></i>{{ __('Add this Task', 'manageentities') }}
+                    </button>
+                </div>
 
-        <tr class="tab_bg_1" id="tab-tasks" style="display: none">
-            <td colspan="4">
-                {# Read by public/scripts/generatecri-tasks.js #}
-                <div style="width: 400px;" id="tasks" data-me-config="{{ tasks_config|json_encode }}"></div>
-            </td>
-        </tr>
+                <div id="tab-tasks" class="mt-3" style="display: none">
+                    {# Read by public/scripts/generatecri-tasks.js #}
+                    <div id="tasks" class="row g-3" data-me-config="{{ tasks_config|json_encode }}"></div>
+                </div>
+            </div>
+        </div>
 
         {% if show_undone %}
-            <tr class="tab_bg_1">
-                <th colspan="4">{{ __('Non-accomplished tasks informations', 'manageentities') }}</th>
-            </tr>
-            <tr class="tab_bg_1">
-                <td>{{ __('Description') }}</td>
-                <td colspan="3">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="ti ti-clock-pause me-2"></i>{{ __('Non-accomplished tasks informations', 'manageentities') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <label class="form-label">{{ __('Description') }}{{ _self.mandatory(mandatory.description_undone) }}</label>
                     {{ _inputs.textarea('description-undone', undone_description, {
                         'rows': 5,
                         'required': mandatory.description_undone,
                         'enable_richtext': true,
                         'enable_images': false,
                     }) }}
-                </td>
-            </tr>
+                </div>
+            </div>
         {% endif %}
 
-        <tr class="tab_bg_2">
-            <td class="center" colspan="4">
-                <button type="submit" name="generatecri" class="btn btn-primary">
-                    {{ _x('button', 'Generate', 'manageentities') }}
-                </button>
-            </td>
-        </tr>
-    </table>
-</form>
+        <div class="text-end mb-3">
+            <button type="submit" name="generatecri" class="btn btn-primary">
+                <i class="ti ti-file-text me-1"></i>{{ _x('button', 'Generate', 'manageentities') }}
+            </button>
+        </div>
+    </form>
+</div>

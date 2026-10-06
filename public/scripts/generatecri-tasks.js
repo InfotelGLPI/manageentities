@@ -125,38 +125,53 @@ function addTaskOnView(isOnRefresh, storedTasks = {}) {
 function getBlockTask(taskCount, description, userIdTech, begin, end, duration, durationDisplay, tasksCategory) {
     const labels = generateCriConfig().labels;
 
+    // Column of the #tasks grid: removeBlockTask() and addTaskOnView() read its data-index
     const block = document.createElement('div');
     block.id = 'task_' + taskCount;
     block.dataset.index = taskCount;
-    block.style.cssText = 'margin: 10px; padding: 10px; border: dashed;';
+    block.className = 'col-12 col-md-6 col-xxl-4';
 
-    const remove = document.createElement('a');
-    remove.style.cursor = 'pointer';
+    const card = document.createElement('div');
+    card.className = 'card h-100';
+    block.appendChild(card);
+
+    const header = document.createElement('div');
+    header.className = 'card-header d-flex align-items-center';
+    const title = document.createElement('h4');
+    title.className = 'card-title mb-0 flex-fill';
+    const titleIcon = document.createElement('i');
+    titleIcon.className = 'ti ti-checkbox me-2';
+    title.append(titleIcon, labels.task);
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'btn btn-sm btn-ghost-danger';
     remove.addEventListener('click', function () {
         removeBlockTask(taskCount);
     });
     const icon = document.createElement('i');
-    icon.className = 'ti ti-circle-minus';
-    icon.style.float = 'right';
+    icon.className = 'ti ti-trash';
     remove.appendChild(icon);
-    block.appendChild(remove);
+    header.append(title, remove);
+    card.appendChild(header);
 
-    const title = document.createElement('span');
-    title.style.cssText = 'font-weight: bold; font-size: 15px;';
-    title.textContent = labels.task + ' :';
-    block.appendChild(title);
-    block.appendChild(document.createElement('br'));
+    const body = document.createElement('div');
+    body.className = 'card-body';
+    const list = document.createElement('dl');
+    list.className = 'row mb-0';
+    body.appendChild(list);
+    card.appendChild(body);
 
     const addLine = function (label, value, valueId = null) {
-        const name = document.createElement('span');
-        name.style.fontWeight = 'bold';
-        name.textContent = label + ' : ';
-        const content = document.createElement('span');
+        const name = document.createElement('dt');
+        name.className = 'col-5';
+        name.textContent = label;
+        const content = document.createElement('dd');
+        content.className = 'col-7 text-break';
         if (valueId !== null) {
             content.id = valueId;
         }
         content.textContent = value;
-        block.append(name, content, document.createElement('br'));
+        list.append(name, content);
     };
 
     // The description is rich text: only its text is displayed, the markup travels
@@ -185,7 +200,7 @@ function getBlockTask(taskCount, description, userIdTech, begin, end, duration, 
         input.type = 'hidden';
         input.name = name + taskCount;
         input.value = value === undefined ? 'undefined' : value;
-        block.appendChild(input);
+        card.appendChild(input);
     });
 
     return block;

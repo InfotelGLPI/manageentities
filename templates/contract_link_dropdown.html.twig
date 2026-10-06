@@ -31,39 +31,55 @@
    and the CRI generation wizard. The |raw fragments are core widgets only (Dropdown,
    tooltip, Ajax refresh of #show_contractdays); every name coming from the database is
    escaped here.
-   layout 'table' wraps the row in its own table, layout 'rows' emits the bare row for a
-   4-column host table. #}
-{% set label_tag = layout == 'rows' ? 'td' : 'th' %}
-{% if layout == 'table' %}<table class="tab_cadre" style="margin:0px">{% endif %}
-{% if out_of_contract|default(false) %}
-    <tr class="tab_bg_1">
-        <th>{{ __('Out of contract', 'manageentities') }}</th>
-    </tr>
+   layout 'table' wraps the row in its own table, layout 'rows' emits Bootstrap form rows
+   (label / field) for the card of the CRI generation wizard. #}
+{% set contract_value %}
+    {% if not has_contracts %}
+        {{ __('No active contracts', 'manageentities') }}
+    {% elseif type == 'ticket' %}
+        {{ contract_field|raw }}
+    {% else %}
+        {{ contract_name }}
+    {% endif %}
+    {% if contract_tooltip %}
+        &nbsp;{{ contract_tooltip|raw }}
+    {% endif %}
+    {{ contract_ajax|raw }}
+{% endset %}
+{% set contractday_value %}
+    {% if type == 'ticket' %}
+        {# Rebuilt by ajax/dropdownContract.php when the contract changes #}
+        <span id="show_contractdays">{{ contractday_field|raw }}</span>
+    {% else %}
+        {{ contractday_name }}
+    {% endif %}
+{% endset %}
+{% if layout == 'rows' %}
+    {% if out_of_contract|default(false) %}
+        <div class="alert alert-info mb-3">{{ __('Out of contract', 'manageentities') }}</div>
+    {% else %}
+        <div class="row mb-3 align-items-center">
+            <label class="col-12 col-md-3 col-form-label">{{ __('Intervention with contract', 'manageentities') }}</label>
+            <div class="col-12 col-md-9">{{ contract_value }}</div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <label class="col-12 col-md-3 col-form-label">{{ __('Periods of contract', 'manageentities') }}</label>
+            <div class="col-12 col-md-9">{{ contractday_value }}</div>
+        </div>
+    {% endif %}
 {% else %}
-    <tr class="tab_bg_1">
-        <{{ label_tag }}>{{ __('Intervention with contract', 'manageentities') }}</{{ label_tag }}>
-        <td>
-            {% if not has_contracts %}
-                {{ __('No active contracts', 'manageentities') }}
-            {% elseif type == 'ticket' %}
-                {{ contract_field|raw }}
-            {% else %}
-                {{ contract_name }}
-            {% endif %}
-            {% if contract_tooltip %}
-                &nbsp;{{ contract_tooltip|raw }}
-            {% endif %}
-            {{ contract_ajax|raw }}
-        </td>
-        <{{ label_tag }}>{{ __('Periods of contract', 'manageentities') }}</{{ label_tag }}>
-        <td>
-            {% if type == 'ticket' %}
-                {# Rebuilt by ajax/dropdownContract.php when the contract changes #}
-                <span id="show_contractdays">{{ contractday_field|raw }}</span>
-            {% else %}
-                {{ contractday_name }}
-            {% endif %}
-        </td>
-    </tr>
+    <table class="tab_cadre" style="margin:0px">
+    {% if out_of_contract|default(false) %}
+        <tr class="tab_bg_1">
+            <th>{{ __('Out of contract', 'manageentities') }}</th>
+        </tr>
+    {% else %}
+        <tr class="tab_bg_1">
+            <th>{{ __('Intervention with contract', 'manageentities') }}</th>
+            <td>{{ contract_value }}</td>
+            <th>{{ __('Periods of contract', 'manageentities') }}</th>
+            <td>{{ contractday_value }}</td>
+        </tr>
+    {% endif %}
+    </table>
 {% endif %}
-{% if layout == 'table' %}</table>{% endif %}

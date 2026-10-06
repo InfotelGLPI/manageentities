@@ -52,7 +52,7 @@
                 </div>
                 <div class="card-body">
                     {% if directhelpdesk_gauges is not null %}
-                        {{ include('@manageentities/directhelpdesk_dashboard.html.twig', directhelpdesk_gauges, with_context = false) }}
+                        {{ include('@manageentities/directhelpdesk_dashboard.html.twig', directhelpdesk_gauges|merge({'col_class': 'col-12 col-xxl-6'}), with_context = false) }}
                     {% endif %}
                     {{ include('@manageentities/entity/directhelpdesk_ticket_select.html.twig', directhelpdesk_select, with_context = false) }}
                 </div>

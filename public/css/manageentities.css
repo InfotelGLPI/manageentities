@@ -110,24 +110,6 @@ div#tabcontent {
    padding: 10px!important;
 }
 
-.tech-tag-div {
-   /*margin-top: -20px;*/
-   float: right;
-   min-height: 50px;
-}
-
-.tech-tag {
-   padding: 2px 16px 16px 16px;
-   height: 22px;
-   text-shadow: 1px 1px #fff;
-   /* Sits on tag.png, a light-grey sprite used by both palettes: keep the
-      label dark, otherwise --tblr-body-color turns it light and unreadable. */
-   color: #1f2937;
-   border-radius: 2px;
-   font-size: 12px;
-
-}
-
 /*
  * Intervention-report generation dialog (opened by manageentities_loadCriForm("showCriForm", ...)
  * through glpi_html_dialog, whose modal receives id="showCriForm"). glpi_html_dialog ignores the

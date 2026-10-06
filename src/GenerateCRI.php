@@ -203,8 +203,6 @@ class GenerateCRI extends CommonGLPI
             $options['_predefined_fields'] = [];
         }
 
-        Entity::showManageentitiesHeader(__('Generate Intervention report', 'manageentities'));
-
         // Predefined + hidden template fields, posted back as hidden inputs
         $hidden_inputs     = [];
         $predefined_fields = [];

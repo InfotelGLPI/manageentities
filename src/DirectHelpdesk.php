@@ -297,7 +297,7 @@ class DirectHelpdesk extends CommonDBTM
      * @param int|float $min_sum     see showDashboard()
      * @param int       $entities_id see showDashboard()
      *
-     * @return array{rows: list<list<array<string, mixed>>>, last_pad: int, hour: string, hours: string, tag_url: string}|null
+     * @return array{cards: list<array<string, mixed>>, hour: string, hours: string}|null
      *         null when there is no gauge to draw
      */
     public static function getDashboardData($min_sum = 0, int $entities_id = 0): ?array
@@ -403,18 +403,11 @@ class DirectHelpdesk extends CommonDBTM
             return null;
         }
 
-        $nbcol = 4;
-        $rows  = array_chunk($cards, $nbcol);
-        // Number of empty filler columns to keep the last row aligned on the grid.
-        $last_count = count(end($rows));
-        $last_pad   = ($last_count % $nbcol != 0) ? ($nbcol - ($last_count % $nbcol)) : 0;
-
+        // The template lays the cards out on a responsive grid: no row chunking here.
         return [
-            'rows'     => $rows,
-            'last_pad' => $last_pad,
-            'hour'     => lcfirst(_n('Hour', 'Hours', 1)),
-            'hours'    => lcfirst(_n('Hour', 'Hours', 2)),
-            'tag_url'  => PLUGIN_MANAGEENTITIES_WEBDIR . "/pics/tag.png",
+            'cards' => $cards,
+            'hour'  => lcfirst(_n('Hour', 'Hours', 1)),
+            'hours' => lcfirst(_n('Hour', 'Hours', 2)),
         ];
     }
 

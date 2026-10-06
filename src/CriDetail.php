@@ -1612,7 +1612,7 @@ class CriDetail extends CommonDBTM
      * @param array|false $cridetail   current CRI detail, [] or false when there is none
      * @param int|array   $entities_id
      * @param string      $type        'ticket' (dropdowns) or 'cri' (read-only names)
-     * @param string      $layout      'table' (own table) or 'rows' (bare row of a 4-column table)
+     * @param string      $layout      'table' (own table) or 'rows' (Bootstrap form rows of a card)
      *
      * @return array{contractSelected: int, contractdaySelected: int, is_contract: int}
      */
