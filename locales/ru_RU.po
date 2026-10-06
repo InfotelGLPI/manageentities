@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-05 23:03+0000\n"
+"POT-Creation-Date: 2026-10-06 14:31+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/"
@@ -603,7 +603,7 @@ msgstr "Номер контракта"
 msgid "Contract number is required"
 msgstr ""
 
-#: src/Gantt.php:296 src/Followup.php:879
+#: src/Gantt.php:321 src/Followup.php:879
 msgid "Contract present"
 msgstr "Контракт в наличии"
 
@@ -769,13 +769,13 @@ msgstr ""
 msgid "Date of"
 msgstr "Дата"
 
-#: src/Gantt.php:304 src/Followup.php:882
+#: src/Gantt.php:329 src/Followup.php:882
 #: templates/wizard/step5_management.html.twig:57
 #: templates/contract_detail_form.html.twig:137
 msgid "Date of renewal"
 msgstr "Дата обновления"
 
-#: src/Gantt.php:300 src/Followup.php:881
+#: src/Gantt.php:325 src/Followup.php:881
 #: templates/entity/references.html.twig:70
 #: templates/wizard/step5_management.html.twig:53
 #: templates/contract_detail_form.html.twig:136
@@ -1196,7 +1196,7 @@ msgstr ""
 msgid "From"
 msgstr "С"
 
-#: src/Gantt.php:85
+#: src/Gantt.php:103
 msgid "GANTT"
 msgstr "ГАНТТ"
 
@@ -1296,7 +1296,7 @@ msgstr "Информация успешно добавлена."
 msgid "Informations successfully deleted."
 msgstr "Информация успешно удалена."
 
-#: src/Gantt.php:375 src/ContractDay.php:119 src/ContractDay.php:457
+#: src/Gantt.php:400 src/ContractDay.php:119 src/ContractDay.php:457
 #: src/Followup.php:855 src/Monthly.php:431
 #: templates/wizard/step6_intervention_block.html.twig:71
 #: templates/contractday_form.html.twig:94
@@ -2790,7 +2790,7 @@ msgstr "Итого (в днях)"
 msgid "Total (in hours)"
 msgstr "Итого (в часах)"
 
-#: src/Gantt.php:376 src/ContractDay.php:463 src/Followup.php:856
+#: src/Gantt.php:401 src/ContractDay.php:463 src/Followup.php:856
 #: templates/contractday_form.html.twig:119
 msgid "Total consummated"
 msgstr "Всего потреблено"
