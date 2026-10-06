@@ -42,6 +42,23 @@ use Toolbox;
 
 class Gantt extends CommonDBTM
 {
+    /** Browser builds of FullCalendar bundled by the plugin, in loading order */
+    private const FULLCALENDAR_BUILDS = [
+        'core',
+        'interaction',
+        'premium-common',
+        'scrollgrid',
+        'timeline',
+        'resource',
+        'resource-timeline',
+    ];
+
+    /** Directory of the bundled FullCalendar, relative to the public directory of the plugin */
+    private const FULLCALENDAR_DIR = '/lib/fullcalendar';
+
+    /** Version of the bundled FullCalendar, also used to bust the browser cache */
+    private const FULLCALENDAR_VERSION = '6.1.21';
+
     public static string $rightname = 'plugin_manageentities';
 
     public static function getTypeName($nb = 0)
@@ -67,8 +84,9 @@ class Gantt extends CommonDBTM
     /**
      * Show the GANTT diagram of the contracts of the active entities.
      *
-     * The chart is drawn by the FullCalendar bundle shipped by GLPI core
-     * (public/lib/fullcalendar.js) in its resourceTimeline view: one parent row per
+     * The chart is drawn by FullCalendar 6 (public/lib/fullcalendar, the browser builds of the
+     * version GLPI 12 core uses itself, which no longer ships it as a global bundle) in its
+     * resourceTimeline view: one parent row per
      * contract, one child row per contract day. This tab is served through
      * ajax/common.tabs.php, which emits no page footer, so Html::requireJs() would be
      * silently dropped; the assets are output by the template instead, exactly as the library they
@@ -164,11 +182,16 @@ class Gantt extends CommonDBTM
             return;
         }
 
-        // Assets of the chart, output by the template ahead of its container
-        $assets = Html::css('lib/fullcalendar.css') . Html::script('lib/fullcalendar.js');
-        $locale_file = self::getFullCalendarLocaleFile();
-        if ($locale_file !== null) {
-            $assets .= Html::script($locale_file);
+        // Assets of the chart, output by the template ahead of its container. The browser
+        // builds register their plugins and inject their stylesheet themselves; each one
+        // reads the globals of the previous ones, hence the order.
+        $assets = '';
+        foreach (self::FULLCALENDAR_BUILDS as $build) {
+            $assets .= Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . self::FULLCALENDAR_DIR . "/$build.global.min.js", ['version' => self::FULLCALENDAR_VERSION], false);
+        }
+        $locale = self::getFullCalendarLocale();
+        if ($locale !== null) {
+            $assets .= Html::script(PLUGIN_MANAGEENTITIES_WEBDIR . self::FULLCALENDAR_DIR . "/locales/$locale.global.min.js", ['version' => self::FULLCALENDAR_VERSION], false);
         }
         // Stamped with the modification time of the file on top of the version of the
         // plugin: Html::script() otherwise falls back to GLPI_VERSION, and the version of
@@ -180,7 +203,7 @@ class Gantt extends CommonDBTM
             $script_stamp .= '.' . filemtime($script);
         }
         $assets .= Html::script(
-            'plugins/manageentities/scripts/gantt.js',
+            PLUGIN_MANAGEENTITIES_WEBDIR . '/scripts/gantt.js',
             ['version' => $script_stamp],
             false,
         );
@@ -194,6 +217,8 @@ class Gantt extends CommonDBTM
                 // The timeline opens on the current month rather than on the oldest
                 // contract, so the days being consumed are the ones on screen.
                 'today'          => date('Y-m-d', $now),
+                // Code of the locale loaded above, which FullCalendar registered globally
+                'locale'         => $locale,
             ],
         ]);
     }
@@ -218,24 +243,24 @@ class Gantt extends CommonDBTM
     }
 
     /**
-     * Locale file of the core FullCalendar bundle for the current language, if any.
+     * Locale of the bundled FullCalendar for the current language, if any.
      *
-     * Mirrors what Html::requireJs('fullcalendar') does, which this tab cannot use: its
-     * content is served by ajax/common.tabs.php, with no footer to honour the request.
+     * Same resolution as the core planning: the regional code first (fr-ca), then the
+     * language alone (fr). English needs no file, FullCalendar falls back to it.
      *
-     * @return string|null path relative to the public directory, null when unavailable
+     * @return string|null code of a file of public/lib/fullcalendar/locales, null when unavailable
      */
-    private static function getFullCalendarLocaleFile(): ?string
+    private static function getFullCalendarLocale(): ?string
     {
         $language = LanguageRegistry::tryGet($_SESSION['glpilanguage'] ?? '');
         if ($language === null) {
             return null;
         }
 
-        foreach ([$language->jquery_code, $language->js_code] as $code) {
-            $filename = 'lib/fullcalendar/core/locales/' . strtolower($code) . '.js';
-            if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
-                return $filename;
+        foreach ([$language->js_code, $language->jquery_code] as $code) {
+            $code = strtolower($code);
+            if (file_exists(PLUGIN_MANAGEENTITIES_DIR . '/public/lib/fullcalendar/locales/' . $code . '.global.min.js')) {
+                return $code;
             }
         }
 

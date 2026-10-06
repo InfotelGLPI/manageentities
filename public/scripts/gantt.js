@@ -26,11 +26,12 @@
  */
 
 /**
- * GANTT tab of an entity, drawn with the FullCalendar bundle shipped by GLPI core.
+ * GANTT tab of an entity, drawn with FullCalendar 6 (browser builds bundled by the plugin
+ * in public/lib/fullcalendar, the version GLPI 12 core uses itself).
  *
  * Gantt::showGantt() echoes this file inside the response of ajax/common.tabs.php, which
- * jQuery inserts with .html(): the container is already in the DOM and fullcalendar.js
- * has already been evaluated by the time this runs. That path evaluates a script through
+ * jQuery inserts with .html(): the container is already in the DOM and the FullCalendar
+ * builds have already been evaluated by the time this runs. That path evaluates a script through
  * a global eval, so an ES module would lose both its scope and its exports here; the
  * closure below is what keeps the helpers off the global object.
  */
@@ -68,32 +69,13 @@
     }
 
     /**
-     * Locale of the core FullCalendar bundle, when Gantt::showGantt() found one to load.
-     *
-     * Every locale file assigns itself to window.FullCalendarLocales, and the PHP side
-     * only ever emits the one of the current language.
-     *
-     * @returns {object|undefined}
-     */
-    function manageentitiesGanttLocale() {
-        var locales = window.FullCalendarLocales;
-        if (!locales) {
-            return undefined;
-        }
-
-        var codes = Object.keys(locales);
-
-        return codes.length > 0 ? locales[codes[0]] : undefined;
-    }
-
-    /**
      * Paint one bar and give it its tooltip.
      *
      * The tooltip is plain text set through setAttribute, so it is not an HTML sink: the
      * whole point of moving off the removed library, whose renderer built the rows by
      * concatenating unescaped strings.
      *
-     * @param {object} info
+     * @param {object} info eventDidMount argument
      */
     function manageentitiesGanttRenderEvent(info) {
         var tooltip = info.event.extendedProps.tooltip;
@@ -152,7 +134,7 @@
                 duration: {months: MANAGEENTITIES_GANTT_ZOOM[i].months},
                 dateAlignment: 'month',
                 slotDuration: {months: 1},
-                slotWidth: MANAGEENTITIES_GANTT_ZOOM[i].slot_width,
+                slotMinWidth: MANAGEENTITIES_GANTT_ZOOM[i].slot_width,
                 // Numeric months: the translated names widen every column for nothing
                 // once a full year has to fit next to the contract list.
                 slotLabelFormat: [{year: 'numeric'}, {month: '2-digit'}]
@@ -209,28 +191,26 @@
         }
 
         calendar = new FullCalendar.Calendar(element, {
-            // interaction carries the dragging implementation the timeline looks for in
-            // initResourceAreaWidthDragging(): without it the divider between the contract
-            // column and the timeline is drawn, and styled as a col-resize handle by the
-            // core stylesheet, but nothing listens to it. Nothing else of the plugin comes
-            // into play here, events staying read-only as long as editable is off.
-            plugins: ['interaction', 'resourceTimeline'],
+            // The browser builds register their plugins globally (interaction, which drags
+            // the divider between the contract column and the timeline, and resource-timeline):
+            // nothing to list here. Events stay read-only as long as editable is off.
             schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-            locale: manageentitiesGanttLocale(),
+            // Registered globally by the locale file Gantt::showGantt() loaded, if any
+            locale: config.locale || 'en',
             // A bounded height is what gives the chart its own scrollers: told to grow to
             // its content it lays them out as visible overflow, so a timeline wider than
             // the tab has no scrollbar to come back to the left with.
             height: 620,
-            defaultView: 'manageentitiesZoom' + zoom,
+            initialView: 'manageentitiesZoom' + zoom,
             // Opens on a window holding today about half way in, so the months already
             // consumed are read next to the ones still to come instead of sitting off
             // screen; today keeps the core indicator and prev and next walk the rest.
-            defaultDate: manageentitiesGanttMonthShift(
+            initialDate: manageentitiesGanttMonthShift(
                 config.today,
                 -Math.floor(MANAGEENTITIES_GANTT_ZOOM[zoom].months / 2)
             ),
             nowIndicator: true,
-            header: {
+            headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 // The view switcher stays out: a single scale is offered, and the two
@@ -252,12 +232,12 @@
                 }
             },
             resourceAreaWidth: 260,
-            resourceLabelText: config.resource_label,
+            resourceAreaHeaderContent: config.resource_label,
             resourcesInitiallyExpanded: true,
             resources: config.resources,
             events: config.events,
             views: manageentitiesGanttViews(),
-            eventRender: manageentitiesGanttRenderEvent
+            eventDidMount: manageentitiesGanttRenderEvent
         });
 
         calendar.render();

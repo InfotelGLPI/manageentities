@@ -384,7 +384,7 @@ class GenerateCRI extends CommonGLPI
             $tasks_stamp .= '.' . filemtime($tasks_js);
         }
         echo Html::script(
-            'plugins/manageentities/scripts/generatecri-tasks.js',
+            PLUGIN_MANAGEENTITIES_WEBDIR . '/scripts/generatecri-tasks.js',
             ['version' => $tasks_stamp],
             false,
         );
