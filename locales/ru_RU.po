@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 14:31+0000\n"
+"POT-Creation-Date: 2026-10-06 23:29+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/"
@@ -92,11 +92,11 @@ msgstr ""
 msgid "-- Select a template --"
 msgstr ""
 
-#: templates/directhelpdesk_dashboard_filter.html.twig:33
+#: templates/directhelpdesk_dashboard_filter.html.twig:36
 msgid "2 hours minimum"
 msgstr "Минимум 2 часа"
 
-#: templates/directhelpdesk_dashboard_filter.html.twig:38
+#: templates/directhelpdesk_dashboard_filter.html.twig:41
 msgid "3 hours minimum"
 msgstr "Минимум 3 часа"
 
@@ -104,7 +104,7 @@ msgstr "Минимум 3 часа"
 msgid "A contract with this number already exists"
 msgstr ""
 
-#: templates/generatecri_wizard.html.twig:157
+#: templates/generatecri_wizard.html.twig:175
 msgid "Accomplished tasks informations"
 msgstr "Информация о выполненных задачах"
 
@@ -185,7 +185,7 @@ msgstr ""
 msgid "Add stakeholders"
 msgstr ""
 
-#: templates/generatecri_wizard.html.twig:157
+#: templates/generatecri_wizard.html.twig:233
 msgid "Add this Task"
 msgstr "Добавить эту задачу"
 
@@ -410,8 +410,8 @@ msgstr ""
 msgid "Caption"
 msgstr ""
 
-#: templates/generatecri_wizard.html.twig:71
-#: templates/generatecri_wizard.html.twig:176
+#: templates/generatecri_wizard.html.twig:77
+#: templates/generatecri_wizard.html.twig:220
 msgid "Category"
 msgstr ""
 
@@ -420,14 +420,14 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/DirectHelpdesk.php:726 src/Followup.php:745 src/Followup.php:979
+#: src/DirectHelpdesk.php:719 src/Followup.php:745 src/Followup.php:979
 #: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
 #: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:126
 #: templates/entity/unbilled_tab.html.twig:141
 #: templates/techlead/clients_by_tech.html.twig:120
 #: templates/techlead/clients_by_tech.html.twig:165
 #: templates/techlead/assignment_rules.html.twig:82
-#: templates/generatecri_wizard.html.twig:42
+#: templates/generatecri_wizard.html.twig:48
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Клиент"
@@ -559,7 +559,7 @@ msgstr[3] ""
 msgid "Contacts"
 msgstr ""
 
-#: src/GenerateCRI.php:367
+#: src/GenerateCRI.php:365
 msgid "Content, end and begin date are mandatory for a task !"
 msgstr "Содержание, дата окончания и начала обязательны для задачи!"
 
@@ -645,8 +645,8 @@ msgid ""
 "Create a new entity, contacts, subscription, contract and service periods."
 msgstr ""
 
-#: templates/directhelpdesk_dashboard.html.twig:44
-#: templates/directhelpdesk_dashboard.html.twig:47
+#: templates/directhelpdesk_dashboard.html.twig:61
+#: templates/directhelpdesk_dashboard.html.twig:65
 msgid "Create a ticket"
 msgstr ""
 
@@ -884,10 +884,10 @@ msgid "Deleting…"
 msgstr ""
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:43
-#: templates/generatecri_wizard.html.twig:95
-#: templates/generatecri_wizard.html.twig:144
-#: templates/generatecri_wizard.html.twig:162
-#: templates/generatecri_wizard.html.twig:220
+#: templates/generatecri_wizard.html.twig:103
+#: templates/generatecri_wizard.html.twig:158
+#: templates/generatecri_wizard.html.twig:181
+#: templates/generatecri_wizard.html.twig:252
 #: templates/directhelpdesk_modal.html.twig:74
 #: templates/directhelpdesk_ticket_tab.html.twig:38
 msgid "Description"
@@ -928,8 +928,8 @@ msgstr ""
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
 #: templates/wizard/step4_contract.html.twig:80
-#: templates/generatecri_wizard.html.twig:145
-#: templates/generatecri_wizard.html.twig:174
+#: templates/generatecri_wizard.html.twig:160
+#: templates/generatecri_wizard.html.twig:196
 #: templates/directhelpdesk_modal.html.twig:83
 #: templates/directhelpdesk_form.html.twig:105
 #: templates/directhelpdesk_ticket_tab.html.twig:37
@@ -1018,7 +1018,7 @@ msgstr "Дата окончания не может быть меньше дат
 msgid "End date is required"
 msgstr ""
 
-#: src/GenerateCRI.php:369
+#: src/GenerateCRI.php:367
 msgid "End date must be after the begin date !"
 msgstr "Дата окончания должна быть позже даты начала!"
 
@@ -1032,7 +1032,7 @@ msgstr "Дата окончания должна быть позже даты н
 #: front/generatecri.php:40 front/cridetail.form.php:53
 #: front/cridetail.form.php:56 front/cridetail.form.php:58
 #: front/addelements.form.php:38 setup.php:251 src/Preference.php:147
-#: src/GenerateCRI.php:942 src/TaskCategory.php:100 src/Profile.php:51
+#: src/GenerateCRI.php:940 src/TaskCategory.php:100 src/Profile.php:51
 #: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
 msgstr "Портал организаций"
@@ -1211,14 +1211,10 @@ msgstr ""
 msgid "General follow-up"
 msgstr "Общий мониторинг"
 
-#: templates/generatecri_wizard.html.twig:235
+#: templates/generatecri_wizard.html.twig:265
 msgctxt "button"
 msgid "Generate"
 msgstr "Сгенерировать"
-
-#: src/GenerateCRI.php:206
-msgid "Generate Intervention report"
-msgstr "Сгенерировать отчет о вмешательстве"
 
 #: src/GenerateCRI.php:76
 msgid "Generate report intervention"
@@ -1268,7 +1264,7 @@ msgstr "Почасовая"
 msgid "Hourly rate"
 msgstr "Почасовая ставка"
 
-#: templates/generatecri_wizard.html.twig:115
+#: templates/generatecri_wizard.html.twig:124
 msgid "Impact"
 msgstr ""
 
@@ -1314,7 +1310,7 @@ msgstr ""
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:728 src/Contract.php:734
+#: src/DirectHelpdesk.php:721 src/Contract.php:734
 #: templates/entity/unbilled_tab.html.twig:143
 msgid "Intervention"
 msgid_plural "Interventions"
@@ -1367,7 +1363,8 @@ msgstr[2] "Типов вмешательства"
 msgstr[3] "Типов вмешательстваов"
 
 #: src/CriDetail.php:493 src/CriDetail.php:746
-#: templates/contract_link_dropdown.html.twig:44
+#: templates/contract_link_dropdown.html.twig:62
+#: templates/contract_link_dropdown.html.twig:78
 msgid "Intervention with contract"
 msgstr "Вмешательство с контрактом"
 
@@ -1391,7 +1388,7 @@ msgstr ""
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:857 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:850 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr "Оплачено"
 
@@ -1464,7 +1461,7 @@ msgstr "Логотип %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Логотип (формат JPG или JPEG)"
 
-#: src/DirectHelpdesk.php:727 templates/entity/unbilled_tab.html.twig:142
+#: src/DirectHelpdesk.php:720 templates/entity/unbilled_tab.html.twig:142
 #: templates/entity/techleads_card.html.twig:64
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
@@ -1558,7 +1555,7 @@ msgstr "Режим управления"
 msgid "Monthly follow-up"
 msgstr "Ежемесячный мониторинг"
 
-#: src/DirectHelpdesk.php:733 templates/entity/unbilled_tab.html.twig:166
+#: src/DirectHelpdesk.php:726 templates/entity/unbilled_tab.html.twig:166
 #, php-format
 msgid "More than %d months"
 msgstr ""
@@ -1629,7 +1626,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: templates/contract_link_dropdown.html.twig:47
+#: templates/contract_link_dropdown.html.twig:38
 msgid "No active contracts"
 msgstr "Нет активных контрактов"
 
@@ -1795,7 +1792,7 @@ msgstr ""
 msgid "No unbilled intervention for a client with an ongoing contract."
 msgstr ""
 
-#: templates/generatecri_wizard.html.twig:217
+#: templates/generatecri_wizard.html.twig:248
 msgid "Non-accomplished tasks informations"
 msgstr "Информация о невыполненных задачах"
 
@@ -1845,7 +1842,7 @@ msgstr "Объект вмешательства"
 msgid "Occupation report"
 msgstr ""
 
-#: src/DirectHelpdesk.php:732 templates/entity/unbilled_tab.html.twig:145
+#: src/DirectHelpdesk.php:725 templates/entity/unbilled_tab.html.twig:145
 msgid "Oldest intervention"
 msgstr ""
 
@@ -1920,7 +1917,8 @@ msgid "Options"
 msgstr "Опции"
 
 #: src/CriDetail.php:1507 src/CriPDF.php:543
-#: templates/contract_link_dropdown.html.twig:40
+#: templates/contract_link_dropdown.html.twig:59
+#: templates/contract_link_dropdown.html.twig:74
 msgid "Out of contract"
 msgstr "Вне контракта"
 
@@ -1974,7 +1972,8 @@ msgstr ""
 
 #: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:888
 #: templates/contractday_list.html.twig:33
-#: templates/contract_link_dropdown.html.twig:58
+#: templates/contract_link_dropdown.html.twig:66
+#: templates/contract_link_dropdown.html.twig:80
 msgid "Periods of contract"
 msgstr "Периоды контракта"
 
@@ -2115,7 +2114,7 @@ msgstr ""
 msgid "Pre-selected state when creating a service period in the wizard."
 msgstr ""
 
-#: templates/generatecri_wizard.html.twig:138
+#: templates/generatecri_wizard.html.twig:153
 msgid "Predefined task informations"
 msgstr "Предопределенная информация о задачах"
 
@@ -2145,7 +2144,7 @@ msgstr ""
 msgid "Price must be greater than 0"
 msgstr ""
 
-#: templates/generatecri_wizard.html.twig:122
+#: templates/generatecri_wizard.html.twig:130
 msgid "Priority"
 msgstr ""
 
@@ -2421,7 +2420,7 @@ msgid "Sorted by oldest end date first"
 msgstr ""
 
 #: templates/config_cri_form.html.twig:54
-#: templates/generatecri_wizard.html.twig:186
+#: templates/generatecri_wizard.html.twig:202
 msgid "Specify an end date"
 msgstr ""
 
@@ -2442,7 +2441,7 @@ msgstr ""
 #: templates/wizard/step4_contract.html.twig:74
 #: templates/report_moving_form.html.twig:40
 #: templates/report_search_form.html.twig:39
-#: templates/generatecri_wizard.html.twig:173
+#: templates/generatecri_wizard.html.twig:192
 #: templates/editorsubscription_fields.html.twig:111
 #: templates/contract_detail_form.html.twig:93
 #: templates/report_occupation_form.html.twig:40
@@ -2557,14 +2556,6 @@ msgstr ""
 msgid "Target entity"
 msgstr ""
 
-#: templates/generatecri_wizard.html.twig:143
-msgid "Task"
-msgid_plural "Tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-
 #: templates/tickettask_blocked_alert.html.twig:32
 msgid "Task addition blocked"
 msgstr ""
@@ -2573,7 +2564,7 @@ msgstr ""
 msgid "Task category"
 msgstr ""
 
-#: src/GenerateCRI.php:368
+#: src/GenerateCRI.php:366
 msgid "Task category must be defined"
 msgstr "Категория задачи должна быть определена"
 
@@ -2610,8 +2601,8 @@ msgstr "Техническая помощь"
 #: src/CriPDF.php:395
 #: templates/entity/directhelpdesk_ticket_select.html.twig:40
 #: templates/techlead/clients_by_tech.html.twig:164
-#: templates/generatecri_wizard.html.twig:128
-#: templates/generatecri_wizard.html.twig:175
+#: templates/generatecri_wizard.html.twig:138
+#: templates/generatecri_wizard.html.twig:215
 #: templates/directhelpdesk_ticket_tab.html.twig:36
 #: templates/ticket_overview.html.twig:249
 #: templates/report_occupation_form.html.twig:45
@@ -2622,11 +2613,11 @@ msgstr[1] "Техсотрудника"
 msgstr[2] "Техсотрудников"
 msgstr[3] "Техсотрудников"
 
-#: src/GenerateCRI.php:372
+#: src/GenerateCRI.php:370
 msgid "Technician as assigned"
 msgstr "Техник назначен"
 
-#: templates/generatecri_wizard.html.twig:147
+#: templates/generatecri_wizard.html.twig:163
 msgid "Technician group"
 msgstr ""
 
@@ -2733,7 +2724,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: templates/generatecri_wizard.html.twig:38
+#: templates/generatecri_wizard.html.twig:43
 msgid "Ticket informations"
 msgstr "Информация о тикете"
 
@@ -2755,7 +2746,7 @@ msgstr "Оправданное время"
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:38
 #: templates/wizard/step2_contact_block.html.twig:60
-#: templates/generatecri_wizard.html.twig:81
+#: templates/generatecri_wizard.html.twig:89
 #: templates/directhelpdesk_modal.html.twig:60
 #: templates/directhelpdesk_form.html.twig:114
 #: templates/directhelpdesk_ticket_tab.html.twig:34
@@ -2855,7 +2846,7 @@ msgstr "Путешествие (в днях)"
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/wizard/step2_contact_block.html.twig:86
-#: templates/generatecri_wizard.html.twig:54
+#: templates/generatecri_wizard.html.twig:60
 #: templates/contract_detail_form.html.twig:55
 #: templates/ticket_overview.html.twig:116
 msgid "Type"
@@ -2884,7 +2875,7 @@ msgstr "Отсутствует тип контрактной услуги"
 msgid "Unarchive and continue"
 msgstr ""
 
-#: src/DirectHelpdesk.php:731 templates/entity/unbilled_tab.html.twig:144
+#: src/DirectHelpdesk.php:724 templates/entity/unbilled_tab.html.twig:144
 msgid "Unbilled hours"
 msgstr ""
 
@@ -2896,7 +2887,7 @@ msgstr ""
 msgid "Unbilled interventions"
 msgstr ""
 
-#: src/DirectHelpdesk.php:730
+#: src/DirectHelpdesk.php:723
 msgid "Unbilled man-days"
 msgstr ""
 
@@ -2945,7 +2936,7 @@ msgstr ""
 msgid "Update subscription fields"
 msgstr ""
 
-#: templates/generatecri_wizard.html.twig:108
+#: templates/generatecri_wizard.html.twig:118
 msgid "Urgency"
 msgstr ""
 
@@ -2975,7 +2966,6 @@ msgstr ""
 
 #: templates/report_search_form.html.twig:54
 #: templates/interventionstakeholder_list.html.twig:46
-#: templates/generatecri_wizard.html.twig:175
 #: templates/interventionstakeholder_form.html.twig:41
 #: templates/cridetail_planning_item.html.twig:36
 msgid "User"
@@ -3137,6 +3127,9 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "Generate Intervention report"
+#~ msgstr "Сгенерировать отчет о вмешательстве"
 
 #~ msgid "Please wait"
 #~ msgstr "Пожалуйста, подождите"
