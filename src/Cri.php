@@ -42,6 +42,8 @@ use Html;
 use Session;
 use Ticket;
 
+use function Safe\file_put_contents;
+
 class Cri extends CommonDBTM
 {
     public static string $rightname = 'plugin_manageentities_cri_create';
@@ -979,7 +981,9 @@ class Cri extends CommonDBTM
         $seefilepath = $seepath . $seefilename;
 
         if ($config->fields["backup"] == 1 && $p['enregistrement']) {
-            $PDF->Output($savefilepath, 'F');
+            // TCPDF >= 7 expects a directory for the "F" destination: get the document as a
+            // string and write it at the expected path, whatever the TCPDF version.
+            file_put_contents($savefilepath, $PDF->Output($filename, 'S'));
 
             $input = [];
             $input["entities_id"] = $job->fields["entities_id"];
@@ -1045,7 +1049,8 @@ class Cri extends CommonDBTM
             $this->CleanFiles($seepath);
         } else {
             // Save the PDF into the preview file
-            $PDF->Output($seefilepath, 'F');
+            // TCPDF >= 7 expects a directory for the "F" destination.
+            file_put_contents($seefilepath, $PDF->Output($seefilename, 'S'));
 
             // A short list rather than a single slot, so two tabs do not invalidate each
             // other's preview. Nothing here survives the session.
