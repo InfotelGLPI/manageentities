@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-06 23:29+0000\n"
+"POT-Creation-Date: 2026-10-09 09:46+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Soporte Infraestructura Standby, 2024\n"
 "Language-Team: Spanish (Ecuador) (https://app.transifex.com/infotelGLPI/"
@@ -1212,7 +1212,7 @@ msgstr "Generar informe de intervención"
 msgid "Generated from the clients management portal"
 msgstr ""
 
-#: front/cri.form.php:42 src/Cri.php:280 src/CriDetail.php:623
+#: front/cri.form.php:42 src/Cri.php:282 src/CriDetail.php:623
 msgid "Generation of the intervention report"
 msgstr "Generar informe de intervención"
 
@@ -1259,7 +1259,7 @@ msgstr ""
 msgid "Impossible action as an intervention report exists"
 msgstr "Acción imposible al existir un informe de intervención"
 
-#: src/Cri.php:296 src/Cri.php:302
+#: src/Cri.php:298 src/Cri.php:304
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr "Generación imposible, no has creado una tarea programada"
 
@@ -1322,7 +1322,7 @@ msgstr "Intervención de contrato"
 msgid "Intervention periods of contract"
 msgstr "Períodos de intervención del contrato"
 
-#: setup.php:155 src/Cri.php:54 src/Profile.php:107 src/Config.php:211
+#: setup.php:155 src/Cri.php:56 src/Profile.php:107 src/Config.php:211
 #: templates/cridetail_add_reports.html.twig:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -1751,7 +1751,7 @@ msgstr ""
 msgid "No subscription recorded."
 msgstr ""
 
-#: src/Cri.php:298
+#: src/Cri.php:300
 msgid "No tasks whose category can be used"
 msgstr "No se pueden utilizar tareas cuya categoría"
 
@@ -1997,17 +1997,17 @@ msgstr ""
 msgid "Please assign a technician to your tasks"
 msgstr "Por favor, asigne un técnico para sus tareas"
 
-#: src/Cri.php:687
+#: src/Cri.php:689
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
 "Por favor, rellene las fechas de inicio y finalización del período del "
 "contrato."
 
-#: src/Cri.php:703
+#: src/Cri.php:705
 msgid "Please fill the contract period begin date."
 msgstr "Por favor, indique la fecha de inicio del contrato."
 
-#: src/Cri.php:695
+#: src/Cri.php:697
 msgid "Please fill the contract period end date."
 msgstr "Por favor, Indique la fecha de finalización del contrato."
 
@@ -2207,7 +2207,7 @@ msgstr ""
 msgid "References"
 msgstr "Referencias"
 
-#: src/Cri.php:289 src/CriDetail.php:625
+#: src/Cri.php:291 src/CriDetail.php:625
 msgid "Regenerate the intervention report"
 msgstr "Regenerar el informe de intervención"
 
