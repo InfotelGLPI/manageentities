@@ -42,6 +42,12 @@
     </div>
     <div class="card-body">
         <div id="step3-errors" class="alert alert-danger d-none"></div>
+        {% if subscription_only|default(false) %}
+            <div class="alert alert-info">
+                <i class="ti ti-info-circle me-1"></i>
+                {{ __('The proposal holds subscription annexes only: no contract is created, the wizard ends with this subscription.', 'manageentities') }}
+            </div>
+        {% endif %}
 
         {# Behaviour: public/scripts/editorsubscription-fields.js #}
         <div class="row g-3" id="step3-fields-{{ rand }}" data-me-subscription="{{ {'required': false}|json_encode }}">
@@ -63,10 +69,13 @@
                 data-me-wizard-action="finish-without-contract" data-step="{{ step }}">
                 <i class="ti ti-check me-1"></i>{{ __('Finish without contract', 'manageentities') }}
             </button>
+            {# A won proposal of subscriptions only makes no contract #}
+            {% if not subscription_only|default(false) %}
             <button type="button" class="btn btn-primary"
                 data-me-wizard-action="save-step" data-step="3">
                 <i class="ti ti-arrow-right me-1"></i>{{ __('Next') }}
             </button>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -113,6 +113,24 @@ class WizardController
     }
 
     /**
+     * New wizard slot prefilled from a won proposal, then its first step
+     */
+    private static function startFromProposal(int $proposals_id): never
+    {
+        $proposal = PresaleConversion::getWonProposal($proposals_id);
+        if ($proposal === null) {
+            Session::addMessageAfterRedirect(__('Only a won proposal can create a customer.', 'manageentities'), false, ERROR);
+            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php');
+        }
+        $wid = self::generateWizardId();
+        if (!isset($_SESSION[self::SESSION_KEY]) || !is_array($_SESSION[self::SESSION_KEY])) {
+            $_SESSION[self::SESSION_KEY] = [];
+        }
+        $_SESSION[self::SESSION_KEY][$wid] = PresaleConversion::prefill($proposal, self::buildDefaultSession());
+        Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php?wid=' . $wid . '&step=1');
+    }
+
+    /**
      * Resolve the active wizard ID from GET > POST > 'default'.
      * 'default' is used by unit/integration tests that call the static
      * methods directly without going through the HTTP layer.
@@ -392,6 +410,7 @@ class WizardController
             'wizard_id'         => $wid,
             'subscription_url'  => $subscription_url,
             'use_subscriptions' => Config::useEditorSubscriptions(),
+            'presale_url'       => PresaleWizard::canUse() ? PresaleWizard::getFormUrl() : '',
         ]);
     }
 
@@ -644,6 +663,12 @@ class WizardController
                 'usertitles_id'   => (int) ($cInput['usertitles_id'] ?? 0),
                 'is_manager'      => (int) (bool) ($cInput['is_manager'] ?? 0),
             ];
+            // Back link to the contact of the pre-sales prospect: only one of the proposal the
+            // wizard was started from
+            $presale_contacts_id = (int) ($cInput['presale_contacts_id'] ?? 0);
+            if ($presale_contacts_id > 0 && PresaleConversion::isContactOf($session, $presale_contacts_id)) {
+                $savedData[$idx]['presale_contacts_id'] = $presale_contacts_id;
+            }
         }
 
         // Next is step 3 (subscription) when enabled, otherwise skip straight to step 4 (contract)
@@ -821,6 +846,10 @@ class WizardController
         // contacts and this subscription are written. The intent is stored in the session
         // because the finish modal confirms through a separate request.
         $session['skip_contract'] = (int) (bool) ($input['skip_contract'] ?? 0);
+        // Won proposal of subscriptions only (PresaleConversion): no contract to make
+        if (!empty($session['subscription_only'])) {
+            $session['skip_contract'] = 1;
+        }
 
         $cloud_client      = (int) (bool) ($input['cloud_client'] ?? 0);
         $active_sub        = (int) (bool) ($input['active_editor_suscription'] ?? 0);
@@ -1540,7 +1569,7 @@ class WizardController
         foreach (($session['contacts_data'] ?? []) as $idx => $cData) {
             $glpiContact = new GlpiContact();
             $contactInput = array_merge($cData, ['entities_id' => $entities_id]);
-            unset($contactInput['is_manager']);
+            unset($contactInput['is_manager'], $contactInput['presale_contacts_id']);
             // ajax/wizard.php only gates the endpoint on the plugin right; the object written here
             // belongs to the core, so creating it takes the core "contact" right, exactly like the
             // \Entity creation above. Without this the wizard was a way around the profile.
@@ -1573,6 +1602,7 @@ class WizardController
 
             $summary = self::buildFinishSummaryFromSession($session, $entities_id, 0);
             self::raiseWizardNotification($summary, $entities_id);
+            PresaleConversion::afterCommit($session, $entities_id, $contact_ids, 0);
             self::clearWizardSession();
 
             return [
@@ -1696,6 +1726,8 @@ class WizardController
 
         $summary = self::buildFinishSummaryFromSession($session, $entities_id, $contracts_id);
         self::raiseWizardNotification($summary, $entities_id);
+        // Customer made from a won proposal: links back, people, logo, document
+        PresaleConversion::afterCommit($session, $entities_id, $contact_ids, $contracts_id);
 
         // Clear this wizard slot (not all slots — other tabs stay alive)
         self::clearWizardSession();
@@ -1955,6 +1987,12 @@ class WizardController
 
     public static function renderStep(): void
     {
+        // Won pre-sales proposal: a new wizard slot prefilled from it (PresaleConversion).
+        // Before the wid redirect below, which drops the other parameters.
+        if (isset($_GET['from_proposal'])) {
+            self::startFromProposal((int) $_GET['from_proposal']);
+        }
+
         $wid = $_GET['wid'] ?? '';
         $widValid = preg_match('/^[0-9a-f]{12}$/', $wid) === 1;
 
@@ -2003,9 +2041,16 @@ class WizardController
             if ($use_subscriptions) {
                 $steps[3] = __('Subscription', 'manageentities');
             }
-            $steps[4] = __('Contract', 'manageentities');
-            $steps[5] = __('Management type', 'manageentities');
-            $steps[6] = _n('Period of contract', 'Periods of contract', 2, 'manageentities');
+            // Won proposal of subscriptions only: no contract steps
+            if (empty($session['subscription_only']) || !$use_subscriptions) {
+                $steps[4] = __('Contract', 'manageentities');
+                $steps[5] = __('Management type', 'manageentities');
+                $steps[6] = _n('Period of contract', 'Periods of contract', 2, 'manageentities');
+            }
+        }
+        // ... and no way to reach them through the URL
+        if (!empty($session['subscription_only']) && $use_subscriptions && $step > 3) {
+            $step = 3;
         }
 
         $step_template = '@manageentities/wizard/step' . $step . '_' . self::stepSlug($step, $session['wizard_mode']) . '.html.twig';
@@ -2032,6 +2077,8 @@ class WizardController
             'step_template' => $step_template,
             'step_vars'     => $vars,
             'redirect_url'  => $front_url,
+            // Started from a won pre-sales proposal
+            'from_proposal' => PresaleConversion::getBanner($session),
             'wizard_i18n'   => [
                 'nothingToDisplay'      => __('Nothing to display.', 'manageentities'),
                 'entityExistsMsg'       => __('The entity "%s" already exists. Do you want to use it to create a new contract?', 'manageentities'),
@@ -2190,6 +2237,8 @@ class WizardController
             'end_date'                                    => $fields['end_date'] ?? '',
             'end_date_expired'                            => $end_date_expired,
             'comment'                                     => $fields['comment'] ?? '',
+            // Won proposal of subscriptions only: the wizard ends here, no "Next"
+            'subscription_only'                           => !empty($session['subscription_only']),
         ];
     }
 

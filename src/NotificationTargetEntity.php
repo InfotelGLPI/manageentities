@@ -81,7 +81,7 @@ class NotificationTargetEntity extends NotificationTarget
 
         // Column labels (##lang.wizard.*## and ##lang.item.*##)
         $this->data['##lang.wizard.entity##'] = __('Entity', 'manageentities');
-        $this->data['##lang.wizard.author##'] = __('Author');
+        $this->data['##lang.wizard.author##'] = __('Author', 'manageentities');
         $this->data['##lang.wizard.date##']   = __('Creation date');
         $this->data['##lang.item.type##']     = __('Type');
         $this->data['##lang.item.label##']    = __('Name');
@@ -106,7 +106,7 @@ class NotificationTargetEntity extends NotificationTarget
     {
         $tags = [
             'wizard.entity' => __('Entity', 'manageentities'),
-            'wizard.author' => __('Author'),
+            'wizard.author' => __('Author', 'manageentities'),
             'wizard.date'   => __('Creation date'),
             'item.type'     => __('Type'),
             'item.label'    => __('Name'),

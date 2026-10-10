@@ -1,0 +1,228 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# "Pre-sales" tab of the configuration.
+ #
+ # config            - row of glpi_plugin_manageentities_configs
+ # customers_entity  - name of the customers entity, empty when not configured
+ # user_types        - {type: label} of PresaleUser
+ # users             - {type: [PresaleUser::getUsers() rows]}
+ # used              - {type: [users_id]} already declared, hidden from the pickers
+ # users_entity      - entity the users must hold a central profile on
+ # annex_models_url  - search page of the annex models
+ # annex_models_count- number of active annex models
+ # import_url        - import of annex models as JSON, empty without the right
+ # use_subscriptions - whether the publisher subscriptions are enabled
+ # templates         - {kind: {label, helper, uploaded, url}} Word templates (PresaleTemplate)
+ #}
+
+{% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
+
+<form name="form" method="post" action="{{ form_url }}" enctype="multipart/form-data">
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-file-dollar"></i>
+            <strong>{{ __('Pre-sales', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            {% if customers_entity is empty %}
+                <div class="alert alert-warning">
+                    <i class="ti ti-alert-triangle me-1"></i>
+                    {{ __('The customers entity is not set in the Setup tab: the pre-sales section cannot be used until it is.', 'manageentities') }}
+                </div>
+            {% endif %}
+
+            {{ fields.dropdownYesNo('use_presale', config.use_presale|default(0), __('Use the pre-sales section', 'manageentities'), row|merge({
+                'helper': __('Adds a "Pre-sales" card to the entities portal, to build financial proposals.', 'manageentities'),
+            })) }}
+
+            {{ fields.htmlField('', customers_entity is not empty ? customers_entity : '-', __('Entity of the prospects and proposals', 'manageentities'), row|merge({
+                'helper': __('The customers entity of the Setup tab.', 'manageentities'),
+            })) }}
+
+            {{ fields.dropdownField('DocumentCategory', 'presale_documentcategories_id', config.presale_documentcategories_id|default(0), __('Category of the generated proposals', 'manageentities'), row) }}
+
+            {{ fields.numberField('presale_default_vat', config.presale_default_vat|default(20), __('Default VAT rate (%)', 'manageentities'), row|merge({
+                'min': 0,
+                'max': 100,
+                'step': 0.01,
+            })) }}
+
+            {# Word templates: none is shipped with the plugin, each one is uploaded here and
+               stored in files/_plugins/manageentities/presale #}
+            <div class="alert alert-info">
+                <i class="ti ti-info-circle me-1"></i>
+                {{ __('Upload the Word templates of the proposals and of the annexes: no template is shipped with the plugin. The placeholders they can hold are listed in the documentation of the plugin.', 'manageentities') }}
+            </div>
+            {% for kind, template in templates %}
+                {% set field %}
+                    <input type="file" class="form-control" name="presale_template[{{ kind }}]" id="presale_template_{{ kind }}"
+                           accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                    <div class="d-flex align-items-center flex-wrap gap-2 mt-1 small">
+                        {% if template.uploaded %}
+                            <span class="badge bg-green-lt">{{ __('Uploaded template', 'manageentities') }}</span>
+                            <a href="{{ template.url }}"><i class="ti ti-download me-1"></i>{{ __('Download') }}</a>
+                            <label class="form-check form-check-inline mb-0 ms-2">
+                                <input type="checkbox" class="form-check-input" name="presale_template_delete[{{ kind }}]" value="1">
+                                <span class="form-check-label">{{ __('Delete') }}</span>
+                            </label>
+                        {% else %}
+                            <span class="badge bg-orange-lt">{{ __('No template: the documents using it cannot be generated', 'manageentities') }}</span>
+                        {% endif %}
+                    </div>
+                {% endset %}
+                {{ fields.field('presale_template[' ~ kind ~ ']', field, template.label, row|merge({
+                    'id': 'presale_template_' ~ kind,
+                    'helper': template.helper,
+                })) }}
+            {% endfor %}
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <input type="hidden" name="id" value="1">
+            <button type="submit" name="update_config" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>
+                {{ _x('button', 'Save') }}
+            </button>
+        </div>
+    </div>
+</form>
+
+{# Sales representatives, then project managers: same list, one card per type #}
+<div class="row g-3 mb-3">
+{% for type, label in user_types %}
+    <div class="col-12 col-xl-6">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="ti {{ type == 1 ? 'ti-briefcase' : 'ti-user-cog' }}"></i>
+                <strong>{{ type == 1 ? __('Assigned sales representatives', 'manageentities') : __('Assigned project managers', 'manageentities') }}</strong>
+            </div>
+            <div class="card-body p-0">
+                {% if users[type] is not empty %}
+                <div class="form-text px-3 pt-2">
+                    {{ __('Left empty, the printed role is the title of the user and the printed phone its mobile phone.', 'manageentities') }}
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>{{ __('Name') }}</th>
+                                <th>{{ __('Printed role', 'manageentities') }}</th>
+                                <th>{{ __('Printed phone', 'manageentities') }}</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users[type] %}
+                            <tr>
+                                <td>
+                                    <a href="{{ user.url }}" target="_blank" title="{{ __('Open the user', 'manageentities') }}">
+                                        {{ user.name }}<i class="ti ti-external-link ms-1 small"></i>
+                                    </a>
+                                    {% if user.email %}<div class="text-muted small">{{ user.email }}</div>{% endif %}
+                                </td>
+                                <td colspan="2">
+                                    <form method="post" action="{{ form_url }}" class="d-flex gap-1">
+                                        <input type="hidden" name="presaleuser_id" value="{{ user.id }}">
+                                        {# Empty: the title and the mobile phone of the user are printed, shown as placeholders #}
+                                        <input type="text" name="role_label" value="{{ user.typed_role }}" class="form-control form-control-sm"
+                                               placeholder="{{ user.user_role ?: label }}" aria-label="{{ __('Printed role', 'manageentities') }}">
+                                        <input type="text" name="phone" value="{{ user.typed_phone }}" class="form-control form-control-sm"
+                                               placeholder="{{ user.user_phone }}" aria-label="{{ __('Printed phone', 'manageentities') }}">
+                                        <button type="submit" name="update_presaleuser" class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Save') }}">
+                                            <i class="ti ti-device-floppy"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    {% if user.is_default %}
+                                        <span class="badge bg-green-lt">{{ __('Default', 'manageentities') }}</span>
+                                    {% else %}
+                                        <form method="post" action="{{ form_url }}" class="d-inline">
+                                            <input type="hidden" name="presaleuser_id" value="{{ user.id }}">
+                                            <button type="submit" name="default_presaleuser" class="btn btn-link btn-sm p-0">
+                                                {{ __('Set as default', 'manageentities') }}
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <form method="post" action="{{ form_url }}" class="d-inline">
+                                        <input type="hidden" name="presaleuser_id" value="{{ user.id }}">
+                                        <button type="submit" name="delete_presaleuser" class="btn btn-link text-danger p-0" title="{{ __('Delete permanently') }}">
+                                            <i class="ti ti-circle-x"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <p class="text-muted text-center py-3 mb-0">{{ __('None declared yet', 'manageentities') }}</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <form method="post" action="{{ form_url }}" class="d-flex align-items-center gap-2 flex-wrap">
+                    <input type="hidden" name="type" value="{{ type }}">
+                    <div class="flex-grow-1">{{ 'User'|itemtype_dropdown({'name': 'users_id', 'right': 'interface', 'entity': users_entity, 'entity_sons': true, 'used': used[type]}) }}</div>
+                    <button type="submit" name="add_presaleuser" class="btn btn-sm btn-primary">{{ __('Add') }}</button>
+                </form>
+                <div class="form-text">{{ __('Users holding a central profile on the customers entity.', 'manageentities') }}</div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<div class="card mb-3">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="ti ti-file-description"></i>
+        <strong>{{ _n('Annex model', 'Annex models', 2, 'manageentities') }}</strong>
+    </div>
+    <div class="card-body d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <span>
+            {{ _n('%d active annex model', '%d active annex models', annex_models_count, 'manageentities')|format(annex_models_count) }}
+            {% if use_subscriptions %}
+                <span class="text-muted">— {{ __('an annex model can describe a publisher subscription.', 'manageentities') }}</span>
+            {% endif %}
+        </span>
+        <div class="d-flex gap-2">
+            {% if import_url %}
+                <a href="{{ import_url }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="ti ti-file-import me-1"></i>{{ __('Import annex models', 'manageentities') }}
+                </a>
+            {% endif %}
+            <a href="{{ annex_models_url }}" class="btn btn-sm btn-outline-primary">
+                <i class="ti ti-list me-1"></i>{{ __('Manage the annex models', 'manageentities') }}
+            </a>
+        </div>
+    </div>
+</div>

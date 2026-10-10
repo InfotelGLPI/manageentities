@@ -43,13 +43,16 @@ use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\GenerateCRI;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
 use GlpiPlugin\Manageentities\Preference;
+use GlpiPlugin\Manageentities\PresaleAnnexType;
+use GlpiPlugin\Manageentities\PresaleOrigin;
+use GlpiPlugin\Manageentities\PresaleClient;
+use GlpiPlugin\Manageentities\PresaleProposal;
 use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Servicecatalog;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\SubscriptionLevel;
 use GlpiPlugin\Manageentities\TaskCategory;
-use GlpiPlugin\Manageentities\TechLead;
 use GlpiPlugin\Manageentities\TicketTask;
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
@@ -97,8 +100,9 @@ function plugin_init_manageentities()
     $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['Ticket']      = [TicketTask::class, 'refreshTicketRemainingDays'];
     $PLUGIN_HOOKS[Hooks::ITEM_RESTORE]['manageentities']['Ticket']     = [TicketTask::class, 'refreshTicketRemainingDays'];
 
-    // A user sent to the trash stops being the tech lead of its clients
-    $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['User']        = [TechLead::class, 'removeUserLinks'];
+    // A user sent to the trash stops being the tech lead or project manager of its clients,
+    // and is no longer offered by the pre-sales wizard
+    $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['User']        = 'plugin_pre_item_purge_manageentities';
 
     $PLUGIN_HOOKS[Hooks::ITEM_TRANSFER]['manageentities'] = 'plugin_item_transfer_manageentities';
 
@@ -111,6 +115,11 @@ function plugin_init_manageentities()
         // notification template is selectable in Configuration > Notifications.
         Plugin::registerClass(Entity::class, ['notificationtemplates_types' => true]);
         Plugin::registerClass(SubscriptionLevel::class);
+        Plugin::registerClass(PresaleAnnexType::class);
+        Plugin::registerClass(PresaleOrigin::class);
+        // Generated proposals and prospect logos are GLPI documents linked to these items
+        Plugin::registerClass(PresaleProposal::class, ['document_types' => true, 'notificationtemplates_types' => true]);
+        Plugin::registerClass(PresaleClient::class, ['document_types' => true]);
         Plugin::registerClass(CustomerSheet::class, ['addtabon' => 'Entity']);
         Plugin::registerClass(Profile::class, ['addtabon' => 'Profile']);
         Plugin::registerClass(Contract::class, [
@@ -207,10 +216,14 @@ function plugin_init_manageentities()
             );
             // Entity creation wizard (native ES module, delegated listeners, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/wizard.js';
+            // Contact blocks and user prefill of the pre-sales wizard (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/presale-wizard.js';
             // Stakeholders tab of a contract day (native ES module, no jQuery)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/interventionstakeholder.js';
             // "+ 12 months" button of the contract form (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/contract-add-months.js';
+            // Price per user of the cloud subscription levels (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/subscriptionlevel.js';
             // Daily/hourly switch of the plugin setup form (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/config-hourorday.js';
             // "Duplicate" button under the ticket tasks (native ES module, no-op elsewhere)

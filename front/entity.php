@@ -36,6 +36,7 @@ use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\ProjectManager;
 use GlpiPlugin\Manageentities\TechLead;
 use GlpiPlugin\Manageentities\TicketOverview;
 
@@ -54,6 +55,7 @@ $Contact         = new Contact();
 $ManageentitiesEntity          = new Entity();
 $BusinessContact = new BusinessContact();
 $TechLead        = new TechLead();
+$ProjectManager  = new ProjectManager();
 
 if (!isset($_POST["entities_id"])) {
     $_POST["entities_id"] = "";
@@ -153,6 +155,26 @@ if ($ManageentitiesEntity->canView()
             } else {
                 $TechLead->setAsDefault($TechLead->getID());
             }
+        }
+        Html::back();
+
+    } elseif (isset($_POST["addprojectmanager"])) {
+        if ($ProjectManager->can(-1, CREATE, $_POST)) {
+            $ProjectManager->add($_POST);
+        }
+        Html::back();
+
+    } elseif (isset($_POST["deleteprojectmanager"])) {
+        // Same right as the tech leads: PURGE is only granted to the full profile
+        if ($ProjectManager->can((int) $_POST["id"], DELETE)) {
+            $ProjectManager->delete(['id' => (int) $_POST["id"]], true);
+        }
+        Html::back();
+
+    } elseif (isset($_POST["projectmanagerbydefault"])) {
+        // can($id, UPDATE) reloads the row and enforces entity access on it
+        if ($ProjectManager->can((int) $_POST["id"], UPDATE)) {
+            $ProjectManager->setAsDefault((int) $_POST["id"]);
         }
         Html::back();
 

@@ -36,6 +36,14 @@
     'use_subscriptions': use_subscriptions ?? true,
 }|json_encode }}">
 
+    {% if from_proposal|default(null) %}
+        <div class="alert alert-info d-flex align-items-center gap-2">
+            <i class="ti ti-file-dollar"></i>
+            <span>{{ __('Customer created from the won proposal', 'manageentities') }} <a href="{{ from_proposal.url }}" target="_blank">{{ from_proposal.name }}</a>.
+                {{ __('The steps are prefilled from it: check and complete them.', 'manageentities') }}</span>
+        </div>
+    {% endif %}
+
     {# Progress bar #}
     <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
         {% for n, label in steps %}

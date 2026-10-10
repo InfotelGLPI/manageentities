@@ -115,6 +115,12 @@ class Profile extends \Profile
                 'label' => __('Direct helpdesk', 'manageentities'),
                 'field' => 'plugin_manageentities_directhelpdesk',
             ],
+            [
+                // Pre-sales section: prospects and financial proposals
+                'itemtype' => PresaleProposal::class,
+                'label' => __('Pre-sales', 'manageentities'),
+                'field' => 'plugin_manageentities_presale',
+            ],
         ];
 
         return $rights;
@@ -215,7 +221,9 @@ class Profile extends \Profile
                 // existing generic value (masked to the four exposed bits) so profiles
                 // that could already use the feature keep their access after the split
                 // instead of silently losing it on update.
-                if ($data['field'] === 'plugin_manageentities_directhelpdesk') {
+                // Same for the pre-sales right: the profiles managing the entities portal keep
+                // the new section available
+                if (in_array($data['field'], ['plugin_manageentities_directhelpdesk', 'plugin_manageentities_presale'], true)) {
                     $seed_mask = CREATE | READ | UPDATE | PURGE;
                     foreach ($DB->request([
                         'FROM'  => 'glpi_profilerights',
@@ -225,7 +233,7 @@ class Profile extends \Profile
                             'glpi_profilerights',
                             ['rights' => ((int) $row['rights']) & $seed_mask],
                             [
-                                'name'        => 'plugin_manageentities_directhelpdesk',
+                                'name'        => $data['field'],
                                 'profiles_id' => $row['profiles_id'],
                             ],
                         );
@@ -259,6 +267,7 @@ class Profile extends \Profile
                 'plugin_manageentities' => ALLSTANDARDRIGHT,
                 'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT,
                 'plugin_manageentities_directhelpdesk' => CREATE | READ | UPDATE | PURGE,
+                'plugin_manageentities_presale' => CREATE | READ | UPDATE | PURGE,
             ],
             true,
         );

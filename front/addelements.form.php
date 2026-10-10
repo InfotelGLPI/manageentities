@@ -29,6 +29,7 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\PresaleWizard;
 use GlpiPlugin\Manageentities\WizardController;
 use GlpiPlugin\Manageentities\Contract;
 
@@ -38,6 +39,11 @@ if (Plugin::isPluginActive("manageentities")
     Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
     WizardController::renderStep();
     Html::footer();
+
+} elseif (Plugin::isPluginActive("manageentities") && PresaleWizard::canUse()) {
+    // Sales representatives may only hold the pre-sales right: the other cards create
+    // entities and contracts, so they go straight to the pre-sales section
+    Html::redirect(PresaleWizard::getFormUrl());
 
 } else {
     throw new AccessDeniedHttpException();

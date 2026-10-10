@@ -32,6 +32,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\PresaleTemplate;
+use GlpiPlugin\Manageentities\PresaleUser;
 
 if (Plugin::isPluginActive("manageentities")) {
     // Saving has always required config UPDATE on top of the plugin right: require it to
@@ -39,8 +41,31 @@ if (Plugin::isPluginActive("manageentities")) {
     if (Session::haveRight(Contract::$rightname, UPDATE) && Session::haveRight(\Config::$rightname, UPDATE)) {
         $config = new Config();
 
+        $presale_user = new PresaleUser();
+
         if (isset($_POST["update_config"])) {
             $config->update($_POST);
+            // Word templates of the pre-sales tab, stored in files/_plugins/manageentities/presale
+            PresaleTemplate::handleUpload($_FILES, $_POST);
+            Html::back();
+        } elseif (isset($_POST["add_presaleuser"])) {
+            $presale_user->add([
+                'users_id' => (int) ($_POST['users_id'] ?? 0),
+                'type'     => (int) ($_POST['type'] ?? 0),
+            ]);
+            Html::back();
+        } elseif (isset($_POST["update_presaleuser"])) {
+            $presale_user->update([
+                'id'         => (int) ($_POST['presaleuser_id'] ?? 0),
+                'role_label' => $_POST['role_label'] ?? '',
+                'phone'      => $_POST['phone'] ?? '',
+            ]);
+            Html::back();
+        } elseif (isset($_POST["default_presaleuser"])) {
+            $presale_user->setAsDefault((int) ($_POST['presaleuser_id'] ?? 0));
+            Html::back();
+        } elseif (isset($_POST["delete_presaleuser"])) {
+            $presale_user->delete(['id' => (int) ($_POST['presaleuser_id'] ?? 0)], true);
             Html::back();
         } else {
             Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);

@@ -81,14 +81,75 @@ class SubscriptionLevel extends CommonDropdown
                 'type'  => 'subscription_type_select',
                 'list'  => true,
             ],
+            [
+                'name'        => 'price_per_user',
+                'label'       => __('Monthly price per user excl. VAT', 'manageentities'),
+                'type'        => 'price_per_user',
+                'list'        => true,
+                // Cloud levels only: the row follows the subscription type
+                // (public/scripts/subscriptionlevel.js)
+                'form_params' => [
+                    'add_field_attribs' => ['data-me-cloud-only' => '1'],
+                    'add_field_class'   => (int) ($this->fields['subscription_type'] ?? self::TYPE_ALL) === self::TYPE_CLOUD ? '' : 'd-none',
+                ],
+            ],
         ];
+    }
+
+    /**
+     * Price of a cloud level, for a future annex dedicated to the cloud subscriptions: empty
+     * for the other levels, French decimal comma accepted
+     *
+     * @param array|false $input
+     *
+     * @return array|false
+     */
+    private function preparePriceInput($input)
+    {
+        if (!is_array($input) || !array_key_exists('price_per_user', $input)) {
+            return $input;
+        }
+        $type = (int) ($input['subscription_type'] ?? $this->fields['subscription_type'] ?? self::TYPE_ALL);
+        $text = trim((string) $input['price_per_user']);
+        if ($type !== self::TYPE_CLOUD || $text === '') {
+            $input['price_per_user'] = null;
+            return $input;
+        }
+        $price = PresalePricing::parseNumber($text);
+        if ($price === null || $price < 0) {
+            Session::addMessageAfterRedirect(__('The price per user must be a positive number.', 'manageentities'), false, ERROR);
+            return false;
+        }
+        $input['price_per_user'] = round($price, 2);
+
+        return $input;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        return $this->preparePriceInput(parent::prepareInputForAdd($input));
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->preparePriceInput(parent::prepareInputForUpdate($input));
     }
 
     public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
         if ($field['type'] === 'subscription_type_select') {
             $current = (int) ($this->fields['subscription_type'] ?? self::TYPE_ALL);
-            \Dropdown::showFromArray('subscription_type', self::getTypes(), ['value' => $current]);
+            \Dropdown::showFromArray('subscription_type', self::getTypes(), [
+                'value'     => $current,
+                'on_change' => CriDetail::CHANGE_EVENT_JS,
+            ]);
+        } elseif ($field['type'] === 'price_per_user') {
+            $price = $this->fields['price_per_user'] ?? null;
+            echo \Html::input('price_per_user', [
+                'value'     => $price !== null ? str_replace('.', ',', (string) (float) $price) : '',
+                'inputmode' => 'decimal',
+            ]);
+            echo '<div class="form-text">' . htmlescape(__('Cloud levels only. Used by the annexes of the cloud subscriptions.', 'manageentities')) . '</div>';
         }
     }
 
@@ -101,6 +162,13 @@ class SubscriptionLevel extends CommonDropdown
             'field'    => 'subscription_type',
             'name'     => __('Subscription type', 'manageentities'),
             'datatype' => 'specific',
+        ];
+        $tab[] = [
+            'id'       => '11',
+            'table'    => $this->getTable(),
+            'field'    => 'price_per_user',
+            'name'     => __('Monthly price per user excl. VAT', 'manageentities'),
+            'datatype' => 'decimal',
         ];
         return $tab;
     }
@@ -119,6 +187,7 @@ class SubscriptionLevel extends CommonDropdown
                 'id'   => (int) $row['id'],
                 'name' => $row['name'],
                 'type' => (int) $row['subscription_type'],
+                'price_per_user' => $row['price_per_user'] !== null ? (float) $row['price_per_user'] : null,
             ];
         }
         return $out;
@@ -139,11 +208,21 @@ class SubscriptionLevel extends CommonDropdown
                             `name`              varchar(255) collate utf8mb4_unicode_ci DEFAULT NULL,
                             `comment`           text collate utf8mb4_unicode_ci,
                             `subscription_type` tinyint NOT NULL DEFAULT '0' COMMENT '0=all, 1=on_premise, 2=cloud',
+                            `price_per_user` decimal(20,2) DEFAULT NULL COMMENT 'monthly price per user excl. VAT, cloud levels',
                             PRIMARY KEY (`id`),
                             KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
             $DB->doQuery($query);
+        }
+
+        // Monthly price per user of the cloud levels (pre-sales, added after the first release)
+        if (!$DB->fieldExists($table, 'price_per_user')) {
+            $migration->addField($table, 'price_per_user', 'decimal(20,2) DEFAULT NULL', [
+                'after'   => 'subscription_type',
+                'comment' => 'monthly price per user excl. VAT, cloud levels',
+            ]);
+            $migration->migrationOneTable($table);
         }
     }
 

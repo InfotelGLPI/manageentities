@@ -1,0 +1,85 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+
+{# Table of the proposals in progress (PresaleWizard::getOpenProposals()), shared by the landing
+ # page of the pre-sales, the form of a prospect and the pre-sales tab of the clients management.
+ #
+ # proposals  - rows of getOpenProposals()
+ # options:
+ #   action_url   - target of the Lost / Won / Delete buttons, none when empty
+ #   can_purge    - offers the deletion
+ #   nb_steps     - number of steps of the wizard, the progress column when given
+ #   show_client  - the column of the prospect
+ #   show_total   - the column of the total excluding VAT
+ #}
+{% macro table(proposals, options = {}) %}
+    {% import '@manageentities/presale/outcome_buttons.html.twig' as outcome %}
+    {% set options = {'action_url': '', 'can_purge': false, 'nb_steps': 0, 'show_client': true, 'show_total': false}|merge(options) %}
+    <div class="table-responsive">
+        <table class="table table-sm table-hover card-table mb-0">
+            <thead>
+                <tr>
+                    <th>{{ __('Name') }}</th>
+                    {% if options.show_client %}<th>{{ _n('Prospect', 'Prospects', 1, 'manageentities') }}</th>{% endif %}
+                    <th>{{ __('Status') }}</th>
+                    {% if options.nb_steps %}<th>{{ __('Progress', 'manageentities') }}</th>{% endif %}
+                    {% if options.show_total %}<th class="text-end">{{ __('Total excluding VAT', 'manageentities') }}</th>{% endif %}
+                    <th>{{ __('Last update') }}</th>
+                    {% if options.action_url %}<th class="text-end">{{ __('Outcome of the proposal', 'manageentities') }}</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+            {% for proposal in proposals %}
+                <tr>
+                    <td><a href="{{ proposal.url }}">{{ proposal.name }}</a></td>
+                    {% if options.show_client %}<td><a href="{{ proposal.client_url }}">{{ proposal.client }}</a></td>{% endif %}
+                    <td>
+                        <span class="badge bg-secondary-lt">{{ proposal.status }}</span>
+                        {% if proposal.estimate_status == 1 %}
+                            <a href="{{ proposal.estimate_url }}" class="badge bg-orange-lt text-decoration-none" title="{{ __('Estimate requested', 'manageentities') }}"><i class="ti ti-calculator"></i></a>
+                        {% elseif proposal.estimate_status == 2 %}
+                            <a href="{{ proposal.estimate_url }}" class="badge bg-green-lt text-decoration-none" title="{{ __('Estimate validated', 'manageentities') }}"><i class="ti ti-calculator"></i></a>
+                        {% endif %}
+                    </td>
+                    {% if options.nb_steps %}<td>{{ proposal.step }} / {{ options.nb_steps }}</td>{% endif %}
+                    {% if options.show_total %}<td class="text-end">{{ proposal.total_ht|formatted_number }} €</td>{% endif %}
+                    <td>
+                        {{ proposal.date_mod|formatted_datetime }}
+                        {% if proposal.modified %}
+                            <i class="ti ti-alert-triangle text-warning ms-1" title="{{ __('Modified since the last generation', 'manageentities') }}"></i>
+                        {% endif %}
+                    </td>
+                    {% if options.action_url %}
+                        <td class="text-end">{{ outcome.buttons(proposal.id, options.action_url, proposal.can_win, proposal.modified, true, 'btn-sm', options.can_purge) }}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}

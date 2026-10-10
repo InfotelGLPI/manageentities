@@ -1,0 +1,57 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+
+{# Import of annex models exported as JSON (PresaleAnnexTypeTransfer).
+ #
+ # form_url   - target of the form
+ # models_url - search page of the annex models
+ # max_size   - largest file accepted, in bytes
+ #}
+
+<div class="container-fluid" style="max-width: 50rem">
+    <form method="post" action="{{ form_url }}" enctype="multipart/form-data" class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="ti ti-file-import me-1"></i>{{ __('Import annex models', 'manageentities') }}</h3>
+        </div>
+        <div class="card-body">
+            <input type="file" name="file" class="form-control" accept=".json,application/json" required>
+            <div class="form-text">
+                {{ __('A JSON file exported from the list or the form of the annex models (%s MB at most).', 'manageentities')|format(max_size // (1024 * 1024)) }}
+            </div>
+            <ul class="small text-muted mt-3 mb-0">
+                <li>{{ __('Each model is created in the active entity. A model whose name already exists is imported as a copy.', 'manageentities') }}</li>
+                <li>{{ __('The subscription level is found by its name; when it does not exist here, the model is imported without level.', 'manageentities') }}</li>
+                <li>{{ __('The images of the purpose and of the details are not imported: they point to documents of the other GLPI.', 'manageentities') }}</li>
+            </ul>
+        </div>
+        <div class="card-footer d-flex gap-2">
+            <a href="{{ models_url }}" class="btn btn-ghost-secondary me-auto"><i class="ti ti-arrow-left me-1"></i>{{ _n('Annex model', 'Annex models', 2, 'manageentities') }}</a>
+            <button type="submit" name="import" value="1" class="btn btn-primary"><i class="ti ti-file-import me-1"></i>{{ __('Import') }}</button>
+        </div>
+    </form>
+</div>

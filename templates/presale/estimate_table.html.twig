@@ -1,0 +1,101 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+
+{# Estimate of a regular annex (PresaleEstimate): section titles spanning the two columns, and
+ # lines with a description and a load in man-days, then the total of the days. Used by the
+ # annex models (default estimate) and by the annexes of the wizard.
+ #
+ # prefix - name of the rows in the form: default_estimate, or annexes[N][estimate]
+ # rows   - [{type: title|line, label, days}]
+ # helper - text under the table, optional
+ # total  - total of the days (PresaleEstimate::formatTotal()), refreshed by the script while typing
+ #
+ # public/scripts/presale-wizard.js adds, removes and moves the rows (data-presale-estimate) and
+ # shows the total while typing.
+ #}
+
+{% macro row(prefix, idx, row) %}
+    {% set name = prefix ~ '[' ~ idx ~ ']' %}
+    {% set is_title = row.type == 'title' %}
+    <tr data-presale-estimate-row data-type="{{ row.type }}">
+        <td {% if is_title %}colspan="2"{% endif %}>
+            <input type="hidden" name="{{ name }}[type]" value="{{ row.type }}">
+            <input type="text" class="form-control{{ is_title ? ' fw-bold' : '' }}" name="{{ name }}[label]" value="{{ row.label }}"
+                   placeholder="{{ is_title ? __('Section title', 'manageentities') : __('Description', 'manageentities') }}"
+                   aria-label="{{ is_title ? __('Section title', 'manageentities') : __('Description', 'manageentities') }}">
+        </td>
+        {% if not is_title %}
+            <td style="width:10rem">
+                <input type="text" inputmode="decimal" class="form-control text-end" name="{{ name }}[days]" value="{{ row.days }}"
+                       data-presale-estimate-days aria-label="{{ __('Load (man-days)', 'manageentities') }}">
+            </td>
+        {% endif %}
+        <td style="width:6.5rem" class="text-end text-nowrap">
+            <button type="button" class="btn btn-sm btn-ghost-secondary p-1" data-presale-action="move-estimate-row" data-direction="up" title="{{ __('Move up', 'manageentities') }}"><i class="ti ti-arrow-up"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost-secondary p-1" data-presale-action="move-estimate-row" data-direction="down" title="{{ __('Move down', 'manageentities') }}"><i class="ti ti-arrow-down"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost-danger p-1" data-presale-action="remove-estimate-row" title="{{ __('Delete') }}"><i class="ti ti-x"></i></button>
+        </td>
+    </tr>
+{% endmacro %}
+
+<div data-presale-estimate data-prefix="{{ prefix }}">
+    <table class="table table-sm table-vcenter mb-1">
+        <thead>
+            <tr>
+                <th>{{ __('Description', 'manageentities') }}</th>
+                <th class="text-end">{{ __('Load (man-days)', 'manageentities') }}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-presale-estimate-rows>
+            {% for row in rows %}
+                {{ _self.row(prefix, loop.index0, row) }}
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th class="text-end">{{ __('Total', 'manageentities') }}</th>
+                <th class="text-end" data-presale-estimate-total>{{ total|default('') }}</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+    <template data-presale-estimate-template="title">{{ _self.row(prefix, '__ROW__', {'type': 'title', 'label': '', 'days': ''}) }}</template>
+    <template data-presale-estimate-template="line">{{ _self.row(prefix, '__ROW__', {'type': 'line', 'label': '', 'days': ''}) }}</template>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-presale-action="add-estimate-row" data-type="title">
+            <i class="ti ti-heading me-1"></i>{{ __('Add a title', 'manageentities') }}
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-primary" data-presale-action="add-estimate-row" data-type="line">
+            <i class="ti ti-plus me-1"></i>{{ __('Add a line', 'manageentities') }}
+        </button>
+    </div>
+    {% if helper|default('') is not empty %}
+        <div class="form-text">{{ helper }}</div>
+    {% endif %}
+</div>
