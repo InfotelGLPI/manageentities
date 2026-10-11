@@ -27,7 +27,8 @@
 
 {# Project managers of the client: several users, one of them being the main one #}
 {% if projectmanagers is not empty or can_edit_projectmanagers %}
-<div class="card">
+<div class="col">
+<div class="card h-100">
     <div class="card-header">
         <h3 class="card-title">
             <i class="ti ti-user-cog me-1"></i>
@@ -101,4 +102,5 @@
         {% endif %}
     </div>
 </div>
+</div>{# /col #}
 {% endif %}

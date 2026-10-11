@@ -600,6 +600,8 @@ class Entity extends CommonGLPI
                 'entity_state'        => $f['state'] ?? '',
                 'entity_country'      => $f['country'] ?? '',
                 'is_root_entity'      => ($instID == 0),
+                // Edited in place by whoever may update the GLPI entity itself
+                'can_update'          => $can_edit && $entityObj->can($f['id'], UPDATE),
                 'logos'               => $logos,
 
                 'max_upload'          => Document::getMaxUploadSize(),
