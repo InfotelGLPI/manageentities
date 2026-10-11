@@ -92,9 +92,23 @@ class PresaleTemplate
         return GLPI_PLUGIN_DOC_DIR . self::DIR;
     }
 
+    /**
+     * File of a kind of template. The name comes from this fixed list, never from the kind
+     * itself: a kind may come from a request, and must not be able to build a path.
+     *
+     * @throws RuntimeException for an unknown kind
+     */
     private static function getUploadedFile(string $kind): string
     {
-        return self::getDir() . '/' . $kind . '.docx';
+        $name = match ($kind) {
+            self::PROPOSAL           => 'proposal.docx',
+            self::ANNEX              => 'annex.docx',
+            self::SUBSCRIPTION_ANNEX => 'subscription_annex.docx',
+            self::CLOUD_ANNEX        => 'subscription_cloud_annex.docx',
+            default                  => throw new RuntimeException('Unknown kind of template'),
+        };
+
+        return self::getDir() . '/' . $name;
     }
 
     public static function isUploaded(string $kind): bool
@@ -147,10 +161,11 @@ class PresaleTemplate
      */
     public static function handleUpload(array $files, array $input): void
     {
-        $kinds = self::getKinds();
-        foreach (array_keys((array) ($input['presale_template_delete'] ?? [])) as $kind) {
-            $kind = (string) $kind;
-            if (self::isUploaded($kind)) {
+        $kinds  = self::getKinds();
+        $delete = (array) ($input['presale_template_delete'] ?? []);
+        // The known kinds drive the loop: the posted keys only say which ones to delete
+        foreach (array_keys($kinds) as $kind) {
+            if (isset($delete[$kind]) && self::isUploaded($kind)) {
                 @unlink(self::getUploadedFile($kind));
                 Session::addMessageAfterRedirect(sprintf(
                     __('%s: template deleted.', 'manageentities'),
