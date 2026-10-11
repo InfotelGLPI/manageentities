@@ -316,7 +316,7 @@ final class RichText
         $previous = libxml_use_internal_errors(true);
         $loaded   = $document->loadHTML(
             '<?xml encoding="UTF-8"><body>' . $html . '</body>',
-            LIBXML_NONET | LIBXML_HTML_NODEFDTD
+            LIBXML_NONET | LIBXML_HTML_NODEFDTD,
         );
         libxml_clear_errors();
         libxml_use_internal_errors($previous);

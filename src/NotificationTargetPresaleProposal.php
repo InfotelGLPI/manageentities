@@ -211,7 +211,7 @@ class NotificationTargetPresaleProposal extends NotificationTarget
                         'notificationtemplates_id' => $templates_id,
                         'language'                 => '',
                         'content_html'             => htmlescape('<p>' . nl2br(htmlescape($text)) . '</p>'),
-                    ]
+                    ],
                 );
             }
 

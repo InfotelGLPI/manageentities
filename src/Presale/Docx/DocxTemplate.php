@@ -269,9 +269,9 @@ final class DocxTemplate
         $escaped = array_map(
             static fn(array $row): array => array_map(
                 static fn(string|int|float $cell): string => self::escape((string) $cell),
-                $row
+                $row,
             ),
-            $rows
+            $rows,
         );
 
         // Bounded: a row whose placeholder could not be replaced must not loop forever

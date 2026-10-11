@@ -2113,6 +2113,7 @@ class PresaleWizard
                 // Next: the customer wizard, prefilled from the proposal
                 Html::redirect(self::getCustomerWizardPath($id));
 
+                // no break
             case 'lost':
                 if (!self::isEditable($proposal)) {
                     throw new AccessDeniedHttpException();
@@ -2155,6 +2156,7 @@ class PresaleWizard
                 Session::addMessageAfterRedirect(__('The proposal has been duplicated: a new draft.', 'manageentities'));
                 Html::redirect(self::getFormUrl() . '?id=' . $copy . '&step=' . self::STEP_ANNEXES);
 
+                // no break
             case 'delete':
                 // A proposal in progress, never a won one: it made a customer
                 if (!self::isEditable($proposal) || !$proposal->can($id, PURGE)) {
@@ -2166,6 +2168,7 @@ class PresaleWizard
                 Session::addMessageAfterRedirect(__('The proposal has been deleted.', 'manageentities'));
                 Html::redirect(self::getFormUrl());
 
+                // no break
             default:
                 throw new AccessDeniedHttpException();
         }

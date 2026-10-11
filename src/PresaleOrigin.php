@@ -128,7 +128,7 @@ class PresaleOrigin extends CommonDropdown
             $DB->update(
                 self::getTable(),
                 ['is_customer_default' => 0],
-                ['is_customer_default' => 1, 'NOT' => ['id' => $this->getID()]]
+                ['is_customer_default' => 1, 'NOT' => ['id' => $this->getID()]],
             );
         }
     }

@@ -124,7 +124,7 @@ final class ConditionalBlocks
             }
             if ($open->parentNode !== $close->parentNode) {
                 throw new RuntimeException(
-                    "Malformed block {$name}: the opening and closing markers must be at the same level."
+                    "Malformed block {$name}: the opening and closing markers must be at the same level.",
                 );
             }
 
