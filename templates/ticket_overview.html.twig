@@ -227,12 +227,12 @@
     </div>
 
     <div class="col-12">
-        {# Last follow-up written by a requester, no task added since: the customer awaits an answer #}
+        {# Last follow-up written by a requester, or no follow-up at all, and no task added since: the customer awaits an answer #}
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
                     <i class="ti ti-message-question me-1"></i>
-                    {{ __('Tickets whose last action is a customer follow-up', 'manageentities') }}
+                    {{ __('Tickets whose last action is a customer follow-up or without any follow-up', 'manageentities') }}
                 </h3>
                 <div class="card-actions">
                     <span class="badge {{ waiting is empty ? 'bg-green-lt' : 'bg-yellow-lt' }}">{{ waiting|length }}</span>
@@ -250,6 +250,7 @@
                                     <th>{{ _n('Technician', 'Technicians', 2) }}</th>
                                     <th>{{ __('Customer follow-up', 'manageentities') }}</th>
                                     <th class="text-nowrap">{{ __('Date') }}</th>
+                                    <th class="text-end text-nowrap">{{ __('Opened for (days)', 'manageentities') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -265,8 +266,14 @@
                                             <span class="badge bg-yellow-lt">{{ __('No technician', 'manageentities') }}</span>
                                         {% endif %}
                                     </td>
-                                    <td>{{ ticket.followup_author }}</td>
-                                    <td class="text-nowrap">{{ ticket.followup_date|formatted_datetime }}</td>
+                                    {% if ticket.followup_author is not null %}
+                                        <td>{{ ticket.followup_author }}</td>
+                                        <td class="text-nowrap">{{ ticket.followup_date|formatted_datetime }}</td>
+                                    {% else %}
+                                        <td><span class="badge bg-orange-lt">{{ __('No follow-up', 'manageentities') }}</span></td>
+                                        <td class="text-nowrap">{{ ticket.date|formatted_datetime }}</td>
+                                    {% endif %}
+                                    <td class="text-end"><span class="badge bg-red-lt">{{ ticket.age }}</span></td>
                                 </tr>
                             {% endfor %}
                             </tbody>

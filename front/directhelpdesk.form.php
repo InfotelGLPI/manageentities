@@ -102,6 +102,46 @@ if (Session::haveRight("plugin_manageentities_directhelpdesk", UPDATE)) {
         }
 
         Html::redirect($ticket->getLinkURL());
+    } elseif (isset($_POST["associate_ticket"])) {
+        // Same outcome as create_ticket, on an existing ticket: the selected interventions are
+        // linked to it and flagged as billed
+        $ticket = new Ticket();
+        $tickets_id = (int) ($_POST["tickets_id"] ?? 0);
+        if (!$ticket->getFromDB($tickets_id) || !$ticket->can($tickets_id, READ)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $nb = 0;
+        foreach ($_POST["select"] ?? [] as $item => $check) {
+            if ($check != "on") {
+                continue;
+            }
+            // Ids come from the POST body: only unbilled interventions the user may update,
+            // of the ticket customer, are associated
+            $direct = new DirectHelpdesk();
+            if (!$direct->getFromDB((int) $item)
+                || !$direct->can($direct->getID(), UPDATE)
+                || (int) $direct->fields['is_billed'] !== 0
+                || (int) $direct->fields['entities_id'] !== (int) $ticket->fields['entities_id']) {
+                continue;
+            }
+            if ($direct->update([
+                'id'         => $direct->getID(),
+                'is_billed'  => 1,
+                'tickets_id' => $tickets_id,
+            ])) {
+                $nb++;
+            }
+        }
+
+        if ($nb === 0) {
+            Session::addMessageAfterRedirect(
+                __('Please select at least one intervention', 'manageentities'),
+                false,
+                ERROR,
+            );
+        }
+        Html::back();
     } elseif (isset($_POST["add"])) {
         // Per-object check like the update branch: the global plugin UPDATE right is
         // not scoped by entity, so enforce CREATE (with the posted entities_id) before

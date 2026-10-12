@@ -3172,3 +3172,18 @@ msgid_plural "weeks"
 msgstr[0] "Semaine"
 msgstr[1] "Semaines"
 msgstr[2] "Semaines"
+
+msgid "Tickets whose last action is a customer follow-up or without any follow-up"
+msgstr "Tickets dont la dernière action est un suivi client ou sans aucun suivi"
+
+msgid "Opened for (days)"
+msgstr "Ouvert depuis (jours)"
+
+msgid "No follow-up"
+msgstr "Aucun suivi"
+
+msgid "Unbilled interventions of the customer"
+msgstr "Interventions non facturées du client"
+
+msgid "Associate with the ticket"
+msgstr "Associer au ticket"

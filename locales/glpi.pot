@@ -3057,3 +3057,18 @@ msgid "week"
 msgid_plural "weeks"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Tickets whose last action is a customer follow-up or without any follow-up"
+msgstr ""
+
+msgid "Opened for (days)"
+msgstr ""
+
+msgid "No follow-up"
+msgstr ""
+
+msgid "Unbilled interventions of the customer"
+msgstr ""
+
+msgid "Associate with the ticket"
+msgstr ""

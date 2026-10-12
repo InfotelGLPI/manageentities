@@ -421,7 +421,8 @@ class TicketOverview
 
     /**
      * Open tickets whose last follow-up was written by one of their requesters, with no task
-     * added since: the customer is waiting for an answer. Pending tickets are left out.
+     * added since: the customer is waiting for an answer. Tickets without any follow-up nor task
+     * are listed too: opened by the customer, they were never handled. Pending tickets are left out.
      *
      * @param array $tickets open tickets, by id
      *
@@ -497,11 +498,38 @@ class TicketOverview
             }
             $waiting[$tickets_id] = $data;
         }
+
+        // A ticket without any follow-up has only been opened: the customer waits since its
+        // opening date
+        $followed_up = [];
+        $followed_iterator = $DB->request([
+            'SELECT'   => ['items_id'],
+            'DISTINCT' => true,
+            'FROM'     => $followup_table,
+            'WHERE'    => [
+                'itemtype' => Ticket::class,
+                'items_id' => array_keys($tickets),
+            ],
+        ]);
+        foreach ($followed_iterator as $data) {
+            $followed_up[(int) $data['items_id']] = true;
+        }
+        foreach ($tickets as $tickets_id => $ticket) {
+            if (isset($followed_up[$tickets_id]) || $ticket['status'] === Ticket::WAITING) {
+                continue;
+            }
+            $waiting[$tickets_id] = [
+                'items_id' => $tickets_id,
+                'users_id' => null,
+                'date'     => $ticket['date'],
+            ];
+        }
         if ($waiting === []) {
             return [];
         }
 
-        // A task added after the follow-up means the customer was answered in the meantime
+        // A task added after the follow-up (or after the opening, for a ticket without any
+        // follow-up) means the customer was answered in the meantime
         $task_iterator = $DB->request([
             'SELECT'  => [
                 'tickets_id',
@@ -520,16 +548,19 @@ class TicketOverview
 
         $result = [];
         foreach ($waiting as $tickets_id => $data) {
+            $has_followup = $data['users_id'] !== null;
             $result[] = self::formatTicket($tickets[$tickets_id]) + [
-                'followup_date'   => $data['date'],
-                'followup_author' => getUserName((int) $data['users_id']),
+                // Date since which the customer waits: last follow-up, or opening date
+                'waiting_since'   => $data['date'],
+                'followup_date'   => $has_followup ? $data['date'] : null,
+                'followup_author' => $has_followup ? getUserName((int) $data['users_id']) : null,
                 'techs'           => array_map(
                     static fn(int $users_id): string => getUserName($users_id),
                     array_values($tickets[$tickets_id]['techs']),
                 ),
             ];
         }
-        usort($result, static fn(array $a, array $b): int => strcmp((string) $a['followup_date'], (string) $b['followup_date']));
+        usort($result, static fn(array $a, array $b): int => strcmp((string) $a['waiting_since'], (string) $b['waiting_since']));
 
         return $result;
     }
