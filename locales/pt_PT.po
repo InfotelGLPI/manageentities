@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 09:46+0000\n"
+"POT-Creation-Date: 2026-10-12 08:56+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Emperium <real.emperium@gmail.com>, 2019\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/infotelGLPI/"
@@ -312,6 +312,10 @@ msgstr ""
 #: templates/cridetail_for_ticket.html.twig:61
 msgid "Associate to a contract"
 msgstr "Associar a um contrato "
+
+#: templates/directhelpdesk_ticket_tab.html.twig:95
+msgid "Associate with the ticket"
+msgstr ""
 
 #: templates/entity/contracts_tab.html.twig:32
 msgid "Associated assistance contracts"
@@ -737,6 +741,7 @@ msgstr "Data administrativa "
 #: templates/directhelpdesk_modal.html.twig:78
 #: templates/directhelpdesk_form.html.twig:96
 #: templates/directhelpdesk_ticket_tab.html.twig:35
+#: templates/directhelpdesk_ticket_tab.html.twig:71
 #: templates/ticket_overview.html.twig:251
 msgid "Date"
 msgstr ""
@@ -864,6 +869,7 @@ msgstr ""
 #: templates/generatecri_wizard.html.twig:252
 #: templates/directhelpdesk_modal.html.twig:74
 #: templates/directhelpdesk_ticket_tab.html.twig:38
+#: templates/directhelpdesk_ticket_tab.html.twig:74
 msgid "Description"
 msgstr ""
 
@@ -907,6 +913,7 @@ msgstr ""
 #: templates/directhelpdesk_modal.html.twig:83
 #: templates/directhelpdesk_form.html.twig:105
 #: templates/directhelpdesk_ticket_tab.html.twig:37
+#: templates/directhelpdesk_ticket_tab.html.twig:73
 msgid "Duration"
 msgstr ""
 
@@ -999,8 +1006,8 @@ msgstr ""
 #: front/report_occupation.form.php:43 front/directhelpdesk.php:41
 #: front/directhelpdesk.php:44 front/directhelpdesk.php:46
 #: front/report_moving.form.php:43 front/generatecri.form.php:127
-#: front/config.form.php:46 front/directhelpdesk.form.php:147
-#: front/directhelpdesk.form.php:150 front/directhelpdesk.form.php:152
+#: front/config.form.php:46 front/directhelpdesk.form.php:187
+#: front/directhelpdesk.form.php:190 front/directhelpdesk.form.php:192
 #: front/report.form.php:46 front/entity.php:63 front/entity.php:66
 #: front/entity.php:68 front/generatecri.php:35 front/generatecri.php:38
 #: front/generatecri.php:40 front/cridetail.form.php:53
@@ -1636,6 +1643,10 @@ msgstr ""
 msgid "No expired publisher subscription."
 msgstr ""
 
+#: templates/ticket_overview.html.twig:272
+msgid "No follow-up"
+msgstr ""
+
 #: templates/entity/unbilled_tab.html.twig:105
 #, php-format
 msgid "No hours left unbilled for more than %d months."
@@ -1733,18 +1744,18 @@ msgstr ""
 msgid "No tasks whose category can be used"
 msgstr "Sem tarefas onde essa categoria possa ser usada "
 
-#: src/TicketOverview.php:622 templates/entity/techleads_card.html.twig:90
+#: src/TicketOverview.php:653 templates/entity/techleads_card.html.twig:90
 #: templates/techlead/clients_by_tech.html.twig:191
 msgid "No tech lead"
 msgstr ""
 
-#: src/TicketOverview.php:603 templates/ticket_overview.html.twig:57
+#: src/TicketOverview.php:634 templates/ticket_overview.html.twig:57
 #: templates/ticket_overview.html.twig:185
-#: templates/ticket_overview.html.twig:264
+#: templates/ticket_overview.html.twig:265
 msgid "No technician"
 msgstr ""
 
-#: templates/ticket_overview.html.twig:275
+#: templates/ticket_overview.html.twig:282
 msgid "No ticket awaiting an answer"
 msgstr ""
 
@@ -1856,6 +1867,10 @@ msgstr ""
 
 #: src/Dashboard.php:100 src/Dashboard.php:478
 msgid "Opened contract prestations without remaining days"
+msgstr ""
+
+#: templates/ticket_overview.html.twig:252
+msgid "Opened for (days)"
 msgstr ""
 
 #: templates/ticket_overview.html.twig:43
@@ -2003,7 +2018,7 @@ msgstr ""
 msgid "Please select an entity"
 msgstr ""
 
-#: front/directhelpdesk.form.php:83
+#: front/directhelpdesk.form.php:83 front/directhelpdesk.form.php:139
 msgid "Please select at least one intervention"
 msgstr ""
 
@@ -2299,6 +2314,7 @@ msgid "See the unbilled interventions"
 msgstr ""
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:36
+#: templates/directhelpdesk_ticket_tab.html.twig:69
 msgid "Select"
 msgstr ""
 
@@ -2548,6 +2564,7 @@ msgstr "Assistência técnica "
 #: templates/generatecri_wizard.html.twig:138
 #: templates/generatecri_wizard.html.twig:215
 #: templates/directhelpdesk_ticket_tab.html.twig:36
+#: templates/directhelpdesk_ticket_tab.html.twig:72
 #: templates/ticket_overview.html.twig:249
 #: templates/report_occupation_form.html.twig:45
 msgid "Technician"
@@ -2673,7 +2690,8 @@ msgid "Ticket not validated"
 msgstr "Ticket não validado "
 
 #: templates/ticket_overview.html.twig:234
-msgid "Tickets whose last action is a customer follow-up"
+msgid ""
+"Tickets whose last action is a customer follow-up or without any follow-up"
 msgstr ""
 
 #: src/Dashboard.php:90 src/Dashboard.php:350
@@ -2690,6 +2708,7 @@ msgstr "Tempo justificado "
 #: templates/directhelpdesk_modal.html.twig:60
 #: templates/directhelpdesk_form.html.twig:114
 #: templates/directhelpdesk_ticket_tab.html.twig:34
+#: templates/directhelpdesk_ticket_tab.html.twig:70
 msgid "Title"
 msgstr ""
 
@@ -2823,6 +2842,10 @@ msgstr ""
 
 #: src/Entity.php:80 src/Entity.php:187
 msgid "Unbilled interventions"
+msgstr ""
+
+#: templates/directhelpdesk_ticket_tab.html.twig:62
+msgid "Unbilled interventions of the customer"
 msgstr ""
 
 #: src/DirectHelpdesk.php:723
