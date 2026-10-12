@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 10:48+0000\n"
+"POT-Creation-Date: 2026-10-12 10:53+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/"
@@ -2588,8 +2588,8 @@ msgstr "Информация о невыполненных задачах"
 msgid "None declared yet"
 msgstr ""
 
-#: src/DirectHelpdesk.php:64 src/DirectHelpdesk_Ticket.php:48
-#: src/DirectHelpdesk_Ticket.php:85
+#: src/DirectHelpdesk.php:64 src/DirectHelpdesk_Ticket.php:49
+#: src/DirectHelpdesk_Ticket.php:86
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] "Не оплаченное вмешательство"
