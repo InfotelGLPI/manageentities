@@ -118,8 +118,21 @@ class DirectHelpdesk_Ticket extends CommonDBTM
                 ];
             }
         }
+
+        // Unbilled interventions of the ticket customer (those of the alert shown on top of
+        // the ticket), offered to be associated with it
+        $unbilled = [];
+        if ($item->getType() == 'Ticket'
+            && Session::haveRight(self::$rightname, UPDATE)
+            && $item->can($item->getID(), READ)) {
+            $unbilled = self::getTicketSelectData((int) $item->fields['entities_id'])['rows'] ?? [];
+        }
+
         TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_ticket_tab.html.twig', [
-            'rows' => $rows,
+            'rows'       => $rows,
+            'unbilled'   => $unbilled,
+            'tickets_id' => $item->getID(),
+            'form_url'   => DirectHelpdesk::getFormURL(),
         ]);
         return true;
     }
