@@ -39,6 +39,8 @@ use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\CriTechnician;
 use GlpiPlugin\Manageentities\CriType;
+use GlpiPlugin\Manageentities\Dat;
+use GlpiPlugin\Manageentities\DatServer;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\DirectHelpdeskInjection;
@@ -418,6 +420,12 @@ function plugin_manageentities_install()
     // After installPresaleFields(): copies the templates chosen as GLPI documents, drops their fields
     PresaleTemplate::install($presale_migration);
 
+    // Technical architecture documents (DAT) of the clients. Idempotent, as above.
+    $dat_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+    Dat::install($dat_migration);
+    DatServer::install($dat_migration);
+    Config::installDatFields($dat_migration);
+
 
     include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
@@ -503,6 +511,8 @@ function plugin_manageentities_uninstall()
     PresaleCounter::uninstall();
     PresaleTemplate::uninstall();
     NotificationTargetPresaleProposal::uninstall();
+    Dat::uninstall();
+    DatServer::uninstall();
 
     // Entity owns no table, so it is absent from the list above: only its notification
     // chain has to be removed.
@@ -546,6 +556,8 @@ function plugin_manageentities_uninstall()
         CriPrice::class,
         CriTechnician::class,
         CriType::class,
+        Dat::class,
+        DatServer::class,
         DirectHelpdesk::class,
         DirectHelpdesk_Ticket::class,
         EditorSubscription::class,

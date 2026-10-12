@@ -655,6 +655,10 @@ class Entity extends CommonGLPI
                 'projectmanager_used'        => $projectmanager_used,
                 // For the add-contact/business form, use the first (or only) entity id
                 'entity_id'            => $entities[array_key_first($entities)] ?? 0,
+                // Technical architecture document: one per client, provider-side
+                'dat'                  => $is_single && $interface !== 'helpdesk'
+                    ? DatWizard::getCardData((int) reset($entities))
+                    : null,
             ],
         );
     }

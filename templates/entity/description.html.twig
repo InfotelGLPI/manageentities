@@ -366,6 +366,10 @@
 
         {{ include('@manageentities/entity/projectmanagers_card.html.twig') }}
 
+        {% if dat %}
+            {{ include('@manageentities/entity/dat_card.html.twig') }}
+        {% endif %}
+
     </div>{# /row 2 x 2 #}
     </div>{# /col below #}
 </div>{# /row #}

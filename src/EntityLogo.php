@@ -197,13 +197,19 @@ class EntityLogo extends CommonDBTM
             }
 
             if ($docID > 0) {
-                if ($docitem->add([
+                // The same picture may already be linked to the entity (Documents tab, previous
+                // logo): the core refuses a duplicated relation, which used to leave the entity
+                // without any logo. An existing link is as good as a new one.
+                $link = [
                     'documents_id' => $docID,
-                    '_do_notif' => $donotif,
-                    '_disablenotif' => $disablenotif,
-                    'itemtype' => 'Entity',
-                    'items_id' => $values['entities_id'],
-                ])) {
+                    'itemtype'     => 'Entity',
+                    'items_id'     => $values['entities_id'],
+                ];
+                if (countElementsInTable(Document_Item::getTable(), $link) > 0
+                    || $docitem->add($link + [
+                        '_do_notif'     => $donotif,
+                        '_disablenotif' => $disablenotif,
+                    ])) {
                     $docadded[$docID]['data'] = sprintf(
                         __('%1$s - %2$s'),
                         $doc->fields["name"],

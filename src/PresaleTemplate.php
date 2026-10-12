@@ -39,11 +39,12 @@ use Toolbox;
 use ZipArchive;
 
 /**
- * Word templates of the pre-sales documents: the proposal and the three kinds of annexes.
+ * Word templates of the pre-sales documents (the proposal and the three kinds of annexes) and
+ * of the technical architecture documents (DAT).
  *
  * No template is shipped with the plugin: each one is uploaded in the configuration and stored
  * in files/_plugins/manageentities/presale, under the name of its kind (annex.docx...). The
- * placeholders they can hold are listed in docs/avant-vente.md. The files are not GLPI
+ * placeholders they can hold are listed in docs/avant-vente.md and docs/dat.md. The files are not GLPI
  * documents: they are only read by the generator and downloaded from the configuration.
  */
 class PresaleTemplate
@@ -58,9 +59,11 @@ class PresaleTemplate
     public const ANNEX              = 'annex';
     public const SUBSCRIPTION_ANNEX = 'subscription_annex';
     public const CLOUD_ANNEX        = 'subscription_cloud_annex';
+    public const DAT                = 'dat';
 
     /**
-     * @return array<string, string> label of each kind of template
+     * @return array<string, string> label of each kind of pre-sales template, uploaded in the
+     *                               Pre-sales tab of the configuration
      */
     public static function getKinds(): array
     {
@@ -87,6 +90,16 @@ class PresaleTemplate
         ];
     }
 
+    /**
+     * @return array<string, string> label of every kind of template: pre-sales and DAT
+     */
+    public static function getAllKinds(): array
+    {
+        return self::getKinds() + [
+            self::DAT => __('Word template of the technical architecture documents', 'manageentities'),
+        ];
+    }
+
     private static function getDir(): string
     {
         return GLPI_PLUGIN_DOC_DIR . self::DIR;
@@ -105,6 +118,7 @@ class PresaleTemplate
             self::ANNEX              => 'annex.docx',
             self::SUBSCRIPTION_ANNEX => 'subscription_annex.docx',
             self::CLOUD_ANNEX        => 'subscription_cloud_annex.docx',
+            self::DAT                => 'dat.docx',
             default                  => throw new RuntimeException('Unknown kind of template'),
         };
 
@@ -113,7 +127,7 @@ class PresaleTemplate
 
     public static function isUploaded(string $kind): bool
     {
-        return isset(self::getKinds()[$kind]) && is_file(self::getUploadedFile($kind));
+        return isset(self::getAllKinds()[$kind]) && is_file(self::getUploadedFile($kind));
     }
 
     /**
@@ -125,8 +139,10 @@ class PresaleTemplate
     {
         if (!self::isUploaded($kind)) {
             throw new RuntimeException(sprintf(
-                __('%s: no template uploaded in the configuration (Pre-sales tab).', 'manageentities'),
-                self::getKinds()[$kind] ?? $kind,
+                $kind === self::DAT
+                    ? __('%s: no template uploaded in the configuration (DAT tab).', 'manageentities')
+                    : __('%s: no template uploaded in the configuration (Pre-sales tab).', 'manageentities'),
+                self::getAllKinds()[$kind] ?? $kind,
             ));
         }
         return self::getUploadedFile($kind);
@@ -141,7 +157,7 @@ class PresaleTemplate
      */
     public static function getMissing(array $kinds): array
     {
-        $labels  = self::getKinds();
+        $labels  = self::getAllKinds();
         $missing = [];
         foreach (array_unique($kinds) as $kind) {
             if (!self::isUploaded($kind)) {
@@ -154,14 +170,15 @@ class PresaleTemplate
 
     /**
      * Stores the templates uploaded with the configuration form ($_FILES['presale_template'])
-     * and removes the ones asked for ($input['presale_template_delete'][kind])
+     * and removes the ones asked for ($input['presale_template_delete'][kind]). Shared by the
+     * Pre-sales and DAT tabs: only the kinds posted are handled
      *
      * @param array $files $_FILES
      * @param array $input $_POST
      */
     public static function handleUpload(array $files, array $input): void
     {
-        $kinds  = self::getKinds();
+        $kinds  = self::getAllKinds();
         $delete = (array) ($input['presale_template_delete'] ?? []);
         // The known kinds drive the loop: the posted keys only say which ones to delete
         foreach (array_keys($kinds) as $kind) {
@@ -306,7 +323,7 @@ class PresaleTemplate
 
     public static function uninstall(): void
     {
-        foreach (array_keys(self::getKinds()) as $kind) {
+        foreach (array_keys(self::getAllKinds()) as $kind) {
             @unlink(self::getUploadedFile($kind));
         }
         @rmdir(self::getDir());

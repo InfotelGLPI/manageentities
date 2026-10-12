@@ -95,6 +95,7 @@ class Config extends CommonDBTM
         $this->addStandardTab(__CLASS__, $ong, $options);
         $this->addStandardTab(CriDetail::class, $ong, $options);
         $this->addStandardTab(PresaleConfig::class, $ong, $options);
+        $this->addStandardTab(DatConfig::class, $ong, $options);
         $this->addStandardTab(Company::class, $ong, $options);
         $this->addStandardTab(CheckSchema::class, $ong, $options);
         return $ong;
@@ -320,6 +321,28 @@ class Config extends CommonDBTM
         }
 
         self::installPresaleFields($migration);
+        self::installDatFields($migration);
+    }
+
+    /**
+     * Settings of the technical architecture documents (DAT). Idempotent, as
+     * installPresaleFields().
+     *
+     * @param Migration $migration
+     *
+     * @return void
+     */
+    public static function installDatFields(Migration $migration): void
+    {
+        global $DB;
+
+        $table = self::getTable();
+        if (!$DB->fieldExists($table, 'dat_documentcategories_id')) {
+            $migration->addField($table, 'dat_documentcategories_id', 'fkey', [
+                'comment' => 'RELATION to glpi_documentcategories (id) — category of the generated DAT',
+            ]);
+            $migration->migrationOneTable($table);
+        }
     }
 
     /**
