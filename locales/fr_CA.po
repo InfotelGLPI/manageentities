@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 10:53+0000\n"
+"POT-Creation-Date: 2026-10-12 14:45+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Tiago Graça, 2022\n"
 "Language-Team: French (Canada) (https://www.transifex.com/infotelGLPI/"
@@ -106,7 +106,8 @@ msgstr ""
 msgid "%s client(s) able to open tickets"
 msgstr ""
 
-#: src/PresaleWizard.php:995
+#: src/PresaleWizard.php:995 src/DatWizard.php:595 src/DatWizard.php:598
+#: src/DatWizard.php:602
 #, php-format
 msgid "%s is mandatory"
 msgstr ""
@@ -126,12 +127,17 @@ msgstr ""
 msgid "%s: at least one line is required"
 msgstr ""
 
-#: src/PresaleTemplate.php:128
+#: src/PresaleTemplate.php:143
+#, php-format
+msgid "%s: no template uploaded in the configuration (DAT tab)."
+msgstr ""
+
+#: src/PresaleTemplate.php:144
 #, php-format
 msgid "%s: no template uploaded in the configuration (Pre-sales tab)."
 msgstr ""
 
-#: src/PresaleTemplate.php:171
+#: src/PresaleTemplate.php:188
 #, php-format
 msgid "%s: template deleted."
 msgstr ""
@@ -195,6 +201,14 @@ msgstr ""
 msgid "A contract with this number already exists"
 msgstr ""
 
+#: templates/entity/dat_card.html.twig:79
+msgid "A draft is in progress, not generated yet."
+msgstr ""
+
+#: templates/entity/dat_card.html.twig:78
+msgid "A draft of the next version is in progress."
+msgstr ""
+
 #: templates/presale/proposal_form.html.twig:88
 msgid "A new draft with the same client, team and annexes"
 msgstr ""
@@ -207,7 +221,7 @@ msgstr "Informations sur les tâches accomplies"
 msgid "Active"
 msgstr ""
 
-#: src/EditorSubscription.php:183 hook.php:1000
+#: src/EditorSubscription.php:183 hook.php:1012
 msgid "Active editor subscription"
 msgstr ""
 
@@ -269,6 +283,10 @@ msgstr ""
 msgid "Add a new price"
 msgstr "Ajouter un nouveau tarif"
 
+#: templates/dat/step_system.html.twig:98
+msgid "Add a server"
+msgstr ""
+
 #: templates/wizard/step6_interventions.html.twig:54
 #: templates/contractday_add_form.html.twig:35
 msgid "Add a service period"
@@ -288,6 +306,10 @@ msgstr ""
 
 #: templates/directhelpdesk_modal.html.twig:38
 msgid "Add an unbilled intervention"
+msgstr ""
+
+#: src/DatWizard.php:686
+msgid "Add at least one server."
 msgstr ""
 
 #: templates/wizard/step6_criprices_section.html.twig:73
@@ -416,19 +438,19 @@ msgid_plural "Annex models"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PresaleTemplate.php:86
+#: src/PresaleTemplate.php:89
 msgid ""
 "Annexes of a cloud subscription: monthly price per subscription, number of "
 "subscriptions, number of months."
 msgstr ""
 
-#: src/PresaleTemplate.php:85
+#: src/PresaleTemplate.php:88
 msgid ""
 "Annexes of an on premise subscription: quantity and price, no daily rate "
 "column."
 msgstr ""
 
-#: src/PresaleTemplate.php:84
+#: src/PresaleTemplate.php:87
 msgid "Annexes priced in days at a daily rate."
 msgstr ""
 
@@ -566,8 +588,10 @@ msgstr ""
 msgid "Attach documents"
 msgstr ""
 
-#: src/NotificationTargetPresaleProposal.php:68
+#: src/DatWizard.php:598 src/NotificationTargetPresaleProposal.php:68
 #: src/NotificationTargetEntity.php:84 src/NotificationTargetEntity.php:109
+#: templates/dat/step_general.html.twig:54
+#: templates/dat/step_summary.html.twig:65
 msgid "Author"
 msgstr ""
 
@@ -624,7 +648,7 @@ msgstr ""
 #: templates/wizard/layout.html.twig:89 templates/wizard/layout.html.twig:115
 #: templates/wizard/layout.html.twig:143 templates/wizard/layout.html.twig:173
 #: templates/editorsubscription_transfer.html.twig:68
-#: templates/presale/layout.html.twig:107
+#: templates/presale/layout.html.twig:107 templates/dat/layout.html.twig:97
 #: templates/editorsubscription_wizard.html.twig:100
 msgid "Cancel"
 msgstr ""
@@ -641,6 +665,10 @@ msgstr ""
 #: templates/generatecri_wizard.html.twig:77
 #: templates/generatecri_wizard.html.twig:220
 msgid "Category"
+msgstr ""
+
+#: templates/dat/config_form.html.twig:45
+msgid "Category of the generated DAT"
 msgstr ""
 
 #: templates/config_presale_form.html.twig:69
@@ -689,14 +717,17 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/DirectHelpdesk.php:719 src/Followup.php:745 src/Followup.php:979
-#: src/Monthly.php:425 src/Dashboard.php:248 src/Dashboard.php:312
-#: src/Dashboard.php:367 templates/entity/unbilled_tab.html.twig:126
+#: src/DirectHelpdesk.php:719 src/DatWizard.php:595 src/Followup.php:745
+#: src/Followup.php:979 src/Monthly.php:425 src/Dashboard.php:248
+#: src/Dashboard.php:312 src/Dashboard.php:367
+#: templates/entity/unbilled_tab.html.twig:126
 #: templates/entity/unbilled_tab.html.twig:141
 #: templates/techlead/clients_by_tech.html.twig:120
 #: templates/techlead/clients_by_tech.html.twig:165
 #: templates/techlead/assignment_rules.html.twig:82
 #: templates/generatecri_wizard.html.twig:48
+#: templates/dat/step_general.html.twig:45
+#: templates/dat/step_summary.html.twig:64
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -758,7 +789,7 @@ msgstr ""
 
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
 #: src/EditorSubscription.php:751
-#: src/NotificationTargetEditorSubscription.php:120 hook.php:1013
+#: src/NotificationTargetEditorSubscription.php:120 hook.php:1025
 #: templates/editorsubscription_fields.html.twig:70
 #: templates/cridetail_for_ticket.html.twig:93
 #: templates/contract_detail_form.html.twig:58
@@ -943,7 +974,7 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
-#: src/PresaleTemplate.php:83
+#: src/PresaleTemplate.php:86
 msgid "Cover, presentation and signatures of the proposal."
 msgstr ""
 
@@ -972,6 +1003,10 @@ msgstr ""
 
 #: templates/entity/editorsubscription_tab.html.twig:60
 msgid "Create subscription"
+msgstr ""
+
+#: templates/entity/dat_card.html.twig:90
+msgid "Create the DAT"
 msgstr ""
 
 #: templates/presale/proposal_form.html.twig:81
@@ -1054,8 +1089,18 @@ msgstr ""
 msgid "Customer stamp"
 msgstr "Cachet client"
 
+#: src/DatConfig.php:46
+msgid "DAT"
+msgstr ""
+
 #: templates/entity/references.html.twig:63
 msgid "DEBUG"
+msgstr ""
+
+#: templates/dat/step_system.html.twig:43
+#: templates/dat/step_system.html.twig:79
+#: templates/dat/step_summary.html.twig:80
+msgid "DNS name"
 msgstr ""
 
 #: src/CriPrice.php:54 src/CriPrice.php:91 src/CriPrice.php:178
@@ -1078,12 +1123,23 @@ msgstr "Horaire quotidien"
 msgid "Data administrative"
 msgstr "Données administratives"
 
+#: src/DatWizard.php:115
+msgid "Database information"
+msgstr ""
+
+#: src/DatWizard.php:116
+msgid "Database installation"
+msgstr ""
+
 #: templates/entity/directhelpdesk_ticket_select.html.twig:39
+#: templates/entity/dat_card.html.twig:54
 #: templates/report_occupation_result.html.twig:46
 #: templates/directhelpdesk_modal.html.twig:78
 #: templates/directhelpdesk_form.html.twig:96
 #: templates/directhelpdesk_ticket_tab.html.twig:35
 #: templates/directhelpdesk_ticket_tab.html.twig:71
+#: templates/dat/step_general.html.twig:67
+#: templates/dat/step_summary.html.twig:66
 #: templates/ticket_overview.html.twig:251
 msgid "Date"
 msgstr ""
@@ -1216,6 +1272,8 @@ msgstr "Heure par défaut (Après-midi)"
 #: templates/presale/estimate_form.html.twig:107
 #: templates/presale/step_annexes.html.twig:102
 #: templates/presale/step_annexes.html.twig:230
+#: templates/dat/step_system.html.twig:62
+#: templates/dat/config_form.html.twig:62
 #: templates/config_presale_form.html.twig:93
 msgid "Delete"
 msgstr "Supprimer"
@@ -1308,6 +1366,13 @@ msgstr "Afficher le PDF"
 msgid "Display comments from the company in the CRI"
 msgstr "Afficher les commentaires de la société dans le CRI"
 
+#: templates/entity/dat_card.html.twig:53
+msgid "Document"
+msgid_plural "Documents"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/dat/config_form.html.twig:59
 #: templates/config_presale_form.html.twig:90
 msgid "Download"
 msgstr ""
@@ -1320,7 +1385,7 @@ msgstr ""
 msgid "Download the proposal"
 msgstr ""
 
-#: src/PresaleProposal.php:75
+#: src/Dat.php:87 src/PresaleProposal.php:75
 msgid "Draft"
 msgstr ""
 
@@ -1466,7 +1531,7 @@ msgstr "La date de fin doit être postérieure à la date de début!"
 #: front/entity.php:70 front/generatecri.php:35 front/generatecri.php:38
 #: front/generatecri.php:40 front/cridetail.form.php:53
 #: front/cridetail.form.php:56 front/cridetail.form.php:58
-#: front/addelements.form.php:39 setup.php:264 src/Preference.php:147
+#: front/addelements.form.php:39 setup.php:266 src/Preference.php:147
 #: src/GenerateCRI.php:940 src/TaskCategory.php:100 src/Profile.php:51
 #: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
@@ -1656,6 +1721,10 @@ msgstr ""
 msgid "Fax"
 msgstr ""
 
+#: src/DatWizard.php:121
+msgid "File modifications"
+msgstr ""
+
 #: templates/entity/contracts_tab.html.twig:38
 msgid "Filtered"
 msgstr ""
@@ -1714,7 +1783,8 @@ msgstr ""
 msgid "General follow-up"
 msgstr "Suivi général"
 
-#: templates/presale/step_general.html.twig:56
+#: src/DatWizard.php:73 templates/presale/step_general.html.twig:56
+#: templates/dat/step_general.html.twig:39
 msgid "General information"
 msgstr ""
 
@@ -1731,11 +1801,15 @@ msgstr ""
 msgid "Generate report intervention"
 msgstr "Générer le rapport d'intervention"
 
+#: templates/dat/layout.html.twig:106
+msgid "Generate the document"
+msgstr ""
+
 #: templates/presale/step_generate.html.twig:137
 msgid "Generate the proposal"
 msgstr ""
 
-#: src/PresaleProposal.php:76
+#: src/Dat.php:88 src/PresaleProposal.php:76
 msgid "Generated"
 msgstr ""
 
@@ -1754,6 +1828,10 @@ msgstr "Génération du rapport d'intervention"
 #: src/Followup.php:862 templates/contractday_form.html.twig:127
 msgid "Guaranteed package"
 msgstr "Forfait garanti"
+
+#: src/DatWizard.php:119
+msgid "HTTPS certificate"
+msgstr ""
 
 #: src/CriPDF.php:529
 msgid "Help on contract"
@@ -1775,7 +1853,7 @@ msgstr[1] ""
 msgid "Hour of"
 msgstr "Heure de"
 
-#: src/Contract.php:652 src/Contract.php:705 src/Config.php:200
+#: src/Contract.php:652 src/Contract.php:705 src/Config.php:201
 msgid "Hourly"
 msgstr "Horaire"
 
@@ -1784,6 +1862,12 @@ msgstr "Horaire"
 #: templates/wizard/step6_criprices_section.html.twig:34
 msgid "Hourly rate"
 msgstr "Tarif horaire"
+
+#: templates/dat/step_system.html.twig:48
+#: templates/dat/step_system.html.twig:80
+#: templates/dat/step_summary.html.twig:81
+msgid "IP address"
+msgstr ""
 
 #: templates/generatecri_wizard.html.twig:124
 msgid "Impact"
@@ -1810,6 +1894,10 @@ msgstr "Génération impossible, aucune tâche planifiée créée"
 msgid "In progress"
 msgstr "En cours"
 
+#: templates/dat/step_system.html.twig:100
+msgid "In the tables of the document, one row per server, in this order."
+msgstr ""
+
 #: templates/techlead/assignment_rules.html.twig:108
 #: templates/presale/step_annexes.html.twig:220
 msgid "Inactive"
@@ -1834,6 +1922,10 @@ msgstr "Crédit initial"
 msgid "Initial credit is required"
 msgstr ""
 
+#: src/DatWizard.php:110
+msgid "Installed packages"
+msgstr ""
+
 #: templates/presale/step_general.html.twig:85
 msgid "Internal label"
 msgstr ""
@@ -1842,7 +1934,7 @@ msgstr ""
 msgid "Internal name"
 msgstr ""
 
-#: src/EditorSubscription.php:185 src/EditorSubscription.php:759 hook.php:1026
+#: src/EditorSubscription.php:185 src/EditorSubscription.php:759 hook.php:1038
 #: templates/editorsubscription_fields.html.twig:78
 #: templates/cridetail_for_ticket.html.twig:55
 #: templates/contract_detail_form.html.twig:83
@@ -1873,7 +1965,7 @@ msgstr "Intervention du contrat"
 msgid "Intervention periods of contract"
 msgstr "Périodes d'intervention du contrat"
 
-#: setup.php:164 src/Cri.php:56 src/Profile.php:107 src/Config.php:212
+#: setup.php:164 src/Cri.php:56 src/Profile.php:107 src/Config.php:213
 #: templates/cridetail_add_reports.html.twig:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -1945,6 +2037,11 @@ msgstr ""
 msgid "Landscape PDF"
 msgstr ""
 
+#: templates/dat/step_summary.html.twig:43
+#, php-format
+msgid "Last generated version: %s"
+msgstr ""
+
 #: src/EditorSubscription.php:180
 #: templates/entity/editorsubscription_tab.html.twig:75
 msgid "Last intervention"
@@ -1967,6 +2064,7 @@ msgstr ""
 msgid "Last visit"
 msgstr "Dernière visite"
 
+#: templates/entity/dat_card.html.twig:62
 #: templates/presale/step_generate.html.twig:149
 msgid "Latest"
 msgstr ""
@@ -1975,7 +2073,7 @@ msgstr ""
 msgid "Launch the plugin Entities portal with GLPI launching"
 msgstr "Lancer le plugin Portail Entités au démarrage de GLPI"
 
-#: templates/presale/layout.html.twig:106
+#: templates/presale/layout.html.twig:106 templates/dat/layout.html.twig:96
 msgid "Leave the wizard without saving this page?"
 msgstr ""
 
@@ -2025,6 +2123,8 @@ msgid "Load (man-days)"
 msgstr ""
 
 #: src/EntityLogo.php:187 templates/entity/description.html.twig:172
+#: templates/dat/step_general.html.twig:80
+#: templates/dat/step_general.html.twig:82
 msgid "Logo"
 msgstr "Logo"
 
@@ -2049,6 +2149,10 @@ msgstr ""
 #: templates/presale/step_client.html.twig:238
 #: templates/presale/client_form.html.twig:73
 msgid "Logo of the client"
+msgstr ""
+
+#: src/DatWizard.php:118
+msgid "Logs"
 msgstr ""
 
 #: templates/presale/outcome_buttons.html.twig:45
@@ -2212,12 +2316,14 @@ msgstr ""
 #: templates/presale/estimate_table.html.twig:60
 #: templates/presale/estimate_form.html.twig:106
 #: templates/presale/step_annexes.html.twig:227
+#: templates/dat/step_system.html.twig:59
 msgid "Move down"
 msgstr ""
 
 #: templates/presale/estimate_table.html.twig:59
 #: templates/presale/estimate_form.html.twig:105
 #: templates/presale/step_annexes.html.twig:224
+#: templates/dat/step_system.html.twig:56
 msgid "Move up"
 msgstr ""
 
@@ -2291,13 +2397,17 @@ msgstr ""
 msgid "New subscription"
 msgstr ""
 
+#: templates/entity/dat_card.html.twig:99
+msgid "New version"
+msgstr ""
+
 #: templates/wizard/step1_select_entity.html.twig:53
 #: templates/wizard/step2_contacts.html.twig:60
 #: templates/wizard/step5_management.html.twig:130
 #: templates/wizard/step1_entity.html.twig:129
 #: templates/wizard/step3_subscription.html.twig:76
 #: templates/wizard/step4_contract.html.twig:140
-#: templates/presale/layout.html.twig:125
+#: templates/presale/layout.html.twig:125 templates/dat/layout.html.twig:117
 msgid "Next"
 msgstr ""
 
@@ -2305,6 +2415,12 @@ msgstr ""
 #: templates/techlead/clients_by_tech.html.twig:145
 #: templates/contract_detail_form.html.twig:88
 msgid "No"
+msgstr ""
+
+#: src/DatWizard.php:558 templates/dat/step_summary.html.twig:51
+msgid ""
+"No Word template uploaded in the configuration (DAT tab): the document "
+"cannot be generated."
 msgstr ""
 
 #: templates/contract_link_dropdown.html.twig:38
@@ -2386,6 +2502,12 @@ msgstr ""
 
 #: src/EditorSubscription.php:455
 msgid "No level"
+msgstr ""
+
+#: templates/dat/step_general.html.twig:84
+msgid ""
+"No logo: the header of the document will have none. Add it from the customer "
+"sheet."
 msgstr ""
 
 #: templates/entity/unbilled_tab.html.twig:156
@@ -2502,10 +2624,18 @@ msgstr "Merci de configurer une catégorie de tâche de billet avec le plugin"
 msgid "No tech lead"
 msgstr ""
 
+#: templates/entity/dat_card.html.twig:73
+msgid "No technical architecture document yet."
+msgstr ""
+
 #: src/TicketOverview.php:634 templates/ticket_overview.html.twig:57
 #: templates/ticket_overview.html.twig:185
 #: templates/ticket_overview.html.twig:265
 msgid "No technician"
+msgstr ""
+
+#: templates/dat/config_form.html.twig:65
+msgid "No template: the DAT cannot be generated"
 msgstr ""
 
 #: templates/config_presale_form.html.twig:96
@@ -2542,6 +2672,10 @@ msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] ""
 msgstr[1] ""
+
+#: templates/dat/step_summary.html.twig:103
+msgid "Not filled in"
+msgstr ""
 
 #: src/PresaleProposal.php:88
 msgid "Not requested"
@@ -2606,6 +2740,10 @@ msgstr ""
 msgid "On-premise"
 msgstr ""
 
+#: templates/dat/step_sections.html.twig:57
+msgid "One command per line: the lines are kept as typed in the document."
+msgstr ""
+
 #: src/Entity.php:86 src/Entity.php:318
 msgid "Ongoing tickets"
 msgstr ""
@@ -2636,6 +2774,10 @@ msgstr ""
 #: templates/ticket_overview.html.twig:182
 #: templates/ticket_overview.html.twig:201
 msgid "Open in the ticket search"
+msgstr ""
+
+#: templates/dat/step_summary.html.twig:53
+msgid "Open the configuration"
 msgstr ""
 
 #: templates/presale/step_generate.html.twig:115
@@ -2716,6 +2858,14 @@ msgstr ""
 msgid "Overdue tickets: opened for more than"
 msgstr ""
 
+#: src/DatWizard.php:113
+msgid "PHP information"
+msgstr ""
+
+#: src/DatWizard.php:114
+msgid "PHP installation"
+msgstr ""
+
 #: templates/presale/step_client.html.twig:242
 msgid ""
 "PNG or JPEG, 2 MB at most. Printed on the cover and in the header of the "
@@ -2741,7 +2891,7 @@ msgstr ""
 #: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:848
 #: src/WizardController.php:1846 src/WizardController.php:1921
 #: src/WizardController.php:2034 src/WizardController.php:2048
-#: src/Config.php:213 src/Entity.php:341
+#: src/Config.php:214 src/Entity.php:341
 #: templates/wizard/step6_intervention_block.html.twig:35
 #: templates/wizard/step6_interventions.html.twig:36
 #: templates/contractday_add_form.html.twig:45
@@ -2756,7 +2906,7 @@ msgstr[1] "Périodes du contrat"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:960
+#: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:972
 #: templates/contractday_list.html.twig:33
 #: templates/contract_link_dropdown.html.twig:66
 #: templates/contract_link_dropdown.html.twig:80
@@ -2942,7 +3092,8 @@ msgstr "Prestation"
 #: templates/wizard/step3_subscription.html.twig:63
 #: templates/wizard/step4_contract.html.twig:136
 #: templates/presale/layout.html.twig:112
-#: templates/presale/layout.html.twig:121
+#: templates/presale/layout.html.twig:121 templates/dat/layout.html.twig:102
+#: templates/dat/layout.html.twig:113
 msgid "Previous"
 msgstr ""
 
@@ -3164,7 +3315,7 @@ msgstr ""
 msgid "Referenced name at the publisher"
 msgstr ""
 
-#: src/Entity.php:83 src/Entity.php:351 src/Entity.php:721
+#: src/Entity.php:83 src/Entity.php:351 src/Entity.php:725
 msgid "References"
 msgstr "Références"
 
@@ -3242,6 +3393,10 @@ msgstr ""
 msgid "Request the estimate again"
 msgstr ""
 
+#: templates/entity/dat_card.html.twig:94
+msgid "Resume the draft"
+msgstr ""
+
 #: templates/presale/step_generate.html.twig:140
 msgid "Retain at least one annex before generating the proposal."
 msgstr ""
@@ -3259,6 +3414,9 @@ msgstr[1] "Gestion des droits"
 #: templates/presale/step_client.html.twig:107
 #: templates/presale/step_team.html.twig:84
 #: templates/presale/client_form.html.twig:94
+#: templates/dat/step_system.html.twig:53
+#: templates/dat/step_system.html.twig:81
+#: templates/dat/step_summary.html.twig:82
 msgid "Role"
 msgstr ""
 
@@ -3272,6 +3430,14 @@ msgstr "Rubrique par défaut pour les rapports"
 
 #: templates/techlead/clients_by_tech.html.twig:70
 msgid "Rules to create"
+msgstr ""
+
+#: src/DatWizard.php:123
+msgid "SSO installation"
+msgstr ""
+
+#: src/DatWizard.php:122
+msgid "SSO technology"
 msgstr ""
 
 #: src/PresaleUser.php:96 src/NotificationTargetPresaleProposal.php:66
@@ -3290,6 +3456,7 @@ msgstr ""
 #: templates/config_cri_form.html.twig:72 templates/profile.html.twig:34
 #: templates/presale/estimate_form.html.twig:135
 #: templates/config_options_form.html.twig:156
+#: templates/dat/config_form.html.twig:77
 #: templates/config_presale_form.html.twig:110
 #: templates/config_presale_form.html.twig:158
 msgctxt "button"
@@ -3313,7 +3480,7 @@ msgstr "Enregistrer le compte-rendu d'intervention"
 msgid "Save this period"
 msgstr ""
 
-#: src/CriType.php:153 hook.php:117 hook.php:136
+#: src/CriType.php:153 hook.php:119 hook.php:138
 msgid "Scheduled intervention"
 msgstr "Intervention planifiée"
 
@@ -3370,6 +3537,23 @@ msgstr ""
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
+#: src/DatServer.php:49 templates/dat/step_system.html.twig:71
+#: templates/dat/step_summary.html.twig:74
+msgid "Server"
+msgid_plural "Servers"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/DatWizard.php:693
+#, php-format
+msgid "Server %d: the DNS name is not valid."
+msgstr ""
+
+#: src/DatWizard.php:696
+#, php-format
+msgid "Server %d: the IP address is not valid."
+msgstr ""
+
 #: templates/config_presale_form.html.twig:170
 msgid "Set as default"
 msgstr ""
@@ -3384,6 +3568,10 @@ msgstr ""
 
 #: templates/presale/step_general.html.twig:81
 msgid "Set at the first generation"
+msgstr ""
+
+#: templates/dat/step_general.html.twig:77
+msgid "Set by the generation."
 msgstr ""
 
 #: templates/wizard/step1_entity.html.twig:63
@@ -3507,7 +3695,7 @@ msgstr ""
 msgid "Status list contract for the general monitoring"
 msgstr "Liste des états du contrat pour le suivi général"
 
-#: src/CriType.php:154 hook.php:118 hook.php:137
+#: src/CriType.php:154 hook.php:120 hook.php:139
 msgid "Study and advice"
 msgstr "Étude et conseil"
 
@@ -3565,6 +3753,7 @@ msgstr ""
 msgid "Suggested queries"
 msgstr ""
 
+#: src/DatWizard.php:80 templates/entity/dat_card.html.twig:102
 #: templates/presale/proposal_form.html.twig:116
 #: templates/presale/step_general.html.twig:106
 #: templates/presale/step_generate.html.twig:55
@@ -3577,6 +3766,18 @@ msgstr ""
 
 #: templates/directhelpdesk_form.html.twig:114
 msgid "Surname"
+msgstr ""
+
+#: src/DatWizard.php:74
+msgid "System"
+msgstr ""
+
+#: src/DatWizard.php:109
+msgid "System information"
+msgstr ""
+
+#: src/DatWizard.php:117
+msgid "System tasks"
 msgstr ""
 
 #: templates/preference_form.html.twig:50
@@ -3598,6 +3799,10 @@ msgstr ""
 #: src/GenerateCRI.php:366
 msgid "Task category must be defined"
 msgstr "La catégorie de tâche doit être définie"
+
+#: src/DatWizard.php:78
+msgid "Tasks, logs, HTTPS, NTP, files"
+msgstr ""
 
 #: src/Dashboard.php:180 src/Dashboard.php:461
 msgid "Team"
@@ -3626,6 +3831,17 @@ msgstr ""
 #: src/Contract.php:660 src/Contract.php:711
 msgid "Technical Assistance"
 msgstr "Assistance Technique"
+
+#: src/Dat.php:73 templates/entity/dat_card.html.twig:39
+#: templates/dat/layout.html.twig:52
+msgid "Technical architecture document"
+msgid_plural "Technical architecture documents"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/dat/config_form.html.twig:42
+msgid "Technical architecture documents"
+msgstr ""
 
 #: src/CriPDF.php:395
 #: templates/entity/directhelpdesk_ticket_select.html.twig:40
@@ -3724,6 +3940,7 @@ msgid ""
 msgstr ""
 
 #: src/PresaleGenerator.php:370 src/PresaleGenerator.php:387
+#: src/DatGenerator.php:196 src/DatGenerator.php:213
 msgid "The document could not be stored."
 msgstr ""
 
@@ -3776,10 +3993,20 @@ msgstr ""
 msgid "The format of the image must be in JPG or JPEG"
 msgstr "Le format de l'image doit être en JPG ou JPEG"
 
+#: templates/entity/dat_card.html.twig:83
+msgid "The generated versions are no longer in the documents of the client."
+msgstr ""
+
 #: src/PresaleWizard.php:2095
 msgid ""
 "The generation of the proposal failed. Check the Word templates of the "
 "configuration."
+msgstr ""
+
+#: src/DatWizard.php:572
+msgid ""
+"The generation of the technical architecture document failed. Check the Word "
+"template of the configuration."
 msgstr ""
 
 #: templates/presale/annextype_import.html.twig:49
@@ -3927,6 +4154,14 @@ msgstr ""
 msgid "The target entity must not have a publisher subscription yet."
 msgstr ""
 
+#: src/DatWizard.php:625 src/DatWizard.php:754
+msgid "The technical architecture document could not be saved."
+msgstr ""
+
+#: src/DatWizard.php:567
+msgid "The technical architecture document has been generated."
+msgstr ""
+
 #: src/PresaleWizard.php:1318
 msgid "The type of contract is mandatory."
 msgstr ""
@@ -3948,6 +4183,10 @@ msgstr ""
 #: templates/interventionstakeholder_list.html.twig:43
 msgid "This action is irreversible. Continue ?"
 msgstr "Cette action est irréversible, Continuer ?"
+
+#: src/Dat.php:148
+msgid "This client already has a technical architecture document."
+msgstr ""
 
 #: src/CriDetail.php:255
 msgid "This contract is not available for the entity of the ticket"
@@ -4089,7 +4328,7 @@ msgstr "Total consommation mensuelle"
 
 #: src/ContractDay.php:465 src/Followup.php:857 src/Dashboard.php:184
 #: src/Dashboard.php:465 src/NotificationTargetContract.php:120
-#: src/NotificationTargetContract.php:155 hook.php:986
+#: src/NotificationTargetContract.php:155 hook.php:998
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr "Total restant"
@@ -4250,8 +4489,15 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1137
+#: hook.php:1149
 msgid "Update subscription fields"
+msgstr ""
+
+#: templates/dat/config_form.html.twig:51
+msgid ""
+"Upload the Word template of the technical architecture documents: no "
+"template is shipped with the plugin. The placeholders it can hold are listed "
+"in the documentation of the plugin."
 msgstr ""
 
 #: templates/config_presale_form.html.twig:81
@@ -4267,6 +4513,7 @@ msgid ""
 "Upload these Word templates in the configuration (Pre-sales tab) first: %s."
 msgstr ""
 
+#: templates/dat/config_form.html.twig:58
 #: templates/config_presale_form.html.twig:89
 msgid "Uploaded template"
 msgstr ""
@@ -4275,7 +4522,7 @@ msgstr ""
 msgid "Urgency"
 msgstr ""
 
-#: src/CriType.php:152 hook.php:116 hook.php:135
+#: src/CriType.php:152 hook.php:118 hook.php:137
 msgid "Urgent intervention"
 msgstr "Intervention urgente"
 
@@ -4363,7 +4610,14 @@ msgid "Validated by %s"
 msgstr ""
 
 #: templates/presale/proposal_form.html.twig:111
+#: templates/dat/step_general.html.twig:75
+#: templates/dat/step_summary.html.twig:67
 msgid "Version"
+msgstr ""
+
+#: templates/dat/layout.html.twig:57
+#, php-format
+msgid "Version %s"
 msgstr ""
 
 #: templates/preference_form.html.twig:77
@@ -4387,6 +4641,18 @@ msgid ""
 msgstr ""
 "Attention : le changement de la configuration journalière ou horaire impacte "
 "les types de contrat."
+
+#: src/DatWizard.php:75
+msgid "Web server"
+msgstr ""
+
+#: src/DatWizard.php:111
+msgid "Web server information"
+msgstr ""
+
+#: src/DatWizard.php:112
+msgid "Web server installation"
+msgstr ""
 
 #: src/PresaleOrigin.php:192 templates/entity/description.html.twig:75
 #: templates/entity/description.html.twig:113
@@ -4436,20 +4702,24 @@ msgstr ""
 msgid "Word document"
 msgstr ""
 
-#: src/PresaleTemplate.php:69
+#: src/PresaleTemplate.php:72
 msgid "Word template of the annexes"
 msgstr ""
 
-#: src/PresaleTemplate.php:71
+#: src/PresaleTemplate.php:74
 msgid "Word template of the cloud subscription annexes"
 msgstr ""
 
-#: src/PresaleTemplate.php:68
+#: src/PresaleTemplate.php:71
 msgid "Word template of the proposals"
 msgstr ""
 
-#: src/PresaleTemplate.php:70
+#: src/PresaleTemplate.php:73
 msgid "Word template of the subscription annexes"
+msgstr ""
+
+#: src/PresaleTemplate.php:99
+msgid "Word template of the technical architecture documents"
 msgstr ""
 
 #: src/CriPDF.php:569
@@ -4505,6 +4775,10 @@ msgstr ""
 msgid "e.g. Expertise, Support, Project"
 msgstr ""
 
+#: templates/dat/step_system.html.twig:53
+msgid "e.g. Front, Database"
+msgstr ""
+
 #: templates/presale/annextype_default_lines.html.twig:47
 msgid "e.g. GLPI technical expertise"
 msgstr ""
@@ -4537,7 +4811,7 @@ msgstr "sur"
 msgid "since"
 msgstr ""
 
-#: src/PresaleTemplate.php:193
+#: src/PresaleTemplate.php:210
 msgid "template saved."
 msgstr ""
 
@@ -4549,19 +4823,19 @@ msgstr ""
 msgid "the designation is mandatory"
 msgstr ""
 
-#: src/PresaleTemplate.php:218
+#: src/PresaleTemplate.php:235
 msgid "the file could not be saved."
 msgstr ""
 
-#: src/PresaleTemplate.php:206
+#: src/PresaleTemplate.php:223
 msgid "the file could not be uploaded."
 msgstr ""
 
-#: src/PresaleTemplate.php:212
+#: src/PresaleTemplate.php:229
 msgid "the file is not a Word document (.docx)."
 msgstr ""
 
-#: src/PresaleTemplate.php:209
+#: src/PresaleTemplate.php:226
 msgid "the file is too large (10 MB at most)."
 msgstr ""
 
@@ -4585,7 +4859,7 @@ msgstr ""
 msgid "the quantity must be greater than 0"
 msgstr ""
 
-#: src/PresaleTemplate.php:215
+#: src/PresaleTemplate.php:232
 msgid "the templates folder could not be created."
 msgstr ""
 
