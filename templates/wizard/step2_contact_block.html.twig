@@ -44,6 +44,10 @@
         {% endif %}
     </div>
     <div class="card-body">
+        {# Contact of the pre-sales prospect it comes from (won proposal): kept through the step #}
+        {% if fields.presale_contacts_id|default(0) %}
+            <input type="hidden" name="contacts[{{ idx }}][presale_contacts_id]" value="{{ fields.presale_contacts_id }}">
+        {% endif %}
         <div class="row g-3">
 
             <div class="col-sm-4">

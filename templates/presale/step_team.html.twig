@@ -1,0 +1,111 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Step 2 — sales representative and project manager.
+ #
+ # sales, pm - one person each:
+ #   prefix   - name of the fields in the form (sales[...] / pm[...])
+ #   is_sales - true for the sales representative, false for the project manager
+ #   optional - the project manager can be left empty
+ #   users    - {users_id: name} users declared in the configuration for this role
+ #   prefill  - {users_id: {name, role, email, phone}} copied into the fields when the choice changes
+ #   person   - current values: users_id, name, role, email, phone
+ # errors    - {prefix.field: message}
+ #}
+
+{% macro person_card(data, errors) %}
+    {% set prefix = data.prefix %}
+    {% set is_sales = data.is_sales %}
+    {% set person = data.person %}
+    <div class="card h-100" data-presale-person="{{ data.prefill|json_encode }}">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="ti {{ is_sales ? 'ti-briefcase' : 'ti-user-cog' }} me-1"></i>
+                {{ is_sales ? __('Sales representative', 'manageentities') : _n('Project manager', 'Project managers', 1, 'manageentities') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if data.users|length <= 1 %}
+                <div class="alert alert-warning">
+                    {{ is_sales
+                        ? __('No sales representative is declared in the configuration (Pre-sales tab): type the details below.', 'manageentities')
+                        : __('No project manager is declared in the configuration (Pre-sales tab): type the details below, or leave them empty.', 'manageentities') }}
+                </div>
+            {% endif %}
+
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="col-form-label fw-bold" for="presale_{{ prefix }}_users_id">
+                        {{ is_sales ? __('Assigned sales representative', 'manageentities') : __('Assigned project manager', 'manageentities') }}
+                    </label>
+                    {{ call('Dropdown::showFromArray', [prefix ~ '[users_id]', data.users, {
+                        'value': person.users_id ?? 0,
+                        'display': false,
+                        'width': '100%',
+                        'rand': prefix,
+                    }])|raw }}
+                    {% if errors[prefix ~ '.users_id'] is defined %}<div class="text-danger small mt-1">{{ errors[prefix ~ '.users_id'] }}</div>{% endif %}
+                    <div class="form-text">{{ __('Choosing a user fills in the details below, which remain editable: they are printed in the proposal.', 'manageentities') }}</div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold" for="presale_{{ prefix }}_name">
+                        {{ __('Name') }}{% if not data.optional %} <span class="text-danger">*</span>{% endif %}
+                    </label>
+                    <input type="text" id="presale_{{ prefix }}_name" name="{{ prefix }}[name]" data-presale-person-field="name"
+                           class="form-control{{ errors[prefix ~ '.name'] is defined ? ' is-invalid' : '' }}" value="{{ person.name ?? '' }}">
+                    {% if errors[prefix ~ '.name'] is defined %}<div class="invalid-feedback">{{ errors[prefix ~ '.name'] }}</div>{% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold" for="presale_{{ prefix }}_role">{{ __('Role', 'manageentities') }}</label>
+                    <input type="text" id="presale_{{ prefix }}_role" name="{{ prefix }}[role]" data-presale-person-field="role"
+                           class="form-control" value="{{ person.role ?? '' }}">
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold" for="presale_{{ prefix }}_email">{{ __('Email') }}</label>
+                    <input type="email" id="presale_{{ prefix }}_email" name="{{ prefix }}[email]" data-presale-person-field="email" data-me-wizard-format="email"
+                           class="form-control{{ errors[prefix ~ '.email'] is defined ? ' is-invalid' : '' }}" value="{{ person.email ?? '' }}">
+                    {% if errors[prefix ~ '.email'] is defined %}<div class="invalid-feedback">{{ errors[prefix ~ '.email'] }}</div>{% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold" for="presale_{{ prefix }}_phone">{{ __('Phone') }}</label>
+                    <input type="text" id="presale_{{ prefix }}_phone" name="{{ prefix }}[phone]" data-presale-person-field="phone" data-me-wizard-format="phone"
+                           class="form-control" value="{{ person.phone ?? '' }}">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        {{ _self.person_card(sales, errors) }}
+    </div>
+    <div class="col-lg-6">
+        {{ _self.person_card(pm, errors) }}
+    </div>
+</div>

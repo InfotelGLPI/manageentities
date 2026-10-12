@@ -1,0 +1,143 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+
+{# Estimate of a proposal by its project manager (PresaleWizard::renderEstimate()): the days of
+ # the regular annexes, the annexes can be removed or ordered. No annex added here and no prices:
+ # the sales representative does it, at step 3 of the wizard.
+ #
+ # proposal, client_name - the proposal and its client
+ # annexes, title_format - as at step 3 (PresaleWizard::buildAnnexesVars())
+ # statuses     - labels of the estimate statuses
+ # brief        - note of the sales representative
+ # comment      - comment of the project manager
+ # validated_by - user who validated the estimate, empty when not validated
+ # errors       - {field: message}
+ # readonly     - the proposal is won or lost, or cannot be changed
+ # form_url, proposal_url, wizard_url
+ #
+ # The wrapper is #presale-wizard so that public/scripts/presale-wizard.js handles the annexes
+ # (order, removal) and the estimates as in the wizard.
+ #}
+
+{% set status = proposal.estimate_status|default(0) %}
+
+<div id="presale-wizard" class="container-fluid">
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+        <h2 class="mb-0"><i class="ti ti-calculator me-1"></i>{{ __('Estimate', 'manageentities') }} — {{ client_name }}</h2>
+        <span class="badge {{ status == 2 ? 'bg-green-lt' : (status == 1 ? 'bg-orange-lt' : 'bg-secondary-lt') }} ms-2">{{ statuses[status] }}</span>
+        <a href="{{ proposal_url }}" class="btn btn-sm btn-ghost-secondary ms-auto">
+            <i class="ti ti-file-dollar me-1"></i>{{ proposal.name }}
+        </a>
+    </div>
+
+    {% if errors is not empty %}
+        <div class="alert alert-danger">
+            <ul class="mb-0">{% for message in errors %}<li>{{ message }}</li>{% endfor %}</ul>
+        </div>
+    {% endif %}
+
+    <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header"><h3 class="card-title"><i class="ti ti-message me-1"></i>{{ __('Request of the sales representative', 'manageentities') }}</h3></div>
+                <div class="card-body">
+                    <div class="text-muted small mb-1">{{ proposal.sales_name }}{% if proposal.estimate_date %} — {{ proposal.estimate_date|formatted_datetime }}{% endif %}</div>
+                    {% if brief %}<div style="white-space: pre-line">{{ brief }}</div>{% else %}<span class="text-muted">{{ __('No note.', 'manageentities') }}</span>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header"><h3 class="card-title"><i class="ti ti-user-cog me-1"></i>{{ __('Comment of the project manager', 'manageentities') }}</h3></div>
+                <div class="card-body">
+                    <textarea form="presale-estimate-form" name="estimate_comment" class="form-control" rows="4" {{ readonly ? 'disabled' : '' }}
+                              placeholder="{{ __('Assumptions, risks, what the estimate does not cover...', 'manageentities') }}">{{ comment }}</textarea>
+                    {% if validated_by %}<div class="text-muted small mt-1">{{ __('Validated by %s', 'manageentities')|format(validated_by) }}</div>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" action="{{ form_url }}" id="presale-estimate-form">
+        <input type="hidden" name="id" value="{{ proposal.id }}">
+        <fieldset {{ readonly ? 'disabled' : '' }}>
+
+        <div data-presale-annexes data-presale-title-format="{{ title_format }}">
+        {% for annex in annexes %}
+            {% set idx = loop.index0 %}
+            {% set prefix = 'annexes[' ~ idx ~ ']' %}
+            {% set key = 'annexes.' ~ idx %}
+            <div class="card mb-3 border-primary" id="presale-annex-{{ idx }}" data-presale-annex data-presale-mode="{{ annex.mode }}">
+                <input type="hidden" name="{{ prefix }}[id]" value="{{ annex.id }}">
+                <input type="hidden" name="{{ prefix }}[models_id]" value="{{ annex.models_id }}">
+                <div class="card-header d-flex align-items-center flex-wrap gap-2">
+                    <span class="badge bg-primary text-white fs-5" data-presale-annex-number>{{ title_format|format(idx + 1, '')|trim|trim(':')|trim }}</span>
+                    <span>{{ annex.title ?: annex.model_name }}</span>
+                    {% if annex.is_subscription %}
+                        <span class="badge bg-orange-lt"><i class="ti ti-certificate me-1"></i>{{ annex.level_name ?: __('Publisher subscription', 'manageentities') }}</span>
+                    {% endif %}
+                    <div class="btn-group btn-group-sm ms-auto">
+                        <button type="button" class="btn btn-ghost-secondary" data-presale-action="move-annex" data-direction="up" title="{{ __('Move up', 'manageentities') }}"><i class="ti ti-arrow-up"></i></button>
+                        <button type="button" class="btn btn-ghost-secondary" data-presale-action="move-annex" data-direction="down" title="{{ __('Move down', 'manageentities') }}"><i class="ti ti-arrow-down"></i></button>
+                        <button type="button" class="btn btn-ghost-danger" data-presale-action="remove-annex" title="{{ __('Delete') }}"
+                                data-presale-confirm="{{ __('Remove this annex from the proposal?', 'manageentities') }}"><i class="ti ti-trash"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if errors[key] is defined %}<div class="alert alert-danger">{{ errors[key] }}</div>{% endif %}
+                    {% if annex.is_subscription %}
+                        <span class="text-muted">{{ __('Subscription annex: no estimate in days.', 'manageentities') }}</span>
+                    {% else %}
+                        {% if errors[key ~ '.estimate'] is defined %}<div class="text-danger small mb-1">{{ errors[key ~ '.estimate'] }}</div>{% endif %}
+                        {{ include('@manageentities/presale/estimate_table.html.twig', {
+                            'prefix': prefix ~ '[estimate]',
+                            'rows': annex.estimate,
+                            'total': annex.estimate_total,
+                        }, with_context = false) }}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+
+        </fieldset>
+
+        <div class="d-flex gap-2 justify-content-end mt-3">
+            <a href="{{ wizard_url }}" class="btn btn-ghost-secondary me-auto">
+                <i class="ti ti-arrow-left me-1"></i>{{ __('Back to the proposal', 'manageentities') }}
+            </a>
+            <button type="submit" name="save_estimate" value="1" class="btn btn-outline-primary" {{ readonly ? 'disabled' : '' }}>
+                <i class="ti ti-device-floppy me-1"></i>{{ _x('button', 'Save') }}
+            </button>
+            <button type="submit" name="validate" value="1" class="btn btn-success" {{ readonly ? 'disabled' : '' }}
+                    data-presale-confirm="{{ __('Validate the estimate? The sales representative is told it is ready.', 'manageentities') }}">
+                <i class="ti ti-check me-1"></i>{{ __('Validate the estimate', 'manageentities') }}
+            </button>
+        </div>
+    </form>
+</div>

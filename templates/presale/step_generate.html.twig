@@ -1,0 +1,179 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Step 5 — summary and generation of the Word document.
+ #
+ # proposal     - fields of the proposal
+ # client       - fields of the prospect
+ # recipient    - name of the contact receiving the proposal
+ # annexes      - PresaleProposal::getAnnexesSummary()
+ # versions     - generated documents, newest first: name, date, url, is_last
+ # action_url   - target of the generate / won / lost actions
+ # can_generate - the proposal is editable and has at least one annex
+ # missing_templates - labels of the Word templates still to upload in the configuration
+ # estimate_pending - the estimate is requested from the project manager and not validated
+ # estimate_url  - estimate screen of the proposal
+ # templates_url - Pre-sales tab of the configuration
+ #
+ # The generate / won / lost buttons post to action_url with the form attribute: they sit in
+ # the form of the step, whose own buttons save the step.
+ #}
+
+{% macro row(label, value) %}
+    <div class="col-sm-6 col-lg-4">
+        <div class="text-muted small">{{ label }}</div>
+        <div class="fw-bold">{{ value is empty ? '-' : value }}</div>
+    </div>
+{% endmacro %}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-list-check me-1"></i>{{ __('Summary', 'manageentities') }}</h3>
+    </div>
+    <div class="card-body row g-3">
+        {{ _self.row(_n('Prospect', 'Prospects', 1, 'manageentities'), client.name) }}
+        {{ _self.row(__('Recipient', 'manageentities'), recipient) }}
+        {{ _self.row(__('Type of contract', 'manageentities'), proposal.proposal_type) }}
+        {{ _self.row(__('Sales representative', 'manageentities'), proposal.sales_name) }}
+        {{ _self.row(_n('Project manager', 'Project managers', 1, 'manageentities'), proposal.pm_name) }}
+        {{ _self.row(__('Date of the contract', 'manageentities'), proposal.proposal_date ? proposal.proposal_date|formatted_date : '') }}
+    </div>
+    <div class="table-responsive">
+        <table class="table table-sm card-table mb-0">
+            <thead>
+                <tr>
+                    <th>{{ _n('Annex', 'Annexes', 1, 'manageentities') }}</th>
+                    <th class="text-end">{{ __('Total excl. VAT', 'manageentities') }}</th>
+                    <th class="text-end">{{ __('VAT', 'manageentities') }}</th>
+                    <th class="text-end">{{ __('Total incl. VAT', 'manageentities') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for annex in annexes %}
+                    <tr>
+                        <td>{{ annex.title }}</td>
+                        <td class="text-end">{{ annex.ht|formatted_number }}</td>
+                        {% if annex.vat_rate > 0 %}
+                            <td class="text-end">{{ annex.vat|formatted_number }}</td>
+                            <td class="text-end">{{ annex.ttc|formatted_number }}</td>
+                        {% else %}
+                            <td class="text-end text-muted" colspan="2">{{ __('VAT not applicable', 'manageentities') }}</td>
+                        {% endif %}
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4" class="text-muted">{{ __('No annex retained yet.', 'manageentities') }}</td></tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold">
+                    <td>{{ __('Total') }}</td>
+                    <td class="text-end">{{ proposal.total_ht|formatted_number }}</td>
+                    <td class="text-end">{{ proposal.total_vat|formatted_number }}</td>
+                    <td class="text-end">{{ proposal.total_ttc|formatted_number }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-file-type-docx me-1"></i>{{ __('Word document', 'manageentities') }}</h3>
+        {% if proposal.reference %}
+            <span class="badge bg-blue-lt ms-2">{{ proposal.reference }}</span>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if estimate_pending %}
+            <div class="alert alert-warning">
+                <i class="ti ti-calculator me-1"></i>
+                {{ __('The estimate requested from the project manager is not validated yet.', 'manageentities') }}
+                <a href="{{ estimate_url }}">{{ __('Open the estimate', 'manageentities') }}</a>
+            </div>
+        {% endif %}
+        {% if can_generate and missing_templates is not empty %}
+            <div class="alert alert-warning">
+                <i class="ti ti-alert-triangle me-1"></i>
+                {{ __('These Word templates must be uploaded in the configuration before generating the proposal:', 'manageentities') }}
+                <ul class="mb-1">
+                    {% for label in missing_templates %}<li>{{ label }}</li>{% endfor %}
+                </ul>
+                <a href="{{ templates_url }}">{{ __('Pre-sales configuration', 'manageentities') }}</a>
+            </div>
+        {% endif %}
+        {% if can_generate %}
+            <p class="text-muted">
+                {{ proposal.version > 0
+                    ? __('Each generation creates a new version of the document; the previous ones are kept.', 'manageentities')
+                    : __('The reference of the proposal is set at the first generation.', 'manageentities') }}
+            </p>
+            <button type="submit" form="presale-action-form" name="presale_action" value="generate" class="btn btn-primary"
+                    {{ missing_templates is not empty ? 'disabled' : '' }}>
+                <i class="ti ti-file-export me-1"></i>
+                {{ proposal.version > 0 ? __('Generate a new version', 'manageentities') : __('Generate the proposal', 'manageentities') }}
+            </button>
+        {% elseif proposal.status in [1, 2] %}
+            <div class="alert alert-warning mb-0">{{ __('Retain at least one annex before generating the proposal.', 'manageentities') }}</div>
+        {% endif %}
+
+        {% if versions is not empty %}
+            <ul class="list-group list-group-flush mt-3">
+                {% for version in versions %}
+                    <li class="list-group-item d-flex align-items-center gap-2 px-0">
+                        <i class="ti ti-file-type-docx text-primary"></i>
+                        <a href="{{ version.url }}">{{ version.name }}</a>
+                        {% if version.is_last %}<span class="badge bg-green-lt">{{ __('Latest', 'manageentities') }}</span>{% endif %}
+                        <span class="text-muted ms-auto small">{{ version.date|formatted_datetime }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    {# Outcome: lost at any time while open; won once a document was generated, the customer
+       having signed one of its versions (a change after the generation makes the proposal a
+       draft again, it can still be won on the last version) #}
+    {% if proposal.status in [1, 2] %}
+        <div class="card-footer d-flex gap-2 justify-content-end align-items-center">
+            <span class="text-muted me-auto">{{ __('Outcome of the proposal', 'manageentities') }}</span>
+            {% if proposal.status == 1 and proposal.version > 0 %}
+                <span class="text-warning small">
+                    <i class="ti ti-alert-triangle me-1"></i>{{ __('Modified since the last generation', 'manageentities') }}
+                </span>
+            {% endif %}
+            <button type="submit" form="presale-action-form" name="presale_action" value="lost" class="btn btn-outline-danger"
+                    data-presale-confirm="{{ __('Archive this proposal as lost? It can be reactivated later.', 'manageentities') }}">
+                <i class="ti ti-archive me-1"></i>{{ __('Lost', 'manageentities') }}
+            </button>
+            {% if proposal.version > 0 %}
+                <button type="submit" form="presale-action-form" name="presale_action" value="won" class="btn btn-success"
+                        {% if proposal.status == 1 %}data-presale-confirm="{{ __('The proposal was modified after its last generation. Mark it as won on the last generated version?', 'manageentities') }}"{% endif %}>
+                    <i class="ti ti-trophy me-1"></i>{{ __('Won', 'manageentities') }}
+                </button>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

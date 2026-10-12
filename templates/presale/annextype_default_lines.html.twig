@@ -1,0 +1,126 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+
+{# Default lines of an annex model (PresaleAnnexType), prefilled in the table of the annex in
+ # the pre-sales wizard, where they can be changed. Same columns as the wizard for the pricing
+ # mode of the model (PresalePricing): days at a daily rate, a quantity at a price, or for a
+ # cloud subscription a monthly price per subscription, subscriptions and months.
+ #
+ # lines       - [{designation, quantity, unit_price, months}], one empty line when none
+ # mode        - PresalePricing::MODE_* of the model (as saved)
+ # level_price - monthly price per subscription of the cloud level, null when none
+ #
+ # public/scripts/presale-wizard.js adds and removes the lines (data-presale-default-lines) and
+ # shows the totals.
+ #}
+
+{% macro line(idx, line, level_price = null) %}
+    {% set name = 'default_lines[' ~ idx ~ ']' %}
+    <tr data-presale-line>
+        <td style="min-width:16rem">
+            <input type="text" class="form-control" name="{{ name }}[designation]"
+                   value="{{ line.designation }}" placeholder="{{ __('e.g. GLPI technical expertise', 'manageentities') }}"
+                   aria-label="{{ __('Designation', 'manageentities') }}">
+        </td>
+        <td style="width:9rem">
+            {# Cloud subscription: the monthly price of its level, not typed #}
+            <input type="text" inputmode="decimal" class="form-control text-end" name="{{ name }}[unit_price]" data-presale-amount="unit_price"
+                   value="{{ level_price is not null ? level_price|replace({'.': ','}) : line.unit_price }}" aria-label="{{ __('Price excl. VAT', 'manageentities') }}"
+                   {{ level_price is not null ? 'readonly' : '' }}>
+        </td>
+        <td style="width:7rem">
+            <input type="text" inputmode="decimal" class="form-control text-end" name="{{ name }}[quantity]" data-presale-amount="quantity"
+                   value="{{ line.quantity }}" aria-label="{{ __('Quantity', 'manageentities') }}">
+        </td>
+        <td style="width:6rem" data-presale-col="months">
+            <input type="text" inputmode="decimal" class="form-control text-end" name="{{ name }}[months]" data-presale-amount="months"
+                   value="{{ line.months|default('') }}" placeholder="12" aria-label="{{ __('Number of months', 'manageentities') }}">
+        </td>
+        <td style="width:9rem" class="text-end align-middle" data-presale-line-total></td>
+        <td style="width:2.5rem" class="text-center align-middle">
+            <button type="button" class="btn btn-sm btn-ghost-danger p-1" data-presale-action="remove-line" title="{{ __('Delete') }}">
+                <i class="ti ti-x"></i>
+            </button>
+        </td>
+    </tr>
+{% endmacro %}
+
+{# The labels and the months column follow the mode, as in the wizard #}
+<style>
+    [data-presale-default-lines] [data-presale-label] { display: none; }
+    [data-presale-default-lines][data-presale-mode="days"] [data-presale-label="days"],
+    [data-presale-default-lines][data-presale-mode="flat"] [data-presale-label="flat"],
+    [data-presale-default-lines][data-presale-mode="cloud"] [data-presale-label="cloud"] { display: inline; }
+    [data-presale-default-lines]:not([data-presale-mode="cloud"]) [data-presale-col="months"] { display: none; }
+</style>
+
+<div data-presale-default-lines data-presale-mode="{{ mode|default('days') }}">
+    <table class="table table-sm table-vcenter mb-1">
+        <thead>
+            <tr>
+                <th>{{ __('Designation', 'manageentities') }}</th>
+                <th class="text-end">
+                    <span data-presale-label="days">{{ __('Daily rate excl. VAT', 'manageentities') }}</span>
+                    <span data-presale-label="flat">{{ __('Price excl. VAT', 'manageentities') }}</span>
+                    <span data-presale-label="cloud">{{ __('Monthly price per subscription excl. VAT', 'manageentities') }}</span>
+                </th>
+                <th class="text-end">
+                    <span data-presale-label="days">{{ __('Days', 'manageentities') }}</span>
+                    <span data-presale-label="flat">{{ __('Quantity', 'manageentities') }}</span>
+                    <span data-presale-label="cloud">{{ __('Subscriptions', 'manageentities') }}</span>
+                </th>
+                <th class="text-end" data-presale-col="months">{{ __('Months', 'manageentities') }}</th>
+                <th class="text-end">{{ __('Total excl. VAT', 'manageentities') }}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-presale-lines>
+            {% for line in (lines is empty ? [{'designation': '', 'quantity': '', 'unit_price': '', 'months': ''}] : lines) %}
+                {{ _self.line(loop.index0, line, mode == 'cloud' ? level_price : null) }}
+            {% endfor %}
+        </tbody>
+    </table>
+    <template data-presale-line-template>
+        {{ _self.line('__LINE__', {'designation': '', 'quantity': '', 'unit_price': '', 'months': ''}, mode == 'cloud' ? level_price : null) }}
+    </template>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-presale-action="add-line">
+        <i class="ti ti-plus me-1"></i>{{ __('Add a line', 'manageentities') }}
+    </button>
+    <div class="form-text">
+        {{ __('Lines of a new annex of this model in the pre-sales wizard, where they can be changed. Quantity and price may be left empty.', 'manageentities') }}
+        <span data-presale-label="cloud">
+            {% if level_price is not null %}
+                {{ __('The monthly price is the one of the subscription level (%s € excl. VAT), set in its form.', 'manageentities')|format(level_price|number_format(2, ',', ' ')) }}
+            {% else %}
+                {{ __('The subscription level has no monthly price yet: set it in its form.', 'manageentities') }}
+            {% endif %}
+            {{ __('Empty months: 12.', 'manageentities') }}
+        </span>
+        <span data-presale-label="days">{{ __('The columns follow the kind of annex: save the model after changing it.', 'manageentities') }}</span>
+    </div>
+</div>

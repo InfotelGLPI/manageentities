@@ -55,6 +55,7 @@ class Entity extends CommonGLPI
     public const TAB_CONTRACTS = 5;
     public const TAB_DOCUMENTS = 9;
     public const TAB_TICKETS   = 15;
+    public const TAB_PROPOSALS = 16;
 
     /**
      * Tabs of the client management dashboard a user can choose to display, by tab number.
@@ -68,8 +69,11 @@ class Entity extends CommonGLPI
             2                   => __('Monthly follow-up', 'manageentities'),
             3                   => __('GANTT'),
             4                   => __('Data administrative', 'manageentities'),
-            self::TAB_CONTRACTS => _n('Contract', 'Contracts', 2),
         ];
+        if (Config::usePresale()) {
+            $labels[self::TAB_PROPOSALS] = __('Proposals in progress', 'manageentities');
+        }
+        $labels[self::TAB_CONTRACTS] = _n('Contract', 'Contracts', 2);
         if (Config::useEditorSubscriptions()) {
             $labels[6] = _n('Publisher subscription', 'Publisher subscriptions', 2, 'manageentities');
             $labels[7] = __('Contracts status overview', 'manageentities');
@@ -87,6 +91,102 @@ class Entity extends CommonGLPI
     public static function getTypeName($nb = 0)
     {
         return _n('Client management', 'Clients management', $nb, 'manageentities');
+    }
+
+    /**
+     * Proposals in progress of the customers of the perimeter: the ones of their prospect
+     * (converted_entities_id); on the customers entity itself, every proposal in progress
+     *
+     * @param array<int|string> $entities active entities
+     *
+     * @return list<array> rows of PresaleWizard::getOpenProposals()
+     */
+    private static function getOpenProposals(array $entities): array
+    {
+        return PresaleWizard::getOpenProposals(self::getProposalsCriteria($entities));
+    }
+
+    /**
+     * Proposals of the customers: all of them on the entity of the prospects
+     *
+     * @param array<int|string> $entities
+     */
+    private static function getProposalsCriteria(array $entities): array
+    {
+        $entities = array_map('intval', $entities);
+        if (in_array(PresaleWizard::getTargetEntity(), $entities, true)) {
+            return [];
+        }
+
+        return [PresaleClient::getTable() . '.converted_entities_id' => $entities];
+    }
+
+    /**
+     * Tab of the proposals in progress
+     *
+     * @param array<int|string> $entities active entities
+     */
+    public static function showOpenProposals(array $entities): void
+    {
+        $entities = array_map('intval', $entities);
+        // On a single customer, a new proposal starts from it
+        $new_url = PresaleWizard::getFormUrl() . '?step=' . PresaleWizard::STEP_CLIENT;
+        if (count($entities) === 1 && $entities[0] !== PresaleWizard::getTargetEntity()) {
+            $new_url .= '&entities_id=' . $entities[0];
+        }
+
+        TemplateRenderer::getInstance()->display('@manageentities/entity/proposals_tab.html.twig', [
+            'proposals'  => self::getOpenProposals($entities),
+            'badges'     => self::getProposalBadges($entities),
+            'action_url' => PresaleProposal::canUpdate() ? PresaleWizard::getActionUrl() : '',
+            'can_purge'  => PresaleProposal::canPurge(),
+            'new_url'    => PresaleWizard::canUse() ? $new_url : '',
+            'list_url'   => PresaleProposal::getSearchURL(),
+        ]);
+    }
+
+    /**
+     * Badges of the tab: proposals in progress, won and lost, each one opening the list of its status
+     *
+     * @param array<int> $entities
+     *
+     * @return list<array{label: string, count: int, color: string, icon: string, url: string}>
+     */
+    private static function getProposalBadges(array $entities): array
+    {
+        $counts = PresaleWizard::countProposalsByStatus(self::getProposalsCriteria($entities));
+        // The list has no criterion on the customer: it only follows the badges of all the prospects
+        $global = self::getProposalsCriteria($entities) === [];
+        $url    = static fn(string|int $status): string => $global
+            ? PresaleProposal::getSearchURL() . '?' . http_build_query([
+                'criteria' => [['field' => 5, 'searchtype' => 'equals', 'value' => $status]],
+                'reset'    => 'reset',
+            ])
+            : '';
+
+        return [
+            [
+                'label' => __('Proposals in progress', 'manageentities'),
+                'count' => $counts[PresaleProposal::STATUS_DRAFT] + $counts[PresaleProposal::STATUS_GENERATED],
+                'color' => 'blue',
+                'icon'  => 'ti ti-progress',
+                'url'   => $url('open'),
+            ],
+            [
+                'label' => __('Proposals won', 'manageentities'),
+                'count' => $counts[PresaleProposal::STATUS_WON],
+                'color' => 'green',
+                'icon'  => 'ti ti-trophy',
+                'url'   => $url(PresaleProposal::STATUS_WON),
+            ],
+            [
+                'label' => __('Proposals lost', 'manageentities'),
+                'count' => $counts[PresaleProposal::STATUS_LOST],
+                'color' => 'red',
+                'icon'  => 'ti ti-archive',
+                'url'   => $url(PresaleProposal::STATUS_LOST),
+            ],
+        ];
     }
 
     public static function getIcon()
@@ -155,6 +255,17 @@ class Entity extends CommonGLPI
             // only ever read one customer at a time.
             if ($is_single_entity) {
                 $tabs[4] = self::createTabEntry(__('Data administrative', 'manageentities'));
+            }
+
+            // Proposals in progress of the customers of the perimeter, before their contracts:
+            // the pre-sales come first in the life of a customer
+            if (Session::getCurrentInterface() == 'central' && Config::usePresale() && PresaleProposal::canView()) {
+                $tabs[self::TAB_PROPOSALS] = PresaleProposal::createTabEntry(
+                    __('Proposals in progress', 'manageentities'),
+                    count(self::getOpenProposals($entities)),
+                    self::class,
+                    PresaleProposal::getIcon(),
+                );
             }
 
             if (Session::haveRight(\Contract::$rightname, READ)) {
@@ -328,6 +439,9 @@ class Entity extends CommonGLPI
                 case 5:
                     $Contract->showContracts($entities);
                     break;
+                case self::TAB_PROPOSALS:
+                    self::showOpenProposals($entities);
+                    break;
                 case 6:
                     if (Config::useEditorSubscriptions()) {
                         EditorSubscription::showForEntity($entities);
@@ -448,6 +562,7 @@ class Entity extends CommonGLPI
         $contact         = new Contact();
         $businessContact = new BusinessContact();
         $techLead        = new TechLead();
+        $projectManager  = new ProjectManager();
         $entityObj       = new \Entity();
         $can_edit        = (Session::getCurrentInterface() !== 'helpdesk');
         $is_single       = (count($entities) === 1);
@@ -485,6 +600,8 @@ class Entity extends CommonGLPI
                 'entity_state'        => $f['state'] ?? '',
                 'entity_country'      => $f['country'] ?? '',
                 'is_root_entity'      => ($instID == 0),
+                // Edited in place by whoever may update the GLPI entity itself
+                'can_update'          => $can_edit && $entityObj->can($f['id'], UPDATE),
                 'logos'               => $logos,
 
                 'max_upload'          => Document::getMaxUploadSize(),
@@ -501,6 +618,13 @@ class Entity extends CommonGLPI
 
         $techlead_used = ($can_edit && $is_single)
             ? array_column($techLead->find(['entities_id' => $entities]), 'users_id')
+            : [];
+        // Project managers are provider-side too
+        $projectmanager_data = $interface === 'helpdesk'
+            ? []
+            : $projectManager->buildProjectManagersForTemplate($entities, $CFG_GLPI['root_doc']);
+        $projectmanager_used = ($can_edit && $is_single)
+            ? array_column($projectManager->find(['entities_id' => $entities]), 'users_id')
             : [];
 
         TemplateRenderer::getInstance()->display(
@@ -524,6 +648,11 @@ class Entity extends CommonGLPI
                 'can_update_techleads' => $can_edit && Session::haveRight(TechLead::$rightname, UPDATE),
                 'techlead_entities'    => $entities,
                 'techlead_used'        => $techlead_used,
+                'projectmanagers'            => $projectmanager_data,
+                'can_edit_projectmanagers'   => $can_edit && $projectManager->canCreate(),
+                'can_update_projectmanagers' => $can_edit && Session::haveRight(ProjectManager::$rightname, UPDATE),
+                'projectmanager_entities'    => $entities,
+                'projectmanager_used'        => $projectmanager_used,
                 // For the add-contact/business form, use the first (or only) entity id
                 'entity_id'            => $entities[array_key_first($entities)] ?? 0,
             ],
@@ -544,6 +673,11 @@ class Entity extends CommonGLPI
             //Link to config page in admin plugins list
             $menu['config_page'] = Config::getFormURL(false);
             $menu['links']['add'] = PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php';
+        }
+
+        if (Config::usePresale() && PresaleProposal::canView()) {
+            $menu['options']['presaleproposal'] = PresaleProposal::getMenuContent();
+            $menu['options']['presaleclient']   = PresaleClient::getMenuContent();
         }
 
         $menu['options']['contractday']['title'] = ContractDay::getTypeName(2);

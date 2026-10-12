@@ -1,0 +1,155 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import '@manageentities/presale/proposals_table.html.twig' as proposals %}
+
+{# Form of a prospect (PresaleClient::showForm()).
+ #
+ # item        - the prospect
+ # contacts    - its contacts, main one first
+ # open        - its proposals in progress (PresaleWizard::getOpenProposals())
+ # others      - its won and lost proposals: name, url, status, date_mod
+ # action_url  - target of the Lost / Won / Delete buttons, empty without the right
+ # can_purge   - offers the deletion of a proposal
+ # new_url     - new proposal for this prospect, empty when not allowed
+ # entity_name, entity_url - its customer entity, empty when it is not a customer yet
+ # logo_url    - its logo, empty when none
+ #}
+
+<div class="asset">
+    {% include('components/form/header.html.twig') %}
+
+    <div class="card-body">
+        {% if entity_name %}
+            <div class="alert alert-info">
+                <i class="ti ti-building me-1"></i>
+                {{ __('Existing customer:', 'manageentities') }} <a href="{{ entity_url }}">{{ entity_name }}</a>
+            </div>
+        {% endif %}
+        {% if item.fields['is_archived'] %}
+            <div class="alert alert-secondary">
+                <i class="ti ti-archive me-1"></i>
+                {{ __('All the proposals of this prospect are lost: it is archived. Reactivate one of them to use it again.', 'manageentities') }}
+            </div>
+        {% endif %}
+
+        <div class="row">
+            {{ fields.textField('name', item.fields['name'], __('Company name', 'manageentities'), {'required': true}) }}
+            {{ fields.textField('website', item.fields['website'], __('Website')) }}
+            {{ fields.textField('address', item.fields['address'], __('Address'), {'required': true}) }}
+            {{ fields.textField('postcode', item.fields['postcode'], __('Postal code'), {'required': true}) }}
+            {{ fields.textField('town', item.fields['town'], __('City'), {'required': true}) }}
+            {{ fields.textField('state', item.fields['state'], __('State')) }}
+            {{ fields.textField('country', item.fields['country'], __('Country')) }}
+            {{ fields.textField('phonenumber', item.fields['phonenumber'], __('Phone')) }}
+            {{ fields.textField('email', item.fields['email'], __('Email'), {'type': 'email'}) }}
+            {% if logo_url %}
+                {{ fields.htmlField('', '<img src="' ~ logo_url|e('html_attr') ~ '" alt="" style="max-height:50px">', __('Logo of the client', 'manageentities')) }}
+            {% endif %}
+            {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), {'enable_richtext': false, 'rows': 3, 'full_width': true}) }}
+        </div>
+    </div>
+
+    {% include('components/form/buttons.html.twig') %}
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-users me-1"></i>{{ _n('Contact', 'Contacts', 2) }}</h3>
+    </div>
+    {% if contacts is empty %}
+        <div class="card-body text-muted">{{ __('No contact.', 'manageentities') }}</div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-sm card-table mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ __('Role', 'manageentities') }}</th>
+                        <th>{{ __('Email') }}</th>
+                        <th>{{ __('Phone') }}</th>
+                        <th>{{ __('Mobile') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for contact in contacts %}
+                    <tr>
+                        <td>
+                            {{ contact.name }} {{ contact.firstname }}
+                            {% if contact.is_default %}<span class="badge bg-green-lt ms-1">{{ __('Main contact', 'manageentities') }}</span>{% endif %}
+                        </td>
+                        <td>{{ contact.role }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>{{ contact.phone }}</td>
+                        <td>{{ contact.mobile }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-muted small">{{ __('The contacts are changed at step 1 of a proposal.', 'manageentities') }}</div>
+    {% endif %}
+</div>
+
+<div class="card mt-3">
+    <div class="card-header d-flex align-items-center">
+        <h3 class="card-title"><i class="ti ti-file-dollar me-1"></i>{{ __('Proposals in progress', 'manageentities') }}</h3>
+        {% if new_url %}
+            <a href="{{ new_url }}" class="btn btn-sm btn-primary ms-auto">
+                <i class="ti ti-file-plus me-1"></i>{{ __('New proposal', 'manageentities') }}
+            </a>
+        {% endif %}
+    </div>
+    {% if open is empty %}
+        <div class="card-body text-muted">{{ __('No proposal in progress.', 'manageentities') }}</div>
+    {% else %}
+        {{ proposals.table(open, {'action_url': action_url, 'can_purge': can_purge, 'show_client': false, 'show_total': true}) }}
+    {% endif %}
+</div>
+
+{% if others is not empty %}
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title"><i class="ti ti-archive me-1"></i>{{ __('Won and lost proposals', 'manageentities') }}</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm card-table mb-0">
+                <tbody>
+                {% for proposal in others %}
+                    <tr>
+                        <td><a href="{{ proposal.url }}">{{ proposal.name }}</a></td>
+                        <td><span class="badge bg-secondary-lt">{{ proposal.status }}</span></td>
+                        <td>{{ proposal.date_mod|formatted_datetime }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}

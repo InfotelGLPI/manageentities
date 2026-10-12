@@ -1,0 +1,106 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Project managers of the client: several users, one of them being the main one #}
+{% if projectmanagers is not empty or can_edit_projectmanagers %}
+<div class="col">
+<div class="card h-100">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-user-cog me-1"></i>
+            {{ _n('Project manager', 'Project managers', 2, 'manageentities') }}
+        </h3>
+    </div>
+    <div class="card-body p-0">
+        {% if projectmanagers is not empty %}
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ __('Phone') }}</th>
+                        <th>{{ __('Mobile phone') }}</th>
+                        <th>{{ __('Email address') }}</th>
+                        <th></th>
+                        {% if can_edit_projectmanagers and is_single %}<th></th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for pm in projectmanagers %}
+                    <tr>
+                        <td><a href="{{ pm.url }}">{{ pm.name }}</a></td>
+                        <td>{{ pm.phone }}</td>
+                        <td>{{ pm.mobile }}</td>
+                        <td>
+                            {% if pm.email %}
+                                <a href="mailto:{{ pm.email }}">{{ pm.email }}</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if pm.is_default %}
+                                <span class="badge bg-green-lt">{{ __('Main project manager', 'manageentities') }}</span>
+                            {% elseif can_update_projectmanagers and is_single %}
+                                <form method="post" action="{{ entity_action_url }}" class="d-inline">
+                                    <input type="hidden" name="id" value="{{ pm.link_id }}">
+                                    <button type="submit" name="projectmanagerbydefault" class="btn btn-link btn-sm p-0">
+                                        {{ __('Set as main project manager', 'manageentities') }}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                        {% if can_edit_projectmanagers and is_single %}
+                        <td class="text-center">
+                            <form method="post" action="{{ entity_action_url }}" class="d-inline">
+                                <input type="hidden" name="id" value="{{ pm.link_id }}">
+                                <button type="submit" name="deleteprojectmanager" class="btn btn-link text-danger p-0" title="{{ __('Delete permanently') }}">
+                                    <i class="ti ti-circle-x"></i>
+                                </button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="text-muted text-center py-3 mb-0">{{ __('No project manager', 'manageentities') }}</p>
+        {% endif %}
+
+        {% if can_edit_projectmanagers and is_single %}
+        <div class="card-footer">
+            <form method="post" action="{{ entity_action_url }}" class="d-flex align-items-center gap-2 flex-wrap">
+                <input type="hidden" name="entities_id" value="{{ entity_id }}">
+                <div class="flex-grow-1">{{ 'User'|itemtype_dropdown({'name': 'users_id', 'right': 'interface', 'entity': projectmanager_entities, 'used': projectmanager_used}) }}</div>
+                <button type="submit" name="addprojectmanager" class="btn btn-sm btn-primary">{{ __('Add') }}</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</div>{# /col #}
+{% endif %}
