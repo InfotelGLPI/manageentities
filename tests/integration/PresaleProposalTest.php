@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities\Tests\Integration;
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
+use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\NotificationTargetPresaleProposal;
 use GlpiPlugin\Manageentities\PresaleAnnexLine;
 use GlpiPlugin\Manageentities\PresaleClient;
@@ -539,6 +540,153 @@ class PresaleProposalTest extends DbTestCase
         $this->assertSame($entities_id, $session['entities_id']);
         // Its contacts already exist: none to create
         $this->assertSame([], $session['contacts_data'] ?? []);
+        // No subscription annex: no subscription step
+        $this->assertFalse(WizardController::hasSubscriptionStep($session));
+    }
+
+    public function testRegularAnnexesBecomePeriodsOfContractAtASingleRate(): void
+    {
+        $proposal = $this->createProposal($this->createPresaleClient(), [
+            'status'        => PresaleProposal::STATUS_WON,
+            'proposal_date' => '2026-11-01',
+        ]);
+        $this->addAnnex($proposal, [
+            ['designation' => 'Audit', 'quantity' => 2, 'unit_price' => 700],
+            ['designation' => 'Atelier', 'quantity' => 2, 'unit_price' => 800],
+        ], 0, 1);
+        $this->addAnnex($proposal, [['designation' => 'Licence', 'quantity' => 1, 'unit_price' => 900]], $this->createSubscriptionLevel(), 2);
+        $this->addAnnex($proposal, [['designation' => 'Formation', 'quantity' => 3, 'unit_price' => 650]], 0, 3);
+
+        $session = PresaleConversion::prefill($proposal, WizardController::buildDefaultSession());
+
+        // One period per regular annex, the subscription annex left out
+        $this->assertSame([1, 2], array_keys($session['interventions_data']));
+        $first = $session['interventions_data'][1];
+        $this->assertSame('Expertise GLPI', $first['fields']['name']);
+        $this->assertSame(4.0, $first['fields']['nbday']);
+        $this->assertSame('2026-11-01', $first['fields']['begin_date']);
+        $this->assertSame('2027-11-01', $first['fields']['end_date']);
+        // A single rate: the average of the lines
+        $this->assertCount(1, $first['criprices']);
+        $this->assertSame(750.0, $first['criprices'][0]['price']);
+        $this->assertSame(650.0, $session['interventions_data'][2]['criprices'][0]['price']);
+    }
+
+    public function testSeveralSubscriptionAnnexesAreOfferedToChooseFrom(): void
+    {
+        $proposal = $this->createProposal($this->createPresaleClient(), ['status' => PresaleProposal::STATUS_WON]);
+        $on_premise = $this->addAnnex($proposal, [['designation' => 'Licence', 'quantity' => 1, 'unit_price' => 900]], $this->createSubscriptionLevel(), 1);
+        $cloud      = $this->addAnnex($proposal, [['designation' => 'Cloud', 'quantity' => 1, 'unit_price' => 90]], $this->createSubscriptionLevel(), 2);
+        $this->updateItem(PresaleProposal_Annex::class, $cloud->getID(), ['cloud_client' => 1]);
+
+        $session = PresaleConversion::prefill($proposal, WizardController::buildDefaultSession());
+
+        $this->assertSame([$on_premise->getID(), $cloud->getID()], array_keys($session['subscription_choices']));
+        // The first one by default, the other one once chosen
+        $this->assertSame(0, $session['subscription_data']['cloud_client']);
+        $_SESSION['manageentities_wizard'] = ['default' => $session];
+        $result = WizardController::saveSubscriptionAndReturn(['change_choice' => 1, 'subscription_choice' => $cloud->getID()]);
+        $this->assertTrue($result['success']);
+        $this->assertSame(1, WizardController::getSession()['subscription_data']['cloud_client']);
+    }
+
+    public function testTheSubscriptionOfAnExistingCustomerIsRenewed(): void
+    {
+        global $DB;
+
+        $entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $DB->delete(EditorSubscription::getTable(), ['entities_id' => $entities_id]);
+        $subscription = $this->createItem(EditorSubscription::class, [
+            'entities_id'         => $entities_id,
+            'name'                => 'Référence éditeur',
+            'customer_account_id' => 'ACC-42',
+            'begin_date'          => '2025-12-01 00:00:00',
+            'end_date'            => '2026-11-30 00:00:00',
+        ]);
+        $client   = $this->createPresaleClient(['converted_entities_id' => $entities_id]);
+        $proposal = $this->createProposal($client, ['status' => PresaleProposal::STATUS_WON, 'proposal_date' => '2026-11-01']);
+        $level    = $this->createSubscriptionLevel();
+        $this->addAnnex($proposal, [['designation' => 'Licence', 'quantity' => 1, 'unit_price' => 900]], $level);
+
+        $session = PresaleConversion::prefill($proposal, WizardController::buildDefaultSession());
+
+        $this->assertTrue(WizardController::hasSubscriptionStep($session));
+        $this->assertSame(1, $session['subscription_only']);
+        // Renewed from the end of the running subscription, its name and account kept
+        $this->assertSame('2026-12-01', $session['subscription_data']['begin_date']);
+        $this->assertSame('2027-11-30', $session['subscription_data']['end_date']);
+        $this->assertSame('ACC-42', $session['subscription_data']['customer_account_id']);
+
+        // Subscription only: the wizard writes the renewed subscription, no contract
+        $session['skip_contract'] = 1;
+        $_SESSION['manageentities_wizard'] = ['default' => $session];
+        $result = WizardController::commitWizardAndReturn();
+        $this->assertTrue($result['success'], json_encode($result));
+
+        $this->assertSame(1, countElementsInTable(EditorSubscription::getTable(), ['entities_id' => $entities_id]));
+        $subscription->getFromDB($subscription->getID());
+        $this->assertSame('2027-11-30 00:00:00', $subscription->fields['end_date']);
+        $this->assertSame($level, (int) $subscription->fields['plugin_manageentities_subscriptionlevels_id']);
+    }
+
+    public function testAnExistingCustomerGetsItsSubscriptionAndAContractWithItsPeriods(): void
+    {
+        global $DB;
+
+        $entities_id = getItemByTypeName(\Entity::class, '_test_child_2', true);
+        $DB->delete(EditorSubscription::getTable(), ['entities_id' => $entities_id]);
+        $state = $this->createItem(\GlpiPlugin\Manageentities\ContractState::class, ['name' => 'State ' . $this->getUniqueString()]);
+        $DB->update(\GlpiPlugin\Manageentities\Config::getTable(), ['wizard_contractstate_id' => $state->getID()], ['id' => 1]);
+        $this->resetConfigCache();
+
+        $client   = $this->createPresaleClient(['converted_entities_id' => $entities_id]);
+        $proposal = $this->createProposal($client, ['status' => PresaleProposal::STATUS_WON, 'proposal_date' => '2026-11-01']);
+        $this->addAnnex($proposal, [['designation' => 'Audit', 'quantity' => 5, 'unit_price' => 750]], 0, 1);
+        $this->addAnnex($proposal, [['designation' => 'Licence', 'quantity' => 1, 'unit_price' => 900]], $this->createSubscriptionLevel(), 2);
+
+        $_SESSION['manageentities_wizard'] = ['default' => PresaleConversion::prefill($proposal, WizardController::buildDefaultSession())];
+        $name = 'CTR ' . $this->getUniqueString();
+        $r = WizardController::saveSubscriptionAndReturn(WizardController::getSession()['subscription_data']);
+        $this->assertTrue($r['success'], json_encode($r));
+        $type  = $this->createItem(\ContractType::class, ['name' => 'Type ' . $this->getUniqueString()]);
+        $cstate = $this->createItem(\State::class, ['name' => 'Status ' . $this->getUniqueString(), 'entities_id' => 0, 'is_recursive' => 1]);
+        $r = WizardController::saveContractAndReturn([
+            'name'             => $name,
+            'num'              => 'NUM-' . $this->getUniqueString(),
+            'begin_date'       => '2026-11-01',
+            'duration'         => 12,
+            'contracttypes_id' => $type->getID(),
+            'states_id'        => $cstate->getID(),
+        ]);
+        $this->assertTrue($r['success'], json_encode($r));
+        $this->assertTrue(WizardController::saveManagementTypeAndReturn(['date_signature' => '2026-11-01'])['success']);
+
+        $result = WizardController::commitWizardAndReturn();
+        $this->assertTrue($result['success'], json_encode($result));
+
+        // Subscription created on the customer, contract with the period of the regular annex
+        $this->assertSame(1, countElementsInTable(EditorSubscription::getTable(), ['entities_id' => $entities_id]));
+        $contracts = (new \Contract())->find(['name' => $name, 'entities_id' => $entities_id]);
+        $this->assertCount(1, $contracts);
+        $periods = (new \GlpiPlugin\Manageentities\ContractDay())->find(['contracts_id' => array_key_first($contracts)]);
+        $this->assertCount(1, $periods);
+        $period = reset($periods);
+        $this->assertSame('Expertise GLPI', $period['name']);
+        $this->assertEquals(5, $period['nbday']);
+        $prices = (new \GlpiPlugin\Manageentities\CriPrice())->find(['plugin_manageentities_contractdays_id' => $period['id']]);
+        $this->assertEquals(750, reset($prices)['price']);
+    }
+
+    public function testACustomerOutOfReachIsNeverCreatedAgain(): void
+    {
+        $entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $client      = $this->createPresaleClient(['converted_entities_id' => $entities_id]);
+        $proposal    = $this->createProposal($client, ['status' => PresaleProposal::STATUS_WON]);
+
+        // Only the other child is active: the customer entity is out of reach
+        $this->setEntity('_test_child_2', false);
+
+        $this->assertSame([], PresaleConversion::prefill($proposal, WizardController::buildDefaultSession()));
     }
 
     public function testOnlyAContactOfTheProspectIsLinkedBack(): void

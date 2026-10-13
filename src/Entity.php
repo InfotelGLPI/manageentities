@@ -142,6 +142,11 @@ class Entity extends CommonGLPI
             'can_purge'  => PresaleProposal::canPurge(),
             'new_url'    => PresaleWizard::canUse() ? $new_url : '',
             'list_url'   => PresaleProposal::getSearchURL(),
+            // Renewals to propose: expired subscriptions, contracts reported by the end / notice alerts
+            'subscriptions' => PresaleRenewal::getExpiredSubscriptions($entities),
+            'contracts'     => PresaleRenewal::getExpiringContracts($entities),
+            'show_subscriptions' => Config::useEditorSubscriptions() && EditorSubscription::canView(),
+            'show_contracts'     => \Contract::canView(),
         ]);
     }
 

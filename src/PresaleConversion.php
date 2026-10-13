@@ -82,23 +82,47 @@ class PresaleConversion
         $session[self::SESSION_PROPOSAL] = $proposal->getID();
         $session['step']                 = 1;
 
-        if ($entities_id > 0 && Session::haveAccessToEntity($entities_id)) {
-            // Existing customer: a new contract on its entity, its contacts already exist
+        if ($entities_id > 0) {
+            // Existing customer: its entity, whose contacts already exist. Out of reach, the
+            // wizard is refused rather than creating the customer a second time.
+            if (!Session::haveAccessToEntity($entities_id)) {
+                return [];
+            }
             $session['wizard_mode'] = 'existing_entity';
             $session['entities_id'] = $entities_id;
         } else {
             $session['wizard_mode'] = 'new_entity';
             $session['entity_data'] = self::entityData($client);
             $session['contacts_data'] = self::contactsData($client);
-            $session['subscription_data'] = self::subscriptionData($proposal);
+        }
+
+        // Subscription annexes: the subscription of the customer is created, or renewed when it
+        // has one already; several annexes (cloud and on-premise), the user picks the one
+        $choices = self::subscriptionChoices($proposal, $entities_id);
+        if ($choices !== []) {
+            $session['subscription_choices'] = $choices;
+            $session['subscription_data']    = reset($choices)['data'];
             // Only subscription annexes: no contract, the wizard ends after the subscription
-            if ($session['subscription_data'] !== [] && !self::hasRegularAnnex($proposal)) {
+            if (!self::hasRegularAnnex($proposal)) {
                 $session['subscription_only'] = 1;
             }
         }
-        $session['contract_prefill'] = self::contractData($proposal);
+        $session['contract_prefill']   = self::contractData($proposal);
+        $session['interventions_data'] = self::interventionsData($proposal);
 
         return $session;
+    }
+
+    /**
+     * Subscription of an existing customer, renewed instead of created (one per entity)
+     */
+    public static function getExistingSubscriptionId(int $entities_id): int
+    {
+        if ($entities_id <= 0) {
+            return 0;
+        }
+
+        return (int) (EditorSubscription::getForEntity($entities_id)['id'] ?? 0);
     }
 
     /**
@@ -163,10 +187,13 @@ class PresaleConversion
     }
 
     /**
-     * Publisher subscription of the first subscription annex of the proposal: its level, cloud
-     * or not, a year from the date of the proposal
+     * Publisher subscription of each subscription annex of the proposal: its level, cloud or
+     * not, for a year. A new subscription starts on the date of the proposal; the existing one
+     * of a customer is renewed: its name and account kept, from its end when still running.
+     *
+     * @return array<int, array{label: string, data: array}> by id of the annex, in their order
      */
-    private static function subscriptionData(PresaleProposal $proposal): array
+    public static function subscriptionChoices(PresaleProposal $proposal, int $entities_id = 0): array
     {
         if (!Config::useEditorSubscriptions()) {
             return [];
@@ -174,24 +201,97 @@ class PresaleConversion
         $annexes = (new PresaleProposal_Annex())->find([
             'plugin_manageentities_presaleproposals_id'   => $proposal->getID(),
             'plugin_manageentities_subscriptionlevels_id' => ['>', 0],
-        ], ['rank'], 1);
+        ], ['rank', 'id']);
         if ($annexes === []) {
             return [];
         }
-        $annex = reset($annexes);
-        $begin = (string) ($proposal->fields['proposal_date'] ?: date('Y-m-d'));
 
-        return [
-            'name'                                        => '',
-            'customer_account_id'                         => '',
-            'active_editor_suscription'                   => 1,
-            'cloud_client'                                => (int) $annex['cloud_client'],
-            'internet_publication'                        => (int) $annex['cloud_client'],
-            'plugin_manageentities_subscriptionlevels_id' => (int) $annex['plugin_manageentities_subscriptionlevels_id'],
-            'begin_date'                                  => $begin,
-            'end_date'                                    => date('Y-m-d', (int) strtotime($begin . ' +1 year -1 day')),
-            'comment'                                     => (string) $annex['title'],
-        ];
+        $existing = $entities_id > 0 ? EditorSubscription::getForEntity($entities_id) : [];
+        $begin    = (string) ($proposal->fields['proposal_date'] ?: date('Y-m-d'));
+        // Renewal: from the day after the end of the current subscription, when later
+        $end = substr((string) ($existing['end_date'] ?? ''), 0, 10);
+        if ($end !== '' && $end >= $begin) {
+            $begin = date('Y-m-d', (int) strtotime($end . ' +1 day'));
+        }
+
+        $choices = [];
+        foreach ($annexes as $annex) {
+            $level = (int) $annex['plugin_manageentities_subscriptionlevels_id'];
+            $cloud = (int) $annex['cloud_client'];
+            $choices[(int) $annex['id']] = [
+                'label' => sprintf(
+                    '%s (%s - %s)',
+                    (string) $annex['title'],
+                    $cloud ? __('Cloud', 'manageentities') : __('Editor', 'manageentities'),
+                    \Dropdown::getDropdownName(SubscriptionLevel::getTable(), $level),
+                ),
+                'data'  => [
+                    'name'                                        => (string) ($existing['name'] ?? ''),
+                    'customer_account_id'                         => (string) ($existing['customer_account_id'] ?? ''),
+                    'active_editor_suscription'                   => 1,
+                    'cloud_client'                                => $cloud,
+                    'internet_publication'                        => $cloud ?: (int) ($existing['internet_publication'] ?? 0),
+                    'plugin_manageentities_subscriptionlevels_id' => $level,
+                    'begin_date'                                  => $begin,
+                    'end_date'                                    => date('Y-m-d', (int) strtotime($begin . ' +1 year -1 day')),
+                    'comment'                                     => (string) $annex['title'],
+                ],
+            ];
+        }
+
+        return $choices;
+    }
+
+    /**
+     * Periods of contract of the regular annexes: one per annex, its days at its daily rate.
+     * The wizard takes a single rate per period: the rate of the lines when they share it,
+     * else their average (amount / days), rounded to the cent.
+     *
+     * @return array<int, array{fields: array, criprices: list<array>, stakeholders: array}> indexed from 1
+     */
+    public static function interventionsData(PresaleProposal $proposal): array
+    {
+        $config   = Config::getInstance();
+        $begin    = (string) ($proposal->fields['proposal_date'] ?: date('Y-m-d'));
+        $end      = date('Y-m-d', (int) strtotime($begin . ' +12 months'));
+        $lines    = new PresaleAnnexLine();
+        $periods  = [];
+        $idx      = 1;
+        foreach ((new PresaleProposal_Annex())->find([
+            'plugin_manageentities_presaleproposals_id'   => $proposal->getID(),
+            'plugin_manageentities_subscriptionlevels_id' => 0,
+        ], ['rank', 'id']) as $annex) {
+            $days   = 0.0;
+            $amount = 0.0;
+            foreach ($lines->find(['plugin_manageentities_presaleproposals_annexes_id' => $annex['id']]) as $line) {
+                $days   += (float) $line['quantity'];
+                $amount += (float) $line['quantity'] * (float) $line['unit_price'];
+            }
+            $fields = [
+                'name'                                    => (string) $annex['title'],
+                'plugin_manageentities_contractstates_id' => (int) ($config->fields['wizard_contractstate_id'] ?? 0),
+                'begin_date'                              => $begin,
+                'end_date'                                => $end,
+                'nbday'                                   => round($days, 2),
+                'report'                                  => 0.0,
+                'charged'                                 => 0,
+                'comment'                                 => '',
+            ];
+            if ((int) ($config->fields['wizard_contract_type'] ?? 0) > 0) {
+                $fields['contract_type'] = (int) $config->fields['wizard_contract_type'];
+            }
+            $periods[$idx++] = [
+                'fields'       => $fields,
+                'criprices'    => $days > 0 ? [[
+                    'plugin_manageentities_critypes_id' => (int) ($config->fields['wizard_critype_id'] ?? 0),
+                    'price'                             => round($amount / $days, 2),
+                    'is_default'                        => 1,
+                ]] : [],
+                'stakeholders' => [],
+            ];
+        }
+
+        return $periods;
     }
 
     private static function contractData(PresaleProposal $proposal): array
@@ -270,7 +370,9 @@ class PresaleConversion
         }
 
         Session::addMessageAfterRedirect(sprintf(
-            __('The customer has been created from the proposal %s.', 'manageentities'),
+            $session['wizard_mode'] === 'existing_entity'
+                ? __('The customer has been updated from the proposal %s.', 'manageentities')
+                : __('The customer has been created from the proposal %s.', 'manageentities'),
             (string) ($proposal->fields['reference'] ?: $proposal->fields['name']),
         ));
     }

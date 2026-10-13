@@ -433,6 +433,14 @@ class PresaleWizard
             }
         }
 
+        // Renewal of a subscription or a contract of the customer (PresaleRenewal), kept by the post
+        $renewal = $proposal === null
+            ? PresaleRenewal::getSourceInput($values ?? $query, $entities_id)
+            : array_filter([
+                'plugin_manageentities_editorsubscriptions_id' => (int) $proposal->fields['plugin_manageentities_editorsubscriptions_id'],
+                'contracts_id'                                 => (int) $proposal->fields['contracts_id'],
+            ]);
+
         // After an error, the posted values win
         if ($values !== null) {
             if (isset($values['contacts'])) {
@@ -466,6 +474,12 @@ class PresaleWizard
             'customers'   => $proposal === null ? self::getCustomerChoices() : [],
             'prospect'    => $prospects_id,
             'customer'    => $entities_id,
+            // Renewed subscription or contract: hidden fields of a new proposal, label of its source
+            'renewal'       => $proposal === null ? [
+                'editorsubscriptions_id' => $renewal['plugin_manageentities_editorsubscriptions_id'] ?? 0,
+                'contracts_id'           => $renewal['contracts_id'] ?? 0,
+            ] : [],
+            'renewal_label' => PresaleRenewal::getSourceLabel($renewal),
             // Details missing on the customer entity, to fill in again
             'missing'     => $missing,
             'entity_name' => $converted > 0 ? Dropdown::getDropdownName('glpi_entities', $converted) : '',
@@ -903,8 +917,14 @@ class PresaleWizard
         $entities_id     = $id === 0 && $prospects_id === 0 ? (int) ($input['customer_entities_id'] ?? 0) : 0;
         $origins_id      = (int) ($input['plugin_manageentities_presaleorigins_id'] ?? 0);
         // Posted back with the values after an error, so that the step keeps its source and origin
-        $source = array_filter(['prospects_id' => $prospects_id, 'customer_entities_id' => $entities_id])
-            + ['plugin_manageentities_presaleorigins_id' => $origins_id];
+        // Renewal of a subscription or a contract of the customer: checked again, it may be followed since
+        $renewal = PresaleRenewal::getSourceInput($input, $entities_id);
+        $source  = array_filter([
+            'prospects_id'           => $prospects_id,
+            'customer_entities_id'   => $entities_id,
+            'editorsubscriptions_id' => $renewal['plugin_manageentities_editorsubscriptions_id'] ?? 0,
+            'contracts_id'           => $renewal['contracts_id'] ?? 0,
+        ]) + ['plugin_manageentities_presaleorigins_id' => $origins_id];
 
         // The chosen source must still be available
         $client = new PresaleClient();
@@ -949,7 +969,7 @@ class PresaleWizard
                 $values['logo_documents_id'] = self::getEntityLogo($entities_id);
             }
             $client->update(['id' => $client->getID()] + $values);
-            $id = self::createProposal($client, $origins_id);
+            $id = self::createProposal($client, $origins_id, $renewal);
         } else {
             $values += [
                 'entities_id'           => self::getTargetEntity(),
@@ -963,7 +983,7 @@ class PresaleWizard
             if (!$client->add($values)) {
                 return ['id' => 0, 'errors' => ['name' => __('The prospect could not be saved.', 'manageentities')], 'values' => $values + $posted_contacts + $source];
             }
-            $id = self::createProposal($client, $origins_id);
+            $id = self::createProposal($client, $origins_id, $renewal);
         }
 
         $proposal = self::loadProposal($id);
@@ -1007,8 +1027,10 @@ class PresaleWizard
 
     /**
      * Draft proposal of a prospect, created at step 1
+     *
+     * @param array $renewal renewed subscription or contract, from PresaleRenewal::getSourceInput()
      */
-    private static function createProposal(PresaleClient $client, int $origins_id = 0): int
+    private static function createProposal(PresaleClient $client, int $origins_id = 0, array $renewal = []): int
     {
         $proposal = new PresaleProposal();
         $input    = [
@@ -1021,7 +1043,7 @@ class PresaleWizard
             'step'                                    => self::STEP_CLIENT,
             'proposal_date'                           => date('Y-m-d'),
             'users_id'                                => Session::getLoginUserID(),
-        ];
+        ] + $renewal;
         // A known prospect keeps its contacts: its main one receives the proposal
         $contacts = (new PresaleContact())->find(
             ['plugin_manageentities_presaleclients_id' => $client->getID()],
@@ -2190,6 +2212,8 @@ class PresaleWizard
         $input  = array_intersect_key($fields, array_flip([
             'entities_id', 'is_recursive', 'plugin_manageentities_presaleclients_id',
             'plugin_manageentities_presalecontacts_id', 'plugin_manageentities_presaleorigins_id', 'proposal_type', 'summary',
+            // Same renewal: the subscription or the contract stays followed by the copy
+            'plugin_manageentities_editorsubscriptions_id', 'contracts_id',
             'sales_users_id', 'sales_name', 'sales_role', 'sales_email', 'sales_phone',
             'pm_users_id', 'pm_name', 'pm_role', 'pm_email', 'pm_phone',
             'total_ht', 'total_vat', 'total_ttc',

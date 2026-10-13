@@ -177,6 +177,16 @@
 </div>
 {% endif %}
 
+{# Proposal started from a subscription or a contract to renew (PresaleRenewal) #}
+{% for field, value in renewal ?? {} %}
+    {% if value %}<input type="hidden" name="{{ field }}" value="{{ value }}">{% endif %}
+{% endfor %}
+{% if renewal_label ?? '' %}
+    <div class="alert alert-info">
+        <i class="ti ti-refresh me-1"></i>{{ renewal_label }}
+    </div>
+{% endif %}
+
 {% if entity_name %}
     <div class="alert alert-info">
         <i class="ti ti-building me-1"></i>

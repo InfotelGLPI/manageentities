@@ -88,7 +88,9 @@ class WizardController
             'entity_data'        => [],
             'entities_id'        => 0,   // set only in existing_entity mode or after finishWizard
             'contacts_data'      => [],   // [idx => [fields]]
-            'subscription_data'  => [],   // new_entity mode only: EditorSubscription fields
+            'subscription_data'  => [],   // EditorSubscription fields (new_entity, or a won proposal)
+            // Won proposal: its subscription annexes to choose from (PresaleConversion)
+            'subscription_choices' => [],
             // Set at step 3: finish right after the subscription, writing neither
             // contract, management type nor period of contract.
             'skip_contract'      => 0,
@@ -122,11 +124,17 @@ class WizardController
             Session::addMessageAfterRedirect(__('Only a won proposal can create a customer.', 'manageentities'), false, ERROR);
             Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php');
         }
+        $session = PresaleConversion::prefill($proposal, self::buildDefaultSession());
+        if ($session === []) {
+            // Customer entity out of reach: never created a second time
+            Session::addMessageAfterRedirect(__('The customer of this proposal is not in your entities.', 'manageentities'), false, ERROR);
+            Html::redirect(PresaleProposal::getFormURLWithID($proposal->getID()));
+        }
         $wid = self::generateWizardId();
         if (!isset($_SESSION[self::SESSION_KEY]) || !is_array($_SESSION[self::SESSION_KEY])) {
             $_SESSION[self::SESSION_KEY] = [];
         }
-        $_SESSION[self::SESSION_KEY][$wid] = PresaleConversion::prefill($proposal, self::buildDefaultSession());
+        $_SESSION[self::SESSION_KEY][$wid] = $session;
         Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/addelements.form.php?wid=' . $wid . '&step=1');
     }
 
@@ -390,10 +398,10 @@ class WizardController
         $session = self::getSession();
         $session['wizard_mode'] = 'existing_entity';
         $session['entities_id'] = $entities_id;
-        // existing_entity skips step 3 (subscription, new_entity only) → go to step 4 (contract)
-        $session['step']        = max($session['step'], 4);
+        // existing_entity skips step 3, except for the subscription of a won proposal
+        $session['step']        = max($session['step'], self::hasSubscriptionStep($session) ? 3 : 4);
         self::saveSession($session);
-        return ['success' => true, 'entities_id' => $entities_id, 'step' => 4];
+        return ['success' => true, 'entities_id' => $entities_id, 'step' => $session['step']];
     }
 
     // -------------------------------------------------------------------------
@@ -489,9 +497,15 @@ class WizardController
             }
         }
         $session = self::getSession();
+        // A won proposal made for another customer keeps its own: the subscription it renews
+        // belongs to it
+        if (!empty($session[PresaleConversion::SESSION_PROPOSAL]) && (int) $session['entities_id'] > 0
+            && (int) $session['entities_id'] !== $entities_id) {
+            return ['success' => false, 'errors' => ['entities_id' => __('The customer of the proposal cannot be changed.', 'manageentities')]];
+        }
         $session['entities_id'] = $entities_id;
-        // existing_entity skips step 3 (subscription, new_entity only) → go to step 4 (contract)
-        $session['step']        = max($session['step'], 4);
+        // existing_entity skips step 3, except for the subscription of a won proposal
+        $session['step']        = max($session['step'], self::hasSubscriptionStep($session) ? 3 : 4);
         self::saveSession($session);
         return ['success' => true, 'entities_id' => $entities_id, 'step' => $session['step']];
     }
@@ -833,6 +847,16 @@ class WizardController
         self::jsonOut(self::saveSubscriptionAndReturn($_POST));
     }
 
+    /**
+     * Whether the wizard has a subscription step: always for a new customer, for an existing
+     * one only when a won proposal carries a subscription to create or renew
+     */
+    public static function hasSubscriptionStep(array $session): bool
+    {
+        return Config::useEditorSubscriptions()
+            && ($session['wizard_mode'] !== 'existing_entity' || !empty($session['subscription_choices']));
+    }
+
     public static function saveSubscriptionAndReturn(array $input = []): array
     {
         if (empty($input)) {
@@ -840,6 +864,19 @@ class WizardController
         }
 
         $session = self::getSession();
+        if (!self::hasSubscriptionStep($session)) {
+            return ['success' => false, 'message' => __('No subscription in this wizard', 'manageentities')];
+        }
+
+        // Won proposal with several subscription annexes: the one chosen reloads the step with
+        // its level and type, nothing else is saved
+        $choice = (int) ($input['subscription_choice'] ?? 0);
+        if (!empty($input['change_choice']) && isset($session['subscription_choices'][$choice])) {
+            $session['subscription_data']   = $session['subscription_choices'][$choice]['data'];
+            $session['subscription_choice'] = $choice;
+            self::saveSession($session);
+            return ['success' => true, 'step' => 3];
+        }
 
         // The step offers two exits: "Next", which goes on to the contract, and "Finish
         // without contract", which stops the wizard here so that only the entity, its
@@ -1550,7 +1587,8 @@ class WizardController
             return ['success' => false, 'errors' => ['global' => __('Entity not found', 'manageentities')]];
         }
 
-        // 1b. Publisher subscription (new_entity mode only, skipped if user left step blank)
+        // 1b. Publisher subscription (skipped if user left step blank): created on a new
+        // entity; on an existing one only from a won proposal, renewing its subscription
         $subscription_data = $session['subscription_data'] ?? [];
         $sub_has_content   = !empty($subscription_data)
             && (
@@ -1559,9 +1597,18 @@ class WizardController
                 || ($subscription_data['name'] ?? '') !== ''
                 || !empty($subscription_data['begin_date'])
             );
-        if ($session['wizard_mode'] !== 'existing_entity' && $sub_has_content) {
+        if ($sub_has_content && self::hasSubscriptionStep($session)) {
             $sub = new EditorSubscription();
-            $sub->add(array_merge($subscription_data, ['entities_id' => $entities_id]));
+            // One subscription per entity: the one of the customer is renewed, read again here
+            $subscriptions_id = PresaleConversion::getExistingSubscriptionId($entities_id);
+            if ($subscriptions_id > 0) {
+                if (!$sub->can($subscriptions_id, UPDATE)) {
+                    throw new AccessDeniedHttpException();
+                }
+                $sub->update(['id' => $subscriptions_id] + $subscription_data);
+            } else {
+                $sub->add(array_merge($subscription_data, ['entities_id' => $entities_id]));
+            }
         }
 
         // 2. Contacts
@@ -1802,7 +1849,7 @@ class WizardController
                 || ($sub['name'] ?? '') !== ''
                 || !empty($sub['begin_date'])
             );
-        if ($session['wizard_mode'] !== 'existing_entity' && $sub_has_content) {
+        if ($sub_has_content && self::hasSubscriptionStep($session)) {
             $sub_label = $sub['name'] !== '' ? $sub['name'] : __('(no name)', 'manageentities');
             if (!empty($sub['begin_date'])) {
                 $sub_label .= ' — ' . substr($sub['begin_date'], 0, 10);
@@ -2027,12 +2074,19 @@ class WizardController
         $wizard_url = PLUGIN_MANAGEENTITIES_WEBDIR . '/ajax/wizard.php?wid=' . $wid;
 
         if ($session['wizard_mode'] === 'existing_entity') {
-            $steps = [
-                1 => _n('Entity', 'Entities', 1),
-                4 => __('Contract', 'manageentities'),
-                5 => __('Management type', 'manageentities'),
-                6 => _n('Period of contract', 'Periods of contract', 2, 'manageentities'),
-            ];
+            $steps = [1 => _n('Entity', 'Entities', 1)];
+            // Won proposal with a subscription: it is created or renewed on the customer
+            if (self::hasSubscriptionStep($session)) {
+                $steps[3] = __('Subscription', 'manageentities');
+            }
+            if (empty($session['subscription_only']) || !$use_subscriptions) {
+                $steps[4] = __('Contract', 'manageentities');
+                $steps[5] = __('Management type', 'manageentities');
+                $steps[6] = _n('Period of contract', 'Periods of contract', 2, 'manageentities');
+            }
+            if (!isset($steps[$step])) {
+                $step = 1;
+            }
         } else {
             $steps = [
                 1 => _n('Entity', 'Entities', 1),
@@ -2068,6 +2122,8 @@ class WizardController
             'is_day'      => $is_day,
             'is_hour'     => $is_hour,
             'use_subscriptions' => $use_subscriptions,
+            'has_subscription'  => self::hasSubscriptionStep($session),
+            'subscription_only' => !empty($session['subscription_only']) && $use_subscriptions,
         ];
 
         $vars += self::buildStepVars($step, $session, $rand, $is_day, $is_hour);
@@ -2222,7 +2278,9 @@ class WizardController
 
         $sub_name = $fields['name'] ?? '';
         if ($sub_name === '') {
-            $sub_name = $session['entity_data']['name'] ?? '';
+            $sub_name = $session['wizard_mode'] === 'existing_entity'
+                ? Dropdown::getDropdownName('glpi_entities', (int) $session['entities_id'])
+                : ($session['entity_data']['name'] ?? '');
         }
 
         return [
@@ -2239,6 +2297,11 @@ class WizardController
             'comment'                                     => $fields['comment'] ?? '',
             // Won proposal of subscriptions only: the wizard ends here, no "Next"
             'subscription_only'                           => !empty($session['subscription_only']),
+            // Won proposal: the subscription annexes to choose from, the existing one renewed
+            'subscription_choices'                        => array_map(static fn(array $c): string => $c['label'], $session['subscription_choices'] ?? []),
+            'subscription_choice'                         => (int) ($session['subscription_choice'] ?? array_key_first($session['subscription_choices'] ?? []) ?? 0),
+            'subscription_renewal'                        => $session['wizard_mode'] === 'existing_entity'
+                && PresaleConversion::getExistingSubscriptionId((int) $session['entities_id']) > 0,
         ];
     }
 

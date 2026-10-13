@@ -578,9 +578,15 @@ class EditorSubscription extends CommonDBTM
             $rows[]                  = $row;
         }
 
+        // Expired and not followed by a proposal yet: a new proposal renews it (PresaleRenewal)
+        $renewals = Config::usePresale() && Session::getCurrentInterface() === 'central'
+            ? array_column(PresaleRenewal::getExpiredSubscriptions(array_column($rows, 'entities_id')), 'new_url', 'id')
+            : [];
+
         $last_interventions = self::getLastInterventionDates(array_column($rows, 'entities_id'));
         foreach ($rows as &$row) {
             $row['last_intervention'] = $last_interventions[(int) $row['entities_id']] ?? null;
+            $row['proposal_url']      = $renewals[(int) $row['id']] ?? '';
         }
         unset($row);
 

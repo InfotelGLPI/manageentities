@@ -382,6 +382,7 @@ class PresaleProposal extends CommonDBTM
             'client'     => $client->fields,
             'recipient'  => $recipient->isNewItem() ? '' : trim($recipient->fields['name'] . ' ' . $recipient->fields['firstname']),
             'origin_label' => PresaleOrigin::getTypeName(1),
+            'renewal'    => PresaleRenewal::getSourceLabel($this->fields),
             'origin'     => (int) $this->fields['plugin_manageentities_presaleorigins_id'] > 0
                 ? \Dropdown::getDropdownName(PresaleOrigin::getTable(), (int) $this->fields['plugin_manageentities_presaleorigins_id'])
                 : '',
@@ -426,6 +427,8 @@ class PresaleProposal extends CommonDBTM
                             `plugin_manageentities_presaleclients_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                             `plugin_manageentities_presalecontacts_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'recipient of the proposal',
                             `plugin_manageentities_presaleorigins_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'origin of the request, for the statistics',
+                            `plugin_manageentities_editorsubscriptions_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_editorsubscriptions (id) — expired subscription renewed by the proposal',
+                            `contracts_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_contracts (id) — expiring contract followed by the proposal',
                             `name` varchar(255) DEFAULT NULL,
                             `reference` varchar(32) DEFAULT NULL COMMENT 'set at the first generation, e.g. SOC260914',
                             `status` tinyint NOT NULL DEFAULT '1' COMMENT '1=draft, 2=generated, 3=won, 4=lost (archived)',
@@ -465,6 +468,8 @@ class PresaleProposal extends CommonDBTM
                             KEY `plugin_manageentities_presaleclients_id` (`plugin_manageentities_presaleclients_id`),
                             KEY `plugin_manageentities_presalecontacts_id` (`plugin_manageentities_presalecontacts_id`),
                             KEY `plugin_manageentities_presaleorigins_id` (`plugin_manageentities_presaleorigins_id`),
+                            KEY `plugin_manageentities_editorsubscriptions_id` (`plugin_manageentities_editorsubscriptions_id`),
+                            KEY `contracts_id` (`contracts_id`),
                             KEY `status` (`status`),
                             KEY `sales_users_id` (`sales_users_id`),
                             KEY `pm_users_id` (`pm_users_id`),
@@ -488,6 +493,9 @@ class PresaleProposal extends CommonDBTM
             'estimate_users_id' => ['fkey', 'RELATION to glpi_users (id) — who validated the estimate', 'estimate_date'],
             // Origin of the request, for the statistics
             'plugin_manageentities_presaleorigins_id' => ['fkey', 'origin of the request, for the statistics', 'plugin_manageentities_presalecontacts_id'],
+            // Subscription or contract the proposal renews (lists of Entity::showOpenProposals())
+            'plugin_manageentities_editorsubscriptions_id' => ['fkey', 'RELATION to glpi_plugin_manageentities_editorsubscriptions (id) — expired subscription renewed by the proposal', 'plugin_manageentities_presaleorigins_id'],
+            'contracts_id' => ['fkey', 'RELATION to glpi_contracts (id) — expiring contract followed by the proposal', 'plugin_manageentities_editorsubscriptions_id'],
         ];
         $changed = false;
         foreach ($fields as $name => [$type, $comment, $after]) {
@@ -496,7 +504,7 @@ class PresaleProposal extends CommonDBTM
                 $changed = true;
             }
         }
-        foreach (['estimate_status', 'estimate_users_id', 'plugin_manageentities_presaleorigins_id'] as $key) {
+        foreach (['estimate_status', 'estimate_users_id', 'plugin_manageentities_presaleorigins_id', 'plugin_manageentities_editorsubscriptions_id', 'contracts_id'] as $key) {
             $migration->addKey($table, $key);
         }
         if ($changed) {

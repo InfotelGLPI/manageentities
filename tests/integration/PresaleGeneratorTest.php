@@ -102,6 +102,13 @@ class PresaleGeneratorTest extends DbTestCase
             $section->addText('Proposition commerciale');
             $section->addText('{{PM_NAME}} {{PM_ROLE}} {{PM_EMAIL}} {{PM_PHONE}}');
             $section->addText('{{LOGO_COVER}}');
+            $section->addText('Version {{VERSION}}');
+            // Approval table: one row per version
+            $history = $section->addTable();
+            $history->addRow();
+            foreach (['VERSION_DATE', 'VERSION_NUM', 'VERSION_AUTHOR', 'VERSION_CHANGE'] as $placeholder) {
+                $history->addCell(2000)->addText('{{' . $placeholder . '}}');
+            }
             foreach (['Client', 'Référence', 'Type de contrat', 'Commercial', 'Contact', 'Date contrat'] as $property) {
                 $word->getDocInfo()->setCustomProperty($property, '-');
             }
@@ -254,5 +261,14 @@ class PresaleGeneratorTest extends DbTestCase
         $this->assertSame(2, (int) $proposal->fields['version']);
         // The previous version is kept
         $this->assertTrue((new \Document())->getFromDB($first));
+
+        // Inside the document: version 2, and the approval table holds both versions
+        $document = new \Document();
+        $document->getFromDB($second);
+        $body = self::text($this->readPart(GLPI_DOC_DIR . '/' . $document->fields['filepath'], 'word/document.xml'));
+        $this->assertStringContainsString('Version 2.0', $body);
+        // Oldest first: the initial version, then this one
+        $this->assertMatchesRegularExpression('/1\.0.*Initial version.*2\.0.*Version 2\.0/s', $body);
+        $this->assertStringNotContainsString('{{', $body);
     }
 }

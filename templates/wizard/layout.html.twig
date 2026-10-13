@@ -34,6 +34,8 @@
     'mode': wizard_mode,
     'id': wizard_id|default(''),
     'use_subscriptions': use_subscriptions ?? true,
+    'has_subscription': has_subscription ?? false,
+    'subscription_only': subscription_only ?? false,
 }|json_encode }}">
 
     {% if from_proposal|default(null) %}

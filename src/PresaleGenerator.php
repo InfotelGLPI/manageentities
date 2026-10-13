@@ -143,7 +143,11 @@ class PresaleGenerator
         $template->setCondition('IF_PROJECT_MANAGER', (string) $fields['pm_name'] !== '');
         // No item table of its own: the prices are in the annexes
         $template->setCondition('IF_ITEMS', false);
+        // Version of this document, and the history of the versions (approval table): one row
+        // per generation, the previous ones read from the documents of the proposal
+        $template->setRows('VERSION_NUM', $this->getVersionRows($version));
         $template->setTexts([
+            'VERSION'      => self::versionLabel($version),
             'PM_NAME'      => (string) $fields['pm_name'],
             'PM_ROLE'      => (string) $fields['pm_role'],
             'PM_EMAIL'     => (string) $fields['pm_email'],
@@ -352,6 +356,63 @@ class PresaleGenerator
             return [$height, $height];
         }
         return [(int) round($height * $size[0] / $size[1]), $height];
+    }
+
+    /** Version as printed in the document: 1.0, 2.0... */
+    private static function versionLabel(int $version): string
+    {
+        return $version . '.0';
+    }
+
+    /**
+     * Rows of the history of the versions, oldest first: the documents generated before, then
+     * the one being generated
+     *
+     * @return list<array<string, string>>
+     */
+    private function getVersionRows(int $version): array
+    {
+        $documents = [];
+        foreach ((new Document_Item())->find([
+            'itemtype' => PresaleProposal::class,
+            'items_id' => $this->proposal->getID(),
+        ], ['id']) as $link) {
+            $document = new Document();
+            // Generated versions only: named "<reference> - <client> - v<n>.docx"
+            if ($document->getFromDB((int) $link['documents_id'])
+                && preg_match('/ - v(\d+)\.docx$/', (string) $document->fields['name'], $match)
+                && (int) $match[1] < $version) {
+                $documents[(int) $match[1]] = $document->fields;
+            }
+        }
+        ksort($documents);
+
+        $rows = [];
+        foreach ($documents as $number => $document) {
+            $rows[] = $this->versionRow(
+                $number,
+                (string) $document['date_creation'],
+                (int) $document['users_id'],
+            );
+        }
+        $rows[] = $this->versionRow($version, (string) $_SESSION['glpi_currenttime'], (int) \Session::getLoginUserID());
+
+        return $rows;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function versionRow(int $version, string $date, int $users_id): array
+    {
+        return [
+            'VERSION_NUM'    => self::versionLabel($version),
+            'VERSION_DATE'   => $date !== '' ? date('d/m/Y', (int) strtotime($date)) : '',
+            'VERSION_AUTHOR' => $users_id > 0 ? getUserName($users_id) : '',
+            'VERSION_CHANGE' => $version === 1
+                ? __('Initial version', 'manageentities')
+                : sprintf(__('Version %s', 'manageentities'), self::versionLabel($version)),
+        ];
     }
 
     /**

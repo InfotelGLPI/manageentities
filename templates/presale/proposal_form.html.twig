@@ -38,6 +38,7 @@
  # can_outcome - an open proposal the user can update: Lost / Won buttons
  # can_duplicate - the user can create proposals: Duplicate button
  # customer_url - won proposal: the customer wizard prefilled from it, empty otherwise
+ # renewal   - renewed subscription or contract (PresaleRenewal::getSourceLabel()), empty when none
  #}
 
 {% import '@manageentities/presale/outcome_buttons.html.twig' as outcome %}
@@ -100,6 +101,9 @@
             {{ _self.row(__('Address'), [client.address ?? '', [client.postcode ?? '', client.town ?? '']|join(' ')|trim]|filter(v => v is not empty)|join(', ')) }}
             {{ _self.row(__('Recipient', 'manageentities'), recipient) }}
             {{ _self.row(origin_label, origin) }}
+            {% if renewal %}
+                {{ _self.row(__('Renewal'), renewal) }}
+            {% endif %}
         </div>
     </div>
 

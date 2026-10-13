@@ -36,6 +36,9 @@
  # can_purge  - offers the deletion of a proposal
  # new_url    - new proposal (for the customer when there is a single one), empty when not allowed
  # list_url   - search page of the proposals
+ # subscriptions - rows of PresaleRenewal::getExpiredSubscriptions()
+ # contracts  - rows of PresaleRenewal::getExpiringContracts()
+ # show_subscriptions / show_contracts - the lists of renewals the user may see
  #}
 
 <div class="card">
@@ -67,3 +70,110 @@
         {{ proposals.table(proposals, {'action_url': action_url, 'can_purge': can_purge, 'show_total': true}) }}
     {% endif %}
 </div>
+
+{# Renewals to propose: a row leaves its list once a proposal started from it is in progress or won #}
+{% if show_subscriptions %}
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="ti ti-certificate me-1"></i>{{ __('Expired subscriptions to renew', 'manageentities') }}
+                <span class="badge bg-red-lt ms-1">{{ subscriptions|length }}</span>
+            </h3>
+        </div>
+        {% if subscriptions is empty %}
+            <div class="card-body text-muted">{{ __('No expired subscription to renew.', 'manageentities') }}</div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-sm table-hover card-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ _n('Entity', 'Entities', 1) }}</th>
+                            <th>{{ __('Referenced name at the publisher', 'manageentities') }}</th>
+                            <th class="text-center">{{ __('Type', 'manageentities') }}</th>
+                            <th>{{ __('Subscription level', 'manageentities') }}</th>
+                            <th>{{ __('End date', 'manageentities') }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in subscriptions %}
+                            <tr>
+                                <td>{{ row.entity }}</td>
+                                <td>{{ row.name ?: '-' }}</td>
+                                <td class="text-center">
+                                    {% if row.cloud_client %}
+                                        <span class="badge bg-info-lt"><i class="ti ti-cloud me-1"></i>{{ __('Cloud', 'manageentities') }}</span>
+                                    {% else %}
+                                        <span class="badge bg-success-lt"><i class="ti ti-certificate me-1"></i>{{ __('Editor', 'manageentities') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ row.level ?: '-' }}</td>
+                                <td class="text-danger fw-bold">{{ row.end_date|formatted_date }}</td>
+                                <td class="text-end">
+                                    {% if row.new_url %}
+                                        <a href="{{ row.new_url }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="ti ti-file-plus me-1"></i>{{ __('New proposal', 'manageentities') }}
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if show_contracts %}
+    <div class="card mt-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="ti ti-writing-sign me-1"></i>{{ __('Contracts about to expire', 'manageentities') }}
+                <span class="badge bg-orange-lt ms-1">{{ contracts|length }}</span>
+            </h3>
+        </div>
+        <div class="card-body border-bottom py-2 small text-muted">
+            {{ __('Contracts reported by the end and notice alerts of the contracts (delay set in the entities), to prepare a proposal for a new contract.', 'manageentities') }}
+        </div>
+        {% if contracts is empty %}
+            <div class="card-body text-muted">{{ __('No contract about to expire.', 'manageentities') }}</div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-sm table-hover card-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ _n('Entity', 'Entities', 1) }}</th>
+                            <th>{{ _n('Contract', 'Contracts', 1) }}</th>
+                            <th>{{ __('Number') }}</th>
+                            <th>{{ __('Notice') }}</th>
+                            <th>{{ __('End date', 'manageentities') }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in contracts %}
+                            <tr>
+                                <td>{{ row.entity }}</td>
+                                <td><a href="{{ row.contract_url }}">{{ row.name ?: '-' }}</a></td>
+                                <td>{{ row.num ?: '-' }}</td>
+                                <td>{{ row.notice_date ? row.notice_date|formatted_date : '-' }}</td>
+                                <td class="{{ row.expired ? 'text-danger fw-bold' : '' }}">
+                                    {{ row.end_date|formatted_date }}
+                                    {% if row.expired %}<i class="ti ti-alert-circle ms-1" title="{{ __('Expired', 'manageentities') }}"></i>{% endif %}
+                                </td>
+                                <td class="text-end">
+                                    {% if row.new_url %}
+                                        <a href="{{ row.new_url }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="ti ti-file-plus me-1"></i>{{ __('New proposal', 'manageentities') }}
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

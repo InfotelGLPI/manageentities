@@ -42,6 +42,29 @@
     </div>
     <div class="card-body">
         <div id="step3-errors" class="alert alert-danger d-none"></div>
+        {% if subscription_renewal|default(false) %}
+            <div class="alert alert-info">
+                <i class="ti ti-refresh me-1"></i>
+                {{ __('The customer already has a publisher subscription: it is renewed with these values.', 'manageentities') }}
+            </div>
+        {% endif %}
+        {# Won proposal with several subscription annexes (cloud and on-premise): one subscription per customer #}
+        {% if subscription_choices|default([])|length > 1 %}
+            <div class="mb-3">
+                <label class="col-form-label fw-bold" for="me_sub_choice_{{ rand }}">
+                    {{ __('Subscription annex of the proposal', 'manageentities') }}
+                </label>
+                <select class="form-select" id="me_sub_choice_{{ rand }}" name="subscription_choice"
+                        data-me-wizard-subscription-choice>
+                    {% for id, label in subscription_choices %}
+                        <option value="{{ id }}" {{ id == subscription_choice ? 'selected' : '' }}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <div class="form-text">
+                    {{ __('The proposal holds several subscription annexes: a customer has a single subscription, choose the one to keep.', 'manageentities') }}
+                </div>
+            </div>
+        {% endif %}
         {% if subscription_only|default(false) %}
             <div class="alert alert-info">
                 <i class="ti ti-info-circle me-1"></i>
