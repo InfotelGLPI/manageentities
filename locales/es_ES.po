@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-12 14:45+0000\n"
+"POT-Creation-Date: 2026-10-13 11:21+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2019\n"
 "Language-Team: Spanish (Spain) (https://www.transifex.com/infotelGLPI/"
@@ -540,7 +540,7 @@ msgstr ""
 msgid "Associate to a contract"
 msgstr ""
 
-#: templates/directhelpdesk_ticket_tab.html.twig:95
+#: templates/directhelpdesk_ticket_tab.html.twig:96
 msgid "Associate with the ticket"
 msgstr ""
 
@@ -1135,7 +1135,7 @@ msgstr ""
 #: templates/directhelpdesk_modal.html.twig:78
 #: templates/directhelpdesk_form.html.twig:96
 #: templates/directhelpdesk_ticket_tab.html.twig:35
-#: templates/directhelpdesk_ticket_tab.html.twig:71
+#: templates/directhelpdesk_ticket_tab.html.twig:72
 #: templates/dat/step_general.html.twig:67
 #: templates/dat/step_summary.html.twig:66
 #: templates/ticket_overview.html.twig:251
@@ -1318,7 +1318,7 @@ msgstr ""
 #: templates/generatecri_wizard.html.twig:252
 #: templates/directhelpdesk_modal.html.twig:74
 #: templates/directhelpdesk_ticket_tab.html.twig:38
-#: templates/directhelpdesk_ticket_tab.html.twig:74
+#: templates/directhelpdesk_ticket_tab.html.twig:75
 #: templates/presale/estimate_table.html.twig:49
 #: templates/presale/estimate_table.html.twig:50
 #: templates/presale/estimate_table.html.twig:70
@@ -1403,7 +1403,7 @@ msgstr ""
 #: templates/directhelpdesk_modal.html.twig:83
 #: templates/directhelpdesk_form.html.twig:105
 #: templates/directhelpdesk_ticket_tab.html.twig:37
-#: templates/directhelpdesk_ticket_tab.html.twig:73
+#: templates/directhelpdesk_ticket_tab.html.twig:74
 msgid "Duration"
 msgstr ""
 
@@ -3507,7 +3507,7 @@ msgid "See the unbilled interventions"
 msgstr ""
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:36
-#: templates/directhelpdesk_ticket_tab.html.twig:69
+#: templates/directhelpdesk_ticket_tab.html.twig:70
 msgid "Select"
 msgstr ""
 
@@ -3843,7 +3843,7 @@ msgstr ""
 #: templates/generatecri_wizard.html.twig:138
 #: templates/generatecri_wizard.html.twig:215
 #: templates/directhelpdesk_ticket_tab.html.twig:36
-#: templates/directhelpdesk_ticket_tab.html.twig:72
+#: templates/directhelpdesk_ticket_tab.html.twig:73
 #: templates/ticket_overview.html.twig:249
 #: templates/report_occupation_form.html.twig:45
 msgid "Technician"
@@ -4241,7 +4241,7 @@ msgstr ""
 #: templates/directhelpdesk_modal.html.twig:60
 #: templates/directhelpdesk_form.html.twig:114
 #: templates/directhelpdesk_ticket_tab.html.twig:34
-#: templates/directhelpdesk_ticket_tab.html.twig:70
+#: templates/directhelpdesk_ticket_tab.html.twig:71
 #: templates/presale/proposal_form.html.twig:132
 #: templates/presale/step_annexes.html.twig:241
 msgid "Title"
