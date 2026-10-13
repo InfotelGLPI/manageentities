@@ -61,6 +61,7 @@
 {% if unbilled is not empty %}
     <h3 class="mt-3">{{ __('Unbilled interventions of the customer', 'manageentities') }}</h3>
     <form method="post" action="{{ form_url }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="tickets_id" value="{{ tickets_id }}">
         <div class="table-responsive">
             <table class="table table-sm table-hover table-vcenter">

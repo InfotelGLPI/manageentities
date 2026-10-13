@@ -38,6 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Migration;
 use Session;
+use Ticket;
 
 class DirectHelpdesk_Ticket extends CommonDBTM
 {
@@ -121,17 +122,19 @@ class DirectHelpdesk_Ticket extends CommonDBTM
 
         // Unbilled interventions of the ticket customer (those of the alert shown on top of
         // the ticket), offered to be associated with it
-        $unbilled = [];
-        if ($item->getType() == 'Ticket'
+        $unbilled   = [];
+        $tickets_id = 0;
+        if ($item instanceof Ticket
             && Session::haveRight(self::$rightname, UPDATE)
             && $item->can($item->getID(), READ)) {
-            $unbilled = self::getTicketSelectData((int) $item->fields['entities_id'])['rows'] ?? [];
+            $tickets_id = $item->getID();
+            $unbilled   = self::getTicketSelectData((int) $item->fields['entities_id'])['rows'] ?? [];
         }
 
         TemplateRenderer::getInstance()->display('@manageentities/directhelpdesk_ticket_tab.html.twig', [
             'rows'       => $rows,
             'unbilled'   => $unbilled,
-            'tickets_id' => $item->getID(),
+            'tickets_id' => $tickets_id,
             'form_url'   => DirectHelpdesk::getFormURL(),
         ]);
         return true;
