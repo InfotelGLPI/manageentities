@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 11:21+0000\n"
+"POT-Creation-Date: 2026-10-13 16:04+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/"
@@ -48,7 +48,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/PresaleWizard.php:1676
+#: src/PresaleWizard.php:1698
 #, php-format
 msgid "%1$s, line %2$d: %3$s"
 msgstr ""
@@ -63,7 +63,7 @@ msgstr ""
 msgid "%1$s: subscription level \"%2$s\" unknown here, imported without level."
 msgstr ""
 
-#: src/PresaleWizard.php:1696
+#: src/PresaleWizard.php:1718
 #, php-format
 msgid "%1$s: the priced lines total %2$s days, the estimate %3$s days"
 msgstr ""
@@ -91,7 +91,7 @@ msgstr[3] ""
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
 
-#: src/EditorSubscription.php:1111
+#: src/EditorSubscription.php:1117
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
@@ -105,7 +105,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/PresaleWizard.php:2198 src/PresaleAnnexTypeTransfer.php:247
+#: src/PresaleWizard.php:2222 src/PresaleAnnexTypeTransfer.php:247
 #, php-format
 msgid "%s (copy)"
 msgstr ""
@@ -115,7 +115,7 @@ msgstr ""
 msgid "%s client(s) able to open tickets"
 msgstr ""
 
-#: src/PresaleWizard.php:995 src/DatWizard.php:595 src/DatWizard.php:598
+#: src/PresaleWizard.php:1015 src/DatWizard.php:595 src/DatWizard.php:598
 #: src/DatWizard.php:602
 #, php-format
 msgid "%s is mandatory"
@@ -126,12 +126,12 @@ msgstr ""
 msgid "%s open ticket(s)"
 msgstr ""
 
-#: src/PresaleWizard.php:1563
+#: src/PresaleWizard.php:1585
 #, php-format
 msgid "%s € excl. VAT per subscription per month"
 msgstr ""
 
-#: src/PresaleWizard.php:1668
+#: src/PresaleWizard.php:1690
 #, php-format
 msgid "%s: at least one line is required"
 msgstr ""
@@ -151,7 +151,7 @@ msgstr ""
 msgid "%s: template deleted."
 msgstr ""
 
-#: src/PresaleWizard.php:1647
+#: src/PresaleWizard.php:1669
 #, php-format
 msgid "%s: the VAT rate must be between 0 and 100"
 msgstr ""
@@ -175,7 +175,7 @@ msgstr "(в днях)"
 msgid "(in hours)"
 msgstr "(в часах)"
 
-#: src/WizardController.php:1806
+#: src/WizardController.php:1853
 msgid "(no name)"
 msgstr ""
 
@@ -183,7 +183,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:2307
+#: src/WizardController.php:2370
 msgid "-- Select a template --"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgid ""
 "most)."
 msgstr ""
 
-#: src/WizardController.php:303
+#: src/WizardController.php:311
 msgid "A contract with this number already exists"
 msgstr ""
 
@@ -218,7 +218,7 @@ msgstr ""
 msgid "A draft of the next version is in progress."
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:88
+#: templates/presale/proposal_form.html.twig:89
 msgid "A new draft with the same client, team and annexes"
 msgstr ""
 
@@ -270,7 +270,7 @@ msgid "Add a company"
 msgstr "Добавить компанию"
 
 #: templates/wizard/step2_contacts.html.twig:50
-#: templates/presale/step_client.html.twig:276
+#: templates/presale/step_client.html.twig:286
 msgid "Add a contact"
 msgstr ""
 
@@ -341,8 +341,8 @@ msgstr ""
 #: templates/entity/description.html.twig:133
 #: templates/wizard/step1_entity.html.twig:95
 #: templates/company_form.html.twig:63
-#: templates/presale/step_client.html.twig:215
-#: templates/presale/proposal_form.html.twig:100
+#: templates/presale/step_client.html.twig:225
+#: templates/presale/proposal_form.html.twig:101
 #: templates/presale/client_form.html.twig:65
 msgid "Address"
 msgstr ""
@@ -426,7 +426,7 @@ msgid "An error occurred while saving."
 msgstr ""
 
 #: src/PresaleWizard.php:81 src/PresaleProposal_Annex.php:85
-#: templates/presale/proposal_form.html.twig:124
+#: templates/presale/proposal_form.html.twig:128
 #: templates/presale/step_generate.html.twig:69
 msgid "Annex"
 msgid_plural "Annexes"
@@ -503,7 +503,7 @@ msgstr ""
 msgid "Archived clients with unbilled hours:"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:106
+#: templates/wizard/layout.html.twig:108
 msgid "Archived customer"
 msgstr ""
 
@@ -595,11 +595,11 @@ msgstr "Связанный тикет"
 msgid "Assumptions, risks, what the estimate does not cover..."
 msgstr ""
 
-#: src/PresaleWizard.php:1133
+#: src/PresaleWizard.php:1155
 msgid "At least one contact is required."
 msgstr ""
 
-#: src/WizardController.php:1492 src/WizardController.php:1521
+#: src/WizardController.php:1529 src/WizardController.php:1558
 msgid "At least one service period with a rate is required"
 msgstr ""
 
@@ -642,8 +642,8 @@ msgstr ""
 msgid "Begin date"
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:157 src/WizardController.php:284
-#: src/WizardController.php:317 src/WizardController.php:880
+#: src/EditorSubscriptionWizard.php:157 src/WizardController.php:292
+#: src/WizardController.php:325 src/WizardController.php:917
 msgid "Begin date is required"
 msgstr ""
 
@@ -664,15 +664,15 @@ msgstr ""
 msgid "CSV"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:89 templates/wizard/layout.html.twig:115
-#: templates/wizard/layout.html.twig:143 templates/wizard/layout.html.twig:173
+#: templates/wizard/layout.html.twig:91 templates/wizard/layout.html.twig:117
+#: templates/wizard/layout.html.twig:145 templates/wizard/layout.html.twig:175
 #: templates/editorsubscription_transfer.html.twig:68
 #: templates/presale/layout.html.twig:107 templates/dat/layout.html.twig:97
 #: templates/editorsubscription_wizard.html.twig:100
 msgid "Cancel"
 msgstr ""
 
-#: src/WizardController.php:1344
+#: src/WizardController.php:1381
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -700,7 +700,7 @@ msgid ""
 "are filled in below, and can be changed."
 msgstr ""
 
-#: src/PresaleWizard.php:2030
+#: src/PresaleWizard.php:2052
 msgid ""
 "Choose a project manager declared in the configuration (step 2) to request "
 "the estimate."
@@ -714,11 +714,11 @@ msgstr ""
 msgid "Choose the JSON file to import."
 msgstr ""
 
-#: src/PresaleWizard.php:1529
+#: src/PresaleWizard.php:1551
 msgid "Choose the annex model to add."
 msgstr ""
 
-#: src/PresaleWizard.php:1325
+#: src/PresaleWizard.php:1347
 msgid "Choose the recipient of the proposal."
 msgstr ""
 
@@ -731,7 +731,7 @@ msgstr ""
 #: templates/entity/description.html.twig:79
 #: templates/entity/description.html.twig:143
 #: templates/wizard/step1_entity.html.twig:105
-#: templates/presale/step_client.html.twig:221
+#: templates/presale/step_client.html.twig:231
 #: templates/presale/client_form.html.twig:67
 msgid "City"
 msgstr ""
@@ -762,7 +762,7 @@ msgstr ""
 msgid "Client annuary"
 msgstr "Клиентский справочник"
 
-#: templates/presale/step_client.html.twig:200
+#: templates/presale/step_client.html.twig:210
 msgid "Client details"
 msgstr ""
 
@@ -803,7 +803,8 @@ msgstr ""
 msgid "Closed contract period state"
 msgstr ""
 
-#: src/SubscriptionLevel.php:71
+#: src/SubscriptionLevel.php:71 src/PresaleConversion.php:225
+#: templates/entity/proposals_tab.html.twig:105
 #: templates/entity/editorsubscription_tab.html.twig:92
 #: templates/entity/status_tab.html.twig:71
 #: templates/entity/status_tab.html.twig:158
@@ -811,7 +812,7 @@ msgid "Cloud"
 msgstr ""
 
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
-#: src/EditorSubscription.php:751
+#: src/EditorSubscription.php:757
 #: src/NotificationTargetEditorSubscription.php:120 hook.php:1025
 #: templates/editorsubscription_fields.html.twig:70
 #: templates/cridetail_for_ticket.html.twig:93
@@ -850,7 +851,7 @@ msgstr ""
 #: templates/wizard/step2_contact_block.html.twig:99
 #: templates/wizard/step1_entity.html.twig:121
 #: templates/wizard/step4_contract.html.twig:98
-#: templates/presale/step_client.html.twig:251
+#: templates/presale/step_client.html.twig:261
 #: templates/presale/client_form.html.twig:75
 #: templates/editorsubscription_fields.html.twig:136
 #: templates/cridetail_for_ticket.html.twig:157
@@ -868,8 +869,8 @@ msgstr[1] "Компании"
 msgstr[2] "Компаний"
 msgstr[3] "Компаний"
 
-#: src/PresaleWizard.php:989 templates/presale/step_client.html.twig:205
-#: templates/presale/proposal_form.html.twig:99
+#: src/PresaleWizard.php:1009 templates/presale/step_client.html.twig:215
+#: templates/presale/proposal_form.html.twig:100
 #: templates/presale/client_form.html.twig:63
 msgid "Company name"
 msgstr ""
@@ -882,7 +883,7 @@ msgstr "Конфигурация ежедневная или почасовая"
 msgid "Configuring the client side view"
 msgstr "Настройка клиентского представления"
 
-#: templates/wizard/layout.html.twig:148
+#: templates/wizard/layout.html.twig:150
 msgid "Confirm and finish"
 msgstr ""
 
@@ -897,7 +898,7 @@ msgstr ""
 #: templates/wizard/step2_contact_block.html.twig:38
 #: templates/wizard/step2_contacts.html.twig:36
 #: templates/presale/step_client.html.twig:79
-#: templates/presale/step_client.html.twig:262
+#: templates/presale/step_client.html.twig:272
 #: templates/presale/client_form.html.twig:84
 msgid "Contact"
 msgid_plural "Contacts"
@@ -906,17 +907,17 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/PresaleWizard.php:1144
+#: src/PresaleWizard.php:1166
 #, php-format
 msgid "Contact #%d: invalid email address"
 msgstr ""
 
-#: src/PresaleWizard.php:1138
+#: src/PresaleWizard.php:1160
 #, php-format
 msgid "Contact #%d: the last name is mandatory"
 msgstr ""
 
-#: src/WizardController.php:2039
+#: src/WizardController.php:2093
 msgid "Contacts"
 msgstr ""
 
@@ -928,7 +929,8 @@ msgstr "Содержание, дата окончания и начала обя
 msgid "Context, scope, constraints..."
 msgstr ""
 
-#: src/WizardController.php:2032 src/WizardController.php:2046
+#: src/WizardController.php:2083 src/WizardController.php:2100
+#: templates/entity/proposals_tab.html.twig:147
 #: templates/wizard/step6_intervention_block.html.twig:98
 #: templates/wizard/step4_contract.html.twig:39
 #: templates/followup_report.html.twig:55
@@ -944,7 +946,7 @@ msgstr[3] ""
 msgid "Contract closure"
 msgstr ""
 
-#: src/WizardController.php:1618
+#: src/WizardController.php:1665
 msgid "Contract data is missing"
 msgstr ""
 
@@ -964,7 +966,7 @@ msgstr "Контракт импортирован в GLPI"
 msgid "Contract number"
 msgstr "Номер контракта"
 
-#: src/WizardController.php:280
+#: src/WizardController.php:288
 msgid "Contract number is required"
 msgstr ""
 
@@ -977,8 +979,18 @@ msgstr "Контракт в наличии"
 msgid "Contract type"
 msgstr ""
 
-#: src/WizardController.php:292
+#: src/WizardController.php:300
 msgid "Contract type is required"
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:132
+msgid "Contracts about to expire"
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:137
+msgid ""
+"Contracts reported by the end and notice alerts of the contracts (delay set "
+"in the entities), to prepare a proposal for a new contract."
 msgstr ""
 
 #: src/NotificationTargetContract.php:103
@@ -987,19 +999,19 @@ msgstr ""
 msgid "Contracts running out of remaining days"
 msgstr ""
 
-#: src/Entity.php:79 src/Entity.php:286
+#: src/Entity.php:79 src/Entity.php:291
 #: templates/entity/status_tab.html.twig:32
 msgid "Contracts status overview"
 msgstr ""
 
-#: src/Entity.php:240
+#: src/Entity.php:245
 msgid "Contractual follow-up"
 msgstr ""
 
 #: templates/entity/description.html.twig:81
 #: templates/entity/description.html.twig:153
 #: templates/wizard/step1_entity.html.twig:115
-#: templates/presale/step_client.html.twig:227
+#: templates/presale/step_client.html.twig:237
 #: templates/presale/client_form.html.twig:69
 msgid "Country"
 msgstr ""
@@ -1039,7 +1051,7 @@ msgstr ""
 msgid "Create the DAT"
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:81
+#: templates/presale/proposal_form.html.twig:82
 msgid "Create the customer"
 msgstr ""
 
@@ -1101,7 +1113,7 @@ msgstr ""
 msgid "Customer comments"
 msgstr "Комментарии клиента"
 
-#: templates/wizard/layout.html.twig:42
+#: templates/wizard/layout.html.twig:44
 msgid "Customer created from the won proposal"
 msgstr ""
 
@@ -1150,7 +1162,7 @@ msgstr ""
 msgid "Daily schedule"
 msgstr "Ежедневное расписание"
 
-#: src/Entity.php:71 src/Entity.php:257
+#: src/Entity.php:71 src/Entity.php:262
 #: templates/entity/description.html.twig:40
 msgid "Data administrative"
 msgstr "Административные данные"
@@ -1193,12 +1205,12 @@ msgstr "Дата обновления"
 msgid "Date of signature"
 msgstr "Дата подписания"
 
-#: src/WizardController.php:1048
+#: src/WizardController.php:1085
 msgid "Date of signature is required"
 msgstr ""
 
 #: src/NotificationTargetPresaleProposal.php:135 src/PresaleProposal.php:190
-#: templates/presale/proposal_form.html.twig:110
+#: templates/presale/proposal_form.html.twig:114
 #: templates/presale/step_general.html.twig:72
 #: templates/presale/step_generate.html.twig:63
 msgid "Date of the contract"
@@ -1278,7 +1290,7 @@ msgstr "Список предприятий по умолчанию для об�
 msgid "Default origin of the requests of existing customers"
 msgstr ""
 
-#: src/WizardController.php:380
+#: src/WizardController.php:388
 msgid "Default parent entity is not configured"
 msgstr ""
 
@@ -1312,7 +1324,7 @@ msgstr "Время PM по умолчанию"
 msgid "Delete"
 msgstr "Удалить"
 
-#: templates/wizard/layout.html.twig:178
+#: templates/wizard/layout.html.twig:180
 msgid "Delete and reinitialize"
 msgstr ""
 
@@ -1343,7 +1355,7 @@ msgid ""
 "are kept."
 msgstr ""
 
-#: templates/wizard/layout.html.twig:176
+#: templates/wizard/layout.html.twig:178
 msgid "Deleting…"
 msgstr ""
 
@@ -1417,7 +1429,7 @@ msgstr ""
 msgid "Download the JSON file"
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:60
+#: templates/presale/proposal_form.html.twig:61
 msgid "Download the proposal"
 msgstr ""
 
@@ -1425,7 +1437,7 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:89
+#: templates/presale/proposal_form.html.twig:90
 msgid "Duplicate"
 msgstr ""
 
@@ -1445,7 +1457,7 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: src/WizardController.php:288
+#: src/WizardController.php:296
 msgid "Duration is required"
 msgstr ""
 
@@ -1474,20 +1486,21 @@ msgid ""
 "\"%2$s\" and not yet assigned to a technician"
 msgstr ""
 
-#: templates/entity/editorsubscription_tab.html.twig:107
+#: templates/entity/editorsubscription_tab.html.twig:113
 #: templates/contract_detail_form.html.twig:47
 msgid "Edit"
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:65
+#: templates/presale/proposal_form.html.twig:66
 msgid "Edit in the wizard"
 msgstr ""
 
+#: src/PresaleConversion.php:225 templates/entity/proposals_tab.html.twig:107
 #: templates/entity/editorsubscription_tab.html.twig:94
 msgid "Editor"
 msgstr ""
 
-#: src/EditorSubscription.php:159 src/EditorSubscription.php:743
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:749
 #: src/NotificationTargetEditorSubscription.php:121
 #: templates/editorsubscription_fields.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:95
@@ -1503,7 +1516,7 @@ msgstr ""
 #: templates/wizard/step2_contact_block.html.twig:85
 #: templates/wizard/step1_entity.html.twig:84
 #: templates/presale/step_client.html.twig:112
-#: templates/presale/step_client.html.twig:234
+#: templates/presale/step_client.html.twig:244
 #: templates/presale/step_team.html.twig:89
 #: templates/presale/client_form.html.twig:71
 #: templates/presale/client_form.html.twig:95
@@ -1528,6 +1541,8 @@ msgstr ""
 #: src/EditorSubscription.php:187
 #: src/NotificationTargetEditorSubscription.php:110
 #: src/NotificationTargetEditorSubscription.php:147
+#: templates/entity/proposals_tab.html.twig:94
+#: templates/entity/proposals_tab.html.twig:150
 #: templates/entity/editorsubscription_tab.html.twig:79
 #: templates/wizard/step6_intervention_block.html.twig:65
 #: templates/report_moving_form.html.twig:41
@@ -1549,8 +1564,8 @@ msgstr ""
 msgid "End date cannot be less than begin date"
 msgstr "Дата окончания не может быть меньше даты начала"
 
-#: src/EditorSubscriptionWizard.php:160 src/WizardController.php:320
-#: src/WizardController.php:883
+#: src/EditorSubscriptionWizard.php:160 src/WizardController.php:328
+#: src/WizardController.php:920
 msgid "End date is required"
 msgstr ""
 
@@ -1593,6 +1608,8 @@ msgstr ""
 #: src/NotificationTargetEntity.php:108
 #: templates/report_moving_result.html.twig:40
 #: templates/entity/references.html.twig:69
+#: templates/entity/proposals_tab.html.twig:90
+#: templates/entity/proposals_tab.html.twig:146
 #: templates/entity/contracts_tab.html.twig:51
 #: templates/entity/editorsubscription_tab.html.twig:72
 #: templates/wizard/step2_contact_block.html.twig:95
@@ -1618,20 +1635,20 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: templates/wizard/layout.html.twig:80
+#: templates/wizard/layout.html.twig:82
 msgid "Entity already exists"
 msgstr ""
 
-#: src/WizardController.php:1482 src/WizardController.php:1529
+#: src/WizardController.php:1519 src/WizardController.php:1566
 msgid "Entity data is missing"
 msgstr ""
 
 #: src/EditorSubscriptionWizard.php:239 src/Company.php:224 src/Company.php:266
-#: src/WizardController.php:364 src/WizardController.php:370
-#: src/WizardController.php:385 src/WizardController.php:464
-#: src/WizardController.php:470 src/WizardController.php:558
-#: src/WizardController.php:946 src/WizardController.php:1534
-#: src/WizardController.php:1550
+#: src/WizardController.php:372 src/WizardController.php:378
+#: src/WizardController.php:393 src/WizardController.php:472
+#: src/WizardController.php:478 src/WizardController.php:572
+#: src/WizardController.php:983 src/WizardController.php:1571
+#: src/WizardController.php:1587
 msgid "Entity not found"
 msgstr ""
 
@@ -1643,19 +1660,19 @@ msgstr ""
 msgid "Entity used to archive customers."
 msgstr ""
 
-#: src/WizardController.php:1635
+#: src/WizardController.php:1682
 msgid "Error creating contract"
 msgstr ""
 
-#: src/WizardController.php:1545
+#: src/WizardController.php:1582
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:1686
+#: src/WizardController.php:1733
 msgid "Error creating management type"
 msgstr ""
 
-#: src/WizardController.php:388
+#: src/WizardController.php:396
 msgid "Error unarchiving entity"
 msgstr ""
 
@@ -1713,11 +1730,12 @@ msgstr "Превышение"
 msgid "Existing customer"
 msgstr ""
 
-#: templates/presale/step_client.html.twig:183
+#: templates/presale/step_client.html.twig:193
 #: templates/presale/client_form.html.twig:52
 msgid "Existing customer:"
 msgstr ""
 
+#: templates/entity/proposals_tab.html.twig:163
 #: templates/editorsubscription_fields.html.twig:128
 msgid "Expired"
 msgstr ""
@@ -1734,6 +1752,10 @@ msgstr ""
 
 #: templates/entity/editorsubscription_tab.html.twig:40
 msgid "Expired subscriptions"
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:79
+msgid "Expired subscriptions to renew"
 msgstr ""
 
 #: src/PresaleAnnexType.php:155 templates/followup_export_toolbar.html.twig:40
@@ -1772,7 +1794,7 @@ msgid "Filtered by default state list"
 msgstr ""
 
 #: src/PresaleProposal.php:61 src/PresaleClient.php:134
-#: templates/entity/proposals_tab.html.twig:45
+#: templates/entity/proposals_tab.html.twig:48
 #: templates/presale/home.html.twig:70
 msgid "Financial proposal"
 msgid_plural "Financial proposals"
@@ -1781,8 +1803,8 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: templates/wizard/step3_subscription.html.twig:68
-#: templates/wizard/step3_subscription.html.twig:70
+#: templates/wizard/step3_subscription.html.twig:91
+#: templates/wizard/step3_subscription.html.twig:93
 msgid "Finish without contract"
 msgstr ""
 
@@ -1791,7 +1813,7 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: src/WizardController.php:264
+#: src/WizardController.php:272
 msgid "First name is required"
 msgstr ""
 
@@ -1803,7 +1825,7 @@ msgstr ""
 msgid "From"
 msgstr "С"
 
-#: src/PresaleConversion.php:205
+#: src/PresaleConversion.php:305
 #, php-format
 msgid "From the proposal %s"
 msgstr ""
@@ -1818,7 +1840,7 @@ msgid ""
 "applied to the contract when all periods are closed."
 msgstr ""
 
-#: src/Followup.php:48 src/Entity.php:68 src/Entity.php:241
+#: src/Followup.php:48 src/Entity.php:68 src/Entity.php:246
 #: templates/followup_criterias.html.twig:42
 msgid "General follow-up"
 msgstr "Общий мониторинг"
@@ -1960,8 +1982,12 @@ msgstr "Информация успешно удалена."
 msgid "Initial credit"
 msgstr "Начальный кредит"
 
-#: src/WizardController.php:326
+#: src/WizardController.php:334
 msgid "Initial credit is required"
+msgstr ""
+
+#: src/PresaleGenerator.php:413
+msgid "Initial version"
 msgstr ""
 
 #: src/DatWizard.php:110
@@ -1976,7 +2002,7 @@ msgstr ""
 msgid "Internal name"
 msgstr ""
 
-#: src/EditorSubscription.php:185 src/EditorSubscription.php:759 hook.php:1038
+#: src/EditorSubscription.php:185 src/EditorSubscription.php:765 hook.php:1038
 #: templates/editorsubscription_fields.html.twig:78
 #: templates/cridetail_for_ticket.html.twig:55
 #: templates/contract_detail_form.html.twig:83
@@ -1996,8 +2022,8 @@ msgstr[3] "Вмешательств"
 msgid "Intervention date"
 msgstr "Дата вмешательства"
 
-#: src/WizardController.php:1228 src/WizardController.php:1239
-#: src/WizardController.php:1324
+#: src/WizardController.php:1265 src/WizardController.php:1276
+#: src/WizardController.php:1361
 msgid "Intervention not saved yet"
 msgstr ""
 
@@ -2041,7 +2067,7 @@ msgstr[3] "Типов вмешательстваов"
 msgid "Intervention with contract"
 msgstr "Вмешательство с контрактом"
 
-#: src/ContractDay.php:56 src/Entity.php:81 src/Entity.php:335
+#: src/ContractDay.php:56 src/Entity.php:81 src/Entity.php:340
 msgid "Interventions reports"
 msgstr "Отчеты о вмешательствах"
 
@@ -2049,24 +2075,24 @@ msgstr "Отчеты о вмешательствах"
 msgid "Interventions with old contract"
 msgstr "Вмешательства с устаревшими контрактами"
 
-#: src/PresaleWizard.php:1322
+#: src/PresaleWizard.php:1344
 msgid "Invalid date of the contract."
 msgstr ""
 
-#: front/entity.form.php:73 src/PresaleWizard.php:1002
-#: src/PresaleWizard.php:1262 src/WizardController.php:239
+#: front/entity.form.php:73 src/PresaleWizard.php:1022
+#: src/PresaleWizard.php:1284 src/WizardController.php:247
 msgid "Invalid email address"
 msgstr ""
 
-#: src/PresaleWizard.php:999
+#: src/PresaleWizard.php:1019
 msgid "Invalid postal code"
 msgstr ""
 
-#: src/WizardController.php:252
+#: src/WizardController.php:260
 msgid "Invalid website address"
 msgstr ""
 
-#: src/WizardController.php:430
+#: src/WizardController.php:438
 msgid "Invalid wizard mode"
 msgstr ""
 
@@ -2102,7 +2128,7 @@ msgstr ""
 msgid "Last name"
 msgstr ""
 
-#: src/WizardController.php:261
+#: src/WizardController.php:269
 msgid "Last name is required"
 msgstr ""
 
@@ -2133,7 +2159,7 @@ msgid ""
 "its mobile phone."
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:133
+#: templates/presale/proposal_form.html.twig:137
 msgid "Line"
 msgid_plural "Lines"
 msgstr[0] ""
@@ -2193,12 +2219,12 @@ msgstr "Логотип %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Логотип (формат JPG или JPEG)"
 
-#: src/PresaleWizard.php:1074
+#: src/PresaleWizard.php:1096
 #, php-format
 msgid "Logo of %s"
 msgstr ""
 
-#: templates/presale/step_client.html.twig:238
+#: templates/presale/step_client.html.twig:248
 #: templates/presale/client_form.html.twig:73
 msgid "Logo of the client"
 msgstr ""
@@ -2259,7 +2285,7 @@ msgstr ""
 msgid "Manage your contracts"
 msgstr "Управление вашими контрактами"
 
-#: src/WizardController.php:1674
+#: src/WizardController.php:1721
 msgid "Management data is missing"
 msgstr ""
 
@@ -2271,8 +2297,8 @@ msgstr[1] "Управления категориями задач"
 msgstr[2] "Управлений категориями задач"
 msgstr[3] "Управлений категориями задач"
 
-#: src/Contract.php:76 src/WizardController.php:2033
-#: src/WizardController.php:2047 templates/wizard/step5_management.html.twig:42
+#: src/Contract.php:76 src/WizardController.php:2084
+#: src/WizardController.php:2101 templates/wizard/step5_management.html.twig:42
 #: templates/contract_detail_form.html.twig:129
 msgid "Management type"
 msgstr ""
@@ -2294,11 +2320,11 @@ msgstr ""
 msgid "Missing"
 msgstr ""
 
-#: templates/presale/step_client.html.twig:191
+#: templates/presale/step_client.html.twig:201
 msgid "Missing on the customer, to fill in:"
 msgstr ""
 
-#: src/WizardController.php:1304
+#: src/WizardController.php:1341
 msgid "Missing required fields"
 msgstr ""
 
@@ -2338,7 +2364,7 @@ msgstr ""
 msgid "Modified since the last generation"
 msgstr ""
 
-#: src/Monthly.php:53 src/Entity.php:69 src/Entity.php:246
+#: src/Monthly.php:53 src/Entity.php:69 src/Entity.php:251
 #: templates/monthly_criterias.html.twig:42
 #: templates/monthly_period_nav.html.twig:34
 msgid "Monthly follow-up"
@@ -2408,8 +2434,8 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: src/WizardController.php:247 src/WizardController.php:276
-#: src/WizardController.php:314
+#: src/WizardController.php:255 src/WizardController.php:284
+#: src/WizardController.php:322
 msgid "Name is required"
 msgstr ""
 
@@ -2440,7 +2466,10 @@ msgstr "Новая организация"
 msgid "New intervention"
 msgstr "Новое вмешательство"
 
-#: templates/entity/proposals_tab.html.twig:49
+#: templates/entity/proposals_tab.html.twig:52
+#: templates/entity/proposals_tab.html.twig:115
+#: templates/entity/proposals_tab.html.twig:168
+#: templates/entity/editorsubscription_tab.html.twig:107
 #: templates/presale/home.html.twig:61
 #: templates/presale/client_form.html.twig:125
 #: templates/presale/layout.html.twig:55
@@ -2459,7 +2488,7 @@ msgstr ""
 #: templates/wizard/step2_contacts.html.twig:60
 #: templates/wizard/step5_management.html.twig:130
 #: templates/wizard/step1_entity.html.twig:129
-#: templates/wizard/step3_subscription.html.twig:76
+#: templates/wizard/step3_subscription.html.twig:99
 #: templates/wizard/step4_contract.html.twig:140
 #: templates/presale/layout.html.twig:125 templates/dat/layout.html.twig:117
 msgid "Next"
@@ -2494,7 +2523,7 @@ msgid ""
 "No annex model is defined: create them in Setup > Dropdowns > Annex models."
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:126
+#: templates/presale/proposal_form.html.twig:130
 #: templates/presale/step_generate.html.twig:88
 msgid "No annex retained yet."
 msgstr ""
@@ -2521,6 +2550,10 @@ msgstr ""
 msgid "No contact."
 msgstr ""
 
+#: templates/entity/proposals_tab.html.twig:140
+msgid "No contract about to expire."
+msgstr ""
+
 #: templates/entity/contracts_tab.html.twig:94
 msgid "No contract found"
 msgstr ""
@@ -2539,6 +2572,10 @@ msgstr ""
 
 #: templates/entity/status_tab.html.twig:95
 msgid "No expired publisher subscription."
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:84
+msgid "No expired subscription to renew."
 msgstr ""
 
 #: templates/ticket_overview.html.twig:272
@@ -2594,7 +2631,7 @@ msgstr ""
 msgid "No picture uploaded"
 msgstr "Изображение не загружено"
 
-#: src/PresaleWizard.php:745 templates/entity/projectmanagers_card.html.twig:91
+#: src/PresaleWizard.php:759 templates/entity/projectmanagers_card.html.twig:91
 msgid "No project manager"
 msgstr ""
 
@@ -2604,7 +2641,7 @@ msgid ""
 "the details below, or leave them empty."
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:65
+#: templates/entity/proposals_tab.html.twig:68
 #: templates/presale/client_form.html.twig:130
 msgid "No proposal in progress."
 msgstr ""
@@ -2613,7 +2650,7 @@ msgstr ""
 msgid "No publisher subscription"
 msgstr ""
 
-#: templates/entity/editorsubscription_tab.html.twig:119
+#: templates/entity/editorsubscription_tab.html.twig:126
 msgid "No publisher subscription recorded for this entity."
 msgstr ""
 
@@ -2663,6 +2700,10 @@ msgstr "Никакие заинтересованные стороны еще н
 #: src/EditorSubscriptionWizard.php:220 src/EditorSubscriptionWizard.php:324
 #: src/EditorSubscriptionWizard.php:329
 msgid "No subscription found."
+msgstr ""
+
+#: src/WizardController.php:868
+msgid "No subscription in this wizard"
 msgstr ""
 
 #: templates/entity/status_tab.html.twig:191
@@ -2749,8 +2790,16 @@ msgstr ""
 msgid "Nothing to display"
 msgstr "Нечего отображать"
 
-#: src/WizardController.php:2083
+#: src/WizardController.php:2139
 msgid "Nothing to display."
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:149
+msgid "Notice"
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:148
+msgid "Number"
 msgstr ""
 
 #: templates/entity/contracts_tab.html.twig:52
@@ -2758,7 +2807,7 @@ msgctxt "phone"
 msgid "Number"
 msgstr ""
 
-#: src/WizardController.php:1318
+#: src/WizardController.php:1355
 msgid "Number of days must be greater than 0"
 msgstr ""
 
@@ -2800,15 +2849,15 @@ msgstr ""
 msgid "One command per line: the lines are kept as typed in the document."
 msgstr ""
 
-#: src/Entity.php:86 src/Entity.php:318
+#: src/Entity.php:86 src/Entity.php:323
 msgid "Ongoing tickets"
 msgstr ""
 
-#: src/WizardController.php:122
+#: src/WizardController.php:124
 msgid "Only a won proposal can create a customer."
 msgstr ""
 
-#: src/WizardController.php:1246
+#: src/WizardController.php:1283
 msgid "Only one rate is allowed per service period"
 msgstr ""
 
@@ -2921,7 +2970,7 @@ msgstr ""
 msgid "PHP installation"
 msgstr ""
 
-#: templates/presale/step_client.html.twig:242
+#: templates/presale/step_client.html.twig:252
 msgid ""
 "PNG or JPEG, 2 MB at most. Printed on the cover and in the header of the "
 "proposal."
@@ -2944,9 +2993,9 @@ msgid "Period comment"
 msgstr ""
 
 #: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:848
-#: src/WizardController.php:1846 src/WizardController.php:1921
-#: src/WizardController.php:2034 src/WizardController.php:2048
-#: src/Config.php:214 src/Entity.php:341
+#: src/WizardController.php:1893 src/WizardController.php:1968
+#: src/WizardController.php:2085 src/WizardController.php:2102
+#: src/Config.php:214 src/Entity.php:346
 #: templates/wizard/step6_intervention_block.html.twig:35
 #: templates/wizard/step6_interventions.html.twig:36
 #: templates/contractday_add_form.html.twig:45
@@ -2958,7 +3007,7 @@ msgstr[1] "Периода контракта"
 msgstr[2] "Периодов контракта"
 msgstr[3] "Периодов контракта"
 
-#: src/WizardController.php:1498
+#: src/WizardController.php:1535
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
@@ -2987,7 +3036,7 @@ msgstr "Ответственное лицо"
 #: templates/wizard/step2_contact_block.html.twig:69
 #: templates/wizard/step1_entity.html.twig:73
 #: templates/presale/step_client.html.twig:117
-#: templates/presale/step_client.html.twig:231
+#: templates/presale/step_client.html.twig:241
 #: templates/presale/step_team.html.twig:95
 #: templates/presale/client_form.html.twig:70
 #: templates/presale/client_form.html.twig:96
@@ -3041,11 +3090,11 @@ msgstr ""
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 
-#: src/WizardController.php:488
+#: src/WizardController.php:496
 msgid "Please select a child entity"
 msgstr ""
 
-#: src/WizardController.php:360 src/WizardController.php:460
+#: src/WizardController.php:368 src/WizardController.php:468
 msgid "Please select an entity"
 msgstr ""
 
@@ -3079,7 +3128,7 @@ msgstr ""
 #: templates/entity/description.html.twig:78
 #: templates/entity/description.html.twig:138
 #: templates/wizard/step1_entity.html.twig:100
-#: templates/presale/step_client.html.twig:218
+#: templates/presale/step_client.html.twig:228
 #: templates/presale/client_form.html.twig:66
 msgid "Postal code"
 msgstr ""
@@ -3149,7 +3198,7 @@ msgstr "Предоставление"
 #: templates/wizard/step6_interventions.html.twig:60
 #: templates/wizard/step2_contacts.html.twig:56
 #: templates/wizard/step5_management.html.twig:126
-#: templates/wizard/step3_subscription.html.twig:63
+#: templates/wizard/step3_subscription.html.twig:86
 #: templates/wizard/step4_contract.html.twig:136
 #: templates/presale/layout.html.twig:112
 #: templates/presale/layout.html.twig:121 templates/dat/layout.html.twig:102
@@ -3172,7 +3221,7 @@ msgstr ""
 msgid "Price excl. VAT"
 msgstr ""
 
-#: src/WizardController.php:1233
+#: src/WizardController.php:1270
 msgid "Price must be greater than 0"
 msgstr ""
 
@@ -3200,7 +3249,7 @@ msgstr ""
 msgid "Production"
 msgstr "Производство"
 
-#: templates/presale/proposal_form.html.twig:56
+#: templates/presale/proposal_form.html.twig:57
 #: templates/presale/proposals_table.html.twig:50
 msgid "Progress"
 msgstr ""
@@ -3209,7 +3258,7 @@ msgstr ""
 #: src/NotificationTargetPresaleProposal.php:67
 #: src/NotificationTargetPresaleProposal.php:140 src/PresaleProposal.php:205
 #: templates/entity/projectmanagers_card.html.twig:35
-#: templates/presale/proposal_form.html.twig:113
+#: templates/presale/proposal_form.html.twig:117
 #: templates/presale/step_generate.html.twig:62
 #: templates/presale/step_team.html.twig:48
 msgid "Project manager"
@@ -3219,7 +3268,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/PresaleWizard.php:82 templates/presale/proposal_form.html.twig:107
+#: src/PresaleWizard.php:82 templates/presale/proposal_form.html.twig:111
 msgid "Proposal"
 msgstr ""
 
@@ -3235,23 +3284,23 @@ msgstr ""
 msgid "Proposal won"
 msgstr ""
 
-#: src/Entity.php:74 src/Entity.php:169 src/Entity.php:264
-#: templates/entity/proposals_tab.html.twig:43
+#: src/Entity.php:74 src/Entity.php:174 src/Entity.php:269
+#: templates/entity/proposals_tab.html.twig:46
 #: templates/presale/home.html.twig:100
 #: templates/presale/client_form.html.twig:122
 msgid "Proposals in progress"
 msgstr ""
 
-#: src/Entity.php:183
+#: src/Entity.php:188
 msgid "Proposals lost"
 msgstr ""
 
-#: src/Entity.php:176
+#: src/Entity.php:181
 msgid "Proposals won"
 msgstr ""
 
 #: src/NotificationTargetPresaleProposal.php:134 src/PresaleProposal.php:166
-#: src/PresaleClient.php:51 templates/presale/proposal_form.html.twig:97
+#: src/PresaleClient.php:51 templates/presale/proposal_form.html.twig:98
 #: templates/presale/step_generate.html.twig:58
 #: templates/presale/home.html.twig:79
 #: templates/presale/proposals_table.html.twig:48
@@ -3278,7 +3327,7 @@ msgstr[3] ""
 msgid "Publisher"
 msgstr ""
 
-#: src/EditorSubscription.php:178 src/EditorSubscription.php:728
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:734
 #: src/NotificationTargetEditorSubscription.php:105
 #: src/NotificationTargetEditorSubscription.php:142
 #: templates/entity/editorsubscription_tab.html.twig:73
@@ -3289,7 +3338,7 @@ msgstr ""
 
 #: front/editorsubscription.form.php:111 src/EditorSubscription.php:55
 #: src/NotificationTargetPresaleProposal.php:141 src/Entity.php:78
-#: src/Entity.php:277 templates/wizard/step3_subscription.html.twig:39
+#: src/Entity.php:282 templates/wizard/step3_subscription.html.twig:39
 #: templates/editorsubscription_transfer.html.twig:43
 #: templates/presale/estimate_form.html.twig:102
 #: templates/presale/step_annexes.html.twig:217
@@ -3322,7 +3371,7 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:609
+#: src/EditorSubscription.php:615
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
@@ -3350,11 +3399,11 @@ msgstr ""
 msgid "Rates"
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:75
+#: templates/presale/proposal_form.html.twig:76
 msgid "Reactivate"
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:101
+#: templates/presale/proposal_form.html.twig:102
 #: templates/presale/step_general.html.twig:92
 #: templates/presale/step_generate.html.twig:59
 msgid "Recipient"
@@ -3377,13 +3426,14 @@ msgstr ""
 #: src/EditorSubscription.php:179
 #: src/NotificationTargetEditorSubscription.php:106
 #: src/NotificationTargetEditorSubscription.php:143
+#: templates/entity/proposals_tab.html.twig:91
 #: templates/entity/editorsubscription_tab.html.twig:74
 #: templates/editorsubscription_fields.html.twig:34
 #: templates/contract_detail_form.html.twig:72
 msgid "Referenced name at the publisher"
 msgstr ""
 
-#: src/Entity.php:83 src/Entity.php:351 src/Entity.php:725
+#: src/Entity.php:83 src/Entity.php:356 src/Entity.php:730
 msgid "References"
 msgstr "Ссылки"
 
@@ -3391,11 +3441,11 @@ msgstr "Ссылки"
 msgid "Regenerate the intervention report"
 msgstr "Перегенерировать отчет о вмешательстве"
 
-#: templates/wizard/layout.html.twig:62
+#: templates/wizard/layout.html.twig:64
 msgid "Reinitialize"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:161
+#: templates/wizard/layout.html.twig:163
 msgid "Reinitialize wizard"
 msgstr ""
 
@@ -3431,6 +3481,20 @@ msgstr "Остаток всего (сумма)"
 #: templates/presale/estimate_form.html.twig:108
 #: templates/presale/step_annexes.html.twig:231
 msgid "Remove this annex from the proposal?"
+msgstr ""
+
+#: templates/presale/proposal_form.html.twig:105
+msgid "Renewal"
+msgstr ""
+
+#: src/PresaleRenewal.php:293
+#, php-format
+msgid "Renewal of the contract %s"
+msgstr ""
+
+#: src/PresaleRenewal.php:281
+#, php-format
+msgid "Renewal of the publisher subscription ended on %s"
 msgstr ""
 
 #: setup.php:167 templates/report_occupation_result.html.twig:34
@@ -3469,7 +3533,7 @@ msgstr ""
 msgid "Retain at least one annex before generating the proposal."
 msgstr ""
 
-#: src/PresaleWizard.php:1725 src/PresaleWizard.php:2006
+#: src/PresaleWizard.php:1747 src/PresaleWizard.php:2028
 msgid "Retain at least one annex."
 msgstr ""
 
@@ -3512,7 +3576,7 @@ msgstr ""
 
 #: src/PresaleUser.php:96 src/NotificationTargetPresaleProposal.php:66
 #: src/NotificationTargetPresaleProposal.php:139 src/PresaleProposal.php:197
-#: templates/presale/proposal_form.html.twig:112
+#: templates/presale/proposal_form.html.twig:116
 #: templates/presale/step_generate.html.twig:61
 #: templates/presale/step_team.html.twig:48
 msgid "Sales representative"
@@ -3603,7 +3667,7 @@ msgstr "Выберите существующую цену"
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 
-#: src/EditorSubscription.php:1039
+#: src/EditorSubscription.php:1045
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -3727,7 +3791,7 @@ msgstr ""
 #: templates/entity/description.html.twig:80
 #: templates/entity/description.html.twig:148
 #: templates/wizard/step1_entity.html.twig:110
-#: templates/presale/step_client.html.twig:224
+#: templates/presale/step_client.html.twig:234
 #: templates/presale/client_form.html.twig:68
 msgid "State"
 msgstr ""
@@ -3761,7 +3825,7 @@ msgstr "Состояние созданного тикета"
 msgid "Status"
 msgstr ""
 
-#: src/WizardController.php:296 src/WizardController.php:323
+#: src/WizardController.php:304 src/WizardController.php:331
 msgid "Status is required"
 msgstr ""
 
@@ -3773,8 +3837,12 @@ msgstr "Контракт со списком состояний для обще�
 msgid "Study and advice"
 msgstr "обучение и консультация"
 
-#: src/WizardController.php:2042
+#: src/WizardController.php:2080 src/WizardController.php:2096
 msgid "Subscription"
+msgstr ""
+
+#: templates/wizard/step3_subscription.html.twig:55
+msgid "Subscription annex of the proposal"
 msgstr ""
 
 #: templates/presale/estimate_form.html.twig:114
@@ -3782,9 +3850,10 @@ msgid "Subscription annex: no estimate in days."
 msgstr ""
 
 #: src/SubscriptionLevel.php:47 src/EditorSubscription.php:182
-#: src/EditorSubscription.php:735 src/EditorSubscription.php:790
+#: src/EditorSubscription.php:741 src/EditorSubscription.php:796
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
+#: templates/entity/proposals_tab.html.twig:93
 #: templates/entity/editorsubscription_tab.html.twig:77
 #: templates/editorsubscription_fields.html.twig:90
 #: templates/contract_detail_form.html.twig:78
@@ -3830,13 +3899,13 @@ msgid "Suggested queries"
 msgstr ""
 
 #: src/DatWizard.php:80 templates/entity/dat_card.html.twig:102
-#: templates/presale/proposal_form.html.twig:116
+#: templates/presale/proposal_form.html.twig:120
 #: templates/presale/step_general.html.twig:106
 #: templates/presale/step_generate.html.twig:55
 msgid "Summary"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:131
+#: templates/wizard/layout.html.twig:133
 msgid "Summary of created items"
 msgstr ""
 
@@ -3896,7 +3965,7 @@ msgstr[3] ""
 msgid "Tech lead - click to become the main one"
 msgstr ""
 
-#: src/Entity.php:85 src/Entity.php:308
+#: src/Entity.php:85 src/Entity.php:313
 #: templates/techlead/clients_by_tech.html.twig:39
 msgid "Tech lead by clients"
 msgstr ""
@@ -3987,16 +4056,35 @@ msgstr ""
 msgid "The contract period %s already exists"
 msgstr "Период контракта %s уже существует"
 
-#: src/WizardController.php:2085
+#: src/WizardController.php:2141
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
 "place it under the default parent entity to continue?"
 msgstr ""
 
-#: src/PresaleConversion.php:273
+#: templates/wizard/step3_subscription.html.twig:48
+msgid ""
+"The customer already has a publisher subscription: it is renewed with these "
+"values."
+msgstr ""
+
+#: src/PresaleConversion.php:375
 #, php-format
 msgid "The customer has been created from the proposal %s."
+msgstr ""
+
+#: src/PresaleConversion.php:374
+#, php-format
+msgid "The customer has been updated from the proposal %s."
+msgstr ""
+
+#: src/WizardController.php:504
+msgid "The customer of the proposal cannot be changed."
+msgstr ""
+
+#: src/WizardController.php:130
+msgid "The customer of this proposal is not in your entities."
 msgstr ""
 
 #: templates/config_presale_form.html.twig:57
@@ -4015,34 +4103,34 @@ msgstr ""
 msgid "The customers entity of the Setup tab."
 msgstr ""
 
-#: templates/presale/step_client.html.twig:185
+#: templates/presale/step_client.html.twig:195
 msgid ""
 "The details below are the ones of the proposals: the entity itself is not "
 "changed."
 msgstr ""
 
-#: src/PresaleGenerator.php:370 src/PresaleGenerator.php:387
+#: src/PresaleGenerator.php:431 src/PresaleGenerator.php:448
 #: src/DatGenerator.php:196 src/DatGenerator.php:213
 msgid "The document could not be stored."
 msgstr ""
 
-#: src/WizardController.php:2084
+#: src/WizardController.php:2140
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
 "contract?"
 msgstr ""
 
-#: src/PresaleWizard.php:1951
+#: src/PresaleWizard.php:1973
 msgid "The estimate has been saved."
 msgstr ""
 
-#: src/PresaleWizard.php:2043
+#: src/PresaleWizard.php:2065
 #, php-format
 msgid "The estimate is requested from %s."
 msgstr ""
 
-#: src/PresaleWizard.php:1948
+#: src/PresaleWizard.php:1970
 msgid ""
 "The estimate is validated: the sales representative can price the proposal."
 msgstr ""
@@ -4055,7 +4143,7 @@ msgstr ""
 msgid "The file is too large (5 MB at most)."
 msgstr ""
 
-#: templates/wizard/layout.html.twig:136
+#: templates/wizard/layout.html.twig:138
 msgid "The following items will be saved. Please review before confirming."
 msgstr ""
 
@@ -4066,7 +4154,7 @@ msgid ""
 "plugin or by a custom development before running them."
 msgstr ""
 
-#: templates/wizard/layout.html.twig:166
+#: templates/wizard/layout.html.twig:168
 msgid "The following unsaved data from this wizard will be lost:"
 msgstr ""
 
@@ -4079,7 +4167,7 @@ msgstr "Формат изображения должен быть в JPG или 
 msgid "The generated versions are no longer in the documents of the client."
 msgstr ""
 
-#: src/PresaleWizard.php:2095
+#: src/PresaleWizard.php:2117
 msgid ""
 "The generation of the proposal failed. Check the Word templates of the "
 "configuration."
@@ -4102,20 +4190,20 @@ msgstr ""
 msgid "The lines total %1$s days, the estimate %2$s days: they must be equal."
 msgstr ""
 
-#: src/PresaleWizard.php:1053 src/PresaleWizard.php:1067
-#: src/PresaleWizard.php:1084
+#: src/PresaleWizard.php:1075 src/PresaleWizard.php:1089
+#: src/PresaleWizard.php:1106
 msgid "The logo could not be uploaded."
 msgstr ""
 
-#: src/PresaleWizard.php:1060
+#: src/PresaleWizard.php:1082
 msgid "The logo must be a PNG or JPEG image."
 msgstr ""
 
-#: src/PresaleWizard.php:1056
+#: src/PresaleWizard.php:1078
 msgid "The logo must not exceed 2 MB."
 msgstr ""
 
-#: src/PresaleConversion.php:294
+#: src/PresaleConversion.php:396
 msgid "The logo of the prospect could not be copied to the customer."
 msgstr ""
 
@@ -4126,7 +4214,7 @@ msgid ""
 "in its form."
 msgstr ""
 
-#: src/PresaleWizard.php:1259
+#: src/PresaleWizard.php:1281
 msgid "The name of the sales representative is mandatory."
 msgstr ""
 
@@ -4143,37 +4231,43 @@ msgstr ""
 msgid "The price per user must be a positive number."
 msgstr ""
 
-#: src/PresaleWizard.php:2153
+#: src/PresaleWizard.php:2175
 msgid "The proposal could not be duplicated."
 msgstr ""
 
-#: src/PresaleWizard.php:2168
+#: src/PresaleWizard.php:2190
 msgid "The proposal has been deleted."
 msgstr ""
 
-#: src/PresaleWizard.php:2156
+#: src/PresaleWizard.php:2178
 msgid "The proposal has been duplicated: a new draft."
 msgstr ""
 
-#: src/PresaleWizard.php:2090
+#: src/PresaleWizard.php:2112
 msgid "The proposal has been generated."
 msgstr ""
 
-#: templates/wizard/step3_subscription.html.twig:48
+#: templates/wizard/step3_subscription.html.twig:64
+msgid ""
+"The proposal holds several subscription annexes: a customer has a single "
+"subscription, choose the one to keep."
+msgstr ""
+
+#: templates/wizard/step3_subscription.html.twig:71
 msgid ""
 "The proposal holds subscription annexes only: no contract is created, the "
 "wizard ends with this subscription."
 msgstr ""
 
-#: src/PresaleWizard.php:2143
+#: src/PresaleWizard.php:2165
 msgid "The proposal is back to draft."
 msgstr ""
 
-#: src/PresaleWizard.php:2129
+#: src/PresaleWizard.php:2151
 msgid "The proposal is lost: it is archived."
 msgstr ""
 
-#: src/PresaleWizard.php:2112
+#: src/PresaleWizard.php:2134
 msgid "The proposal is won: create the customer from it."
 msgstr ""
 
@@ -4184,7 +4278,7 @@ msgid ""
 "last generated version?"
 msgstr ""
 
-#: src/PresaleWizard.php:964
+#: src/PresaleWizard.php:984
 msgid "The prospect could not be saved."
 msgstr ""
 
@@ -4210,7 +4304,7 @@ msgid ""
 "create them"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:43
+#: templates/wizard/layout.html.twig:45
 msgid "The steps are prefilled from it: check and complete them."
 msgstr ""
 
@@ -4244,7 +4338,7 @@ msgstr ""
 msgid "The technical architecture document has been generated."
 msgstr ""
 
-#: src/PresaleWizard.php:1318
+#: src/PresaleWizard.php:1340
 msgid "The type of contract is mandatory."
 msgstr ""
 
@@ -4290,7 +4384,7 @@ msgstr ""
 msgid "This proposal is won or lost: it can no longer be modified."
 msgstr ""
 
-#: src/PresaleWizard.php:1256
+#: src/PresaleWizard.php:1278
 msgid "This user is not declared for the pre-sales."
 msgstr ""
 
@@ -4332,7 +4426,7 @@ msgstr "Оправданное время"
 #: templates/directhelpdesk_form.html.twig:114
 #: templates/directhelpdesk_ticket_tab.html.twig:34
 #: templates/directhelpdesk_ticket_tab.html.twig:71
-#: templates/presale/proposal_form.html.twig:132
+#: templates/presale/proposal_form.html.twig:136
 #: templates/presale/step_annexes.html.twig:241
 msgid "Title"
 msgstr ""
@@ -4354,7 +4448,7 @@ msgstr "Представить счет"
 #: templates/report_moving_result.html.twig:43
 #: templates/entity/unbilled_tab.html.twig:175
 #: templates/report_occupation_result.html.twig:50
-#: templates/presale/proposal_form.html.twig:160
+#: templates/presale/proposal_form.html.twig:164
 #: templates/presale/estimate_table.html.twig:82
 #: templates/presale/step_generate.html.twig:93
 msgid "Total"
@@ -4382,7 +4476,7 @@ msgstr ""
 msgid "Total exceeding"
 msgstr "Всего превышено"
 
-#: templates/presale/proposal_form.html.twig:135
+#: templates/presale/proposal_form.html.twig:139
 #: templates/presale/step_generate.html.twig:70
 #: templates/presale/annextype_default_lines.html.twig:98
 #: templates/presale/step_annexes.html.twig:306
@@ -4396,7 +4490,7 @@ msgid "Total excluding VAT"
 msgstr ""
 
 #: src/NotificationTargetPresaleProposal.php:138
-#: templates/presale/proposal_form.html.twig:137
+#: templates/presale/proposal_form.html.twig:141
 #: templates/presale/step_generate.html.twig:72
 #: templates/presale/step_annexes.html.twig:340
 msgid "Total incl. VAT"
@@ -4450,6 +4544,7 @@ msgstr "Путешествие (в днях)"
 #: src/NotificationTargetEditorSubscription.php:107
 #: src/NotificationTargetEditorSubscription.php:144
 #: templates/entity/description.html.twig:226
+#: templates/entity/proposals_tab.html.twig:92
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/wizard/step2_contact_block.html.twig:90
@@ -4465,7 +4560,7 @@ msgstr[3] ""
 
 #: src/NotificationTargetPresaleProposal.php:136 src/Followup.php:852
 #: src/Monthly.php:430 src/PresaleProposal.php:183
-#: templates/presale/proposal_form.html.twig:109
+#: templates/presale/proposal_form.html.twig:113
 #: templates/presale/step_general.html.twig:62
 #: templates/presale/step_generate.html.twig:60
 msgid "Type of contract"
@@ -4494,7 +4589,7 @@ msgstr ""
 msgid "URL of the proposal"
 msgstr ""
 
-#: src/WizardController.php:2086
+#: src/WizardController.php:2142
 msgid "Unarchive and continue"
 msgstr ""
 
@@ -4506,7 +4601,7 @@ msgstr ""
 msgid "Unbilled hours by client with an ongoing contract"
 msgstr ""
 
-#: src/Entity.php:84 src/Entity.php:298
+#: src/Entity.php:84 src/Entity.php:303
 msgid "Unbilled interventions"
 msgstr ""
 
@@ -4522,19 +4617,19 @@ msgstr ""
 msgid "Unknown action"
 msgstr ""
 
-#: src/PresaleWizard.php:1636 src/PresaleWizard.php:1979
+#: src/PresaleWizard.php:1658 src/PresaleWizard.php:2001
 msgid "Unknown annex model"
 msgstr ""
 
-#: src/PresaleWizard.php:919
+#: src/PresaleWizard.php:939
 msgid "Unknown customer"
 msgstr ""
 
-#: src/PresaleWizard.php:926
+#: src/PresaleWizard.php:946
 msgid "Unknown origin"
 msgstr ""
 
-#: src/PresaleWizard.php:914
+#: src/PresaleWizard.php:934
 msgid "Unknown prospect"
 msgstr ""
 
@@ -4593,7 +4688,7 @@ msgid ""
 "documentation of the plugin."
 msgstr ""
 
-#: src/PresaleWizard.php:2078
+#: src/PresaleWizard.php:2100
 #, php-format
 msgid ""
 "Upload these Word templates in the configuration (Pre-sales tab) first: %s."
@@ -4632,7 +4727,7 @@ msgstr "Использование цены"
 msgid "Use the pre-sales section"
 msgstr ""
 
-#: templates/wizard/layout.html.twig:92 templates/wizard/layout.html.twig:93
+#: templates/wizard/layout.html.twig:94 templates/wizard/layout.html.twig:95
 msgid "Use this entity"
 msgstr ""
 
@@ -4647,7 +4742,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/WizardController.php:1862 src/InterventionStakeholder.php:52
+#: src/WizardController.php:1909 src/InterventionStakeholder.php:52
 #: templates/wizard/step6_stakeholders_section.html.twig:36
 msgid "User affected"
 msgid_plural "Users affected"
@@ -4656,7 +4751,7 @@ msgstr[1] "Затронутых пользователя"
 msgstr[2] "Затронутых пользователей"
 msgstr[3] "Затронутых пользователей"
 
-#: src/WizardController.php:1335
+#: src/WizardController.php:1372
 msgid "User already added"
 msgstr ""
 
@@ -4664,24 +4759,24 @@ msgstr ""
 msgid "Users holding a central profile on the customers entity."
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:136
+#: templates/presale/proposal_form.html.twig:140
 #: templates/presale/step_generate.html.twig:71
 #: templates/presale/step_annexes.html.twig:176
 #: templates/presale/step_annexes.html.twig:339
 msgid "VAT"
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:153
+#: templates/presale/proposal_form.html.twig:157
 #: templates/presale/step_generate.html.twig:84
 msgid "VAT not applicable"
 msgstr ""
 
-#: src/PresaleGenerator.php:281
+#: src/PresaleGenerator.php:285
 msgid "VAT not applicable: amounts excluding taxes."
 msgstr ""
 
 #: src/PresaleAnnexType.php:127 src/PresaleAnnexType.php:463
-#: templates/presale/proposal_form.html.twig:134
+#: templates/presale/proposal_form.html.twig:138
 #: templates/presale/step_annexes.html.twig:248
 msgid "VAT rate (%)"
 msgstr ""
@@ -4699,13 +4794,13 @@ msgstr ""
 msgid "Validated by %s"
 msgstr ""
 
-#: templates/presale/proposal_form.html.twig:111
+#: templates/presale/proposal_form.html.twig:115
 #: templates/dat/step_general.html.twig:75
 #: templates/dat/step_summary.html.twig:67
 msgid "Version"
 msgstr ""
 
-#: templates/dat/layout.html.twig:57
+#: src/PresaleGenerator.php:414 templates/dat/layout.html.twig:57
 #, php-format
 msgid "Version %s"
 msgstr ""
@@ -4747,7 +4842,7 @@ msgstr ""
 #: src/PresaleOrigin.php:192 templates/entity/description.html.twig:75
 #: templates/entity/description.html.twig:113
 #: templates/wizard/step1_entity.html.twig:89
-#: templates/presale/step_client.html.twig:208
+#: templates/presale/step_client.html.twig:218
 #: templates/presale/client_form.html.twig:64
 msgid "Website"
 msgstr ""
@@ -4858,7 +4953,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/WizardController.php:1789
+#: src/WizardController.php:1836
 #: templates/wizard/step6_stakeholders_section.html.twig:30
 msgid "days"
 msgstr ""
@@ -4875,7 +4970,7 @@ msgstr ""
 msgid "e.g. GLPI technical expertise"
 msgstr ""
 
-#: src/WizardController.php:1788
+#: src/WizardController.php:1835
 #: templates/wizard/step6_stakeholders_section.html.twig:30
 msgid "hours"
 msgstr ""
