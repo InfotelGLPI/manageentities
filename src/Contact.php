@@ -185,7 +185,8 @@ class Contact extends CommonDBTM
                         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                         `is_default` tinyint NOT NULL DEFAULT '0',
                         PRIMARY KEY  (`id`),
-                        UNIQUE KEY `unicity` (`entities_id`),
+                        UNIQUE KEY `unicity` (`contacts_id`,`entities_id`),
+                        KEY `contacts_id` (`contacts_id`),
                         KEY `entities_id` (`entities_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
