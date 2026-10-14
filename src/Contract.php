@@ -1346,11 +1346,48 @@ class Contract extends CommonDBTM
      */
     public static function cronLowRemainingDaysContracts($task = null)
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
         if (!$CFG_GLPI['notifications_mailing']) {
             return 0;
         }
+
+        $contracts = self::getLowRemainingDaysContracts();
+        if (empty($contracts)) {
+            return 0;
+        }
+
+        NotificationEvent::raiseEvent(
+            NotificationTargetContract::LowRemainingDaysContracts,
+            new self(),
+            [
+                'entities_id' => 0,
+                'contracts'   => $contracts,
+            ],
+        );
+
+        if ($task instanceof CronTask) {
+            $task->addVolume(count($contracts));
+            $task->log(sprintf(__('%d contracts running out of remaining days notified', 'manageentities'), count($contracts)));
+        }
+
+        return 1;
+    }
+
+    /**
+     * Contracts running out of remaining days, on the rules described on
+     * cronLowRemainingDaysContracts(): the list of its mail, also shown in the "Proposals in
+     * progress" tab (PresaleRenewal) so that both never disagree.
+     *
+     * @param array<int>|null $entities restricted to these entities, all of them when null (cron)
+     *
+     * @return list<array{contracts_id: int, name: string, num: string, begin_date: ?string,
+     *                    entities_id: int, entity_completename: string, remaining_days: float,
+     *                    prestations: string}>
+     */
+    public static function getLowRemainingDaysContracts(?array $entities = null): array
+    {
+        global $DB;
 
         $config               = Config::getInstance();
         $closed_glpi_state_id = (int) ($config->fields['closed_glpi_state_id'] ?? 0);
@@ -1371,6 +1408,10 @@ class Contract extends CommonDBTM
             if (!empty($archive_ids)) {
                 $where[] = ['NOT' => ['glpi_contracts.entities_id' => $archive_ids]];
             }
+        }
+        // Whole customers only: the decision is taken per entity, all its contracts summed
+        if ($entities !== null) {
+            $where['glpi_contracts.entities_id'] = $entities === [] ? [-1] : array_values(array_map('intval', $entities));
         }
 
         $iterator = $DB->request([
@@ -1441,25 +1482,7 @@ class Contract extends CommonDBTM
             $contracts[] = $contract;
         }
 
-        if (empty($contracts)) {
-            return 0;
-        }
-
-        NotificationEvent::raiseEvent(
-            NotificationTargetContract::LowRemainingDaysContracts,
-            new self(),
-            [
-                'entities_id' => 0,
-                'contracts'   => $contracts,
-            ],
-        );
-
-        if ($task instanceof CronTask) {
-            $task->addVolume(count($contracts));
-            $task->log(sprintf(__('%d contracts running out of remaining days notified', 'manageentities'), count($contracts)));
-        }
-
-        return 1;
+        return $contracts;
     }
 
     /**

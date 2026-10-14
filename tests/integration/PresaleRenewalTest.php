@@ -29,9 +29,10 @@
 
 namespace GlpiPlugin\Manageentities\Tests\Integration;
 
-use Alert;
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\ContractState;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\PresaleProposal;
 use GlpiPlugin\Manageentities\PresaleRenewal;
@@ -80,19 +81,17 @@ class PresaleRenewalTest extends DbTestCase
     }
 
     /**
-     * Contract of the plugin ending $months months after $begin
+     * Contract of the plugin with one open period of $days days, nothing consumed yet
      */
-    private function createContract(int $entities_id, string $begin, int $months, int $notice = 0, bool $plugin = true): \Contract
+    private function createContract(int $entities_id, float $days, bool $plugin = true): \Contract
     {
         /** @var \Contract $contract */
         $contract = $this->createItem(\Contract::class, [
             'entities_id' => $entities_id,
             'name'        => 'Contract ' . $this->getUniqueString(),
             'num'         => 'NUM-' . mt_rand(1000, 9999),
-            'begin_date'  => $begin,
-            'duration'    => $months,
-            'notice'      => $notice,
-            'alert'       => (2 ** Alert::END) + (2 ** Alert::NOTICE),
+            'begin_date'  => date('Y-m-d', strtotime('-6 months')),
+            'duration'    => 12,
         ]);
         if ($plugin) {
             $this->createItem(Contract::class, [
@@ -100,22 +99,28 @@ class PresaleRenewalTest extends DbTestCase
                 'entities_id'  => $entities_id,
             ]);
         }
+        $this->createItem(ContractDay::class, [
+            'name'                                    => 'Period ' . $this->getUniqueString(),
+            'entities_id'                             => $entities_id,
+            'contracts_id'                            => $contract->getID(),
+            'plugin_manageentities_contractstates_id' => $this->getOpenState(),
+            'begin_date'                              => date('Y-m-d', strtotime('-6 months')),
+            'end_date'                                => date('Y-m-d', strtotime('+6 months')),
+            'nbday'                                   => $days,
+        ], ['begin_date', 'end_date']);
 
         return $contract;
     }
 
-    /** Contract alerts of the entities: enabled, $delay days ahead */
-    private function enableContractAlerts(int $delay): void
+    private ?int $open_state = null;
+
+    /** State of period that is not closed */
+    private function getOpenState(): int
     {
-        // Through update(): the cache of the entity configuration is cleared
-        $this->updateItem(\Entity::class, $this->getTestRootEntity(true), [
-            'use_contracts_alert'               => 1,
-            'send_contracts_alert_before_delay' => $delay,
-        ]);
-        $this->updateItem(\Entity::class, $this->getCustomerEntity(), [
-            'use_contracts_alert'               => \Entity::CONFIG_PARENT,
-            'send_contracts_alert_before_delay' => \Entity::CONFIG_PARENT,
-        ]);
+        return $this->open_state ??= $this->createItem(ContractState::class, [
+            'name'      => 'Open ' . $this->getUniqueString(),
+            'is_closed' => 0,
+        ])->getID();
     }
 
     public function testExpiredSubscriptionIsListedUntilAProposalFollowsIt(): void
@@ -151,33 +156,63 @@ class PresaleRenewalTest extends DbTestCase
         $this->assertSame([], PresaleRenewal::getExpiredSubscriptions([$other]));
     }
 
-    public function testContractsFollowTheEndAndNoticeAlertsOfTheCore(): void
+    public function testContractsAreTheOnesOfTheRemainingDaysMail(): void
     {
         $entities_id = $this->getCustomerEntity();
-        $this->enableContractAlerts(30);
 
-        // Ends in about 20 days: reported
-        $ending   = $this->createContract($entities_id, date('Y-m-d', strtotime('-12 months +20 days')), 12);
-        // Ends in about 6 months, notice of 6 months: notice date in a few days, reported
-        $notice   = $this->createContract($entities_id, date('Y-m-d', strtotime('-6 months +5 days')), 12, 6);
-        // Ends in about 6 months, no notice: not yet
-        $this->createContract($entities_id, date('Y-m-d', strtotime('-6 months')), 12);
-        // Ending, but not handled by the plugin
-        $this->createContract($entities_id, date('Y-m-d', strtotime('-12 months +20 days')), 12, 0, false);
+        // No day left: reported, as in the mail
+        $empty = $this->createContract($entities_id, 0);
+        // Not handled by the plugin
+        $this->createContract($entities_id, 0, false);
 
-        $ids = array_column(PresaleRenewal::getExpiringContracts([$entities_id]), 'id');
-        sort($ids);
-        $expected = [$ending->getID(), $notice->getID()];
-        sort($expected);
-        $this->assertSame($expected, $ids);
+        $rows = PresaleRenewal::getExpiringContracts([$entities_id]);
+        $this->assertSame([$empty->getID()], array_column($rows, 'id'));
+        $this->assertSame(
+            array_column(Contract::getLowRemainingDaysContracts([$entities_id]), 'contracts_id'),
+            array_column($rows, 'id'),
+        );
+        $this->assertStringContainsString('contracts_id=' . $empty->getID(), $rows[0]['new_url']);
+
+        // A proposal in progress follows it: it leaves the list
+        $this->createProposal($this->createPresaleClient(['converted_entities_id' => $entities_id]), [
+            'contracts_id' => $empty->getID(),
+        ]);
+        $this->assertSame([], PresaleRenewal::getExpiringContracts([$entities_id]));
     }
 
-    public function testNoContractWhenTheAlertsAreDisabled(): void
+    public function testTheTabShowsTheBadgesAndTheListsOfRenewals(): void
     {
         $entities_id = $this->getCustomerEntity();
-        $this->createContract($entities_id, date('Y-m-d', strtotime('-12 months +20 days')), 12);
-        $this->updateItem(\Entity::class, $this->getTestRootEntity(true), ['use_contracts_alert' => 0]);
-        $this->updateItem(\Entity::class, $entities_id, ['use_contracts_alert' => \Entity::CONFIG_PARENT]);
+        $this->createSubscription($entities_id, date('Y-m-d', strtotime('-10 days')));
+        $this->createContract($entities_id, 0);
+
+        // The templates of the plugin: registered by the plugin loader, absent from the tests
+        $loader = \Glpi\Application\View\TemplateRenderer::getInstance()->getEnvironment()->getLoader();
+        if ($loader instanceof \Twig\Loader\FilesystemLoader && !in_array('manageentities', $loader->getNamespaces(), true)) {
+            $loader->addPath(dirname(__DIR__, 2) . '/templates', 'manageentities');
+        }
+
+        ob_start();
+        try {
+            \GlpiPlugin\Manageentities\Entity::showOpenProposals([$entities_id]);
+        } finally {
+            $html = (string) ob_get_clean();
+        }
+
+        // A badge per list, opening it
+        $this->assertStringContainsString('href="#me-renewal-subscriptions"', $html);
+        $this->assertStringContainsString('href="#me-renewal-contracts"', $html);
+        $this->assertStringContainsString('id="me-renewal-subscriptions"', $html);
+        $this->assertStringContainsString('id="me-renewal-contracts"', $html);
+        $this->assertSame(2, substr_count($html, 'contracts_id=') + substr_count($html, 'editorsubscriptions_id='));
+    }
+
+    public function testACustomerWithDaysLeftOnAnotherContractIsNotListed(): void
+    {
+        $entities_id = $this->getCustomerEntity();
+        $this->createContract($entities_id, 0);
+        // Days left on another contract of the same customer: nothing runs out, as in the mail
+        $this->createContract($entities_id, 10);
 
         $this->assertSame([], PresaleRenewal::getExpiringContracts([$entities_id]));
     }
@@ -186,8 +221,7 @@ class PresaleRenewalTest extends DbTestCase
     {
         $entities_id  = $this->getCustomerEntity();
         $subscription = $this->createSubscription($entities_id, date('Y-m-d', strtotime('-10 days')));
-        $this->enableContractAlerts(30);
-        $contract = $this->createContract($entities_id, date('Y-m-d', strtotime('-12 months +20 days')), 12);
+        $contract = $this->createContract($entities_id, 0);
 
         $this->assertSame(
             ['plugin_manageentities_editorsubscriptions_id' => $subscription->getID()],

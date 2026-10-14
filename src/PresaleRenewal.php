@@ -29,20 +29,15 @@
 
 namespace GlpiPlugin\Manageentities;
 
-use Alert;
 use Dropdown;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Html;
 
 /**
  * Renewals to propose, listed in the "Proposals in progress" tab of the clients management:
  * - the expired publisher subscriptions (end date before today, as the ExpiredSubscriptions alert);
- * - the contracts of the plugin about to end, on the criteria of the end and notice alerts of the
- *   core (Contract::cronContract()): end = begin + duration, notice = end - notice, reported
- *   send_contracts_alert_before_delay days ahead in the entities where these alerts are enabled.
+ * - the contracts running out of remaining days, the very list of the LowRemainingDaysContracts
+ *   mail (Contract::getLowRemainingDaysContracts()).
  *
  * A proposal started from a row keeps its source (plugin_manageentities_editorsubscriptions_id or
  * contracts_id): the row leaves the list while that proposal is in progress or won.
@@ -105,131 +100,52 @@ class PresaleRenewal
     }
 
     /**
-     * Contracts of the plugin, of the customers of the perimeter, reported by the end or notice
-     * alert of the core, with no proposal in progress or won
+     * Contracts of the customers of the perimeter running out of remaining days, exactly the
+     * list of the "Contracts running out of remaining days" mail
+     * (Contract::getLowRemainingDaysContracts()), with no proposal in progress or won
      *
      * @param array<int|string> $entities active entities
      *
      * @return list<array{id: int, entities_id: int, entity: string, name: string, num: string,
-     *                    end_date: string, notice_date: string, expired: bool, contract_url: string,
-     *                    new_url: string}>
+     *                    begin_date: string, remaining_days: float, prestations: string,
+     *                    contract_url: string, new_url: string}>
      */
     public static function getExpiringContracts(array $entities): array
     {
-        global $DB;
-
         if (!\Contract::canView()) {
             return [];
         }
-
-        // Delay of the alerts of each entity, as Contract::cronContract(): nothing is reported
-        // where the contract alerts are disabled
-        $delays   = [];
-        $notified = \Entity::getEntitiesToNotify('use_contracts_alert');
-        foreach (self::getCustomerEntities($entities) as $entities_id) {
-            if (isset($notified[$entities_id])) {
-                $delays[$entities_id] = max(0, (int) \Entity::getUsedConfig('send_contracts_alert_before_delay', $entities_id));
-            }
-        }
-        if ($delays === []) {
+        $customers = array_filter(self::getCustomerEntities($entities), static fn(int $id): bool => $id > 0);
+        if ($customers === []) {
             return [];
         }
 
-        $contracts   = \Contract::getTable();
-        $end_date    = QueryFunction::dateAdd(
-            date: new QueryIdentifier($contracts . '.begin_date'),
-            interval: new QueryIdentifier($contracts . '.duration'),
-            interval_unit: 'MONTH',
-        );
-        $notice_date = QueryFunction::dateAdd(
-            date: new QueryIdentifier($contracts . '.begin_date'),
-            interval: new QueryExpression($DB::quoteName($contracts . '.duration') . ' - ' . $DB::quoteName($contracts . '.notice')),
-            interval_unit: 'MONTH',
-        );
-        $days_to_end    = 'DATEDIFF(' . $end_date . ', CURDATE())';
-        $days_to_notice = 'DATEDIFF(' . $notice_date . ', CURDATE())';
-        $alert          = $DB::quoteName($contracts . '.alert');
-
-        // Same windows as the end and notice alerts, with the delay of each entity
-        $windows = [];
-        foreach ($delays as $entities_id => $delay) {
-            $windows[] = [
-                $contracts . '.entities_id' => $entities_id,
-                [
-                    'OR' => [
-                        // End: from $delay days ahead; an ended contract stays until it is handled
-                        [
-                            new QueryExpression($alert . ' & ' . (2 ** Alert::END) . ' > 0'),
-                            new QueryExpression("$days_to_end <= $delay"),
-                        ],
-                        // Notice: contract still running, notice date within $delay days
-                        [
-                            new QueryExpression($alert . ' & ' . (2 ** Alert::NOTICE) . ' > 0'),
-                            $contracts . '.notice' => ['!=', 0],
-                            new QueryExpression("$days_to_end > 0"),
-                            new QueryExpression("$days_to_notice <= $delay"),
-                        ],
-                    ],
-                ],
-            ];
+        $followed = [];
+        foreach ((new PresaleProposal())->find([
+            'contracts_id' => ['>', 0],
+            'status'       => [...PresaleProposal::getOpenStatuses(), PresaleProposal::STATUS_WON],
+        ]) as $proposal) {
+            $followed[(int) $proposal['contracts_id']] = true;
         }
 
-        $where = [
-            $contracts . '.is_deleted'  => 0,
-            $contracts . '.is_template' => 0,
-            ['NOT' => [$contracts . '.begin_date' => null]],
-            $contracts . '.duration'    => ['!=', 0],
-            // The contracts handled by the plugin only
-            $contracts . '.id'          => new QuerySubQuery([
-                'SELECT' => 'contracts_id',
-                'FROM'   => Contract::getTable(),
-            ]),
-            ['NOT' => [$contracts . '.id' => self::getFollowedSources('contracts_id')]],
-            ['OR' => $windows],
-            getEntitiesRestrictCriteria($contracts, '', '', true),
-        ];
-        // A closed contract is over: it is not renewed (as the remaining days alert)
-        $closed_glpi_state_id = (int) (Config::getInstance()->fields['closed_glpi_state_id'] ?? 0);
-        if ($closed_glpi_state_id > 0) {
-            $where[] = ['NOT' => [$contracts . '.states_id' => $closed_glpi_state_id]];
-        }
-
-        $iterator = $DB->request([
-            'SELECT'    => [
-                $contracts . '.id',
-                $contracts . '.entities_id',
-                $contracts . '.name',
-                $contracts . '.num',
-                $contracts . '.notice',
-                'glpi_entities.completename AS entity',
-                new QueryExpression($end_date, 'end_date'),
-                new QueryExpression($notice_date, 'notice_date'),
-            ],
-            'FROM'      => $contracts,
-            'LEFT JOIN' => [
-                'glpi_entities' => [
-                    'FKEY' => [$contracts => 'entities_id', 'glpi_entities' => 'id'],
-                ],
-            ],
-            'WHERE'     => $where,
-            'ORDER'     => ['end_date ASC', 'glpi_entities.completename ASC'],
-        ]);
-
-        $today = date('Y-m-d');
-        $rows  = [];
-        foreach ($iterator as $data) {
-            $end    = substr((string) $data['end_date'], 0, 10);
+        $rows     = [];
+        $contract = new \Contract();
+        foreach (Contract::getLowRemainingDaysContracts($customers) as $data) {
+            $id = (int) $data['contracts_id'];
+            if (isset($followed[$id]) || !$contract->can($id, READ)) {
+                continue;
+            }
             $rows[] = [
-                'id'           => (int) $data['id'],
-                'entities_id'  => (int) $data['entities_id'],
-                'entity'       => (string) $data['entity'],
-                'name'         => (string) $data['name'],
-                'num'          => (string) $data['num'],
-                'end_date'     => $end,
-                'notice_date'  => (int) $data['notice'] > 0 ? substr((string) $data['notice_date'], 0, 10) : '',
-                'expired'      => $end < $today,
-                'contract_url' => \Contract::getFormURLWithID((int) $data['id']),
-                'new_url'      => self::getNewProposalUrl((int) $data['entities_id'], ['contracts_id' => (int) $data['id']]),
+                'id'             => $id,
+                'entities_id'    => (int) $data['entities_id'],
+                'entity'         => (string) $data['entity_completename'],
+                'name'           => (string) $data['name'],
+                'num'            => (string) $data['num'],
+                'begin_date'     => substr((string) $data['begin_date'], 0, 10),
+                'remaining_days' => (float) $data['remaining_days'],
+                'prestations'    => (string) $data['prestations'],
+                'contract_url'   => \Contract::getFormURLWithID($id),
+                'new_url'        => self::getNewProposalUrl((int) $data['entities_id'], ['contracts_id' => $id]),
             ];
         }
 

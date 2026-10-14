@@ -63,6 +63,20 @@
                 </div>
             </{{ tag }}>
         {% endfor %}
+        {# Renewals to propose: counts of the lists below, each one opening its list #}
+        {% for renewal in [
+            {'show': show_subscriptions, 'count': subscriptions|length, 'color': 'red', 'icon': 'ti ti-certificate', 'label': __('Expired subscriptions to renew', 'manageentities'), 'anchor': 'me-renewal-subscriptions'},
+            {'show': show_contracts, 'count': contracts|length, 'color': 'orange', 'icon': 'ti ti-writing-sign', 'label': __('Contracts running out of remaining days', 'manageentities'), 'anchor': 'me-renewal-contracts'},
+        ] %}
+            {% if renewal.show %}
+                <a href="#{{ renewal.anchor }}" class="card text-center border-2 flex-shrink-0 text-decoration-none" style="min-width:110px">
+                    <div class="card-body p-3">
+                        <div class="display-6 fw-bold text-{{ renewal.color }}">{{ renewal.count }}</div>
+                        <div class="text-muted small mt-1"><i class="{{ renewal.icon }} me-1"></i>{{ renewal.label }}</div>
+                    </div>
+                </a>
+            {% endif %}
+        {% endfor %}
     </div>
     {% if proposals is empty %}
         <div class="card-body text-muted">{{ __('No proposal in progress.', 'manageentities') }}</div>
@@ -73,7 +87,7 @@
 
 {# Renewals to propose: a row leaves its list once a proposal started from it is in progress or won #}
 {% if show_subscriptions %}
-    <div class="card mt-3">
+    <div class="card mt-3" id="me-renewal-subscriptions">
         <div class="card-header">
             <h3 class="card-title">
                 <i class="ti ti-certificate me-1"></i>{{ __('Expired subscriptions to renew', 'manageentities') }}
@@ -126,18 +140,18 @@
 {% endif %}
 
 {% if show_contracts %}
-    <div class="card mt-3">
+    <div class="card mt-3" id="me-renewal-contracts">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="ti ti-writing-sign me-1"></i>{{ __('Contracts about to expire', 'manageentities') }}
+                <i class="ti ti-writing-sign me-1"></i>{{ __('Contracts running out of remaining days', 'manageentities') }}
                 <span class="badge bg-orange-lt ms-1">{{ contracts|length }}</span>
             </h3>
         </div>
         <div class="card-body border-bottom py-2 small text-muted">
-            {{ __('Contracts reported by the end and notice alerts of the contracts (delay set in the entities), to prepare a proposal for a new contract.', 'manageentities') }}
+            {{ __('The contracts of the alert mail: every open period has less than one remaining day, and the customer has no day left on its other contracts. To prepare a proposal for a new contract.', 'manageentities') }}
         </div>
         {% if contracts is empty %}
-            <div class="card-body text-muted">{{ __('No contract about to expire.', 'manageentities') }}</div>
+            <div class="card-body text-muted">{{ __('No contract running out of remaining days.', 'manageentities') }}</div>
         {% else %}
             <div class="table-responsive">
                 <table class="table table-sm table-hover card-table mb-0">
@@ -146,8 +160,9 @@
                             <th>{{ _n('Entity', 'Entities', 1) }}</th>
                             <th>{{ _n('Contract', 'Contracts', 1) }}</th>
                             <th>{{ __('Number') }}</th>
-                            <th>{{ __('Notice') }}</th>
-                            <th>{{ __('End date', 'manageentities') }}</th>
+                            <th>{{ __('Start date', 'manageentities') }}</th>
+                            <th>{{ __('Prestation', 'manageentities') }}</th>
+                            <th class="text-end">{{ __('Remaining days', 'manageentities') }}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -157,11 +172,9 @@
                                 <td>{{ row.entity }}</td>
                                 <td><a href="{{ row.contract_url }}">{{ row.name ?: '-' }}</a></td>
                                 <td>{{ row.num ?: '-' }}</td>
-                                <td>{{ row.notice_date ? row.notice_date|formatted_date : '-' }}</td>
-                                <td class="{{ row.expired ? 'text-danger fw-bold' : '' }}">
-                                    {{ row.end_date|formatted_date }}
-                                    {% if row.expired %}<i class="ti ti-alert-circle ms-1" title="{{ __('Expired', 'manageentities') }}"></i>{% endif %}
-                                </td>
+                                <td>{{ row.begin_date ? row.begin_date|formatted_date : '-' }}</td>
+                                <td class="small">{{ row.prestations ?: '-' }}</td>
+                                <td class="text-end text-danger fw-bold">{{ row.remaining_days|formatted_number }}</td>
                                 <td class="text-end">
                                     {% if row.new_url %}
                                         <a href="{{ row.new_url }}" class="btn btn-sm btn-outline-primary">
