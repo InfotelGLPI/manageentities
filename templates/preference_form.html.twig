@@ -50,6 +50,21 @@
                     __('Tabs displayed in the clients management', 'manageentities'),
                     row|merge({'multiple': true, 'values': tabs_selected})
                 ) }}
+                {# Order of the tabs: drag and drop list, its order posted as a comma-separated
+                   list of tab numbers (public/scripts/preference-tabs-order.js) #}
+                {% set order_field %}
+                    <input type="hidden" name="dashboard_tabs_order" value="{{ tabs_ordered|keys|join(',') }}" data-me-tabs-order-input>
+                    <ul class="list-group" data-me-tabs-order>
+                        {% for tab, label in tabs_ordered %}
+                            <li class="list-group-item d-flex align-items-center gap-2 py-1" data-tab="{{ tab }}" style="cursor: move">
+                                <i class="ti ti-grip-vertical text-muted"></i>
+                                <span>{{ label }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="form-text">{{ __('Drag and drop the tabs to change their order in the clients management.', 'manageentities') }}</div>
+                {% endset %}
+                {{ fields.field('dashboard_tabs_order', order_field, __('Order of the tabs of the clients management', 'manageentities'), row) }}
                 {{ fields.dropdownArrayField(
                     'contract_states',
                     null,

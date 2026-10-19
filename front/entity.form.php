@@ -28,10 +28,16 @@
  */
 
 use Glpi\Exception\Http\BadRequestHttpException;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\WizardController;
 
 $logo = new EntityLogo();
+
+// Logo and administrative data of the "Data administrative" tab: back on that tab
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    PortalEntity::keepTab();
+}
 
 global $CFG_GLPI;
 

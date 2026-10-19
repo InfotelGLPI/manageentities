@@ -83,6 +83,7 @@ CREATE TABLE `glpi_plugin_manageentities_preferences` (
    `business_id` text DEFAULT NULL,
    `companies_id` text DEFAULT NULL,
    `hidden_dashboard_tabs` text DEFAULT NULL,
+   `dashboard_tabs_order` text DEFAULT NULL COMMENT 'JSON tab numbers of the clients management, in the order of the user',
    PRIMARY KEY  (`id`),
    KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -122,6 +123,11 @@ CREATE TABLE `glpi_plugin_manageentities_configs` (
    `presale_documentcategories_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id) — category of the generated proposals',
    `presale_default_vat` decimal(5,2) NOT NULL DEFAULT '20.00',
    `dat_documentcategories_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id) — category of the generated DAT',
+   `use_kiflo` tinyint NOT NULL DEFAULT '0',
+   `kiflo_url` varchar(255) NOT NULL DEFAULT 'https://api.kiflo.com/v3',
+   `kiflo_token` text COMMENT 'encrypted with GLPIKey',
+   `kiflo_last_sync` timestamp NULL DEFAULT NULL COMMENT 'last successful synchronization',
+   `kiflo_last_error` text COMMENT 'error of the last synchronization, empty when it succeeded',
    PRIMARY KEY  (`id`),
    KEY `documentcategories_id` (`documentcategories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -483,6 +489,7 @@ CREATE TABLE `glpi_plugin_manageentities_presaleproposals` (
    `documents_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documents (id) — last generated version',
    `version` int NOT NULL DEFAULT '0',
    `archive_date` timestamp NULL DEFAULT NULL,
+   `conversion_date` timestamp NULL DEFAULT NULL COMMENT 'won proposal: the customer wizard went through (PresaleConversion::afterCommit())',
    `estimate_status` tinyint NOT NULL DEFAULT '0' COMMENT 'estimate by the project manager: 0 none, 1 requested, 2 validated',
    `estimate_brief` text COMMENT 'note of the sales representative for the estimate',
    `estimate_comment` text COMMENT 'comment of the project manager on the estimate',
@@ -591,4 +598,41 @@ CREATE TABLE `glpi_plugin_manageentities_datservers` (
    PRIMARY KEY  (`id`),
    KEY `plugin_manageentities_dats_id` (`plugin_manageentities_dats_id`),
    KEY `rank` (`rank`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_kifloleads`;
+CREATE TABLE `glpi_plugin_manageentities_kifloleads` (
+   `id` int unsigned NOT NULL auto_increment,
+   `kiflo_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'id of the lead in Kiflo',
+   `name` varchar(255) DEFAULT NULL COMMENT 'company name of the lead',
+   `contact_name` varchar(255) DEFAULT NULL,
+   `email` varchar(255) DEFAULT NULL,
+   `phone` varchar(255) DEFAULT NULL,
+   `origin` varchar(255) DEFAULT NULL,
+   `comment` text,
+   `status` varchar(50) NOT NULL DEFAULT '' COMMENT 'Pending, Accepted, Refused, Converted...',
+   `source` varchar(50) DEFAULT NULL,
+   `partner_name` varchar(255) DEFAULT NULL,
+   `owner_name` varchar(255) DEFAULT NULL COMMENT 'owner of the lead at the publisher',
+   `owner_email` varchar(255) DEFAULT NULL,
+   `deal_name` varchar(255) DEFAULT NULL,
+   `customer_name` varchar(255) DEFAULT NULL,
+   `kiflo_customers_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'id of the customer in Kiflo, once converted',
+   `date_kiflo` timestamp NULL DEFAULT NULL COMMENT 'creation date in Kiflo',
+   `deadline` timestamp NULL DEFAULT NULL,
+   `accepted_date` timestamp NULL DEFAULT NULL,
+   `converted_date` timestamp NULL DEFAULT NULL,
+   `properties` text COMMENT 'JSON of the custom properties of the lead',
+   `is_deleted_kiflo` tinyint NOT NULL DEFAULT '0' COMMENT 'no longer returned by Kiflo',
+   `date_sync` timestamp NULL DEFAULT NULL,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   `date_mod` timestamp NULL DEFAULT NULL,
+   PRIMARY KEY  (`id`),
+   UNIQUE KEY `kiflo_id` (`kiflo_id`),
+   KEY `status` (`status`),
+   KEY `kiflo_customers_id` (`kiflo_customers_id`),
+   KEY `date_kiflo` (`date_kiflo`),
+   KEY `is_deleted_kiflo` (`is_deleted_kiflo`),
+   KEY `date_creation` (`date_creation`),
+   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

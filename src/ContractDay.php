@@ -570,7 +570,9 @@ class ContractDay extends CommonDBTM
                 'glpi_tickets.is_deleted' => 0,
                 'glpi_plugin_manageentities_contractdays.end_date' => ['<=', $date],
                 'glpi_plugin_manageentities_cridetails.date' => ['>', $date],
-            ],
+            // Interventions of the active entities only: the monthly follow-up and the dashboard
+            // widget listed those of the whole base, whatever the customer displayed
+            ] + getEntitiesRestrictCriteria('glpi_plugin_manageentities_cridetails'),
         ];
 
         return $criteria;

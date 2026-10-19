@@ -194,3 +194,28 @@ div#tabcontent {
 .me-techlead-card:has(input[value="other"]:checked) .me-techlead-count[data-me-count="other"] {
    display: inline;
 }
+
+/* Clients management (front/entity.php): the vertical tabs on the right of their content,
+   with their counters. Only that page carries .me-portal, the tabs of the other items keep
+   the layout of the core. Below md, the core turns the tabs into a select: nothing to move. */
+@media (min-width: 768px) {
+   .me-portal .card-tabs.vertical {
+      flex-direction: row-reverse !important;
+   }
+
+   .me-portal .card-tabs.vertical > .nav-tabs {
+      min-width: 240px !important;
+      border-left: 1px solid var(--tblr-border-color);
+      border-right: 0;
+   }
+
+   .me-portal .card-tabs.vertical > .nav-tabs .nav-link {
+      border-radius: 0 var(--tblr-border-radius) var(--tblr-border-radius) 0;
+   }
+
+   .me-portal .card-tabs.vertical > .tab-content {
+      border-left: 0 !important;
+      border-right: 1px solid var(--tblr-border-color);
+      min-width: 0;
+   }
+}

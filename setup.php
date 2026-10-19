@@ -184,6 +184,9 @@ function plugin_init_manageentities()
 
         $PLUGIN_HOOKS['mydashboard']['manageentities'] = [Dashboard::class];
 
+        // Kiflo API key, encrypted in the configuration
+        $PLUGIN_HOOKS[Hooks::SECURED_FIELDS]['manageentities'] = ['glpi_plugin_manageentities_configs.kiflo_token'];
+
         $PLUGIN_HOOKS[Hooks::PRE_ITEM_ADD]['manageentities'] = [
             'TicketTask' => [TicketTask::class, 'preItemAdd'],
         ];
@@ -203,6 +206,8 @@ function plugin_init_manageentities()
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/directhelpdesk-filters.js';
         // "Associate to a contract" card of the CRI detail (native ES module, no-op elsewhere)
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/cridetail-contract.js';
+        // Order of the tabs of the clients management in the preferences (native ES module, no-op elsewhere)
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/preference-tabs-order.js';
         // Prices of a contract period and their edition form (native ES module, no-op elsewhere)
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/criprice.js';
 

@@ -1,0 +1,98 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# "Kiflo" tab of the configuration (KifloConfig).
+ #
+ # config      - row of glpi_plugin_manageentities_configs
+ # default_url - URL of the Kiflo API used when the field is empty
+ # has_token   - whether an API key is stored (it is never sent back to the form)
+ # leads_count - number of leads of the local copy
+ #}
+
+{% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
+
+<form name="form" method="post" action="{{ form_url }}">
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-target-arrow"></i>
+            <strong>{{ __('Kiflo', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            {{ fields.dropdownYesNo('use_kiflo', config.use_kiflo|default(0), __('Use the Kiflo API', 'manageentities'), row|merge({
+                'helper': __('Displays the leads shared by the publisher in Kiflo, in the clients management and on the dashboard.', 'manageentities'),
+            })) }}
+
+            {{ fields.textField('kiflo_url', config.kiflo_url|default(default_url), __('URL of the API', 'manageentities'), row|merge({
+                'helper': __('Left empty: %s')|format(default_url),
+                'additional_attributes': {'placeholder': default_url},
+            })) }}
+
+            {% set token_field %}
+                <input type="password" class="form-control" name="kiflo_token" id="kiflo_token" value="" autocomplete="new-password"
+                       placeholder="{{ has_token ? __('Key stored: leave empty to keep it', 'manageentities') : '' }}">
+                {% if has_token %}
+                    <label class="form-check mt-1 mb-0">
+                        <input type="checkbox" class="form-check-input" name="_blank_kiflo_token" value="1">
+                        <span class="form-check-label">{{ __('Clear the key', 'manageentities') }}</span>
+                    </label>
+                {% endif %}
+            {% endset %}
+            {{ fields.field('kiflo_token', token_field, __('API key', 'manageentities'), row|merge({
+                'id': 'kiflo_token',
+                'helper': __('Partner API access token, generated in Kiflo. Stored encrypted.', 'manageentities'),
+            })) }}
+
+            {{ fields.htmlField('', config.kiflo_last_sync ? config.kiflo_last_sync|formatted_datetime ~ ' — ' ~ _n('%d lead', '%d leads', leads_count, 'manageentities')|format(leads_count) : '-', __('Last synchronization', 'manageentities'), row) }}
+
+            {% if config.kiflo_last_error %}
+                <div class="alert alert-danger mb-0">
+                    <i class="ti ti-alert-triangle me-1"></i>
+                    {{ config.kiflo_last_error }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+            <input type="hidden" name="id" value="1">
+            {% if has_token %}
+                <button type="submit" name="kiflo_test" class="btn btn-outline-secondary" formnovalidate>
+                    <i class="ti ti-plug-connected me-1"></i>{{ __('Test the connection', 'manageentities') }}
+                </button>
+                {% if config.use_kiflo %}
+                    <button type="submit" name="kiflo_sync" class="btn btn-outline-secondary" formnovalidate>
+                        <i class="ti ti-refresh me-1"></i>{{ __('Synchronize now', 'manageentities') }}
+                    </button>
+                {% endif %}
+            {% endif %}
+            <button type="submit" name="update_config" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>
+                {{ _x('button', 'Save') }}
+            </button>
+        </div>
+    </div>
+</form>

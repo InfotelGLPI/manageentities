@@ -801,25 +801,25 @@ parameters:
 		-
 			message: '#^Access to static property \$MANAGEMENT on an unknown class GlpiPlugin\\Mydashboard\\Menu\.$#'
 			identifier: class.notFound
-			count: 1
+			count: 2
 			path: src/Dashboard.php
 
 		-
 			message: '#^Access to static property \$TABLE on an unknown class GlpiPlugin\\Mydashboard\\Widget\.$#'
 			identifier: class.notFound
-			count: 5
+			count: 6
 			path: src/Dashboard.php
 
 		-
 			message: '#^Call to method setTabDatas\(\) on an unknown class GlpiPlugin\\Mydashboard\\Datatable\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 3
 			path: src/Dashboard.php
 
 		-
 			message: '#^Call to method setTabNames\(\) on an unknown class GlpiPlugin\\Mydashboard\\Datatable\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 3
 			path: src/Dashboard.php
 
 		-
@@ -829,9 +829,15 @@ parameters:
 			path: src/Dashboard.php
 
 		-
+			message: '#^Call to method setOption\(\) on an unknown class GlpiPlugin\\Mydashboard\\Datatable\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Dashboard.php
+
+		-
 			message: '#^Call to method setWidgetTitle\(\) on an unknown class GlpiPlugin\\Mydashboard\\Datatable\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 3
 			path: src/Dashboard.php
 
 		-
@@ -843,7 +849,7 @@ parameters:
 		-
 			message: '#^Call to method toggleWidgetRefresh\(\) on an unknown class GlpiPlugin\\Mydashboard\\Datatable\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 3
 			path: src/Dashboard.php
 
 		-
@@ -861,13 +867,13 @@ parameters:
 		-
 			message: '#^Instantiated class GlpiPlugin\\Mydashboard\\Datatable not found\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 3
 			path: src/Dashboard.php
 
 		-
 			message: '#^Instantiated class GlpiPlugin\\Mydashboard\\Html not found\.$#'
 			identifier: class.notFound
-			count: 5
+			count: 6
 			path: src/Dashboard.php
 
 		-

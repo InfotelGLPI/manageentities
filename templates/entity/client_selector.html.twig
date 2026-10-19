@@ -1,0 +1,51 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Selector of the customer above the tabs of the clients management (Entity::showClientSelector()).
+ #
+ # action_url - page of the clients management, which changes the active entities
+ # clients    - {entities_id: name}, 0 being all the clients
+ # active     - customer displayed, 0 for all of them
+ #}
+
+<form method="post" action="{{ action_url }}" class="card mb-3">
+    <div class="card-body py-2 d-flex align-items-center flex-wrap gap-2">
+        <label for="dropdown_entities_idme_client_selector" class="form-label mb-0 fw-bold">
+            <i class="ti ti-building me-1"></i>{{ _n('Client', 'Clients', 1, 'manageentities') }}
+        </label>
+        <div style="min-width: 320px">
+            {% do call('Dropdown::showFromArray', ['entities_id', clients, {
+                'value': active,
+                'width': '100%',
+                'rand': 'me_client_selector',
+            }]) %}
+        </div>
+        <button type="submit" name="choose_client" value="1" class="btn btn-primary">
+            <i class="ti ti-filter me-1"></i>{{ __('Show', 'manageentities') }}
+        </button>
+    </div>
+</form>

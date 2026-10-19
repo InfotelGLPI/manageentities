@@ -108,6 +108,9 @@ class PresaleConversion
             }
         }
         $session['contract_prefill']   = self::contractData($proposal);
+        // Kept for the whole wizard (contract_prefill is consumed by the first display of the
+        // contract step): a contract template loaded later does not overwrite these fields
+        $session['proposal_contract']  = $session['contract_prefill'];
         $session['interventions_data'] = self::interventionsData($proposal);
 
         return $session;
@@ -324,6 +327,10 @@ class PresaleConversion
             return;
         }
 
+        // The proposal is converted: it leaves the won proposals waiting for their customer,
+        // whatever the wizard made (a subscription only makes no contract)
+        $proposal->update(['id' => $proposals_id, 'conversion_date' => $_SESSION['glpi_currenttime']]);
+
         // The prospect became this customer, its contacts these contacts
         $client->update(['id' => $client->getID(), 'converted_entities_id' => $entities_id]);
         $link = new PresaleContact();
@@ -441,22 +448,107 @@ class PresaleConversion
     }
 
     /**
-     * Whether the customer was already made from the proposal: its document is linked to a
-     * contract (afterCommit()), or, without document, its prospect became a customer
+     * Whether the customer was already made from the proposal: the customer wizard started from
+     * it went through (afterCommit() sets its conversion date)
      */
     public static function isConverted(PresaleProposal $proposal): bool
     {
-        $documents_id = (int) $proposal->fields['documents_id'];
-        if ($documents_id > 0) {
-            return countElementsInTable(Document_Item::getTable(), [
-                'documents_id' => $documents_id,
-                'itemtype'     => \Contract::class,
-            ]) > 0;
-        }
-        $client = new PresaleClient();
+        return !empty($proposal->fields['conversion_date']);
+    }
 
-        return $client->getFromDB((int) $proposal->fields['plugin_manageentities_presaleclients_id'])
-            && (int) $client->fields['converted_entities_id'] > 0;
+    /**
+     * Conversion date of the won proposals converted before the column existed, from what
+     * afterCommit() left: the document linked to a contract, or, without document, the prospect
+     * that became a customer. Run once, when the column is added.
+     */
+    public static function initConversionDates(): void
+    {
+        global $DB;
+
+        $proposals = PresaleProposal::getTable();
+        $client    = new PresaleClient();
+        foreach (
+            $DB->request([
+                'SELECT' => ['id', 'documents_id', 'plugin_manageentities_presaleclients_id', 'date_mod'],
+                'FROM'   => $proposals,
+                'WHERE'  => ['status' => PresaleProposal::STATUS_WON],
+            ]) as $data
+        ) {
+            // The prospect is only looked at without document: a proposal made for an existing
+            // customer has its entity from the start, converted or not
+            if ((int) $data['documents_id'] > 0) {
+                $converted = countElementsInTable(Document_Item::getTable(), [
+                    'documents_id' => (int) $data['documents_id'],
+                    'itemtype'     => \Contract::class,
+                ]) > 0;
+            } else {
+                $converted = $client->getFromDB((int) $data['plugin_manageentities_presaleclients_id'])
+                    && (int) $client->fields['converted_entities_id'] > 0;
+            }
+            if ($converted) {
+                // Direct update: no history nor date_mod change for a data migration
+                $DB->update($proposals, ['conversion_date' => $data['date_mod']], ['id' => (int) $data['id']]);
+            }
+        }
+    }
+
+    /**
+     * Won proposals whose customer is still to be made: the customer wizard was left before its
+     * end, or not started yet
+     *
+     * @param array $criteria extra criteria, on the proposals or their prospect
+     *
+     * @return list<array{id: int, url: string, name: string, client: string, client_url: string,
+     *                    date_mod: string, total_ht: float, customer_url: string}>
+     */
+    public static function getProposalsToConvert(array $criteria = []): array
+    {
+        global $DB;
+
+        $proposals = PresaleProposal::getTable();
+        $clients   = PresaleClient::getTable();
+        $can_convert = Session::haveRight(Contract::$rightname, UPDATE);
+
+        $list = [];
+        foreach (
+            $DB->request([
+                'SELECT'    => [
+                    $proposals . '.id',
+                    $proposals . '.name',
+                    $proposals . '.total_ht',
+                    $proposals . '.date_mod',
+                    $clients . '.id AS clients_id',
+                    $clients . '.name AS client_name',
+                ],
+                'FROM'      => $proposals,
+                'LEFT JOIN' => [
+                    $clients => [
+                        'ON' => [
+                            $clients   => 'id',
+                            $proposals => 'plugin_manageentities_presaleclients_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    $proposals . '.status'          => PresaleProposal::STATUS_WON,
+                    $proposals . '.conversion_date' => null,
+                ] + $criteria + getEntitiesRestrictCriteria($proposals, '', '', true),
+                'ORDERBY'   => [$proposals . '.date_mod DESC'],
+            ]) as $data
+        ) {
+            $list[] = [
+                'id'           => (int) $data['id'],
+                'url'          => PresaleProposal::getFormURLWithID((int) $data['id']),
+                'name'         => (string) ($data['name'] ?: $data['client_name']),
+                'client'       => (string) $data['client_name'],
+                'client_url'   => PresaleClient::getFormURLWithID((int) $data['clients_id']),
+                'date_mod'     => (string) $data['date_mod'],
+                'total_ht'     => (float) $data['total_ht'],
+                'customer_url' => $can_convert ? PresaleWizard::getCustomerWizardPath((int) $data['id']) : '',
+            ];
+        }
+
+        return $list;
     }
 
     /**

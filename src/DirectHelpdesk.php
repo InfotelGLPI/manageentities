@@ -489,6 +489,15 @@ class DirectHelpdesk extends CommonDBTM
      *     is_day_mode: bool
      * }
      */
+    /**
+     * Counter of the tab of the clients management: the unbilled interventions of its main
+     * table (customers with ongoing services), the same total as the tab
+     */
+    public static function countUnbilled(): int
+    {
+        return (int) (self::buildUnbilledOverview()['total_nb'] ?? 0);
+    }
+
     private static function buildUnbilledOverview(): array
     {
         global $DB;

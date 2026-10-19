@@ -733,6 +733,29 @@ class WizardController
         return $condition;
     }
 
+    /**
+     * Fields of a contract template, merged into those the step already holds: a template only
+     * fills the fields still empty, it never overwrites what the user typed or what a won
+     * proposal prefilled (its name, number, start date, comment)
+     *
+     * @param array<string, mixed> $template fields of the template
+     * @param array<string, mixed> $current  fields already defined
+     *
+     * @return array<string, mixed>
+     */
+    public static function mergeTemplateIntoContract(array $template, array $current): array
+    {
+        $merged = $template;
+        foreach ($template as $field => $value) {
+            $existing = $current[$field] ?? null;
+            if ($existing !== null && $existing !== '' && $existing !== 0 && $existing !== '0') {
+                $merged[$field] = $existing;
+            }
+        }
+
+        return $merged;
+    }
+
     public static function loadContractTemplate(): void
     {
         header('Content-Type: application/json');
@@ -762,21 +785,34 @@ class WizardController
             self::jsonOut(['success' => false]);
         }
 
-        $f = $contract->fields;
-
-        $session = self::getSession();
-        $session['contract_prefill'] = [
-            'name'             => $f['name'] ?? '',
-            'num'              => $f['num'] ?? '',
-            'begin_date'       => $f['begin_date'] ?? '',
-            'duration'         => (int) ($f['duration'] ?? 12),
-            'contracttypes_id' => (int) ($f['contracttypes_id'] ?? 0),
-            'states_id'        => (int) ($f['states_id'] ?? 0),
-            'comment'          => $f['comment'] ?? '',
-        ];
-        self::saveSession($session);
+        self::prefillFromTemplate($contract->fields);
 
         self::jsonOut(['success' => true, 'redirect' => true, 'step' => 4]);
+    }
+
+    /**
+     * Prefill of the contract step from a template, for its next display: the template only
+     * fills the fields the step does not hold yet (typed by the user, or prefilled from a won
+     * proposal)
+     *
+     * @param array<string, mixed> $template fields of the template contract
+     */
+    public static function prefillFromTemplate(array $template): void
+    {
+        $session = self::getSession();
+        $session['contract_prefill'] = self::mergeTemplateIntoContract(
+            [
+                'name'             => $template['name'] ?? '',
+                'num'              => $template['num'] ?? '',
+                'begin_date'       => $template['begin_date'] ?? '',
+                'duration'         => (int) ($template['duration'] ?? 12),
+                'contracttypes_id' => (int) ($template['contracttypes_id'] ?? 0),
+                'states_id'        => (int) ($template['states_id'] ?? 0),
+                'comment'          => $template['comment'] ?? '',
+            ],
+            ($session['contract_prefill'] ?? []) + ($session['contract_data'] ?? []) + ($session['proposal_contract'] ?? []),
+        );
+        self::saveSession($session);
     }
 
     // -------------------------------------------------------------------------
@@ -2305,6 +2341,31 @@ class WizardController
         ];
     }
 
+    /**
+     * Won proposal the wizard was started from: its generated document, which goes with the new
+     * contract by default (PresaleConversion::afterCommit() links it once the contract exists)
+     *
+     * @return array{name: string, filename: string, url: string}|null null without proposal or document
+     */
+    private static function getProposalDocument(array $session): ?array
+    {
+        $proposals_id = (int) ($session[PresaleConversion::SESSION_PROPOSAL] ?? 0);
+        $proposal     = new PresaleProposal();
+        if ($proposals_id <= 0 || !$proposal->getFromDB($proposals_id) || (int) $proposal->fields['documents_id'] <= 0) {
+            return null;
+        }
+        $document = new Document();
+        if (!$document->getFromDB((int) $proposal->fields['documents_id'])) {
+            return null;
+        }
+
+        return [
+            'name'     => (string) ($document->fields['name'] ?: $document->fields['filename']),
+            'filename' => (string) ($document->fields['filename'] ?? ''),
+            'url'      => PresaleWizard::getDocumentUrl($document->getID(), $proposals_id),
+        ];
+    }
+
     private static function buildContractVars(array $session, int $rand): array
     {
         // Prefill from template if set (consumed after render)
@@ -2341,6 +2402,7 @@ class WizardController
         $rand_tpl = mt_rand();
 
         return [
+            'proposal_doc'       => self::getProposalDocument($session),
             'contract_fields'    => $fields,
             'contracttype_field' => self::dropdownField(GlpiContractType::class, [
                 'name'  => 'contracttypes_id',
@@ -2411,7 +2473,9 @@ class WizardController
             'is_day_price'             => $is_day,
             'show_on_global_gantt' => $is_first ? true : (bool) ($fields['show_on_global_gantt'] ?? false),
             'refacturable_costs'   => (bool) ($fields['refacturable_costs'] ?? false),
+            // A document goes with the contract: uploaded in the wizard, or the generated proposal
             'contract_added'       => !empty($session['documents_ids'])
+                                       || self::getProposalDocument($session) !== null
                                        || (bool) ($fields['contract_added'] ?? false),
             'moving_management'    => (bool) ($fields['moving_management'] ?? false),
         ];

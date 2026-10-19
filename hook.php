@@ -50,6 +50,7 @@ use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
+use GlpiPlugin\Manageentities\KifloLead;
 use GlpiPlugin\Manageentities\Monthly;
 use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\PresaleAnnexLine;
@@ -426,6 +427,11 @@ function plugin_manageentities_install()
     DatServer::install($dat_migration);
     Config::installDatFields($dat_migration);
 
+    // Leads of Kiflo, shared by the publisher. Idempotent, as above.
+    $kiflo_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+    Config::installKifloFields($kiflo_migration);
+    KifloLead::install($kiflo_migration);
+
 
     include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
@@ -513,6 +519,7 @@ function plugin_manageentities_uninstall()
     NotificationTargetPresaleProposal::uninstall();
     Dat::uninstall();
     DatServer::uninstall();
+    KifloLead::uninstall();
 
     // Entity owns no table, so it is absent from the list above: only its notification
     // chain has to be removed.
@@ -563,6 +570,7 @@ function plugin_manageentities_uninstall()
         EditorSubscription::class,
         EntityLogo::class,
         InterventionStakeholder::class,
+        KifloLead::class,
         Preference::class,
         PresaleAnnexLine::class,
         PresaleAnnexType::class,

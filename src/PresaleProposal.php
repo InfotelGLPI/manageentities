@@ -452,6 +452,7 @@ class PresaleProposal extends CommonDBTM
                             `documents_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documents (id) — last generated version',
                             `version` int NOT NULL DEFAULT '0',
                             `archive_date` timestamp NULL DEFAULT NULL,
+                            `conversion_date` timestamp NULL DEFAULT NULL COMMENT 'won proposal: the customer wizard went through (PresaleConversion::afterCommit())',
                             `estimate_status` tinyint NOT NULL DEFAULT '0' COMMENT 'estimate by the project manager: 0 none, 1 requested, 2 validated',
                             `estimate_brief` text COMMENT 'note of the sales representative for the estimate',
                             `estimate_comment` text COMMENT 'comment of the project manager on the estimate',
@@ -496,7 +497,10 @@ class PresaleProposal extends CommonDBTM
             // Subscription or contract the proposal renews (lists of Entity::showOpenProposals())
             'plugin_manageentities_editorsubscriptions_id' => ['fkey', 'RELATION to glpi_plugin_manageentities_editorsubscriptions (id) — expired subscription renewed by the proposal', 'plugin_manageentities_presaleorigins_id'],
             'contracts_id' => ['fkey', 'RELATION to glpi_contracts (id) — expiring contract followed by the proposal', 'plugin_manageentities_editorsubscriptions_id'],
+            // Won proposal converted into a customer (the wizard went through)
+            'conversion_date' => ['timestamp NULL DEFAULT NULL', 'won proposal: the customer wizard went through (PresaleConversion::afterCommit())', 'archive_date'],
         ];
+        $add_conversion_date = !$DB->fieldExists($table, 'conversion_date');
         $changed = false;
         foreach ($fields as $name => [$type, $comment, $after]) {
             if (!$DB->fieldExists($table, $name)) {
@@ -509,6 +513,9 @@ class PresaleProposal extends CommonDBTM
         }
         if ($changed) {
             $migration->migrationOneTable($table);
+        }
+        if ($add_conversion_date) {
+            PresaleConversion::initConversionDates();
         }
 
         // Default columns of the list: reference, prospect, status, type, date, sales, total, update

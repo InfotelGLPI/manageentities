@@ -51,6 +51,8 @@
                         <th>{{ _n('Entity', 'Entities', 1) }}</th>
                         <th class="text-center">{{ _x('phone', 'Number') }}</th>
                         <th>{{ __('Status') }}</th>
+                        <th class="text-end">{{ is_day ? __('Remaining days', 'manageentities') : __('Remaining hours', 'manageentities') }}</th>
+                        <th>{{ __('End date') }}</th>
                         <th>{{ __('Comments') }}</th>
                         {% if show_management %}
                         <th class="text-center">{{ __('Mode of management', 'manageentities') }}</th>
@@ -69,6 +71,14 @@
                         <td>{{ row.entity_name }}</td>
                         <td class="text-center">{{ row.num }}</td>
                         <td>{{ row.state }}</td>
+                        <td class="text-end {{ row.remaining_days <= 0 ? 'text-danger fw-bold' : '' }}">
+                            {{ row.remaining_days|formatted_number }}
+                        </td>
+                        <td>
+                            {% if row.end_date %}
+                                <span class="{{ row.end_date < 'now'|date('Y-m-d') ? 'text-danger' : '' }}">{{ row.end_date|formatted_date }}</span>
+                            {% endif %}
+                        </td>
                         <td>{{ row.comment|nl2br }}</td>
                         {% if show_management %}
                         <td class="text-center">{{ row.management }}</td>

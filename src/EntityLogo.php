@@ -91,31 +91,24 @@ class EntityLogo extends CommonDBTM
         }
 
         if ($values["entities_id"]) {
-            if ($this->getFromDBByCrit(['entities_id' => $values["entities_id"]])) {
-                $row_id = (int) $this->fields['id'];
-                $doc = new Document();
-                $img = ["id" => $this->fields["logos_id"]];
-                $doc->delete($img, 1);
-                $logo = $this->addEntityFiles($values, 0, -1);
-                foreach ($logo as $key => $name) {
-                    // A row already exists for this entity. add() ignores the id it is handed and
-                    // inserts a NEW row, so every replacement used to leave an orphan behind - and
-                    // getLogo() returns the first row it finds (reset()), which could bring a
-                    // previous logo back. Update the existing row instead.
-                    $this->update([
-                        'id' => $row_id,
-                        'logos_id' => $key,
-                    ]);
-                }
-            } else {
-                $logo = $this->addEntityFiles($values, 0, -1);
+            $entities_id = (int) $values["entities_id"];
 
-                foreach ($logo as $key => $name) {
-                    $this->add([
-                        'entities_id' => $values["entities_id"],
-                        'logos_id' => $key,
-                    ]);
-                }
+            // Replacement: the previous logo document is purged first, so that a new upload of
+            // the same picture (its file lost on the server) gives a new document instead of
+            // being matched to the broken one by its checksum.
+            foreach ($this->find(['entities_id' => $entities_id]) as $row) {
+                (new Document())->delete(['id' => $row['logos_id']], 1);
+            }
+            // The purge hook (cleanForItem()) drops the rows of the purged document: the row used
+            // to be updated afterwards, which then failed silently and left the entity without
+            // any logo until a second upload. One row per entity, recreated below.
+            $this->deleteByCriteria(['entities_id' => $entities_id]);
+
+            foreach (array_keys($this->addEntityFiles($values, 0, -1)) as $logos_id) {
+                $this->add([
+                    'entities_id' => $entities_id,
+                    'logos_id'    => $logos_id,
+                ]);
             }
         }
     }

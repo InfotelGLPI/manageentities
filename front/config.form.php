@@ -32,13 +32,14 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\KifloConfig;
 use GlpiPlugin\Manageentities\PresaleTemplate;
 use GlpiPlugin\Manageentities\PresaleUser;
 
 if (Plugin::isPluginActive("manageentities")) {
     // Saving has always required config UPDATE on top of the plugin right: require it to
     // display the form too, instead of showing a form whose submission is then refused.
-    if (Session::haveRight(Contract::$rightname, UPDATE) && Session::haveRight(\Config::$rightname, UPDATE)) {
+    if (Config::canManageConfig()) {
         $config = new Config();
 
         $presale_user = new PresaleUser();
@@ -47,6 +48,12 @@ if (Plugin::isPluginActive("manageentities")) {
             $config->update($_POST);
             // Word templates of the pre-sales tab, stored in files/_plugins/manageentities/presale
             PresaleTemplate::handleUpload($_FILES, $_POST);
+            Html::back();
+        } elseif (isset($_POST["kiflo_test"])) {
+            KifloConfig::testConnection();
+            Html::back();
+        } elseif (isset($_POST["kiflo_sync"])) {
+            KifloConfig::synchronize();
             Html::back();
         } elseif (isset($_POST["add_presaleuser"])) {
             $presale_user->add([

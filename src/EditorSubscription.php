@@ -535,13 +535,13 @@ class EditorSubscription extends CommonDBTM
     // Display
     // -----------------------------------------------------------------------
 
-    public static function showForEntity(array $instID): void
+    /**
+     * Subscriptions of the tab of the clients management, on the table aliased "s"
+     *
+     * @param array<int|string> $instID active entities
+     */
+    private static function getEntityTabCriteria(array $instID): array
     {
-        global $DB;
-
-        $can_edit = Session::getCurrentInterface() !== 'helpdesk'
-            && Session::haveRightsOr(self::$rightname, [CREATE, UPDATE]);
-
         // Scope to the entity (or entities, if displayed recursively) currently active
         $where = !empty($instID) ? ['s.entities_id' => $instID] : [];
 
@@ -556,6 +556,34 @@ class EditorSubscription extends CommonDBTM
                 $where[] = ['NOT' => ['s.entities_id' => array_keys($archive_sons)]];
             }
         }
+
+        return $where;
+    }
+
+    /**
+     * Counter of the tab of the clients management: the subscriptions it lists
+     *
+     * @param array<int|string> $instID active entities
+     */
+    public static function countForEntity(array $instID): int
+    {
+        global $DB;
+
+        return (int) $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => self::getTable() . ' AS s',
+            'WHERE' => self::getEntityTabCriteria($instID),
+        ])->current()['cpt'];
+    }
+
+    public static function showForEntity(array $instID): void
+    {
+        global $DB;
+
+        $can_edit = Session::getCurrentInterface() !== 'helpdesk'
+            && Session::haveRightsOr(self::$rightname, [CREATE, UPDATE]);
+
+        $where = self::getEntityTabCriteria($instID);
 
         $now  = date('Y-m-d');
         $rows = [];

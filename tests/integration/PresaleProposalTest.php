@@ -527,6 +527,148 @@ class PresaleProposalTest extends DbTestCase
         $this->assertSame(1, $session['subscription_only']);
     }
 
+    public function testAWonProposalLeftBeforeTheEndOfTheWizardStaysToConvert(): void
+    {
+        $client   = $this->createPresaleClient();
+        $proposal = $this->createProposal($client, [
+            'status'    => PresaleProposal::STATUS_GENERATED,
+            'version'   => 1,
+            'reference' => 'TCV' . mt_rand(100000, 999999),
+        ]);
+        $this->runAction($proposal, 'won');
+        $proposal->getFromDB($proposal->getID());
+
+        // Won but the wizard was left: no longer in progress, listed with the customer to create
+        $criteria = [PresaleProposal::getTable() . '.id' => $proposal->getID()];
+        $this->assertSame([], PresaleWizard::getOpenProposals($criteria));
+        $to_convert = PresaleConversion::getProposalsToConvert($criteria);
+        $this->assertCount(1, $to_convert);
+        $this->assertSame(PresaleWizard::getCustomerWizardPath($proposal->getID()), $to_convert[0]['customer_url']);
+        $this->assertFalse(PresaleConversion::isConverted($proposal));
+
+        // The tab of the proposals offers to start the customer wizard again
+        $loader = \Glpi\Application\View\TemplateRenderer::getInstance()->getEnvironment()->getLoader();
+        if ($loader instanceof \Twig\Loader\FilesystemLoader && !in_array('manageentities', $loader->getNamespaces(), true)) {
+            $loader->addPath(dirname(__DIR__, 2) . '/templates', 'manageentities');
+        }
+        ob_start();
+        try {
+            \GlpiPlugin\Manageentities\Entity::showOpenProposals([PresaleWizard::getTargetEntity()]);
+        } finally {
+            $html = (string) ob_get_clean();
+        }
+        $this->assertStringContainsString('id="me-proposals-to-convert"', $html);
+        $this->assertStringContainsString('from_proposal=' . $proposal->getID(), $html);
+    }
+
+    public function testASubscriptionOnlyConversionIsRecordedWithoutContract(): void
+    {
+        $client   = $this->createPresaleClient();
+        $proposal = $this->createProposal($client, ['status' => PresaleProposal::STATUS_WON, 'documents_id' => 0]);
+        $this->addAnnex($proposal, [['designation' => 'Licence', 'quantity' => 1, 'unit_price' => 900]], $this->createSubscriptionLevel());
+        $session = PresaleConversion::prefill($proposal, WizardController::buildDefaultSession());
+
+        // End of the wizard: a subscription only, no contract
+        $entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        PresaleConversion::afterCommit($session, $entities_id, [], 0);
+        $this->hasSessionMessages(INFO, [sprintf(
+            'The customer has been created from the proposal %s.',
+            (string) ($proposal->fields['reference'] ?: $proposal->fields['name']),
+        )]);
+
+        $proposal->getFromDB($proposal->getID());
+        $this->assertNotEmpty($proposal->fields['conversion_date']);
+        $this->assertTrue(PresaleConversion::isConverted($proposal));
+        $this->assertSame([], PresaleConversion::getProposalsToConvert([PresaleProposal::getTable() . '.id' => $proposal->getID()]));
+    }
+
+    public function testConversionDatesOfTheProposalsConvertedBeforeTheColumn(): void
+    {
+        global $DB;
+
+        $converted = $this->createProposal(
+            $this->createPresaleClient(['converted_entities_id' => getItemByTypeName(\Entity::class, '_test_child_1', true)]),
+            ['status' => PresaleProposal::STATUS_WON, 'documents_id' => 0],
+        );
+        $waiting = $this->createProposal($this->createPresaleClient(), ['status' => PresaleProposal::STATUS_WON, 'documents_id' => 0]);
+        // Generated proposal for an existing customer: its prospect has the entity from the
+        // start, only its document linked to a contract tells it was converted
+        $document = new \Document();
+        $documents_id = (int) $document->add(['name' => 'Proposal', 'entities_id' => $this->getTestRootEntity(true)]);
+        $existing = $this->createProposal(
+            $this->createPresaleClient(['converted_entities_id' => getItemByTypeName(\Entity::class, '_test_child_1', true)]),
+            ['status' => PresaleProposal::STATUS_WON, 'documents_id' => $documents_id],
+        );
+        $DB->update(
+            PresaleProposal::getTable(),
+            ['conversion_date' => null],
+            ['id' => [$converted->getID(), $waiting->getID(), $existing->getID()]],
+        );
+
+        PresaleConversion::initConversionDates();
+
+        $converted->getFromDB($converted->getID());
+        $waiting->getFromDB($waiting->getID());
+        $existing->getFromDB($existing->getID());
+        $this->assertTrue(PresaleConversion::isConverted($converted));
+        $this->assertFalse(PresaleConversion::isConverted($waiting));
+        $this->assertFalse(PresaleConversion::isConverted($existing));
+    }
+
+    public function testTheContractOfAWonProposalGetsItsDocumentAndKeepsItsFieldsOverATemplate(): void
+    {
+        $document     = new \Document();
+        $documents_id = (int) $document->add(['name' => 'Proposal PDF', 'entities_id' => $this->getTestRootEntity(true)]);
+        $client       = $this->createPresaleClient();
+        $proposal     = $this->createProposal($client, [
+            'status'        => PresaleProposal::STATUS_WON,
+            'reference'     => 'TPL' . mt_rand(100000, 999999),
+            'proposal_type' => 'Expertise & Souscription',
+            'proposal_date' => '2026-11-01',
+            'documents_id'  => $documents_id,
+        ]);
+        $this->addAnnex($proposal, [['designation' => 'Audit', 'quantity' => 2, 'unit_price' => 750]], 0, 1);
+
+        $session = PresaleConversion::prefill($proposal, WizardController::buildDefaultSession());
+        (new \ReflectionMethod(WizardController::class, 'saveSession'))->invoke(null, $session);
+
+        // The contract step shows the document of the proposal, linked by default
+        $vars = (new \ReflectionMethod(WizardController::class, 'buildContractVars'))
+            ->invoke(null, WizardController::getSession(), 1);
+        $this->assertIsArray($vars['proposal_doc']);
+        $this->assertSame('Proposal PDF', $vars['proposal_doc']['name']);
+        // The prefill is consumed by this first display, the fields of the proposal are kept
+        $this->assertSame([], WizardController::getSession()['contract_prefill'] ?? []);
+
+        // Management step: "the contract is imported in GLPI" checked, the proposal goes with it
+        $management = (new \ReflectionMethod(WizardController::class, 'buildManagementVars'))
+            ->invoke(null, WizardController::getSession(), 1, true, false);
+        $this->assertTrue($management['contract_added']);
+
+        // A contract template loaded afterwards: it fills the empty fields only
+        WizardController::prefillFromTemplate([
+            'name'     => 'Template contract',
+            'num'      => 'TPL-NUM',
+            'duration' => 36,
+        ]);
+        // End of the wizard: the document of the proposal goes with the new contract
+        $entities_id  = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $contracts_id = (int) $this->createItem(\Contract::class, ['name' => 'From proposal', 'entities_id' => $entities_id])->getID();
+        PresaleConversion::afterCommit(WizardController::getSession(), $entities_id, [], $contracts_id);
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        $this->assertSame(1, countElementsInTable(\Document_Item::getTable(), [
+            'documents_id' => $documents_id,
+            'itemtype'     => \Contract::class,
+            'items_id'     => $contracts_id,
+        ]));
+
+        $prefill = WizardController::getSession()['contract_prefill'];
+        $this->assertSame('Expertise & Souscription', $prefill['name']);
+        $this->assertSame($proposal->fields['reference'], $prefill['num']);
+        $this->assertSame('2026-11-01', $prefill['begin_date']);
+        $this->assertSame(36, $prefill['duration']);
+    }
+
     public function testPrefillOfAnExistingCustomerKeepsItsEntity(): void
     {
         $entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);

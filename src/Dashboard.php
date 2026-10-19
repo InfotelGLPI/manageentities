@@ -104,6 +104,14 @@ class Dashboard extends CommonGLPI
             ],
         ];
 
+        if (KifloLead::canView()) {
+            $widgets[Menu::$MANAGEMENT][$this->getType() . "6"] = [
+                "title" => __("Open Kiflo leads", "manageentities"),
+                "type" => Widget::$TABLE,
+                "comment" => __("Leads shared by the publisher in Kiflo, refreshed by the synchronization", "manageentities"),
+            ];
+        }
+
         return $widgets;
     }
 
@@ -479,6 +487,49 @@ class Dashboard extends CommonGLPI
 
                 return $widget;
                 break;
+            case $this->getType() . "6":
+                // Reads the local copy only: a dashboard never waits for the Kiflo API
+                if (!KifloLead::canView()) {
+                    return new MydashboardHtml();
+                }
+
+                $datas    = [];
+                $tab_url  = KifloLead::getTabUrl();
+                foreach (KifloLead::getLeads() as $lead) {
+                    // Cells are rendered as HTML by the datatable: every value is escaped
+                    $contact = htmlspecialchars((string) $lead['contact_name'], ENT_QUOTES);
+                    if (!empty($lead['email'])) {
+                        $email    = htmlspecialchars((string) $lead['email'], ENT_QUOTES);
+                        $contact .= "<br><a href='mailto:" . $email . "'>" . $email . "</a>";
+                    }
+                    $datas[] = [
+                        // The detail of the lead (description...) is shown by the leads tab
+                        'name'    => "<a href='" . htmlspecialchars($tab_url, ENT_QUOTES) . "' target='_blank'>"
+                            . htmlspecialchars((string) $lead['name'], ENT_QUOTES) . "</a>",
+                        'contact' => $contact,
+                        'status'  => "<span class='badge bg-" . htmlspecialchars($lead['status_color'], ENT_QUOTES) . "-lt'>"
+                            . htmlspecialchars($lead['status_label'], ENT_QUOTES) . "</span>",
+                        'origin'  => htmlspecialchars((string) $lead['origin'], ENT_QUOTES),
+                        'owner'   => htmlspecialchars((string) $lead['owner_name'], ENT_QUOTES),
+                        'date'    => Html::convDate($lead['date_kiflo']),
+                    ];
+                }
+
+                $widget = new Datatable();
+                $widget->setTabNames([
+                    __('Company', 'manageentities'),
+                    _n('Contact', 'Contacts', 1),
+                    __('Status'),
+                    __('Origin', 'manageentities'),
+                    __('Owner at the publisher', 'manageentities'),
+                    __('Creation date'),
+                ]);
+                $widget->setTabDatas($datas);
+                $widget->setOption("bSort", false);
+                $widget->toggleWidgetRefresh();
+                $widget->setWidgetTitle(__("Open Kiflo leads", "manageentities"));
+
+                return $widget;
         }
     }
 

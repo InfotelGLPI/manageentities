@@ -25,38 +25,18 @@
  # --------------------------------------------------------------------------
  #}
 
-{# "General follow-up" tab of the helpdesk interface: current contracts on the left, unbilled
-   direct helpdesk interventions (gauges above the table) on the right. Each panel includes the
-   template of its central counterpart, fed with the data of Followup::getFollowUpReportData(),
-   DirectHelpdesk::getDashboardData() and DirectHelpdesk_Ticket::getTicketSelectData(). #}
-<div class="row g-3">
-    <div class="col-12 {{ directhelpdesk_select is not null ? 'col-md-6' }}">
-        <div class="card h-100">
-            <div class="card-header" style="background-color: var(--tblr-secondary-fg);">
-                <h4 class="mb-3">{{ __('Current contracts', 'manageentities') }}</h4>
-            </div>
-            <div class="card-body">
-                {% if followup is not null %}
-                    {{ include('@manageentities/followup_report.html.twig', followup, with_context = false) }}
-                {% else %}
-                    <div class="center b">{{ __('No results found') }}</div>
-                {% endif %}
-            </div>
-        </div>
+{# "Contractual follow-up" tab of the helpdesk interface: the current contracts, from the data
+   of Followup::getFollowUpReportData(). The unbilled interventions have their own tab
+   (unbilled_helpdesk.html.twig). #}
+<div class="card">
+    <div class="card-header" style="background-color: var(--tblr-secondary-fg);">
+        <h4 class="mb-3">{{ __('Current contracts', 'manageentities') }}</h4>
     </div>
-    {% if directhelpdesk_select is not null %}
-        <div class="col-12 col-md-6">
-            <div class="card h-100">
-                <div class="card-header" style="background-color: var(--tblr-secondary-fg);">
-                    <h4 class="mb-3">{{ directhelpdesk_title }}</h4>
-                </div>
-                <div class="card-body">
-                    {% if directhelpdesk_gauges is not null %}
-                        {{ include('@manageentities/directhelpdesk_dashboard.html.twig', directhelpdesk_gauges|merge({'col_class': 'col-12 col-xxl-6'}), with_context = false) }}
-                    {% endif %}
-                    {{ include('@manageentities/entity/directhelpdesk_ticket_select.html.twig', directhelpdesk_select, with_context = false) }}
-                </div>
-            </div>
-        </div>
-    {% endif %}
+    <div class="card-body">
+        {% if followup is not null %}
+            {{ include('@manageentities/followup_report.html.twig', followup, with_context = false) }}
+        {% else %}
+            <div class="center b">{{ __('No results found') }}</div>
+        {% endif %}
+    </div>
 </div>

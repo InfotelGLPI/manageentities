@@ -36,6 +36,7 @@
  # can_purge  - offers the deletion of a proposal
  # new_url    - new proposal (for the customer when there is a single one), empty when not allowed
  # list_url   - search page of the proposals
+ # to_convert - rows of PresaleConversion::getProposalsToConvert(): won, customer not created yet
  # subscriptions - rows of PresaleRenewal::getExpiredSubscriptions()
  # contracts  - rows of PresaleRenewal::getExpiringContracts()
  # show_subscriptions / show_contracts - the lists of renewals the user may see
@@ -84,6 +85,48 @@
         {{ proposals.table(proposals, {'action_url': action_url, 'can_purge': can_purge, 'show_total': true}) }}
     {% endif %}
 </div>
+
+{# Won proposals whose customer wizard was left before its end: it is started again from here #}
+{% if to_convert is not empty %}
+    <div class="card mt-3" id="me-proposals-to-convert">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="ti ti-trophy me-1"></i>{{ __('Won, customer to create', 'manageentities') }}
+                <span class="badge bg-green-lt ms-1">{{ to_convert|length }}</span>
+            </h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover card-table mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ _n('Prospect', 'Prospects', 1, 'manageentities') }}</th>
+                        <th class="text-end">{{ __('Total excluding VAT', 'manageentities') }}</th>
+                        <th>{{ __('Last update') }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for proposal in to_convert %}
+                    <tr>
+                        <td><a href="{{ proposal.url }}">{{ proposal.name }}</a></td>
+                        <td><a href="{{ proposal.client_url }}">{{ proposal.client }}</a></td>
+                        <td class="text-end">{{ proposal.total_ht|formatted_number }} €</td>
+                        <td>{{ proposal.date_mod|formatted_datetime }}</td>
+                        <td class="text-end">
+                            {% if proposal.customer_url %}
+                                <a href="{{ proposal.customer_url }}" class="btn btn-success btn-sm">
+                                    <i class="ti ti-building-plus me-1"></i>{{ __('Create the customer', 'manageentities') }}
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
 
 {# Renewals to propose: a row leaves its list once a proposal started from it is in progress or won #}
 {% if show_subscriptions %}

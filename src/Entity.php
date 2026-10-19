@@ -36,6 +36,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
+use Symfony\Component\HttpFoundation\Response;
 use Migration;
 use Notification;
 use Notification_NotificationTemplate;
@@ -52,10 +53,17 @@ class Entity extends CommonGLPI
 {
     public static string $rightname = 'plugin_manageentities';
 
+    /** Tabs of the clients management in a column, on the right (public/css/manageentities.css) */
+    public string $taborientation = self::TAB_VERTICAL;
+
     public const TAB_CONTRACTS = 5;
     public const TAB_DOCUMENTS = 9;
     public const TAB_TICKETS   = 15;
     public const TAB_PROPOSALS = 16;
+    public const TAB_KIFLO_LEADS = 17;
+    public const TAB_SUMMARY     = 18;
+    /** Unbilled interventions of the simplified interface (tab 13 being the central overview) */
+    public const TAB_HELPDESK_UNBILLED = 19;
 
     /**
      * Tabs of the client management dashboard a user can choose to display, by tab number.
@@ -70,6 +78,9 @@ class Entity extends CommonGLPI
             3                   => __('GANTT'),
             4                   => __('Data administrative', 'manageentities'),
         ];
+        if (Config::useKiflo()) {
+            $labels[self::TAB_KIFLO_LEADS] = KifloLead::getTypeName(2);
+        }
         if (Config::usePresale()) {
             $labels[self::TAB_PROPOSALS] = __('Proposals in progress', 'manageentities');
         }
@@ -137,6 +148,8 @@ class Entity extends CommonGLPI
 
         TemplateRenderer::getInstance()->display('@manageentities/entity/proposals_tab.html.twig', [
             'proposals'  => self::getOpenProposals($entities),
+            // Won, but the customer wizard did not go through: to be started again from here
+            'to_convert' => PresaleConversion::getProposalsToConvert(self::getProposalsCriteria($entities)),
             'badges'     => self::getProposalBadges($entities),
             'action_url' => PresaleProposal::canUpdate() ? PresaleWizard::getActionUrl() : '',
             'can_purge'  => PresaleProposal::canPurge(),
@@ -239,16 +252,53 @@ class Entity extends CommonGLPI
                 : [$_SESSION["glpiactive_entity"]];
             $is_single_entity = (count($entities) === 1);
 
-            if ($followUp->canView()) {
-                $tabs[1] = Followup::createTabEntry(
-                    Session::getCurrentInterface() == 'helpdesk'
-                        ? __('Contractual follow-up', 'manageentities')
-                        : __('General follow-up', 'manageentities'),
+            // Simplified interface: the summary of the customer comes first
+            if (Session::getCurrentInterface() == 'helpdesk' && $is_single_entity) {
+                $tabs[self::TAB_SUMMARY] = self::createTabEntry(
+                    __('Summary', 'manageentities'),
+                    0,
+                    self::class,
+                    'ti ti-id-badge-2',
                 );
+            }
+
+            if ($followUp->canView()) {
+                // Simplified interface: its ongoing contracts as counter
+                $tabs[1] = Session::getCurrentInterface() == 'helpdesk'
+                    ? Followup::createTabEntry(
+                        __('Contractual follow-up', 'manageentities'),
+                        CustomerSummary::countOngoingContracts($entities),
+                    )
+                    : Followup::createTabEntry(__('General follow-up', 'manageentities'));
+            }
+
+            // Simplified interface: the unbilled interventions of the customer, right after its
+            // contracts, with their number as counter
+            if (Session::getCurrentInterface() == 'helpdesk') {
+                $unbilled = CustomerSummary::countUnbilled($entities);
+                if ($unbilled > 0) {
+                    $tabs[self::TAB_HELPDESK_UNBILLED] = DirectHelpdesk::createTabEntry(
+                        __('Unbilled interventions', 'manageentities'),
+                        $unbilled,
+                        self::class,
+                        DirectHelpdesk::getIcon(),
+                    );
+                }
             }
 
             if ($monthly->canView() && Session::getCurrentInterface() == 'central') {
                 $tabs[2] = Monthly::createTabEntry(__('Monthly follow-up', 'manageentities'));
+            }
+
+            // Simplified interface: the subscription comes right after the follow-up, before the
+            // GANTT (its tab keeps its place in the central interface, below)
+            if (Session::getCurrentInterface() == 'helpdesk' && Config::useEditorSubscriptions()) {
+                $tabs[6] = EditorSubscription::createTabEntry(
+                    _n('Publisher subscription', 'Publisher subscriptions', 2, 'manageentities'),
+                    EditorSubscription::countForEntity($entities),
+                    self::class,
+                    EditorSubscription::getIcon(),
+                );
             }
 
             if ($gantt->canView()) {
@@ -257,9 +307,20 @@ class Entity extends CommonGLPI
 
             // showDescription() issues two queries and renders one Html::file() per entity, so a
             // parent entity multiplies the cost by the size of its subtree for a page that is
-            // only ever read one customer at a time.
-            if ($is_single_entity) {
+            // only ever read one customer at a time. The simplified interface has the summary
+            // card instead.
+            if ($is_single_entity && Session::getCurrentInterface() == 'central') {
                 $tabs[4] = self::createTabEntry(__('Data administrative', 'manageentities'));
+            }
+
+            // Leads shared by the publisher in Kiflo: they come before the proposals made to them
+            if (Session::getCurrentInterface() == 'central' && KifloLead::canView()) {
+                $tabs[self::TAB_KIFLO_LEADS] = KifloLead::createTabEntry(
+                    KifloLead::getTypeName(2),
+                    count(KifloLead::getLeads()),
+                    self::class,
+                    KifloLead::getIcon(),
+                );
             }
 
             // Proposals in progress of the customers of the perimeter, before their contracts:
@@ -274,13 +335,16 @@ class Entity extends CommonGLPI
             }
 
             if (Session::haveRight(\Contract::$rightname, READ)) {
-                $tabs[self::TAB_CONTRACTS] = Contract::createTabEntry(_n('Contract', 'Contracts', 2));
+                $tabs[self::TAB_CONTRACTS] = Contract::createTabEntry(
+                    _n('Contract', 'Contracts', 2),
+                    (new Contract())->countForEntities($entities),
+                );
             }
 
-            if (Config::useEditorSubscriptions()) {
+            if (Session::getCurrentInterface() == 'central' && Config::useEditorSubscriptions()) {
                 $tabs[6] = EditorSubscription::createTabEntry(
                     _n('Publisher subscription', 'Publisher subscriptions', 2, 'manageentities'),
-                    0,
+                    EditorSubscription::countForEntity($entities),
                     self::class,
                     EditorSubscription::getIcon(),
                 );
@@ -301,7 +365,7 @@ class Entity extends CommonGLPI
                 && Session::haveRight(DirectHelpdesk::$rightname, READ)) {
                 $tabs[13] = DirectHelpdesk::createTabEntry(
                     __('Unbilled interventions', 'manageentities'),
-                    0,
+                    DirectHelpdesk::countUnbilled(),
                     self::class,
                     DirectHelpdesk::getIcon(),
                 );
@@ -309,9 +373,10 @@ class Entity extends CommonGLPI
 
             // Workload of the tech leads: central only, like the other provider-side overviews
             if (Session::getCurrentInterface() == 'central' && TechLead::canView()) {
+                // Counter: the clients having a main tech lead, 1 on a client that has one
                 $tabs[14] = TechLead::createTabEntry(
                     __('Tech lead by clients', 'manageentities'),
-                    0,
+                    TechLead::countClientsWithMainTechLead($entities),
                     self::class,
                     TechLead::getIcon(),
                 );
@@ -321,7 +386,7 @@ class Entity extends CommonGLPI
             if (Session::getCurrentInterface() == 'central' && TicketOverview::canView()) {
                 $tabs[self::TAB_TICKETS] = self::createTabEntry(
                     __('Ongoing tickets', 'manageentities'),
-                    0,
+                    TicketOverview::countOpenTickets($entities),
                     self::class,
                     'ti ti-ticket',
                 );
@@ -349,11 +414,17 @@ class Entity extends CommonGLPI
             }
 
             if (Session::haveRight(\Document::$rightname, UPDATE)) {
-                $tabs[self::TAB_DOCUMENTS] = Document::createTabEntry(_n('Document', 'Documents', 2));
+                $tabs[self::TAB_DOCUMENTS] = Document::createTabEntry(
+                    _n('Document', 'Documents', 2),
+                    countElementsInTable(Document_Item::getTable(), [
+                        'itemtype' => \Entity::class,
+                        'items_id' => $entities,
+                    ]),
+                );
             }
 
             if (Session::getCurrentInterface() != 'helpdesk' && $this->canview()) {
-                $tabs[12] = self::createTabEntry(__('References', 'manageentities'));
+                $tabs[12] = self::createTabEntry(__('References', 'manageentities'), self::countReferences());
             }
 
             // Tabs the user chose not to display, from the preferences of the plugin. Only the
@@ -368,6 +439,11 @@ class Entity extends CommonGLPI
                 if ($displayed !== []) {
                     $tabs = $displayed;
                 }
+                // Order chosen in the preferences, the tabs it does not know after
+                $tabs = Preference::sortDashboardTabs(
+                    $tabs,
+                    Preference::getDashboardTabsOrder((int) Session::getLoginUserID()),
+                );
             }
 
             return $tabs;
@@ -413,19 +489,24 @@ class Entity extends CommonGLPI
                 $entities = [$_SESSION["glpiactive_entity"]];
             }
             switch ($tabnum) {
+                case self::TAB_SUMMARY:
+                    CustomerSummary::show((int) $entities[0]);
+                    break;
+                case self::TAB_HELPDESK_UNBILLED:
+                    // Gauges above the list of the unbilled interventions, as the contractual
+                    // follow-up showed them; the gauges are only drawn next to a list
+                    $directhelpdesk_select = DirectHelpdesk_Ticket::getTicketSelectData($entities);
+                    TemplateRenderer::getInstance()->display('@manageentities/entity/unbilled_helpdesk.html.twig', [
+                        'directhelpdesk_gauges' => $directhelpdesk_select !== null ? DirectHelpdesk::getDashboardData() : null,
+                        'directhelpdesk_select' => $directhelpdesk_select,
+                    ]);
+                    break;
                 case 1:
                     $followUp->showCriteriasForm($_GET);
                     if (Session::getCurrentInterface() == 'helpdesk') {
-                        // The panels include the templates of the follow-up report, of the gauges
-                        // and of the unbilled interventions, fed with the data of their methods.
-                        // The gauges are only drawn next to a list of unbilled interventions.
-                        $directhelpdesk_select = DirectHelpdesk_Ticket::getTicketSelectData($entities);
-
+                        // Current contracts only: the unbilled interventions have their own tab
                         TemplateRenderer::getInstance()->display('@manageentities/entity/followup_helpdesk.html.twig', [
-                            'followup'              => Followup::getFollowUpReportData($_GET),
-                            'directhelpdesk_title'  => DirectHelpdesk::getTypeName(2),
-                            'directhelpdesk_gauges' => $directhelpdesk_select !== null ? DirectHelpdesk::getDashboardData() : null,
-                            'directhelpdesk_select' => $directhelpdesk_select,
+                            'followup' => Followup::getFollowUpReportData($_GET),
                         ]);
                     } else {
                         Followup::showFollowUp($_GET);
@@ -446,6 +527,9 @@ class Entity extends CommonGLPI
                     break;
                 case self::TAB_PROPOSALS:
                     self::showOpenProposals($entities);
+                    break;
+                case self::TAB_KIFLO_LEADS:
+                    KifloLead::showLeadsTab(!empty($_GET['kiflo_all']));
                     break;
                 case 6:
                     if (Config::useEditorSubscriptions()) {
@@ -550,6 +634,99 @@ class Entity extends CommonGLPI
         }
 
         return true;
+    }
+
+    /** Session key: the next display of the portal keeps the current tab */
+    private const SESSION_KEEP_TAB = 'plugin_manageentities_keep_tab';
+
+    /**
+     * A form of a tab was posted: the page it goes back to keeps that tab open, instead of the
+     * first tab of a new visit (front/entity.php)
+     */
+    public static function keepTab(): void
+    {
+        $_SESSION[self::SESSION_KEEP_TAB] = true;
+    }
+
+    /**
+     * Whether the current tab is to be kept, once
+     */
+    public static function consumeKeepTab(): bool
+    {
+        $keep = !empty($_SESSION[self::SESSION_KEEP_TAB]);
+        unset($_SESSION[self::SESSION_KEEP_TAB]);
+
+        return $keep;
+    }
+
+    /**
+     * Customers offered by the selector of the dashboard: the entities under the customers
+     * entity of the configuration, archived customers excluded, the user can reach
+     *
+     * @return array<int, string> {entities_id: name}
+     */
+    public static function getSelectableClients(): array
+    {
+        global $DB;
+
+        $root = PresaleWizard::getTargetEntity();
+        $ids  = array_diff(array_keys(getSonsOf('glpi_entities', $root)), [$root]);
+
+        $archive = (int) (Config::getInstance()->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive > 0) {
+            $ids = array_diff($ids, array_keys(getSonsOf('glpi_entities', $archive)));
+        }
+        $ids = array_values(array_filter($ids, static fn($id) => Session::haveAccessToEntity((int) $id)));
+        if ($ids === []) {
+            return [];
+        }
+
+        $clients = [];
+        foreach (
+            $DB->request([
+                'SELECT'  => ['id', 'name'],
+                'FROM'    => 'glpi_entities',
+                'WHERE'   => ['id' => $ids],
+                'ORDERBY' => 'name',
+            ]) as $data
+        ) {
+            $clients[(int) $data['id']] = (string) $data['name'];
+        }
+
+        return $clients;
+    }
+
+    /**
+     * Selector of the customer above the tabs: the whole dashboard follows the active entities,
+     * a single customer or all of them (the customers entity and its sons)
+     */
+    public static function showClientSelector(): void
+    {
+        if (Session::getCurrentInterface() !== 'central') {
+            return;
+        }
+        $clients = self::getSelectableClients();
+        if ($clients === []) {
+            return;
+        }
+
+        $active = count($_SESSION['glpiactiveentities'] ?? []) === 1
+            ? (int) $_SESSION['glpiactive_entity']
+            : 0;
+
+        // An entity outside the list (the customers entity alone...) shows all of them
+        $active = isset($clients[$active]) ? $active : 0;
+        TemplateRenderer::getInstance()->display('@manageentities/entity/client_selector.html.twig', [
+            'action_url' => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
+            'clients'    => [0 => __('All the clients', 'manageentities')] + $clients,
+            'active'     => $active,
+        ]);
+
+        // A single customer chosen: its summary card above the tabs, as the first tab of the
+        // simplified interface shows it
+        if ($active > 0) {
+            CustomerSummary::show($active);
+        }
     }
 
     public static function showManageentitiesHeader($subtitle = '')
@@ -723,11 +900,17 @@ class Entity extends CommonGLPI
         return $values;
     }
 
-    public function showReferences($instID)
+    /**
+     * References: the clients with a signed contract, grouped by year of first signature, the
+     * most recent year first, the clients by name
+     *
+     * @return array<int, list<array{entities_id: int, name: string, signature: string, town: string,
+     *                               country: string, website: string, website_is_url: bool,
+     *                               sales: string, logos: int[]}>>
+     */
+    public static function getReferences(): array
     {
         global $DB;
-
-        self::showManageentitiesHeader(__('References', 'manageentities'));
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -751,28 +934,164 @@ class Entity extends CommonGLPI
         ]);
 
         $years       = [];
-        $debug       = [];
         $entity_logo = new EntityLogo();
         $entity      = new \Entity();
+        $rows        = iterator_to_array($iterator);
+        $sales       = self::getMainSalesNames(array_map('intval', array_column($rows, 'entities_id')));
 
-        foreach ($iterator as $data) {
+        foreach ($rows as $data) {
             if (!$entity->getFromDB($data['entities_id'])) {
                 continue;
             }
-            $debug[] = [
-                'name'      => $entity->getName(),
-                'signature' => Html::convDate($data['signature']),
-            ];
-            $years[$data['year']][] = [
-                'name'  => $entity->getName(),
-                'logos' => array_column($entity_logo->find(['entities_id' => $data['entities_id']]), 'logos_id'),
+            $website = (string) ($entity->fields['website'] ?? '');
+            $years[(int) $data['year']][] = [
+                'entities_id'    => (int) $data['entities_id'],
+                'name'           => (string) $entity->getName(),
+                'signature'      => substr((string) $data['signature'], 0, 10),
+                'town'           => (string) ($entity->fields['town'] ?? ''),
+                'country'        => (string) ($entity->fields['country'] ?? ''),
+                'website'        => $website,
+                // Only http(s) URLs become a link: the field is free text (javascript: scheme)
+                'website_is_url' => \Toolbox::isValidWebUrl($website),
+                'sales'          => $sales[(int) $data['entities_id']] ?? '',
+                'logos'          => array_map('intval', array_column($entity_logo->find(['entities_id' => $data['entities_id']]), 'logos_id')),
             ];
         }
+        foreach ($years as &$clients) {
+            usort($clients, static fn(array $a, array $b): int => strnatcasecmp($a['name'], $b['name']));
+        }
+        unset($clients);
+
+        return $years;
+    }
+
+    /**
+     * Counter of the References tab: the clients with a signed contract, those getReferences()
+     * lists
+     */
+    public static function countReferences(): int
+    {
+        global $DB;
+
+        return (int) $DB->request([
+            'SELECT' => [QueryFunction::count('entities_id', true, 'cpt')],
+            'FROM'   => 'glpi_plugin_manageentities_contracts',
+            'WHERE'  => [
+                'NOT' => ['date_signature' => null],
+            ] + getEntitiesRestrictCriteria('glpi_plugin_manageentities_contracts'),
+        ])->current()['cpt'];
+    }
+
+    /**
+     * Main sales representative of each client (the default one, else the first), by entity
+     *
+     * @param int[] $entities
+     *
+     * @return array<int, string>
+     */
+    private static function getMainSalesNames(array $entities): array
+    {
+        global $DB;
+
+        if ($entities === []) {
+            return [];
+        }
+
+        $names = [];
+        foreach (
+            $DB->request([
+                'SELECT'  => ['entities_id', 'users_id'],
+                'FROM'    => BusinessContact::getTable(),
+                'WHERE'   => ['entities_id' => $entities],
+                'ORDERBY' => ['is_default DESC', 'id ASC'],
+            ]) as $data
+        ) {
+            $names[(int) $data['entities_id']] ??= (string) getUserName((int) $data['users_id']);
+        }
+
+        return $names;
+    }
+
+    public function showReferences($instID)
+    {
+        self::showManageentitiesHeader(__('References', 'manageentities'));
 
         TemplateRenderer::getInstance()->display('@manageentities/entity/references.html.twig', [
-            'years' => $years,
-            'debug' => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? $debug : [],
+            'years'      => self::getReferences(),
+            'export_url' => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php?export=references',
         ]);
+    }
+
+    /**
+     * CSV of the references, all of them or those of one year
+     */
+    public static function getReferencesCsvResponse(?int $year): Response
+    {
+        if (!self::canView()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $out = fopen('php://temp', 'r+');
+        // UTF-8 BOM for Excel
+        fwrite($out, "\xEF\xBB\xBF");
+        foreach (self::getReferencesCsvRows($year) as $row) {
+            fputcsv($out, $row, ';');
+        }
+        rewind($out);
+        $csv = (string) stream_get_contents($out);
+        fclose($out);
+
+        $filename = 'references_' . ($year ?? 'all') . '_' . date('Ymd_His') . '.csv';
+
+        return new Response($csv, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
+        ]);
+    }
+
+    /**
+     * Lines of the CSV of the references, header first: all of them, or those of one year
+     *
+     * @return list<list<string>>
+     */
+    public static function getReferencesCsvRows(?int $year): array
+    {
+        $years = self::getReferences();
+        if ($year !== null) {
+            $years = array_intersect_key($years, [$year => true]);
+        }
+
+        $rows = [[
+            __('Year', 'manageentities'),
+            _n('Client', 'Clients', 1, 'manageentities'),
+            __('Date of signature', 'manageentities'),
+            __('City'),
+            __('Country'),
+            __('Sales representative', 'manageentities'),
+            __('Website'),
+        ]];
+
+        // Neutralize CSV formula injection, as EditorSubscription::exportCsv() does
+        $csv_safe = static function ($value): string {
+            $value = (string) $value;
+            return $value !== '' && strpbrk($value[0], "=+-@\t\r") !== false ? "'" . $value : $value;
+        };
+        foreach ($years as $client_year => $clients) {
+            foreach ($clients as $client) {
+                $rows[] = [
+                    (string) $client_year,
+                    $csv_safe($client['name']),
+                    $client['signature'],
+                    $csv_safe($client['town']),
+                    $csv_safe($client['country']),
+                    $csv_safe($client['sales']),
+                    $csv_safe($client['website']),
+                ];
+            }
+        }
+
+        return $rows;
     }
 
     /**
