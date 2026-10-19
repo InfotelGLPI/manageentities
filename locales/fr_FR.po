@@ -2,11 +2,11 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 # Translators:
 # Kevin HAINRY <kevin.hainry@infotel.com>, 2021
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2026
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -15,14 +15,12 @@ msgstr ""
 "POT-Creation-Date: 2026-10-19 10:22+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
-"Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
-"teams/79674/fr_FR/)\n"
-"Language: fr_FR\n"
+"Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
-"1000000 == 0 ? 1 : 2;\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: templates/report_occupation_result.html.twig:51
 #, php-format
@@ -73,9 +71,9 @@ msgstr ""
 #, php-format
 msgid "%d Kiflo lead synchronized."
 msgid_plural "%d Kiflo leads synchronized."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d prospect Kiflo synchronisé."
+msgstr[1] "%d prospects Kiflo synchronisés."
+msgstr[2] "%d prospects Kiflo synchronisés."
 
 #: templates/config_presale_form.html.twig:212
 #, php-format
@@ -107,17 +105,17 @@ msgstr "%d notifications des souscriptions éditeurs expirées"
 #, php-format
 msgid "%d intervention"
 msgid_plural "%d interventions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d intervention"
+msgstr[1] "%d interventions"
+msgstr[2] "%d interventions"
 
 #: templates/kiflo/config_form.html.twig:71
 #, php-format
 msgid "%d lead"
 msgid_plural "%d leads"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d prospect"
+msgstr[1] "%d prospects"
+msgstr[2] "%d prospects"
 
 #: front/techleadrule.php:48
 #, php-format
@@ -226,11 +224,11 @@ msgstr "3 heures minimum"
 #: templates/presale/annextype_import.html.twig:44
 #, php-format
 msgid ""
-"A JSON file exported from the list or the form of the annex models (%s MB at "
-"most)."
+"A JSON file exported from the list or the form of the annex models (%s MB at"
+" most)."
 msgstr ""
-"Un fichier JSON exporté depuis la liste ou la fiche des modèles d'annexe (%s "
-"Mo maximum)."
+"Un fichier JSON exporté depuis la liste ou la fiche des modèles d'annexe (%s"
+" Mo maximum)."
 
 #: src/WizardController.php:311
 msgid "A contract with this number already exists"
@@ -247,23 +245,24 @@ msgstr "Un brouillon de la prochaine version est en cours."
 #: templates/presale/proposal_form.html.twig:89
 msgid "A new draft with the same client, team and annexes"
 msgstr ""
-"Un nouveau brouillon avec le même client, la même équipe et les mêmes annexes"
+"Un nouveau brouillon avec le même client, la même équipe et les mêmes "
+"annexes"
 
 #: templates/kiflo/config_form.html.twig:66
 msgid "API key"
-msgstr ""
+msgstr "Clé API"
 
 #: src/KifloLead.php:107
 msgid "Abandoned"
-msgstr ""
+msgstr "Abandonné"
 
 #: src/KifloLead.php:102
 msgid "Accepted"
-msgstr ""
+msgstr "Accepté"
 
 #: templates/entity/kiflo_leads_tab.html.twig:186
 msgid "Accepted on"
-msgstr ""
+msgstr "Accepté le"
 
 #: templates/generatecri_wizard.html.twig:175
 msgid "Accomplished tasks informations"
@@ -397,8 +396,8 @@ msgid ""
 "Adds a \"Pre-sales\" card to the entities portal, to build financial "
 "proposals."
 msgstr ""
-"Ajoute une carte « Avant-vente » au portail des entités, pour construire des "
-"propositions financières."
+"Ajoute une carte « Avant-vente » au portail des entités, pour construire des"
+" propositions financières."
 
 #: front/entity.form.php:83
 msgid "Administrative data updated"
@@ -438,7 +437,7 @@ msgstr "Liste complète"
 
 #: src/Entity.php:721
 msgid "All the clients"
-msgstr ""
+msgstr "Tous les clients"
 
 #: templates/presale/client_form.html.twig:58
 msgid ""
@@ -518,8 +517,8 @@ msgid ""
 "Annexes of an on premise subscription: quantity and price, no daily rate "
 "column."
 msgstr ""
-"Annexes de souscription on premise : quantité et prix, sans colonne de tarif "
-"journalier."
+"Annexes de souscription on premise : quantité et prix, sans colonne de tarif"
+" journalier."
 
 #: src/PresaleTemplate.php:87
 msgid "Annexes priced in days at a daily rate."
@@ -571,7 +570,8 @@ msgstr "Date d'archivage"
 
 #: templates/editorsubscription_wizard.html.twig:119
 msgid "Are you sure you want to permanently delete this subscription?"
-msgstr "Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
+msgstr ""
+"Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
 
 #: templates/techlead/clients_by_tech.html.twig:166
 msgid "As main tech lead"
@@ -709,7 +709,8 @@ msgstr "La date de début est obligatoire"
 #: templates/presale/home.html.twig:47
 msgid "Build a financial proposal for a prospect or an existing client."
 msgstr ""
-"Construire une proposition financière pour un prospect ou un client existant."
+"Construire une proposition financière pour un prospect ou un client "
+"existant."
 
 #: src/Contract.php:731 src/Contract.php:785
 msgid "By intervention"
@@ -806,7 +807,7 @@ msgstr "Ville"
 
 #: templates/kiflo/config_form.html.twig:62
 msgid "Clear the key"
-msgstr ""
+msgstr "Effacer la clé"
 
 #: src/DirectHelpdesk.php:728 src/DatWizard.php:595 src/Followup.php:745
 #: src/Followup.php:979 src/Monthly.php:425 src/Dashboard.php:256
@@ -966,9 +967,9 @@ msgstr "Confirmer et terminer"
 #, php-format
 msgid "Connection to Kiflo succeeded: %d lead available."
 msgid_plural "Connection to Kiflo succeeded: %d leads available."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Connexion vers Kiflo réussie : %d prospect disponible."
+msgstr[1] "Connexion vers Kiflo réussie : %d prospects disponibles."
+msgstr[2] "Connexion vers Kiflo réussie : %d prospects disponibles."
 
 #: src/CriDetail.php:1355
 msgid "Consumption"
@@ -1086,7 +1087,7 @@ msgstr "Suivi contractuel"
 
 #: src/KifloLead.php:106
 msgid "Converted"
-msgstr ""
+msgstr "Convertie"
 
 #: templates/entity/description.html.twig:81
 #: templates/entity/description.html.twig:153
@@ -1154,11 +1155,11 @@ msgstr "Créé le"
 #: templates/entity/kiflo_leads_tab.html.twig:91
 #: templates/entity/kiflo_leads_tab.html.twig:179
 msgid "Creation date"
-msgstr ""
+msgstr "Date de création"
 
 #: templates/entity/customer_summary.html.twig:101
 msgid "Credit almost used up"
-msgstr ""
+msgstr "Crédit presque épuisé"
 
 #: src/ContractDay.php:152
 msgid "Credit remaining"
@@ -1318,11 +1319,11 @@ msgstr "Jours"
 #: templates/entity/kiflo_leads_tab.html.twig:92
 #: templates/entity/kiflo_leads_tab.html.twig:182
 msgid "Deadline"
-msgstr ""
+msgstr "Date limite"
 
 #: templates/entity/kiflo_leads_tab.html.twig:171
 msgid "Deal"
-msgstr ""
+msgstr "Accord"
 
 #: templates/presale/step_general.html.twig:47
 msgid "Deduced from the annexes:"
@@ -1515,6 +1516,8 @@ msgid ""
 "Displays the leads shared by the publisher in Kiflo, in the clients "
 "management and on the dashboard."
 msgstr ""
+"Affiche les prospects partagés par l'éditeur dans Kiflo, dans la gestion des"
+" clients et sur le tableau de bord."
 
 #: templates/entity/dat_card.html.twig:53
 msgid "Document"
@@ -1541,8 +1544,11 @@ msgid "Draft"
 msgstr "Brouillon"
 
 #: templates/preference_form.html.twig:65
-msgid "Drag and drop the tabs to change their order in the clients management."
+msgid ""
+"Drag and drop the tabs to change their order in the clients management."
 msgstr ""
+"Faites glisser les onglets pour modifier leur ordre dans la gestion des "
+"clients."
 
 #: templates/presale/proposal_form.html.twig:90
 msgid "Duplicate"
@@ -1575,8 +1581,8 @@ msgstr "Durée du trajet"
 
 #: templates/presale/step_generate.html.twig:131
 msgid ""
-"Each generation creates a new version of the document; the previous ones are "
-"kept."
+"Each generation creates a new version of the document; the previous ones are"
+" kept."
 msgstr ""
 "Chaque génération crée une nouvelle version du document ; les précédentes "
 "sont conservées."
@@ -1597,8 +1603,8 @@ msgid ""
 "\"%2$s\" and not yet assigned to a technician"
 msgstr ""
 "Chaque règle est créée dans l'entité %1$s (récursive) et attribue le "
-"responsable technique principal aux tickets du client ouverts avec la source "
-"de demande \"%2$s\" et non encore attribués à un technicien"
+"responsable technique principal aux tickets du client ouverts avec la source"
+" de demande \"%2$s\" et non encore attribués à un technicien"
 
 #: templates/entity/editorsubscription_tab.html.twig:113
 #: templates/contract_detail_form.html.twig:47
@@ -1635,12 +1641,11 @@ msgstr "Éléments ajoutés via l'assistant"
 #: templates/presale/step_team.html.twig:89
 #: templates/presale/client_form.html.twig:71
 #: templates/presale/client_form.html.twig:95
-#, fuzzy
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] "Courriel"
-msgstr[1] "Courriel"
-msgstr[2] "Courriel"
+msgstr[0] "Email"
+msgstr[1] "Emails"
+msgstr[2] "Emails"
 
 #: templates/entity/description.html.twig:74
 #: templates/entity/description.html.twig:124
@@ -1760,12 +1765,12 @@ msgstr "L'entité existe déjà"
 msgid "Entity data is missing"
 msgstr "Les données de l'entité sont manquantes"
 
-#: src/EditorSubscriptionWizard.php:239 src/Company.php:224 src/Company.php:266
-#: src/WizardController.php:372 src/WizardController.php:378
-#: src/WizardController.php:393 src/WizardController.php:472
-#: src/WizardController.php:478 src/WizardController.php:572
-#: src/WizardController.php:1019 src/WizardController.php:1607
-#: src/WizardController.php:1623
+#: src/EditorSubscriptionWizard.php:239 src/Company.php:224
+#: src/Company.php:266 src/WizardController.php:372
+#: src/WizardController.php:378 src/WizardController.php:393
+#: src/WizardController.php:472 src/WizardController.php:478
+#: src/WizardController.php:572 src/WizardController.php:1019
+#: src/WizardController.php:1607 src/WizardController.php:1623
 msgid "Entity not found"
 msgstr "Entité non trouvée"
 
@@ -1809,9 +1814,9 @@ msgid ""
 "be changed. Printed under the purpose (placeholder {{CHIFFRAGE}} of the "
 "annex template). Not used by the subscription annexes."
 msgstr ""
-"Chiffrage d'une nouvelle annexe de ce modèle dans l'assistant d'avant-vente, "
-"où il reste modifiable. Imprimé sous l'objet (balise {{CHIFFRAGE}} du modèle "
-"d'annexe). Non utilisé par les annexes de souscription."
+"Chiffrage d'une nouvelle annexe de ce modèle dans l'assistant d'avant-vente,"
+" où il reste modifiable. Imprimé sous l'objet (balise {{CHIFFRAGE}} du "
+"modèle d'annexe). Non utilisé par les annexes de souscription."
 
 #: src/PresaleProposal.php:89 templates/presale/proposals_table.html.twig:64
 msgid "Estimate requested"
@@ -1861,7 +1866,7 @@ msgstr "Expirée"
 
 #: templates/entity/customer_summary.html.twig:122
 msgid "Expired on"
-msgstr ""
+msgstr "Expiré le"
 
 #: templates/entity/editorsubscription_tab.html.twig:52
 msgid "Expired only"
@@ -1894,7 +1899,7 @@ msgstr "Export CSV"
 
 #: templates/entity/references.html.twig:38
 msgid "Export all the references"
-msgstr ""
+msgstr "Exporter toutes les références"
 
 #: src/PresaleAnnexType.php:182 src/PresaleAnnexType.php:220
 msgid "Export as JSON"
@@ -2012,7 +2017,7 @@ msgstr "Généré à partir du portail de gestion des clients"
 
 #: templates/wizard/step4_contract.html.twig:124
 msgid "Generated proposal: linked to the contract"
-msgstr ""
+msgstr "Proposition générée : liée au contrat"
 
 #: src/PresaleWizard.php:83
 msgid "Generation"
@@ -2075,7 +2080,8 @@ msgstr "Impact"
 msgid "Import"
 msgstr "Importer"
 
-#: src/PresaleAnnexType.php:238 templates/presale/annextype_import.html.twig:39
+#: src/PresaleAnnexType.php:238
+#: templates/presale/annextype_import.html.twig:39
 #: templates/config_presale_form.html.twig:220
 msgid "Import annex models"
 msgstr "Importer des modèles d'annexe"
@@ -2241,40 +2247,41 @@ msgstr "Conservée sur la proposition, pour les statistiques."
 
 #: templates/kiflo/config_form.html.twig:58
 msgid "Key stored: leave empty to keep it"
-msgstr ""
+msgstr "Clé enregistrée : laissez vide pour la conserver"
 
 #: src/KifloConfig.php:47 templates/kiflo/config_form.html.twig:44
 msgid "Kiflo"
-msgstr ""
+msgstr "Kiflo"
 
 #: src/KifloClient.php:168
 #, php-format
 msgid "Kiflo API error (HTTP %d)."
-msgstr ""
+msgstr "Kiflo API erreur (HTTP %d)."
 
 #: src/KifloClient.php:149
 #, php-format
 msgid "Kiflo API unreachable: %s"
-msgstr ""
+msgstr "Kiflo API indisponible : %s"
 
 #: templates/entity/kiflo_leads_tab.html.twig:195
 msgid "Kiflo ID"
-msgstr ""
+msgstr "Kiflo ID"
 
 #: src/KifloLead.php:59 templates/entity/kiflo_leads_tab.html.twig:41
 msgid "Kiflo lead"
 msgid_plural "Kiflo leads"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Kiflo prospect"
+msgstr[1] "Kiflo prospects"
+msgstr[2] "Kiflo prospects"
 
 #: src/KifloClient.php:164
 msgid "Kiflo refused the API key (401): check it or generate a new one."
 msgstr ""
+"Kiflo a refusé la clé API (401) : vérifiez-la ou générez-en une nouvelle."
 
 #: src/KifloClient.php:166
 msgid "Kiflo resource not found (404): check the API URL."
-msgstr ""
+msgstr "Ressource Kiflo introuvable (404) : vérifiez l’URL de l’API."
 
 #: templates/followup_export_toolbar.html.twig:48
 msgid "Landscape PDF"
@@ -2302,7 +2309,7 @@ msgstr "Le nom est obligatoire"
 #: templates/entity/kiflo_leads_tab.html.twig:43
 #: templates/kiflo/config_form.html.twig:71
 msgid "Last synchronization"
-msgstr ""
+msgstr "Dernière synchronisation"
 
 #: templates/entity/proposals_tab.html.twig:105
 #: templates/presale/proposals_table.html.twig:52
@@ -2326,6 +2333,8 @@ msgstr "Lancer le plugin Portail entités au démarrage de GLPI"
 msgid ""
 "Leads shared by the publisher in Kiflo, refreshed by the synchronization"
 msgstr ""
+"Les prospects partagés par l'éditeur dans Kiflo, mis à jour par la "
+"synchronisation"
 
 #: templates/presale/layout.html.twig:106 templates/dat/layout.html.twig:96
 msgid "Leave the wizard without saving this page?"
@@ -2342,7 +2351,7 @@ msgstr ""
 #: templates/kiflo/config_form.html.twig:52
 #, php-format
 msgid "Left empty: %s"
-msgstr ""
+msgstr "Laisser vide : %s"
 
 #: templates/presale/proposal_form.html.twig:137
 msgid "Line"
@@ -2356,8 +2365,8 @@ msgid ""
 "Lines of a new annex of this model in the pre-sales wizard, where they can "
 "be changed. Quantity and price may be left empty."
 msgstr ""
-"Lignes d'une nouvelle annexe de ce modèle dans l'assistant d'avant-vente, où "
-"elles restent modifiables. Quantité et prix peuvent rester vides."
+"Lignes d'une nouvelle annexe de ce modèle dans l'assistant d'avant-vente, où"
+" elles restent modifiables. Quantité et prix peuvent rester vides."
 
 #: src/CriDetail.php:83
 msgid "Linked interventions"
@@ -2373,8 +2382,8 @@ msgstr "Liste par défaut des statuts pour le suivi général"
 
 #: templates/config_options_form.html.twig:45
 msgid ""
-"List of entities used by the plugin. When set, only tickets belonging to sub-"
-"entities of this entity will display the intervention report tab."
+"List of entities used by the plugin. When set, only tickets belonging to "
+"sub-entities of this entity will display the intervention report tab."
 msgstr ""
 "Liste des entités utilisées par le plugin. Si cette option est activée, "
 "seuls les tickets appartenant aux sous-entités de cette entité afficheront "
@@ -2396,7 +2405,8 @@ msgid "Logo"
 msgstr "Logo"
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#. No addslashes()/stripslashes() here: GLPI stores raw data since version 10 and
+#. No addslashes()/stripslashes() here: GLPI stores raw data since version 10
+#. and
 #. the query builder escapes on its own, so the pair used to write literal
 #. backslashes into the database and strip legitimate ones back out.
 #: src/Company.php:406
@@ -2486,7 +2496,8 @@ msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
 #: src/Contract.php:76 src/WizardController.php:2120
-#: src/WizardController.php:2137 templates/wizard/step5_management.html.twig:42
+#: src/WizardController.php:2137
+#: templates/wizard/step5_management.html.twig:42
 #: templates/contract_detail_form.html.twig:129
 msgid "Management type"
 msgstr "Type de gestion"
@@ -2579,7 +2590,7 @@ msgstr "Mois"
 #: templates/entity/customer_summary.html.twig:146
 #, php-format
 msgid "More than %d hours"
-msgstr ""
+msgstr "Plus de %d heures"
 
 #: src/DirectHelpdesk.php:735 templates/entity/unbilled_tab.html.twig:166
 #, php-format
@@ -2635,8 +2646,8 @@ msgstr "Le nom est requis"
 
 #: src/PresaleAnnexType.php:110
 msgid ""
-"Names the proposals holding this annex (type of contract and internal label, "
-"e.g. \"Client - Expertise & Souscription\"). Empty: the first word of the "
+"Names the proposals holding this annex (type of contract and internal label,"
+" e.g. \"Client - Expertise & Souscription\"). Empty: the first word of the "
 "name of the model."
 msgstr ""
 "Nomme les propositions qui contiennent cette annexe (type de contrat et "
@@ -2702,8 +2713,8 @@ msgid ""
 "No Word template uploaded in the configuration (DAT tab): the document "
 "cannot be generated."
 msgstr ""
-"Aucun modèle Word déposé dans la configuration (onglet DAT) : le document ne "
-"peut pas être généré."
+"Aucun modèle Word déposé dans la configuration (onglet DAT) : le document ne"
+" peut pas être généré."
 
 #: templates/contract_link_dropdown.html.twig:38
 msgid "No active contracts"
@@ -2758,7 +2769,7 @@ msgstr "Pas de contrat trouvé"
 
 #: templates/entity/proposals_tab.html.twig:197
 msgid "No contract running out of remaining days."
-msgstr ""
+msgstr "Aucun contrat n'arrive à échéance."
 
 #: templates/cridetail_for_ticket.html.twig:44
 msgid "No days remaining on this contract period"
@@ -2767,12 +2778,12 @@ msgstr "Il ne reste plus de jours sur cette période contractuelle"
 #: src/TicketTask.php:101 templates/tickettask_blocked_alert.html.twig:34
 msgid "No days remaining on this contract period. Task addition is blocked."
 msgstr ""
-"Il ne reste plus de jours sur cette période contractuelle. L'ajout de tâches "
-"est bloqué."
+"Il ne reste plus de jours sur cette période contractuelle. L'ajout de tâches"
+" est bloqué."
 
 #: templates/entity/kiflo_leads_tab.html.twig:204
 msgid "No description"
-msgstr ""
+msgstr "Pas de description"
 
 #: src/EditorSubscriptionWizard.php:133 src/EditorSubscriptionWizard.php:231
 msgid "No entity selected."
@@ -2801,7 +2812,7 @@ msgstr "Il ne reste plus d'heures sur cette période contractuelle"
 
 #: templates/entity/kiflo_leads_tab.html.twig:216
 msgid "No lead"
-msgstr ""
+msgstr "Pas de prospect"
 
 #: src/EditorSubscription.php:455
 msgid "No level"
@@ -2809,8 +2820,8 @@ msgstr "Pas de niveau"
 
 #: templates/dat/step_general.html.twig:84
 msgid ""
-"No logo: the header of the document will have none. Add it from the customer "
-"sheet."
+"No logo: the header of the document will have none. Add it from the customer"
+" sheet."
 msgstr ""
 "Pas de logo : l'en-tête du document n'en aura pas. Ajoutez-le depuis la "
 "fiche client."
@@ -2826,7 +2837,7 @@ msgstr "Aucune note."
 
 #: templates/entity/customer_summary.html.twig:104
 msgid "No ongoing contract"
-msgstr ""
+msgstr "Aucun contrat en cours"
 
 #: templates/techlead/clients_by_tech.html.twig:48
 msgid "No only"
@@ -2849,7 +2860,8 @@ msgstr "Pas de période trouvée"
 msgid "No picture uploaded"
 msgstr "Pas d'image téléchargée"
 
-#: src/PresaleWizard.php:759 templates/entity/projectmanagers_card.html.twig:91
+#: src/PresaleWizard.php:759
+#: templates/entity/projectmanagers_card.html.twig:91
 msgid "No project manager"
 msgstr "Aucun chef de projet"
 
@@ -2921,7 +2933,7 @@ msgstr "Aucun intervenant n'a encore été ajouté."
 
 #: templates/entity/customer_summary.html.twig:127
 msgid "No subscription"
-msgstr ""
+msgstr "Aucune souscription"
 
 #: src/EditorSubscriptionWizard.php:220 src/EditorSubscriptionWizard.php:324
 #: src/EditorSubscriptionWizard.php:329
@@ -2970,7 +2982,7 @@ msgstr "Pas de tickets attendant une réponse"
 
 #: templates/entity/unbilled_helpdesk.html.twig:43
 msgid "No unbilled intervention"
-msgstr ""
+msgstr "Aucune intervention non facturée"
 
 #: templates/entity/unbilled_tab.html.twig:185
 msgid "No unbilled intervention for a client with an ongoing contract."
@@ -3015,7 +3027,7 @@ msgstr "Non sauvegardé"
 
 #: templates/entity/kiflo_leads_tab.html.twig:216
 msgid "Not synchronized yet"
-msgstr ""
+msgstr "Pas encore synchronisé"
 
 #: templates/presale/step_annexes.html.twig:127
 msgid "Note for the project manager"
@@ -3084,7 +3096,7 @@ msgstr ""
 
 #: templates/entity/customer_summary.html.twig:94
 msgid "Ongoing contract"
-msgstr ""
+msgstr "Contrat en cours"
 
 #: src/Entity.php:97 src/Entity.php:388
 msgid "Ongoing tickets"
@@ -3111,7 +3123,7 @@ msgstr ""
 
 #: src/Dashboard.php:109 src/Dashboard.php:530
 msgid "Open Kiflo leads"
-msgstr ""
+msgstr "Ouvrir les prospects Kiflo"
 
 #: templates/ticket_overview.html.twig:101
 #: templates/ticket_overview.html.twig:144
@@ -3123,7 +3135,7 @@ msgstr "Ouvrir depuis la liste des tickets"
 
 #: templates/entity/kiflo_leads_tab.html.twig:50
 msgid "Open leads only"
-msgstr ""
+msgstr "Prospects ouverts uniquement"
 
 #: templates/dat/step_summary.html.twig:53
 msgid "Open the configuration"
@@ -3180,12 +3192,12 @@ msgstr "Options"
 
 #: templates/preference_form.html.twig:67
 msgid "Order of the tabs of the clients management"
-msgstr ""
+msgstr "Ordre des onglets de la gestion des clients"
 
 #: src/Dashboard.php:523 templates/entity/kiflo_leads_tab.html.twig:89
 #: templates/entity/kiflo_leads_tab.html.twig:157
 msgid "Origin"
-msgstr ""
+msgstr "Origine"
 
 #: src/PresaleOrigin.php:48 templates/presale/step_client.html.twig:63
 msgid "Origin of the request"
@@ -3220,7 +3232,7 @@ msgstr "Tickets en retard : ouverts depuis plus de"
 #: src/Dashboard.php:524 templates/entity/kiflo_leads_tab.html.twig:90
 #: templates/entity/kiflo_leads_tab.html.twig:160
 msgid "Owner at the publisher"
-msgstr ""
+msgstr "Référent éditeur"
 
 #: src/DatWizard.php:113
 msgid "PHP information"
@@ -3235,8 +3247,8 @@ msgid ""
 "PNG or JPEG, 2 MB at most. Printed on the cover and in the header of the "
 "proposal."
 msgstr ""
-"PNG ou JPEG, 2 Mo maximum. Imprimé sur la page de garde et dans l'en-tête de "
-"la proposition."
+"PNG ou JPEG, 2 Mo maximum. Imprimé sur la page de garde et dans l'en-tête de"
+" la proposition."
 
 #: src/Contract.php:739 src/Contract.php:791
 msgid "Package"
@@ -3252,15 +3264,15 @@ msgstr "Entité parente"
 
 #: templates/entity/kiflo_leads_tab.html.twig:167
 msgid "Partner"
-msgstr ""
+msgstr "Partenaire"
 
 #: templates/kiflo/config_form.html.twig:68
 msgid "Partner API access token, generated in Kiflo. Stored encrypted."
-msgstr ""
+msgstr "Jeton d'accès à l'API partenaire, généré dans Kiflo. Stocké chiffré."
 
 #: src/KifloLead.php:101
 msgid "Pending"
-msgstr ""
+msgstr "En attente"
 
 #: templates/cridetail_for_ticket.html.twig:211
 msgid "Period comment"
@@ -3314,12 +3326,11 @@ msgstr "Responsable"
 #: templates/presale/step_team.html.twig:95
 #: templates/presale/client_form.html.twig:70
 #: templates/presale/client_form.html.twig:96
-#, fuzzy
 msgid "Phone"
 msgid_plural "Phones"
 msgstr[0] "Téléphone"
-msgstr[1] "Téléphone"
-msgstr[2] "Téléphone"
+msgstr[1] "Téléphones"
+msgstr[2] "Téléphones"
 
 #: templates/wizard/step2_contact_block.html.twig:74
 msgid "Phone 2"
@@ -3348,7 +3359,8 @@ msgstr "Merci d'assigner un technicien au ticket"
 #: src/Cri.php:689
 msgid "Please fill the contract period begin and end dates."
 msgstr ""
-"Merci de renseigner les dates de début et de fin de la prestation du contrat."
+"Merci de renseigner les dates de début et de fin de la prestation du "
+"contrat."
 
 #: src/Cri.php:705
 msgid "Please fill the contract period begin date."
@@ -3448,7 +3460,8 @@ msgstr ""
 "Type de contact présélectionné lors de l'ajout d'un contact dans le wizard."
 
 #: templates/config_options_form.html.twig:117
-msgid "Pre-selected document category when attaching a document in the wizard."
+msgid ""
+"Pre-selected document category when attaching a document in the wizard."
 msgstr ""
 "Catégorie de document présélectionnée lors de l'ajout d'un document dans le "
 "wizard."
@@ -3457,8 +3470,8 @@ msgstr ""
 msgid ""
 "Pre-selected intervention type when creating a service period in the wizard."
 msgstr ""
-"Type d'intervention présélectionné lors de la création d'une prestation dans "
-"le wizard."
+"Type d'intervention présélectionné lors de la création d'une prestation dans"
+" le wizard."
 
 #: templates/config_options_form.html.twig:108
 msgid ""
@@ -3695,7 +3708,7 @@ msgstr "Réactiver"
 
 #: src/KifloLead.php:104
 msgid "Reassigned"
-msgstr ""
+msgstr "Réassigné"
 
 #: templates/presale/proposal_form.html.twig:102
 #: templates/presale/step_general.html.twig:92
@@ -3733,11 +3746,11 @@ msgstr "References"
 
 #: templates/entity/customer_summary.html.twig:70
 msgid "Referent contact"
-msgstr ""
+msgstr "Contact référent"
 
 #: src/KifloLead.php:105
 msgid "Refused"
-msgstr ""
+msgstr "Refusé"
 
 #: src/Cri.php:291 src/CriDetail.php:625
 msgid "Regenerate the intervention report"
@@ -4042,11 +4055,11 @@ msgstr "Répartition"
 
 #: templates/entity/client_selector.html.twig:48
 msgid "Show"
-msgstr ""
+msgstr "Afficher"
 
 #: templates/entity/kiflo_leads_tab.html.twig:50
 msgid "Show closed leads"
-msgstr ""
+msgstr "Afficher les prospects fermés"
 
 #: templates/entity/editorsubscription_tab.html.twig:51
 msgid "Show expired subscriptions only"
@@ -4061,8 +4074,8 @@ msgstr "Voir sur le GANTT"
 msgid ""
 "Shown in the lists only. Deduced from the client and the annexes when empty."
 msgstr ""
-"Affiché uniquement dans les listes. Déduit du client et des annexes s'il est "
-"vide."
+"Affiché uniquement dans les listes. Déduit du client et des annexes s'il est"
+" vide."
 
 #: templates/techlead/assignment_rules.html.twig:83
 msgid "Simplified interface users"
@@ -4237,11 +4250,11 @@ msgstr "Surnom"
 #: templates/entity/kiflo_leads_tab.html.twig:56
 #: templates/kiflo/config_form.html.twig:88
 msgid "Synchronize now"
-msgstr ""
+msgstr "Synchroniser maintenant"
 
 #: src/KifloLead.php:380
 msgid "Synchronize the leads of Kiflo"
-msgstr ""
+msgstr "Synchroniser les prospects de Kiflo"
 
 #: src/DatWizard.php:74
 msgid "System"
@@ -4352,7 +4365,7 @@ msgstr "Intervenants"
 
 #: templates/kiflo/config_form.html.twig:84
 msgid "Test the connection"
-msgstr ""
+msgstr "Tester la connexion"
 
 #: ajax/cri.php:168 ajax/cri.php:207 ajax/cri.php:237
 msgid "Thanks to select a intervention type"
@@ -4360,15 +4373,17 @@ msgstr "Merci de sélectionner un type d'intervention"
 
 #: src/Config.php:187
 msgid "The Kiflo API URL must start with https://."
-msgstr ""
+msgstr "L'URL de l'API Kiflo doit commencer par https://."
 
 #: src/KifloClient.php:132
 msgid "The Kiflo API key is not set."
-msgstr ""
+msgstr "La clé API Kiflo n'est pas définie."
 
 #: src/KifloClient.php:165
-msgid "The Kiflo partner program does not grant access to this resource (403)."
+msgid ""
+"The Kiflo partner program does not grant access to this resource (403)."
 msgstr ""
+"Le programme partenaire Kiflo ne donne pas accès à cette ressource (403)."
 
 #: src/PresaleAnnexType.php:397
 msgid "The VAT rate must be between 0 and 100."
@@ -4391,7 +4406,8 @@ msgstr ""
 "jours, et peut ajouter ou retirer des annexes."
 
 #: templates/presale/annextype_default_lines.html.twig:124
-msgid "The columns follow the kind of annex: save the model after changing it."
+msgid ""
+"The columns follow the kind of annex: save the model after changing it."
 msgstr ""
 "Les colonnes dépendent du type d'annexe : enregistrez le modèle après "
 "l'avoir modifié."
@@ -4411,6 +4427,9 @@ msgid ""
 "remaining day, and the customer has no day left on its other contracts. To "
 "prepare a proposal for a new contract."
 msgstr ""
+"Les conditions des alertes par courrier : chaque période en cours a moins "
+"d’un jour restant, et le client n’a plus de jour restant sur ses autres "
+"contrats. Préparation d’une proposition de nouveau contrat."
 
 #: src/WizardController.php:2177
 #, php-format
@@ -4452,8 +4471,8 @@ msgid ""
 "The customers entity is not set in the Setup tab: the pre-sales section "
 "cannot be used until it is."
 msgstr ""
-"L'entité des clients n'est pas définie dans l'onglet Configuration : l'avant-"
-"vente est inutilisable tant qu'elle ne l'est pas."
+"L'entité des clients n'est pas définie dans l'onglet Configuration : "
+"l'avant-vente est inutilisable tant qu'elle ne l'est pas."
 
 #: templates/presale/home.html.twig:53
 msgid ""
@@ -4472,8 +4491,8 @@ msgid ""
 "The details below are the ones of the proposals: the entity itself is not "
 "changed."
 msgstr ""
-"Les coordonnées ci-dessous sont celles des propositions : l'entité elle-même "
-"n'est pas modifiée."
+"Les coordonnées ci-dessous sont celles des propositions : l'entité elle-même"
+" n'est pas modifiée."
 
 #: src/PresaleGenerator.php:431 src/PresaleGenerator.php:448
 #: src/DatGenerator.php:196 src/DatGenerator.php:213
@@ -4486,8 +4505,8 @@ msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
 "contract?"
 msgstr ""
-"L'entité \"%s\" existe déjà. Souhaitez-vous l'utiliser pour créer un nouveau "
-"contrat ?"
+"L'entité \"%s\" existe déjà. Souhaitez-vous l'utiliser pour créer un nouveau"
+" contrat ?"
 
 #: src/PresaleWizard.php:1973
 msgid "The estimate has been saved."
@@ -4501,7 +4520,8 @@ msgstr "Le chiffrage est demandé à %s."
 #: src/PresaleWizard.php:1970
 msgid ""
 "The estimate is validated: the sales representative can price the proposal."
-msgstr "Le chiffrage est validé : le commercial peut valoriser la proposition."
+msgstr ""
+"Le chiffrage est validé : le commercial peut valoriser la proposition."
 
 #: templates/presale/step_generate.html.twig:114
 msgid "The estimate requested from the project manager is not validated yet."
@@ -4523,10 +4543,10 @@ msgid ""
 "expected schema: data will be lost. Check that they are not used by another "
 "plugin or by a custom development before running them."
 msgstr ""
-"Les requêtes suivantes suppriment des colonnes ou des tables qui ne font pas "
-"partie du schéma attendu : des données seront perdues. Avant de les "
-"exécuter, vérifiez qu’elles ne sont pas utilisées par un autre plugin ou par "
-"un développement personnalisé."
+"Les requêtes suivantes suppriment des colonnes ou des tables qui ne font pas"
+" partie du schéma attendu : des données seront perdues. Avant de les "
+"exécuter, vérifiez qu’elles ne sont pas utilisées par un autre plugin ou par"
+" un développement personnalisé."
 
 #: templates/wizard/layout.html.twig:168
 msgid "The following unsaved data from this wizard will be lost:"
@@ -4552,16 +4572,16 @@ msgstr ""
 
 #: src/DatWizard.php:572
 msgid ""
-"The generation of the technical architecture document failed. Check the Word "
-"template of the configuration."
+"The generation of the technical architecture document failed. Check the Word"
+" template of the configuration."
 msgstr ""
 "La génération du dossier d'architecture technique a échoué. Vérifiez le "
 "modèle Word de la configuration."
 
 #: templates/presale/annextype_import.html.twig:49
 msgid ""
-"The images of the purpose and of the details are not imported: they point to "
-"documents of the other GLPI."
+"The images of the purpose and of the details are not imported: they point to"
+" documents of the other GLPI."
 msgstr ""
 "Les images de l'objet et des détails ne sont pas importées : elles pointent "
 "vers des documents de l'autre GLPI."
@@ -4570,8 +4590,8 @@ msgstr ""
 #, php-format
 msgid "The lines total %1$s days, the estimate %2$s days: they must be equal."
 msgstr ""
-"Les lignes totalisent %1$s jours, le chiffrage %2$s jours : ils doivent être "
-"égaux."
+"Les lignes totalisent %1$s jours, le chiffrage %2$s jours : ils doivent être"
+" égaux."
 
 #: src/PresaleWizard.php:1075 src/PresaleWizard.php:1089
 #: src/PresaleWizard.php:1106
@@ -4593,8 +4613,8 @@ msgstr "Le logo du prospect n'a pas pu être copié sur le client."
 #: templates/presale/annextype_default_lines.html.twig:118
 #, php-format
 msgid ""
-"The monthly price is the one of the subscription level (%s € excl. VAT), set "
-"in its form."
+"The monthly price is the one of the subscription level (%s € excl. VAT), set"
+" in its form."
 msgstr ""
 "Le prix mensuel est celui du niveau de souscription (%s € HT), défini dans "
 "sa fiche."
@@ -4605,7 +4625,8 @@ msgstr "Le nom du commercial est obligatoire."
 
 #: ajax/interventionstakeholderactions.php:76
 #, php-format
-msgid "The number of days exceeds the remaining days of the intervention (%s)."
+msgid ""
+"The number of days exceeds the remaining days of the intervention (%s)."
 msgstr ""
 "Le nombre de jours dépasse le nombre de jours restants de l'intervention "
 "(%s)."
@@ -4687,18 +4708,19 @@ msgid ""
 msgstr ""
 "Les requêtes ci-dessous ne sont que des suggestions basées sur les "
 "différences constatées. Veuillez les examiner, sauvegarder votre base de "
-"données, puis les exécuter manuellement : elles ne sont jamais exécutées par "
-"l’extension."
+"données, puis les exécuter manuellement : elles ne sont jamais exécutées par"
+" l’extension."
 
 #: templates/presale/step_generate.html.twig:132
 msgid "The reference of the proposal is set at the first generation."
-msgstr "La référence de la proposition est attribuée à la première génération."
+msgstr ""
+"La référence de la proposition est attribuée à la première génération."
 
 #: templates/techlead/assignment_rules.html.twig:47
 #, php-format
 msgid ""
-"The rules are created in the entity %s: select it in your active entities to "
-"create them"
+"The rules are created in the entity %s: select it in your active entities to"
+" create them"
 msgstr ""
 "Les règles sont créées dans l'entité %s: sélectionnez là dans vos entités "
 "actives pour les créer"
@@ -4706,8 +4728,8 @@ msgstr ""
 #: templates/wizard/layout.html.twig:45
 msgid "The steps are prefilled from it: check and complete them."
 msgstr ""
-"Les étapes sont préremplies à partir de celle-ci : vérifiez-les et complétez-"
-"les."
+"Les étapes sont préremplies à partir de celle-ci : vérifiez-les et "
+"complétez-les."
 
 #: src/EditorSubscriptionWizard.php:234
 msgid "The subscription already belongs to this entity."
@@ -4757,11 +4779,11 @@ msgstr "Leurs coordonnées, contacts et propositions."
 
 #: templates/presale/step_generate.html.twig:121
 msgid ""
-"These Word templates must be uploaded in the configuration before generating "
-"the proposal:"
+"These Word templates must be uploaded in the configuration before generating"
+" the proposal:"
 msgstr ""
-"Ces modèles Word doivent être déposés dans la configuration avant de générer "
-"la proposition :"
+"Ces modèles Word doivent être déposés dans la configuration avant de générer"
+" la proposition :"
 
 #: templates/interventionstakeholder_list.html.twig:43
 msgid "This action is irreversible. Continue ?"
@@ -4856,6 +4878,7 @@ msgstr "A facturer"
 #: src/KifloClient.php:167
 msgid "Too many requests sent to Kiflo (429): try again later."
 msgstr ""
+"Trop de requêtes envoyées à Kiflo (429) : veuillez réessayer plus tard."
 
 #: templates/monthly_report.html.twig:71
 #: templates/report_moving_result.html.twig:43
@@ -4992,7 +5015,7 @@ msgstr "Type de contrat de service manquant"
 
 #: templates/kiflo/config_form.html.twig:51
 msgid "URL of the API"
-msgstr ""
+msgstr "URL de l'API"
 
 #: src/NotificationTargetPresaleProposal.php:144
 msgid "URL of the customer wizard"
@@ -5012,7 +5035,7 @@ msgstr "Désarchiver et continuer"
 
 #: src/KifloLead.php:103
 msgid "Unassigned"
-msgstr ""
+msgstr "Non attribué"
 
 #: src/DirectHelpdesk.php:733 templates/entity/unbilled_tab.html.twig:144
 msgid "Unbilled hours"
@@ -5037,7 +5060,7 @@ msgstr "Jours-hommes non facturées"
 
 #: src/KifloClient.php:155
 msgid "Unexpected answer of the Kiflo API."
-msgstr ""
+msgstr "Réponse inattendue de l'API Kiflo."
 
 #: ajax/wizard.php:137
 msgid "Unknown action"
@@ -5069,7 +5092,7 @@ msgstr "Interventions non planifiées"
 
 #: templates/entity/customer_summary.html.twig:122
 msgid "Until"
-msgstr ""
+msgstr "Jusqu'à"
 
 #: templates/cridetail_for_ticket.html.twig:270
 #: templates/contract_detail_form.html.twig:206
@@ -5107,8 +5130,8 @@ msgstr "Mise à jour des champs du type de gestion"
 #: templates/dat/config_form.html.twig:51
 msgid ""
 "Upload the Word template of the technical architecture documents: no "
-"template is shipped with the plugin. The placeholders it can hold are listed "
-"in the documentation of the plugin."
+"template is shipped with the plugin. The placeholders it can hold are listed"
+" in the documentation of the plugin."
 msgstr ""
 "Déposez le modèle Word des dossiers d'architecture technique : aucun modèle "
 "n'est livré avec le plugin. Les balises qu'il peut contenir sont listées "
@@ -5117,8 +5140,8 @@ msgstr ""
 #: templates/config_presale_form.html.twig:81
 msgid ""
 "Upload the Word templates of the proposals and of the annexes: no template "
-"is shipped with the plugin. The placeholders they can hold are listed in the "
-"documentation of the plugin."
+"is shipped with the plugin. The placeholders they can hold are listed in the"
+" documentation of the plugin."
 msgstr ""
 "Déposez les modèles Word des propositions et des annexes : aucun modèle "
 "n'est fourni avec le plugin. Les balises utilisables sont listées dans la "
@@ -5129,8 +5152,8 @@ msgstr ""
 msgid ""
 "Upload these Word templates in the configuration (Pre-sales tab) first: %s."
 msgstr ""
-"Déposez d'abord ces modèles Word dans la configuration (onglet Avant-"
-"vente) : %s."
+"Déposez d'abord ces modèles Word dans la configuration (onglet Avant-vente) "
+": %s."
 
 #: templates/dat/config_form.html.twig:58
 #: templates/config_presale_form.html.twig:89
@@ -5163,7 +5186,7 @@ msgstr "Utilisation de la tarification"
 
 #: templates/kiflo/config_form.html.twig:47
 msgid "Use the Kiflo API"
-msgstr ""
+msgstr "Utiliser l'API Kiflo"
 
 #: templates/config_presale_form.html.twig:61
 msgid "Use the pre-sales section"
@@ -5247,8 +5270,8 @@ msgstr "Version %s"
 
 #: templates/preference_form.html.twig:92
 msgid ""
-"Warning : If there are more than one plugin which be loaded at startup, then "
-"only the first will be used"
+"Warning : If there are more than one plugin which be loaded at startup, then"
+" only the first will be used"
 msgstr ""
 "Attention : si plusieurs plugins sont lancés au démarrage, seul le premier "
 "sera actif"
@@ -5266,8 +5289,8 @@ msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
 msgstr ""
-"Attention : le changement de la configuration journalière ou horaire impacte "
-"les types de contrat."
+"Attention : le changement de la configuration journalière ou horaire impacte"
+" les types de contrat."
 
 #: src/DatWizard.php:75
 msgid "Web server"
@@ -5333,7 +5356,7 @@ msgstr "Propositions gagnées et perdues"
 
 #: templates/entity/proposals_tab.html.twig:94
 msgid "Won, customer to create"
-msgstr ""
+msgstr "Gagné, client à créer"
 
 #: templates/presale/step_generate.html.twig:105
 msgid "Word document"
@@ -5411,7 +5434,7 @@ msgstr "jours"
 
 #: templates/entity/customer_summary.html.twig:98
 msgid "days left"
-msgstr ""
+msgstr "jours restants"
 
 #: templates/presale/step_general.html.twig:66
 msgid "e.g. Expertise, Support, Project"
@@ -5432,7 +5455,7 @@ msgstr "heures"
 
 #: templates/entity/customer_summary.html.twig:98
 msgid "hours left"
-msgstr ""
+msgstr "heures restantes"
 
 #: src/CriPDF.php:290 src/CriPDF.php:318
 msgid "in"
@@ -5440,7 +5463,7 @@ msgstr "à"
 
 #: templates/entity/customer_summary.html.twig:141
 msgid "man-days"
-msgstr ""
+msgstr "jours-homme"
 
 #: templates/followup_criterias.html.twig:64
 #: templates/followup_criterias.html.twig:69
@@ -5516,7 +5539,8 @@ msgstr "le dossier des modèles n'a pas pu être créé."
 #: templates/entity/contracts_tab.html.twig:106
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
-"Essayez de modifier le filtre sur le statut par défaut dans la configuration."
+"Essayez de modifier le filtre sur le statut par défaut dans la "
+"configuration."
 
 #: templates/ticket_overview.html.twig:127
 msgid "week"
@@ -5524,23 +5548,3 @@ msgid_plural "weeks"
 msgstr[0] "Semaine"
 msgstr[1] "Semaines"
 msgstr[2] "Semaines"
-
-#~ msgid "DEBUG"
-#~ msgstr "DEBUG"
-
-#~ msgid "Contracts about to expire"
-#~ msgstr "Contrats sur le point d'expirer"
-
-#~ msgid ""
-#~ "Contracts reported by the end and notice alerts of the contracts (delay "
-#~ "set in the entities), to prepare a proposal for a new contract."
-#~ msgstr ""
-#~ "Les contrats signalés à la fin et les alertes de notification des "
-#~ "contrats (délai fixé dans les entités), afin de préparer une proposition "
-#~ "pour un nouveau contrat."
-
-#~ msgid "No contract about to expire."
-#~ msgstr "Aucun contrat n'arrive à expiration."
-
-#~ msgid "Notice"
-#~ msgstr "Avis"
