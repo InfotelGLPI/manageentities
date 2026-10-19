@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 16:04+0000\n"
+"POT-Creation-Date: 2026-10-14 08:36+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2018\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/infotelGLPI/"
@@ -78,7 +78,7 @@ msgid_plural "%d annex models imported."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:1459
+#: src/Contract.php:1371
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
@@ -780,7 +780,7 @@ msgid "Closed contract period state"
 msgstr ""
 
 #: src/SubscriptionLevel.php:71 src/PresaleConversion.php:225
-#: templates/entity/proposals_tab.html.twig:105
+#: templates/entity/proposals_tab.html.twig:119
 #: templates/entity/editorsubscription_tab.html.twig:92
 #: templates/entity/status_tab.html.twig:71
 #: templates/entity/status_tab.html.twig:158
@@ -900,7 +900,7 @@ msgid "Context, scope, constraints..."
 msgstr ""
 
 #: src/WizardController.php:2083 src/WizardController.php:2100
-#: templates/entity/proposals_tab.html.twig:147
+#: templates/entity/proposals_tab.html.twig:161
 #: templates/wizard/step6_intervention_block.html.twig:98
 #: templates/wizard/step4_contract.html.twig:39
 #: templates/followup_report.html.twig:55
@@ -951,19 +951,11 @@ msgstr ""
 msgid "Contract type is required"
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:132
-msgid "Contracts about to expire"
-msgstr ""
-
-#: templates/entity/proposals_tab.html.twig:137
-msgid ""
-"Contracts reported by the end and notice alerts of the contracts (delay set "
-"in the entities), to prepare a proposal for a new contract."
-msgstr ""
-
 #: src/NotificationTargetContract.php:103
 #: src/NotificationTargetContract.php:113
 #: src/NotificationTargetContract.php:169
+#: templates/entity/proposals_tab.html.twig:69
+#: templates/entity/proposals_tab.html.twig:146
 msgid "Contracts running out of remaining days"
 msgstr ""
 
@@ -1457,7 +1449,7 @@ msgstr ""
 msgid "Edit in the wizard"
 msgstr ""
 
-#: src/PresaleConversion.php:225 templates/entity/proposals_tab.html.twig:107
+#: src/PresaleConversion.php:225 templates/entity/proposals_tab.html.twig:121
 #: templates/entity/editorsubscription_tab.html.twig:94
 msgid "Editor"
 msgstr ""
@@ -1503,8 +1495,7 @@ msgstr ""
 #: src/EditorSubscription.php:187
 #: src/NotificationTargetEditorSubscription.php:110
 #: src/NotificationTargetEditorSubscription.php:147
-#: templates/entity/proposals_tab.html.twig:94
-#: templates/entity/proposals_tab.html.twig:150
+#: templates/entity/proposals_tab.html.twig:108
 #: templates/entity/editorsubscription_tab.html.twig:79
 #: templates/wizard/step6_intervention_block.html.twig:65
 #: templates/report_moving_form.html.twig:41
@@ -1570,8 +1561,8 @@ msgstr ""
 #: src/NotificationTargetEntity.php:108
 #: templates/report_moving_result.html.twig:40
 #: templates/entity/references.html.twig:69
-#: templates/entity/proposals_tab.html.twig:90
-#: templates/entity/proposals_tab.html.twig:146
+#: templates/entity/proposals_tab.html.twig:104
+#: templates/entity/proposals_tab.html.twig:160
 #: templates/entity/contracts_tab.html.twig:51
 #: templates/entity/editorsubscription_tab.html.twig:72
 #: templates/wizard/step2_contact_block.html.twig:95
@@ -1695,7 +1686,6 @@ msgstr ""
 msgid "Existing customer:"
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:163
 #: templates/editorsubscription_fields.html.twig:128
 msgid "Expired"
 msgstr ""
@@ -1714,7 +1704,8 @@ msgstr ""
 msgid "Expired subscriptions"
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:79
+#: templates/entity/proposals_tab.html.twig:68
+#: templates/entity/proposals_tab.html.twig:93
 msgid "Expired subscriptions to renew"
 msgstr ""
 
@@ -2411,8 +2402,8 @@ msgid "New intervention"
 msgstr ""
 
 #: templates/entity/proposals_tab.html.twig:52
-#: templates/entity/proposals_tab.html.twig:115
-#: templates/entity/proposals_tab.html.twig:168
+#: templates/entity/proposals_tab.html.twig:129
+#: templates/entity/proposals_tab.html.twig:181
 #: templates/entity/editorsubscription_tab.html.twig:107
 #: templates/presale/home.html.twig:61
 #: templates/presale/client_form.html.twig:125
@@ -2494,12 +2485,12 @@ msgstr ""
 msgid "No contact."
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:140
-msgid "No contract about to expire."
-msgstr ""
-
 #: templates/entity/contracts_tab.html.twig:94
 msgid "No contract found"
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:154
+msgid "No contract running out of remaining days."
 msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:44
@@ -2518,7 +2509,7 @@ msgstr ""
 msgid "No expired publisher subscription."
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:84
+#: templates/entity/proposals_tab.html.twig:98
 msgid "No expired subscription to renew."
 msgstr ""
 
@@ -2585,7 +2576,7 @@ msgid ""
 "the details below, or leave them empty."
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:68
+#: templates/entity/proposals_tab.html.twig:82
 #: templates/presale/client_form.html.twig:130
 msgid "No proposal in progress."
 msgstr ""
@@ -2736,11 +2727,7 @@ msgstr ""
 msgid "Nothing to display."
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:149
-msgid "Notice"
-msgstr ""
-
-#: templates/entity/proposals_tab.html.twig:148
+#: templates/entity/proposals_tab.html.twig:162
 msgid "Number"
 msgstr ""
 
@@ -3127,6 +3114,7 @@ msgstr ""
 #: src/Dashboard.php:183 src/Dashboard.php:314 src/Dashboard.php:369
 #: src/Dashboard.php:464 src/NotificationTargetContract.php:121
 #: src/NotificationTargetContract.php:156
+#: templates/entity/proposals_tab.html.twig:164
 msgid "Prestation"
 msgstr ""
 
@@ -3353,7 +3341,7 @@ msgstr ""
 #: src/EditorSubscription.php:179
 #: src/NotificationTargetEditorSubscription.php:106
 #: src/NotificationTargetEditorSubscription.php:143
-#: templates/entity/proposals_tab.html.twig:91
+#: templates/entity/proposals_tab.html.twig:105
 #: templates/entity/editorsubscription_tab.html.twig:74
 #: templates/editorsubscription_fields.html.twig:34
 #: templates/contract_detail_form.html.twig:72
@@ -3380,6 +3368,7 @@ msgstr ""
 msgid "Remaining"
 msgstr ""
 
+#: templates/entity/proposals_tab.html.twig:165
 #: templates/cridetail_for_ticket.html.twig:42
 msgid "Remaining days"
 msgstr ""
@@ -3414,12 +3403,12 @@ msgstr ""
 msgid "Renewal"
 msgstr ""
 
-#: src/PresaleRenewal.php:293
+#: src/PresaleRenewal.php:209
 #, php-format
 msgid "Renewal of the contract %s"
 msgstr ""
 
-#: src/PresaleRenewal.php:281
+#: src/PresaleRenewal.php:197
 #, php-format
 msgid "Renewal of the publisher subscription ended on %s"
 msgstr ""
@@ -3700,6 +3689,7 @@ msgstr ""
 #: src/EditorSubscription.php:186
 #: src/NotificationTargetEditorSubscription.php:109
 #: src/NotificationTargetEditorSubscription.php:146
+#: templates/entity/proposals_tab.html.twig:163
 #: templates/entity/editorsubscription_tab.html.twig:78
 #: templates/wizard/step4_contract.html.twig:74
 #: templates/report_moving_form.html.twig:40
@@ -3774,7 +3764,7 @@ msgstr ""
 #: src/EditorSubscription.php:741 src/EditorSubscription.php:796
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
-#: templates/entity/proposals_tab.html.twig:93
+#: templates/entity/proposals_tab.html.twig:107
 #: templates/entity/editorsubscription_tab.html.twig:77
 #: templates/editorsubscription_fields.html.twig:90
 #: templates/contract_detail_form.html.twig:78
@@ -3967,6 +3957,13 @@ msgstr ""
 #: src/ContractDay.php:761
 #, php-format
 msgid "The contract period %s already exists"
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:151
+msgid ""
+"The contracts of the alert mail: every open period has less than one "
+"remaining day, and the customer has no day left on its other contracts. To "
+"prepare a proposal for a new contract."
 msgstr ""
 
 #: src/WizardController.php:2141
@@ -4455,7 +4452,7 @@ msgstr ""
 #: src/NotificationTargetEditorSubscription.php:107
 #: src/NotificationTargetEditorSubscription.php:144
 #: templates/entity/description.html.twig:226
-#: templates/entity/proposals_tab.html.twig:92
+#: templates/entity/proposals_tab.html.twig:106
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/wizard/step2_contact_block.html.twig:90
