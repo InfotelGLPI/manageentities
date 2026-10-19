@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 08:36+0000\n"
+"POT-Creation-Date: 2026-10-19 10:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,6 +60,13 @@ msgstr ""
 msgid "%1$s: the priced lines total %2$s days, the estimate %3$s days"
 msgstr ""
 
+#: src/KifloConfig.php:112
+#, php-format
+msgid "%d Kiflo lead synchronized."
+msgid_plural "%d Kiflo leads synchronized."
+msgstr[0] ""
+msgstr[1] ""
+
 #: templates/config_presale_form.html.twig:212
 #, php-format
 msgid "%d active annex model"
@@ -74,15 +81,29 @@ msgid_plural "%d annex models imported."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Contract.php:1371
+#: src/Contract.php:1449
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
 
-#: src/EditorSubscription.php:1117
+#: src/EditorSubscription.php:1145
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
+
+#: templates/entity/customer_summary.html.twig:144
+#, php-format
+msgid "%d intervention"
+msgid_plural "%d interventions"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/kiflo/config_form.html.twig:71
+#, php-format
+msgid "%d lead"
+msgid_plural "%d leads"
+msgstr[0] ""
+msgstr[1] ""
 
 #: front/techleadrule.php:48
 #, php-format
@@ -161,7 +182,7 @@ msgstr "(in days)"
 msgid "(in hours)"
 msgstr "(in hours)"
 
-#: src/WizardController.php:1853
+#: src/WizardController.php:1889
 msgid "(no name)"
 msgstr ""
 
@@ -169,7 +190,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:2370
+#: src/WizardController.php:2432
 msgid "-- Select a template --"
 msgstr ""
 
@@ -208,15 +229,32 @@ msgstr ""
 msgid "A new draft with the same client, team and annexes"
 msgstr ""
 
+#: templates/kiflo/config_form.html.twig:66
+msgid "API key"
+msgstr ""
+
+#: src/KifloLead.php:107
+msgid "Abandoned"
+msgstr ""
+
+#: src/KifloLead.php:102
+msgid "Accepted"
+msgstr ""
+
+#: templates/entity/kiflo_leads_tab.html.twig:186
+msgid "Accepted on"
+msgstr ""
+
 #: templates/generatecri_wizard.html.twig:175
 msgid "Accomplished tasks informations"
 msgstr "Accomplished tasks informations"
 
+#: templates/entity/customer_summary.html.twig:118
 #: templates/techlead/assignment_rules.html.twig:110
 msgid "Active"
 msgstr ""
 
-#: src/EditorSubscription.php:183 hook.php:1012
+#: src/EditorSubscription.php:183 hook.php:1020
 msgid "Active editor subscription"
 msgstr ""
 
@@ -238,8 +276,8 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: templates/entity/contracts_tab.html.twig:109
-#: templates/entity/contracts_tab.html.twig:112
+#: templates/entity/contracts_tab.html.twig:119
+#: templates/entity/contracts_tab.html.twig:122
 #: templates/editorsubscription_wizard.html.twig:88
 #: templates/editorsubscription_wizard.html.twig:110
 #: templates/company_list.html.twig:39
@@ -260,7 +298,7 @@ msgstr "Add a company"
 msgid "Add a contact"
 msgstr ""
 
-#: templates/wizard/step4_contract.html.twig:113
+#: templates/wizard/step4_contract.html.twig:114
 msgid "Add a document"
 msgstr ""
 
@@ -339,7 +377,7 @@ msgid ""
 "proposals."
 msgstr ""
 
-#: front/entity.form.php:77
+#: front/entity.form.php:83
 msgid "Administrative data updated"
 msgstr ""
 
@@ -372,6 +410,10 @@ msgstr "All fields are not correctly filled."
 #: templates/cri_reports.html.twig:40
 msgid "All reports"
 msgstr "All reports"
+
+#: src/Entity.php:721
+msgid "All the clients"
+msgstr ""
 
 #: templates/presale/client_form.html.twig:58
 msgid ""
@@ -449,7 +491,7 @@ msgstr ""
 msgid "Annexes priced in days at a daily rate."
 msgstr ""
 
-#: src/Contract.php:615 src/Contract.php:634
+#: src/Contract.php:693 src/Contract.php:712
 msgid "Annual"
 msgstr "Annual"
 
@@ -575,11 +617,11 @@ msgstr ""
 msgid "At least one contact is required."
 msgstr ""
 
-#: src/WizardController.php:1529 src/WizardController.php:1558
+#: src/WizardController.php:1565 src/WizardController.php:1594
 msgid "At least one service period with a rate is required"
 msgstr ""
 
-#: templates/wizard/step4_contract.html.twig:108
+#: templates/wizard/step4_contract.html.twig:109
 msgid "Attach documents"
 msgstr ""
 
@@ -619,7 +661,7 @@ msgid "Begin date"
 msgstr ""
 
 #: src/EditorSubscriptionWizard.php:157 src/WizardController.php:292
-#: src/WizardController.php:325 src/WizardController.php:917
+#: src/WizardController.php:325 src/WizardController.php:953
 msgid "Begin date is required"
 msgstr ""
 
@@ -628,7 +670,7 @@ msgstr ""
 msgid "Build a financial proposal for a prospect or an existing client."
 msgstr ""
 
-#: src/Contract.php:653 src/Contract.php:707
+#: src/Contract.php:731 src/Contract.php:785
 msgid "By intervention"
 msgstr "By intervention"
 
@@ -648,7 +690,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/WizardController.php:1381
+#: src/WizardController.php:1417
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -712,11 +754,17 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: src/DirectHelpdesk.php:719 src/DatWizard.php:595 src/Followup.php:745
-#: src/Followup.php:979 src/Monthly.php:425 src/Dashboard.php:248
-#: src/Dashboard.php:312 src/Dashboard.php:367
+#: templates/kiflo/config_form.html.twig:62
+msgid "Clear the key"
+msgstr ""
+
+#: src/DirectHelpdesk.php:728 src/DatWizard.php:595 src/Followup.php:745
+#: src/Followup.php:979 src/Monthly.php:425 src/Dashboard.php:256
+#: src/Dashboard.php:320 src/Dashboard.php:375 src/Entity.php:1067
+#: templates/entity/client_selector.html.twig:38
 #: templates/entity/unbilled_tab.html.twig:126
 #: templates/entity/unbilled_tab.html.twig:141
+#: templates/entity/kiflo_leads_tab.html.twig:175
 #: templates/techlead/clients_by_tech.html.twig:120
 #: templates/techlead/clients_by_tech.html.twig:165
 #: templates/techlead/assignment_rules.html.twig:82
@@ -732,7 +780,7 @@ msgstr[1] "Clients"
 msgid "Client and contacts"
 msgstr ""
 
-#: src/Dashboard.php:85 src/Dashboard.php:260
+#: src/Dashboard.php:85 src/Dashboard.php:268
 msgid "Client annuary"
 msgstr "Client annuary"
 
@@ -740,7 +788,7 @@ msgstr "Client annuary"
 msgid "Client details"
 msgstr ""
 
-#: src/Entity.php:93
+#: src/Entity.php:104
 msgid "Client management"
 msgid_plural "Clients management"
 msgstr[0] ""
@@ -763,6 +811,8 @@ msgstr ""
 msgid "Clients without tech lead"
 msgstr ""
 
+#: templates/entity/kiflo_leads_tab.html.twig:142
+#: templates/entity/kiflo_leads_tab.html.twig:208
 #: templates/directhelpdesk_modal.html.twig:41
 msgid "Close"
 msgstr ""
@@ -775,8 +825,8 @@ msgstr ""
 msgid "Closed contract period state"
 msgstr ""
 
-#: src/SubscriptionLevel.php:71 src/PresaleConversion.php:225
-#: templates/entity/proposals_tab.html.twig:119
+#: src/SubscriptionLevel.php:71 src/PresaleConversion.php:228
+#: templates/entity/proposals_tab.html.twig:162
 #: templates/entity/editorsubscription_tab.html.twig:92
 #: templates/entity/status_tab.html.twig:71
 #: templates/entity/status_tab.html.twig:158
@@ -784,8 +834,8 @@ msgid "Cloud"
 msgstr ""
 
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
-#: src/EditorSubscription.php:757
-#: src/NotificationTargetEditorSubscription.php:120 hook.php:1025
+#: src/EditorSubscription.php:785
+#: src/NotificationTargetEditorSubscription.php:120 hook.php:1033
 #: templates/editorsubscription_fields.html.twig:70
 #: templates/cridetail_for_ticket.html.twig:93
 #: templates/contract_detail_form.html.twig:58
@@ -817,10 +867,10 @@ msgstr ""
 
 #: templates/entity/description.html.twig:77
 #: templates/entity/description.html.twig:98
-#: templates/entity/contracts_tab.html.twig:54
+#: templates/entity/contracts_tab.html.twig:56
 #: templates/wizard/step2_contact_block.html.twig:99
 #: templates/wizard/step1_entity.html.twig:121
-#: templates/wizard/step4_contract.html.twig:98
+#: templates/wizard/step4_contract.html.twig:99
 #: templates/presale/step_client.html.twig:261
 #: templates/presale/client_form.html.twig:75
 #: templates/editorsubscription_fields.html.twig:136
@@ -829,7 +879,9 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: src/Company.php:53 templates/followup_criterias.html.twig:87
+#: src/Company.php:53 src/Dashboard.php:520
+#: templates/entity/kiflo_leads_tab.html.twig:86
+#: templates/followup_criterias.html.twig:87
 #: templates/company_form.html.twig:43 templates/company_list.html.twig:49
 #: templates/company_list.html.twig:59
 msgid "Company"
@@ -855,6 +907,13 @@ msgstr "Configuring the client side view"
 msgid "Confirm and finish"
 msgstr ""
 
+#: src/KifloConfig.php:92
+#, php-format
+msgid "Connection to Kiflo succeeded: %d lead available."
+msgid_plural "Connection to Kiflo succeeded: %d leads available."
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/CriDetail.php:1355
 msgid "Consumption"
 msgstr "Consumption"
@@ -863,6 +922,8 @@ msgstr "Consumption"
 msgid "Consumption summary"
 msgstr ""
 
+#: templates/entity/kiflo_leads_tab.html.twig:87
+#: templates/entity/kiflo_leads_tab.html.twig:146
 #: templates/wizard/step2_contact_block.html.twig:38
 #: templates/wizard/step2_contacts.html.twig:36
 #: templates/presale/step_client.html.twig:79
@@ -883,7 +944,7 @@ msgstr ""
 msgid "Contact #%d: the last name is mandatory"
 msgstr ""
 
-#: src/WizardController.php:2093
+#: src/WizardController.php:2129
 msgid "Contacts"
 msgstr ""
 
@@ -895,10 +956,10 @@ msgstr "Content, end and begin date are mandatory for a task !"
 msgid "Context, scope, constraints..."
 msgstr ""
 
-#: src/WizardController.php:2083 src/WizardController.php:2100
-#: templates/entity/proposals_tab.html.twig:161
+#: src/WizardController.php:2119 src/WizardController.php:2136
+#: templates/entity/proposals_tab.html.twig:204
 #: templates/wizard/step6_intervention_block.html.twig:98
-#: templates/wizard/step4_contract.html.twig:39
+#: templates/wizard/step4_contract.html.twig:40
 #: templates/followup_report.html.twig:55
 #: templates/contractday_form.html.twig:46 templates/cri_form.html.twig:48
 msgid "Contract"
@@ -910,7 +971,7 @@ msgstr[1] ""
 msgid "Contract closure"
 msgstr ""
 
-#: src/WizardController.php:1665
+#: src/WizardController.php:1701
 msgid "Contract data is missing"
 msgstr ""
 
@@ -926,7 +987,7 @@ msgstr "Contract is imported in GLPI"
 #: src/CriDetail.php:494 src/CriDetail.php:750
 #: src/NotificationTargetContract.php:118
 #: src/NotificationTargetContract.php:153 src/CriPDF.php:532
-#: templates/wizard/step4_contract.html.twig:69
+#: templates/wizard/step4_contract.html.twig:70
 msgid "Contract number"
 msgstr "Contract number"
 
@@ -938,7 +999,7 @@ msgstr ""
 msgid "Contract present"
 msgstr "Contract present"
 
-#: templates/wizard/step4_contract.html.twig:84
+#: templates/wizard/step4_contract.html.twig:85
 #: templates/cridetail_for_ticket.html.twig:125
 msgid "Contract type"
 msgstr ""
@@ -950,18 +1011,22 @@ msgstr ""
 #: src/NotificationTargetContract.php:103
 #: src/NotificationTargetContract.php:113
 #: src/NotificationTargetContract.php:169
-#: templates/entity/proposals_tab.html.twig:69
-#: templates/entity/proposals_tab.html.twig:146
+#: templates/entity/proposals_tab.html.twig:70
+#: templates/entity/proposals_tab.html.twig:189
 msgid "Contracts running out of remaining days"
 msgstr ""
 
-#: src/Entity.php:79 src/Entity.php:291
+#: src/Entity.php:90 src/Entity.php:355
 #: templates/entity/status_tab.html.twig:32
 msgid "Contracts status overview"
 msgstr ""
 
-#: src/Entity.php:245
+#: src/Entity.php:269
 msgid "Contractual follow-up"
+msgstr ""
+
+#: src/KifloLead.php:106
+msgid "Converted"
 msgstr ""
 
 #: templates/entity/description.html.twig:81
@@ -1007,6 +1072,7 @@ msgstr ""
 msgid "Create the DAT"
 msgstr ""
 
+#: templates/entity/proposals_tab.html.twig:119
 #: templates/presale/proposal_form.html.twig:82
 msgid "Create the customer"
 msgstr ""
@@ -1024,6 +1090,15 @@ msgstr ""
 msgid "Created by"
 msgstr "Created by"
 
+#: templates/entity/kiflo_leads_tab.html.twig:91
+#: templates/entity/kiflo_leads_tab.html.twig:179
+msgid "Creation date"
+msgstr ""
+
+#: templates/entity/customer_summary.html.twig:101
+msgid "Credit almost used up"
+msgstr ""
+
 #: src/ContractDay.php:152
 msgid "Credit remaining"
 msgstr "Credit remaining"
@@ -1037,7 +1112,7 @@ msgstr "Crossed time"
 msgid "Crossed time (itinerary including)"
 msgstr "Crossed time (itinerary including)"
 
-#: templates/entity/followup_helpdesk.html.twig:36
+#: templates/entity/followup_helpdesk.html.twig:33
 msgid "Current contracts"
 msgstr ""
 
@@ -1091,10 +1166,6 @@ msgstr "Customer stamp"
 msgid "DAT"
 msgstr ""
 
-#: templates/entity/references.html.twig:63
-msgid "DEBUG"
-msgstr ""
-
 #: templates/dat/step_system.html.twig:43
 #: templates/dat/step_system.html.twig:79
 #: templates/dat/step_summary.html.twig:80
@@ -1116,7 +1187,7 @@ msgstr ""
 msgid "Daily schedule"
 msgstr "Daily schedule"
 
-#: src/Entity.php:71 src/Entity.php:262
+#: src/Entity.php:79 src/Entity.php:313
 #: templates/entity/description.html.twig:40
 msgid "Data administrative"
 msgstr "Data administrative"
@@ -1152,14 +1223,13 @@ msgstr "Date of"
 msgid "Date of renewal"
 msgstr "Date of renewal"
 
-#: src/Gantt.php:325 src/Followup.php:881
-#: templates/entity/references.html.twig:70
+#: src/Gantt.php:325 src/Followup.php:881 src/Entity.php:1068
 #: templates/wizard/step5_management.html.twig:53
 #: templates/contract_detail_form.html.twig:136
 msgid "Date of signature"
 msgstr "Date of signature"
 
-#: src/WizardController.php:1085
+#: src/WizardController.php:1121
 msgid "Date of signature is required"
 msgstr ""
 
@@ -1180,6 +1250,15 @@ msgstr[1] ""
 #: templates/presale/annextype_default_lines.html.twig:93
 #: templates/presale/step_annexes.html.twig:301
 msgid "Days"
+msgstr ""
+
+#: templates/entity/kiflo_leads_tab.html.twig:92
+#: templates/entity/kiflo_leads_tab.html.twig:182
+msgid "Deadline"
+msgstr ""
+
+#: templates/entity/kiflo_leads_tab.html.twig:171
+msgid "Deal"
 msgstr ""
 
 #: templates/presale/step_general.html.twig:47
@@ -1230,11 +1309,11 @@ msgstr ""
 msgid "Default lines"
 msgstr ""
 
-#: templates/preference_form.html.twig:64
+#: templates/preference_form.html.twig:79
 msgid "Default list of Business for the general monitoring"
 msgstr "Default list of Business for the general monitoring"
 
-#: templates/preference_form.html.twig:71
+#: templates/preference_form.html.twig:86
 msgid "Default list of companies for the general monitoring"
 msgstr "Default list of companies for the general monitoring"
 
@@ -1293,7 +1372,7 @@ msgstr ""
 msgid "Delete permanently"
 msgstr ""
 
-#: templates/entity/contracts_tab.html.twig:81
+#: templates/entity/contracts_tab.html.twig:91
 #: templates/cridetail_add_reports.html.twig:50
 #: templates/editorsubscription_wizard.html.twig:106
 #: templates/cri_form.html.twig:60
@@ -1312,6 +1391,8 @@ msgid "Deleting…"
 msgstr ""
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:43
+#: templates/entity/kiflo_leads_tab.html.twig:101
+#: templates/entity/kiflo_leads_tab.html.twig:199
 #: templates/generatecri_wizard.html.twig:103
 #: templates/generatecri_wizard.html.twig:158
 #: templates/generatecri_wizard.html.twig:181
@@ -1364,6 +1445,12 @@ msgstr "Display PDF"
 msgid "Display comments from the company in the CRI"
 msgstr "Display comments from the company in the CRI"
 
+#: templates/kiflo/config_form.html.twig:48
+msgid ""
+"Displays the leads shared by the publisher in Kiflo, in the clients "
+"management and on the dashboard."
+msgstr ""
+
 #: templates/entity/dat_card.html.twig:53
 msgid "Document"
 msgid_plural "Documents"
@@ -1387,6 +1474,10 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
+#: templates/preference_form.html.twig:65
+msgid "Drag and drop the tabs to change their order in the clients management."
+msgstr ""
+
 #: templates/presale/proposal_form.html.twig:90
 msgid "Duplicate"
 msgstr ""
@@ -1397,7 +1488,7 @@ msgid "Duplicate"
 msgstr ""
 
 #: templates/entity/directhelpdesk_ticket_select.html.twig:41
-#: templates/wizard/step4_contract.html.twig:80
+#: templates/wizard/step4_contract.html.twig:81
 #: templates/generatecri_wizard.html.twig:160
 #: templates/generatecri_wizard.html.twig:196
 #: templates/directhelpdesk_modal.html.twig:83
@@ -1445,12 +1536,12 @@ msgstr ""
 msgid "Edit in the wizard"
 msgstr ""
 
-#: src/PresaleConversion.php:225 templates/entity/proposals_tab.html.twig:121
+#: src/PresaleConversion.php:228 templates/entity/proposals_tab.html.twig:164
 #: templates/entity/editorsubscription_tab.html.twig:94
 msgid "Editor"
 msgstr ""
 
-#: src/EditorSubscription.php:159 src/EditorSubscription.php:749
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:777
 #: src/NotificationTargetEditorSubscription.php:121
 #: templates/editorsubscription_fields.html.twig:62
 #: templates/cridetail_for_ticket.html.twig:95
@@ -1463,6 +1554,7 @@ msgstr ""
 msgid "Elements added through the wizard"
 msgstr ""
 
+#: templates/entity/kiflo_leads_tab.html.twig:149
 #: templates/wizard/step2_contact_block.html.twig:85
 #: templates/wizard/step1_entity.html.twig:84
 #: templates/presale/step_client.html.twig:112
@@ -1471,7 +1563,9 @@ msgstr ""
 #: templates/presale/client_form.html.twig:71
 #: templates/presale/client_form.html.twig:95
 msgid "Email"
-msgstr ""
+msgid_plural "Emails"
+msgstr[0] ""
+msgstr[1] ""
 
 #: templates/entity/description.html.twig:74
 #: templates/entity/description.html.twig:124
@@ -1491,7 +1585,8 @@ msgstr ""
 #: src/EditorSubscription.php:187
 #: src/NotificationTargetEditorSubscription.php:110
 #: src/NotificationTargetEditorSubscription.php:147
-#: templates/entity/proposals_tab.html.twig:108
+#: templates/entity/proposals_tab.html.twig:151
+#: templates/entity/contracts_tab.html.twig:55
 #: templates/entity/editorsubscription_tab.html.twig:79
 #: templates/wizard/step6_intervention_block.html.twig:65
 #: templates/report_moving_form.html.twig:41
@@ -1509,12 +1604,12 @@ msgstr ""
 msgid "End date"
 msgstr ""
 
-#: src/ContractDay.php:717
+#: src/ContractDay.php:719
 msgid "End date cannot be less than begin date"
 msgstr "End date cannot be less than begin date"
 
 #: src/EditorSubscriptionWizard.php:160 src/WizardController.php:328
-#: src/WizardController.php:920
+#: src/WizardController.php:956
 msgid "End date is required"
 msgstr ""
 
@@ -1525,13 +1620,13 @@ msgstr "End date must be after the begin date !"
 #: front/report_occupation.form.php:43 front/directhelpdesk.php:41
 #: front/directhelpdesk.php:44 front/directhelpdesk.php:46
 #: front/report_moving.form.php:43 front/generatecri.form.php:127
-#: front/config.form.php:71 front/directhelpdesk.form.php:187
+#: front/config.form.php:78 front/directhelpdesk.form.php:187
 #: front/directhelpdesk.form.php:190 front/directhelpdesk.form.php:192
-#: front/report.form.php:46 front/entity.php:65 front/entity.php:68
-#: front/entity.php:70 front/generatecri.php:35 front/generatecri.php:38
+#: front/report.form.php:46 front/entity.php:71 front/entity.php:74
+#: front/entity.php:76 front/generatecri.php:35 front/generatecri.php:38
 #: front/generatecri.php:40 front/cridetail.form.php:53
 #: front/cridetail.form.php:56 front/cridetail.form.php:58
-#: front/addelements.form.php:39 setup.php:266 src/Preference.php:147
+#: front/addelements.form.php:39 setup.php:271 src/Preference.php:191
 #: src/GenerateCRI.php:940 src/TaskCategory.php:100 src/Profile.php:51
 #: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
 msgid "Entities portal"
@@ -1556,15 +1651,14 @@ msgstr ""
 #: src/NotificationTargetContract.php:151 src/NotificationTargetEntity.php:83
 #: src/NotificationTargetEntity.php:108
 #: templates/report_moving_result.html.twig:40
-#: templates/entity/references.html.twig:69
-#: templates/entity/proposals_tab.html.twig:104
-#: templates/entity/proposals_tab.html.twig:160
+#: templates/entity/proposals_tab.html.twig:147
+#: templates/entity/proposals_tab.html.twig:203
 #: templates/entity/contracts_tab.html.twig:51
 #: templates/entity/editorsubscription_tab.html.twig:72
 #: templates/wizard/step2_contact_block.html.twig:95
 #: templates/wizard/step6_intervention_block.html.twig:94
 #: templates/wizard/step1_select_entity.html.twig:45
-#: templates/wizard/step4_contract.html.twig:93
+#: templates/wizard/step4_contract.html.twig:94
 #: templates/report_moving_form.html.twig:45
 #: templates/criprice_for_critype.html.twig:34
 #: templates/directhelpdesk_form.html.twig:58
@@ -1586,7 +1680,7 @@ msgstr[1] ""
 msgid "Entity already exists"
 msgstr ""
 
-#: src/WizardController.php:1519 src/WizardController.php:1566
+#: src/WizardController.php:1555 src/WizardController.php:1602
 msgid "Entity data is missing"
 msgstr ""
 
@@ -1594,8 +1688,8 @@ msgstr ""
 #: src/WizardController.php:372 src/WizardController.php:378
 #: src/WizardController.php:393 src/WizardController.php:472
 #: src/WizardController.php:478 src/WizardController.php:572
-#: src/WizardController.php:983 src/WizardController.php:1571
-#: src/WizardController.php:1587
+#: src/WizardController.php:1019 src/WizardController.php:1607
+#: src/WizardController.php:1623
 msgid "Entity not found"
 msgstr ""
 
@@ -1607,15 +1701,15 @@ msgstr ""
 msgid "Entity used to archive customers."
 msgstr ""
 
-#: src/WizardController.php:1682
+#: src/WizardController.php:1718
 msgid "Error creating contract"
 msgstr ""
 
-#: src/WizardController.php:1582
+#: src/WizardController.php:1618
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:1733
+#: src/WizardController.php:1769
 msgid "Error creating management type"
 msgstr ""
 
@@ -1686,6 +1780,10 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
+#: templates/entity/customer_summary.html.twig:122
+msgid "Expired on"
+msgstr ""
+
 #: templates/entity/editorsubscription_tab.html.twig:52
 msgid "Expired only"
 msgstr ""
@@ -1700,18 +1798,23 @@ msgstr ""
 msgid "Expired subscriptions"
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:68
-#: templates/entity/proposals_tab.html.twig:93
+#: templates/entity/proposals_tab.html.twig:69
+#: templates/entity/proposals_tab.html.twig:136
 msgid "Expired subscriptions to renew"
 msgstr ""
 
-#: src/PresaleAnnexType.php:155 templates/followup_export_toolbar.html.twig:40
+#: src/PresaleAnnexType.php:155 templates/entity/references.html.twig:50
+#: templates/followup_export_toolbar.html.twig:40
 msgid "Export"
 msgstr ""
 
 #: templates/entity/unbilled_tab.html.twig:130
 #: templates/entity/editorsubscription_tab.html.twig:56
 msgid "Export CSV"
+msgstr ""
+
+#: templates/entity/references.html.twig:38
+msgid "Export all the references"
 msgstr ""
 
 #: src/PresaleAnnexType.php:182 src/PresaleAnnexType.php:220
@@ -1741,7 +1844,7 @@ msgid "Filtered by default state list"
 msgstr ""
 
 #: src/PresaleProposal.php:61 src/PresaleClient.php:134
-#: templates/entity/proposals_tab.html.twig:48
+#: templates/entity/proposals_tab.html.twig:49
 #: templates/presale/home.html.twig:70
 msgid "Financial proposal"
 msgid_plural "Financial proposals"
@@ -1770,7 +1873,7 @@ msgstr ""
 msgid "From"
 msgstr "From"
 
-#: src/PresaleConversion.php:305
+#: src/PresaleConversion.php:308
 #, php-format
 msgid "From the proposal %s"
 msgstr ""
@@ -1785,7 +1888,7 @@ msgid ""
 "applied to the contract when all periods are closed."
 msgstr ""
 
-#: src/Followup.php:48 src/Entity.php:68 src/Entity.php:246
+#: src/Followup.php:48 src/Entity.php:76 src/Entity.php:272
 #: templates/followup_criterias.html.twig:42
 msgid "General follow-up"
 msgstr "General follow-up"
@@ -1824,6 +1927,10 @@ msgstr ""
 msgid "Generated from the clients management portal"
 msgstr ""
 
+#: templates/wizard/step4_contract.html.twig:124
+msgid "Generated proposal: linked to the contract"
+msgstr ""
+
 #: src/PresaleWizard.php:83
 msgid "Generation"
 msgstr ""
@@ -1860,7 +1967,7 @@ msgstr[1] ""
 msgid "Hour of"
 msgstr "Hour of"
 
-#: src/Contract.php:652 src/Contract.php:705 src/Config.php:201
+#: src/Contract.php:730 src/Contract.php:783 src/Config.php:229
 msgid "Hourly"
 msgstr "Hourly"
 
@@ -1945,14 +2052,14 @@ msgstr ""
 msgid "Internal name"
 msgstr ""
 
-#: src/EditorSubscription.php:185 src/EditorSubscription.php:765 hook.php:1038
+#: src/EditorSubscription.php:185 src/EditorSubscription.php:793 hook.php:1046
 #: templates/editorsubscription_fields.html.twig:78
 #: templates/cridetail_for_ticket.html.twig:55
 #: templates/contract_detail_form.html.twig:83
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:721 src/Contract.php:734
+#: src/DirectHelpdesk.php:730 src/Contract.php:812
 #: templates/entity/unbilled_tab.html.twig:143
 msgid "Intervention"
 msgid_plural "Interventions"
@@ -1963,8 +2070,8 @@ msgstr[1] "Interventions"
 msgid "Intervention date"
 msgstr "Intervention date"
 
-#: src/WizardController.php:1265 src/WizardController.php:1276
-#: src/WizardController.php:1361
+#: src/WizardController.php:1301 src/WizardController.php:1312
+#: src/WizardController.php:1397
 msgid "Intervention not saved yet"
 msgstr ""
 
@@ -1976,7 +2083,7 @@ msgstr "Intervention of contract"
 msgid "Intervention periods of contract"
 msgstr "Intervention periods of contract"
 
-#: setup.php:164 src/Cri.php:56 src/Profile.php:107 src/Config.php:213
+#: setup.php:164 src/Cri.php:56 src/Profile.php:107 src/Config.php:241
 #: templates/cridetail_add_reports.html.twig:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -2002,11 +2109,11 @@ msgstr[1] "Intervention types"
 msgid "Intervention with contract"
 msgstr "Intervention with contract"
 
-#: src/ContractDay.php:56 src/Entity.php:81 src/Entity.php:340
+#: src/ContractDay.php:56 src/Entity.php:92 src/Entity.php:405
 msgid "Interventions reports"
 msgstr "Interventions reports"
 
-#: src/Dashboard.php:95 src/Dashboard.php:401
+#: src/Dashboard.php:95 src/Dashboard.php:409
 msgid "Interventions with old contract"
 msgstr "Interventions with old contract"
 
@@ -2014,7 +2121,7 @@ msgstr "Interventions with old contract"
 msgid "Invalid date of the contract."
 msgstr ""
 
-#: front/entity.form.php:73 src/PresaleWizard.php:1022
+#: front/entity.form.php:79 src/PresaleWizard.php:1022
 #: src/PresaleWizard.php:1284 src/WizardController.php:247
 msgid "Invalid email address"
 msgstr ""
@@ -2031,7 +2138,7 @@ msgstr ""
 msgid "Invalid wizard mode"
 msgstr ""
 
-#: src/DirectHelpdesk.php:850 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:859 templates/directhelpdesk_form.html.twig:132
 msgid "Is billed"
 msgstr ""
 
@@ -2042,6 +2149,42 @@ msgstr "Is default"
 
 #: templates/presale/step_client.html.twig:72
 msgid "Kept on the proposal, for the statistics."
+msgstr ""
+
+#: templates/kiflo/config_form.html.twig:58
+msgid "Key stored: leave empty to keep it"
+msgstr ""
+
+#: src/KifloConfig.php:47 templates/kiflo/config_form.html.twig:44
+msgid "Kiflo"
+msgstr ""
+
+#: src/KifloClient.php:168
+#, php-format
+msgid "Kiflo API error (HTTP %d)."
+msgstr ""
+
+#: src/KifloClient.php:149
+#, php-format
+msgid "Kiflo API unreachable: %s"
+msgstr ""
+
+#: templates/entity/kiflo_leads_tab.html.twig:195
+msgid "Kiflo ID"
+msgstr ""
+
+#: src/KifloLead.php:59 templates/entity/kiflo_leads_tab.html.twig:41
+msgid "Kiflo lead"
+msgid_plural "Kiflo leads"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/KifloClient.php:164
+msgid "Kiflo refused the API key (401): check it or generate a new one."
+msgstr ""
+
+#: src/KifloClient.php:166
+msgid "Kiflo resource not found (404): check the API URL."
 msgstr ""
 
 #: templates/followup_export_toolbar.html.twig:48
@@ -2067,6 +2210,12 @@ msgstr ""
 msgid "Last name is required"
 msgstr ""
 
+#: templates/entity/kiflo_leads_tab.html.twig:43
+#: templates/kiflo/config_form.html.twig:71
+msgid "Last synchronization"
+msgstr ""
+
+#: templates/entity/proposals_tab.html.twig:105
 #: templates/presale/proposals_table.html.twig:52
 msgid "Last update"
 msgstr ""
@@ -2084,6 +2233,11 @@ msgstr ""
 msgid "Launch the plugin Entities portal with GLPI launching"
 msgstr "Launch the plugin Entities portal with GLPI launching"
 
+#: src/Dashboard.php:111
+msgid ""
+"Leads shared by the publisher in Kiflo, refreshed by the synchronization"
+msgstr ""
+
 #: templates/presale/layout.html.twig:106 templates/dat/layout.html.twig:96
 msgid "Leave the wizard without saving this page?"
 msgstr ""
@@ -2092,6 +2246,11 @@ msgstr ""
 msgid ""
 "Left empty, the printed role is the title of the user and the printed phone "
 "its mobile phone."
+msgstr ""
+
+#: templates/kiflo/config_form.html.twig:52
+#, php-format
+msgid "Left empty: %s"
 msgstr ""
 
 #: templates/presale/proposal_form.html.twig:137
@@ -2124,7 +2283,7 @@ msgid ""
 "entities of this entity will display the intervention report tab."
 msgstr ""
 
-#: templates/wizard/step4_contract.html.twig:56
+#: templates/wizard/step4_contract.html.twig:57
 msgid "Load"
 msgstr ""
 
@@ -2133,7 +2292,7 @@ msgstr ""
 msgid "Load (man-days)"
 msgstr ""
 
-#: src/EntityLogo.php:187 templates/entity/description.html.twig:172
+#: src/EntityLogo.php:180 templates/entity/description.html.twig:172
 #: templates/dat/step_general.html.twig:80
 #: templates/dat/step_general.html.twig:82
 msgid "Logo"
@@ -2188,7 +2347,7 @@ msgstr ""
 msgid "Main project manager"
 msgstr ""
 
-#: src/DirectHelpdesk.php:720 templates/entity/unbilled_tab.html.twig:142
+#: src/DirectHelpdesk.php:729 templates/entity/unbilled_tab.html.twig:142
 #: templates/entity/techleads_card.html.twig:65
 #: templates/techlead/clients_by_tech.html.twig:43
 #: templates/techlead/clients_by_tech.html.twig:44
@@ -2218,7 +2377,7 @@ msgstr ""
 msgid "Manage your contracts"
 msgstr "Manage your contracts"
 
-#: src/WizardController.php:1721
+#: src/WizardController.php:1757
 msgid "Management data is missing"
 msgstr ""
 
@@ -2228,8 +2387,8 @@ msgid_plural "Management of task categories"
 msgstr[0] "Management of task category"
 msgstr[1] "Management of task categories"
 
-#: src/Contract.php:76 src/WizardController.php:2084
-#: src/WizardController.php:2101 templates/wizard/step5_management.html.twig:42
+#: src/Contract.php:76 src/WizardController.php:2120
+#: src/WizardController.php:2137 templates/wizard/step5_management.html.twig:42
 #: templates/contract_detail_form.html.twig:129
 msgid "Management type"
 msgstr ""
@@ -2255,7 +2414,7 @@ msgstr ""
 msgid "Missing on the customer, to fill in:"
 msgstr ""
 
-#: src/WizardController.php:1341
+#: src/WizardController.php:1377
 msgid "Missing required fields"
 msgstr ""
 
@@ -2279,7 +2438,7 @@ msgid "Mobile phone"
 msgstr ""
 
 #: src/Followup.php:884 src/Monthly.php:429
-#: templates/entity/contracts_tab.html.twig:56
+#: templates/entity/contracts_tab.html.twig:58
 #: templates/wizard/step5_management.html.twig:63
 #: templates/contract_detail_form.html.twig:141
 msgid "Mode of management"
@@ -2295,7 +2454,7 @@ msgstr ""
 msgid "Modified since the last generation"
 msgstr ""
 
-#: src/Monthly.php:53 src/Entity.php:69 src/Entity.php:251
+#: src/Monthly.php:53 src/Entity.php:77 src/Entity.php:290
 #: templates/monthly_criterias.html.twig:42
 #: templates/monthly_period_nav.html.twig:34
 msgid "Monthly follow-up"
@@ -2319,7 +2478,12 @@ msgstr ""
 msgid "Months"
 msgstr ""
 
-#: src/DirectHelpdesk.php:726 templates/entity/unbilled_tab.html.twig:166
+#: templates/entity/customer_summary.html.twig:146
+#, php-format
+msgid "More than %d hours"
+msgstr ""
+
+#: src/DirectHelpdesk.php:735 templates/entity/unbilled_tab.html.twig:166
 #, php-format
 msgid "More than %d months"
 msgstr ""
@@ -2338,7 +2502,7 @@ msgstr ""
 msgid "Move up"
 msgstr ""
 
-#: src/Contract.php:999 templates/wizard/step5_management.html.twig:104
+#: src/Contract.php:1077 templates/wizard/step5_management.html.twig:104
 #: templates/contract_detail_form.html.twig:178
 msgid "Movement management"
 msgstr "Movement management"
@@ -2350,6 +2514,7 @@ msgstr ""
 #: templates/entity/description.html.twig:57
 #: templates/entity/description.html.twig:222
 #: templates/entity/description.html.twig:309
+#: templates/entity/proposals_tab.html.twig:102
 #: templates/entity/contacts_card.html.twig:41
 #: templates/entity/business_card.html.twig:41
 #: templates/entity/contracts_tab.html.twig:50
@@ -2357,7 +2522,7 @@ msgstr ""
 #: templates/entity/projectmanagers_card.html.twig:44
 #: templates/wizard/step6_intervention_block.html.twig:55
 #: templates/wizard/step1_entity.html.twig:45
-#: templates/wizard/step4_contract.html.twig:64
+#: templates/wizard/step4_contract.html.twig:65
 #: templates/presale/step_team.html.twig:77
 #: templates/presale/client_form.html.twig:93
 #: templates/presale/proposals_table.html.twig:47
@@ -2397,9 +2562,9 @@ msgstr "New entity"
 msgid "New intervention"
 msgstr "New intervention"
 
-#: templates/entity/proposals_tab.html.twig:52
-#: templates/entity/proposals_tab.html.twig:129
-#: templates/entity/proposals_tab.html.twig:181
+#: templates/entity/proposals_tab.html.twig:53
+#: templates/entity/proposals_tab.html.twig:172
+#: templates/entity/proposals_tab.html.twig:224
 #: templates/entity/editorsubscription_tab.html.twig:107
 #: templates/presale/home.html.twig:61
 #: templates/presale/client_form.html.twig:125
@@ -2420,7 +2585,7 @@ msgstr ""
 #: templates/wizard/step5_management.html.twig:130
 #: templates/wizard/step1_entity.html.twig:129
 #: templates/wizard/step3_subscription.html.twig:99
-#: templates/wizard/step4_contract.html.twig:140
+#: templates/wizard/step4_contract.html.twig:152
 #: templates/presale/layout.html.twig:125 templates/dat/layout.html.twig:117
 msgid "Next"
 msgstr ""
@@ -2481,11 +2646,11 @@ msgstr ""
 msgid "No contact."
 msgstr ""
 
-#: templates/entity/contracts_tab.html.twig:94
+#: templates/entity/contracts_tab.html.twig:104
 msgid "No contract found"
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:154
+#: templates/entity/proposals_tab.html.twig:197
 msgid "No contract running out of remaining days."
 msgstr ""
 
@@ -2497,6 +2662,10 @@ msgstr ""
 msgid "No days remaining on this contract period. Task addition is blocked."
 msgstr ""
 
+#: templates/entity/kiflo_leads_tab.html.twig:204
+msgid "No description"
+msgstr ""
+
 #: src/EditorSubscriptionWizard.php:133 src/EditorSubscriptionWizard.php:231
 msgid "No entity selected."
 msgstr ""
@@ -2505,7 +2674,7 @@ msgstr ""
 msgid "No expired publisher subscription."
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:98
+#: templates/entity/proposals_tab.html.twig:141
 msgid "No expired subscription to renew."
 msgstr ""
 
@@ -2520,6 +2689,10 @@ msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:45
 msgid "No hours remaining on this contract period"
+msgstr ""
+
+#: templates/entity/kiflo_leads_tab.html.twig:216
+msgid "No lead"
 msgstr ""
 
 #: src/EditorSubscription.php:455
@@ -2541,6 +2714,10 @@ msgstr ""
 msgid "No note."
 msgstr ""
 
+#: templates/entity/customer_summary.html.twig:104
+msgid "No ongoing contract"
+msgstr ""
+
 #: templates/techlead/clients_by_tech.html.twig:48
 msgid "No only"
 msgstr ""
@@ -2558,7 +2735,7 @@ msgstr ""
 msgid "No period found"
 msgstr ""
 
-#: front/entity.form.php:44 templates/entity/description.html.twig:177
+#: front/entity.form.php:50 templates/entity/description.html.twig:177
 msgid "No picture uploaded"
 msgstr "No picture uploaded"
 
@@ -2572,7 +2749,7 @@ msgid ""
 "the details below, or leave them empty."
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:82
+#: templates/entity/proposals_tab.html.twig:83
 #: templates/presale/client_form.html.twig:130
 msgid "No proposal in progress."
 msgstr ""
@@ -2601,8 +2778,8 @@ msgstr ""
 msgid "No reports found"
 msgstr ""
 
-#: templates/entity/references.html.twig:57
-#: templates/entity/followup_helpdesk.html.twig:42
+#: templates/entity/references.html.twig:98
+#: templates/entity/followup_helpdesk.html.twig:39
 #: templates/techlead/clients_by_tech.html.twig:152
 #: templates/directhelpdesk_ticket_tab.html.twig:56
 #: templates/company_list.html.twig:69
@@ -2628,12 +2805,16 @@ msgstr ""
 msgid "No stakeholders have been affected yet."
 msgstr "No stakeholders have been affected yet."
 
+#: templates/entity/customer_summary.html.twig:127
+msgid "No subscription"
+msgstr ""
+
 #: src/EditorSubscriptionWizard.php:220 src/EditorSubscriptionWizard.php:324
 #: src/EditorSubscriptionWizard.php:329
 msgid "No subscription found."
 msgstr ""
 
-#: src/WizardController.php:868
+#: src/WizardController.php:904
 msgid "No subscription in this wizard"
 msgstr ""
 
@@ -2645,7 +2826,7 @@ msgstr ""
 msgid "No tasks whose category can be used"
 msgstr "No tasks whose category can be used"
 
-#: src/TicketOverview.php:653 templates/entity/techleads_card.html.twig:91
+#: src/TicketOverview.php:664 templates/entity/techleads_card.html.twig:91
 #: templates/techlead/clients_by_tech.html.twig:191
 msgid "No tech lead"
 msgstr ""
@@ -2654,7 +2835,7 @@ msgstr ""
 msgid "No technical architecture document yet."
 msgstr ""
 
-#: src/TicketOverview.php:634 templates/ticket_overview.html.twig:57
+#: src/TicketOverview.php:645 templates/ticket_overview.html.twig:57
 #: templates/ticket_overview.html.twig:185
 #: templates/ticket_overview.html.twig:265
 msgid "No technician"
@@ -2670,6 +2851,10 @@ msgstr ""
 
 #: templates/ticket_overview.html.twig:282
 msgid "No ticket awaiting an answer"
+msgstr ""
+
+#: templates/entity/unbilled_helpdesk.html.twig:43
+msgid "No unbilled intervention"
 msgstr ""
 
 #: templates/entity/unbilled_tab.html.twig:185
@@ -2711,6 +2896,10 @@ msgstr ""
 msgid "Not saved"
 msgstr ""
 
+#: templates/entity/kiflo_leads_tab.html.twig:216
+msgid "Not synchronized yet"
+msgstr ""
+
 #: templates/presale/step_annexes.html.twig:127
 msgid "Note for the project manager"
 msgstr ""
@@ -2719,11 +2908,11 @@ msgstr ""
 msgid "Nothing to display"
 msgstr "Nothing to display"
 
-#: src/WizardController.php:2139
+#: src/WizardController.php:2175
 msgid "Nothing to display."
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:162
+#: templates/entity/proposals_tab.html.twig:205
 msgid "Number"
 msgstr ""
 
@@ -2732,7 +2921,7 @@ msgctxt "phone"
 msgid "Number"
 msgstr ""
 
-#: src/WizardController.php:1355
+#: src/WizardController.php:1391
 msgid "Number of days must be greater than 0"
 msgstr ""
 
@@ -2757,7 +2946,7 @@ msgstr "Object of intervention"
 msgid "Occupation report"
 msgstr ""
 
-#: src/DirectHelpdesk.php:725 templates/entity/unbilled_tab.html.twig:145
+#: src/DirectHelpdesk.php:734 templates/entity/unbilled_tab.html.twig:145
 msgid "Oldest intervention"
 msgstr ""
 
@@ -2774,7 +2963,11 @@ msgstr ""
 msgid "One command per line: the lines are kept as typed in the document."
 msgstr ""
 
-#: src/Entity.php:86 src/Entity.php:323
+#: templates/entity/customer_summary.html.twig:94
+msgid "Ongoing contract"
+msgstr ""
+
+#: src/Entity.php:97 src/Entity.php:388
 msgid "Ongoing tickets"
 msgstr ""
 
@@ -2782,7 +2975,7 @@ msgstr ""
 msgid "Only a won proposal can create a customer."
 msgstr ""
 
-#: src/WizardController.php:1283
+#: src/WizardController.php:1319
 msgid "Only one rate is allowed per service period"
 msgstr ""
 
@@ -2796,12 +2989,20 @@ msgid ""
 msgstr ""
 "Only ticket accepted are taking into account for consumption calculation"
 
+#: src/Dashboard.php:109 src/Dashboard.php:530
+msgid "Open Kiflo leads"
+msgstr ""
+
 #: templates/ticket_overview.html.twig:101
 #: templates/ticket_overview.html.twig:144
 #: templates/ticket_overview.html.twig:154
 #: templates/ticket_overview.html.twig:182
 #: templates/ticket_overview.html.twig:201
 msgid "Open in the ticket search"
+msgstr ""
+
+#: templates/entity/kiflo_leads_tab.html.twig:50
+msgid "Open leads only"
 msgstr ""
 
 #: templates/dat/step_summary.html.twig:53
@@ -2833,7 +3034,7 @@ msgstr ""
 msgid "Opened by a customer"
 msgstr ""
 
-#: src/Dashboard.php:100 src/Dashboard.php:478
+#: src/Dashboard.php:100 src/Dashboard.php:486
 msgid "Opened contract prestations without remaining days"
 msgstr "Opened contract prestations without remaining days"
 
@@ -2848,14 +3049,23 @@ msgstr ""
 #: templates/wizard/step6_stakeholders_section.html.twig:37
 #: templates/wizard/step2_contacts.html.twig:37
 #: templates/wizard/step3_subscription.html.twig:40
-#: templates/wizard/step4_contract.html.twig:49
-#: templates/wizard/step4_contract.html.twig:109
+#: templates/wizard/step4_contract.html.twig:50
+#: templates/wizard/step4_contract.html.twig:110
 msgid "Optional"
 msgstr ""
 
 #: templates/cridetail_for_ticket.html.twig:169
 msgid "Options"
 msgstr "Options"
+
+#: templates/preference_form.html.twig:67
+msgid "Order of the tabs of the clients management"
+msgstr ""
+
+#: src/Dashboard.php:523 templates/entity/kiflo_leads_tab.html.twig:89
+#: templates/entity/kiflo_leads_tab.html.twig:157
+msgid "Origin"
+msgstr ""
 
 #: src/PresaleOrigin.php:48 templates/presale/step_client.html.twig:63
 msgid "Origin of the request"
@@ -2886,6 +3096,11 @@ msgstr ""
 msgid "Overdue tickets: opened for more than"
 msgstr ""
 
+#: src/Dashboard.php:524 templates/entity/kiflo_leads_tab.html.twig:90
+#: templates/entity/kiflo_leads_tab.html.twig:160
+msgid "Owner at the publisher"
+msgstr ""
+
 #: src/DatWizard.php:113
 msgid "PHP information"
 msgstr ""
@@ -2900,7 +3115,7 @@ msgid ""
 "proposal."
 msgstr ""
 
-#: src/Contract.php:661 src/Contract.php:713
+#: src/Contract.php:739 src/Contract.php:791
 msgid "Package"
 msgstr "Package"
 
@@ -2912,14 +3127,26 @@ msgstr "Page"
 msgid "Parent entity"
 msgstr ""
 
+#: templates/entity/kiflo_leads_tab.html.twig:167
+msgid "Partner"
+msgstr ""
+
+#: templates/kiflo/config_form.html.twig:68
+msgid "Partner API access token, generated in Kiflo. Stored encrypted."
+msgstr ""
+
+#: src/KifloLead.php:101
+msgid "Pending"
+msgstr ""
+
 #: templates/cridetail_for_ticket.html.twig:211
 msgid "Period comment"
 msgstr ""
 
 #: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:848
-#: src/WizardController.php:1893 src/WizardController.php:1968
-#: src/WizardController.php:2085 src/WizardController.php:2102
-#: src/Config.php:214 src/Entity.php:346
+#: src/WizardController.php:1929 src/WizardController.php:2004
+#: src/WizardController.php:2121 src/WizardController.php:2138
+#: src/Config.php:242 src/Entity.php:411
 #: templates/wizard/step6_intervention_block.html.twig:35
 #: templates/wizard/step6_interventions.html.twig:36
 #: templates/contractday_add_form.html.twig:45
@@ -2929,12 +3156,12 @@ msgid_plural "Periods of contract"
 msgstr[0] "Period of contract"
 msgstr[1] "Periods of contract"
 
-#: src/WizardController.php:1535
+#: src/WizardController.php:1571
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:972
+#: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:980
 #: templates/contractday_list.html.twig:33
 #: templates/contract_link_dropdown.html.twig:66
 #: templates/contract_link_dropdown.html.twig:80
@@ -2955,6 +3182,7 @@ msgstr "Person in charge"
 #: templates/entity/business_card.html.twig:43
 #: templates/entity/techleads_card.html.twig:45
 #: templates/entity/projectmanagers_card.html.twig:45
+#: templates/entity/kiflo_leads_tab.html.twig:154
 #: templates/wizard/step2_contact_block.html.twig:69
 #: templates/wizard/step1_entity.html.twig:73
 #: templates/presale/step_client.html.twig:117
@@ -2963,19 +3191,22 @@ msgstr "Person in charge"
 #: templates/presale/client_form.html.twig:70
 #: templates/presale/client_form.html.twig:96
 msgid "Phone"
-msgstr ""
+msgid_plural "Phones"
+msgstr[0] ""
+msgstr[1] ""
 
 #: templates/wizard/step2_contact_block.html.twig:74
 msgid "Phone 2"
 msgstr ""
 
 #: templates/entity/description.html.twig:175
-#: templates/entity/references.html.twig:46 templates/company_form.html.twig:78
-#: templates/company_form.html.twig:79
+#: templates/entity/references.html.twig:62
+#: templates/entity/customer_summary.html.twig:45
+#: templates/company_form.html.twig:78 templates/company_form.html.twig:79
 msgid "Picture"
 msgstr ""
 
-#: front/config.form.php:82
+#: front/config.form.php:89
 msgid "Please activate the plugin"
 msgstr "Please activate the plugin"
 
@@ -3022,8 +3253,8 @@ msgstr ""
 msgid "Please select at least one intervention"
 msgstr ""
 
-#: src/Dashboard.php:195 src/Dashboard.php:258 src/Dashboard.php:347
-#: src/Dashboard.php:475
+#: src/Dashboard.php:203 src/Dashboard.php:266 src/Dashboard.php:355
+#: src/Dashboard.php:483
 msgid "Plugin is not activated"
 msgstr "Plugin is not activated"
 
@@ -3035,7 +3266,7 @@ msgstr "Portal"
 msgid "Portrait PDF"
 msgstr ""
 
-#: templates/preference_form.html.twig:82
+#: templates/preference_form.html.twig:97
 #: templates/entity/directhelpdesk_ticket_select.html.twig:71
 #: templates/report_moving_form.html.twig:53
 #: templates/report_search_form.html.twig:69
@@ -3059,7 +3290,7 @@ msgstr ""
 msgid "Postponement"
 msgstr "Postponement"
 
-#: templates/wizard/step4_contract.html.twig:48
+#: templates/wizard/step4_contract.html.twig:49
 msgid "Pre-fill from a contract template"
 msgstr ""
 
@@ -3107,10 +3338,10 @@ msgstr ""
 msgid "Predefined task informations"
 msgstr "Predefined task informations"
 
-#: src/Dashboard.php:183 src/Dashboard.php:314 src/Dashboard.php:369
-#: src/Dashboard.php:464 src/NotificationTargetContract.php:121
+#: src/Dashboard.php:191 src/Dashboard.php:322 src/Dashboard.php:377
+#: src/Dashboard.php:472 src/NotificationTargetContract.php:121
 #: src/NotificationTargetContract.php:156
-#: templates/entity/proposals_tab.html.twig:164
+#: templates/entity/proposals_tab.html.twig:207
 msgid "Prestation"
 msgstr "Prestation"
 
@@ -3118,7 +3349,7 @@ msgstr "Prestation"
 #: templates/wizard/step2_contacts.html.twig:56
 #: templates/wizard/step5_management.html.twig:126
 #: templates/wizard/step3_subscription.html.twig:86
-#: templates/wizard/step4_contract.html.twig:136
+#: templates/wizard/step4_contract.html.twig:148
 #: templates/presale/layout.html.twig:112
 #: templates/presale/layout.html.twig:121 templates/dat/layout.html.twig:102
 #: templates/dat/layout.html.twig:113
@@ -3140,7 +3371,7 @@ msgstr ""
 msgid "Price excl. VAT"
 msgstr ""
 
-#: src/WizardController.php:1270
+#: src/WizardController.php:1306
 msgid "Price must be greater than 0"
 msgstr ""
 
@@ -3201,23 +3432,24 @@ msgstr ""
 msgid "Proposal won"
 msgstr ""
 
-#: src/Entity.php:74 src/Entity.php:174 src/Entity.php:269
-#: templates/entity/proposals_tab.html.twig:46
+#: src/Entity.php:85 src/Entity.php:187 src/Entity.php:330
+#: templates/entity/proposals_tab.html.twig:47
 #: templates/presale/home.html.twig:100
 #: templates/presale/client_form.html.twig:122
 msgid "Proposals in progress"
 msgstr ""
 
-#: src/Entity.php:188
+#: src/Entity.php:201
 msgid "Proposals lost"
 msgstr ""
 
-#: src/Entity.php:181
+#: src/Entity.php:194
 msgid "Proposals won"
 msgstr ""
 
 #: src/NotificationTargetPresaleProposal.php:134 src/PresaleProposal.php:166
-#: src/PresaleClient.php:51 templates/presale/proposal_form.html.twig:98
+#: src/PresaleClient.php:51 templates/entity/proposals_tab.html.twig:103
+#: templates/presale/proposal_form.html.twig:98
 #: templates/presale/step_generate.html.twig:58
 #: templates/presale/home.html.twig:79
 #: templates/presale/proposals_table.html.twig:48
@@ -3240,7 +3472,7 @@ msgstr[1] ""
 msgid "Publisher"
 msgstr ""
 
-#: src/EditorSubscription.php:178 src/EditorSubscription.php:734
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:762
 #: src/NotificationTargetEditorSubscription.php:105
 #: src/NotificationTargetEditorSubscription.php:142
 #: templates/entity/editorsubscription_tab.html.twig:73
@@ -3250,8 +3482,10 @@ msgid "Publisher customer account ID"
 msgstr ""
 
 #: front/editorsubscription.form.php:111 src/EditorSubscription.php:55
-#: src/NotificationTargetPresaleProposal.php:141 src/Entity.php:78
-#: src/Entity.php:282 templates/wizard/step3_subscription.html.twig:39
+#: src/NotificationTargetPresaleProposal.php:141 src/Entity.php:89
+#: src/Entity.php:297 src/Entity.php:346
+#: templates/entity/customer_summary.html.twig:115
+#: templates/wizard/step3_subscription.html.twig:39
 #: templates/editorsubscription_transfer.html.twig:43
 #: templates/presale/estimate_form.html.twig:102
 #: templates/presale/step_annexes.html.twig:217
@@ -3282,7 +3516,7 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:615
+#: src/EditorSubscription.php:643
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
@@ -3298,7 +3532,7 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
-#: src/Contract.php:614 src/Contract.php:632
+#: src/Contract.php:692 src/Contract.php:710
 msgid "Quarterly"
 msgstr "Quarterly"
 
@@ -3314,6 +3548,10 @@ msgstr ""
 msgid "Reactivate"
 msgstr ""
 
+#: src/KifloLead.php:104
+msgid "Reassigned"
+msgstr ""
+
 #: templates/presale/proposal_form.html.twig:102
 #: templates/presale/step_general.html.twig:92
 #: templates/presale/step_generate.html.twig:59
@@ -3324,7 +3562,7 @@ msgstr ""
 msgid "Recursive"
 msgstr ""
 
-#: src/Contract.php:1000 templates/wizard/step5_management.html.twig:84
+#: src/Contract.php:1078 templates/wizard/step5_management.html.twig:84
 #: templates/contract_detail_form.html.twig:158
 msgid "Refacturable costs"
 msgstr "Refacturable costs"
@@ -3337,16 +3575,24 @@ msgstr ""
 #: src/EditorSubscription.php:179
 #: src/NotificationTargetEditorSubscription.php:106
 #: src/NotificationTargetEditorSubscription.php:143
-#: templates/entity/proposals_tab.html.twig:105
+#: templates/entity/proposals_tab.html.twig:148
 #: templates/entity/editorsubscription_tab.html.twig:74
 #: templates/editorsubscription_fields.html.twig:34
 #: templates/contract_detail_form.html.twig:72
 msgid "Referenced name at the publisher"
 msgstr ""
 
-#: src/Entity.php:83 src/Entity.php:356 src/Entity.php:730
+#: src/Entity.php:94 src/Entity.php:427 src/Entity.php:1017
 msgid "References"
 msgstr "References"
+
+#: templates/entity/customer_summary.html.twig:70
+msgid "Referent contact"
+msgstr ""
+
+#: src/KifloLead.php:105
+msgid "Refused"
+msgstr ""
 
 #: src/Cri.php:291 src/CriDetail.php:625
 msgid "Regenerate the intervention report"
@@ -3364,15 +3610,17 @@ msgstr ""
 msgid "Remaining"
 msgstr ""
 
-#: templates/entity/proposals_tab.html.twig:165
+#: templates/entity/proposals_tab.html.twig:208
+#: templates/entity/contracts_tab.html.twig:54
 #: templates/cridetail_for_ticket.html.twig:42
 msgid "Remaining days"
 msgstr ""
 
-#: src/Dashboard.php:80 src/Dashboard.php:198
+#: src/Dashboard.php:80 src/Dashboard.php:206
 msgid "Remaining days number by opened client contracts"
 msgstr "Remaining days number by opened client contracts"
 
+#: templates/entity/contracts_tab.html.twig:54
 #: templates/cridetail_for_ticket.html.twig:42
 msgid "Remaining hours"
 msgstr ""
@@ -3486,7 +3734,7 @@ msgstr ""
 
 #: src/PresaleUser.php:96 src/NotificationTargetPresaleProposal.php:66
 #: src/NotificationTargetPresaleProposal.php:139 src/PresaleProposal.php:197
-#: templates/presale/proposal_form.html.twig:116
+#: src/Entity.php:1071 templates/presale/proposal_form.html.twig:116
 #: templates/presale/step_generate.html.twig:61
 #: templates/presale/step_team.html.twig:48
 msgid "Sales representative"
@@ -3498,6 +3746,7 @@ msgstr ""
 
 #: templates/taskcategory_form.html.twig:49
 #: templates/config_cri_form.html.twig:72 templates/profile.html.twig:34
+#: templates/kiflo/config_form.html.twig:94
 #: templates/presale/estimate_form.html.twig:135
 #: templates/config_options_form.html.twig:156
 #: templates/dat/config_form.html.twig:77
@@ -3524,7 +3773,7 @@ msgstr "Save the intervention report"
 msgid "Save this period"
 msgstr ""
 
-#: src/CriType.php:153 hook.php:119 hook.php:138
+#: src/CriType.php:153 hook.php:120 hook.php:139
 msgid "Scheduled intervention"
 msgstr "Scheduled intervention"
 
@@ -3573,11 +3822,11 @@ msgstr ""
 msgid "Select an existing price"
 msgstr "Select an existing price"
 
-#: src/Contract.php:1318
+#: src/Contract.php:1396
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 
-#: src/EditorSubscription.php:1045
+#: src/EditorSubscription.php:1073
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
@@ -3640,11 +3889,19 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
+#: templates/entity/client_selector.html.twig:48
+msgid "Show"
+msgstr ""
+
+#: templates/entity/kiflo_leads_tab.html.twig:50
+msgid "Show closed leads"
+msgstr ""
+
 #: templates/entity/editorsubscription_tab.html.twig:51
 msgid "Show expired subscriptions only"
 msgstr ""
 
-#: src/Contract.php:998 templates/wizard/step5_management.html.twig:76
+#: src/Contract.php:1076 templates/wizard/step5_management.html.twig:76
 #: templates/contract_detail_form.html.twig:150
 msgid "Show on GANTT"
 msgstr ""
@@ -3685,9 +3942,9 @@ msgstr ""
 #: src/EditorSubscription.php:186
 #: src/NotificationTargetEditorSubscription.php:109
 #: src/NotificationTargetEditorSubscription.php:146
-#: templates/entity/proposals_tab.html.twig:163
+#: templates/entity/proposals_tab.html.twig:206
 #: templates/entity/editorsubscription_tab.html.twig:78
-#: templates/wizard/step4_contract.html.twig:74
+#: templates/wizard/step4_contract.html.twig:75
 #: templates/report_moving_form.html.twig:40
 #: templates/report_search_form.html.twig:39
 #: templates/generatecri_wizard.html.twig:192
@@ -3724,8 +3981,9 @@ msgid "State of ticket created"
 msgstr "State of ticket created"
 
 #: templates/entity/contracts_tab.html.twig:53
+#: templates/entity/kiflo_leads_tab.html.twig:88
 #: templates/wizard/step6_intervention_block.html.twig:81
-#: templates/wizard/step4_contract.html.twig:88
+#: templates/wizard/step4_contract.html.twig:89
 #: templates/presale/proposals_table.html.twig:49
 #: templates/ticket_overview.html.twig:42
 #: templates/ticket_overview.html.twig:248
@@ -3736,15 +3994,15 @@ msgstr ""
 msgid "Status is required"
 msgstr ""
 
-#: templates/preference_form.html.twig:57
+#: templates/preference_form.html.twig:72
 msgid "Status list contract for the general monitoring"
 msgstr "Status list contract for the general monitoring"
 
-#: src/CriType.php:154 hook.php:120 hook.php:139
+#: src/CriType.php:154 hook.php:121 hook.php:140
 msgid "Study and advice"
 msgstr "Study and advice"
 
-#: src/WizardController.php:2080 src/WizardController.php:2096
+#: src/WizardController.php:2116 src/WizardController.php:2132
 msgid "Subscription"
 msgstr ""
 
@@ -3757,10 +4015,10 @@ msgid "Subscription annex: no estimate in days."
 msgstr ""
 
 #: src/SubscriptionLevel.php:47 src/EditorSubscription.php:182
-#: src/EditorSubscription.php:741 src/EditorSubscription.php:796
+#: src/EditorSubscription.php:769 src/EditorSubscription.php:824
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
-#: templates/entity/proposals_tab.html.twig:107
+#: templates/entity/proposals_tab.html.twig:150
 #: templates/entity/editorsubscription_tab.html.twig:77
 #: templates/editorsubscription_fields.html.twig:90
 #: templates/contract_detail_form.html.twig:78
@@ -3803,7 +4061,8 @@ msgstr ""
 msgid "Suggested queries"
 msgstr ""
 
-#: src/DatWizard.php:80 templates/entity/dat_card.html.twig:102
+#: src/DatWizard.php:80 src/Entity.php:258
+#: templates/entity/dat_card.html.twig:102
 #: templates/presale/proposal_form.html.twig:120
 #: templates/presale/step_general.html.twig:106
 #: templates/presale/step_generate.html.twig:55
@@ -3816,6 +4075,15 @@ msgstr ""
 
 #: templates/directhelpdesk_form.html.twig:114
 msgid "Surname"
+msgstr ""
+
+#: templates/entity/kiflo_leads_tab.html.twig:56
+#: templates/kiflo/config_form.html.twig:88
+msgid "Synchronize now"
+msgstr ""
+
+#: src/KifloLead.php:380
+msgid "Synchronize the leads of Kiflo"
 msgstr ""
 
 #: src/DatWizard.php:74
@@ -3854,7 +4122,7 @@ msgstr ""
 msgid "Tasks, logs, HTTPS, NTP, files"
 msgstr ""
 
-#: src/Dashboard.php:180 src/Dashboard.php:461
+#: src/Dashboard.php:188 src/Dashboard.php:469
 msgid "Team"
 msgstr "Team"
 
@@ -3868,7 +4136,7 @@ msgstr[1] ""
 msgid "Tech lead - click to become the main one"
 msgstr ""
 
-#: src/Entity.php:85 src/Entity.php:313
+#: src/Entity.php:96 src/Entity.php:378
 #: templates/techlead/clients_by_tech.html.twig:39
 msgid "Tech lead by clients"
 msgstr ""
@@ -3878,7 +4146,7 @@ msgstr ""
 msgid "Tech lead: %s"
 msgstr ""
 
-#: src/Contract.php:660 src/Contract.php:711
+#: src/Contract.php:738 src/Contract.php:789
 msgid "Technical Assistance"
 msgstr "Technical Assistance"
 
@@ -3922,9 +4190,25 @@ msgstr ""
 msgid "Technicians"
 msgstr "Technicians"
 
+#: templates/kiflo/config_form.html.twig:84
+msgid "Test the connection"
+msgstr ""
+
 #: ajax/cri.php:168 ajax/cri.php:207 ajax/cri.php:237
 msgid "Thanks to select a intervention type"
 msgstr "Thanks to select a intervention type"
+
+#: src/Config.php:187
+msgid "The Kiflo API URL must start with https://."
+msgstr ""
+
+#: src/KifloClient.php:132
+msgid "The Kiflo API key is not set."
+msgstr ""
+
+#: src/KifloClient.php:165
+msgid "The Kiflo partner program does not grant access to this resource (403)."
+msgstr ""
 
 #: src/PresaleAnnexType.php:397
 msgid "The VAT rate must be between 0 and 100."
@@ -3950,19 +4234,19 @@ msgstr ""
 msgid "The contacts are changed at step 1 of a proposal."
 msgstr ""
 
-#: src/ContractDay.php:761
+#: src/ContractDay.php:763
 #, php-format
 msgid "The contract period %s already exists"
 msgstr "The contract period %s already exists"
 
-#: templates/entity/proposals_tab.html.twig:151
+#: templates/entity/proposals_tab.html.twig:194
 msgid ""
 "The contracts of the alert mail: every open period has less than one "
 "remaining day, and the customer has no day left on its other contracts. To "
 "prepare a proposal for a new contract."
 msgstr ""
 
-#: src/WizardController.php:2141
+#: src/WizardController.php:2177
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
@@ -3975,12 +4259,12 @@ msgid ""
 "values."
 msgstr ""
 
-#: src/PresaleConversion.php:375
+#: src/PresaleConversion.php:382
 #, php-format
 msgid "The customer has been created from the proposal %s."
 msgstr ""
 
-#: src/PresaleConversion.php:374
+#: src/PresaleConversion.php:381
 #, php-format
 msgid "The customer has been updated from the proposal %s."
 msgstr ""
@@ -4020,7 +4304,7 @@ msgstr ""
 msgid "The document could not be stored."
 msgstr ""
 
-#: src/WizardController.php:2140
+#: src/WizardController.php:2176
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
@@ -4109,7 +4393,7 @@ msgstr ""
 msgid "The logo must not exceed 2 MB."
 msgstr ""
 
-#: src/PresaleConversion.php:396
+#: src/PresaleConversion.php:403
 msgid "The logo of the prospect could not be copied to the customer."
 msgstr ""
 
@@ -4315,7 +4599,7 @@ msgid ""
 "Tickets whose last action is a customer follow-up or without any follow-up"
 msgstr ""
 
-#: src/Dashboard.php:90 src/Dashboard.php:350
+#: src/Dashboard.php:90 src/Dashboard.php:358
 msgid "Tickets without CRI"
 msgstr "Tickets without CRI"
 
@@ -4347,6 +4631,10 @@ msgstr "To compute"
 #: src/Monthly.php:660
 msgid "To present an invoice"
 msgstr "To present an invoice"
+
+#: src/KifloClient.php:167
+msgid "Too many requests sent to Kiflo (429): try again later."
+msgstr ""
 
 #: templates/monthly_report.html.twig:71
 #: templates/report_moving_result.html.twig:43
@@ -4389,6 +4677,7 @@ msgid "Total excl. VAT"
 msgstr ""
 
 #: src/NotificationTargetPresaleProposal.php:137 src/PresaleProposal.php:213
+#: templates/entity/proposals_tab.html.twig:104
 #: templates/presale/proposals_table.html.twig:51
 msgid "Total excluding VAT"
 msgstr ""
@@ -4408,9 +4697,9 @@ msgstr "Total moving package"
 msgid "Total production"
 msgstr "Total production"
 
-#: src/ContractDay.php:465 src/Followup.php:857 src/Dashboard.php:184
-#: src/Dashboard.php:465 src/NotificationTargetContract.php:120
-#: src/NotificationTargetContract.php:155 hook.php:998
+#: src/ContractDay.php:465 src/Followup.php:857 src/Dashboard.php:192
+#: src/Dashboard.php:473 src/NotificationTargetContract.php:120
+#: src/NotificationTargetContract.php:155 hook.php:1006
 #: templates/contractday_form.html.twig:122
 msgid "Total remaining"
 msgstr "Total remaining"
@@ -4448,7 +4737,7 @@ msgstr "Travel (in days)"
 #: src/NotificationTargetEditorSubscription.php:107
 #: src/NotificationTargetEditorSubscription.php:144
 #: templates/entity/description.html.twig:226
-#: templates/entity/proposals_tab.html.twig:106
+#: templates/entity/proposals_tab.html.twig:149
 #: templates/entity/contacts_card.html.twig:45
 #: templates/entity/editorsubscription_tab.html.twig:76
 #: templates/wizard/step2_contact_block.html.twig:90
@@ -4468,7 +4757,7 @@ msgstr[1] ""
 msgid "Type of contract"
 msgstr "Type of contract"
 
-#: src/ContractDay.php:161 src/ContractDay.php:795 src/Followup.php:886
+#: src/ContractDay.php:161 src/ContractDay.php:797 src/Followup.php:886
 #: templates/wizard/step5_management.html.twig:67
 #: templates/contractday_form.html.twig:58
 #: templates/contract_detail_form.html.twig:142
@@ -4478,6 +4767,10 @@ msgstr "Type of service contract"
 #: src/CriDetail.php:1304 src/CriDetail.php:1836
 msgid "Type of service contract missing"
 msgstr "Type of service contract missing"
+
+#: templates/kiflo/config_form.html.twig:51
+msgid "URL of the API"
+msgstr ""
 
 #: src/NotificationTargetPresaleProposal.php:144
 msgid "URL of the customer wizard"
@@ -4491,11 +4784,15 @@ msgstr ""
 msgid "URL of the proposal"
 msgstr ""
 
-#: src/WizardController.php:2142
+#: src/WizardController.php:2178
 msgid "Unarchive and continue"
 msgstr ""
 
-#: src/DirectHelpdesk.php:724 templates/entity/unbilled_tab.html.twig:144
+#: src/KifloLead.php:103
+msgid "Unassigned"
+msgstr ""
+
+#: src/DirectHelpdesk.php:733 templates/entity/unbilled_tab.html.twig:144
 msgid "Unbilled hours"
 msgstr ""
 
@@ -4503,7 +4800,8 @@ msgstr ""
 msgid "Unbilled hours by client with an ongoing contract"
 msgstr ""
 
-#: src/Entity.php:84 src/Entity.php:303
+#: src/Entity.php:95 src/Entity.php:281 src/Entity.php:367
+#: templates/entity/customer_summary.html.twig:138
 msgid "Unbilled interventions"
 msgstr ""
 
@@ -4511,8 +4809,12 @@ msgstr ""
 msgid "Unbilled interventions of the customer"
 msgstr ""
 
-#: src/DirectHelpdesk.php:723
+#: src/DirectHelpdesk.php:732
 msgid "Unbilled man-days"
+msgstr ""
+
+#: src/KifloClient.php:155
+msgid "Unexpected answer of the Kiflo API."
 msgstr ""
 
 #: ajax/wizard.php:137
@@ -4543,6 +4845,10 @@ msgstr ""
 msgid "Unplanned interventions"
 msgstr ""
 
+#: templates/entity/customer_summary.html.twig:122
+msgid "Until"
+msgstr ""
+
 #: templates/cridetail_for_ticket.html.twig:270
 #: templates/contract_detail_form.html.twig:206
 msgid "Update"
@@ -4563,7 +4869,7 @@ msgstr ""
 msgid "Update logo"
 msgstr ""
 
-#: src/Contract.php:988
+#: src/Contract.php:1066
 msgid "Update management fields"
 msgstr ""
 
@@ -4572,7 +4878,7 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1149
+#: hook.php:1157
 msgid "Update subscription fields"
 msgstr ""
 
@@ -4605,7 +4911,7 @@ msgstr ""
 msgid "Urgency"
 msgstr ""
 
-#: src/CriType.php:152 hook.php:118 hook.php:137
+#: src/CriType.php:152 hook.php:119 hook.php:138
 msgid "Urgent intervention"
 msgstr "Urgent intervention"
 
@@ -4625,6 +4931,10 @@ msgstr "Use for calculation of intervention report"
 msgid "Use of price"
 msgstr "Use of price"
 
+#: templates/kiflo/config_form.html.twig:47
+msgid "Use the Kiflo API"
+msgstr ""
+
 #: templates/config_presale_form.html.twig:61
 msgid "Use the pre-sales section"
 msgstr ""
@@ -4642,14 +4952,14 @@ msgid_plural "Users"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1909 src/InterventionStakeholder.php:52
+#: src/WizardController.php:1945 src/InterventionStakeholder.php:52
 #: templates/wizard/step6_stakeholders_section.html.twig:36
 msgid "User affected"
 msgid_plural "Users affected"
 msgstr[0] "User affected"
 msgstr[1] "Users affected"
 
-#: src/WizardController.php:1372
+#: src/WizardController.php:1408
 msgid "User already added"
 msgstr ""
 
@@ -4703,7 +5013,7 @@ msgstr ""
 msgid "Version %s"
 msgstr ""
 
-#: templates/preference_form.html.twig:77
+#: templates/preference_form.html.twig:92
 msgid ""
 "Warning : If there are more than one plugin which be loaded at startup, then "
 "only the first will be used"
@@ -4781,6 +5091,10 @@ msgstr ""
 msgid "Won and lost proposals"
 msgstr ""
 
+#: templates/entity/proposals_tab.html.twig:94
+msgid "Won, customer to create"
+msgstr ""
+
 #: templates/presale/step_generate.html.twig:105
 msgid "Word document"
 msgstr ""
@@ -4809,7 +5123,7 @@ msgstr ""
 msgid "Wording of the activities"
 msgstr "Wording of the activities"
 
-#: src/CriPDF.php:418
+#: src/Entity.php:1066 src/CriPDF.php:418
 msgid "Year"
 msgstr "Year"
 
@@ -4849,9 +5163,13 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1836
+#: src/WizardController.php:1872
 #: templates/wizard/step6_stakeholders_section.html.twig:30
 msgid "days"
+msgstr ""
+
+#: templates/entity/customer_summary.html.twig:98
+msgid "days left"
 msgstr ""
 
 #: templates/presale/step_general.html.twig:66
@@ -4866,14 +5184,22 @@ msgstr ""
 msgid "e.g. GLPI technical expertise"
 msgstr ""
 
-#: src/WizardController.php:1835
+#: src/WizardController.php:1871
 #: templates/wizard/step6_stakeholders_section.html.twig:30
 msgid "hours"
+msgstr ""
+
+#: templates/entity/customer_summary.html.twig:98
+msgid "hours left"
 msgstr ""
 
 #: src/CriPDF.php:290 src/CriPDF.php:318
 msgid "in"
 msgstr "in"
+
+#: templates/entity/customer_summary.html.twig:141
+msgid "man-days"
+msgstr ""
 
 #: templates/followup_criterias.html.twig:64
 #: templates/followup_criterias.html.twig:69
@@ -4946,7 +5272,7 @@ msgstr ""
 msgid "the templates folder could not be created."
 msgstr ""
 
-#: templates/entity/contracts_tab.html.twig:96
+#: templates/entity/contracts_tab.html.twig:106
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
 
