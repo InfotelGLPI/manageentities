@@ -77,7 +77,7 @@
                         <th>{{ __('Subscription level', 'manageentities') }}</th>
                         <th>{{ __('Start date', 'manageentities') }}</th>
                         <th>{{ __('End date', 'manageentities') }} <i class="ti ti-sort-ascending ms-1 text-muted" title="{{ __('Sorted by oldest end date first', 'manageentities') }}"></i></th>
-                        {% if can_edit or rows|filter(r => r.proposal_url)|length > 0 %}<th></th>{% endif %}
+                        {% if can_edit or rows|filter(r => r.proposal_url or r.proposal)|length > 0 %}<th></th>{% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -100,8 +100,15 @@
                             {{ row.end_date ? row.end_date|date('d/m/Y') : '—' }}
                             {% if row.end_date_expired %}<i class="ti ti-alert-circle ms-1"></i>{% endif %}
                         </td>
-                        {% if can_edit or rows|filter(r => r.proposal_url)|length > 0 %}
+                        {% if can_edit or rows|filter(r => r.proposal_url or r.proposal)|length > 0 %}
                         <td class="text-end text-nowrap">
+                            {% if row.proposal %}
+                                <a href="{{ row.proposal.url }}" class="btn btn-sm btn-outline-info"
+                                   title="{{ __('Proposal created', 'manageentities') }}">
+                                    <i class="ti ti-file-dollar me-1"></i>{{ row.proposal.reference }}
+                                    <span class="badge bg-info-lt ms-1">{{ row.proposal.status }}</span>
+                                </a>
+                            {% endif %}
                             {% if row.proposal_url %}
                                 <a href="{{ row.proposal_url }}" class="btn btn-sm btn-outline-success">
                                     <i class="ti ti-file-plus me-1"></i>{{ __('New proposal', 'manageentities') }}

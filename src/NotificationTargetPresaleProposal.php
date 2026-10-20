@@ -161,25 +161,25 @@ class NotificationTargetPresaleProposal extends NotificationTarget
 
         $content = [
             self::EVENT_GENERATED => [
-                'Proposition ##presale.reference## générée - ##presale.client##',
-                "La proposition ##presale.name## (##presale.reference##) pour ##presale.client## est générée.\n\n"
-                . "Type de contrat : ##presale.type##\nTotal HT : ##presale.total_ht##\nTotal TTC : ##presale.total_ttc##\n\n"
-                . "Document : ##presale.document.url##\nProposition : ##presale.url##",
+                'Proposal ##presale.reference## generated - ##presale.client##',
+                "The proposal ##presale.name## (##presale.reference##) for ##presale.client## has been generated.\n\n"
+                . "Type of contract: ##presale.type##\nTotal excl. tax: ##presale.total_ht##\nTotal incl. tax: ##presale.total_ttc##\n\n"
+                . "Document: ##presale.document.url##\nProposal: ##presale.url##",
                 false,
             ],
             self::EVENT_WON => [
-                'Proposition ##presale.reference## gagnée - ##presale.client##',
-                "La proposition ##presale.name## (##presale.reference##) pour ##presale.client## est gagnée.\n\n"
-                . "Type de contrat : ##presale.type##\nTotal HT : ##presale.total_ht##\n"
-                . "Commercial : ##presale.sales##\nChef de projet : ##presale.pm##\nSouscription éditeur : ##presale.subscription##\n\n"
-                . "À faire : créer le client, son contrat et, s'il y a une annexe de souscription, sa souscription éditeur :\n"
-                . "##presale.customer.url##\n\nProposition : ##presale.url##",
+                'Proposal ##presale.reference## won - ##presale.client##',
+                "The proposal ##presale.name## (##presale.reference##) for ##presale.client## has been won.\n\n"
+                . "Type of contract: ##presale.type##\nTotal excl. tax: ##presale.total_ht##\n"
+                . "Sales representative: ##presale.sales##\nProject manager: ##presale.pm##\nPublisher subscription: ##presale.subscription##\n\n"
+                . "To do: create the customer, its contract and, if there is a subscription annex, its publisher subscription:\n"
+                . "##presale.customer.url##\n\nProposal: ##presale.url##",
                 true,
             ],
             self::EVENT_LOST => [
-                'Proposition ##presale.reference## perdue - ##presale.client##',
-                "La proposition ##presale.name## (##presale.reference##) pour ##presale.client## est perdue : elle est archivée.\n\n"
-                . "Proposition : ##presale.url##",
+                'Proposal ##presale.reference## lost - ##presale.client##',
+                "The proposal ##presale.name## (##presale.reference##) for ##presale.client## has been lost: it is archived.\n\n"
+                . "Proposal: ##presale.url##",
                 false,
             ],
         ];
@@ -203,16 +203,22 @@ class NotificationTargetPresaleProposal extends NotificationTarget
                 ]);
             } else {
                 $templates_id = (int) $template['id'];
-                // The first versions escaped the apostrophes twice: "s&#039;il" in the mails
-                $DB->update(
-                    'glpi_notificationtemplatetranslations',
-                    ['content_html' => self::toStoredHtml($text)],
-                    [
+                // The first versions escaped the apostrophes twice: "s&#039;il" in the mails.
+                // Repaired whatever the text, the existing templates keep their own wording.
+                foreach ($DB->request([
+                    'SELECT' => ['id', 'content_html'],
+                    'FROM'   => 'glpi_notificationtemplatetranslations',
+                    'WHERE'  => [
                         'notificationtemplates_id' => $templates_id,
-                        'language'                 => '',
-                        'content_html'             => htmlescape('<p>' . nl2br(htmlescape($text)) . '</p>'),
+                        'content_html'             => ['LIKE', '%&amp;#039;%'],
                     ],
-                );
+                ]) as $translation) {
+                    $DB->update(
+                        'glpi_notificationtemplatetranslations',
+                        ['content_html' => str_replace('&amp;#039;', '&#039;', (string) $translation['content_html'])],
+                        ['id' => $translation['id']],
+                    );
+                }
             }
 
             $exists = countElementsInTable('glpi_notifications', ['itemtype' => PresaleProposal::class, 'event' => $event]);

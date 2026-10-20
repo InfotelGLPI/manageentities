@@ -131,6 +131,12 @@
                     <i class="ti ti-send me-1"></i>{{ estimate_status > 0 ? __('Request the estimate again', 'manageentities') : __('Request the estimate', 'manageentities') }}
                     ({{ pm_name }})
                 </button>
+                {% if estimate_status > 0 %}
+                    <button type="submit" name="cancel_estimate" value="1" class="btn btn-outline-danger mt-2"
+                            data-presale-confirm="{{ __('Cancel the estimate? The days already set in the annexes are kept.', 'manageentities') }}">
+                        <i class="ti ti-x me-1"></i>{{ estimate_status == 1 ? __('Cancel the request', 'manageentities') : __('Cancel the estimate', 'manageentities') }}
+                    </button>
+                {% endif %}
                 <div class="form-text">{{ __('The annexes are saved first. The project manager sets the days, and can add or remove annexes.', 'manageentities') }}</div>
             {% endif %}
         </div>

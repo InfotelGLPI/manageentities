@@ -37,7 +37,7 @@ if (!Plugin::isPluginActive('manageentities') || !PresaleWizard::canUse()) {
     throw new AccessDeniedHttpException();
 }
 
-if (isset($_POST['save_estimate']) || isset($_POST['validate'])) {
+if (isset($_POST['save_estimate']) || isset($_POST['validate']) || isset($_POST['cancel_estimate'])) {
     PresaleWizard::handleEstimatePost($_POST);
 }
 

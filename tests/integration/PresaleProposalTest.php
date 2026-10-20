@@ -307,6 +307,44 @@ class PresaleProposalTest extends DbTestCase
     }
 
     // -------------------------------------------------------------------------
+    // Estimate by the project manager
+    // -------------------------------------------------------------------------
+
+    public function testCancellingTheEstimateKeepsWhatWasDone(): void
+    {
+        $proposal = $this->createProposal($this->createPresaleClient(), [
+            'estimate_status'   => PresaleProposal::ESTIMATE_VALIDATED,
+            'estimate_brief'    => 'Scope',
+            'estimate_comment'  => '12 days',
+            'estimate_date'     => '2031-07-15 10:00:00',
+            'estimate_users_id' => 2,
+        ]);
+
+        PresaleWizard::cancelEstimate($proposal);
+
+        $proposal->getFromDB($proposal->getID());
+        $this->assertSame(PresaleProposal::ESTIMATE_NONE, (int) $proposal->fields['estimate_status']);
+        $this->assertNull($proposal->fields['estimate_date']);
+        $this->assertSame(0, (int) $proposal->fields['estimate_users_id']);
+        // Kept for a new request
+        $this->assertSame('Scope', $proposal->fields['estimate_brief']);
+        $this->assertSame('12 days', $proposal->fields['estimate_comment']);
+        // Out of the estimates to do of the project manager
+        $this->assertNotContains($proposal->getID(), array_column(PresaleWizard::getEstimatesToDo(), 'id'));
+    }
+
+    public function testTheEstimateOfAClosedProposalCannotBeCancelled(): void
+    {
+        $proposal = $this->createProposal($this->createPresaleClient(), [
+            'status'          => PresaleProposal::STATUS_WON,
+            'estimate_status' => PresaleProposal::ESTIMATE_REQUESTED,
+        ]);
+
+        $this->expectException(AccessDeniedHttpException::class);
+        PresaleWizard::cancelEstimate($proposal);
+    }
+
+    // -------------------------------------------------------------------------
     // Notifications
     // -------------------------------------------------------------------------
 
@@ -421,8 +459,15 @@ class PresaleProposalTest extends DbTestCase
     {
         global $DB;
 
+        // Fresh install of the template: an existing one is never overwritten
+        $DB->delete('glpi_notificationtemplates', [
+            'itemtype' => PresaleProposal::class,
+            'name'     => 'Pre-sales - ' . NotificationTargetPresaleProposal::EVENT_WON,
+        ]);
+        NotificationTargetPresaleProposal::install(new \Migration(PLUGIN_MANAGEENTITIES_VERSION));
+
         $won = $DB->request([
-            'SELECT'     => 'glpi_notificationtemplatetranslations.content_html',
+            'SELECT'     => ['glpi_notificationtemplatetranslations.id', 'glpi_notificationtemplatetranslations.subject', 'glpi_notificationtemplatetranslations.content_html'],
             'FROM'       => 'glpi_notificationtemplatetranslations',
             'INNER JOIN' => [
                 'glpi_notificationtemplates' => ['ON' => [
@@ -437,9 +482,23 @@ class PresaleProposalTest extends DbTestCase
         ])->current();
 
         $this->assertNotNull($won);
-        // "s'il" is stored as GLPI stores HTML (escaped once): s&#039;il, never s&amp;#039;il
-        $this->assertStringNotContainsString('&amp;#039;', $won['content_html']);
+        // Installed in English, translated by the administrator if needed
+        $this->assertStringStartsWith('Proposal ', $won['subject']);
         $this->assertStringContainsString('&lt;p&gt;', $won['content_html']);
+
+        // A template of the first versions, its apostrophes escaped twice: repaired on update,
+        // its own wording kept
+        $DB->update('glpi_notificationtemplatetranslations', [
+            'subject'      => 'Proposition gagnée',
+            'content_html' => htmlescape('<p>' . nl2br(htmlescape("s'il y a une annexe")) . '</p>'),
+        ], ['id' => $won['id']]);
+        NotificationTargetPresaleProposal::install(new \Migration(PLUGIN_MANAGEENTITIES_VERSION));
+
+        $repaired = $DB->request(['FROM' => 'glpi_notificationtemplatetranslations', 'WHERE' => ['id' => $won['id']]])->current();
+        // "s'il" is stored as GLPI stores HTML (escaped once): s&#039;il, never s&amp;#039;il
+        $this->assertStringNotContainsString('&amp;#039;', $repaired['content_html']);
+        $this->assertStringContainsString('s&#039;il', $repaired['content_html']);
+        $this->assertSame('Proposition gagnée', $repaired['subject']);
     }
 
     // -------------------------------------------------------------------------

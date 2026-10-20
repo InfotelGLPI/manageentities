@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use Document;
 use Document_Item;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Session;
 
 /**
@@ -564,6 +565,216 @@ class PresaleConversion
             && $contact->getFromDB($presale_contacts_id)
             && (int) $contact->fields['plugin_manageentities_presaleclients_id']
                 === (int) $proposal->fields['plugin_manageentities_presaleclients_id'];
+    }
+
+    /**
+     * Details of the entity compared with the proposal (§ administrative data)
+     *
+     * @return array<string, string> field => label
+     */
+    private static function getEntityFieldLabels(): array
+    {
+        return [
+            'address'     => __('Address'),
+            'postcode'    => __('Postal code'),
+            'town'        => __('City'),
+            'state'       => _n('State', 'States', 1),
+            'country'     => __('Country'),
+            'phonenumber' => __('Phone'),
+            'email'       => _n('Email', 'Emails', 1),
+            'website'     => __('Website'),
+        ];
+    }
+
+    /**
+     * Contact fields compared with the proposal: GLPI contact field => prospect contact field
+     *
+     * @return array<string, string>
+     */
+    private static function getContactFieldMap(): array
+    {
+        return [
+            'name'      => 'name',
+            'firstname' => 'firstname',
+            'email'     => 'email',
+            'phone'     => 'phone',
+            'mobile'    => 'mobile',
+            'comment'   => 'role',
+        ];
+    }
+
+    /**
+     * Differences between the won proposal of an existing customer and its entity: the
+     * administrative details and the contacts typed in the proposal (new or changed). Each one
+     * is offered by step 1 of the wizard, unchecked, and applied by applyCustomerChanges().
+     *
+     * @return array{
+     *     entity: list<array{field: string, label: string, current: string, proposed: string}>,
+     *     contacts: list<array{presale_contacts_id: int, contacts_id: int, label: string,
+     *                          changes: list<array{label: string, current: string, proposed: string}>}>
+     * }
+     */
+    public static function getCustomerChanges(array $session, int $entities_id): array
+    {
+        $changes  = ['entity' => [], 'contacts' => []];
+        $proposal = new PresaleProposal();
+        $client   = new PresaleClient();
+        $entity   = new \Entity();
+        if (
+            (int) ($session[self::SESSION_PROPOSAL] ?? 0) <= 0
+            || ($session['wizard_mode'] ?? '') !== 'existing_entity'
+            || $entities_id <= 0
+            || !$proposal->getFromDB((int) $session[self::SESSION_PROPOSAL])
+            || !$client->getFromDB((int) $proposal->fields['plugin_manageentities_presaleclients_id'])
+            || !$entity->getFromDB($entities_id)
+        ) {
+            return $changes;
+        }
+
+        // Administrative details, only when typed in the proposal: an empty field is no change
+        foreach (self::getEntityFieldLabels() as $field => $label) {
+            $proposed = trim((string) ($client->fields[$field] ?? ''));
+            $current  = trim((string) ($entity->fields[$field] ?? ''));
+            if ($proposed !== '' && $proposed !== $current) {
+                $changes['entity'][] = ['field' => $field, 'label' => $label, 'current' => $current, 'proposed' => $proposed];
+            }
+        }
+
+        // Contacts of the proposal: a new one (no GLPI contact yet, or no longer reachable), or
+        // one whose details differ from its GLPI contact
+        $labels = [
+            'name'      => __('Last name'),
+            'firstname' => __('First name'),
+            'email'     => _n('Email', 'Emails', 1),
+            'phone'     => __('Phone'),
+            'mobile'    => __('Mobile phone'),
+            'comment'   => __('Role', 'manageentities'),
+        ];
+        foreach ((new PresaleContact())->find(
+            ['plugin_manageentities_presaleclients_id' => $client->getID()],
+            ['is_default DESC', 'id'],
+        ) as $row) {
+            $label   = trim($row['firstname'] . ' ' . $row['name']);
+            $contact = new \Contact();
+            $contacts_id = (int) $row['contacts_id'];
+            if ($contacts_id <= 0 || !$contact->getFromDB($contacts_id) || $contact->fields['is_deleted']) {
+                $changes['contacts'][] = [
+                    'presale_contacts_id' => (int) $row['id'],
+                    'contacts_id'         => 0,
+                    'label'               => $label,
+                    'changes'             => [],
+                ];
+                continue;
+            }
+            $diff = [];
+            foreach (self::getContactFieldMap() as $glpi_field => $presale_field) {
+                $proposed = trim((string) $row[$presale_field]);
+                $current  = trim((string) $contact->fields[$glpi_field]);
+                if ($proposed !== '' && $proposed !== $current) {
+                    $diff[] = ['label' => $labels[$glpi_field], 'current' => $current, 'proposed' => $proposed];
+                }
+            }
+            if ($diff !== []) {
+                $changes['contacts'][] = [
+                    'presale_contacts_id' => (int) $row['id'],
+                    'contacts_id'         => $contacts_id,
+                    'label'               => $label,
+                    'changes'             => $diff,
+                ];
+            }
+        }
+
+        return $changes;
+    }
+
+    /**
+     * Changes of the customer kept by step 1, the ones posted checked among getCustomerChanges()
+     *
+     * @param array $input posted step 1: apply_entity[field] and apply_contacts[presale_contacts_id]
+     *
+     * @return array{entity: list<string>, contacts: list<int>}
+     */
+    public static function readCustomerChanges(array $session, int $entities_id, array $input): array
+    {
+        $available = self::getCustomerChanges($session, $entities_id);
+        $entity    = array_column($available['entity'], 'field');
+        $contacts  = array_column($available['contacts'], 'presale_contacts_id');
+
+        return [
+            'entity'   => array_values(array_intersect($entity, array_keys(array_filter((array) ($input['apply_entity'] ?? []))))),
+            'contacts' => array_values(array_intersect($contacts, array_map('intval', array_keys(array_filter((array) ($input['apply_contacts'] ?? [])))))),
+        ];
+    }
+
+    /**
+     * Applies the changes kept at step 1 (customer_changes of the session) to the existing
+     * customer: its administrative details, and its contacts created or updated from the
+     * proposal. Each write checks the core right of the object.
+     */
+    public static function applyCustomerChanges(array $session, int $entities_id): void
+    {
+        $kept = $session['customer_changes'] ?? [];
+        if (($kept['entity'] ?? []) === [] && ($kept['contacts'] ?? []) === []) {
+            return;
+        }
+        $proposal = new PresaleProposal();
+        $client   = new PresaleClient();
+        if (
+            !$proposal->getFromDB((int) ($session[self::SESSION_PROPOSAL] ?? 0))
+            || !$client->getFromDB((int) $proposal->fields['plugin_manageentities_presaleclients_id'])
+        ) {
+            return;
+        }
+
+        $entity_input = ['id' => $entities_id];
+        foreach (array_intersect($kept['entity'] ?? [], array_keys(self::getEntityFieldLabels())) as $field) {
+            $entity_input[$field] = trim((string) $client->fields[$field]);
+        }
+        $entity = new \Entity();
+        if (count($entity_input) > 1) {
+            if (!$entity->can($entities_id, UPDATE)) {
+                throw new AccessDeniedHttpException();
+            }
+            $entity->update($entity_input);
+        }
+
+        $link = new PresaleContact();
+        foreach ($kept['contacts'] ?? [] as $presale_contacts_id) {
+            if (
+                !$link->getFromDB((int) $presale_contacts_id)
+                || (int) $link->fields['plugin_manageentities_presaleclients_id'] !== $client->getID()
+            ) {
+                continue;
+            }
+            $input = [];
+            foreach (self::getContactFieldMap() as $glpi_field => $presale_field) {
+                $value = trim((string) $link->fields[$presale_field]);
+                if ($value !== '') {
+                    $input[$glpi_field] = $value;
+                }
+            }
+
+            $contact     = new \Contact();
+            $contacts_id = (int) $link->fields['contacts_id'];
+            if ($contacts_id > 0 && $contact->getFromDB($contacts_id) && !$contact->fields['is_deleted']) {
+                if (!$contact->can($contacts_id, UPDATE)) {
+                    throw new AccessDeniedHttpException();
+                }
+                $contact->update(['id' => $contacts_id] + $input);
+                continue;
+            }
+
+            $input['entities_id'] = $entities_id;
+            if (!$contact->can(-1, CREATE, $input)) {
+                throw new AccessDeniedHttpException();
+            }
+            $contacts_id = (int) $contact->add($input);
+            if ($contacts_id > 0) {
+                // Linked to the entity (Contacts card), never as its manager: the current one stays
+                (new Contact())->add(['contacts_id' => $contacts_id, 'entities_id' => $entities_id, 'is_default' => 0]);
+                $link->update(['id' => $link->getID(), 'contacts_id' => $contacts_id]);
+            }
+        }
     }
 
     /**

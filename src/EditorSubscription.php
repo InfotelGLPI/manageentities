@@ -610,11 +610,16 @@ class EditorSubscription extends CommonDBTM
         $renewals = Config::usePresale() && Session::getCurrentInterface() === 'central'
             ? array_column(PresaleRenewal::getExpiredSubscriptions(array_column($rows, 'entities_id')), 'new_url', 'id')
             : [];
+        // Proposal already started from the subscription, shown next to the "New proposal" button
+        $proposals = Config::usePresale() && Session::getCurrentInterface() === 'central'
+            ? PresaleRenewal::getSubscriptionProposals(array_map('intval', array_column($rows, 'id')))
+            : [];
 
         $last_interventions = self::getLastInterventionDates(array_column($rows, 'entities_id'));
         foreach ($rows as &$row) {
             $row['last_intervention'] = $last_interventions[(int) $row['entities_id']] ?? null;
             $row['proposal_url']      = $renewals[(int) $row['id']] ?? '';
+            $row['proposal']          = $proposals[(int) $row['id']] ?? null;
         }
         unset($row);
 

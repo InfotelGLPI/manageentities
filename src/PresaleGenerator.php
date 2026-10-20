@@ -378,11 +378,12 @@ class PresaleGenerator
             'items_id' => $this->proposal->getID(),
         ], ['id']) as $link) {
             $document = new Document();
-            // Generated versions only: named "<reference> - <client> - v<n>.docx"
-            if ($document->getFromDB((int) $link['documents_id'])
-                && preg_match('/ - v(\d+)\.docx$/', (string) $document->fields['name'], $match)
-                && (int) $match[1] < $version) {
-                $documents[(int) $match[1]] = $document->fields;
+            // Generated versions only (getDocumentName())
+            if ($document->getFromDB((int) $link['documents_id'])) {
+                $number = self::getDocumentVersion((string) $document->fields['name']);
+                if ($number !== null && $number < $version) {
+                    $documents[$number] = $document->fields;
+                }
             }
         }
         ksort($documents);
@@ -416,16 +417,41 @@ class PresaleGenerator
     }
 
     /**
+     * Name of a generated document: "SOC261019 - Client.docx" for the first version, then
+     * "SOC261019_V2 - Client.docx", "SOC261019_V3 - Client.docx"...
+     */
+    public static function getDocumentName(string $reference, string $client_name, int $version): string
+    {
+        return sprintf(
+            '%s%s - %s.docx',
+            $reference,
+            $version > 1 ? '_V' . $version : '',
+            preg_replace('/[^\w\- ]/u', '', $client_name),
+        );
+    }
+
+    /**
+     * Version of a generated document read from its name (getDocumentName()), null for another
+     * document. The names of the first releases, "SOC261019 - Client - v2.docx", are read too.
+     */
+    public static function getDocumentVersion(string $name): ?int
+    {
+        if (preg_match('/ - v(\d+)\.docx$/', $name, $match)) {
+            return (int) $match[1];
+        }
+        if (preg_match('/^[A-Z0-9]{3}\d{4,6}(?:_V(\d+))? - .*\.docx$/', $name, $match)) {
+            return isset($match[1]) ? (int) $match[1] : 1;
+        }
+
+        return null;
+    }
+
+    /**
      * Stores the generated file as a GLPI document linked to the proposal
      */
     private function storeDocument(string $file, string $reference, int $version): int
     {
-        $name   = sprintf(
-            '%s - %s - v%d.docx',
-            $reference,
-            preg_replace('/[^\w\- ]/u', '', (string) $this->client->fields['name']),
-            $version,
-        );
+        $name   = self::getDocumentName($reference, (string) $this->client->fields['name'], $version);
         $prefix = uniqid('', true) . '_';
         if (!copy($file, GLPI_UPLOAD_DIR . '/' . $prefix . $name)) {
             throw new RuntimeException(__('The document could not be stored.', 'manageentities'));

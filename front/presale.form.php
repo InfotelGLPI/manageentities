@@ -36,7 +36,7 @@ if (!Plugin::isPluginActive('manageentities') || !PresaleWizard::canUse()) {
 }
 
 // Each step posts here (CSRF checked by the core listener): saved, then redirected
-if (isset($_POST['save_step']) || isset($_POST['previous']) || isset($_POST['add_annex']) || isset($_POST['request_estimate'])) {
+if (isset($_POST['save_step']) || isset($_POST['previous']) || isset($_POST['add_annex']) || isset($_POST['request_estimate']) || isset($_POST['cancel_estimate'])) {
     PresaleWizard::handlePost($_POST, $_FILES);
 }
 

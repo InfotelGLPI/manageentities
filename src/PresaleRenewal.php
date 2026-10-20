@@ -100,6 +100,36 @@ class PresaleRenewal
     }
 
     /**
+     * Last proposal started from each subscription, whatever its status; none without the right
+     *
+     * @param list<int> $subscriptions_ids
+     *
+     * @return array<int, array{reference: string, status: string, url: string}> by subscription
+     */
+    public static function getSubscriptionProposals(array $subscriptions_ids): array
+    {
+        if ($subscriptions_ids === [] || !PresaleProposal::canView()) {
+            return [];
+        }
+
+        $statuses  = PresaleProposal::getStatuses();
+        $proposals = [];
+        foreach ((new PresaleProposal())->find([
+            'plugin_manageentities_editorsubscriptions_id' => $subscriptions_ids,
+        ], ['id DESC']) as $data) {
+            $subscriptions_id = (int) $data['plugin_manageentities_editorsubscriptions_id'];
+            $proposals[$subscriptions_id] ??= [
+                // No reference before the first generation
+                'reference' => (string) ($data['reference'] ?: '#' . $data['id']),
+                'status'    => $statuses[(int) $data['status']] ?? '',
+                'url'       => PresaleProposal::getFormURLWithID((int) $data['id']),
+            ];
+        }
+
+        return $proposals;
+    }
+
+    /**
      * Contracts of the customers of the perimeter running out of remaining days, exactly the
      * list of the "Contracts running out of remaining days" mail
      * (Contract::getLowRemainingDaysContracts()), with no proposal in progress or won

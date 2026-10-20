@@ -504,6 +504,8 @@ class WizardController
             return ['success' => false, 'errors' => ['entities_id' => __('The customer of the proposal cannot be changed.', 'manageentities')]];
         }
         $session['entities_id'] = $entities_id;
+        // Updates of the customer checked among the ones of the won proposal, applied at commit
+        $session['customer_changes'] = PresaleConversion::readCustomerChanges($session, $entities_id, $input);
         // existing_entity skips step 3, except for the subscription of a won proposal
         $session['step']        = max($session['step'], self::hasSubscriptionStep($session) ? 3 : 4);
         self::saveSession($session);
@@ -1621,6 +1623,9 @@ class WizardController
             // existing_entity mode: the id was checked when it was picked, but everything below -
             // subscription, contacts, contracts, contract days, prices - is written into it now.
             return ['success' => false, 'errors' => ['global' => __('Entity not found', 'manageentities')]];
+        } else {
+            // Details and contacts of the won proposal checked at step 1
+            PresaleConversion::applyCustomerChanges($session, $entities_id);
         }
 
         // 1b. Publisher subscription (skipped if user left step blank): created on a new
@@ -2235,6 +2240,9 @@ class WizardController
 
             return [
                 'entity_select_field' => self::entityField('entities_id', (int) $session['entities_id'], $rand, $condition),
+                // Won proposal: details and contacts typed in it, offered to update the customer
+                'customer_changes'    => PresaleConversion::getCustomerChanges($session, (int) $session['entities_id']),
+                'kept_changes'        => $session['customer_changes'] ?? ['entity' => [], 'contacts' => []],
             ];
         }
 

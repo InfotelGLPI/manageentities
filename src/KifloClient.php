@@ -71,6 +71,7 @@ class KifloClient
         // HttpClient of GLPI 12; Guzzle on GLPI 11, where symfony/http-client is a dev dependency only
         $this->http  = $http ?? (class_exists(HttpClient::class)
             ? new HttpClient(Config::class, ['timeout' => 20])
+            // @phpstan-ignore staticMethod.notFound (GLPI 11 only, removed in GLPI 12)
             : Toolbox::getGuzzleClient(['timeout' => 20]));
     }
 

@@ -131,6 +131,12 @@
             <a href="{{ wizard_url }}" class="btn btn-ghost-secondary me-auto">
                 <i class="ti ti-arrow-left me-1"></i>{{ __('Back to the proposal', 'manageentities') }}
             </a>
+            {% if proposal.estimate_status > 0 %}
+                <button type="submit" name="cancel_estimate" value="1" class="btn btn-outline-danger" {{ readonly ? 'disabled' : '' }}
+                        data-presale-confirm="{{ __('Cancel the estimate? It goes back to the sales representative, the days already set are kept.', 'manageentities') }}">
+                    <i class="ti ti-x me-1"></i>{{ __('Cancel the estimate', 'manageentities') }}
+                </button>
+            {% endif %}
             <button type="submit" name="save_estimate" value="1" class="btn btn-outline-primary" {{ readonly ? 'disabled' : '' }}>
                 <i class="ti ti-device-floppy me-1"></i>{{ _x('button', 'Save') }}
             </button>

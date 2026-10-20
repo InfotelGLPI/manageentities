@@ -678,7 +678,7 @@ class PresaleWizard
         $contacts = [];
         foreach ((new Contact())->buildContactsForTemplate([$entities_id], '') as $data) {
             $contact = new \Contact();
-            if (!$contact->getFromDB((int) $data['link_id'])) {
+            if (!$contact->getFromDB((int) $data['contacts_id'])) {
                 continue;
             }
             $contacts[] = [
@@ -861,6 +861,11 @@ class PresaleWizard
             } else {
                 self::requestEstimate(self::loadProposal($id), $input);
             }
+            Html::redirect(self::getFormUrl() . '?id=' . $id . '&step=' . self::STEP_ANNEXES);
+        }
+        // Request withdrawn by the sales representative: the annexes posted are not saved
+        if ($step === self::STEP_ANNEXES && isset($input['cancel_estimate'])) {
+            self::cancelEstimate(self::loadProposal($id));
             Html::redirect(self::getFormUrl() . '?id=' . $id . '&step=' . self::STEP_ANNEXES);
         }
 
@@ -1954,6 +1959,12 @@ class PresaleWizard
             throw new AccessDeniedHttpException();
         }
 
+        // Estimate given back by the project manager: nothing posted is saved
+        if (isset($input['cancel_estimate'])) {
+            self::cancelEstimate($proposal);
+            Html::redirect(self::getFormUrl());
+        }
+
         $result = self::saveEstimate($proposal, $input);
         if ($result['errors'] !== []) {
             self::keepFailedPost(self::STEP_ESTIMATE, $result['errors'], $result['values']);
@@ -2065,6 +2076,28 @@ class PresaleWizard
             __('The estimate is requested from %s.', 'manageentities'),
             (string) $proposal->fields['pm_name'],
         ));
+    }
+
+    /**
+     * Cancels the request or the validation of the estimate, by the sales representative (step 3)
+     * or the project manager (estimate screen): back to "not requested", out of the estimates
+     * to do. The days of the annexes, the note and the comment are kept for a new request.
+     */
+    public static function cancelEstimate(PresaleProposal $proposal): void
+    {
+        if (!self::isEditable($proposal)) {
+            throw new AccessDeniedHttpException();
+        }
+        if ((int) $proposal->fields['estimate_status'] === PresaleProposal::ESTIMATE_NONE) {
+            return;
+        }
+        $proposal->update([
+            'id'                => $proposal->getID(),
+            'estimate_status'   => PresaleProposal::ESTIMATE_NONE,
+            'estimate_date'     => 'NULL',
+            'estimate_users_id' => 0,
+        ]);
+        Session::addMessageAfterRedirect(__('The estimate has been cancelled.', 'manageentities'));
     }
 
     /**

@@ -30,6 +30,7 @@
 namespace GlpiPlugin\Manageentities\Tests\Unit;
 
 use GlpiPlugin\Manageentities\PresaleCounter;
+use GlpiPlugin\Manageentities\PresaleGenerator;
 use GlpiPlugin\Manageentities\PresaleProposal_Annex;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -39,6 +40,29 @@ use PHPUnit\Framework\TestCase;
  */
 class PresaleNamingTest extends TestCase
 {
+    public function testTheFirstVersionOfADocumentHasNoNumber(): void
+    {
+        $this->assertSame('SOC261019 - Société Test.docx', PresaleGenerator::getDocumentName('SOC261019', 'Société Test', 1));
+        $this->assertSame('SOC261019_V2 - Société Test.docx', PresaleGenerator::getDocumentName('SOC261019', 'Société Test', 2));
+        $this->assertSame('SOC261019_V3 - LOréal.docx', PresaleGenerator::getDocumentName('SOC261019', "L'Oréal", 3));
+    }
+
+    public static function documentVersionProvider(): iterable
+    {
+        yield 'first version'        => ['SOC261019 - Société Test.docx', 1];
+        yield 'next version'         => ['SOC261019_V2 - Société Test.docx', 2];
+        yield 'monthly reference'    => ['SOC261001_V12 - Client.docx', 12];
+        yield 'name of the releases' => ['SOC261001 - Client - v3.docx', 3];
+        yield 'another document'     => ['Contrat signé.docx', null];
+        yield 'not a docx'           => ['SOC261019 - Client.pdf', null];
+    }
+
+    #[DataProvider('documentVersionProvider')]
+    public function testTheVersionIsReadFromTheName(string $name, ?int $expected): void
+    {
+        $this->assertSame($expected, PresaleGenerator::getDocumentVersion($name));
+    }
+
     public function testAnnexesAreNumberedInFrench(): void
     {
         $this->assertSame('Annexe 2 : Expertise GLPI', PresaleProposal_Annex::numberTitle(2, 'Expertise GLPI'));
