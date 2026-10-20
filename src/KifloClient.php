@@ -30,10 +30,13 @@
 namespace GlpiPlugin\Manageentities;
 
 use Glpi\Toolbox\HttpClient;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\BadResponseException;
 use RuntimeException;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
+use Toolbox;
 
 /**
  * Read-only client of the Kiflo Partner API (https://docs-api.kiflo.com/).
@@ -55,17 +58,20 @@ class KifloClient
 
     private string $token;
 
-    /** @var HttpClient|HttpClientInterface */
+    /** @var HttpClient|HttpClientInterface|ClientInterface */
     private $http;
 
     /**
-     * @param HttpClient|HttpClientInterface|null $http injected by the tests only
+     * @param HttpClient|HttpClientInterface|ClientInterface|null $http injected by the tests only
      */
     public function __construct(string $url, string $token, $http = null)
     {
         $this->url   = rtrim(trim($url) !== '' ? trim($url) : self::DEFAULT_URL, '/');
         $this->token = trim($token);
-        $this->http  = $http ?? new HttpClient(Config::class, ['timeout' => 20]);
+        // HttpClient of GLPI 12; Guzzle on GLPI 11, where symfony/http-client is a dev dependency only
+        $this->http  = $http ?? (class_exists(HttpClient::class)
+            ? new HttpClient(Config::class, ['timeout' => 20])
+            : Toolbox::getGuzzleClient(['timeout' => 20]));
     }
 
     /**
@@ -140,8 +146,8 @@ class KifloClient
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
             ]);
-            $data = json_decode($response->getContent(), true);
-        } catch (HttpExceptionInterface $e) {
+            $data = json_decode($this->http instanceof ClientInterface ? (string) $response->getBody() : $response->getContent(), true);
+        } catch (HttpExceptionInterface | BadResponseException $e) {
             throw new RuntimeException(self::getHttpErrorMessage($e->getResponse()->getStatusCode()), 0, $e);
         } catch (Throwable $e) {
             // Transport: DNS, timeout, TLS certificate (e.g. a proxy inspecting the traffic)

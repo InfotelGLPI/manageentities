@@ -67,26 +67,15 @@ class PresaleProposalTest extends DbTestCase
     // Reference
     // -------------------------------------------------------------------------
 
-    public function testReferencesFollowEachOtherByPrefixAndMonth(): void
+    public function testReferenceIsThePrefixAndTheDay(): void
     {
         $date = new \DateTimeImmutable('2031-07-15');
 
-        $this->assertSame('SOC310701', PresaleCounter::next('Société Test', $date));
-        $this->assertSame('SOC310702', PresaleCounter::next('Socotec', $date));
-        // Another prefix starts its own sequence
-        $this->assertSame('APR310701', PresaleCounter::next('APRR', $date));
-        // A new month too
-        $this->assertSame('SOC310801', PresaleCounter::next('Société Test', new \DateTimeImmutable('2031-08-01')));
-    }
-
-    public function testCounterLeavesNoTransactionOpen(): void
-    {
-        global $DB;
-
-        $level = $this->callPrivateMethod($DB, 'isInTransaction');
-        PresaleCounter::next('Transaction', new \DateTimeImmutable('2031-09-01'));
-
-        $this->assertSame($level, $this->callPrivateMethod($DB, 'isInTransaction'));
+        $this->assertSame('SOC310715', PresaleCounter::next('Société Test', $date));
+        // Same prefix the same day: same reference, the version of the document differs
+        $this->assertSame('SOC310715', PresaleCounter::next('Socotec', $date));
+        $this->assertSame('APR310715', PresaleCounter::next('APRR', $date));
+        $this->assertSame('SOC310716', PresaleCounter::next('Société Test', new \DateTimeImmutable('2031-07-16')));
     }
 
     // -------------------------------------------------------------------------

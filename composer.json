@@ -7,6 +7,7 @@
             "php": "8.3.99"
         },
         "optimize-autoloader": true,
+        "platform-check": false,
         "sort-packages": true
     },
     "require": {

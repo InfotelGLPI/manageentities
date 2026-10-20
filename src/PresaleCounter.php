@@ -29,14 +29,12 @@
 
 namespace GlpiPlugin\Manageentities;
 
-use DBConnection;
-use Glpi\DBAL\QueryExpression;
 use Migration;
 
 /**
- * References of the proposals, as in the proof of concept: the first three letters of the
- * client, the year and month of the generation, and a sequence of the month for that prefix,
- * e.g. SOC260914. One row per prefix and month holds the last sequence used.
+ * References of the proposals: the first three letters of the client and the date of the
+ * generation (YYMMDD), e.g. SOC261019. Several proposals of a client the same day share it:
+ * the version in the name of the generated document tells them apart.
  */
 class PresaleCounter
 {
@@ -57,58 +55,18 @@ class PresaleCounter
     }
 
     /**
-     * Next reference for a client. The row of the prefix and month is locked by the update
-     * until the commit, so two proposals generated at once never get the same sequence.
+     * Reference of a proposal of a client generated on that date (now by default)
      */
     public static function next(string $client_name, ?\DateTimeInterface $date = null): string
     {
-        global $DB;
-
-        $prefix = self::getPrefix($client_name);
-        $period = ($date ?? new \DateTimeImmutable($_SESSION['glpi_currenttime'] ?? 'now'))->format('ym');
-        $where  = ['prefix' => $prefix, 'period' => $period];
-
-        $DB->beginTransaction();
-        try {
-            if (countElementsInTable(self::getTable(), $where) === 0) {
-                try {
-                    $DB->insert(self::getTable(), $where + ['sequence' => 0]);
-                } catch (\RuntimeException $e) {
-                    // Created meanwhile by a concurrent generation (unique key): use that row
-                }
-            }
-            $DB->update(self::getTable(), ['sequence' => new QueryExpression($DB->quoteName('sequence') . ' + 1')], $where);
-            $sequence = (int) ($DB->request(['SELECT' => 'sequence', 'FROM' => self::getTable(), 'WHERE' => $where])->current()['sequence'] ?? 0);
-            $DB->commit();
-        } catch (\Throwable $e) {
-            $DB->rollBack();
-            throw $e;
-        }
-
-        return sprintf('%s%s%02d', $prefix, $period, $sequence);
+        return self::getPrefix($client_name)
+            . ($date ?? new \DateTimeImmutable($_SESSION['glpi_currenttime'] ?? 'now'))->format('ymd');
     }
 
     public static function install(Migration $migration)
     {
-        global $DB;
-
-        $default_charset   = DBConnection::getDefaultCharset();
-        $default_collation = DBConnection::getDefaultCollation();
-        $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
-        $table             = self::getTable();
-
-        if (!$DB->tableExists($table)) {
-            $query = "CREATE TABLE `$table` (
-                            `id` int {$default_key_sign} NOT NULL auto_increment,
-                            `prefix` varchar(3) NOT NULL DEFAULT '',
-                            `period` char(4) NOT NULL DEFAULT '' COMMENT 'YYMM',
-                            `sequence` int NOT NULL DEFAULT '0',
-                            PRIMARY KEY  (`id`),
-                            UNIQUE KEY `unicity` (`prefix`,`period`)
-               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-
-            $DB->doQuery($query);
-        }
+        // The sequences of the month are no longer used: the reference is the date of the day
+        self::uninstall();
     }
 
     public static function uninstall()

@@ -430,7 +430,7 @@ class PresaleProposal extends CommonDBTM
                             `plugin_manageentities_editorsubscriptions_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_plugin_manageentities_editorsubscriptions (id) — expired subscription renewed by the proposal',
                             `contracts_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_contracts (id) — expiring contract followed by the proposal',
                             `name` varchar(255) DEFAULT NULL,
-                            `reference` varchar(32) DEFAULT NULL COMMENT 'set at the first generation, e.g. SOC260914',
+                            `reference` varchar(32) DEFAULT NULL COMMENT 'set at the first generation, e.g. SOC261019',
                             `status` tinyint NOT NULL DEFAULT '1' COMMENT '1=draft, 2=generated, 3=won, 4=lost (archived)',
                             `step` tinyint NOT NULL DEFAULT '0' COMMENT 'last validated step of the wizard',
                             `sales_users_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id)',
@@ -462,7 +462,7 @@ class PresaleProposal extends CommonDBTM
                             `date_creation` timestamp NULL DEFAULT NULL,
                             `date_mod` timestamp NULL DEFAULT NULL,
                             PRIMARY KEY  (`id`),
-                            UNIQUE KEY `reference` (`reference`),
+                            KEY `reference` (`reference`),
                             KEY `name` (`name`),
                             KEY `entities_id` (`entities_id`),
                             KEY `is_recursive` (`is_recursive`),
@@ -516,6 +516,14 @@ class PresaleProposal extends CommonDBTM
         }
         if ($add_conversion_date) {
             PresaleConversion::initConversionDates();
+        }
+
+        // The reference is the date of the day (PresaleCounter::next()): several proposals of a
+        // client the same day share it, it is no longer unique
+        foreach ($DB->doQuery("SHOW INDEX FROM `$table` WHERE `Key_name` = 'reference'") as $index) {
+            if ((int) $index['Non_unique'] === 0) {
+                $DB->doQuery("ALTER TABLE `$table` DROP INDEX `reference`, ADD INDEX `reference` (`reference`)");
+            }
         }
 
         // Default columns of the list: reference, prospect, status, type, date, sales, total, update
