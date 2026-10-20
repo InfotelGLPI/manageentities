@@ -12,11 +12,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19 11:49+0000\n"
+"POT-Creation-Date: 2026-10-20 07:11+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
-"Language-Team: French (France) (https://app.transifex.com/infotelGLPI/"
-"teams/79674/fr_FR/)\n"
+"Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/"
+"79674/fr_FR/)\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % "
 "1000000 == 0 ? 1 : 2;\n"
 
-#: templates/report_occupation_result.html.twig:51
+#: ⁨standard input⁩:51
 #, php-format
 msgid "% of time justified"
 msgstr "% de temps justifié"
@@ -34,12 +34,12 @@ msgstr "% de temps justifié"
 msgid "%1$s (copy %2$d)"
 msgstr "%1$s (copie %2$d)"
 
-#: templates/techlead/clients_by_tech.html.twig:60
+#: ⁨standard input⁩:60
 #, php-format
 msgid "%1$s client(s) followed by %2$s tech lead(s)"
 msgstr "%1$s client(s) suivi par %2$s tech lead(s)"
 
-#: templates/directhelpdesk_unbilled_alert.html.twig:34
+#: ⁨standard input⁩:34
 #, php-format
 msgid "%1$s intervention"
 msgid_plural "%1$s interventions"
@@ -77,7 +77,7 @@ msgstr[0] "%d prospect Kiflo synchronisé."
 msgstr[1] "%d prospects Kiflo synchronisés."
 msgstr[2] "%d prospects Kiflo synchronisés."
 
-#: templates/config_presale_form.html.twig:212
+#: ⁨standard input⁩:212
 #, php-format
 msgid "%d active annex model"
 msgid_plural "%d active annex models"
@@ -103,7 +103,7 @@ msgstr "%d contrats arrivant à échéance sont notifiés"
 msgid "%d expired publisher subscriptions notified"
 msgstr "%d notifications des souscriptions éditeurs expirées"
 
-#: templates/entity/customer_summary.html.twig:144
+#: ⁨standard input⁩:144
 #, php-format
 msgid "%d intervention"
 msgid_plural "%d interventions"
@@ -111,7 +111,7 @@ msgstr[0] "%d intervention"
 msgstr[1] "%d interventions"
 msgstr[2] "%d interventions"
 
-#: templates/kiflo/config_form.html.twig:71
+#: ⁨standard input⁩:71
 #, php-format
 msgid "%d lead"
 msgid_plural "%d leads"
@@ -127,23 +127,23 @@ msgstr[0] "%d règle créée"
 msgstr[1] "%d règles créées"
 msgstr[2] "%d règles créées"
 
-#: src/PresaleWizard.php:2222 src/PresaleAnnexTypeTransfer.php:247
+#: src/PresaleAnnexTypeTransfer.php:247 src/PresaleWizard.php:2222
 #, php-format
 msgid "%s (copy)"
 msgstr "%s (copie)"
 
-#: templates/techlead/assignment_rules.html.twig:59
+#: ⁨standard input⁩:59
 #, php-format
 msgid "%s client(s) able to open tickets"
 msgstr "%s client(s) peuvent ouvrir des tickets"
 
-#: src/PresaleWizard.php:1015 src/DatWizard.php:595 src/DatWizard.php:598
-#: src/DatWizard.php:602
+#: src/DatWizard.php:595 src/DatWizard.php:598 src/DatWizard.php:602
+#: src/PresaleWizard.php:1015
 #, php-format
 msgid "%s is mandatory"
 msgstr "%s est obligatoire"
 
-#: templates/ticket_overview.html.twig:145
+#: ⁨standard input⁩:145
 #, php-format
 msgid "%s open ticket(s)"
 msgstr "%s ticket(s) ouverts"
@@ -211,19 +211,19 @@ msgstr "+ 12 mois"
 msgid "-- Select a template --"
 msgstr "-- Sélectionner un gabarit --"
 
-#: templates/presale/step_annexes.html.twig:252
+#: ⁨standard input⁩:252
 msgid "0 or empty: VAT not applicable."
 msgstr "0 ou vide : TVA non applicable."
 
-#: templates/directhelpdesk_dashboard_filter.html.twig:36
+#: ⁨standard input⁩:36
 msgid "2 hours minimum"
 msgstr "2 heures minimum"
 
-#: templates/directhelpdesk_dashboard_filter.html.twig:41
+#: ⁨standard input⁩:41
 msgid "3 hours minimum"
 msgstr "3 heures minimum"
 
-#: templates/presale/annextype_import.html.twig:44
+#: ⁨standard input⁩:44
 #, php-format
 msgid ""
 "A JSON file exported from the list or the form of the annex models (%s MB at "
@@ -236,20 +236,20 @@ msgstr ""
 msgid "A contract with this number already exists"
 msgstr "Un contrat avec ce numéro existe déjà"
 
-#: templates/entity/dat_card.html.twig:79
+#: ⁨standard input⁩:79
 msgid "A draft is in progress, not generated yet."
 msgstr "Un brouillon est en cours, pas encore généré."
 
-#: templates/entity/dat_card.html.twig:78
+#: ⁨standard input⁩:78
 msgid "A draft of the next version is in progress."
 msgstr "Un brouillon de la prochaine version est en cours."
 
-#: templates/presale/proposal_form.html.twig:89
+#: ⁨standard input⁩:89
 msgid "A new draft with the same client, team and annexes"
 msgstr ""
 "Un nouveau brouillon avec le même client, la même équipe et les mêmes annexes"
 
-#: templates/kiflo/config_form.html.twig:66
+#: ⁨standard input⁩:66
 msgid "API key"
 msgstr "Clé API"
 
@@ -261,46 +261,31 @@ msgstr "Abandonné"
 msgid "Accepted"
 msgstr "Accepté"
 
-#: templates/entity/kiflo_leads_tab.html.twig:186
+#: ⁨standard input⁩:186
 msgid "Accepted on"
 msgstr "Accepté le"
 
-#: templates/generatecri_wizard.html.twig:175
+#: ⁨standard input⁩:175
 msgid "Accomplished tasks informations"
 msgstr "Informations sur les tâches accomplies"
 
-#: templates/entity/customer_summary.html.twig:118
-#: templates/techlead/assignment_rules.html.twig:110
+#: ⁨standard input⁩:118 ⁨standard input⁩:110
 msgid "Active"
 msgstr "Active"
 
-#: src/EditorSubscription.php:183 hook.php:1020
+#: hook.php:1020 src/EditorSubscription.php:183
 msgid "Active editor subscription"
 msgstr "Souscription active éditeur"
 
-#: templates/entity/description.html.twig:281
-#: templates/entity/description.html.twig:284
-#: templates/entity/description.html.twig:353
-#: templates/entity/description.html.twig:356
-#: templates/entity/contacts_card.html.twig:104
-#: templates/entity/contacts_card.html.twig:108
-#: templates/entity/business_card.html.twig:85
-#: templates/entity/business_card.html.twig:89
-#: templates/entity/techleads_card.html.twig:99
-#: templates/entity/projectmanagers_card.html.twig:99
-#: templates/interventionstakeholder_form.html.twig:77
-#: templates/presale/step_annexes.html.twig:155
-#: templates/cridetail_for_ticket.html.twig:266
-#: templates/contract_detail_form.html.twig:202
-#: templates/config_presale_form.html.twig:196
+#: ⁨standard input⁩:196 ⁨standard input⁩:77 ⁨standard input⁩:266 ⁨standard input⁩:155
+#: ⁨standard input⁩:104 ⁨standard input⁩:108 ⁨standard input⁩:99 ⁨standard input⁩:281
+#: ⁨standard input⁩:284 ⁨standard input⁩:353 ⁨standard input⁩:356 ⁨standard input⁩:85
+#: ⁨standard input⁩:89 ⁨standard input⁩:202
 msgid "Add"
 msgstr "Ajouter"
 
-#: templates/entity/contracts_tab.html.twig:119
-#: templates/entity/contracts_tab.html.twig:122
-#: templates/editorsubscription_wizard.html.twig:88
-#: templates/editorsubscription_wizard.html.twig:110
-#: templates/company_list.html.twig:39
+#: ⁨standard input⁩:39 ⁨standard input⁩:119 ⁨standard input⁩:122 ⁨standard input⁩:88
+#: ⁨standard input⁩:110
 msgctxt "button"
 msgid "Add"
 msgstr "Ajouter"
@@ -313,52 +298,48 @@ msgstr "Ajoutez 12 mois à la période contractuelle initiale"
 msgid "Add a company"
 msgstr "Ajouter une société"
 
-#: templates/wizard/step2_contacts.html.twig:50
-#: templates/presale/step_client.html.twig:286
+#: ⁨standard input⁩:286 ⁨standard input⁩:50
 msgid "Add a contact"
 msgstr "Ajouter un contact"
 
-#: templates/wizard/step4_contract.html.twig:114
+#: ⁨standard input⁩:114
 msgid "Add a document"
 msgstr "Ajouter un document"
 
-#: templates/presale/estimate_table.html.twig:95
-#: templates/presale/annextype_default_lines.html.twig:112
-#: templates/presale/step_annexes.html.twig:321
+#: ⁨standard input⁩:321 ⁨standard input⁩:95 ⁨standard input⁩:112
 msgid "Add a line"
 msgstr "Ajouter une ligne"
 
-#: templates/wizard/mode_choice.html.twig:86
+#: ⁨standard input⁩:86
 msgid "Add a new contract and service periods to an existing client."
 msgstr ""
 "Ajouter un nouveau contrat et de nouvelles prestations à un client existant."
 
-#: templates/criprice_list.html.twig:77
+#: ⁨standard input⁩:77
 msgid "Add a new price"
 msgstr "Ajouter un nouveau tarif"
 
-#: templates/dat/step_system.html.twig:98
+#: ⁨standard input⁩:98
 msgid "Add a server"
 msgstr "Ajouter un serveur"
 
-#: templates/wizard/step6_interventions.html.twig:54
-#: templates/contractday_add_form.html.twig:35
+#: ⁨standard input⁩:35 ⁨standard input⁩:54
 msgid "Add a service period"
 msgstr "Ajouter une prestation"
 
-#: templates/cri_form.html.twig:78
+#: ⁨standard input⁩:78
 msgid "Add a technician"
 msgstr "Ajouter un intervenant"
 
-#: templates/presale/estimate_table.html.twig:92
+#: ⁨standard input⁩:92
 msgid "Add a title"
 msgstr "Ajouter un titre"
 
-#: templates/presale/step_annexes.html.twig:144
+#: ⁨standard input⁩:144
 msgid "Add an annex"
 msgstr "Ajouter une annexe"
 
-#: templates/directhelpdesk_modal.html.twig:38
+#: ⁨standard input⁩:38
 msgid "Add an unbilled intervention"
 msgstr "Ajouter une intervention non facturée"
 
@@ -366,33 +347,28 @@ msgstr "Ajouter une intervention non facturée"
 msgid "Add at least one server."
 msgstr "Ajoutez au moins un serveur."
 
-#: templates/wizard/step6_criprices_section.html.twig:73
+#: ⁨standard input⁩:73
 msgid "Add rate"
 msgstr "Ajouter un tarif"
 
-#: templates/interventionstakeholder_form.html.twig:33
+#: ⁨standard input⁩:33
 msgid "Add stakeholders"
 msgstr "Ajout d'intervenants"
 
-#: templates/generatecri_wizard.html.twig:233
+#: ⁨standard input⁩:233
 msgid "Add this Task"
 msgstr "Ajouter cette tâche"
 
-#: templates/wizard/step6_stakeholders_section.html.twig:71
+#: ⁨standard input⁩:71
 msgid "Add user"
 msgstr "Ajouter un intervenant"
 
-#: templates/entity/description.html.twig:76
-#: templates/entity/description.html.twig:133
-#: templates/wizard/step1_entity.html.twig:95
-#: templates/company_form.html.twig:63
-#: templates/presale/step_client.html.twig:225
-#: templates/presale/proposal_form.html.twig:101
-#: templates/presale/client_form.html.twig:65
+#: ⁨standard input⁩:225 ⁨standard input⁩:101 ⁨standard input⁩:65 ⁨standard input⁩:76
+#: ⁨standard input⁩:133 ⁨standard input⁩:63 ⁨standard input⁩:95
 msgid "Address"
 msgstr "Adresse"
 
-#: templates/config_presale_form.html.twig:62
+#: ⁨standard input⁩:62
 msgid ""
 "Adds a \"Pre-sales\" card to the entities portal, to build financial "
 "proposals."
@@ -404,26 +380,24 @@ msgstr ""
 msgid "Administrative data updated"
 msgstr "Données administratives mises à jour"
 
-#: templates/interventionstakeholder_list.html.twig:47
-#: templates/interventionstakeholder_form.html.twig:53
+#: ⁨standard input⁩:53 ⁨standard input⁩:47
 msgid "Affected to"
 msgstr "Affecté à"
 
-#: templates/ticket_overview.html.twig:44
+#: ⁨standard input⁩:44
 msgid "Age (days)"
 msgstr "Age (jours)"
 
-#: templates/techlead/clients_by_tech.html.twig:46
-#: templates/report_search_form.html.twig:47
+#: ⁨standard input⁩:47 ⁨standard input⁩:46
 msgid "All"
 msgstr "Tous"
 
-#: templates/entity/status_tab.html.twig:143
+#: ⁨standard input⁩:143
 msgid "All entities with a publisher subscription have an active contract."
 msgstr ""
 "Tous les clients disposant d'une souscription éditeur ont un contrat actif."
 
-#: templates/entity/status_tab.html.twig:57
+#: ⁨standard input⁩:57
 msgid "All entities with an active contract have a publisher subscription."
 msgstr ""
 "Tous les clients disposant d'un contrat actif ont une souscription éditeur."
@@ -432,7 +406,7 @@ msgstr ""
 msgid "All fields are not correctly filled."
 msgstr "Tous les champs ne sont pas correctement remplis."
 
-#: templates/cri_reports.html.twig:40
+#: ⁨standard input⁩:40
 msgid "All reports"
 msgstr "Liste complète"
 
@@ -440,7 +414,7 @@ msgstr "Liste complète"
 msgid "All the clients"
 msgstr "Tous les clients"
 
-#: templates/presale/client_form.html.twig:58
+#: ⁨standard input⁩:58
 msgid ""
 "All the proposals of this prospect are lost: it is archived. Reactivate one "
 "of them to use it again."
@@ -448,17 +422,16 @@ msgstr ""
 "Toutes les propositions de ce prospect sont perdues : il est archivé. "
 "Réactivez l'une d'elles pour l'utiliser de nouveau."
 
-#: templates/config_options_form.html.twig:74
+#: ⁨standard input⁩:74
 msgid "Allow periods on the same interval of dates"
 msgstr "Autoriser les interventions sur un même intervalle de date"
 
 #: src/Monthly.php:332 src/Monthly.php:342 src/Monthly.php:345
-#: templates/wizard/step6_intervention_block.html.twig:108
-#: templates/contractday_form.html.twig:106
+#: ⁨standard input⁩:106 ⁨standard input⁩:108
 msgid "Already charged"
 msgstr "Déjà facturé"
 
-#: templates/checkschema_result.html.twig:30
+#: ⁨standard input⁩:30
 msgid "Altered table"
 msgstr "Table modifiée"
 
@@ -480,9 +453,8 @@ msgstr "Une erreur est survenue lors de la suppression."
 msgid "An error occurred while saving."
 msgstr "Une erreur est survenue à la sauvegarde."
 
-#: src/PresaleWizard.php:81 src/PresaleProposal_Annex.php:85
-#: templates/presale/proposal_form.html.twig:128
-#: templates/presale/step_generate.html.twig:69
+#: src/PresaleProposal_Annex.php:85 src/PresaleWizard.php:81 ⁨standard input⁩:128
+#: ⁨standard input⁩:69
 msgid "Annex"
 msgid_plural "Annexes"
 msgstr[0] "Annexe"
@@ -496,9 +468,8 @@ msgstr[0] "Ligne d'annexe"
 msgstr[1] "Lignes d'annexe"
 msgstr[2] "Lignes d'annexe"
 
-#: src/PresaleAnnexType.php:54 templates/presale/annextype_import.html.twig:53
-#: templates/presale/step_annexes.html.twig:161
-#: templates/config_presale_form.html.twig:208
+#: src/PresaleAnnexType.php:54 ⁨standard input⁩:208 ⁨standard input⁩:161
+#: ⁨standard input⁩:53
 msgid "Annex model"
 msgid_plural "Annex models"
 msgstr[0] "Modèle d'annexe"
@@ -541,13 +512,12 @@ msgstr "Tarif Horaire appliqué"
 msgid "Applied rate"
 msgstr "Tarif appliqué"
 
-#: templates/ticket_overview.html.twig:129
+#: ⁨standard input⁩:129
 msgctxt "button"
 msgid "Apply"
 msgstr "Appliquer"
 
-#: templates/presale/outcome_buttons.html.twig:46
-#: templates/presale/step_generate.html.twig:168
+#: ⁨standard input⁩:46 ⁨standard input⁩:168
 msgid "Archive this proposal as lost? It can be reactivated later."
 msgstr ""
 "Archiver cette proposition comme perdue ? Elle pourra être réactivée plus "
@@ -557,11 +527,11 @@ msgstr ""
 msgid "Archived"
 msgstr "Archivé"
 
-#: templates/entity/unbilled_tab.html.twig:46
+#: ⁨standard input⁩:46
 msgid "Archived clients with unbilled hours:"
 msgstr "Clients archivés avec des heures non facturées :"
 
-#: templates/wizard/layout.html.twig:108
+#: ⁨standard input⁩:108
 msgid "Archived customer"
 msgstr "Client archivé"
 
@@ -569,77 +539,73 @@ msgstr "Client archivé"
 msgid "Archiving date"
 msgstr "Date d'archivage"
 
-#: templates/editorsubscription_wizard.html.twig:119
+#: ⁨standard input⁩:119
 msgid "Are you sure you want to permanently delete this subscription?"
 msgstr "Êtes-vous sûr de vouloir supprimer définitivement cette souscription ?"
 
-#: templates/techlead/clients_by_tech.html.twig:166
+#: ⁨standard input⁩:166
 msgid "As main tech lead"
 msgstr "En tant que tech lead responsable"
 
-#: templates/presale/step_team.html.twig:63
+#: ⁨standard input⁩:63
 msgid "Assigned project manager"
 msgstr "Chef de projet affecté"
 
-#: templates/config_presale_form.html.twig:123
+#: ⁨standard input⁩:123
 msgid "Assigned project managers"
 msgstr "Chefs de projet affectés"
 
-#: templates/presale/step_team.html.twig:63
+#: ⁨standard input⁩:63
 msgid "Assigned sales representative"
 msgstr "Commercial affecté"
 
-#: templates/config_presale_form.html.twig:123
+#: ⁨standard input⁩:123
 msgid "Assigned sales representatives"
 msgstr "Commerciaux affectés"
 
-#: templates/ticket_overview.html.twig:40
+#: ⁨standard input⁩:40
 msgid "Assigned technician(s)"
 msgstr "Technicien(s) assigné"
 
-#: templates/techlead/assignment_rules.html.twig:85
+#: ⁨standard input⁩:85
 msgid "Assignment rule"
 msgstr "Règle métier"
 
-#: front/techleadrule.php:56 templates/techlead/clients_by_tech.html.twig:67
-#: templates/techlead/assignment_rules.html.twig:55
+#: front/techleadrule.php:56 ⁨standard input⁩:67 ⁨standard input⁩:55
 msgid "Assignment rules"
 msgstr "Règles métiers"
 
-#: templates/techlead/assignment_rules.html.twig:106
+#: ⁨standard input⁩:106
 msgid "Assigns another technician"
 msgstr "Assigner un autre technicien"
 
-#: templates/cridetail_for_ticket.html.twig:61
+#: ⁨standard input⁩:61
 msgid "Associate to a contract"
 msgstr "Associer à un contrat"
 
-#: templates/directhelpdesk_ticket_tab.html.twig:96
+#: ⁨standard input⁩:96
 msgid "Associate with the ticket"
 msgstr "Associer au ticket"
 
-#: templates/entity/contracts_tab.html.twig:32
+#: ⁨standard input⁩:32
 msgid "Associated assistance contracts"
 msgstr "Contrats d'assistance associés"
 
-#: templates/entity/description.html.twig:300
-#: templates/entity/business_card.html.twig:32
-#: templates/followup_criterias.html.twig:95
+#: ⁨standard input⁩:95 ⁨standard input⁩:300 ⁨standard input⁩:32
 msgid "Associated commercial"
 msgid_plural "Associated business"
 msgstr[0] "Commercial associé"
 msgstr[1] "Commerciaux associés"
 msgstr[2] "Commerciaux associés"
 
-#: templates/entity/description.html.twig:213
-#: templates/entity/contacts_card.html.twig:32
+#: ⁨standard input⁩:32 ⁨standard input⁩:213
 msgid "Associated contact"
 msgid_plural "Associated contacts"
 msgstr[0] "Contact associé"
 msgstr[1] "Contacts associés"
 msgstr[2] "Contacts associés"
 
-#: templates/cri_reports.html.twig:33
+#: ⁨standard input⁩:33
 msgid "Associated intervention reports"
 msgstr "Rapports d'intervention associés"
 
@@ -647,7 +613,7 @@ msgstr "Rapports d'intervention associés"
 msgid "Associated ticket"
 msgstr "Ticket associé"
 
-#: templates/presale/estimate_form.html.twig:79
+#: ⁨standard input⁩:79
 msgid "Assumptions, risks, what the estimate does not cover..."
 msgstr "Hypothèses, risques, ce que le chiffrage ne couvre pas..."
 
@@ -659,18 +625,17 @@ msgstr "Au moins un contact est requis."
 msgid "At least one service period with a rate is required"
 msgstr "Au moins une prestation avec un tarif est requis"
 
-#: templates/wizard/step4_contract.html.twig:109
+#: ⁨standard input⁩:109
 msgid "Attach documents"
 msgstr "Attacher des documents"
 
-#: src/DatWizard.php:598 src/NotificationTargetPresaleProposal.php:68
+#: src/NotificationTargetPresaleProposal.php:68 src/DatWizard.php:598
 #: src/NotificationTargetEntity.php:84 src/NotificationTargetEntity.php:109
-#: templates/dat/step_general.html.twig:54
-#: templates/dat/step_summary.html.twig:65
+#: ⁨standard input⁩:54 ⁨standard input⁩:65
 msgid "Author"
 msgstr "Auteur"
 
-#: templates/techlead/clients_by_tech.html.twig:65
+#: ⁨standard input⁩:65
 msgid ""
 "Automatic assignment of the main tech lead to the tickets opened by the "
 "clients"
@@ -678,35 +643,29 @@ msgstr ""
 "Attribution automatique du tech lead principal aux tickets ouverts par les "
 "clients"
 
-#: templates/presale/layout.html.twig:68
+#: ⁨standard input⁩:68
 msgid "Available in a next version"
 msgstr "Disponible dans une prochaine version"
 
-#: templates/techlead/assignment_rules.html.twig:33
+#: ⁨standard input⁩:33
 msgid "Back"
 msgstr "Retour"
 
-#: templates/presale/estimate_form.html.twig:132
-#: templates/presale/layout.html.twig:115
+#: ⁨standard input⁩:115 ⁨standard input⁩:132
 msgid "Back to the proposal"
 msgstr "Retour à la proposition"
 
-#: templates/wizard/step6_intervention_block.html.twig:60
-#: templates/monthly_criterias.html.twig:49
-#: templates/followup_criterias.html.twig:64
-#: templates/followup_criterias.html.twig:69
-#: templates/cridetail_for_ticket.html.twig:180
-#: templates/contractday_form.html.twig:64
+#: ⁨standard input⁩:64 ⁨standard input⁩:69 ⁨standard input⁩:49 ⁨standard input⁩:180
+#: ⁨standard input⁩:60
 msgid "Begin date"
 msgstr "Date de début"
 
-#: src/EditorSubscriptionWizard.php:157 src/WizardController.php:292
-#: src/WizardController.php:325 src/WizardController.php:953
+#: src/WizardController.php:292 src/WizardController.php:325
+#: src/WizardController.php:953 src/EditorSubscriptionWizard.php:157
 msgid "Begin date is required"
 msgstr "La date de début est obligatoire"
 
-#: templates/wizard/mode_choice.html.twig:50
-#: templates/presale/home.html.twig:47
+#: ⁨standard input⁩:47 ⁨standard input⁩:50
 msgid "Build a financial proposal for a prospect or an existing client."
 msgstr ""
 "Construire une proposition financière pour un prospect ou un client existant."
@@ -719,15 +678,12 @@ msgstr "A l'intervention"
 msgid "CRI generation"
 msgstr "Génération du CRI"
 
-#: templates/followup_export_toolbar.html.twig:56
+#: ⁨standard input⁩:56
 msgid "CSV"
 msgstr "CSV"
 
-#: templates/wizard/layout.html.twig:91 templates/wizard/layout.html.twig:117
-#: templates/wizard/layout.html.twig:145 templates/wizard/layout.html.twig:175
-#: templates/editorsubscription_transfer.html.twig:68
-#: templates/presale/layout.html.twig:107 templates/dat/layout.html.twig:97
-#: templates/editorsubscription_wizard.html.twig:100
+#: ⁨standard input⁩:107 ⁨standard input⁩:97 ⁨standard input⁩:68 ⁨standard input⁩:100
+#: ⁨standard input⁩:91 ⁨standard input⁩:117 ⁨standard input⁩:145 ⁨standard input⁩:175
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -738,24 +694,23 @@ msgstr ""
 "Impossible d'assigner %.2f jour(s) : seulement %.2f jours(s) restants sur "
 "%.2f"
 
-#: templates/legend.html.twig:41
+#: ⁨standard input⁩:41
 msgid "Caption"
 msgstr "Légende"
 
-#: templates/generatecri_wizard.html.twig:77
-#: templates/generatecri_wizard.html.twig:220
+#: ⁨standard input⁩:77 ⁨standard input⁩:220
 msgid "Category"
 msgstr "Catégorie"
 
-#: templates/dat/config_form.html.twig:45
+#: ⁨standard input⁩:45
 msgid "Category of the generated DAT"
 msgstr "Catégorie des DAT générés"
 
-#: templates/config_presale_form.html.twig:69
+#: ⁨standard input⁩:69
 msgid "Category of the generated proposals"
 msgstr "Catégorie des propositions générées"
 
-#: templates/presale/step_client.html.twig:174
+#: ⁨standard input⁩:174
 msgid ""
 "Choose a known prospect or an existing customer: its details and contacts "
 "are filled in below, and can be changed."
@@ -771,7 +726,7 @@ msgstr ""
 "Choisissez un chef de projet déclaré dans la configuration (étape 2) pour "
 "demander le chiffrage."
 
-#: templates/presale/step_annexes.html.twig:201
+#: ⁨standard input⁩:201
 msgid "Choose an annex model above and add it to the proposal."
 msgstr ""
 "Choisissez un modèle d'annexe ci-dessus et ajoutez-le à la proposition."
@@ -788,7 +743,7 @@ msgstr "Choisissez le modèle d'annexe à ajouter."
 msgid "Choose the recipient of the proposal."
 msgstr "Choisissez le destinataire de la proposition."
 
-#: templates/presale/step_team.html.twig:72
+#: ⁨standard input⁩:72
 msgid ""
 "Choosing a user fills in the details below, which remain editable: they are "
 "printed in the proposal."
@@ -796,31 +751,21 @@ msgstr ""
 "Choisir un utilisateur remplit les informations ci-dessous, qui restent "
 "modifiables : elles sont imprimées dans la proposition."
 
-#: templates/entity/description.html.twig:79
-#: templates/entity/description.html.twig:143
-#: templates/wizard/step1_entity.html.twig:105
-#: templates/presale/step_client.html.twig:231
-#: templates/presale/client_form.html.twig:67
+#: ⁨standard input⁩:231 ⁨standard input⁩:67 ⁨standard input⁩:79 ⁨standard input⁩:143
+#: ⁨standard input⁩:105
 msgid "City"
 msgstr "Ville"
 
-#: templates/kiflo/config_form.html.twig:62
+#: ⁨standard input⁩:62
 msgid "Clear the key"
 msgstr "Effacer la clé"
 
-#: src/DirectHelpdesk.php:728 src/DatWizard.php:595 src/Followup.php:745
-#: src/Followup.php:979 src/Monthly.php:425 src/Dashboard.php:256
-#: src/Dashboard.php:320 src/Dashboard.php:375 src/Entity.php:1067
-#: templates/entity/client_selector.html.twig:38
-#: templates/entity/unbilled_tab.html.twig:126
-#: templates/entity/unbilled_tab.html.twig:141
-#: templates/entity/kiflo_leads_tab.html.twig:175
-#: templates/techlead/clients_by_tech.html.twig:120
-#: templates/techlead/clients_by_tech.html.twig:165
-#: templates/techlead/assignment_rules.html.twig:82
-#: templates/generatecri_wizard.html.twig:48
-#: templates/dat/step_general.html.twig:45
-#: templates/dat/step_summary.html.twig:64
+#: src/Entity.php:1067 src/DatWizard.php:595 src/DirectHelpdesk.php:728
+#: src/Dashboard.php:256 src/Dashboard.php:320 src/Dashboard.php:375
+#: src/Monthly.php:425 src/Followup.php:745 src/Followup.php:979
+#: ⁨standard input⁩:45 ⁨standard input⁩:64 ⁨standard input⁩:126 ⁨standard input⁩:141
+#: ⁨standard input⁩:38 ⁨standard input⁩:175 ⁨standard input⁩:48 ⁨standard input⁩:120
+#: ⁨standard input⁩:165 ⁨standard input⁩:82
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Client"
@@ -835,7 +780,7 @@ msgstr "Client et contacts"
 msgid "Client annuary"
 msgstr "Annuaire client"
 
-#: templates/presale/step_client.html.twig:210
+#: ⁨standard input⁩:210
 msgid "Client details"
 msgstr "Coordonnées du client"
 
@@ -846,51 +791,44 @@ msgstr[0] "Gestion des clients"
 msgstr[1] "Gestion des clients"
 msgstr[2] "Gestion des clients"
 
-#: templates/presale/step_client.html.twig:139
+#: ⁨standard input⁩:139
 msgid "Client of the proposal"
 msgstr "Client de la proposition"
 
-#: templates/entity/unbilled_tab.html.twig:80
+#: ⁨standard input⁩:80
 #, php-format
 msgid "Clients with hours left unbilled for more than %d months:"
 msgstr "Clients dont les heures restent impayées depuis plus de %d mois :"
 
-#: templates/techlead/clients_by_tech.html.twig:203
+#: ⁨standard input⁩:203
 msgid "Clients without main tech lead"
 msgstr "Clients sans tech lead responsable"
 
-#: templates/techlead/clients_by_tech.html.twig:227
+#: ⁨standard input⁩:227
 msgid "Clients without tech lead"
 msgstr "Clients sans tech lead"
 
-#: templates/entity/kiflo_leads_tab.html.twig:142
-#: templates/entity/kiflo_leads_tab.html.twig:208
-#: templates/directhelpdesk_modal.html.twig:41
+#: ⁨standard input⁩:142 ⁨standard input⁩:208 ⁨standard input⁩:41
 msgid "Close"
 msgstr "Fermer"
 
-#: templates/config_options_form.html.twig:143
+#: ⁨standard input⁩:143
 msgid "Closed GLPI contract state"
 msgstr "État du contrat GLPI fermé"
 
-#: templates/config_options_form.html.twig:148
+#: ⁨standard input⁩:148
 msgid "Closed contract period state"
 msgstr "État de la période contractuelle fermée"
 
-#: src/SubscriptionLevel.php:71 src/PresaleConversion.php:228
-#: templates/entity/proposals_tab.html.twig:162
-#: templates/entity/editorsubscription_tab.html.twig:92
-#: templates/entity/status_tab.html.twig:71
-#: templates/entity/status_tab.html.twig:158
+#: src/PresaleConversion.php:228 src/SubscriptionLevel.php:71 ⁨standard input⁩:71
+#: ⁨standard input⁩:158 ⁨standard input⁩:162 ⁨standard input⁩:92
 msgid "Cloud"
 msgstr "Cloud"
 
+#: hook.php:1033 src/NotificationTargetEditorSubscription.php:120
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
-#: src/EditorSubscription.php:785
-#: src/NotificationTargetEditorSubscription.php:120 hook.php:1033
-#: templates/editorsubscription_fields.html.twig:70
-#: templates/cridetail_for_ticket.html.twig:93
-#: templates/contract_detail_form.html.twig:58
+#: src/EditorSubscription.php:785 ⁨standard input⁩:93 ⁨standard input⁩:70
+#: ⁨standard input⁩:58
 msgid "Cloud client"
 msgstr "Client cloud"
 
@@ -907,58 +845,45 @@ msgstr "Couleur"
 msgid "Color field is not correct"
 msgstr "Le champ de couleur est incorrect"
 
-#: templates/directhelpdesk_form.html.twig:124
-#: templates/company_form.html.twig:70
+#: ⁨standard input⁩:124 ⁨standard input⁩:70
 msgid "Comment"
 msgid_plural "Comments"
 msgstr[0] "Commentaire"
 msgstr[1] "Commentaires"
 msgstr[2] "Commentaires"
 
-#: templates/presale/estimate_form.html.twig:76
+#: ⁨standard input⁩:76
 msgid "Comment of the project manager"
 msgstr "Commentaire du chef de projet"
 
-#: templates/entity/description.html.twig:77
-#: templates/entity/description.html.twig:98
-#: templates/entity/contracts_tab.html.twig:56
-#: templates/wizard/step2_contact_block.html.twig:99
-#: templates/wizard/step1_entity.html.twig:121
-#: templates/wizard/step4_contract.html.twig:99
-#: templates/presale/step_client.html.twig:261
-#: templates/presale/client_form.html.twig:75
-#: templates/editorsubscription_fields.html.twig:136
-#: templates/cridetail_for_ticket.html.twig:157
-#: templates/contractday_form.html.twig:111
+#: ⁨standard input⁩:157 ⁨standard input⁩:261 ⁨standard input⁩:75 ⁨standard input⁩:56
+#: ⁨standard input⁩:77 ⁨standard input⁩:98 ⁨standard input⁩:111 ⁨standard input⁩:99
+#: ⁨standard input⁩:121 ⁨standard input⁩:136
 msgid "Comments"
 msgstr "Commentaires"
 
-#: src/Company.php:53 src/Dashboard.php:520
-#: templates/entity/kiflo_leads_tab.html.twig:86
-#: templates/followup_criterias.html.twig:87
-#: templates/company_form.html.twig:43 templates/company_list.html.twig:49
-#: templates/company_list.html.twig:59
+#: src/Company.php:53 src/Dashboard.php:520 ⁨standard input⁩:87 ⁨standard input⁩:49
+#: ⁨standard input⁩:59 ⁨standard input⁩:86 ⁨standard input⁩:43
 msgid "Company"
 msgid_plural "Companies"
 msgstr[0] "Société"
 msgstr[1] "Sociétés"
 msgstr[2] "Sociétés"
 
-#: src/PresaleWizard.php:1009 templates/presale/step_client.html.twig:215
-#: templates/presale/proposal_form.html.twig:100
-#: templates/presale/client_form.html.twig:63
+#: src/PresaleWizard.php:1009 ⁨standard input⁩:215 ⁨standard input⁩:100
+#: ⁨standard input⁩:63
 msgid "Company name"
 msgstr "Raison sociale"
 
-#: templates/config_options_form.html.twig:54
+#: ⁨standard input⁩:54
 msgid "Configuration daily or hourly"
 msgstr "Configuration journalière ou horaire"
 
-#: templates/config_options_form.html.twig:76
+#: ⁨standard input⁩:76
 msgid "Configuring the client side view"
 msgstr "Configuration de la vue coté client"
 
-#: templates/wizard/layout.html.twig:150
+#: ⁨standard input⁩:150
 msgid "Confirm and finish"
 msgstr "Confirmer et terminer"
 
@@ -974,17 +899,12 @@ msgstr[2] "Connexion vers Kiflo réussie : %d prospects disponibles."
 msgid "Consumption"
 msgstr "Consommation"
 
-#: templates/contractday_form.html.twig:117
+#: ⁨standard input⁩:117
 msgid "Consumption summary"
 msgstr "Détail de la consommation"
 
-#: templates/entity/kiflo_leads_tab.html.twig:87
-#: templates/entity/kiflo_leads_tab.html.twig:146
-#: templates/wizard/step2_contact_block.html.twig:38
-#: templates/wizard/step2_contacts.html.twig:36
-#: templates/presale/step_client.html.twig:79
-#: templates/presale/step_client.html.twig:272
-#: templates/presale/client_form.html.twig:84
+#: ⁨standard input⁩:79 ⁨standard input⁩:272 ⁨standard input⁩:84 ⁨standard input⁩:87
+#: ⁨standard input⁩:146 ⁨standard input⁩:36 ⁨standard input⁩:38
 msgid "Contact"
 msgid_plural "Contacts"
 msgstr[0] "Contact"
@@ -1010,23 +930,20 @@ msgid "Content, end and begin date are mandatory for a task !"
 msgstr ""
 "Le contenu, la date de fin et de début sont obligatoires pour une tâche!"
 
-#: templates/presale/step_annexes.html.twig:129
+#: ⁨standard input⁩:129
 msgid "Context, scope, constraints..."
 msgstr "Contexte, périmètre, contraintes..."
 
 #: src/WizardController.php:2119 src/WizardController.php:2136
-#: templates/entity/proposals_tab.html.twig:204
-#: templates/wizard/step6_intervention_block.html.twig:98
-#: templates/wizard/step4_contract.html.twig:40
-#: templates/followup_report.html.twig:55
-#: templates/contractday_form.html.twig:46 templates/cri_form.html.twig:48
+#: ⁨standard input⁩:55 ⁨standard input⁩:204 ⁨standard input⁩:46 ⁨standard input⁩:48
+#: ⁨standard input⁩:98 ⁨standard input⁩:40
 msgid "Contract"
 msgid_plural "Contracts"
 msgstr[0] "Contrat"
 msgstr[1] "Contrats"
 msgstr[2] "Contrats"
 
-#: templates/config_options_form.html.twig:133
+#: ⁨standard input⁩:133
 msgid "Contract closure"
 msgstr "Clôture des contrats"
 
@@ -1038,15 +955,13 @@ msgstr "Les données du contrat sont manquantes"
 msgid "Contract detail"
 msgstr "Détail du contrat"
 
-#: templates/wizard/step5_management.html.twig:93
-#: templates/contract_detail_form.html.twig:167
+#: ⁨standard input⁩:93 ⁨standard input⁩:167
 msgid "Contract is imported in GLPI"
 msgstr "Le contrat est importé dans GLPI"
 
-#: src/CriDetail.php:494 src/CriDetail.php:750
-#: src/NotificationTargetContract.php:118
-#: src/NotificationTargetContract.php:153 src/CriPDF.php:532
-#: templates/wizard/step4_contract.html.twig:70
+#: src/CriPDF.php:532 src/NotificationTargetContract.php:118
+#: src/NotificationTargetContract.php:153 src/CriDetail.php:494
+#: src/CriDetail.php:750 ⁨standard input⁩:70
 msgid "Contract number"
 msgstr "N° du contrat"
 
@@ -1058,8 +973,7 @@ msgstr "Le numéro de contrat est obligatoire"
 msgid "Contract present"
 msgstr "Contrat présent"
 
-#: templates/wizard/step4_contract.html.twig:85
-#: templates/cridetail_for_ticket.html.twig:125
+#: ⁨standard input⁩:125 ⁨standard input⁩:85
 msgid "Contract type"
 msgstr "Type de contrat"
 
@@ -1069,14 +983,11 @@ msgstr "Le type de contrat est obligatoire"
 
 #: src/NotificationTargetContract.php:103
 #: src/NotificationTargetContract.php:113
-#: src/NotificationTargetContract.php:169
-#: templates/entity/proposals_tab.html.twig:70
-#: templates/entity/proposals_tab.html.twig:189
+#: src/NotificationTargetContract.php:169 ⁨standard input⁩:70 ⁨standard input⁩:189
 msgid "Contracts running out of remaining days"
 msgstr "Contrats arrivant à échéance"
 
-#: src/Entity.php:90 src/Entity.php:355
-#: templates/entity/status_tab.html.twig:32
+#: src/Entity.php:90 src/Entity.php:355 ⁨standard input⁩:32
 msgid "Contracts status overview"
 msgstr "Etat des lieux des contrats"
 
@@ -1088,11 +999,8 @@ msgstr "Suivi contractuel"
 msgid "Converted"
 msgstr "Convertie"
 
-#: templates/entity/description.html.twig:81
-#: templates/entity/description.html.twig:153
-#: templates/wizard/step1_entity.html.twig:115
-#: templates/presale/step_client.html.twig:237
-#: templates/presale/client_form.html.twig:69
+#: ⁨standard input⁩:237 ⁨standard input⁩:69 ⁨standard input⁩:81 ⁨standard input⁩:153
+#: ⁨standard input⁩:115
 msgid "Country"
 msgstr "Etat"
 
@@ -1100,49 +1008,46 @@ msgstr "Etat"
 msgid "Cover, presentation and signatures of the proposal."
 msgstr "Page de garde, présentation et signatures de la proposition."
 
-#: templates/wizard/mode_choice.html.twig:70
+#: ⁨standard input⁩:70
 msgid "Create a new entity, contacts, contract and service periods."
 msgstr "Créer un nouveau client, des contacts, un contrat et des prestations."
 
-#: templates/wizard/mode_choice.html.twig:68
+#: ⁨standard input⁩:68
 msgid ""
 "Create a new entity, contacts, subscription, contract and service periods."
 msgstr ""
 "Créer un nouveau client, des contacts, une souscription, un contrat et des "
 "prestations."
 
-#: templates/directhelpdesk_dashboard.html.twig:61
-#: templates/directhelpdesk_dashboard.html.twig:65
+#: ⁨standard input⁩:61 ⁨standard input⁩:65
 msgid "Create a ticket"
 msgstr "Créer un ticket"
 
-#: templates/wizard/mode_choice.html.twig:101
+#: ⁨standard input⁩:101
 msgid "Create or update the publisher subscription for a client."
 msgstr "Créer ou mettre à jour la souscription éditeur pour un client."
 
-#: templates/editorsubscription_wizard.html.twig:68
-#: templates/editorsubscription_wizard.html.twig:86
+#: ⁨standard input⁩:68 ⁨standard input⁩:86
 msgid "Create publisher subscription"
 msgstr "Créer la souscription éditeur"
 
-#: templates/entity/editorsubscription_tab.html.twig:60
+#: ⁨standard input⁩:60
 msgid "Create subscription"
 msgstr "Créer une souscription"
 
-#: templates/entity/dat_card.html.twig:90
+#: ⁨standard input⁩:90
 msgid "Create the DAT"
 msgstr "Créer le DAT"
 
-#: templates/entity/proposals_tab.html.twig:119
-#: templates/presale/proposal_form.html.twig:82
+#: ⁨standard input⁩:82 ⁨standard input⁩:119
 msgid "Create the customer"
 msgstr "Créer le client"
 
-#: templates/techlead/assignment_rules.html.twig:65
+#: ⁨standard input⁩:65
 msgid "Create the missing rules"
 msgstr "Créer les règles manquantes"
 
-#: templates/techlead/assignment_rules.html.twig:127
+#: ⁨standard input⁩:127
 msgctxt "button"
 msgid "Create the rule"
 msgstr "Créer la règle"
@@ -1151,12 +1056,11 @@ msgstr "Créer la règle"
 msgid "Created by"
 msgstr "Créé le"
 
-#: templates/entity/kiflo_leads_tab.html.twig:91
-#: templates/entity/kiflo_leads_tab.html.twig:179
+#: ⁨standard input⁩:91 ⁨standard input⁩:179
 msgid "Creation date"
 msgstr "Date de création"
 
-#: templates/entity/customer_summary.html.twig:101
+#: ⁨standard input⁩:101
 msgid "Credit almost used up"
 msgstr "Crédit presque épuisé"
 
@@ -1168,24 +1072,24 @@ msgstr "Crédit restant"
 msgid "Crossed time"
 msgstr "Temps passé"
 
-#: src/CriDetail.php:492 src/CriDetail.php:745 src/CriDetail.php:833
-#: src/CriDetail.php:1333 src/CriPDF.php:562
+#: src/CriPDF.php:562 src/CriDetail.php:492 src/CriDetail.php:745
+#: src/CriDetail.php:833 src/CriDetail.php:1333
 msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
-#: templates/entity/followup_helpdesk.html.twig:33
+#: ⁨standard input⁩:33
 msgid "Current contracts"
 msgstr "Contrats en cours"
 
-#: templates/editorsubscription_transfer.html.twig:47
+#: ⁨standard input⁩:47
 msgid "Current entity"
 msgstr "Entité courante"
 
-#: templates/followup_export_toolbar.html.twig:44
+#: ⁨standard input⁩:44
 msgid "Current page"
 msgstr "Page courante"
 
-#: src/Monthly.php:444 templates/interventionstakeholder_list.html.twig:32
+#: src/Monthly.php:444 ⁨standard input⁩:32
 msgid "Current stakeholder"
 msgid_plural "Current stakeholders"
 msgstr[0] "Intervenant actuel"
@@ -1196,7 +1100,7 @@ msgstr[2] "Intervenants actuels"
 msgid "Customer Visa"
 msgstr "Visa client"
 
-#: templates/config_options_form.html.twig:124
+#: ⁨standard input⁩:124
 msgid "Customer archiving entity"
 msgstr "Entité d'archivage client"
 
@@ -1204,19 +1108,19 @@ msgstr "Entité d'archivage client"
 msgid "Customer comments"
 msgstr "Observations du client"
 
-#: templates/wizard/layout.html.twig:44
+#: ⁨standard input⁩:44
 msgid "Customer created from the won proposal"
 msgstr "Client créé depuis la proposition gagnée"
 
-#: templates/config_options_form.html.twig:44
+#: ⁨standard input⁩:44
 msgid "Customer entities"
 msgstr "Entités des clients"
 
-#: templates/ticket_overview.html.twig:250
+#: ⁨standard input⁩:250
 msgid "Customer follow-up"
 msgstr "Suivi client"
 
-#: src/CustomerSheet.php:47 templates/techlead/clients_by_tech.html.twig:128
+#: src/CustomerSheet.php:47 ⁨standard input⁩:128
 msgid "Customer sheet"
 msgstr "Fiche client"
 
@@ -1228,29 +1132,25 @@ msgstr "Cachet client"
 msgid "DAT"
 msgstr "DAT"
 
-#: templates/dat/step_system.html.twig:43
-#: templates/dat/step_system.html.twig:79
-#: templates/dat/step_summary.html.twig:80
+#: ⁨standard input⁩:43 ⁨standard input⁩:79 ⁨standard input⁩:80
 msgid "DNS name"
 msgstr "Nom DNS"
 
 #: src/CriPrice.php:54 src/CriPrice.php:91 src/CriPrice.php:178
-#: src/CriPrice.php:324 src/Monthly.php:436 src/CriType.php:93
-#: templates/wizard/step6_criprices_section.html.twig:34
+#: src/CriPrice.php:324 src/CriType.php:93 src/Monthly.php:436
+#: ⁨standard input⁩:34
 msgid "Daily rate"
 msgstr "Tarif journalier"
 
-#: templates/presale/annextype_default_lines.html.twig:88
-#: templates/presale/step_annexes.html.twig:296
+#: ⁨standard input⁩:296 ⁨standard input⁩:88
 msgid "Daily rate excl. VAT"
 msgstr "Tarif journalier HT"
 
-#: templates/report_occupation_result.html.twig:41
+#: ⁨standard input⁩:41
 msgid "Daily schedule"
 msgstr "Temps quotidien"
 
-#: src/Entity.php:79 src/Entity.php:313
-#: templates/entity/description.html.twig:40
+#: src/Entity.php:79 src/Entity.php:313 ⁨standard input⁩:40
 msgid "Data administrative"
 msgstr "Données administratives"
 
@@ -1262,16 +1162,9 @@ msgstr "Informations sur la base de données"
 msgid "Database installation"
 msgstr "Installation de la base de données"
 
-#: templates/entity/directhelpdesk_ticket_select.html.twig:39
-#: templates/entity/dat_card.html.twig:54
-#: templates/report_occupation_result.html.twig:46
-#: templates/directhelpdesk_modal.html.twig:78
-#: templates/directhelpdesk_form.html.twig:96
-#: templates/directhelpdesk_ticket_tab.html.twig:35
-#: templates/directhelpdesk_ticket_tab.html.twig:72
-#: templates/dat/step_general.html.twig:67
-#: templates/dat/step_summary.html.twig:66
-#: templates/ticket_overview.html.twig:251
+#: ⁨standard input⁩:46 ⁨standard input⁩:35 ⁨standard input⁩:72 ⁨standard input⁩:67
+#: ⁨standard input⁩:66 ⁨standard input⁩:96 ⁨standard input⁩:39 ⁨standard input⁩:54
+#: ⁨standard input⁩:251 ⁨standard input⁩:78
 msgid "Date"
 msgstr "Date"
 
@@ -1279,15 +1172,12 @@ msgstr "Date"
 msgid "Date of"
 msgstr "Date de"
 
-#: src/Gantt.php:329 src/Followup.php:882
-#: templates/wizard/step5_management.html.twig:57
-#: templates/contract_detail_form.html.twig:137
+#: src/Gantt.php:329 src/Followup.php:882 ⁨standard input⁩:57 ⁨standard input⁩:137
 msgid "Date of renewal"
 msgstr "Date de reconduction"
 
-#: src/Gantt.php:325 src/Followup.php:881 src/Entity.php:1068
-#: templates/wizard/step5_management.html.twig:53
-#: templates/contract_detail_form.html.twig:136
+#: src/Entity.php:1068 src/Gantt.php:325 src/Followup.php:881 ⁨standard input⁩:53
+#: ⁨standard input⁩:136
 msgid "Date of signature"
 msgstr "Date de signature"
 
@@ -1296,62 +1186,54 @@ msgid "Date of signature is required"
 msgstr "La date de signature est obligatoire"
 
 #: src/NotificationTargetPresaleProposal.php:135 src/PresaleProposal.php:190
-#: templates/presale/proposal_form.html.twig:114
-#: templates/presale/step_general.html.twig:72
-#: templates/presale/step_generate.html.twig:63
+#: ⁨standard input⁩:72 ⁨standard input⁩:114 ⁨standard input⁩:63
 msgid "Date of the contract"
 msgstr "Date du contrat"
 
-#: templates/interventionstakeholder_list.html.twig:57
+#: ⁨standard input⁩:57
 msgid "Day"
 msgid_plural "Days"
 msgstr[0] "Jour"
 msgstr[1] "Jours"
 msgstr[2] "Jours"
 
-#: templates/wizard/step6_stakeholders_section.html.twig:68
-#: templates/presale/annextype_default_lines.html.twig:93
-#: templates/presale/step_annexes.html.twig:301
+#: ⁨standard input⁩:301 ⁨standard input⁩:93 ⁨standard input⁩:68
 msgid "Days"
 msgstr "Jours"
 
-#: templates/entity/kiflo_leads_tab.html.twig:92
-#: templates/entity/kiflo_leads_tab.html.twig:182
+#: ⁨standard input⁩:92 ⁨standard input⁩:182
 msgid "Deadline"
 msgstr "Date limite"
 
-#: templates/entity/kiflo_leads_tab.html.twig:171
+#: ⁨standard input⁩:171
 msgid "Deal"
 msgstr "Accord"
 
-#: templates/presale/step_general.html.twig:47
+#: ⁨standard input⁩:47
 msgid "Deduced from the annexes:"
 msgstr "Déduit des annexes :"
 
-#: templates/wizard/step6_criprices_section.html.twig:44
-#: templates/wizard/step6_criprices_section.html.twig:66
-#: templates/wizard/step6_criprices_section.html.twig:68
-#: templates/config_presale_form.html.twig:165
+#: ⁨standard input⁩:165 ⁨standard input⁩:44 ⁨standard input⁩:66 ⁨standard input⁩:68
 msgid "Default"
 msgstr "Par défaut"
 
-#: templates/config_options_form.html.twig:87
+#: ⁨standard input⁩:87
 msgid "Default Business list for general monitoring"
 msgstr "Liste par défaut des commerciaux pour le suivi général"
 
-#: templates/config_presale_form.html.twig:71
+#: ⁨standard input⁩:71
 msgid "Default VAT rate (%)"
 msgstr "Taux de TVA par défaut (%)"
 
-#: templates/config_options_form.html.twig:120
+#: ⁨standard input⁩:120
 msgid "Default contact type"
 msgstr "Type de contact par défaut"
 
-#: templates/config_options_form.html.twig:116
+#: ⁨standard input⁩:116
 msgid "Default document category"
 msgstr "Catégorie de document par défaut"
 
-#: templates/config_cri_form.html.twig:51
+#: ⁨standard input⁩:51
 msgid "Default duration"
 msgstr "Durée par défaut"
 
@@ -1359,7 +1241,7 @@ msgstr "Durée par défaut"
 msgid "Default estimate"
 msgstr "Chiffrage par défaut"
 
-#: templates/config_options_form.html.twig:112
+#: ⁨standard input⁩:112
 msgid "Default intervention type"
 msgstr "Type d'intervention par défaut"
 
@@ -1372,11 +1254,11 @@ msgstr "Ligne par défaut « %s » : nombre invalide"
 msgid "Default lines"
 msgstr "Lignes par défaut"
 
-#: templates/preference_form.html.twig:79
+#: ⁨standard input⁩:79
 msgid "Default list of Business for the general monitoring"
 msgstr "Liste par défaut des commerciaux pour le suivi général"
 
-#: templates/preference_form.html.twig:86
+#: ⁨standard input⁩:86
 msgid "Default list of companies for the general monitoring"
 msgstr "Liste par défaut des sociétés pour le suivi général"
 
@@ -1388,62 +1270,44 @@ msgstr "Origine par défaut des demandes de clients existants"
 msgid "Default parent entity is not configured"
 msgstr "L'entité parente par défaut n'est pas configurée"
 
-#: templates/config_options_form.html.twig:107
+#: ⁨standard input⁩:107
 msgid "Default service contract type"
 msgstr "Type de contrat de service par défaut"
 
-#: templates/config_options_form.html.twig:102
+#: ⁨standard input⁩:102
 msgid "Default service period state"
 msgstr "Statut de prestation par défaut"
 
-#: templates/config_cri_form.html.twig:57
+#: ⁨standard input⁩:57
 msgid "Default time AM"
 msgstr "Heure par défaut - Matin"
 
-#: templates/config_cri_form.html.twig:59
+#: ⁨standard input⁩:59
 msgid "Default time PM"
 msgstr "Heure par défaut - Après midi"
 
-#: templates/interventionstakeholder_list.html.twig:42
-#: templates/interventionstakeholder_list.html.twig:60
-#: templates/presale/step_client.html.twig:88
-#: templates/presale/estimate_table.html.twig:61
-#: templates/presale/annextype_default_lines.html.twig:66
-#: templates/presale/estimate_form.html.twig:107
-#: templates/presale/step_annexes.html.twig:102
-#: templates/presale/step_annexes.html.twig:230
-#: templates/dat/step_system.html.twig:62
-#: templates/dat/config_form.html.twig:62
-#: templates/config_presale_form.html.twig:93
+#: ⁨standard input⁩:93 ⁨standard input⁩:88 ⁨standard input⁩:102 ⁨standard input⁩:230
+#: ⁨standard input⁩:61 ⁨standard input⁩:66 ⁨standard input⁩:107 ⁨standard input⁩:62
+#: ⁨standard input⁩:42 ⁨standard input⁩:60
 msgid "Delete"
 msgstr "Supprimer"
 
-#: templates/wizard/layout.html.twig:180
+#: ⁨standard input⁩:180
 msgid "Delete and reinitialize"
 msgstr "Supprimer et réinitialiser"
 
-#: templates/entity/description.html.twig:261
-#: templates/entity/description.html.twig:333
-#: templates/entity/contacts_card.html.twig:84
-#: templates/entity/business_card.html.twig:65
-#: templates/entity/techleads_card.html.twig:79
-#: templates/entity/projectmanagers_card.html.twig:79
-#: templates/presale/outcome_buttons.html.twig:58
-#: templates/cridetail_for_ticket.html.twig:273
-#: templates/contract_detail_form.html.twig:209
-#: templates/config_presale_form.html.twig:178
+#: ⁨standard input⁩:178 ⁨standard input⁩:273 ⁨standard input⁩:58 ⁨standard input⁩:84
+#: ⁨standard input⁩:79 ⁨standard input⁩:261 ⁨standard input⁩:333 ⁨standard input⁩:65
+#: ⁨standard input⁩:209
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
-#: templates/entity/contracts_tab.html.twig:91
-#: templates/cridetail_add_reports.html.twig:50
-#: templates/editorsubscription_wizard.html.twig:106
-#: templates/cri_form.html.twig:60
+#: ⁨standard input⁩:91 ⁨standard input⁩:106 ⁨standard input⁩:60 ⁨standard input⁩:50
 msgctxt "button"
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
-#: templates/presale/outcome_buttons.html.twig:59
+#: ⁨standard input⁩:59
 msgid ""
 "Delete this proposal permanently, with its annexes? The generated documents "
 "are kept."
@@ -1451,38 +1315,26 @@ msgstr ""
 "Supprimer définitivement cette proposition et ses annexes ? Les documents "
 "générés sont conservés."
 
-#: templates/wizard/layout.html.twig:178
+#: ⁨standard input⁩:178
 msgid "Deleting…"
 msgstr "Suppression..."
 
-#: templates/entity/directhelpdesk_ticket_select.html.twig:43
-#: templates/entity/kiflo_leads_tab.html.twig:101
-#: templates/entity/kiflo_leads_tab.html.twig:199
-#: templates/generatecri_wizard.html.twig:103
-#: templates/generatecri_wizard.html.twig:158
-#: templates/generatecri_wizard.html.twig:181
-#: templates/generatecri_wizard.html.twig:252
-#: templates/directhelpdesk_modal.html.twig:74
-#: templates/directhelpdesk_ticket_tab.html.twig:38
-#: templates/directhelpdesk_ticket_tab.html.twig:75
-#: templates/presale/estimate_table.html.twig:49
-#: templates/presale/estimate_table.html.twig:50
-#: templates/presale/estimate_table.html.twig:70
+#: ⁨standard input⁩:38 ⁨standard input⁩:75 ⁨standard input⁩:49 ⁨standard input⁩:50
+#: ⁨standard input⁩:70 ⁨standard input⁩:43 ⁨standard input⁩:101 ⁨standard input⁩:199
+#: ⁨standard input⁩:74 ⁨standard input⁩:103 ⁨standard input⁩:158 ⁨standard input⁩:181
+#: ⁨standard input⁩:252
 msgid "Description"
 msgstr "Description"
 
-#: templates/presale/annextype_default_lines.html.twig:48
-#: templates/presale/annextype_default_lines.html.twig:86
-#: templates/presale/step_annexes.html.twig:81
-#: templates/presale/step_annexes.html.twig:294
+#: ⁨standard input⁩:81 ⁨standard input⁩:294 ⁨standard input⁩:48 ⁨standard input⁩:86
 msgid "Designation"
 msgstr "Désignation"
 
-#: templates/checkschema_result.html.twig:85
+#: ⁨standard input⁩:85
 msgid "Destructive queries"
 msgstr "Requêtes destructives"
 
-#: templates/cri_form.html.twig:110
+#: ⁨standard input⁩:110
 msgid "Detail of the realized works"
 msgstr "Détail des travaux réalisés"
 
@@ -1490,7 +1342,7 @@ msgstr "Détail des travaux réalisés"
 msgid "Detail of work done"
 msgstr "Détail des travaux réalisés"
 
-#: src/PresaleAnnexType.php:121 templates/presale/step_annexes.html.twig:279
+#: src/PresaleAnnexType.php:121 ⁨standard input⁩:279
 msgid "Details"
 msgstr "Détails"
 
@@ -1498,19 +1350,19 @@ msgstr "Détails"
 msgid "Direct helpdesk"
 msgstr "Interventions non facturées"
 
-#: templates/config_cri_form.html.twig:61
+#: ⁨standard input⁩:61
 msgid "Disable creation date in header of PDF"
 msgstr "Désactiver la date de création dans l'entête des PDF"
 
-#: templates/config_cri_form.html.twig:47
+#: ⁨standard input⁩:47
 msgid "Display PDF"
 msgstr "Afficher le PDF"
 
-#: templates/config_options_form.html.twig:92
+#: ⁨standard input⁩:92
 msgid "Display comments from the company in the CRI"
 msgstr "Afficher les commentaires de la société dans le CRI"
 
-#: templates/kiflo/config_form.html.twig:48
+#: ⁨standard input⁩:48
 msgid ""
 "Displays the leads shared by the publisher in Kiflo, in the clients "
 "management and on the dashboard."
@@ -1518,15 +1370,14 @@ msgstr ""
 "Affiche les prospects partagés par l'éditeur dans Kiflo, dans la gestion des "
 "clients et sur le tableau de bord."
 
-#: templates/entity/dat_card.html.twig:53
+#: ⁨standard input⁩:53
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] "Document"
 msgstr[1] "Documents"
 msgstr[2] "Documents"
 
-#: templates/dat/config_form.html.twig:59
-#: templates/config_presale_form.html.twig:90
+#: ⁨standard input⁩:90 ⁨standard input⁩:59
 msgid "Download"
 msgstr "Télécharger"
 
@@ -1534,7 +1385,7 @@ msgstr "Télécharger"
 msgid "Download the JSON file"
 msgstr "Télécharger le fichier JSON"
 
-#: templates/presale/proposal_form.html.twig:61
+#: ⁨standard input⁩:61
 msgid "Download the proposal"
 msgstr "Télécharger la proposition"
 
@@ -1542,29 +1393,23 @@ msgstr "Télécharger la proposition"
 msgid "Draft"
 msgstr "Brouillon"
 
-#: templates/preference_form.html.twig:65
+#: ⁨standard input⁩:65
 msgid "Drag and drop the tabs to change their order in the clients management."
 msgstr ""
 "Faites glisser les onglets pour modifier leur ordre dans la gestion des "
 "clients."
 
-#: templates/presale/proposal_form.html.twig:90
+#: ⁨standard input⁩:90
 msgid "Duplicate"
 msgstr "Dupliquer"
 
-#: templates/tickettask_duplicate_row.html.twig:36
+#: ⁨standard input⁩:36
 msgctxt "button"
 msgid "Duplicate"
 msgstr "Dupliquer"
 
-#: templates/entity/directhelpdesk_ticket_select.html.twig:41
-#: templates/wizard/step4_contract.html.twig:81
-#: templates/generatecri_wizard.html.twig:160
-#: templates/generatecri_wizard.html.twig:196
-#: templates/directhelpdesk_modal.html.twig:83
-#: templates/directhelpdesk_form.html.twig:105
-#: templates/directhelpdesk_ticket_tab.html.twig:37
-#: templates/directhelpdesk_ticket_tab.html.twig:74
+#: ⁨standard input⁩:37 ⁨standard input⁩:74 ⁨standard input⁩:105 ⁨standard input⁩:41
+#: ⁨standard input⁩:83 ⁨standard input⁩:81 ⁨standard input⁩:160 ⁨standard input⁩:196
 msgid "Duration"
 msgstr "Durée"
 
@@ -1572,12 +1417,11 @@ msgstr "Durée"
 msgid "Duration is required"
 msgstr "La durée est obligatoire"
 
-#: templates/wizard/step5_management.html.twig:116
-#: templates/contract_detail_form.html.twig:188
+#: ⁨standard input⁩:116 ⁨standard input⁩:188
 msgid "Duration of moving"
 msgstr "Durée du trajet"
 
-#: templates/presale/step_generate.html.twig:131
+#: ⁨standard input⁩:131
 msgid ""
 "Each generation creates a new version of the document; the previous ones are "
 "kept."
@@ -1585,7 +1429,7 @@ msgstr ""
 "Chaque génération crée une nouvelle version du document ; les précédentes "
 "sont conservées."
 
-#: templates/presale/annextype_import.html.twig:47
+#: ⁨standard input⁩:47
 msgid ""
 "Each model is created in the active entity. A model whose name already "
 "exists is imported as a copy."
@@ -1593,7 +1437,7 @@ msgstr ""
 "Chaque modèle est créé dans l'entité active. Un modèle dont le nom existe "
 "déjà est importé comme copie."
 
-#: templates/techlead/assignment_rules.html.twig:75
+#: ⁨standard input⁩:75
 #, php-format
 msgid ""
 "Each rule is created in the entity %1$s (recursive) and assigns the main "
@@ -1604,25 +1448,21 @@ msgstr ""
 "responsable technique principal aux tickets du client ouverts avec la source "
 "de demande \"%2$s\" et non encore attribués à un technicien"
 
-#: templates/entity/editorsubscription_tab.html.twig:113
-#: templates/contract_detail_form.html.twig:47
+#: ⁨standard input⁩:113 ⁨standard input⁩:47
 msgid "Edit"
 msgstr "Editer"
 
-#: templates/presale/proposal_form.html.twig:66
+#: ⁨standard input⁩:66
 msgid "Edit in the wizard"
 msgstr "Modifier dans l'assistant"
 
-#: src/PresaleConversion.php:228 templates/entity/proposals_tab.html.twig:164
-#: templates/entity/editorsubscription_tab.html.twig:94
+#: src/PresaleConversion.php:228 ⁨standard input⁩:164 ⁨standard input⁩:94
 msgid "Editor"
 msgstr "Editeur"
 
-#: src/EditorSubscription.php:159 src/EditorSubscription.php:777
 #: src/NotificationTargetEditorSubscription.php:121
-#: templates/editorsubscription_fields.html.twig:62
-#: templates/cridetail_for_ticket.html.twig:95
-#: templates/contract_detail_form.html.twig:60
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:777
+#: ⁨standard input⁩:95 ⁨standard input⁩:62 ⁨standard input⁩:60
 msgid "Editor subscription"
 msgstr "Souscription Editeur"
 
@@ -1631,54 +1471,30 @@ msgstr "Souscription Editeur"
 msgid "Elements added through the wizard"
 msgstr "Éléments ajoutés via l'assistant"
 
-#: templates/entity/kiflo_leads_tab.html.twig:149
-#: templates/wizard/step2_contact_block.html.twig:85
-#: templates/wizard/step1_entity.html.twig:84
-#: templates/presale/step_client.html.twig:112
-#: templates/presale/step_client.html.twig:244
-#: templates/presale/step_team.html.twig:89
-#: templates/presale/client_form.html.twig:71
-#: templates/presale/client_form.html.twig:95
+#: ⁨standard input⁩:112 ⁨standard input⁩:244 ⁨standard input⁩:89 ⁨standard input⁩:71
+#: ⁨standard input⁩:95 ⁨standard input⁩:149 ⁨standard input⁩:84 ⁨standard input⁩:85
 msgid "Email"
 msgid_plural "Emails"
 msgstr[0] "Email"
 msgstr[1] "Emails"
 msgstr[2] "Emails"
 
-#: templates/entity/description.html.twig:74
-#: templates/entity/description.html.twig:124
-#: templates/entity/description.html.twig:225
-#: templates/entity/description.html.twig:313
-#: templates/entity/contacts_card.html.twig:44
-#: templates/entity/business_card.html.twig:45
-#: templates/entity/techleads_card.html.twig:47
-#: templates/entity/projectmanagers_card.html.twig:47
+#: ⁨standard input⁩:44 ⁨standard input⁩:47 ⁨standard input⁩:74 ⁨standard input⁩:124
+#: ⁨standard input⁩:225 ⁨standard input⁩:313 ⁨standard input⁩:45
 msgid "Email address"
 msgstr "Courriel"
 
-#: templates/presale/annextype_default_lines.html.twig:122
+#: ⁨standard input⁩:122
 msgid "Empty months: 12."
 msgstr "Mois vides : 12."
 
-#: src/EditorSubscription.php:187
 #: src/NotificationTargetEditorSubscription.php:110
 #: src/NotificationTargetEditorSubscription.php:147
-#: templates/entity/proposals_tab.html.twig:151
-#: templates/entity/contracts_tab.html.twig:55
-#: templates/entity/editorsubscription_tab.html.twig:79
-#: templates/wizard/step6_intervention_block.html.twig:65
-#: templates/report_moving_form.html.twig:41
-#: templates/report_search_form.html.twig:40
-#: templates/monthly_criterias.html.twig:50
-#: templates/followup_criterias.html.twig:75
-#: templates/followup_criterias.html.twig:80
-#: templates/editorsubscription_fields.html.twig:120
-#: templates/cridetail_for_ticket.html.twig:142
-#: templates/cridetail_for_ticket.html.twig:195
-#: templates/contractday_form.html.twig:69
-#: templates/contract_detail_form.html.twig:99
-#: templates/cridetail_planning_item.html.twig:33
-#: templates/report_occupation_form.html.twig:41
+#: src/EditorSubscription.php:187 ⁨standard input⁩:75 ⁨standard input⁩:80
+#: ⁨standard input⁩:50 ⁨standard input⁩:40 ⁨standard input⁩:41 ⁨standard input⁩:142
+#: ⁨standard input⁩:195 ⁨standard input⁩:55 ⁨standard input⁩:151 ⁨standard input⁩:79
+#: ⁨standard input⁩:33 ⁨standard input⁩:69 ⁨standard input⁩:65 ⁨standard input⁩:120
+#: ⁨standard input⁩:99
 msgid "End date"
 msgstr "Date de fin"
 
@@ -1686,8 +1502,8 @@ msgstr "Date de fin"
 msgid "End date cannot be less than begin date"
 msgstr "La date de début ne peut pas être inférieure à la date de fin"
 
-#: src/EditorSubscriptionWizard.php:160 src/WizardController.php:328
-#: src/WizardController.php:956
+#: src/WizardController.php:328 src/WizardController.php:956
+#: src/EditorSubscriptionWizard.php:160
 msgid "End date is required"
 msgstr "La date de fin est obligatoire"
 
@@ -1695,67 +1511,50 @@ msgstr "La date de fin est obligatoire"
 msgid "End date must be after the begin date !"
 msgstr "La date de fin doit être postérieure à la date de début!"
 
-#: front/report_occupation.form.php:43 front/directhelpdesk.php:41
-#: front/directhelpdesk.php:44 front/directhelpdesk.php:46
-#: front/report_moving.form.php:43 front/generatecri.form.php:127
-#: front/config.form.php:78 front/directhelpdesk.form.php:187
+#: setup.php:271 front/report.form.php:46 front/directhelpdesk.form.php:187
 #: front/directhelpdesk.form.php:190 front/directhelpdesk.form.php:192
-#: front/report.form.php:46 front/entity.php:71 front/entity.php:74
-#: front/entity.php:76 front/generatecri.php:35 front/generatecri.php:38
-#: front/generatecri.php:40 front/cridetail.form.php:53
-#: front/cridetail.form.php:56 front/cridetail.form.php:58
-#: front/addelements.form.php:39 setup.php:271 src/Preference.php:191
-#: src/GenerateCRI.php:940 src/TaskCategory.php:100 src/Profile.php:51
-#: src/Profile.php:102 templates/wizard/mode_choice.html.twig:36
+#: front/entity.php:71 front/entity.php:74 front/entity.php:76
+#: front/generatecri.php:35 front/generatecri.php:38 front/generatecri.php:40
+#: front/directhelpdesk.php:41 front/directhelpdesk.php:44
+#: front/directhelpdesk.php:46 front/generatecri.form.php:127
+#: front/report_occupation.form.php:43 front/report_moving.form.php:43
+#: front/addelements.form.php:39 front/config.form.php:78
+#: front/cridetail.form.php:53 front/cridetail.form.php:56
+#: front/cridetail.form.php:58 src/GenerateCRI.php:940 src/Profile.php:51
+#: src/Profile.php:102 src/TaskCategory.php:100 src/Preference.php:191
+#: ⁨standard input⁩:36
 msgid "Entities portal"
 msgstr "Portail Clients"
 
-#: templates/entity/status_tab.html.twig:115
+#: ⁨standard input⁩:115
 msgid "Entities with a publisher subscription but no active contract:"
 msgstr "Clients avec une souscription éditeur mais sans contrat actif :"
 
-#: templates/entity/status_tab.html.twig:46
+#: ⁨standard input⁩:46
 msgid "Entities with an active contract but no publisher subscription:"
 msgstr "Clients avec un contrat actif mais sans souscription éditeur :"
 
-#: templates/entity/status_tab.html.twig:67
+#: ⁨standard input⁩:67
 msgid "Entities with an expired publisher subscription:"
 msgstr "Clients avec une souscription éditeur expirée :"
 
-#: src/EditorSubscription.php:177
 #: src/NotificationTargetEditorSubscription.php:104
 #: src/NotificationTargetEditorSubscription.php:141
-#: src/NotificationTargetContract.php:116
+#: src/EditorSubscription.php:177 src/NotificationTargetContract.php:116
 #: src/NotificationTargetContract.php:151 src/NotificationTargetEntity.php:83
-#: src/NotificationTargetEntity.php:108
-#: templates/report_moving_result.html.twig:40
-#: templates/entity/proposals_tab.html.twig:147
-#: templates/entity/proposals_tab.html.twig:203
-#: templates/entity/contracts_tab.html.twig:51
-#: templates/entity/editorsubscription_tab.html.twig:72
-#: templates/wizard/step2_contact_block.html.twig:95
-#: templates/wizard/step6_intervention_block.html.twig:94
-#: templates/wizard/step1_select_entity.html.twig:45
-#: templates/wizard/step4_contract.html.twig:94
-#: templates/report_moving_form.html.twig:45
-#: templates/criprice_for_critype.html.twig:34
-#: templates/directhelpdesk_form.html.twig:58
-#: templates/directhelpdesk_form.html.twig:68
-#: templates/followup_criterias.html.twig:48
-#: templates/company_form.html.twig:50
-#: templates/cridetail_for_ticket.html.twig:70
-#: templates/editorsubscription_wizard.html.twig:37
-#: templates/editorsubscription_wizard.html.twig:43
-#: templates/cridetail_planning_item.html.twig:30
-#: templates/ticket_overview.html.twig:38
-#: templates/ticket_overview.html.twig:247
+#: src/NotificationTargetEntity.php:108 ⁨standard input⁩:48 ⁨standard input⁩:34
+#: ⁨standard input⁩:45 ⁨standard input⁩:70 ⁨standard input⁩:58 ⁨standard input⁩:68
+#: ⁨standard input⁩:51 ⁨standard input⁩:147 ⁨standard input⁩:203 ⁨standard input⁩:72
+#: ⁨standard input⁩:30 ⁨standard input⁩:50 ⁨standard input⁩:37 ⁨standard input⁩:43
+#: ⁨standard input⁩:38 ⁨standard input⁩:247 ⁨standard input⁩:40 ⁨standard input⁩:94
+#: ⁨standard input⁩:95
 msgid "Entity"
 msgid_plural "Entities"
 msgstr[0] "Entité"
 msgstr[1] "Entités"
 msgstr[2] "Entités"
 
-#: templates/wizard/layout.html.twig:82
+#: ⁨standard input⁩:82
 msgid "Entity already exists"
 msgstr "L'entité existe déjà"
 
@@ -1763,20 +1562,20 @@ msgstr "L'entité existe déjà"
 msgid "Entity data is missing"
 msgstr "Les données de l'entité sont manquantes"
 
-#: src/EditorSubscriptionWizard.php:239 src/Company.php:224 src/Company.php:266
 #: src/WizardController.php:372 src/WizardController.php:378
 #: src/WizardController.php:393 src/WizardController.php:472
 #: src/WizardController.php:478 src/WizardController.php:572
 #: src/WizardController.php:1019 src/WizardController.php:1607
-#: src/WizardController.php:1623
+#: src/WizardController.php:1623 src/Company.php:224 src/Company.php:266
+#: src/EditorSubscriptionWizard.php:239
 msgid "Entity not found"
 msgstr "Entité non trouvée"
 
-#: templates/config_presale_form.html.twig:65
+#: ⁨standard input⁩:65
 msgid "Entity of the prospects and proposals"
 msgstr "Entité des prospects et des propositions"
 
-#: templates/config_options_form.html.twig:125
+#: ⁨standard input⁩:125
 msgid "Entity used to archive customers."
 msgstr "Entité utilisé pour archiver les clients"
 
@@ -1797,12 +1596,11 @@ msgid "Error unarchiving entity"
 msgstr "Erreur au désarchivage de l'entité"
 
 #: front/presaleestimate.form.php:44 src/PresaleProposal.php:237
-#: templates/presale/estimate_form.html.twig:51
-#: templates/presale/step_annexes.html.twig:269
+#: ⁨standard input⁩:269 ⁨standard input⁩:51
 msgid "Estimate"
 msgstr "Chiffrage"
 
-#: templates/presale/step_annexes.html.twig:113
+#: ⁨standard input⁩:113
 msgid "Estimate by the project manager"
 msgstr "Chiffrage par le chef de projet"
 
@@ -1816,11 +1614,11 @@ msgstr ""
 "où il reste modifiable. Imprimé sous l'objet (balise {{CHIFFRAGE}} du modèle "
 "d'annexe). Non utilisé par les annexes de souscription."
 
-#: src/PresaleProposal.php:89 templates/presale/proposals_table.html.twig:64
+#: src/PresaleProposal.php:89 ⁨standard input⁩:64
 msgid "Estimate requested"
 msgstr "Chiffrage demandé"
 
-#: src/PresaleProposal.php:90 templates/presale/proposals_table.html.twig:66
+#: src/PresaleProposal.php:90 ⁨standard input⁩:66
 msgid "Estimate validated"
 msgstr "Chiffrage validé"
 
@@ -1829,19 +1627,19 @@ msgstr "Chiffrage validé"
 msgid "Estimate, \"%s\": invalid number of days"
 msgstr "Chiffrage, « %s » : nombre de jours invalide"
 
-#: templates/cridetail_for_contractday.html.twig:55
+#: ⁨standard input⁩:55
 msgid "Estimated number of remaining days"
 msgstr "Estimation Nombre de jours restant"
 
-#: templates/presale/home.html.twig:90
+#: ⁨standard input⁩:90
 msgid "Estimates to do"
 msgstr "Chiffrages à faire"
 
-#: templates/techlead/clients_by_tech.html.twig:241
+#: ⁨standard input⁩:241
 msgid "Every client has a tech lead"
 msgstr "Chaque client a un tech lead"
 
-#: templates/techlead/clients_by_tech.html.twig:217
+#: ⁨standard input⁩:217
 msgid "Every client with tech leads has a main one"
 msgstr "Chaque client disposant de tech lead en a un principal"
 
@@ -1849,24 +1647,23 @@ msgstr "Chaque client disposant de tech lead en a un principal"
 msgid "Exceeding"
 msgstr "Dépassement"
 
-#: src/PresaleClient.php:154 templates/presale/step_client.html.twig:158
+#: src/PresaleClient.php:154 ⁨standard input⁩:158
 msgid "Existing customer"
 msgstr "Client existant"
 
-#: templates/presale/step_client.html.twig:193
-#: templates/presale/client_form.html.twig:52
+#: ⁨standard input⁩:193 ⁨standard input⁩:52
 msgid "Existing customer:"
 msgstr "Client existant :"
 
-#: templates/editorsubscription_fields.html.twig:128
+#: ⁨standard input⁩:128
 msgid "Expired"
 msgstr "Expirée"
 
-#: templates/entity/customer_summary.html.twig:122
+#: ⁨standard input⁩:122
 msgid "Expired on"
 msgstr "Expiré le"
 
-#: templates/entity/editorsubscription_tab.html.twig:52
+#: ⁨standard input⁩:52
 msgid "Expired only"
 msgstr "Expirés uniquement"
 
@@ -1876,26 +1673,23 @@ msgstr "Expirés uniquement"
 msgid "Expired publisher subscriptions"
 msgstr "Souscriptions éditeurs expirées"
 
-#: templates/entity/editorsubscription_tab.html.twig:40
+#: ⁨standard input⁩:40
 msgid "Expired subscriptions"
 msgstr "Souscriptions expirées"
 
-#: templates/entity/proposals_tab.html.twig:69
-#: templates/entity/proposals_tab.html.twig:136
+#: ⁨standard input⁩:69 ⁨standard input⁩:136
 msgid "Expired subscriptions to renew"
 msgstr "Souscriptions expirées à renouveler"
 
-#: src/PresaleAnnexType.php:155 templates/entity/references.html.twig:50
-#: templates/followup_export_toolbar.html.twig:40
+#: src/PresaleAnnexType.php:155 ⁨standard input⁩:40 ⁨standard input⁩:50
 msgid "Export"
 msgstr "Export"
 
-#: templates/entity/unbilled_tab.html.twig:130
-#: templates/entity/editorsubscription_tab.html.twig:56
+#: ⁨standard input⁩:56 ⁨standard input⁩:130
 msgid "Export CSV"
 msgstr "Export CSV"
 
-#: templates/entity/references.html.twig:38
+#: ⁨standard input⁩:38
 msgid "Export all the references"
 msgstr "Exporter toutes les références"
 
@@ -1907,9 +1701,7 @@ msgstr "Exporter en JSON"
 msgid "Failed to check the sanity of the tables!"
 msgstr "Échec de la vérification de l'intégrité des tables !"
 
-#: templates/entity/description.html.twig:73
-#: templates/entity/description.html.twig:108
-#: templates/wizard/step1_entity.html.twig:78
+#: ⁨standard input⁩:73 ⁨standard input⁩:108 ⁨standard input⁩:78
 msgid "Fax"
 msgstr "Fax"
 
@@ -1917,30 +1709,27 @@ msgstr "Fax"
 msgid "File modifications"
 msgstr "Modifications de fichiers"
 
-#: templates/entity/contracts_tab.html.twig:38
+#: ⁨standard input⁩:38
 msgid "Filtered"
 msgstr "Filtré"
 
-#: templates/entity/contracts_tab.html.twig:37
+#: ⁨standard input⁩:37
 msgid "Filtered by default state list"
 msgstr "Liste filtrée par défaut sur le statut"
 
-#: src/PresaleProposal.php:61 src/PresaleClient.php:134
-#: templates/entity/proposals_tab.html.twig:49
-#: templates/presale/home.html.twig:70
+#: src/PresaleClient.php:134 src/PresaleProposal.php:61 ⁨standard input⁩:70
+#: ⁨standard input⁩:49
 msgid "Financial proposal"
 msgid_plural "Financial proposals"
 msgstr[0] "Proposition financière"
 msgstr[1] "Propositions financières"
 msgstr[2] "Propositions financières"
 
-#: templates/wizard/step3_subscription.html.twig:91
-#: templates/wizard/step3_subscription.html.twig:93
+#: ⁨standard input⁩:91 ⁨standard input⁩:93
 msgid "Finish without contract"
 msgstr "Terminer sans ajout de contrat"
 
-#: templates/wizard/step2_contact_block.html.twig:59
-#: templates/presale/step_client.html.twig:102
+#: ⁨standard input⁩:102 ⁨standard input⁩:59
 msgid "First name"
 msgstr "Prénom"
 
@@ -1948,7 +1737,7 @@ msgstr "Prénom"
 msgid "First name is required"
 msgstr "Le prénom est obligatoire"
 
-#: templates/presale/home.html.twig:62
+#: ⁨standard input⁩:62
 msgid "For a new prospect or a prospect already known."
 msgstr "Pour un nouveau prospect ou un prospect déjà connu."
 
@@ -1965,7 +1754,7 @@ msgstr "Depuis la proposition %s"
 msgid "GANTT"
 msgstr "GANTT"
 
-#: templates/config_options_form.html.twig:145
+#: ⁨standard input⁩:145
 msgid ""
 "GLPI state (visible on contracts) that triggers period closure and is "
 "applied to the contract when all periods are closed."
@@ -1974,22 +1763,20 @@ msgstr ""
 "période et est appliqué au contrat lorsque toutes les périodes sont "
 "clôturées."
 
-#: src/Followup.php:48 src/Entity.php:76 src/Entity.php:272
-#: templates/followup_criterias.html.twig:42
+#: src/Entity.php:76 src/Entity.php:272 src/Followup.php:48 ⁨standard input⁩:42
 msgid "General follow-up"
 msgstr "Suivi général"
 
-#: src/DatWizard.php:73 templates/presale/step_general.html.twig:56
-#: templates/dat/step_general.html.twig:39
+#: src/DatWizard.php:73 ⁨standard input⁩:56 ⁨standard input⁩:39
 msgid "General information"
 msgstr "Informations générales"
 
-#: templates/generatecri_wizard.html.twig:265
+#: ⁨standard input⁩:265
 msgctxt "button"
 msgid "Generate"
 msgstr "Générer"
 
-#: templates/presale/step_generate.html.twig:137
+#: ⁨standard input⁩:137
 msgid "Generate a new version"
 msgstr "Générer une nouvelle version"
 
@@ -1997,11 +1784,11 @@ msgstr "Générer une nouvelle version"
 msgid "Generate report intervention"
 msgstr "Générer le rapport d'intervention"
 
-#: templates/dat/layout.html.twig:106
+#: ⁨standard input⁩:106
 msgid "Generate the document"
 msgstr "Générer le document"
 
-#: templates/presale/step_generate.html.twig:137
+#: ⁨standard input⁩:137
 msgid "Generate the proposal"
 msgstr "Générer la proposition"
 
@@ -2013,7 +1800,7 @@ msgstr "Générée"
 msgid "Generated from the clients management portal"
 msgstr "Généré à partir du portail de gestion des clients"
 
-#: templates/wizard/step4_contract.html.twig:124
+#: ⁨standard input⁩:124
 msgid "Generated proposal: linked to the contract"
 msgstr "Proposition générée : liée au contrat"
 
@@ -2025,7 +1812,7 @@ msgstr "Génération"
 msgid "Generation of the intervention report"
 msgstr "Génération du rapport d'intervention"
 
-#: src/Followup.php:862 templates/contractday_form.html.twig:127
+#: src/Followup.php:862 ⁨standard input⁩:127
 msgid "Guaranteed package"
 msgstr "Forfait garanti"
 
@@ -2037,13 +1824,11 @@ msgstr "Certificat HTTPS"
 msgid "Help on contract"
 msgstr "Assistance sur contrat"
 
-#: templates/report_search_form.html.twig:36
+#: ⁨standard input⁩:36
 msgid "Helpdesk reports"
 msgstr "Rapports d'interventions"
 
-#: templates/entity/unbilled_tab.html.twig:57
-#: templates/entity/unbilled_tab.html.twig:91
-#: templates/wizard/step6_stakeholders_section.html.twig:68
+#: ⁨standard input⁩:57 ⁨standard input⁩:91 ⁨standard input⁩:68
 msgid "Hour"
 msgid_plural "Hours"
 msgstr[0] "Heure"
@@ -2054,32 +1839,28 @@ msgstr[2] "Heures"
 msgid "Hour of"
 msgstr "Heure de"
 
-#: src/Contract.php:730 src/Contract.php:783 src/Config.php:229
+#: src/Config.php:229 src/Contract.php:730 src/Contract.php:783
 msgid "Hourly"
 msgstr "Horaire"
 
 #: src/CriPrice.php:56 src/CriPrice.php:93 src/CriPrice.php:178
-#: src/CriPrice.php:324 src/Monthly.php:437
-#: templates/wizard/step6_criprices_section.html.twig:34
+#: src/CriPrice.php:324 src/Monthly.php:437 ⁨standard input⁩:34
 msgid "Hourly rate"
 msgstr "Tarif horaire"
 
-#: templates/dat/step_system.html.twig:48
-#: templates/dat/step_system.html.twig:80
-#: templates/dat/step_summary.html.twig:81
+#: ⁨standard input⁩:48 ⁨standard input⁩:80 ⁨standard input⁩:81
 msgid "IP address"
 msgstr "Adresse IP"
 
-#: templates/generatecri_wizard.html.twig:124
+#: ⁨standard input⁩:124
 msgid "Impact"
 msgstr "Impact"
 
-#: templates/presale/annextype_import.html.twig:54
+#: ⁨standard input⁩:54
 msgid "Import"
 msgstr "Importer"
 
-#: src/PresaleAnnexType.php:238 templates/presale/annextype_import.html.twig:39
-#: templates/config_presale_form.html.twig:220
+#: src/PresaleAnnexType.php:238 ⁨standard input⁩:220 ⁨standard input⁩:39
 msgid "Import annex models"
 msgstr "Importer des modèles d'annexe"
 
@@ -2091,16 +1872,15 @@ msgstr "Action impossible car un rapport d'intervention existe"
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr "Génération impossible, aucune tâche planifiée créée"
 
-#: src/Monthly.php:350 src/PresaleProposal.php:293
+#: src/PresaleProposal.php:293 src/Monthly.php:350
 msgid "In progress"
 msgstr "En cours"
 
-#: templates/dat/step_system.html.twig:100
+#: ⁨standard input⁩:100
 msgid "In the tables of the document, one row per server, in this order."
 msgstr "Dans les tableaux du document, une ligne par serveur, dans cet ordre."
 
-#: templates/techlead/assignment_rules.html.twig:108
-#: templates/presale/step_annexes.html.twig:220
+#: ⁨standard input⁩:220 ⁨standard input⁩:108
 msgid "Inactive"
 msgstr "Inactive"
 
@@ -2112,10 +1892,9 @@ msgstr "Les informations ont bien été ajoutées."
 msgid "Informations successfully deleted."
 msgstr "Les informations ont bien été supprimées"
 
-#: src/Gantt.php:400 src/ContractDay.php:119 src/ContractDay.php:457
-#: src/Followup.php:855 src/Monthly.php:431
-#: templates/wizard/step6_intervention_block.html.twig:71
-#: templates/contractday_form.html.twig:94
+#: src/Gantt.php:400 src/Monthly.php:431 src/Followup.php:855
+#: src/ContractDay.php:119 src/ContractDay.php:457 ⁨standard input⁩:94
+#: ⁨standard input⁩:71
 msgid "Initial credit"
 msgstr "Crédit initial"
 
@@ -2131,7 +1910,7 @@ msgstr "Version initiale"
 msgid "Installed packages"
 msgstr "Paquets installés"
 
-#: templates/presale/step_general.html.twig:85
+#: ⁨standard input⁩:85
 msgid "Internal label"
 msgstr "Libellé interne"
 
@@ -2139,15 +1918,12 @@ msgstr "Libellé interne"
 msgid "Internal name"
 msgstr "Nom interne"
 
-#: src/EditorSubscription.php:185 src/EditorSubscription.php:793 hook.php:1046
-#: templates/editorsubscription_fields.html.twig:78
-#: templates/cridetail_for_ticket.html.twig:55
-#: templates/contract_detail_form.html.twig:83
+#: hook.php:1046 src/EditorSubscription.php:185 src/EditorSubscription.php:793
+#: ⁨standard input⁩:55 ⁨standard input⁩:78 ⁨standard input⁩:83
 msgid "Internet publication"
 msgstr "Publié sur internet"
 
-#: src/DirectHelpdesk.php:730 src/Contract.php:812
-#: templates/entity/unbilled_tab.html.twig:143
+#: src/DirectHelpdesk.php:730 src/Contract.php:812 ⁨standard input⁩:143
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] "Intervention"
@@ -2163,16 +1939,16 @@ msgstr "Date d'intervention"
 msgid "Intervention not saved yet"
 msgstr "La prestation n'est pas encore sauvegardée"
 
-#: templates/cridetail_periods.html.twig:33
+#: ⁨standard input⁩:33
 msgid "Intervention of contract"
 msgstr "Intervention des prestations"
 
-#: templates/cridetail_for_contractday.html.twig:32
+#: ⁨standard input⁩:32
 msgid "Intervention periods of contract"
 msgstr "Interventions de la prestation du contrat"
 
-#: setup.php:164 src/Cri.php:56 src/Profile.php:107 src/Config.php:241
-#: templates/cridetail_add_reports.html.twig:32
+#: setup.php:164 src/Config.php:241 src/Cri.php:56 src/Profile.php:107
+#: ⁨standard input⁩:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
 msgstr[0] "Rapport d'intervention"
@@ -2186,21 +1962,19 @@ msgstr[0] "Tâche d'intervention"
 msgstr[1] "Tâches d'interventions"
 msgstr[2] "Tâches d'interventions"
 
-#: src/CriType.php:45 templates/criprice_form.html.twig:44
-#: templates/wizard/step6_intervention_block.html.twig:86
+#: src/CriType.php:45 ⁨standard input⁩:44 ⁨standard input⁩:86
 msgid "Intervention type"
 msgid_plural "Intervention types"
 msgstr[0] "Type d'intervention"
 msgstr[1] "Types d'intervention"
 msgstr[2] "Types d'intervention"
 
-#: src/CriDetail.php:493 src/CriDetail.php:746
-#: templates/contract_link_dropdown.html.twig:62
-#: templates/contract_link_dropdown.html.twig:78
+#: src/CriDetail.php:493 src/CriDetail.php:746 ⁨standard input⁩:62
+#: ⁨standard input⁩:78
 msgid "Intervention with contract"
 msgstr "Intervention sous contrat"
 
-#: src/ContractDay.php:56 src/Entity.php:92 src/Entity.php:405
+#: src/Entity.php:92 src/Entity.php:405 src/ContractDay.php:56
 msgid "Interventions reports"
 msgstr "Rapports d'interventions"
 
@@ -2212,8 +1986,8 @@ msgstr "Interventions sur des contrats terminés"
 msgid "Invalid date of the contract."
 msgstr "Date du contrat invalide."
 
-#: front/entity.form.php:79 src/PresaleWizard.php:1022
-#: src/PresaleWizard.php:1284 src/WizardController.php:247
+#: front/entity.form.php:79 src/WizardController.php:247
+#: src/PresaleWizard.php:1022 src/PresaleWizard.php:1284
 msgid "Invalid email address"
 msgstr "Courriel invalide"
 
@@ -2229,73 +2003,70 @@ msgstr "Site web invalide"
 msgid "Invalid wizard mode"
 msgstr "Mode wizard invalide"
 
-#: src/DirectHelpdesk.php:859 templates/directhelpdesk_form.html.twig:132
+#: src/DirectHelpdesk.php:859 ⁨standard input⁩:132
 msgid "Is billed"
 msgstr "Est facturée"
 
-#: src/CriPrice.php:325 src/CriPrice.php:595
-#: templates/criprice_form.html.twig:57
+#: src/CriPrice.php:325 src/CriPrice.php:595 ⁨standard input⁩:57
 msgid "Is default"
 msgstr "Utilisé par défaut"
 
-#: templates/presale/step_client.html.twig:72
+#: ⁨standard input⁩:72
 msgid "Kept on the proposal, for the statistics."
 msgstr "Conservée sur la proposition, pour les statistiques."
 
-#: templates/kiflo/config_form.html.twig:58
+#: ⁨standard input⁩:58
 msgid "Key stored: leave empty to keep it"
 msgstr "Clé enregistrée : laissez vide pour la conserver"
 
-#: src/KifloConfig.php:47 templates/kiflo/config_form.html.twig:44
+#: src/KifloConfig.php:47 ⁨standard input⁩:44
 msgid "Kiflo"
 msgstr "Kiflo"
 
-#: src/KifloClient.php:168
+#: src/KifloClient.php:174
 #, php-format
 msgid "Kiflo API error (HTTP %d)."
 msgstr "Kiflo API erreur (HTTP %d)."
 
-#: src/KifloClient.php:149
+#: src/KifloClient.php:155
 #, php-format
 msgid "Kiflo API unreachable: %s"
 msgstr "Kiflo API indisponible : %s"
 
-#: templates/entity/kiflo_leads_tab.html.twig:195
+#: ⁨standard input⁩:195
 msgid "Kiflo ID"
 msgstr "Kiflo ID"
 
-#: src/KifloLead.php:59 templates/entity/kiflo_leads_tab.html.twig:41
+#: src/KifloLead.php:59 ⁨standard input⁩:41
 msgid "Kiflo lead"
 msgid_plural "Kiflo leads"
 msgstr[0] "Kiflo prospect"
 msgstr[1] "Kiflo prospects"
 msgstr[2] "Kiflo prospects"
 
-#: src/KifloClient.php:164
+#: src/KifloClient.php:170
 msgid "Kiflo refused the API key (401): check it or generate a new one."
 msgstr ""
 "Kiflo a refusé la clé API (401) : vérifiez-la ou générez-en une nouvelle."
 
-#: src/KifloClient.php:166
+#: src/KifloClient.php:172
 msgid "Kiflo resource not found (404): check the API URL."
 msgstr "Ressource Kiflo introuvable (404) : vérifiez l’URL de l’API."
 
-#: templates/followup_export_toolbar.html.twig:48
+#: ⁨standard input⁩:48
 msgid "Landscape PDF"
 msgstr "PDF au format paysage"
 
-#: templates/dat/step_summary.html.twig:43
+#: ⁨standard input⁩:43
 #, php-format
 msgid "Last generated version: %s"
 msgstr "Dernière version générée : %s"
 
-#: src/EditorSubscription.php:180
-#: templates/entity/editorsubscription_tab.html.twig:75
+#: src/EditorSubscription.php:180 ⁨standard input⁩:75
 msgid "Last intervention"
 msgstr "Dernière intervention"
 
-#: templates/wizard/step2_contact_block.html.twig:54
-#: templates/presale/step_client.html.twig:97
+#: ⁨standard input⁩:97 ⁨standard input⁩:54
 msgid "Last name"
 msgstr "Nom"
 
@@ -2303,13 +2074,11 @@ msgstr "Nom"
 msgid "Last name is required"
 msgstr "Le nom est obligatoire"
 
-#: templates/entity/kiflo_leads_tab.html.twig:43
-#: templates/kiflo/config_form.html.twig:71
+#: ⁨standard input⁩:43 ⁨standard input⁩:71
 msgid "Last synchronization"
 msgstr "Dernière synchronisation"
 
-#: templates/entity/proposals_tab.html.twig:105
-#: templates/presale/proposals_table.html.twig:52
+#: ⁨standard input⁩:52 ⁨standard input⁩:105
 msgid "Last update"
 msgstr "Dernière modification"
 
@@ -2317,12 +2086,11 @@ msgstr "Dernière modification"
 msgid "Last visit"
 msgstr "Dernière visite"
 
-#: templates/entity/dat_card.html.twig:62
-#: templates/presale/step_generate.html.twig:149
+#: ⁨standard input⁩:149 ⁨standard input⁩:62
 msgid "Latest"
 msgstr "Dernière"
 
-#: templates/preference_form.html.twig:43
+#: ⁨standard input⁩:43
 msgid "Launch the plugin Entities portal with GLPI launching"
 msgstr "Lancer le plugin Portail entités au démarrage de GLPI"
 
@@ -2333,11 +2101,11 @@ msgstr ""
 "Les prospects partagés par l'éditeur dans Kiflo, mis à jour par la "
 "synchronisation"
 
-#: templates/presale/layout.html.twig:106 templates/dat/layout.html.twig:96
+#: ⁨standard input⁩:106 ⁨standard input⁩:96
 msgid "Leave the wizard without saving this page?"
 msgstr "Quitter l'assistant sans enregistrer cette page ?"
 
-#: templates/config_presale_form.html.twig:128
+#: ⁨standard input⁩:128
 msgid ""
 "Left empty, the printed role is the title of the user and the printed phone "
 "its mobile phone."
@@ -2345,19 +2113,19 @@ msgstr ""
 "Laissés vides, la fonction imprimée est le titre de l'utilisateur et le "
 "téléphone imprimé son mobile."
 
-#: templates/kiflo/config_form.html.twig:52
+#: ⁨standard input⁩:52
 #, php-format
 msgid "Left empty: %s"
 msgstr "Laisser vide : %s"
 
-#: templates/presale/proposal_form.html.twig:137
+#: ⁨standard input⁩:137
 msgid "Line"
 msgid_plural "Lines"
 msgstr[0] "Ligne"
 msgstr[1] "Lignes"
 msgstr[2] "Lignes"
 
-#: templates/presale/annextype_default_lines.html.twig:115
+#: ⁨standard input⁩:115
 msgid ""
 "Lines of a new annex of this model in the pre-sales wizard, where they can "
 "be changed. Quantity and price may be left empty."
@@ -2369,15 +2137,15 @@ msgstr ""
 msgid "Linked interventions"
 msgstr "Interventions liées"
 
-#: templates/directhelpdesk_modal.html.twig:94
+#: ⁨standard input⁩:94
 msgid "Linked ticket"
 msgstr "Ticket lié"
 
-#: templates/config_options_form.html.twig:82
+#: ⁨standard input⁩:82
 msgid "List of default statuses for general monitoring"
 msgstr "Liste par défaut des statuts pour le suivi général"
 
-#: templates/config_options_form.html.twig:45
+#: ⁨standard input⁩:45
 msgid ""
 "List of entities used by the plugin. When set, only tickets belonging to sub-"
 "entities of this entity will display the intervention report tab."
@@ -2386,18 +2154,16 @@ msgstr ""
 "seuls les tickets appartenant aux sous-entités de cette entité afficheront "
 "l'onglet de rapport d'intervention."
 
-#: templates/wizard/step4_contract.html.twig:57
+#: ⁨standard input⁩:57
 msgid "Load"
 msgstr "Charger"
 
-#: templates/presale/estimate_table.html.twig:55
-#: templates/presale/estimate_table.html.twig:71
+#: ⁨standard input⁩:55 ⁨standard input⁩:71
 msgid "Load (man-days)"
 msgstr "Charge (jours-homme)"
 
-#: src/EntityLogo.php:180 templates/entity/description.html.twig:172
-#: templates/dat/step_general.html.twig:80
-#: templates/dat/step_general.html.twig:82
+#: src/EntityLogo.php:180 ⁨standard input⁩:80 ⁨standard input⁩:82
+#: ⁨standard input⁩:172
 msgid "Logo"
 msgstr "Logo"
 
@@ -2410,7 +2176,7 @@ msgstr "Logo"
 msgid "Logo %d"
 msgstr "Logo %d"
 
-#: templates/company_form.html.twig:87
+#: ⁨standard input⁩:87
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
@@ -2419,8 +2185,7 @@ msgstr "Logo (format JPG ou JPEG)"
 msgid "Logo of %s"
 msgstr "Logo de %s"
 
-#: templates/presale/step_client.html.twig:248
-#: templates/presale/client_form.html.twig:73
+#: ⁨standard input⁩:248 ⁨standard input⁩:73
 msgid "Logo of the client"
 msgstr "Logo du client"
 
@@ -2428,9 +2193,7 @@ msgstr "Logo du client"
 msgid "Logs"
 msgstr "Journaux"
 
-#: templates/presale/outcome_buttons.html.twig:45
-#: templates/presale/outcome_buttons.html.twig:47
-#: templates/presale/step_generate.html.twig:169
+#: ⁨standard input⁩:45 ⁨standard input⁩:47 ⁨standard input⁩:169
 msgid "Lost"
 msgstr "Perdue"
 
@@ -2438,28 +2201,24 @@ msgstr "Perdue"
 msgid "Lost (archived)"
 msgstr "Perdue (archivée)"
 
-#: src/PresaleClient.php:121 templates/presale/client_form.html.twig:105
+#: src/PresaleClient.php:121 ⁨standard input⁩:105
 msgid "Main contact"
 msgstr "Contact principal"
 
-#: templates/presale/step_client.html.twig:84
+#: ⁨standard input⁩:84
 msgid "Main contact (recipient and signatory)"
 msgstr "Contact principal (destinataire et signataire)"
 
-#: templates/entity/projectmanagers_card.html.twig:65
+#: ⁨standard input⁩:65
 msgid "Main project manager"
 msgstr "Chef de projet principal"
 
-#: src/DirectHelpdesk.php:729 templates/entity/unbilled_tab.html.twig:142
-#: templates/entity/techleads_card.html.twig:65
-#: templates/techlead/clients_by_tech.html.twig:43
-#: templates/techlead/clients_by_tech.html.twig:44
-#: templates/techlead/clients_by_tech.html.twig:121
-#: templates/techlead/assignment_rules.html.twig:84
+#: src/DirectHelpdesk.php:729 ⁨standard input⁩:65 ⁨standard input⁩:142
+#: ⁨standard input⁩:43 ⁨standard input⁩:44 ⁨standard input⁩:121 ⁨standard input⁩:84
 msgid "Main tech lead"
 msgstr "Tech lead responsable"
 
-#: templates/techlead/clients_by_tech.html.twig:137
+#: ⁨standard input⁩:137
 msgid "Main tech lead - click to no longer be the main one"
 msgstr "Tech lead responsable - cliquez pour ne plus être le responsable"
 
@@ -2468,11 +2227,11 @@ msgstr "Tech lead responsable - cliquez pour ne plus être le responsable"
 msgid "Main tech lead of %s"
 msgstr "Tech lead responsable de %s"
 
-#: templates/techlead/ticket_badge.html.twig:31
+#: ⁨standard input⁩:31
 msgid "Main tech lead of the client"
 msgstr "Tech lead responsable du client"
 
-#: templates/config_presale_form.html.twig:224
+#: ⁨standard input⁩:224
 msgid "Manage the annex models"
 msgstr "Gérer les modèles d'annexe"
 
@@ -2491,30 +2250,25 @@ msgstr[0] "Gestion des catégories de tâches"
 msgstr[1] "Gestion des catégories de tâches"
 msgstr[2] "Gestion des catégories de tâches"
 
-#: src/Contract.php:76 src/WizardController.php:2120
-#: src/WizardController.php:2137 templates/wizard/step5_management.html.twig:42
-#: templates/contract_detail_form.html.twig:129
+#: src/WizardController.php:2120 src/WizardController.php:2137
+#: src/Contract.php:76 ⁨standard input⁩:42 ⁨standard input⁩:129
 msgid "Management type"
 msgstr "Type de gestion"
 
-#: templates/entity/description.html.twig:245
-#: templates/entity/description.html.twig:250
-#: templates/entity/description.html.twig:254
-#: templates/entity/contacts_card.html.twig:66
-#: templates/entity/contacts_card.html.twig:72
-#: templates/entity/contacts_card.html.twig:77
+#: ⁨standard input⁩:66 ⁨standard input⁩:72 ⁨standard input⁩:77 ⁨standard input⁩:245
+#: ⁨standard input⁩:250 ⁨standard input⁩:254
 msgid "Manager"
 msgstr "Responsable"
 
-#: templates/wizard/step2_contact_block.html.twig:110
+#: ⁨standard input⁩:110
 msgid "Manager (main contact)"
 msgstr "Responsable (contact principal)"
 
-#: templates/techlead/assignment_rules.html.twig:118
+#: ⁨standard input⁩:118
 msgid "Missing"
 msgstr "Manquant"
 
-#: templates/presale/step_client.html.twig:201
+#: ⁨standard input⁩:201
 msgid "Missing on the customer, to fill in:"
 msgstr "Manquant sur le client, à compléter :"
 
@@ -2522,29 +2276,21 @@ msgstr "Manquant sur le client, à compléter :"
 msgid "Missing required fields"
 msgstr "Des champs obligatoires sont manquants"
 
-#: templates/checkschema_result.html.twig:29
+#: ⁨standard input⁩:29
 msgid "Missing table"
 msgstr "Table manquante"
 
-#: templates/wizard/step2_contact_block.html.twig:79
-#: templates/presale/step_client.html.twig:122
-#: templates/presale/client_form.html.twig:97
+#: ⁨standard input⁩:122 ⁨standard input⁩:97 ⁨standard input⁩:79
 msgid "Mobile"
 msgstr "Mobile"
 
-#: templates/entity/description.html.twig:224
-#: templates/entity/description.html.twig:312
-#: templates/entity/contacts_card.html.twig:43
-#: templates/entity/business_card.html.twig:44
-#: templates/entity/techleads_card.html.twig:46
-#: templates/entity/projectmanagers_card.html.twig:46
+#: ⁨standard input⁩:43 ⁨standard input⁩:46 ⁨standard input⁩:224 ⁨standard input⁩:312
+#: ⁨standard input⁩:44
 msgid "Mobile phone"
 msgstr "Mobile"
 
-#: src/Followup.php:884 src/Monthly.php:429
-#: templates/entity/contracts_tab.html.twig:58
-#: templates/wizard/step5_management.html.twig:63
-#: templates/contract_detail_form.html.twig:141
+#: src/Monthly.php:429 src/Followup.php:884 ⁨standard input⁩:58 ⁨standard input⁩:63
+#: ⁨standard input⁩:141
 msgid "Mode of management"
 msgstr "Mode de gestion"
 
@@ -2553,23 +2299,20 @@ msgstr "Mode de gestion"
 msgid "Model #%d: no name, skipped."
 msgstr "Modèle n°%d : sans nom, ignoré."
 
-#: templates/presale/step_generate.html.twig:164
-#: templates/presale/proposals_table.html.twig:74
+#: ⁨standard input⁩:164 ⁨standard input⁩:74
 msgid "Modified since the last generation"
 msgstr "Modifiée depuis la dernière génération"
 
-#: src/Monthly.php:53 src/Entity.php:77 src/Entity.php:290
-#: templates/monthly_criterias.html.twig:42
-#: templates/monthly_period_nav.html.twig:34
+#: src/Entity.php:77 src/Entity.php:290 src/Monthly.php:53 ⁨standard input⁩:42
+#: ⁨standard input⁩:34
 msgid "Monthly follow-up"
 msgstr "Suivi mensuel"
 
-#: templates/presale/step_annexes.html.twig:87
+#: ⁨standard input⁩:87
 msgid "Monthly price of the subscription level"
 msgstr "Prix mensuel du niveau de souscription"
 
-#: templates/presale/annextype_default_lines.html.twig:90
-#: templates/presale/step_annexes.html.twig:298
+#: ⁨standard input⁩:298 ⁨standard input⁩:90
 msgid "Monthly price per subscription excl. VAT"
 msgstr "Prix mensuel HT par abonnement"
 
@@ -2577,60 +2320,40 @@ msgstr "Prix mensuel HT par abonnement"
 msgid "Monthly price per user excl. VAT"
 msgstr "Prix mensuel HT par utilisateur"
 
-#: templates/presale/annextype_default_lines.html.twig:97
-#: templates/presale/step_annexes.html.twig:305
+#: ⁨standard input⁩:305 ⁨standard input⁩:97
 msgid "Months"
 msgstr "Mois"
 
-#: templates/entity/customer_summary.html.twig:146
+#: ⁨standard input⁩:146
 #, php-format
 msgid "More than %d hours"
 msgstr "Plus de %d heures"
 
-#: src/DirectHelpdesk.php:735 templates/entity/unbilled_tab.html.twig:166
+#: src/DirectHelpdesk.php:735 ⁨standard input⁩:166
 #, php-format
 msgid "More than %d months"
 msgstr "Plus de %d mois"
 
-#: templates/presale/estimate_table.html.twig:60
-#: templates/presale/estimate_form.html.twig:106
-#: templates/presale/step_annexes.html.twig:227
-#: templates/dat/step_system.html.twig:59
+#: ⁨standard input⁩:227 ⁨standard input⁩:60 ⁨standard input⁩:106 ⁨standard input⁩:59
 msgid "Move down"
 msgstr "Descendre"
 
-#: templates/presale/estimate_table.html.twig:59
-#: templates/presale/estimate_form.html.twig:105
-#: templates/presale/step_annexes.html.twig:224
-#: templates/dat/step_system.html.twig:56
+#: ⁨standard input⁩:224 ⁨standard input⁩:59 ⁨standard input⁩:105 ⁨standard input⁩:56
 msgid "Move up"
 msgstr "Monter"
 
-#: src/Contract.php:1077 templates/wizard/step5_management.html.twig:104
-#: templates/contract_detail_form.html.twig:178
+#: src/Contract.php:1077 ⁨standard input⁩:104 ⁨standard input⁩:178
 msgid "Movement management"
 msgstr "Gestion des déplacements"
 
-#: templates/report_moving_form.html.twig:37
+#: ⁨standard input⁩:37
 msgid "Moving report"
 msgstr "Déplacement"
 
-#: templates/entity/description.html.twig:57
-#: templates/entity/description.html.twig:222
-#: templates/entity/description.html.twig:309
-#: templates/entity/proposals_tab.html.twig:102
-#: templates/entity/contacts_card.html.twig:41
-#: templates/entity/business_card.html.twig:41
-#: templates/entity/contracts_tab.html.twig:50
-#: templates/entity/techleads_card.html.twig:44
-#: templates/entity/projectmanagers_card.html.twig:44
-#: templates/wizard/step6_intervention_block.html.twig:55
-#: templates/wizard/step1_entity.html.twig:45
-#: templates/wizard/step4_contract.html.twig:65
-#: templates/presale/step_team.html.twig:77
-#: templates/presale/client_form.html.twig:93
-#: templates/presale/proposals_table.html.twig:47
-#: templates/config_presale_form.html.twig:134
+#: ⁨standard input⁩:134 ⁨standard input⁩:77 ⁨standard input⁩:93 ⁨standard input⁩:47
+#: ⁨standard input⁩:50 ⁨standard input⁩:102 ⁨standard input⁩:41 ⁨standard input⁩:44
+#: ⁨standard input⁩:57 ⁨standard input⁩:222 ⁨standard input⁩:309 ⁨standard input⁩:55
+#: ⁨standard input⁩:65 ⁨standard input⁩:45
 msgid "Name"
 msgstr "Nom"
 
@@ -2649,19 +2372,19 @@ msgstr ""
 "libellé interne, ex. « Client - Expertise & Souscription »). Vide : le "
 "premier mot du nom du modèle."
 
-#: templates/entity/status_tab.html.twig:129
+#: ⁨standard input⁩:129
 msgid "Never had a contract"
 msgstr "N'ayant jamais eu de contrat"
 
-#: templates/wizard/mode_choice.html.twig:65
+#: ⁨standard input⁩:65
 msgid "New client"
 msgstr "Nouveau client"
 
-#: templates/wizard/mode_choice.html.twig:85
+#: ⁨standard input⁩:85
 msgid "New contract"
 msgstr "Nouveau contrat"
 
-#: templates/wizard/step1_entity.html.twig:38
+#: ⁨standard input⁩:38
 msgid "New entity"
 msgstr "Nouvelle entité"
 
@@ -2669,41 +2392,29 @@ msgstr "Nouvelle entité"
 msgid "New intervention"
 msgstr "Nouvelle prestation"
 
-#: templates/entity/proposals_tab.html.twig:53
-#: templates/entity/proposals_tab.html.twig:172
-#: templates/entity/proposals_tab.html.twig:224
-#: templates/entity/editorsubscription_tab.html.twig:107
-#: templates/presale/home.html.twig:61
-#: templates/presale/client_form.html.twig:125
-#: templates/presale/layout.html.twig:55
+#: ⁨standard input⁩:55 ⁨standard input⁩:61 ⁨standard input⁩:125 ⁨standard input⁩:53
+#: ⁨standard input⁩:172 ⁨standard input⁩:224 ⁨standard input⁩:107
 msgid "New proposal"
 msgstr "Nouvelle proposition"
 
-#: templates/wizard/mode_choice.html.twig:100
+#: ⁨standard input⁩:100
 msgid "New subscription"
 msgstr "Nouvelle souscription"
 
-#: templates/entity/dat_card.html.twig:99
+#: ⁨standard input⁩:99
 msgid "New version"
 msgstr "Nouvelle version"
 
-#: templates/wizard/step1_select_entity.html.twig:53
-#: templates/wizard/step2_contacts.html.twig:60
-#: templates/wizard/step5_management.html.twig:130
-#: templates/wizard/step1_entity.html.twig:129
-#: templates/wizard/step3_subscription.html.twig:99
-#: templates/wizard/step4_contract.html.twig:152
-#: templates/presale/layout.html.twig:125 templates/dat/layout.html.twig:117
+#: ⁨standard input⁩:125 ⁨standard input⁩:117 ⁨standard input⁩:99 ⁨standard input⁩:60
+#: ⁨standard input⁩:53 ⁨standard input⁩:130 ⁨standard input⁩:152 ⁨standard input⁩:129
 msgid "Next"
 msgstr "Suivant"
 
-#: templates/techlead/clients_by_tech.html.twig:139
-#: templates/techlead/clients_by_tech.html.twig:145
-#: templates/contract_detail_form.html.twig:88
+#: ⁨standard input⁩:88 ⁨standard input⁩:139 ⁨standard input⁩:145
 msgid "No"
 msgstr "Non"
 
-#: src/DatWizard.php:558 templates/dat/step_summary.html.twig:51
+#: src/DatWizard.php:558 ⁨standard input⁩:51
 msgid ""
 "No Word template uploaded in the configuration (DAT tab): the document "
 "cannot be generated."
@@ -2711,72 +2422,69 @@ msgstr ""
 "Aucun modèle Word déposé dans la configuration (onglet DAT) : le document ne "
 "peut pas être généré."
 
-#: templates/contract_link_dropdown.html.twig:38
+#: ⁨standard input⁩:38
 msgid "No active contracts"
 msgstr "Aucun contrats en cours"
 
-#: templates/contract_detail_form.html.twig:111
+#: ⁨standard input⁩:111
 msgid "No active publisher subscription for this client"
 msgstr "Pas de souscription éditeur active pour ce client"
 
-#: templates/cridetail_for_ticket.html.twig:91
+#: ⁨standard input⁩:91
 msgid "No active subscription"
 msgstr "Pas de souscription active"
 
-#: templates/presale/step_annexes.html.twig:196
+#: ⁨standard input⁩:196
 msgid ""
 "No annex model is defined: create them in Setup > Dropdowns > Annex models."
 msgstr ""
 "Aucun modèle d'annexe n'est défini : créez-les dans Configuration > "
 "Intitulés > Modèles d'annexe."
 
-#: templates/presale/proposal_form.html.twig:130
-#: templates/presale/step_generate.html.twig:88
+#: ⁨standard input⁩:130 ⁨standard input⁩:88
 msgid "No annex retained yet."
 msgstr "Aucune annexe retenue pour l'instant."
 
-#: templates/entity/unbilled_tab.html.twig:68
+#: ⁨standard input⁩:68
 msgid "No archived client with unbilled hours."
 msgstr "Aucun client archivé avec des heures non facturées."
 
-#: templates/entity/description.html.twig:345
-#: templates/entity/business_card.html.twig:77
+#: ⁨standard input⁩:345 ⁨standard input⁩:77
 msgid "No business contact"
 msgstr "Pas de commercial trouvé"
 
-#: templates/techlead/assignment_rules.html.twig:136
+#: ⁨standard input⁩:136
 msgid "No client has users with a simplified interface profile"
 msgstr ""
 "Aucun client ne possède d'utilisateurs avec un profil d'interface simplifié"
 
-#: templates/entity/description.html.twig:273
-#: templates/entity/contacts_card.html.twig:96
+#: ⁨standard input⁩:96 ⁨standard input⁩:273
 msgid "No contact"
 msgstr "Pas decontact trouvé"
 
-#: templates/presale/client_form.html.twig:87
+#: ⁨standard input⁩:87
 msgid "No contact."
 msgstr "Aucun contact."
 
-#: templates/entity/contracts_tab.html.twig:104
+#: ⁨standard input⁩:104
 msgid "No contract found"
 msgstr "Pas de contrat trouvé"
 
-#: templates/entity/proposals_tab.html.twig:197
+#: ⁨standard input⁩:197
 msgid "No contract running out of remaining days."
 msgstr "Aucun contrat n'arrive à échéance."
 
-#: templates/cridetail_for_ticket.html.twig:44
+#: ⁨standard input⁩:44
 msgid "No days remaining on this contract period"
 msgstr "Il ne reste plus de jours sur cette période contractuelle"
 
-#: src/TicketTask.php:101 templates/tickettask_blocked_alert.html.twig:34
+#: src/TicketTask.php:101 ⁨standard input⁩:34
 msgid "No days remaining on this contract period. Task addition is blocked."
 msgstr ""
 "Il ne reste plus de jours sur cette période contractuelle. L'ajout de tâches "
 "est bloqué."
 
-#: templates/entity/kiflo_leads_tab.html.twig:204
+#: ⁨standard input⁩:204
 msgid "No description"
 msgstr "Pas de description"
 
@@ -2784,28 +2492,28 @@ msgstr "Pas de description"
 msgid "No entity selected."
 msgstr "Pas d'entité sélectionnée."
 
-#: templates/entity/status_tab.html.twig:95
+#: ⁨standard input⁩:95
 msgid "No expired publisher subscription."
 msgstr "Pas de souscription éditeur expirée."
 
-#: templates/entity/proposals_tab.html.twig:141
+#: ⁨standard input⁩:141
 msgid "No expired subscription to renew."
 msgstr "Aucun souscription expirée à renouveler."
 
-#: templates/ticket_overview.html.twig:272
+#: ⁨standard input⁩:272
 msgid "No follow-up"
 msgstr "Aucun suivi"
 
-#: templates/entity/unbilled_tab.html.twig:105
+#: ⁨standard input⁩:105
 #, php-format
 msgid "No hours left unbilled for more than %d months."
 msgstr "Aucune heure non facturée depuis plus de %d mois."
 
-#: templates/cridetail_for_ticket.html.twig:45
+#: ⁨standard input⁩:45
 msgid "No hours remaining on this contract period"
 msgstr "Il ne reste plus d'heures sur cette période contractuelle"
 
-#: templates/entity/kiflo_leads_tab.html.twig:216
+#: ⁨standard input⁩:216
 msgid "No lead"
 msgstr "Pas de prospect"
 
@@ -2813,7 +2521,7 @@ msgstr "Pas de prospect"
 msgid "No level"
 msgstr "Pas de niveau"
 
-#: templates/dat/step_general.html.twig:84
+#: ⁨standard input⁩:84
 msgid ""
 "No logo: the header of the document will have none. Add it from the customer "
 "sheet."
@@ -2821,45 +2529,43 @@ msgstr ""
 "Pas de logo : l'en-tête du document n'en aura pas. Ajoutez-le depuis la "
 "fiche client."
 
-#: templates/entity/unbilled_tab.html.twig:156
-#: templates/techlead/assignment_rules.html.twig:99
+#: ⁨standard input⁩:156 ⁨standard input⁩:99
 msgid "No main tech lead"
 msgstr "Pas de tech lead responsable"
 
-#: templates/presale/estimate_form.html.twig:70
+#: ⁨standard input⁩:70
 msgid "No note."
 msgstr "Aucune note."
 
-#: templates/entity/customer_summary.html.twig:104
+#: ⁨standard input⁩:104
 msgid "No ongoing contract"
 msgstr "Aucun contrat en cours"
 
-#: templates/techlead/clients_by_tech.html.twig:48
+#: ⁨standard input⁩:48
 msgid "No only"
 msgstr "Non seulement"
 
-#: templates/ticket_overview.html.twig:165
+#: ⁨standard input⁩:165
 msgid "No open ticket assigned to a technician"
 msgstr "Aucun ticket ouvert attribué à un technicien"
 
-#: templates/ticket_overview.html.twig:205
-#: templates/ticket_overview.html.twig:223
+#: ⁨standard input⁩:205 ⁨standard input⁩:223
 msgid "No overdue ticket"
 msgstr "Aucun ticket non traité"
 
-#: templates/contractday_list.html.twig:54
+#: ⁨standard input⁩:54
 msgid "No period found"
 msgstr "Pas de période trouvée"
 
-#: front/entity.form.php:50 templates/entity/description.html.twig:177
+#: front/entity.form.php:50 ⁨standard input⁩:177
 msgid "No picture uploaded"
 msgstr "Pas d'image téléchargée"
 
-#: src/PresaleWizard.php:759 templates/entity/projectmanagers_card.html.twig:91
+#: src/PresaleWizard.php:759 ⁨standard input⁩:91
 msgid "No project manager"
 msgstr "Aucun chef de projet"
 
-#: templates/presale/step_team.html.twig:56
+#: ⁨standard input⁩:56
 msgid ""
 "No project manager is declared in the configuration (Pre-sales tab): type "
 "the details below, or leave them empty."
@@ -2867,40 +2573,36 @@ msgstr ""
 "Aucun chef de projet n'est déclaré dans la configuration (onglet Avant-"
 "vente) : saisissez les informations ci-dessous, ou laissez-les vides."
 
-#: templates/entity/proposals_tab.html.twig:83
-#: templates/presale/client_form.html.twig:130
+#: ⁨standard input⁩:130 ⁨standard input⁩:83
 msgid "No proposal in progress."
 msgstr "Aucune proposition en cours."
 
-#: templates/cridetail_for_ticket.html.twig:87
+#: ⁨standard input⁩:87
 msgid "No publisher subscription"
 msgstr "Pas de souscription éditeur"
 
-#: templates/entity/editorsubscription_tab.html.twig:126
+#: ⁨standard input⁩:126
 msgid "No publisher subscription recorded for this entity."
 msgstr "Pas de souscription éditeur enregistré pour cette entité."
 
-#: templates/checkschema_result.html.twig:90
+#: ⁨standard input⁩:90
 msgid "No query could be suggested for this difference."
 msgstr "Aucune explication ne peut être fournie pour cette différence."
 
-#: templates/wizard/step6_criprices_section.html.twig:51
+#: ⁨standard input⁩:51
 msgid "No rate defined yet"
 msgstr "Pas de tarif encore défini"
 
-#: templates/criprice_list.html.twig:61
+#: ⁨standard input⁩:61
 msgid "No rate found"
 msgstr "Pas de tarif trouvé"
 
-#: templates/cri_reports.html.twig:69 templates/helpdesk_reports.html.twig:59
+#: ⁨standard input⁩:59 ⁨standard input⁩:69
 msgid "No reports found"
 msgstr "Pas de rapports d'interventions trouvés"
 
-#: templates/entity/references.html.twig:98
-#: templates/entity/followup_helpdesk.html.twig:39
-#: templates/techlead/clients_by_tech.html.twig:152
-#: templates/directhelpdesk_ticket_tab.html.twig:56
-#: templates/company_list.html.twig:69
+#: ⁨standard input⁩:69 ⁨standard input⁩:56 ⁨standard input⁩:39 ⁨standard input⁩:98
+#: ⁨standard input⁩:152
 msgid "No results found"
 msgstr "Pas de résultat trouvé"
 
@@ -2908,7 +2610,7 @@ msgstr "Pas de résultat trouvé"
 msgid "No rule created"
 msgstr "Aucune règle créée"
 
-#: templates/presale/step_team.html.twig:55
+#: ⁨standard input⁩:55
 msgid ""
 "No sales representative is declared in the configuration (Pre-sales tab): "
 "type the details below."
@@ -2916,16 +2618,15 @@ msgstr ""
 "Aucun commercial n'est déclaré dans la configuration (onglet Avant-vente) : "
 "saisissez les informations ci-dessous."
 
-#: templates/contractday_add_form.html.twig:46
+#: ⁨standard input⁩:46
 msgid "No service period defined yet."
 msgstr "Pas encore de prestations définies."
 
-#: templates/interventionstakeholder_list.html.twig:41
-#: templates/interventionstakeholder_list.html.twig:69
+#: ⁨standard input⁩:41 ⁨standard input⁩:69
 msgid "No stakeholders have been affected yet."
 msgstr "Aucun intervenant n'a encore été ajouté."
 
-#: templates/entity/customer_summary.html.twig:127
+#: ⁨standard input⁩:127
 msgid "No subscription"
 msgstr "Aucune souscription"
 
@@ -2938,7 +2639,7 @@ msgstr "Pas de souscriptions trouvées."
 msgid "No subscription in this wizard"
 msgstr "Aucune souscription requise pour cet assistant"
 
-#: templates/entity/status_tab.html.twig:191
+#: ⁨standard input⁩:191
 msgid "No subscription recorded."
 msgstr "Pas de souscription enregistrée."
 
@@ -2946,56 +2647,54 @@ msgstr "Pas de souscription enregistrée."
 msgid "No tasks whose category can be used"
 msgstr "Merci de configurer une catégorie de tâche de ticket avec le plugin"
 
-#: src/TicketOverview.php:664 templates/entity/techleads_card.html.twig:91
-#: templates/techlead/clients_by_tech.html.twig:191
+#: src/TicketOverview.php:664 ⁨standard input⁩:91 ⁨standard input⁩:191
 msgid "No tech lead"
 msgstr "Aucun tech lead"
 
-#: templates/entity/dat_card.html.twig:73
+#: ⁨standard input⁩:73
 msgid "No technical architecture document yet."
 msgstr "Pas encore de dossier d'architecture technique."
 
-#: src/TicketOverview.php:645 templates/ticket_overview.html.twig:57
-#: templates/ticket_overview.html.twig:185
-#: templates/ticket_overview.html.twig:265
+#: src/TicketOverview.php:645 ⁨standard input⁩:57 ⁨standard input⁩:185
+#: ⁨standard input⁩:265
 msgid "No technician"
 msgstr "Pas de technicien"
 
-#: templates/dat/config_form.html.twig:65
+#: ⁨standard input⁩:65
 msgid "No template: the DAT cannot be generated"
 msgstr "Aucun modèle : le DAT ne peut pas être généré"
 
-#: templates/config_presale_form.html.twig:96
+#: ⁨standard input⁩:96
 msgid "No template: the documents using it cannot be generated"
 msgstr ""
 "Aucun modèle : les documents qui l'utilisent ne peuvent pas être générés"
 
-#: templates/ticket_overview.html.twig:282
+#: ⁨standard input⁩:282
 msgid "No ticket awaiting an answer"
 msgstr "Pas de tickets attendant une réponse"
 
-#: templates/entity/unbilled_helpdesk.html.twig:43
+#: ⁨standard input⁩:43
 msgid "No unbilled intervention"
 msgstr "Aucune intervention non facturée"
 
-#: templates/entity/unbilled_tab.html.twig:185
+#: ⁨standard input⁩:185
 msgid "No unbilled intervention for a client with an ongoing contract."
 msgstr ""
 "Aucune intervention non facturée pour un client ayant un contrat en cours."
 
-#: templates/presale/step_client.html.twig:164
+#: ⁨standard input⁩:164
 msgid "No, a new client"
 msgstr "Non, un nouveau client"
 
-#: templates/presale/step_client.html.twig:151
+#: ⁨standard input⁩:151
 msgid "No, a new prospect"
 msgstr "Non, un nouveau prospect"
 
-#: templates/generatecri_wizard.html.twig:248
+#: ⁨standard input⁩:248
 msgid "Non-accomplished tasks informations"
 msgstr "Informations sur les tâches non accomplies"
 
-#: templates/config_presale_form.html.twig:189
+#: ⁨standard input⁩:189
 msgid "None declared yet"
 msgstr "Aucun déclaré pour l'instant"
 
@@ -3007,7 +2706,7 @@ msgstr[0] "Intervention non facturée"
 msgstr[1] "Interventions non facturées"
 msgstr[2] "Interventions non facturées"
 
-#: templates/dat/step_summary.html.twig:103
+#: ⁨standard input⁩:103
 msgid "Not filled in"
 msgstr "Non renseigné"
 
@@ -3015,19 +2714,19 @@ msgstr "Non renseigné"
 msgid "Not requested"
 msgstr "Non demandé"
 
-#: templates/wizard/step6_intervention_block.html.twig:40
+#: ⁨standard input⁩:40
 msgid "Not saved"
 msgstr "Non sauvegardé"
 
-#: templates/entity/kiflo_leads_tab.html.twig:216
+#: ⁨standard input⁩:216
 msgid "Not synchronized yet"
 msgstr "Pas encore synchronisé"
 
-#: templates/presale/step_annexes.html.twig:127
+#: ⁨standard input⁩:127
 msgid "Note for the project manager"
 msgstr "Note pour le chef de projet"
 
-#: templates/gantt.html.twig:32
+#: ⁨standard input⁩:32
 msgid "Nothing to display"
 msgstr "Rien à afficher"
 
@@ -3035,11 +2734,11 @@ msgstr "Rien à afficher"
 msgid "Nothing to display."
 msgstr "Rien à afficher."
 
-#: templates/entity/proposals_tab.html.twig:205
+#: ⁨standard input⁩:205
 msgid "Number"
 msgstr "Nombre"
 
-#: templates/entity/contracts_tab.html.twig:52
+#: ⁨standard input⁩:52
 msgctxt "phone"
 msgid "Number"
 msgstr "Numéro"
@@ -3048,16 +2747,15 @@ msgstr "Numéro"
 msgid "Number of days must be greater than 0"
 msgstr "Le nombre de jours doit être supérieur à 0"
 
-#: templates/config_options_form.html.twig:59
+#: ⁨standard input⁩:59
 msgid "Number of hours by day"
 msgstr "Nombre d'heures par jour"
 
-#: templates/presale/annextype_default_lines.html.twig:62
-#: templates/presale/step_annexes.html.twig:98
+#: ⁨standard input⁩:98 ⁨standard input⁩:62
 msgid "Number of months"
 msgstr "Nombre de mois"
 
-#: templates/cri_form.html.twig:97
+#: ⁨standard input⁩:97
 msgid "Number of moving"
 msgstr "Nombres de déplacements"
 
@@ -3065,11 +2763,11 @@ msgstr "Nombres de déplacements"
 msgid "Object of intervention"
 msgstr "Objet de l'intervention"
 
-#: templates/report_occupation_form.html.twig:37
+#: ⁨standard input⁩:37
 msgid "Occupation report"
 msgstr "Rapport d'occupations"
 
-#: src/DirectHelpdesk.php:734 templates/entity/unbilled_tab.html.twig:145
+#: src/DirectHelpdesk.php:734 ⁨standard input⁩:145
 msgid "Oldest intervention"
 msgstr "Intervention la plus ancienne"
 
@@ -3077,18 +2775,17 @@ msgstr "Intervention la plus ancienne"
 msgid "On premise"
 msgstr "On premise"
 
-#: templates/entity/status_tab.html.twig:81
-#: templates/entity/status_tab.html.twig:166
+#: ⁨standard input⁩:81 ⁨standard input⁩:166
 msgid "On-premise"
 msgstr "On-premise"
 
-#: templates/dat/step_sections.html.twig:57
+#: ⁨standard input⁩:57
 msgid "One command per line: the lines are kept as typed in the document."
 msgstr ""
 "Une commande par ligne : les lignes sont reprises telles quelles dans le "
 "document."
 
-#: templates/entity/customer_summary.html.twig:94
+#: ⁨standard input⁩:94
 msgid "Ongoing contract"
 msgstr "Contrat en cours"
 
@@ -3104,11 +2801,11 @@ msgstr "Seule une proposition gagnée peut créer un client."
 msgid "Only one rate is allowed per service period"
 msgstr "Seulement un seul tarif est autorisé par prestation"
 
-#: templates/config_options_form.html.twig:72
+#: ⁨standard input⁩:72
 msgid "Only public task are visible on intervention report"
 msgstr "Seules les tâches publiques sont visibles sur le CRI"
 
-#: templates/config_options_form.html.twig:66
+#: ⁨standard input⁩:66
 msgid ""
 "Only ticket accepted are taking into account for consumption calculation"
 msgstr ""
@@ -3119,40 +2816,36 @@ msgstr ""
 msgid "Open Kiflo leads"
 msgstr "Ouvrir les prospects Kiflo"
 
-#: templates/ticket_overview.html.twig:101
-#: templates/ticket_overview.html.twig:144
-#: templates/ticket_overview.html.twig:154
-#: templates/ticket_overview.html.twig:182
-#: templates/ticket_overview.html.twig:201
+#: ⁨standard input⁩:101 ⁨standard input⁩:144 ⁨standard input⁩:154 ⁨standard input⁩:182
+#: ⁨standard input⁩:201
 msgid "Open in the ticket search"
 msgstr "Ouvrir depuis la liste des tickets"
 
-#: templates/entity/kiflo_leads_tab.html.twig:50
+#: ⁨standard input⁩:50
 msgid "Open leads only"
 msgstr "Prospects ouverts uniquement"
 
-#: templates/dat/step_summary.html.twig:53
+#: ⁨standard input⁩:53
 msgid "Open the configuration"
 msgstr "Ouvrir la configuration"
 
-#: templates/presale/step_generate.html.twig:115
-#: templates/presale/step_annexes.html.twig:116
+#: ⁨standard input⁩:116 ⁨standard input⁩:115
 msgid "Open the estimate"
 msgstr "Ouvrir le chiffrage"
 
-#: templates/techlead/assignment_rules.html.twig:113
+#: ⁨standard input⁩:113
 msgid "Open the rule"
 msgstr "Ouvrir la règle"
 
-#: templates/config_presale_form.html.twig:145
+#: ⁨standard input⁩:145
 msgid "Open the user"
 msgstr "Ouvrir l'utilisateur"
 
-#: templates/ticket_overview.html.twig:140
+#: ⁨standard input⁩:140
 msgid "Open tickets by technician"
 msgstr "Tickets ouverts par techniciens"
 
-#: templates/ticket_overview.html.twig:177
+#: ⁨standard input⁩:177
 msgid "Open tickets without technician"
 msgstr "Tickets ouverts sans technicien"
 
@@ -3164,67 +2857,59 @@ msgstr "Tickets ouverts par un client"
 msgid "Opened contract prestations without remaining days"
 msgstr "Prestations de contrat en cours sans jours restants"
 
-#: templates/ticket_overview.html.twig:252
+#: ⁨standard input⁩:252
 msgid "Opened for (days)"
 msgstr "Ouvert depuis (jours)"
 
-#: templates/ticket_overview.html.twig:43
+#: ⁨standard input⁩:43
 msgid "Opening date"
 msgstr "Date d'ouverture"
 
-#: templates/wizard/step6_stakeholders_section.html.twig:37
-#: templates/wizard/step2_contacts.html.twig:37
-#: templates/wizard/step3_subscription.html.twig:40
-#: templates/wizard/step4_contract.html.twig:50
-#: templates/wizard/step4_contract.html.twig:110
+#: ⁨standard input⁩:40 ⁨standard input⁩:37 ⁨standard input⁩:50 ⁨standard input⁩:110
 msgid "Optional"
 msgstr "Optionnel"
 
-#: templates/cridetail_for_ticket.html.twig:169
+#: ⁨standard input⁩:169
 msgid "Options"
 msgstr "Options"
 
-#: templates/preference_form.html.twig:67
+#: ⁨standard input⁩:67
 msgid "Order of the tabs of the clients management"
 msgstr "Ordre des onglets de la gestion des clients"
 
-#: src/Dashboard.php:523 templates/entity/kiflo_leads_tab.html.twig:89
-#: templates/entity/kiflo_leads_tab.html.twig:157
+#: src/Dashboard.php:523 ⁨standard input⁩:89 ⁨standard input⁩:157
 msgid "Origin"
 msgstr "Origine"
 
-#: src/PresaleOrigin.php:48 templates/presale/step_client.html.twig:63
+#: src/PresaleOrigin.php:48 ⁨standard input⁩:63
 msgid "Origin of the request"
 msgid_plural "Origins of the requests"
 msgstr[0] "Origine de la demande"
 msgstr[1] "Origines des demandes"
 msgstr[2] "Origines des demandes"
 
-#: src/CriDetail.php:1507 src/CriPDF.php:543
-#: templates/contract_link_dropdown.html.twig:59
-#: templates/contract_link_dropdown.html.twig:74
+#: src/CriPDF.php:543 src/CriDetail.php:1507 ⁨standard input⁩:59
+#: ⁨standard input⁩:74
 msgid "Out of contract"
 msgstr "Hors contrat"
 
-#: templates/presale/step_generate.html.twig:161
-#: templates/presale/proposals_table.html.twig:53
+#: ⁨standard input⁩:161 ⁨standard input⁩:53
 msgid "Outcome of the proposal"
 msgstr "Issue de la proposition"
 
-#: templates/ticket_overview.html.twig:216
+#: ⁨standard input⁩:216
 msgid "Overdue tickets by tech lead"
 msgstr "Tickets en retard par tech lead"
 
-#: templates/ticket_overview.html.twig:197
+#: ⁨standard input⁩:197
 msgid "Overdue tickets by technician"
 msgstr "Tickets en retard par techniciens"
 
-#: templates/ticket_overview.html.twig:123
+#: ⁨standard input⁩:123
 msgid "Overdue tickets: opened for more than"
 msgstr "Tickets en retard : ouverts depuis plus de"
 
-#: src/Dashboard.php:524 templates/entity/kiflo_leads_tab.html.twig:90
-#: templates/entity/kiflo_leads_tab.html.twig:160
+#: src/Dashboard.php:524 ⁨standard input⁩:90 ⁨standard input⁩:160
 msgid "Owner at the publisher"
 msgstr "Référent éditeur"
 
@@ -3236,7 +2921,7 @@ msgstr "Informations PHP"
 msgid "PHP installation"
 msgstr "Installation de PHP"
 
-#: templates/presale/step_client.html.twig:252
+#: ⁨standard input⁩:252
 msgid ""
 "PNG or JPEG, 2 MB at most. Printed on the cover and in the header of the "
 "proposal."
@@ -3252,15 +2937,15 @@ msgstr "Forfait"
 msgid "Page"
 msgstr "Page"
 
-#: templates/wizard/step1_entity.html.twig:59
+#: ⁨standard input⁩:59
 msgid "Parent entity"
 msgstr "Entité parente"
 
-#: templates/entity/kiflo_leads_tab.html.twig:167
+#: ⁨standard input⁩:167
 msgid "Partner"
 msgstr "Partenaire"
 
-#: templates/kiflo/config_form.html.twig:68
+#: ⁨standard input⁩:68
 msgid "Partner API access token, generated in Kiflo. Stored encrypted."
 msgstr "Jeton d'accès à l'API partenaire, généré dans Kiflo. Stocké chiffré."
 
@@ -3268,18 +2953,15 @@ msgstr "Jeton d'accès à l'API partenaire, généré dans Kiflo. Stocké chiffr
 msgid "Pending"
 msgstr "En attente"
 
-#: templates/cridetail_for_ticket.html.twig:211
+#: ⁨standard input⁩:211
 msgid "Period comment"
 msgstr "Commentaires de la prestation"
 
-#: src/ContractDay.php:59 src/ContractDay.php:61 src/Followup.php:848
-#: src/WizardController.php:1929 src/WizardController.php:2004
-#: src/WizardController.php:2121 src/WizardController.php:2138
-#: src/Config.php:242 src/Entity.php:411
-#: templates/wizard/step6_intervention_block.html.twig:35
-#: templates/wizard/step6_interventions.html.twig:36
-#: templates/contractday_add_form.html.twig:45
-#: templates/contractday_form.html.twig:52
+#: src/Config.php:242 src/Entity.php:411 src/WizardController.php:1929
+#: src/WizardController.php:2004 src/WizardController.php:2121
+#: src/WizardController.php:2138 src/Followup.php:848 src/ContractDay.php:59
+#: src/ContractDay.php:61 ⁨standard input⁩:52 ⁨standard input⁩:45 ⁨standard input⁩:36
+#: ⁨standard input⁩:35
 msgid "Period of contract"
 msgid_plural "Periods of contract"
 msgstr[0] "Prestation du contrat"
@@ -3291,10 +2973,8 @@ msgstr[2] "Prestations de contrat"
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 
-#: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:980
-#: templates/contractday_list.html.twig:33
-#: templates/contract_link_dropdown.html.twig:66
-#: templates/contract_link_dropdown.html.twig:80
+#: hook.php:980 src/CriDetail.php:828 src/CriDetail.php:1795 ⁨standard input⁩:33
+#: ⁨standard input⁩:66 ⁨standard input⁩:80
 msgid "Periods of contract"
 msgstr "Prestations du contrat"
 
@@ -3302,38 +2982,22 @@ msgstr "Prestations du contrat"
 msgid "Person in charge"
 msgstr "Responsable"
 
-#: templates/entity/description.html.twig:72
-#: templates/entity/description.html.twig:103
-#: templates/entity/description.html.twig:223
-#: templates/entity/description.html.twig:310
-#: templates/entity/description.html.twig:311
-#: templates/entity/contacts_card.html.twig:42
-#: templates/entity/business_card.html.twig:42
-#: templates/entity/business_card.html.twig:43
-#: templates/entity/techleads_card.html.twig:45
-#: templates/entity/projectmanagers_card.html.twig:45
-#: templates/entity/kiflo_leads_tab.html.twig:154
-#: templates/wizard/step2_contact_block.html.twig:69
-#: templates/wizard/step1_entity.html.twig:73
-#: templates/presale/step_client.html.twig:117
-#: templates/presale/step_client.html.twig:241
-#: templates/presale/step_team.html.twig:95
-#: templates/presale/client_form.html.twig:70
-#: templates/presale/client_form.html.twig:96
+#: ⁨standard input⁩:117 ⁨standard input⁩:241 ⁨standard input⁩:95 ⁨standard input⁩:70
+#: ⁨standard input⁩:96 ⁨standard input⁩:42 ⁨standard input⁩:45 ⁨standard input⁩:72
+#: ⁨standard input⁩:103 ⁨standard input⁩:223 ⁨standard input⁩:310 ⁨standard input⁩:311
+#: ⁨standard input⁩:43 ⁨standard input⁩:154 ⁨standard input⁩:73 ⁨standard input⁩:69
 msgid "Phone"
 msgid_plural "Phones"
 msgstr[0] "Téléphone"
 msgstr[1] "Téléphones"
 msgstr[2] "Téléphones"
 
-#: templates/wizard/step2_contact_block.html.twig:74
+#: ⁨standard input⁩:74
 msgid "Phone 2"
 msgstr "Téléphone 2"
 
-#: templates/entity/description.html.twig:175
-#: templates/entity/references.html.twig:62
-#: templates/entity/customer_summary.html.twig:45
-#: templates/company_form.html.twig:78 templates/company_form.html.twig:79
+#: ⁨standard input⁩:62 ⁨standard input⁩:45 ⁨standard input⁩:175 ⁨standard input⁩:78
+#: ⁨standard input⁩:79
 msgid "Picture"
 msgstr "Logo"
 
@@ -3341,12 +3005,11 @@ msgstr "Logo"
 msgid "Please activate the plugin"
 msgstr "Merci d'activer le plugin"
 
-#: templates/cridetail_for_ticket.html.twig:54
-#: templates/cridetail_for_ticket.html.twig:239
+#: ⁨standard input⁩:54 ⁨standard input⁩:239
 msgid "Please anticipate the end of the service period if necessary"
 msgstr "Veuillez anticiper la fin du contrat si nécessaire."
 
-#: templates/cri_form.html.twig:65
+#: ⁨standard input⁩:65
 msgid "Please assign a technician to your tasks"
 msgstr "Merci d'assigner un technicien au ticket"
 
@@ -3363,7 +3026,7 @@ msgstr "Merci de renseigner la date de début de la prestation du contrat."
 msgid "Please fill the contract period end date."
 msgstr "Merci de renseigner la date de fin de la prestation du contrat."
 
-#: templates/contract_no_days_alert.html.twig:30
+#: ⁨standard input⁩:30
 msgid ""
 "Please note that there are no more contracts with days available for this "
 "customer."
@@ -3371,7 +3034,7 @@ msgstr ""
 "Veuillez noter qu'il n'y a plus de contrats avec des jours disponibles pour "
 "ce client."
 
-#: templates/directhelpdesk_unbilled_alert.html.twig:32
+#: ⁨standard input⁩:32
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 "Veuillez noter qu'il n'y a des interventions non facturées pour ce client."
@@ -3393,50 +3056,40 @@ msgstr "Veuillez sélectionner au moins une intervention"
 msgid "Plugin is not activated"
 msgstr "Le plugin n'est pas activé"
 
-#: templates/entity/portal_header.html.twig:31
+#: ⁨standard input⁩:31
 msgid "Portal"
 msgstr "Portail"
 
-#: templates/followup_export_toolbar.html.twig:52
+#: ⁨standard input⁩:52
 msgid "Portrait PDF"
 msgstr "PDF au format portrait"
 
-#: templates/preference_form.html.twig:97
-#: templates/entity/directhelpdesk_ticket_select.html.twig:71
-#: templates/report_moving_form.html.twig:53
-#: templates/report_search_form.html.twig:69
-#: templates/directhelpdesk_modal.html.twig:107
-#: templates/report_occupation_form.html.twig:52
+#: ⁨standard input⁩:69 ⁨standard input⁩:97 ⁨standard input⁩:53 ⁨standard input⁩:71
+#: ⁨standard input⁩:107 ⁨standard input⁩:52
 msgctxt "button"
 msgid "Post"
 msgstr "Envoyer"
 
-#: templates/entity/description.html.twig:78
-#: templates/entity/description.html.twig:138
-#: templates/wizard/step1_entity.html.twig:100
-#: templates/presale/step_client.html.twig:228
-#: templates/presale/client_form.html.twig:66
+#: ⁨standard input⁩:228 ⁨standard input⁩:66 ⁨standard input⁩:78 ⁨standard input⁩:138
+#: ⁨standard input⁩:100
 msgid "Postal code"
 msgstr "Code postal"
 
-#: src/ContractDay.php:127 src/ContractDay.php:461
-#: templates/wizard/step6_intervention_block.html.twig:76
-#: templates/contractday_form.html.twig:81
+#: src/ContractDay.php:127 src/ContractDay.php:461 ⁨standard input⁩:81
+#: ⁨standard input⁩:76
 msgid "Postponement"
 msgstr "Report"
 
-#: templates/wizard/step4_contract.html.twig:49
+#: ⁨standard input⁩:49
 msgid "Pre-fill from a contract template"
 msgstr "Préremplir depuis un modèle de contrat"
 
 #: front/presale.form.php:43 src/Profile.php:121 src/PresaleConfig.php:46
-#: templates/wizard/mode_choice.html.twig:49
-#: templates/presale/home.html.twig:46 templates/presale/layout.html.twig:48
-#: templates/config_presale_form.html.twig:51
+#: ⁨standard input⁩:51 ⁨standard input⁩:48 ⁨standard input⁩:46 ⁨standard input⁩:49
 msgid "Pre-sales"
 msgstr "Avant-vente"
 
-#: templates/presale/step_generate.html.twig:125
+#: ⁨standard input⁩:125
 msgid "Pre-sales configuration"
 msgstr "Configuration de l'avant-vente"
 
@@ -3447,25 +3100,25 @@ msgstr[0] "Utilisateur de l'avant-vente"
 msgstr[1] "Utilisateurs de l'avant-vente"
 msgstr[2] "Utilisateurs de l'avant-vente"
 
-#: templates/config_options_form.html.twig:121
+#: ⁨standard input⁩:121
 msgid "Pre-selected contact type when adding a contact in the wizard."
 msgstr ""
 "Type de contact présélectionné lors de l'ajout d'un contact dans le wizard."
 
-#: templates/config_options_form.html.twig:117
+#: ⁨standard input⁩:117
 msgid "Pre-selected document category when attaching a document in the wizard."
 msgstr ""
 "Catégorie de document présélectionnée lors de l'ajout d'un document dans le "
 "wizard."
 
-#: templates/config_options_form.html.twig:113
+#: ⁨standard input⁩:113
 msgid ""
 "Pre-selected intervention type when creating a service period in the wizard."
 msgstr ""
 "Type d'intervention présélectionné lors de la création d'une prestation dans "
 "le wizard."
 
-#: templates/config_options_form.html.twig:108
+#: ⁨standard input⁩:108
 msgid ""
 "Pre-selected service contract type when creating a service period in the "
 "wizard."
@@ -3473,45 +3126,37 @@ msgstr ""
 "Type de contrat de service présélectionné lors de l'ajout d'une prestation "
 "dans le wizard."
 
-#: templates/config_options_form.html.twig:103
+#: ⁨standard input⁩:103
 msgid "Pre-selected state when creating a service period in the wizard."
 msgstr ""
 "Statut présélectionné lors de la création d'une prestation dans le wizard."
 
-#: templates/generatecri_wizard.html.twig:153
+#: ⁨standard input⁩:153
 msgid "Predefined task informations"
 msgstr "Informations de tâches prédéfinies"
 
-#: src/Dashboard.php:191 src/Dashboard.php:322 src/Dashboard.php:377
-#: src/Dashboard.php:472 src/NotificationTargetContract.php:121
-#: src/NotificationTargetContract.php:156
-#: templates/entity/proposals_tab.html.twig:207
+#: src/NotificationTargetContract.php:121
+#: src/NotificationTargetContract.php:156 src/Dashboard.php:191
+#: src/Dashboard.php:322 src/Dashboard.php:377 src/Dashboard.php:472
+#: ⁨standard input⁩:207
 msgid "Prestation"
 msgstr "Prestation"
 
-#: templates/wizard/step6_interventions.html.twig:60
-#: templates/wizard/step2_contacts.html.twig:56
-#: templates/wizard/step5_management.html.twig:126
-#: templates/wizard/step3_subscription.html.twig:86
-#: templates/wizard/step4_contract.html.twig:148
-#: templates/presale/layout.html.twig:112
-#: templates/presale/layout.html.twig:121 templates/dat/layout.html.twig:102
-#: templates/dat/layout.html.twig:113
+#: ⁨standard input⁩:112 ⁨standard input⁩:121 ⁨standard input⁩:102 ⁨standard input⁩:113
+#: ⁨standard input⁩:60 ⁨standard input⁩:86 ⁨standard input⁩:56 ⁨standard input⁩:126
+#: ⁨standard input⁩:148
 msgid "Previous"
 msgstr "Précédent"
 
-#: templates/entity/status_tab.html.twig:119
+#: ⁨standard input⁩:119
 msgid "Previously had a contract"
 msgstr "Ayant déjà eu un contrat"
 
-#: templates/wizard/step6_criprices_section.html.twig:62
+#: ⁨standard input⁩:62
 msgid "Price"
 msgstr "Prix"
 
-#: templates/presale/annextype_default_lines.html.twig:53
-#: templates/presale/annextype_default_lines.html.twig:89
-#: templates/presale/step_annexes.html.twig:88
-#: templates/presale/step_annexes.html.twig:297
+#: ⁨standard input⁩:88 ⁨standard input⁩:297 ⁨standard input⁩:53 ⁨standard input⁩:89
 msgid "Price excl. VAT"
 msgstr "Prix HT"
 
@@ -3519,7 +3164,7 @@ msgstr "Prix HT"
 msgid "Price must be greater than 0"
 msgstr "Le prix doit être supérieur à 0"
 
-#: templates/presale/step_annexes.html.twig:124
+#: ⁨standard input⁩:124
 msgid ""
 "Price the days of the estimate: the days of the lines of each annex must "
 "equal its total."
@@ -3527,17 +3172,15 @@ msgstr ""
 "Chiffrez les jours du chiffrage : les jours des lignes de chaque annexe "
 "doivent être égaux à son total."
 
-#: templates/config_presale_form.html.twig:136
-#: templates/config_presale_form.html.twig:157
+#: ⁨standard input⁩:136 ⁨standard input⁩:157
 msgid "Printed phone"
 msgstr "Téléphone imprimé"
 
-#: templates/config_presale_form.html.twig:135
-#: templates/config_presale_form.html.twig:155
+#: ⁨standard input⁩:135 ⁨standard input⁩:155
 msgid "Printed role"
 msgstr "Fonction imprimée"
 
-#: templates/generatecri_wizard.html.twig:130
+#: ⁨standard input⁩:130
 msgid "Priority"
 msgstr "Priorité"
 
@@ -3545,25 +3188,21 @@ msgstr "Priorité"
 msgid "Production"
 msgstr "Production"
 
-#: templates/presale/proposal_form.html.twig:57
-#: templates/presale/proposals_table.html.twig:50
+#: ⁨standard input⁩:57 ⁨standard input⁩:50
 msgid "Progress"
 msgstr "Avancement"
 
-#: src/ProjectManager.php:48 src/PresaleUser.php:97
-#: src/NotificationTargetPresaleProposal.php:67
-#: src/NotificationTargetPresaleProposal.php:140 src/PresaleProposal.php:205
-#: templates/entity/projectmanagers_card.html.twig:35
-#: templates/presale/proposal_form.html.twig:117
-#: templates/presale/step_generate.html.twig:62
-#: templates/presale/step_team.html.twig:48
+#: src/PresaleUser.php:97 src/NotificationTargetPresaleProposal.php:67
+#: src/NotificationTargetPresaleProposal.php:140 src/ProjectManager.php:48
+#: src/PresaleProposal.php:205 ⁨standard input⁩:117 ⁨standard input⁩:48
+#: ⁨standard input⁩:62 ⁨standard input⁩:35
 msgid "Project manager"
 msgid_plural "Project managers"
 msgstr[0] "Chef de projet"
 msgstr[1] "Chefs de projet"
 msgstr[2] "Chefs de projet"
 
-#: src/PresaleWizard.php:82 templates/presale/proposal_form.html.twig:111
+#: src/PresaleWizard.php:82 ⁨standard input⁩:111
 msgid "Proposal"
 msgstr "Proposition"
 
@@ -3579,10 +3218,8 @@ msgstr "Proposition perdue"
 msgid "Proposal won"
 msgstr "Proposition gagnée"
 
-#: src/Entity.php:85 src/Entity.php:187 src/Entity.php:330
-#: templates/entity/proposals_tab.html.twig:47
-#: templates/presale/home.html.twig:100
-#: templates/presale/client_form.html.twig:122
+#: src/Entity.php:85 src/Entity.php:187 src/Entity.php:330 ⁨standard input⁩:100
+#: ⁨standard input⁩:122 ⁨standard input⁩:47
 msgid "Proposals in progress"
 msgstr "Propositions en cours"
 
@@ -3594,19 +3231,16 @@ msgstr "Propositions perdues"
 msgid "Proposals won"
 msgstr "Propositions gagnées"
 
-#: src/NotificationTargetPresaleProposal.php:134 src/PresaleProposal.php:166
-#: src/PresaleClient.php:51 templates/entity/proposals_tab.html.twig:103
-#: templates/presale/proposal_form.html.twig:98
-#: templates/presale/step_generate.html.twig:58
-#: templates/presale/home.html.twig:79
-#: templates/presale/proposals_table.html.twig:48
+#: src/NotificationTargetPresaleProposal.php:134 src/PresaleClient.php:51
+#: src/PresaleProposal.php:166 ⁨standard input⁩:98 ⁨standard input⁩:79
+#: ⁨standard input⁩:58 ⁨standard input⁩:48 ⁨standard input⁩:103
 msgid "Prospect"
 msgid_plural "Prospects"
 msgstr[0] "Prospect"
 msgstr[1] "Prospects"
 msgstr[2] "Prospects"
 
-#: templates/presale/step_client.html.twig:145
+#: ⁨standard input⁩:145
 msgid "Prospect already known"
 msgstr "Prospect déjà connu"
 
@@ -3621,25 +3255,18 @@ msgstr[2] "Contacts du prospect"
 msgid "Publisher"
 msgstr "Éditeur"
 
-#: src/EditorSubscription.php:178 src/EditorSubscription.php:762
 #: src/NotificationTargetEditorSubscription.php:105
 #: src/NotificationTargetEditorSubscription.php:142
-#: templates/entity/editorsubscription_tab.html.twig:73
-#: templates/editorsubscription_fields.html.twig:41
-#: templates/contract_detail_form.html.twig:66
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:762
+#: ⁨standard input⁩:73 ⁨standard input⁩:41 ⁨standard input⁩:66
 msgid "Publisher customer account ID"
 msgstr "ID du compte client chez l'éditeur"
 
-#: front/editorsubscription.form.php:111 src/EditorSubscription.php:55
+#: front/editorsubscription.form.php:111
 #: src/NotificationTargetPresaleProposal.php:141 src/Entity.php:89
-#: src/Entity.php:297 src/Entity.php:346
-#: templates/entity/customer_summary.html.twig:115
-#: templates/wizard/step3_subscription.html.twig:39
-#: templates/editorsubscription_transfer.html.twig:43
-#: templates/presale/estimate_form.html.twig:102
-#: templates/presale/step_annexes.html.twig:217
-#: templates/cridetail_for_ticket.html.twig:83
-#: templates/contract_detail_form.html.twig:42
+#: src/Entity.php:297 src/Entity.php:346 src/EditorSubscription.php:55
+#: ⁨standard input⁩:83 ⁨standard input⁩:217 ⁨standard input⁩:102 ⁨standard input⁩:43
+#: ⁨standard input⁩:115 ⁨standard input⁩:39 ⁨standard input⁩:42
 msgid "Publisher subscription"
 msgid_plural "Publisher subscriptions"
 msgstr[0] "Souscription éditeur"
@@ -3662,7 +3289,7 @@ msgstr "La souscription éditeur a été sauvegardée avec succès."
 msgid "Publisher subscription transferred successfully."
 msgstr "Souscription éditeur transférée avec succès."
 
-#: templates/entity/editorsubscription_tab.html.twig:33
+#: ⁨standard input⁩:33
 msgid "Publisher subscriptions"
 msgstr "Souscriptions éditeurs"
 
@@ -3670,15 +3297,11 @@ msgstr "Souscriptions éditeurs"
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr "La souscription éditeur ne peut pas être créé pour l'entité racine."
 
-#: src/PresaleAnnexType.php:115 templates/presale/step_annexes.html.twig:182
-#: templates/presale/step_annexes.html.twig:257
+#: src/PresaleAnnexType.php:115 ⁨standard input⁩:182 ⁨standard input⁩:257
 msgid "Purpose"
 msgstr "Objet"
 
-#: templates/presale/annextype_default_lines.html.twig:58
-#: templates/presale/annextype_default_lines.html.twig:94
-#: templates/presale/step_annexes.html.twig:93
-#: templates/presale/step_annexes.html.twig:302
+#: ⁨standard input⁩:93 ⁨standard input⁩:302 ⁨standard input⁩:58 ⁨standard input⁩:94
 msgid "Quantity"
 msgstr "Quantité"
 
@@ -3686,15 +3309,15 @@ msgstr "Quantité"
 msgid "Quarterly"
 msgstr "Trimestriel"
 
-#: templates/checkschema_result.html.twig:51
+#: ⁨standard input⁩:51
 msgid "Queries to run"
 msgstr "Requêtes à exécuter"
 
-#: templates/criprice_list.html.twig:34
+#: ⁨standard input⁩:34
 msgid "Rates"
 msgstr "Tarifs"
 
-#: templates/presale/proposal_form.html.twig:76
+#: ⁨standard input⁩:76
 msgid "Reactivate"
 msgstr "Réactiver"
 
@@ -3702,33 +3325,27 @@ msgstr "Réactiver"
 msgid "Reassigned"
 msgstr "Réassigné"
 
-#: templates/presale/proposal_form.html.twig:102
-#: templates/presale/step_general.html.twig:92
-#: templates/presale/step_generate.html.twig:59
+#: ⁨standard input⁩:92 ⁨standard input⁩:102 ⁨standard input⁩:59
 msgid "Recipient"
 msgstr "Destinataire"
 
-#: templates/company_form.html.twig:57
+#: ⁨standard input⁩:57
 msgid "Recursive"
 msgstr "Sous-entités"
 
-#: src/Contract.php:1078 templates/wizard/step5_management.html.twig:84
-#: templates/contract_detail_form.html.twig:158
+#: src/Contract.php:1078 ⁨standard input⁩:84 ⁨standard input⁩:158
 msgid "Refacturable costs"
 msgstr "Frais refacturables"
 
 #: src/NotificationTargetPresaleProposal.php:133 src/PresaleProposal.php:158
-#: templates/presale/step_general.html.twig:80
+#: ⁨standard input⁩:80
 msgid "Reference"
 msgstr "Référence"
 
-#: src/EditorSubscription.php:179
 #: src/NotificationTargetEditorSubscription.php:106
 #: src/NotificationTargetEditorSubscription.php:143
-#: templates/entity/proposals_tab.html.twig:148
-#: templates/entity/editorsubscription_tab.html.twig:74
-#: templates/editorsubscription_fields.html.twig:34
-#: templates/contract_detail_form.html.twig:72
+#: src/EditorSubscription.php:179 ⁨standard input⁩:148 ⁨standard input⁩:74
+#: ⁨standard input⁩:34 ⁨standard input⁩:72
 msgid "Referenced name at the publisher"
 msgstr "Nom référencé chez l'éditeur"
 
@@ -3736,7 +3353,7 @@ msgstr "Nom référencé chez l'éditeur"
 msgid "References"
 msgstr "References"
 
-#: templates/entity/customer_summary.html.twig:70
+#: ⁨standard input⁩:70
 msgid "Referent contact"
 msgstr "Contact référent"
 
@@ -3748,21 +3365,19 @@ msgstr "Refusé"
 msgid "Regenerate the intervention report"
 msgstr "Regénérer le rapport d'intervention"
 
-#: templates/wizard/layout.html.twig:64
+#: ⁨standard input⁩:64
 msgid "Reinitialize"
 msgstr "Réinitialiser"
 
-#: templates/wizard/layout.html.twig:163
+#: ⁨standard input⁩:163
 msgid "Reinitialize wizard"
 msgstr "Réinitialisation du wizard"
 
-#: templates/wizard/step6_stakeholders_section.html.twig:41
+#: ⁨standard input⁩:41
 msgid "Remaining"
 msgstr "Restant"
 
-#: templates/entity/proposals_tab.html.twig:208
-#: templates/entity/contracts_tab.html.twig:54
-#: templates/cridetail_for_ticket.html.twig:42
+#: ⁨standard input⁩:42 ⁨standard input⁩:54 ⁨standard input⁩:208
 msgid "Remaining days"
 msgstr "Jours restants"
 
@@ -3770,8 +3385,7 @@ msgstr "Jours restants"
 msgid "Remaining days number by opened client contracts"
 msgstr "Nombre de jours restants par contrat client"
 
-#: templates/entity/contracts_tab.html.twig:54
-#: templates/cridetail_for_ticket.html.twig:42
+#: ⁨standard input⁩:42 ⁨standard input⁩:54
 msgid "Remaining hours"
 msgstr "Heurs restantes"
 
@@ -3779,21 +3393,20 @@ msgstr "Heurs restantes"
 msgid "Remaining on "
 msgstr "Restant au"
 
-#: templates/contract_remaining_alert.html.twig:31
+#: ⁨standard input⁩:31
 #, php-format
 msgid "Remaining on the contract: %s"
 msgstr "Restant sur le contrat : %s"
 
-#: src/Followup.php:863 templates/contractday_form.html.twig:128
+#: src/Followup.php:863 ⁨standard input⁩:128
 msgid "Remaining total (amount)"
 msgstr "Total restant (montant)"
 
-#: templates/presale/estimate_form.html.twig:108
-#: templates/presale/step_annexes.html.twig:231
+#: ⁨standard input⁩:231 ⁨standard input⁩:108
 msgid "Remove this annex from the proposal?"
 msgstr "Retirer cette annexe de la proposition ?"
 
-#: templates/presale/proposal_form.html.twig:105
+#: ⁨standard input⁩:105
 msgid "Renewal"
 msgstr "Renouvellement"
 
@@ -3807,11 +3420,11 @@ msgstr "Renouvellement du contrat %s"
 msgid "Renewal of the publisher subscription ended on %s"
 msgstr "Le renouvellement de la souscription de l'éditeur a pris fin le %s"
 
-#: setup.php:167 templates/report_occupation_result.html.twig:34
+#: setup.php:167 ⁨standard input⁩:34
 msgid "Report concerning the occupation of the technicians"
 msgstr "Rapport concernant les déplacements des techniciens"
 
-#: setup.php:165 templates/report_moving_result.html.twig:33
+#: setup.php:165 ⁨standard input⁩:33
 msgid "Report on the movement of technicians"
 msgstr "Rapport concernant l'occupation des techniciens"
 
@@ -3823,23 +3436,23 @@ msgstr "N° de demande de support associée"
 msgid "Request of an existing customer"
 msgstr "Demande d'un client existant"
 
-#: templates/presale/estimate_form.html.twig:67
+#: ⁨standard input⁩:67
 msgid "Request of the sales representative"
 msgstr "Demande du commercial"
 
-#: templates/presale/step_annexes.html.twig:131
+#: ⁨standard input⁩:131
 msgid "Request the estimate"
 msgstr "Demander le chiffrage"
 
-#: templates/presale/step_annexes.html.twig:131
+#: ⁨standard input⁩:131
 msgid "Request the estimate again"
 msgstr "Redemander le chiffrage"
 
-#: templates/entity/dat_card.html.twig:94
+#: ⁨standard input⁩:94
 msgid "Resume the draft"
 msgstr "Reprendre le brouillon"
 
-#: templates/presale/step_generate.html.twig:140
+#: ⁨standard input⁩:140
 msgid "Retain at least one annex before generating the proposal."
 msgstr "Retenez au moins une annexe avant de générer la proposition."
 
@@ -3854,24 +3467,20 @@ msgstr[0] "Gestion des droits"
 msgstr[1] "Gestion des droits"
 msgstr[2] "Gestion des droits"
 
-#: templates/presale/step_client.html.twig:107
-#: templates/presale/step_team.html.twig:84
-#: templates/presale/client_form.html.twig:94
-#: templates/dat/step_system.html.twig:53
-#: templates/dat/step_system.html.twig:81
-#: templates/dat/step_summary.html.twig:82
+#: ⁨standard input⁩:107 ⁨standard input⁩:84 ⁨standard input⁩:94 ⁨standard input⁩:53
+#: ⁨standard input⁩:81 ⁨standard input⁩:82
 msgid "Role"
 msgstr "Fonction"
 
-#: templates/entity/description.html.twig:60
+#: ⁨standard input⁩:60
 msgid "Root entity"
 msgstr "Entité racine"
 
-#: templates/config_options_form.html.twig:50
+#: ⁨standard input⁩:50
 msgid "Rubric by default for reports"
 msgstr "Rubrique par défaut pour les rapports"
 
-#: templates/techlead/clients_by_tech.html.twig:70
+#: ⁨standard input⁩:70
 msgid "Rules to create"
 msgstr "Règles à créer"
 
@@ -3884,10 +3493,9 @@ msgid "SSO technology"
 msgstr "Technologie SSO"
 
 #: src/PresaleUser.php:96 src/NotificationTargetPresaleProposal.php:66
-#: src/NotificationTargetPresaleProposal.php:139 src/PresaleProposal.php:197
-#: src/Entity.php:1071 templates/presale/proposal_form.html.twig:116
-#: templates/presale/step_generate.html.twig:61
-#: templates/presale/step_team.html.twig:48
+#: src/NotificationTargetPresaleProposal.php:139 src/Entity.php:1071
+#: src/PresaleProposal.php:197 ⁨standard input⁩:116 ⁨standard input⁩:48
+#: ⁨standard input⁩:61
 msgid "Sales representative"
 msgstr "Commercial"
 
@@ -3895,36 +3503,30 @@ msgstr "Commercial"
 msgid "Sales representative and project manager"
 msgstr "Commercial et chef de projet"
 
-#: templates/taskcategory_form.html.twig:49
-#: templates/config_cri_form.html.twig:72 templates/profile.html.twig:34
-#: templates/kiflo/config_form.html.twig:94
-#: templates/presale/estimate_form.html.twig:135
-#: templates/config_options_form.html.twig:156
-#: templates/dat/config_form.html.twig:77
-#: templates/config_presale_form.html.twig:110
-#: templates/config_presale_form.html.twig:158
+#: ⁨standard input⁩:156 ⁨standard input⁩:110 ⁨standard input⁩:158 ⁨standard input⁩:72
+#: ⁨standard input⁩:135 ⁨standard input⁩:77 ⁨standard input⁩:34 ⁨standard input⁩:94
+#: ⁨standard input⁩:49
 msgctxt "button"
 msgid "Save"
 msgstr "Sauvegarder"
 
-#: templates/wizard/step6_interventions.html.twig:63
-#: templates/wizard/step6_interventions.html.twig:65
+#: ⁨standard input⁩:63 ⁨standard input⁩:65
 msgid "Save and finish"
 msgstr "Sauvegarder et terminer"
 
-#: templates/config_options_form.html.twig:48
+#: ⁨standard input⁩:48
 msgid "Save reports in glpi"
 msgstr "Sauvegarder les rapports dans glpi"
 
-#: templates/cri_preview.html.twig:34
+#: ⁨standard input⁩:34
 msgid "Save the intervention report"
 msgstr "Enregistrer le compte-rendu d'intervention"
 
-#: templates/wizard/step6_intervention_block.html.twig:118
+#: ⁨standard input⁩:118
 msgid "Save this period"
 msgstr "Sauvegarder cette prestation"
 
-#: src/CriType.php:153 hook.php:120 hook.php:139
+#: hook.php:120 hook.php:139 src/CriType.php:153
 msgid "Scheduled intervention"
 msgstr "Intervention planifiée"
 
@@ -3932,44 +3534,40 @@ msgstr "Intervention planifiée"
 msgid "Schema check"
 msgstr "Vérification du schéma"
 
-#: templates/entity/unbilled_tab.html.twig:127
-#: templates/entity/editorsubscription_tab.html.twig:48
+#: ⁨standard input⁩:48 ⁨standard input⁩:127
 msgid "Search"
 msgstr "Rechercher"
 
-#: templates/monthly_criterias.html.twig:58
-#: templates/followup_criterias.html.twig:105
+#: ⁨standard input⁩:105 ⁨standard input⁩:58
 msgctxt "button"
 msgid "Search"
 msgstr "Rechercher"
 
-#: templates/presale/home.html.twig:71
+#: ⁨standard input⁩:71
 msgid "Search the proposals, archived ones included."
 msgstr "Rechercher dans les propositions, archivées comprises."
 
-#: templates/presale/estimate_table.html.twig:49
-#: templates/presale/estimate_table.html.twig:50
+#: ⁨standard input⁩:49 ⁨standard input⁩:50
 msgid "Section title"
 msgstr "Titre de section"
 
-#: templates/directhelpdesk_unbilled_alert.html.twig:37
+#: ⁨standard input⁩:37
 msgid "See the unbilled interventions"
 msgstr "Voir les interventions non facturées"
 
-#: templates/entity/directhelpdesk_ticket_select.html.twig:36
-#: templates/directhelpdesk_ticket_tab.html.twig:70
+#: ⁨standard input⁩:70 ⁨standard input⁩:36
 msgid "Select"
 msgstr "Sélection"
 
-#: templates/editorsubscription_fields.html.twig:95
+#: ⁨standard input⁩:95
 msgid "Select a level..."
 msgstr "Sélectionnez un niveau..."
 
-#: templates/wizard/step1_select_entity.html.twig:38
+#: ⁨standard input⁩:38
 msgid "Select an existing entity"
 msgstr "Sélectionner une entité existante"
 
-#: templates/criprice_form.html.twig:68
+#: ⁨standard input⁩:68
 msgid "Select an existing price"
 msgstr "Sélectionner un prix existant"
 
@@ -3983,8 +3581,7 @@ msgstr ""
 msgid "Send the list of expired publisher subscriptions"
 msgstr "Envoyer la liste des souscriptions éditeurs expirées"
 
-#: src/DatServer.php:49 templates/dat/step_system.html.twig:71
-#: templates/dat/step_summary.html.twig:74
+#: src/DatServer.php:49 ⁨standard input⁩:71 ⁨standard input⁩:74
 msgid "Server"
 msgid_plural "Servers"
 msgstr[0] "Serveur"
@@ -4001,31 +3598,31 @@ msgstr "Serveur %d : le nom DNS n'est pas valide."
 msgid "Server %d: the IP address is not valid."
 msgstr "Serveur %d : l'adresse IP n'est pas valide."
 
-#: templates/config_presale_form.html.twig:170
+#: ⁨standard input⁩:170
 msgid "Set as default"
 msgstr "Définir par défaut"
 
-#: templates/entity/projectmanagers_card.html.twig:70
+#: ⁨standard input⁩:70
 msgid "Set as main project manager"
 msgstr "Définir comme chef de projet principal"
 
-#: templates/entity/techleads_card.html.twig:70
+#: ⁨standard input⁩:70
 msgid "Set as main tech lead"
 msgstr "Définir comme tech lead responsable"
 
-#: templates/presale/step_general.html.twig:81
+#: ⁨standard input⁩:81
 msgid "Set at the first generation"
 msgstr "Attribuée à la première génération"
 
-#: templates/dat/step_general.html.twig:77
+#: ⁨standard input⁩:77
 msgid "Set by the generation."
 msgstr "Fixée par la génération."
 
-#: templates/wizard/step1_entity.html.twig:63
+#: ⁨standard input⁩:63
 msgid "Set in configuration"
 msgstr "Défini dans la configuration"
 
-#: templates/techlead/assignment_rules.html.twig:40
+#: ⁨standard input⁩:40
 msgid ""
 "Set the customers entity in the plugin configuration to create the "
 "assignment rules"
@@ -4033,43 +3630,42 @@ msgstr ""
 "Configurez l'entité clients dans la configuration du plugin pour créer les "
 "règles d'attribution"
 
-#: templates/config_options_form.html.twig:41
+#: ⁨standard input⁩:41
 msgid "Setup"
 msgstr "Configuration"
 
-#: templates/config_cri_form.html.twig:42
+#: ⁨standard input⁩:42
 msgid "Setup for Generate Intervention report"
 msgstr "Configuration pour \"Générer le rapport d'intervention\""
 
-#: templates/techlead/clients_by_tech.html.twig:167
+#: ⁨standard input⁩:167
 msgid "Share"
 msgstr "Répartition"
 
-#: templates/entity/client_selector.html.twig:48
+#: ⁨standard input⁩:48
 msgid "Show"
 msgstr "Afficher"
 
-#: templates/entity/kiflo_leads_tab.html.twig:50
+#: ⁨standard input⁩:50
 msgid "Show closed leads"
 msgstr "Afficher les prospects fermés"
 
-#: templates/entity/editorsubscription_tab.html.twig:51
+#: ⁨standard input⁩:51
 msgid "Show expired subscriptions only"
 msgstr "Voir les souscriptions expirées uniquement"
 
-#: src/Contract.php:1076 templates/wizard/step5_management.html.twig:76
-#: templates/contract_detail_form.html.twig:150
+#: src/Contract.php:1076 ⁨standard input⁩:76 ⁨standard input⁩:150
 msgid "Show on GANTT"
 msgstr "Voir sur le GANTT"
 
-#: templates/presale/step_general.html.twig:87
+#: ⁨standard input⁩:87
 msgid ""
 "Shown in the lists only. Deduced from the client and the annexes when empty."
 msgstr ""
 "Affiché uniquement dans les listes. Déduit du client et des annexes s'il est "
 "vide."
 
-#: templates/techlead/assignment_rules.html.twig:83
+#: ⁨standard input⁩:83
 msgid "Simplified interface users"
 msgstr "Utilisateurs d'interface simplifiée"
 
@@ -4077,12 +3673,11 @@ msgstr "Utilisateurs d'interface simplifiée"
 msgid "Society name"
 msgstr "Nom de la société"
 
-#: templates/entity/editorsubscription_tab.html.twig:79
+#: ⁨standard input⁩:79
 msgid "Sorted by oldest end date first"
 msgstr "Trié par date de fin la plus ancienne en premier"
 
-#: templates/config_cri_form.html.twig:54
-#: templates/generatecri_wizard.html.twig:202
+#: ⁨standard input⁩:54 ⁨standard input⁩:202
 msgid "Specify an end date"
 msgstr "Indiquez une date de fin"
 
@@ -4090,43 +3685,30 @@ msgstr "Indiquez une date de fin"
 msgid "Stakeholder successfully updated."
 msgstr "L'intervenant a bien été ajouté."
 
-#: templates/wizard/mode_choice.html.twig:52
-#: templates/wizard/mode_choice.html.twig:74
-#: templates/wizard/mode_choice.html.twig:88
-#: templates/wizard/mode_choice.html.twig:103
+#: ⁨standard input⁩:52 ⁨standard input⁩:74 ⁨standard input⁩:88 ⁨standard input⁩:103
 msgid "Start"
 msgstr "Commencer"
 
-#: src/EditorSubscription.php:186
 #: src/NotificationTargetEditorSubscription.php:109
 #: src/NotificationTargetEditorSubscription.php:146
-#: templates/entity/proposals_tab.html.twig:206
-#: templates/entity/editorsubscription_tab.html.twig:78
-#: templates/wizard/step4_contract.html.twig:75
-#: templates/report_moving_form.html.twig:40
-#: templates/report_search_form.html.twig:39
-#: templates/generatecri_wizard.html.twig:192
-#: templates/editorsubscription_fields.html.twig:111
-#: templates/contract_detail_form.html.twig:93
-#: templates/report_occupation_form.html.twig:40
+#: src/EditorSubscription.php:186 ⁨standard input⁩:39 ⁨standard input⁩:40
+#: ⁨standard input⁩:206 ⁨standard input⁩:78 ⁨standard input⁩:75 ⁨standard input⁩:111
+#: ⁨standard input⁩:192 ⁨standard input⁩:93
 msgid "Start date"
 msgstr "Date de début"
 
-#: templates/entity/description.html.twig:80
-#: templates/entity/description.html.twig:148
-#: templates/wizard/step1_entity.html.twig:110
-#: templates/presale/step_client.html.twig:234
-#: templates/presale/client_form.html.twig:68
+#: ⁨standard input⁩:234 ⁨standard input⁩:68 ⁨standard input⁩:80 ⁨standard input⁩:148
+#: ⁨standard input⁩:110
 msgid "State"
 msgstr "Etat"
 
-#: templates/config_options_form.html.twig:149
+#: ⁨standard input⁩:149
 msgid "State applied to contract periods when the GLPI contract is closed."
 msgstr ""
 "Statut appliqué aux périodes contractuelles lorsque le contrat GLPI est "
 "clôturé"
 
-#: src/ContractState.php:44 templates/contractday_form.html.twig:101
+#: src/ContractState.php:44 ⁨standard input⁩:101
 msgid "State of contract"
 msgid_plural "States of contracts"
 msgstr[0] "Statut du contrat"
@@ -4137,17 +3719,12 @@ msgstr[2] "Statuts du contrat"
 msgid "State of intervention"
 msgstr "Etat de l'intervention"
 
-#: templates/config_cri_form.html.twig:49
+#: ⁨standard input⁩:49
 msgid "State of ticket created"
 msgstr "État du ticket créé"
 
-#: templates/entity/contracts_tab.html.twig:53
-#: templates/entity/kiflo_leads_tab.html.twig:88
-#: templates/wizard/step6_intervention_block.html.twig:81
-#: templates/wizard/step4_contract.html.twig:89
-#: templates/presale/proposals_table.html.twig:49
-#: templates/ticket_overview.html.twig:42
-#: templates/ticket_overview.html.twig:248
+#: ⁨standard input⁩:49 ⁨standard input⁩:53 ⁨standard input⁩:88 ⁨standard input⁩:42
+#: ⁨standard input⁩:248 ⁨standard input⁩:81 ⁨standard input⁩:89
 msgid "Status"
 msgstr "Statut"
 
@@ -4155,11 +3732,11 @@ msgstr "Statut"
 msgid "Status is required"
 msgstr "Le statut est obligatoire"
 
-#: templates/preference_form.html.twig:72
+#: ⁨standard input⁩:72
 msgid "Status list contract for the general monitoring"
 msgstr "Liste des statuts du contrat pour le suivi général"
 
-#: src/CriType.php:154 hook.php:121 hook.php:140
+#: hook.php:121 hook.php:140 src/CriType.php:154
 msgid "Study and advice"
 msgstr "Étude et conseil"
 
@@ -4167,22 +3744,19 @@ msgstr "Étude et conseil"
 msgid "Subscription"
 msgstr "Souscription"
 
-#: templates/wizard/step3_subscription.html.twig:55
+#: ⁨standard input⁩:55
 msgid "Subscription annex of the proposal"
 msgstr "Annexe de souscription de la proposition"
 
-#: templates/presale/estimate_form.html.twig:114
+#: ⁨standard input⁩:114
 msgid "Subscription annex: no estimate in days."
 msgstr "Annexe de souscription : pas de chiffrage en jours."
 
-#: src/SubscriptionLevel.php:47 src/EditorSubscription.php:182
-#: src/EditorSubscription.php:769 src/EditorSubscription.php:824
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
-#: templates/entity/proposals_tab.html.twig:150
-#: templates/entity/editorsubscription_tab.html.twig:77
-#: templates/editorsubscription_fields.html.twig:90
-#: templates/contract_detail_form.html.twig:78
+#: src/EditorSubscription.php:182 src/EditorSubscription.php:769
+#: src/EditorSubscription.php:824 src/SubscriptionLevel.php:47
+#: ⁨standard input⁩:150 ⁨standard input⁩:77 ⁨standard input⁩:90 ⁨standard input⁩:78
 msgid "Subscription level"
 msgid_plural "Subscription levels"
 msgstr[0] "Niveau de souscription"
@@ -4193,12 +3767,11 @@ msgstr[2] "Niveaux de souscription"
 msgid "Subscription level is required"
 msgstr "Le niveau de souscription est obligatoire"
 
-#: templates/editorsubscription_wizard.html.twig:90
+#: ⁨standard input⁩:90
 msgid "Subscription level is required."
 msgstr "Le niveau de souscription est obligatoire."
 
-#: src/SubscriptionLevel.php:80 src/SubscriptionLevel.php:163
-#: templates/editorsubscription_fields.html.twig:52
+#: src/SubscriptionLevel.php:80 src/SubscriptionLevel.php:163 ⁨standard input⁩:52
 msgid "Subscription type"
 msgstr "Type de souscription"
 
@@ -4206,41 +3779,36 @@ msgstr "Type de souscription"
 msgid "Subscription type is required"
 msgstr "Le type de souscription est obligatoire"
 
-#: templates/presale/annextype_default_lines.html.twig:95
-#: templates/presale/step_annexes.html.twig:303
+#: ⁨standard input⁩:303 ⁨standard input⁩:95
 msgid "Subscriptions"
 msgstr "Abonnements"
 
-#: templates/entity/status_tab.html.twig:177
+#: ⁨standard input⁩:177
 msgid "Subscriptions by level"
 msgstr "Souscriptions par niveau"
 
-#: templates/entity/status_tab.html.twig:151
+#: ⁨standard input⁩:151
 msgid "Subscriptions by type"
 msgstr "Souscriptions par type"
 
-#: templates/checkschema_result.html.twig:80
+#: ⁨standard input⁩:80
 msgid "Suggested queries"
 msgstr "Requêtes suggérées"
 
-#: src/DatWizard.php:80 src/Entity.php:258
-#: templates/entity/dat_card.html.twig:102
-#: templates/presale/proposal_form.html.twig:120
-#: templates/presale/step_general.html.twig:106
-#: templates/presale/step_generate.html.twig:55
+#: src/Entity.php:258 src/DatWizard.php:80 ⁨standard input⁩:106
+#: ⁨standard input⁩:120 ⁨standard input⁩:55 ⁨standard input⁩:102
 msgid "Summary"
 msgstr "Résumé"
 
-#: templates/wizard/layout.html.twig:133
+#: ⁨standard input⁩:133
 msgid "Summary of created items"
 msgstr "Récapitulatif des objets créés"
 
-#: templates/directhelpdesk_form.html.twig:114
+#: ⁨standard input⁩:114
 msgid "Surname"
 msgstr "Surnom"
 
-#: templates/entity/kiflo_leads_tab.html.twig:56
-#: templates/kiflo/config_form.html.twig:88
+#: ⁨standard input⁩:56 ⁨standard input⁩:88
 msgid "Synchronize now"
 msgstr "Synchroniser maintenant"
 
@@ -4260,19 +3828,19 @@ msgstr "Informations système"
 msgid "System tasks"
 msgstr "Tâches système"
 
-#: templates/preference_form.html.twig:50
+#: ⁨standard input⁩:50
 msgid "Tabs displayed in the clients management"
 msgstr "Onglets affichés dans la gestion des clients"
 
-#: templates/editorsubscription_transfer.html.twig:52
+#: ⁨standard input⁩:52
 msgid "Target entity"
 msgstr "Entité cible"
 
-#: templates/tickettask_blocked_alert.html.twig:32
+#: ⁨standard input⁩:32
 msgid "Task addition blocked"
 msgstr "L'ajout de tâches est bloqué"
 
-#: templates/report_moving_form.html.twig:49
+#: ⁨standard input⁩:49
 msgid "Task category"
 msgstr "Catégorie de tâche"
 
@@ -4288,23 +3856,22 @@ msgstr "Tâches, journaux, HTTPS, NTP, fichiers"
 msgid "Team"
 msgstr "Equipe"
 
-#: src/TechLead.php:50 templates/entity/techleads_card.html.twig:35
+#: src/TechLead.php:50 ⁨standard input⁩:35
 msgid "Tech lead"
 msgid_plural "Tech leads"
 msgstr[0] "Tech lead"
 msgstr[1] "Tech leads"
 msgstr[2] "Tech leads"
 
-#: templates/techlead/clients_by_tech.html.twig:137
+#: ⁨standard input⁩:137
 msgid "Tech lead - click to become the main one"
 msgstr "Tech lead - cliquez pour devenir le principal"
 
-#: src/Entity.php:96 src/Entity.php:378
-#: templates/techlead/clients_by_tech.html.twig:39
+#: src/Entity.php:96 src/Entity.php:378 ⁨standard input⁩:39
 msgid "Tech lead by clients"
 msgstr "Tech lead par clients"
 
-#: templates/techlead/ticket_badge.html.twig:32
+#: ⁨standard input⁩:32
 #, php-format
 msgid "Tech lead: %s"
 msgstr "Tech lead: %s"
@@ -4313,27 +3880,20 @@ msgstr "Tech lead: %s"
 msgid "Technical Assistance"
 msgstr "Assistance Technique"
 
-#: src/Dat.php:73 templates/entity/dat_card.html.twig:39
-#: templates/dat/layout.html.twig:52
+#: src/Dat.php:73 ⁨standard input⁩:52 ⁨standard input⁩:39
 msgid "Technical architecture document"
 msgid_plural "Technical architecture documents"
 msgstr[0] "Dossier d'architecture technique"
 msgstr[1] "Dossiers d'architecture technique"
 msgstr[2] "Dossiers d'architecture technique"
 
-#: templates/dat/config_form.html.twig:42
+#: ⁨standard input⁩:42
 msgid "Technical architecture documents"
 msgstr "Dossiers d'architecture technique"
 
-#: src/CriPDF.php:395
-#: templates/entity/directhelpdesk_ticket_select.html.twig:40
-#: templates/techlead/clients_by_tech.html.twig:164
-#: templates/generatecri_wizard.html.twig:138
-#: templates/generatecri_wizard.html.twig:215
-#: templates/directhelpdesk_ticket_tab.html.twig:36
-#: templates/directhelpdesk_ticket_tab.html.twig:73
-#: templates/ticket_overview.html.twig:249
-#: templates/report_occupation_form.html.twig:45
+#: src/CriPDF.php:395 ⁨standard input⁩:36 ⁨standard input⁩:73 ⁨standard input⁩:40
+#: ⁨standard input⁩:249 ⁨standard input⁩:45 ⁨standard input⁩:138 ⁨standard input⁩:215
+#: ⁨standard input⁩:164
 msgid "Technician"
 msgid_plural "Technicians"
 msgstr[0] "Intervenant"
@@ -4344,18 +3904,17 @@ msgstr[2] "Intervenants"
 msgid "Technician as assigned"
 msgstr "Technicien assigné"
 
-#: templates/generatecri_wizard.html.twig:163
+#: ⁨standard input⁩:163
 msgid "Technician group"
 msgstr "Groupe de technicien"
 
 #: src/CriDetail.php:488 src/CriDetail.php:741 src/CriDetail.php:834
-#: src/CriDetail.php:1345 src/CriDetail.php:1354
-#: templates/report_occupation_result.html.twig:42
-#: templates/cri_form.html.twig:53
+#: src/CriDetail.php:1345 src/CriDetail.php:1354 ⁨standard input⁩:42
+#: ⁨standard input⁩:53
 msgid "Technicians"
 msgstr "Intervenants"
 
-#: templates/kiflo/config_form.html.twig:84
+#: ⁨standard input⁩:84
 msgid "Test the connection"
 msgstr "Tester la connexion"
 
@@ -4367,11 +3926,11 @@ msgstr "Merci de sélectionner un type d'intervention"
 msgid "The Kiflo API URL must start with https://."
 msgstr "L'URL de l'API Kiflo doit commencer par https://."
 
-#: src/KifloClient.php:132
+#: src/KifloClient.php:138
 msgid "The Kiflo API key is not set."
 msgstr "La clé API Kiflo n'est pas définie."
 
-#: src/KifloClient.php:165
+#: src/KifloClient.php:171
 msgid "The Kiflo partner program does not grant access to this resource (403)."
 msgstr ""
 "Le programme partenaire Kiflo ne donne pas accès à cette ressource (403)."
@@ -4380,7 +3939,7 @@ msgstr ""
 msgid "The VAT rate must be between 0 and 100."
 msgstr "Le taux de TVA doit être compris entre 0 et 100."
 
-#: templates/presale/step_annexes.html.twig:167
+#: ⁨standard input⁩:167
 msgid ""
 "The annexes are numbered in the order of the list: use the arrows to change "
 "it. A model can be added several times."
@@ -4388,7 +3947,7 @@ msgstr ""
 "Les annexes sont numérotées dans l'ordre de la liste : utilisez les flèches "
 "pour le modifier. Un modèle peut être ajouté plusieurs fois."
 
-#: templates/presale/step_annexes.html.twig:134
+#: ⁨standard input⁩:134
 msgid ""
 "The annexes are saved first. The project manager sets the days, and can add "
 "or remove annexes."
@@ -4396,13 +3955,13 @@ msgstr ""
 "Les annexes sont d'abord enregistrées. Le chef de projet renseigne les "
 "jours, et peut ajouter ou retirer des annexes."
 
-#: templates/presale/annextype_default_lines.html.twig:124
+#: ⁨standard input⁩:124
 msgid "The columns follow the kind of annex: save the model after changing it."
 msgstr ""
 "Les colonnes dépendent du type d'annexe : enregistrez le modèle après "
 "l'avoir modifié."
 
-#: templates/presale/client_form.html.twig:116
+#: ⁨standard input⁩:116
 msgid "The contacts are changed at step 1 of a proposal."
 msgstr "Les contacts se modifient à l'étape 1 d'une proposition."
 
@@ -4411,7 +3970,7 @@ msgstr "Les contacts se modifient à l'étape 1 d'une proposition."
 msgid "The contract period %s already exists"
 msgstr "La prestation du contrat %s existe déja"
 
-#: templates/entity/proposals_tab.html.twig:194
+#: ⁨standard input⁩:194
 msgid ""
 "The contracts of the alert mail: every open period has less than one "
 "remaining day, and the customer has no day left on its other contracts. To "
@@ -4430,7 +3989,7 @@ msgstr ""
 "Le client \"%s\" est actuellement archivé. Souhaitez-vous le désarchiver et "
 "le placer sous l'entité parente par défaut pour continuer ?"
 
-#: templates/wizard/step3_subscription.html.twig:48
+#: ⁨standard input⁩:48
 msgid ""
 "The customer already has a publisher subscription: it is renewed with these "
 "values."
@@ -4456,7 +4015,7 @@ msgstr "Le client de la proposition ne peut être modifié."
 msgid "The customer of this proposal is not in your entities."
 msgstr "Le client de cette proposition ne fait pas partie de vos entités."
 
-#: templates/config_presale_form.html.twig:57
+#: ⁨standard input⁩:57
 msgid ""
 "The customers entity is not set in the Setup tab: the pre-sales section "
 "cannot be used until it is."
@@ -4464,7 +4023,7 @@ msgstr ""
 "L'entité des clients n'est pas définie dans l'onglet Configuration : l'avant-"
 "vente est inutilisable tant qu'elle ne l'est pas."
 
-#: templates/presale/home.html.twig:53
+#: ⁨standard input⁩:53
 msgid ""
 "The customers entity is not set in the configuration of the plugin: the pre-"
 "sales section cannot be used until it is."
@@ -4472,11 +4031,11 @@ msgstr ""
 "L'entité des clients n'est pas définie dans la configuration du plugin : "
 "l'avant-vente est inutilisable tant qu'elle ne l'est pas."
 
-#: templates/config_presale_form.html.twig:66
+#: ⁨standard input⁩:66
 msgid "The customers entity of the Setup tab."
 msgstr "L'entité des clients de l'onglet Configuration."
 
-#: templates/presale/step_client.html.twig:195
+#: ⁨standard input⁩:195
 msgid ""
 "The details below are the ones of the proposals: the entity itself is not "
 "changed."
@@ -4512,7 +4071,7 @@ msgid ""
 "The estimate is validated: the sales representative can price the proposal."
 msgstr "Le chiffrage est validé : le commercial peut valoriser la proposition."
 
-#: templates/presale/step_generate.html.twig:114
+#: ⁨standard input⁩:114
 msgid "The estimate requested from the project manager is not validated yet."
 msgstr "Le chiffrage demandé au chef de projet n'est pas encore validé."
 
@@ -4520,13 +4079,13 @@ msgstr "Le chiffrage demandé au chef de projet n'est pas encore validé."
 msgid "The file is too large (5 MB at most)."
 msgstr "Le fichier est trop volumineux (5 Mo maximum)."
 
-#: templates/wizard/layout.html.twig:138
+#: ⁨standard input⁩:138
 msgid "The following items will be saved. Please review before confirming."
 msgstr ""
 "Les éléments suivants seront enregistrés. Veuillez les vérifier avant de "
 "confirmer."
 
-#: templates/checkschema_result.html.twig:60
+#: ⁨standard input⁩:60
 msgid ""
 "The following queries remove columns or tables that are not part of the "
 "expected schema: data will be lost. Check that they are not used by another "
@@ -4537,7 +4096,7 @@ msgstr ""
 "exécuter, vérifiez qu’elles ne sont pas utilisées par un autre plugin ou par "
 "un développement personnalisé."
 
-#: templates/wizard/layout.html.twig:168
+#: ⁨standard input⁩:168
 msgid "The following unsaved data from this wizard will be lost:"
 msgstr ""
 "Les données non enregistrées suivantes de cet assistant seront perdues :"
@@ -4547,7 +4106,7 @@ msgstr ""
 msgid "The format of the image must be in JPG or JPEG"
 msgstr "Le format de l'image doit être en JPG ou JPEG"
 
-#: templates/entity/dat_card.html.twig:83
+#: ⁨standard input⁩:83
 msgid "The generated versions are no longer in the documents of the client."
 msgstr "Les versions générées ne sont plus dans les documents du client."
 
@@ -4567,7 +4126,7 @@ msgstr ""
 "La génération du dossier d'architecture technique a échoué. Vérifiez le "
 "modèle Word de la configuration."
 
-#: templates/presale/annextype_import.html.twig:49
+#: ⁨standard input⁩:49
 msgid ""
 "The images of the purpose and of the details are not imported: they point to "
 "documents of the other GLPI."
@@ -4575,7 +4134,7 @@ msgstr ""
 "Les images de l'objet et des détails ne sont pas importées : elles pointent "
 "vers des documents de l'autre GLPI."
 
-#: templates/presale/step_annexes.html.twig:326
+#: ⁨standard input⁩:326
 #, php-format
 msgid "The lines total %1$s days, the estimate %2$s days: they must be equal."
 msgstr ""
@@ -4599,7 +4158,7 @@ msgstr "Le logo ne doit pas dépasser 2 Mo."
 msgid "The logo of the prospect could not be copied to the customer."
 msgstr "Le logo du prospect n'a pas pu être copié sur le client."
 
-#: templates/presale/annextype_default_lines.html.twig:118
+#: ⁨standard input⁩:118
 #, php-format
 msgid ""
 "The monthly price is the one of the subscription level (%s € excl. VAT), set "
@@ -4619,7 +4178,7 @@ msgstr ""
 "Le nombre de jours dépasse le nombre de jours restants de l'intervention "
 "(%s)."
 
-#: templates/checkschema_result.html.twig:42
+#: ⁨standard input⁩:42
 msgid "The plugin schema is good"
 msgstr "Le schéma du plugin est bon"
 
@@ -4643,7 +4202,7 @@ msgstr "La proposition a été dupliquée : un nouveau brouillon."
 msgid "The proposal has been generated."
 msgstr "La proposition a été générée."
 
-#: templates/wizard/step3_subscription.html.twig:64
+#: ⁨standard input⁩:64
 msgid ""
 "The proposal holds several subscription annexes: a customer has a single "
 "subscription, choose the one to keep."
@@ -4651,7 +4210,7 @@ msgstr ""
 "La proposition comprend plusieurs annexes de souscriptions : un client ne "
 "possède qu'une seule souscription et choisit celle qu'il souhaite conserver."
 
-#: templates/wizard/step3_subscription.html.twig:71
+#: ⁨standard input⁩:71
 msgid ""
 "The proposal holds subscription annexes only: no contract is created, the "
 "wizard ends with this subscription."
@@ -4671,8 +4230,7 @@ msgstr "La proposition est perdue : elle est archivée."
 msgid "The proposal is won: create the customer from it."
 msgstr "La proposition est gagnée : créez le client à partir de celle-ci."
 
-#: templates/presale/outcome_buttons.html.twig:52
-#: templates/presale/step_generate.html.twig:173
+#: ⁨standard input⁩:52 ⁨standard input⁩:173
 msgid ""
 "The proposal was modified after its last generation. Mark it as won on the "
 "last generated version?"
@@ -4688,7 +4246,7 @@ msgstr "Le prospect n'a pas pu être enregistré."
 msgid "The prospect of the proposal is missing."
 msgstr "Le prospect de la proposition est introuvable."
 
-#: templates/checkschema_result.html.twig:45
+#: ⁨standard input⁩:45
 msgid ""
 "The queries below are only suggestions built from the differences found. "
 "Review them, back up your database, then run them manually: they are never "
@@ -4699,11 +4257,11 @@ msgstr ""
 "données, puis les exécuter manuellement : elles ne sont jamais exécutées par "
 "l’extension."
 
-#: templates/presale/step_generate.html.twig:132
+#: ⁨standard input⁩:132
 msgid "The reference of the proposal is set at the first generation."
 msgstr "La référence de la proposition est attribuée à la première génération."
 
-#: templates/techlead/assignment_rules.html.twig:47
+#: ⁨standard input⁩:47
 #, php-format
 msgid ""
 "The rules are created in the entity %s: select it in your active entities to "
@@ -4712,7 +4270,7 @@ msgstr ""
 "Les règles sont créées dans l'entité %s: sélectionnez là dans vos entités "
 "actives pour les créer"
 
-#: templates/wizard/layout.html.twig:45
+#: ⁨standard input⁩:45
 msgid "The steps are prefilled from it: check and complete them."
 msgstr ""
 "Les étapes sont préremplies à partir de celle-ci : vérifiez-les et complétez-"
@@ -4722,13 +4280,13 @@ msgstr ""
 msgid "The subscription already belongs to this entity."
 msgstr "La souscription appartient déjà à cette entité."
 
-#: templates/presale/annextype_default_lines.html.twig:120
+#: ⁨standard input⁩:120
 msgid "The subscription level has no monthly price yet: set it in its form."
 msgstr ""
 "Le niveau de souscription n'a pas encore de prix mensuel : définissez-le "
 "dans sa fiche."
 
-#: templates/presale/annextype_import.html.twig:48
+#: ⁨standard input⁩:48
 msgid ""
 "The subscription level is found by its name; when it does not exist here, "
 "the model is imported without level."
@@ -4740,7 +4298,7 @@ msgstr ""
 msgid "The target entity already has a publisher subscription."
 msgstr "L'entité cible possède déjà une souscription éditeur."
 
-#: templates/editorsubscription_transfer.html.twig:61
+#: ⁨standard input⁩:61
 msgid "The target entity must not have a publisher subscription yet."
 msgstr "L'entité cible ne doit pas encore avoir de souscription éditeur."
 
@@ -4760,11 +4318,11 @@ msgstr "Le type de contrat est obligatoire."
 msgid "The user must hold a central profile on the customers entity."
 msgstr "L'utilisateur doit avoir un profil central sur l'entité des clients."
 
-#: templates/presale/home.html.twig:80
+#: ⁨standard input⁩:80
 msgid "Their details, contacts and proposals."
 msgstr "Leurs coordonnées, contacts et propositions."
 
-#: templates/presale/step_generate.html.twig:121
+#: ⁨standard input⁩:121
 msgid ""
 "These Word templates must be uploaded in the configuration before generating "
 "the proposal:"
@@ -4772,7 +4330,7 @@ msgstr ""
 "Ces modèles Word doivent être déposés dans la configuration avant de générer "
 "la proposition :"
 
-#: templates/interventionstakeholder_list.html.twig:43
+#: ⁨standard input⁩:43
 msgid "This action is irreversible. Continue ?"
 msgstr "Cette action est irréversible, Continuer ?"
 
@@ -4792,12 +4350,12 @@ msgstr "Ce fichier provient d'une version plus récente du plugin."
 msgid "This file is not an export of annex models."
 msgstr "Ce fichier n'est pas un export de modèles d'annexe."
 
-#: templates/presale/step_annexes.html.twig:220
+#: ⁨standard input⁩:220
 msgid "This model is no longer active, it stays available for this proposal."
 msgstr ""
 "Ce modèle n'est plus actif, il reste disponible pour cette proposition."
 
-#: templates/presale/layout.html.twig:81
+#: ⁨standard input⁩:81
 msgid "This proposal is won or lost: it can no longer be modified."
 msgstr ""
 "Cette proposition est gagnée ou perdue : elle ne peut plus être modifiée."
@@ -4806,16 +4364,14 @@ msgstr ""
 msgid "This user is not declared for the pre-sales."
 msgstr "Cet utilisateur n'est pas déclaré pour l'avant-vente."
 
-#: templates/monthly_old_contractdays_alert.html.twig:33
-#: templates/ticket_overview.html.twig:37
-#: templates/ticket_overview.html.twig:246
+#: ⁨standard input⁩:33 ⁨standard input⁩:37 ⁨standard input⁩:246
 msgid "Ticket"
 msgid_plural "Tickets"
 msgstr[0] "Ticket"
 msgstr[1] "Tickets"
 msgstr[2] "Tickets"
 
-#: templates/generatecri_wizard.html.twig:43
+#: ⁨standard input⁩:43
 msgid "Ticket informations"
 msgstr "Informations du ticket"
 
@@ -4823,7 +4379,7 @@ msgstr "Informations du ticket"
 msgid "Ticket not validated"
 msgstr "Ticket non validé"
 
-#: templates/ticket_overview.html.twig:234
+#: ⁨standard input⁩:234
 msgid ""
 "Tickets whose last action is a customer follow-up or without any follow-up"
 msgstr ""
@@ -4833,19 +4389,13 @@ msgstr ""
 msgid "Tickets without CRI"
 msgstr "Tickets sans CRI"
 
-#: templates/report_occupation_result.html.twig:43
+#: ⁨standard input⁩:43
 msgid "Time justified"
 msgstr "Temps justifé"
 
-#: templates/entity/directhelpdesk_ticket_select.html.twig:38
-#: templates/wizard/step2_contact_block.html.twig:64
-#: templates/generatecri_wizard.html.twig:89
-#: templates/directhelpdesk_modal.html.twig:60
-#: templates/directhelpdesk_form.html.twig:114
-#: templates/directhelpdesk_ticket_tab.html.twig:34
-#: templates/directhelpdesk_ticket_tab.html.twig:71
-#: templates/presale/proposal_form.html.twig:136
-#: templates/presale/step_annexes.html.twig:241
+#: ⁨standard input⁩:34 ⁨standard input⁩:71 ⁨standard input⁩:241 ⁨standard input⁩:136
+#: ⁨standard input⁩:114 ⁨standard input⁩:38 ⁨standard input⁩:60 ⁨standard input⁩:64
+#: ⁨standard input⁩:89
 msgid "Title"
 msgstr "Titre"
 
@@ -4862,18 +4412,13 @@ msgstr "Décompte"
 msgid "To present an invoice"
 msgstr "A facturer"
 
-#: src/KifloClient.php:167
+#: src/KifloClient.php:173
 msgid "Too many requests sent to Kiflo (429): try again later."
 msgstr ""
 "Trop de requêtes envoyées à Kiflo (429) : veuillez réessayer plus tard."
 
-#: templates/monthly_report.html.twig:71
-#: templates/report_moving_result.html.twig:43
-#: templates/entity/unbilled_tab.html.twig:175
-#: templates/report_occupation_result.html.twig:50
-#: templates/presale/proposal_form.html.twig:164
-#: templates/presale/estimate_table.html.twig:82
-#: templates/presale/step_generate.html.twig:93
+#: ⁨standard input⁩:50 ⁨standard input⁩:164 ⁨standard input⁩:82 ⁨standard input⁩:93
+#: ⁨standard input⁩:175 ⁨standard input⁩:43 ⁨standard input⁩:71
 msgid "Total"
 msgstr "Total"
 
@@ -4885,42 +4430,36 @@ msgstr "Total (en jours)"
 msgid "Total (in hours)"
 msgstr "Total (en heures)"
 
-#: src/Gantt.php:401 src/ContractDay.php:463 src/Followup.php:856
-#: templates/contractday_form.html.twig:119
+#: src/Gantt.php:401 src/Followup.php:856 src/ContractDay.php:463
+#: ⁨standard input⁩:119
 msgid "Total consummated"
 msgstr "Total consommé"
 
-#: templates/cridetail_planning_item.html.twig:39
+#: ⁨standard input⁩:39
 msgid "Total duration"
 msgstr "Durée totale"
 
-#: src/ContractDay.php:466 src/Followup.php:859 src/Monthly.php:450
-#: templates/contractday_form.html.twig:123
+#: src/Monthly.php:450 src/Followup.php:859 src/ContractDay.php:466
+#: ⁨standard input⁩:123
 msgid "Total exceeding"
 msgstr "Total dépassement"
 
-#: templates/presale/proposal_form.html.twig:139
-#: templates/presale/step_generate.html.twig:70
-#: templates/presale/annextype_default_lines.html.twig:98
-#: templates/presale/step_annexes.html.twig:306
-#: templates/presale/step_annexes.html.twig:338
+#: ⁨standard input⁩:306 ⁨standard input⁩:338 ⁨standard input⁩:139 ⁨standard input⁩:98
+#: ⁨standard input⁩:70
 msgid "Total excl. VAT"
 msgstr "Total HT"
 
 #: src/NotificationTargetPresaleProposal.php:137 src/PresaleProposal.php:213
-#: templates/entity/proposals_tab.html.twig:104
-#: templates/presale/proposals_table.html.twig:51
+#: ⁨standard input⁩:51 ⁨standard input⁩:104
 msgid "Total excluding VAT"
 msgstr "Total HT"
 
-#: src/NotificationTargetPresaleProposal.php:138
-#: templates/presale/proposal_form.html.twig:141
-#: templates/presale/step_generate.html.twig:72
-#: templates/presale/step_annexes.html.twig:340
+#: src/NotificationTargetPresaleProposal.php:138 ⁨standard input⁩:340
+#: ⁨standard input⁩:141 ⁨standard input⁩:72
 msgid "Total incl. VAT"
 msgstr "Total TTC"
 
-#: templates/report_moving_result.html.twig:41
+#: ⁨standard input⁩:41
 msgid "Total moving package"
 msgstr "Nombre de forfait de déplacement"
 
@@ -4928,31 +4467,30 @@ msgstr "Nombre de forfait de déplacement"
 msgid "Total production"
 msgstr "Total consommation mensuelle"
 
-#: src/ContractDay.php:465 src/Followup.php:857 src/Dashboard.php:192
-#: src/Dashboard.php:473 src/NotificationTargetContract.php:120
-#: src/NotificationTargetContract.php:155 hook.php:1006
-#: templates/contractday_form.html.twig:122
+#: hook.php:1006 src/NotificationTargetContract.php:120
+#: src/NotificationTargetContract.php:155 src/Dashboard.php:192
+#: src/Dashboard.php:473 src/Followup.php:857 src/ContractDay.php:465
+#: ⁨standard input⁩:122
 msgid "Total remaining"
 msgstr "Total restant"
 
-#: templates/report_moving_result.html.twig:42
+#: ⁨standard input⁩:42
 msgid "Total time of the tasks of a category"
 msgstr "Total temps des tâches d'une catégorie"
 
-#: templates/cridetail_for_contractday.html.twig:50
+#: ⁨standard input⁩:50
 msgid "Total yearly consumption"
 msgstr "Total consommation annuelle"
 
-#: templates/editorsubscription_transfer.html.twig:71
-#: templates/editorsubscription_wizard.html.twig:76
+#: ⁨standard input⁩:71 ⁨standard input⁩:76
 msgid "Transfer"
 msgstr "Transférer"
 
-#: templates/editorsubscription_transfer.html.twig:37
+#: ⁨standard input⁩:37
 msgid "Transfer the subscription"
 msgstr "Transférer la souscription"
 
-#: templates/editorsubscription_transfer.html.twig:30
+#: ⁨standard input⁩:30
 msgid "Transfer this subscription to the selected entity?"
 msgstr "Transférer cette souscription dans l'entité sélectionnée ?"
 
@@ -4964,35 +4502,25 @@ msgstr "Déplacement"
 msgid "Travel (in days)"
 msgstr "Déplacement (en jours)"
 
-#: src/EditorSubscription.php:181
 #: src/NotificationTargetEditorSubscription.php:107
 #: src/NotificationTargetEditorSubscription.php:144
-#: templates/entity/description.html.twig:226
-#: templates/entity/proposals_tab.html.twig:149
-#: templates/entity/contacts_card.html.twig:45
-#: templates/entity/editorsubscription_tab.html.twig:76
-#: templates/wizard/step2_contact_block.html.twig:90
-#: templates/generatecri_wizard.html.twig:60
-#: templates/contract_detail_form.html.twig:55
-#: templates/ticket_overview.html.twig:116
+#: src/EditorSubscription.php:181 ⁨standard input⁩:149 ⁨standard input⁩:45
+#: ⁨standard input⁩:76 ⁨standard input⁩:226 ⁨standard input⁩:116 ⁨standard input⁩:90
+#: ⁨standard input⁩:60 ⁨standard input⁩:55
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "Type"
 msgstr[1] "Types"
 msgstr[2] "Types"
 
-#: src/NotificationTargetPresaleProposal.php:136 src/Followup.php:852
-#: src/Monthly.php:430 src/PresaleProposal.php:183
-#: templates/presale/proposal_form.html.twig:113
-#: templates/presale/step_general.html.twig:62
-#: templates/presale/step_generate.html.twig:60
+#: src/NotificationTargetPresaleProposal.php:136 src/PresaleProposal.php:183
+#: src/Monthly.php:430 src/Followup.php:852 ⁨standard input⁩:62
+#: ⁨standard input⁩:113 ⁨standard input⁩:60
 msgid "Type of contract"
 msgstr "Type de contrat"
 
-#: src/ContractDay.php:161 src/ContractDay.php:797 src/Followup.php:886
-#: templates/wizard/step5_management.html.twig:67
-#: templates/contractday_form.html.twig:58
-#: templates/contract_detail_form.html.twig:142
+#: src/Followup.php:886 src/ContractDay.php:161 src/ContractDay.php:797
+#: ⁨standard input⁩:58 ⁨standard input⁩:67 ⁨standard input⁩:142
 msgid "Type of service contract"
 msgstr "Type de contrat de service"
 
@@ -5000,7 +4528,7 @@ msgstr "Type de contrat de service"
 msgid "Type of service contract missing"
 msgstr "Type de contrat de service manquant"
 
-#: templates/kiflo/config_form.html.twig:51
+#: ⁨standard input⁩:51
 msgid "URL of the API"
 msgstr "URL de l'API"
 
@@ -5024,20 +4552,19 @@ msgstr "Désarchiver et continuer"
 msgid "Unassigned"
 msgstr "Non attribué"
 
-#: src/DirectHelpdesk.php:733 templates/entity/unbilled_tab.html.twig:144
+#: src/DirectHelpdesk.php:733 ⁨standard input⁩:144
 msgid "Unbilled hours"
 msgstr "Heures non facturées"
 
-#: templates/entity/unbilled_tab.html.twig:119
+#: ⁨standard input⁩:119
 msgid "Unbilled hours by client with an ongoing contract"
 msgstr "Heures non facturées par un client ayant un contrat en cours"
 
-#: src/Entity.php:95 src/Entity.php:281 src/Entity.php:367
-#: templates/entity/customer_summary.html.twig:138
+#: src/Entity.php:95 src/Entity.php:281 src/Entity.php:367 ⁨standard input⁩:138
 msgid "Unbilled interventions"
 msgstr "Interventions non facturées"
 
-#: templates/directhelpdesk_ticket_tab.html.twig:62
+#: ⁨standard input⁩:62
 msgid "Unbilled interventions of the customer"
 msgstr "Interventions non facturées du client"
 
@@ -5045,7 +4572,7 @@ msgstr "Interventions non facturées du client"
 msgid "Unbilled man-days"
 msgstr "Jours-hommes non facturées"
 
-#: src/KifloClient.php:155
+#: src/KifloClient.php:161
 msgid "Unexpected answer of the Kiflo API."
 msgstr "Réponse inattendue de l'API Kiflo."
 
@@ -5069,35 +4596,32 @@ msgstr "Origine inconnue"
 msgid "Unknown prospect"
 msgstr "Prospect inconnu"
 
-#: templates/checkschema_result.html.twig:31
+#: ⁨standard input⁩:31
 msgid "Unknown table"
 msgstr "Table inconnue"
 
-#: templates/entity/unbilled_tab.html.twig:32
+#: ⁨standard input⁩:32
 msgid "Unplanned interventions"
 msgstr "Interventions non planifiées"
 
-#: templates/entity/customer_summary.html.twig:122
+#: ⁨standard input⁩:122
 msgid "Until"
 msgstr "Jusqu'à"
 
-#: templates/cridetail_for_ticket.html.twig:270
-#: templates/contract_detail_form.html.twig:206
+#: ⁨standard input⁩:270 ⁨standard input⁩:206
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: templates/contract_ma_subscription_fields.html.twig:38
-#: templates/editorsubscription_wizard.html.twig:89
-#: templates/editorsubscription_wizard.html.twig:110
+#: ⁨standard input⁩:38 ⁨standard input⁩:89 ⁨standard input⁩:110
 msgctxt "button"
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: templates/entity/description.html.twig:164
+#: ⁨standard input⁩:164
 msgid "Update administrative data"
 msgstr "Mise à jour des données administratives"
 
-#: templates/entity/description.html.twig:187
+#: ⁨standard input⁩:187
 msgid "Update logo"
 msgstr "Mise à jour du logo"
 
@@ -5105,8 +4629,7 @@ msgstr "Mise à jour du logo"
 msgid "Update management fields"
 msgstr "Mise à jour des champs du type de gestion"
 
-#: templates/editorsubscription_wizard.html.twig:70
-#: templates/editorsubscription_wizard.html.twig:87
+#: ⁨standard input⁩:70 ⁨standard input⁩:87
 msgid "Update publisher subscription"
 msgstr "Mise à jour de la souscription éditeur"
 
@@ -5114,7 +4637,7 @@ msgstr "Mise à jour de la souscription éditeur"
 msgid "Update subscription fields"
 msgstr "Mise à jour des champs du type de gestion"
 
-#: templates/dat/config_form.html.twig:51
+#: ⁨standard input⁩:51
 msgid ""
 "Upload the Word template of the technical architecture documents: no "
 "template is shipped with the plugin. The placeholders it can hold are listed "
@@ -5124,7 +4647,7 @@ msgstr ""
 "n'est livré avec le plugin. Les balises qu'il peut contenir sont listées "
 "dans la documentation du plugin."
 
-#: templates/config_presale_form.html.twig:81
+#: ⁨standard input⁩:81
 msgid ""
 "Upload the Word templates of the proposals and of the annexes: no template "
 "is shipped with the plugin. The placeholders they can hold are listed in the "
@@ -5142,59 +4665,55 @@ msgstr ""
 "Déposez d'abord ces modèles Word dans la configuration (onglet Avant-"
 "vente) : %s."
 
-#: templates/dat/config_form.html.twig:58
-#: templates/config_presale_form.html.twig:89
+#: ⁨standard input⁩:89 ⁨standard input⁩:58
 msgid "Uploaded template"
 msgstr "Modèle déposé"
 
-#: templates/generatecri_wizard.html.twig:118
+#: ⁨standard input⁩:118
 msgid "Urgency"
 msgstr "Urgence"
 
-#: src/CriType.php:152 hook.php:119 hook.php:138
+#: hook.php:119 hook.php:138 src/CriType.php:152
 msgid "Urgent intervention"
 msgstr "Intervention urgente"
 
-#: templates/config_cri_form.html.twig:45
+#: ⁨standard input⁩:45
 msgid "Use Non-accomplished tasks informations"
 msgstr "Utiliser les informations sur les tâches non accomplies"
 
-#: templates/config_options_form.html.twig:78
+#: ⁨standard input⁩:78
 msgid "Use editor subscriptions"
 msgstr "Utiliser les souscriptions édteur"
 
-#: templates/taskcategory_form.html.twig:42
+#: ⁨standard input⁩:42
 msgid "Use for calculation of intervention report"
 msgstr "Utiliser pour le calcul des CRI"
 
-#: templates/config_options_form.html.twig:52
+#: ⁨standard input⁩:52
 msgid "Use of price"
 msgstr "Utilisation de la tarification"
 
-#: templates/kiflo/config_form.html.twig:47
+#: ⁨standard input⁩:47
 msgid "Use the Kiflo API"
 msgstr "Utiliser l'API Kiflo"
 
-#: templates/config_presale_form.html.twig:61
+#: ⁨standard input⁩:61
 msgid "Use the pre-sales section"
 msgstr "Utiliser l'avant-vente"
 
-#: templates/wizard/layout.html.twig:94 templates/wizard/layout.html.twig:95
+#: ⁨standard input⁩:94 ⁨standard input⁩:95
 msgid "Use this entity"
 msgstr "Utiliser cette entité"
 
-#: templates/report_search_form.html.twig:54
-#: templates/interventionstakeholder_list.html.twig:46
-#: templates/interventionstakeholder_form.html.twig:41
-#: templates/cridetail_planning_item.html.twig:36
+#: ⁨standard input⁩:54 ⁨standard input⁩:41 ⁨standard input⁩:46 ⁨standard input⁩:36
 msgid "User"
 msgid_plural "Users"
 msgstr[0] "Utilisateur"
 msgstr[1] "Utilisateurs"
 msgstr[2] "Utilisateurs"
 
-#: src/WizardController.php:1945 src/InterventionStakeholder.php:52
-#: templates/wizard/step6_stakeholders_section.html.twig:36
+#: src/InterventionStakeholder.php:52 src/WizardController.php:1945
+#: ⁨standard input⁩:36
 msgid "User affected"
 msgid_plural "Users affected"
 msgstr[0] "Utilisateur affecté"
@@ -5205,19 +4724,15 @@ msgstr[2] "Utilisateurs affectés"
 msgid "User already added"
 msgstr "Intervenant déjà ajouté"
 
-#: templates/config_presale_form.html.twig:198
+#: ⁨standard input⁩:198
 msgid "Users holding a central profile on the customers entity."
 msgstr "Utilisateurs ayant un profil central sur l'entité des clients."
 
-#: templates/presale/proposal_form.html.twig:140
-#: templates/presale/step_generate.html.twig:71
-#: templates/presale/step_annexes.html.twig:176
-#: templates/presale/step_annexes.html.twig:339
+#: ⁨standard input⁩:176 ⁨standard input⁩:339 ⁨standard input⁩:140 ⁨standard input⁩:71
 msgid "VAT"
 msgstr "TVA"
 
-#: templates/presale/proposal_form.html.twig:157
-#: templates/presale/step_generate.html.twig:84
+#: ⁨standard input⁩:157 ⁨standard input⁩:84
 msgid "VAT not applicable"
 msgstr "TVA non applicable"
 
@@ -5225,37 +4740,34 @@ msgstr "TVA non applicable"
 msgid "VAT not applicable: amounts excluding taxes."
 msgstr "TVA non applicable : montants hors taxes."
 
-#: src/PresaleAnnexType.php:127 src/PresaleAnnexType.php:463
-#: templates/presale/proposal_form.html.twig:138
-#: templates/presale/step_annexes.html.twig:248
+#: src/PresaleAnnexType.php:127 src/PresaleAnnexType.php:463 ⁨standard input⁩:248
+#: ⁨standard input⁩:138
 msgid "VAT rate (%)"
 msgstr "Taux de TVA (%)"
 
-#: templates/presale/estimate_form.html.twig:139
+#: ⁨standard input⁩:139
 msgid "Validate the estimate"
 msgstr "Valider le chiffrage"
 
-#: templates/presale/estimate_form.html.twig:138
+#: ⁨standard input⁩:138
 msgid "Validate the estimate? The sales representative is told it is ready."
 msgstr "Valider le chiffrage ? Le commercial est informé qu'il est prêt."
 
-#: templates/presale/estimate_form.html.twig:80
+#: ⁨standard input⁩:80
 #, php-format
 msgid "Validated by %s"
 msgstr "Validé par %s"
 
-#: templates/presale/proposal_form.html.twig:115
-#: templates/dat/step_general.html.twig:75
-#: templates/dat/step_summary.html.twig:67
+#: ⁨standard input⁩:115 ⁨standard input⁩:75 ⁨standard input⁩:67
 msgid "Version"
 msgstr "Version"
 
-#: src/PresaleGenerator.php:414 templates/dat/layout.html.twig:57
+#: src/PresaleGenerator.php:414 ⁨standard input⁩:57
 #, php-format
 msgid "Version %s"
 msgstr "Version %s"
 
-#: templates/preference_form.html.twig:92
+#: ⁨standard input⁩:92
 msgid ""
 "Warning : If there are more than one plugin which be loaded at startup, then "
 "only the first will be used"
@@ -5263,7 +4775,7 @@ msgstr ""
 "Attention : si plusieurs plugins sont lancés au démarrage, seul le premier "
 "sera actif"
 
-#: templates/monthly_old_contractdays_alert.html.twig:30
+#: ⁨standard input⁩:30
 msgid ""
 "Warning : There are supplementary interventions which depends on a "
 "prestation with a earlier end date"
@@ -5271,7 +4783,7 @@ msgstr ""
 "Attention : il y a des interventions qui dépendent d'une prestation ayant "
 "une date antérieure"
 
-#: templates/config_cri_form.html.twig:65
+#: ⁨standard input⁩:65
 msgid ""
 "Warning: changing the configuration daily or hourly impacts the types of "
 "contract"
@@ -5291,19 +4803,16 @@ msgstr "Informations sur le serveur web"
 msgid "Web server installation"
 msgstr "Installation du serveur web"
 
-#: src/PresaleOrigin.php:192 templates/entity/description.html.twig:75
-#: templates/entity/description.html.twig:113
-#: templates/wizard/step1_entity.html.twig:89
-#: templates/presale/step_client.html.twig:218
-#: templates/presale/client_form.html.twig:64
+#: src/PresaleOrigin.php:192 ⁨standard input⁩:218 ⁨standard input⁩:64
+#: ⁨standard input⁩:75 ⁨standard input⁩:113 ⁨standard input⁩:89
 msgid "Website"
 msgstr "Site web"
 
-#: templates/wizard/mode_choice.html.twig:37
+#: ⁨standard input⁩:37
 msgid "What would you like to do?"
 msgstr "Que souhaitez-vous faire ?"
 
-#: templates/config_options_form.html.twig:139
+#: ⁨standard input⁩:139
 msgid ""
 "When a GLPI contract reaches the configured GLPI state, all its periods are "
 "automatically set to the configured period state. Conversely, when all "
@@ -5315,7 +4824,7 @@ msgstr ""
 "toutes les périodes d'un contrat atteignent ce statut clos de période, le "
 "contrat GLPI est automatiquement mis à jour selon le statut GLPI configuré."
 
-#: templates/config_options_form.html.twig:79
+#: ⁨standard input⁩:79
 msgid ""
 "When disabled, publisher subscription tabs, blocks, alerts and the wizard "
 "subscription step are hidden."
@@ -5327,25 +4836,24 @@ msgstr ""
 msgid "With contrat"
 msgstr "Avec contrat"
 
-#: templates/config_options_form.html.twig:99
+#: ⁨standard input⁩:99
 msgid "Wizard defaults"
 msgstr "Paramètres par défaut du wizard"
 
-#: src/PresaleProposal.php:77 templates/presale/outcome_buttons.html.twig:51
-#: templates/presale/outcome_buttons.html.twig:53
-#: templates/presale/step_generate.html.twig:174
+#: src/PresaleProposal.php:77 ⁨standard input⁩:51 ⁨standard input⁩:53
+#: ⁨standard input⁩:174
 msgid "Won"
 msgstr "Gagnée"
 
-#: templates/presale/client_form.html.twig:139
+#: ⁨standard input⁩:139
 msgid "Won and lost proposals"
 msgstr "Propositions gagnées et perdues"
 
-#: templates/entity/proposals_tab.html.twig:94
+#: ⁨standard input⁩:94
 msgid "Won, customer to create"
 msgstr "Gagné, client à créer"
 
-#: templates/presale/step_generate.html.twig:105
+#: ⁨standard input⁩:105
 msgid "Word document"
 msgstr "Document Word"
 
@@ -5373,17 +4881,15 @@ msgstr "Modèle Word des dossiers d'architecture technique"
 msgid "Wording of the activities"
 msgstr "Libellé des activités"
 
-#: src/Entity.php:1066 src/CriPDF.php:418
+#: src/CriPDF.php:418 src/Entity.php:1066
 msgid "Year"
 msgstr "Année"
 
-#: templates/techlead/clients_by_tech.html.twig:139
-#: templates/techlead/clients_by_tech.html.twig:145
-#: templates/contract_detail_form.html.twig:86
+#: ⁨standard input⁩:86 ⁨standard input⁩:139 ⁨standard input⁩:145
 msgid "Yes"
 msgstr "Oui"
 
-#: templates/techlead/clients_by_tech.html.twig:47
+#: ⁨standard input⁩:47
 msgid "Yes only"
 msgstr "Oui seulement"
 
@@ -5391,56 +4897,50 @@ msgstr "Oui seulement"
 msgid "You cannot add an intervention on this entity"
 msgstr "Vous ne pouvez pas ajouter d'intervention dans cette entité"
 
-#: templates/followup_criterias.html.twig:64
-#: templates/followup_criterias.html.twig:75
+#: ⁨standard input⁩:64 ⁨standard input⁩:75
 msgid "after"
 msgstr "après"
 
-#: templates/config_presale_form.html.twig:214
+#: ⁨standard input⁩:214
 msgid "an annex model can describe a publisher subscription."
 msgstr "un modèle d'annexe peut décrire une souscription éditeur."
 
-#: templates/followup_criterias.html.twig:69
-#: templates/followup_criterias.html.twig:80
+#: ⁨standard input⁩:69 ⁨standard input⁩:80
 msgid "before"
 msgstr "avant"
 
-#: templates/entity/unbilled_tab.html.twig:55
-#: templates/entity/unbilled_tab.html.twig:89
-#: templates/wizard/step6_stakeholders_section.html.twig:52
+#: ⁨standard input⁩:55 ⁨standard input⁩:89 ⁨standard input⁩:52
 msgid "day"
 msgid_plural "days"
 msgstr[0] "jour"
 msgstr[1] "jours"
 msgstr[2] "jours"
 
-#: src/WizardController.php:1872
-#: templates/wizard/step6_stakeholders_section.html.twig:30
+#: src/WizardController.php:1872 ⁨standard input⁩:30
 msgid "days"
 msgstr "jours"
 
-#: templates/entity/customer_summary.html.twig:98
+#: ⁨standard input⁩:98
 msgid "days left"
 msgstr "jours restants"
 
-#: templates/presale/step_general.html.twig:66
+#: ⁨standard input⁩:66
 msgid "e.g. Expertise, Support, Project"
 msgstr "ex. Expertise, Support, Projet"
 
-#: templates/dat/step_system.html.twig:53
+#: ⁨standard input⁩:53
 msgid "e.g. Front, Database"
 msgstr "ex. Front, Base de données"
 
-#: templates/presale/annextype_default_lines.html.twig:47
+#: ⁨standard input⁩:47
 msgid "e.g. GLPI technical expertise"
 msgstr "ex. Expertise technique GLPI"
 
-#: src/WizardController.php:1871
-#: templates/wizard/step6_stakeholders_section.html.twig:30
+#: src/WizardController.php:1871 ⁨standard input⁩:30
 msgid "hours"
 msgstr "heures"
 
-#: templates/entity/customer_summary.html.twig:98
+#: ⁨standard input⁩:98
 msgid "hours left"
 msgstr "heures restantes"
 
@@ -5448,18 +4948,15 @@ msgstr "heures restantes"
 msgid "in"
 msgstr "à"
 
-#: templates/entity/customer_summary.html.twig:141
+#: ⁨standard input⁩:141
 msgid "man-days"
 msgstr "jours-homme"
 
-#: templates/followup_criterias.html.twig:64
-#: templates/followup_criterias.html.twig:69
-#: templates/followup_criterias.html.twig:75
-#: templates/followup_criterias.html.twig:80
+#: ⁨standard input⁩:64 ⁨standard input⁩:69 ⁨standard input⁩:75 ⁨standard input⁩:80
 msgid "of period of contract"
 msgstr "de la prestation de contrat"
 
-#: src/CriDetail.php:1334 src/CriPDF.php:245 src/CriPDF.php:601
+#: src/CriPDF.php:245 src/CriPDF.php:601 src/CriDetail.php:1334
 msgid "of this intervention"
 msgstr "d'intervention"
 
@@ -5467,7 +4964,7 @@ msgstr "d'intervention"
 msgid "on"
 msgstr "sur"
 
-#: templates/entity/unbilled_tab.html.twig:95
+#: ⁨standard input⁩:95
 msgid "since"
 msgstr "depuis"
 
@@ -5523,12 +5020,12 @@ msgstr "la quantité doit être supérieure à 0"
 msgid "the templates folder could not be created."
 msgstr "le dossier des modèles n'a pas pu être créé."
 
-#: templates/entity/contracts_tab.html.twig:106
+#: ⁨standard input⁩:106
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
 "Essayez de modifier le filtre sur le statut par défaut dans la configuration."
 
-#: templates/ticket_overview.html.twig:127
+#: ⁨standard input⁩:127
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "Semaine"
