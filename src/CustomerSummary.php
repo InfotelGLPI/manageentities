@@ -47,13 +47,13 @@ class CustomerSummary
     public const UNBILLED_ALERT_HOURS = 3;
 
     /**
-     * Badge colour of the ongoing contracts: red below LOW_REMAINING_DAYS left, green otherwise,
-     * grey without contract
+     * Badge colour of the ongoing contracts: red below LOW_REMAINING_DAYS left or without any
+     * ongoing contract, green otherwise
      */
     public static function getContractColor(?float $remaining_days): string
     {
         if ($remaining_days === null) {
-            return 'secondary';
+            return 'red';
         }
 
         return $remaining_days < self::LOW_REMAINING_DAYS ? 'red' : 'green';

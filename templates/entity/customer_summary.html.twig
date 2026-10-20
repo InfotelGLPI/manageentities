@@ -87,7 +87,7 @@
 
     <div class="card-footer">
         <div class="row g-3">
-            {# Ongoing contracts: red below the threshold of days left #}
+            {# Ongoing contracts: red below the threshold of days left, or without any #}
             <div class="col-12 col-md">
                 <div class="card card-sm border-{{ contract.color }} border-2 h-100">
                     <div class="card-body">
@@ -101,7 +101,7 @@
                                 <div class="text-red small"><i class="ti ti-alert-triangle me-1"></i>{{ __('Credit almost used up', 'manageentities') }}</div>
                             {% endif %}
                         {% else %}
-                            <div class="h3 mb-0 text-muted">{{ __('No ongoing contract', 'manageentities') }}</div>
+                            <div class="h3 mb-0 text-{{ contract.color }}">{{ __('No ongoing contract', 'manageentities') }}</div>
                         {% endif %}
                     </div>
                 </div>

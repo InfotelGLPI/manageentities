@@ -42,7 +42,7 @@ class CustomerSummaryTest extends TestCase
         $this->assertSame('red', CustomerSummary::getContractColor(0.49));
         $this->assertSame('red', CustomerSummary::getContractColor(-2));
         $this->assertSame('green', CustomerSummary::getContractColor(0.5));
-        $this->assertSame('secondary', CustomerSummary::getContractColor(null));
+        $this->assertSame('red', CustomerSummary::getContractColor(null));
     }
 
     public function testSubscriptionIsRedOnceExpired(): void
