@@ -38,8 +38,8 @@ use RuntimeException;
  * Word document of a DAT (last step of its wizard), from the template uploaded in the DAT tab of
  * the configuration (placeholders listed in docs/dat.md):
  * - general information: CLIENT, DATE_DAT, AUTHOR_DAT, VERSION_DAT, logo in the header;
- * - servers: each table row holding {{IP}} is duplicated once per server, {{NOM_DNS}} out of a
- *   table receives the list of the DNS names;
+ * - servers: each table row holding {{IP}} is duplicated once per server ({{NOM_DNS}},
+ *   {{NOM_INTERNE}} of the server), {{NOM_DNS}} out of a table receives the list of the DNS names;
  * - sections: rich text for *_INFORMATIONS, lines of commands for *_INSTALLATION.
  * The result becomes a GLPI document linked to the client entity: a new version at each
  * generation, the previous ones are kept.
@@ -105,8 +105,9 @@ class DatGenerator
         // out of a table are then filled as plain text
         $template->setRows('IP', array_map(
             static fn(array $server): array => [
-                'IP'      => (string) $server['ip'],
-                'NOM_DNS' => (string) $server['name'],
+                'IP'          => (string) $server['ip'],
+                'NOM_DNS'     => (string) $server['name'],
+                'NOM_INTERNE' => (string) $server['internal_name'],
             ],
             $servers,
         ));

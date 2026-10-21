@@ -629,10 +629,11 @@ class EditorSubscription extends CommonDBTM
         TemplateRenderer::getInstance()->display(
             '@manageentities/entity/editorsubscription_tab.html.twig',
             [
-                'rows'       => $rows,
-                'can_edit'   => $can_edit,
-                'wizard_url' => $wizard_url,
-                'export_url' => $export_url,
+                'rows'        => $rows,
+                'can_edit'    => $can_edit,
+                'wizard_url'  => $wizard_url,
+                'export_url'  => $export_url,
+                'use_presale' => Config::usePresale() && Session::getCurrentInterface() === 'central',
             ],
         );
     }

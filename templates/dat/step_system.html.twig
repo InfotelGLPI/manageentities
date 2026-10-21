@@ -28,12 +28,13 @@
 {# Step 2 — servers of the DAT, then the System sections. The server rows are added, removed and
  # moved by public/scripts/dat-wizard.js; their order is the order of the document.
  #
- # servers  - [{id, name, ip, role}]
+ # servers  - [{id, name, internal_name, ip, os, role}]
+ # systems  - {os: label} DatOsTemplate::getSystems()
  # sections - [{key, label, kind, value}] see step_sections.html.twig
  # errors   - {field: message}, the server fields under servers.<index>.<field>
  #}
 
-{% macro server_row(index, server, errors) %}
+{% macro server_row(index, server, errors, systems) %}
     <tr data-dat-server>
         <td class="text-muted" data-dat-server-number>{{ index is same as('__IDX__') ? '' : index + 1 }}</td>
         <td>
@@ -43,9 +44,23 @@
                    placeholder="glpi.example.com" aria-label="{{ __('DNS name', 'manageentities') }}">
         </td>
         <td>
+            <input type="text" name="servers[{{ index }}][internal_name]" value="{{ server.internal_name|default('') }}" maxlength="255"
+                   class="form-control form-control-sm{{ errors['servers.' ~ index ~ '.internal_name'] is defined ? ' is-invalid' : '' }}"
+                   placeholder="srv-glpi01" aria-label="{{ __('Internal name', 'manageentities') }}">
+        </td>
+        <td>
             <input type="text" name="servers[{{ index }}][ip]" value="{{ server.ip|default('') }}" maxlength="255"
                    class="form-control form-control-sm{{ errors['servers.' ~ index ~ '.ip'] is defined ? ' is-invalid' : '' }}"
                    placeholder="10.0.0.1" aria-label="{{ __('IP address') }}">
+        </td>
+        <td>
+            <select name="servers[{{ index }}][os]" aria-label="{{ __('Operating system') }}"
+                    class="form-select form-select-sm{{ errors['servers.' ~ index ~ '.os'] is defined ? ' is-invalid' : '' }}">
+                <option value="">{{ constant('Dropdown::EMPTY_VALUE') }}</option>
+                {% for os, label in systems %}
+                    <option value="{{ os }}" {{ server.os|default('') == os ? 'selected' : '' }}>{{ label }}</option>
+                {% endfor %}
+            </select>
         </td>
         <td>
             <input type="text" name="servers[{{ index }}][role]" value="{{ server.role|default('') }}" maxlength="255"
@@ -77,20 +92,22 @@
                     <tr>
                         <th style="width: 3rem">#</th>
                         <th>{{ __('DNS name', 'manageentities') }} <span class="text-danger">*</span></th>
+                        <th title="{{ __('HOTE A row of the DNS entries', 'manageentities') }}">{{ __('Internal name', 'manageentities') }} <span class="text-danger">*</span></th>
                         <th>{{ __('IP address') }} <span class="text-danger">*</span></th>
+                        <th title="{{ __('The model of the system of the first server prefills the sections of the document', 'manageentities') }}">{{ __('Operating system') }} <span class="text-danger">*</span></th>
                         <th>{{ __('Role') }}</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody data-dat-servers>
                     {% for server in servers %}
-                        {{ _self.server_row(loop.index0, server, errors) }}
+                        {{ _self.server_row(loop.index0, server, errors, systems) }}
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         <template data-dat-server-template>
-            {{ _self.server_row('__IDX__', {}, {}) }}
+            {{ _self.server_row('__IDX__', {}, {}, systems) }}
         </template>
     </div>
     <div class="card-footer">

@@ -30,6 +30,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
+use GlpiPlugin\Manageentities\DatOsTemplate;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\KifloConfig;
@@ -48,6 +49,10 @@ if (Plugin::isPluginActive("manageentities")) {
             $config->update($_POST);
             // Word templates of the pre-sales tab, stored in files/_plugins/manageentities/presale
             PresaleTemplate::handleUpload($_FILES, $_POST);
+            // Models of the DAT sections, posted by the DAT tab only
+            if (isset($_POST['dat_models']) && is_array($_POST['dat_models'])) {
+                DatOsTemplate::saveAll($_POST['dat_models']);
+            }
             Html::back();
         } elseif (isset($_POST["kiflo_test"])) {
             KifloConfig::testConnection();

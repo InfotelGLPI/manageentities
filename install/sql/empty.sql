@@ -593,11 +593,22 @@ CREATE TABLE `glpi_plugin_manageentities_datservers` (
    `plugin_manageentities_dats_id` int unsigned NOT NULL DEFAULT '0',
    `rank` int NOT NULL DEFAULT '0',
    `name` varchar(255) DEFAULT NULL COMMENT 'DNS name',
+   `internal_name` varchar(255) DEFAULT NULL COMMENT 'internal host name, the HOTE A row of the DNS table',
    `ip` varchar(255) DEFAULT NULL,
+   `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'operating system, a DatOsTemplate::OS_* model',
    `role` varchar(255) DEFAULT NULL COMMENT 'front, database... free text',
    PRIMARY KEY  (`id`),
    KEY `plugin_manageentities_dats_id` (`plugin_manageentities_dats_id`),
    KEY `rank` (`rank`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_datostemplates`;
+CREATE TABLE `glpi_plugin_manageentities_datostemplates` (
+   `id` int unsigned NOT NULL auto_increment,
+   `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'debian, ubuntu, redhat, windows',
+   `sections` mediumtext COMMENT 'JSON text of each section, by placeholder',
+   PRIMARY KEY  (`id`),
+   UNIQUE KEY `os` (`os`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_kifloleads`;

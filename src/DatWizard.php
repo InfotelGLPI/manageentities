@@ -325,22 +325,63 @@ class DatWizard
     {
         $stored   = $dat?->getSections() ?? array_fill_keys(Dat::SECTIONS, '');
         $labels   = self::getSectionLabels();
+        $servers  = $dat !== null ? DatServer::getForDat($dat->getID()) : [];
+        // Model of the system of the first server: it fills the sections left empty
+        $os       = self::getDatOs($servers);
+        $model    = DatOsTemplate::getSectionsFor($os);
         $sections = [];
         foreach (self::getStepSections()[$step] ?? [] as $placeholder) {
+            $value     = (string) ($values['sections'][$placeholder] ?? $stored[$placeholder]);
+            $prefilled = $values === null && trim($value) === '' && ($model[$placeholder] ?? '') !== '';
             $sections[] = [
-                'key'   => $placeholder,
-                'label' => $labels[$placeholder],
-                'kind'  => self::getSectionKind($placeholder),
-                'value' => (string) ($values['sections'][$placeholder] ?? $stored[$placeholder]),
+                'key'       => $placeholder,
+                'label'     => $labels[$placeholder],
+                'kind'      => self::getSectionKind($placeholder),
+                'value'     => $prefilled ? $model[$placeholder] : $value,
+                'prefilled' => $prefilled,
             ];
         }
 
-        $vars = ['sections' => $sections];
+        $vars = [
+            'sections' => $sections,
+            // Offered when the system has a model holding at least one section of the step
+            'model'    => array_filter(array_intersect_key($model, array_flip(self::getStepSections()[$step] ?? []))) !== []
+                ? DatOsTemplate::getSystems()[$os]
+                : '',
+        ];
         if ($step === self::STEP_SYSTEM) {
-            $vars['servers'] = $values['servers'] ?? ($dat !== null ? DatServer::getForDat($dat->getID()) : []);
+            $vars['servers'] = $values['servers'] ?? $servers;
+            $vars['systems'] = DatOsTemplate::getSystems();
         }
 
         return $vars;
+    }
+
+    /**
+     * System of a DAT: the one of its first server, the sections being shared by all of them
+     *
+     * @param list<array<string, mixed>> $servers in their order
+     */
+    private static function getDatOs(array $servers): string
+    {
+        return (string) ($servers[0]['os'] ?? '');
+    }
+
+    /**
+     * "Apply the model": every section of the step replaced by the model of the system of the
+     * DAT, after the step was saved (its servers included, for the System step)
+     */
+    private static function applyModel(Dat $dat, int $step): void
+    {
+        $model = DatOsTemplate::getSectionsFor(self::getDatOs(DatServer::getForDat($dat->getID())));
+        if ($model === []) {
+            return;
+        }
+        $sections = [];
+        foreach (self::getStepSections()[$step] ?? [] as $placeholder) {
+            $sections[$placeholder] = $model[$placeholder] ?? '';
+        }
+        self::updateDat($dat, $step, ['sections' => $sections]);
     }
 
     /**
@@ -538,6 +579,13 @@ class DatWizard
             Html::redirect(self::getStepUrl($entities_id, $step));
         }
 
+        // Saved first, then the sections of the step replaced by the model: back to the step
+        if (isset($input['apply_model']) && isset($dat)) {
+            $dat->getFromDB($dat->getID());
+            self::applyModel($dat, $step);
+            Html::redirect(self::getStepUrl($entities_id, $step));
+        }
+
         $next = isset($input['previous']) ? max(self::STEP_GENERAL, $step - 1) : min($step + 1, self::LAST_STEP);
         Html::redirect(self::getStepUrl($entities_id, $next));
     }
@@ -649,7 +697,7 @@ class DatWizard
     /**
      * Server rows posted under servers[], in their order; the fully empty ones are dropped
      *
-     * @return list<array{id: int, name: string, ip: string, role: string}>
+     * @return list<array{id: int, name: string, internal_name: string, ip: string, os: string, role: string}>
      */
     private static function readServers(array $input): array
     {
@@ -659,12 +707,14 @@ class DatWizard
                 continue;
             }
             $server = [
-                'id'   => (int) ($row['id'] ?? 0),
-                'name' => trim((string) ($row['name'] ?? '')),
-                'ip'   => trim((string) ($row['ip'] ?? '')),
-                'role' => trim((string) ($row['role'] ?? '')),
+                'id'            => (int) ($row['id'] ?? 0),
+                'name'          => trim((string) ($row['name'] ?? '')),
+                'internal_name' => trim((string) ($row['internal_name'] ?? '')),
+                'ip'            => trim((string) ($row['ip'] ?? '')),
+                'os'            => isset(DatOsTemplate::getSystems()[(string) ($row['os'] ?? '')]) ? (string) $row['os'] : '',
+                'role'          => trim((string) ($row['role'] ?? '')),
             ];
-            if ($server['name'] === '' && $server['ip'] === '' && $server['role'] === '') {
+            if ($server['name'] === '' && $server['internal_name'] === '' && $server['ip'] === '' && $server['role'] === '') {
                 continue;
             }
             $servers[] = $server;
@@ -674,9 +724,9 @@ class DatWizard
     }
 
     /**
-     * At least one server, each one with a DNS name and a valid IP address
+     * At least one server, each one with a DNS name, an internal name and a valid IP address
      *
-     * @param list<array{id: int, name: string, ip: string, role: string}> $servers
+     * @param list<array{id: int, name: string, internal_name: string, ip: string, os: string, role: string}> $servers
      *
      * @return array<string, string>
      */
@@ -692,8 +742,14 @@ class DatWizard
             if (filter_var($server['name'], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
                 $errors["servers.$index.name"] = sprintf(__('Server %d: the DNS name is not valid.', 'manageentities'), $number);
             }
+            if (filter_var($server['internal_name'], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false) {
+                $errors["servers.$index.internal_name"] = sprintf(__('Server %d: the internal name is not valid.', 'manageentities'), $number);
+            }
             if (filter_var($server['ip'], FILTER_VALIDATE_IP) === false) {
                 $errors["servers.$index.ip"] = sprintf(__('Server %d: the IP address is not valid.', 'manageentities'), $number);
+            }
+            if ($server['os'] === '') {
+                $errors["servers.$index.os"] = sprintf(__('Server %d: choose its operating system.', 'manageentities'), $number);
             }
         }
 
@@ -704,7 +760,7 @@ class DatWizard
      * Replaces the servers of the DAT with the posted ones: the posted ids are only trusted when
      * they belong to this DAT, the others become new servers
      *
-     * @param list<array{id: int, name: string, ip: string, role: string}> $servers
+     * @param list<array{id: int, name: string, internal_name: string, ip: string, os: string, role: string}> $servers
      */
     private static function saveServers(Dat $dat, array $servers): void
     {
@@ -716,7 +772,9 @@ class DatWizard
                 DatServer::$items_id => $dat->getID(),
                 'rank'               => $rank,
                 'name'               => $row['name'],
+                'internal_name'      => $row['internal_name'],
                 'ip'                 => $row['ip'],
+                'os'                 => $row['os'],
                 'role'               => $row['role'],
             ];
             if (isset($existing[$row['id']])) {

@@ -30,8 +30,22 @@
 {# Sections of a step: rich text for *_INFORMATIONS, block of commands for *_INSTALLATION
  # (one line of the "Code" paragraph of the template per line), plain text otherwise.
  #
- # sections - [{key, label, kind, value}]
+ # sections - [{key, label, kind, value, prefilled}] prefilled: empty section filled by the model
+ # model    - name of the system whose model can replace the sections of the step, empty if none
  #}
+
+{% if model %}
+    <div class="alert alert-info d-flex align-items-center flex-wrap gap-2">
+        <i class="ti ti-template"></i>
+        <span class="me-auto">
+            {{ __('Model %s: the empty sections are prefilled from it.', 'manageentities')|format(model) }}
+        </span>
+        <button type="submit" name="apply_model" value="1" class="btn btn-sm btn-outline-primary"
+                data-dat-confirm="{{ __('Replace every section of this page by the model?', 'manageentities') }}">
+            <i class="ti ti-replace me-1"></i>{{ __('Apply the model', 'manageentities') }}
+        </button>
+    </div>
+{% endif %}
 
 {% for section in sections %}
     <div class="card mb-3">
@@ -39,6 +53,9 @@
             <h3 class="card-title">
                 <i class="ti {{ section.kind == 'code' ? 'ti-terminal-2' : 'ti-file-text' }} me-1"></i>{{ section.label }}
             </h3>
+            {% if section.prefilled %}
+                <span class="badge bg-info-lt ms-2">{{ __('From the model', 'manageentities') }}</span>
+            {% endif %}
         </div>
         <div class="card-body">
             {% if section.kind == 'richtext' %}

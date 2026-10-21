@@ -74,7 +74,9 @@ class DatServer extends CommonDBChild
                             `plugin_manageentities_dats_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                             `rank` int NOT NULL DEFAULT '0',
                             `name` varchar(255) DEFAULT NULL COMMENT 'DNS name',
+                            `internal_name` varchar(255) DEFAULT NULL COMMENT 'internal host name, the HOTE A row of the DNS table',
                             `ip` varchar(255) DEFAULT NULL,
+                            `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'operating system, a DatOsTemplate::OS_* model',
                             `role` varchar(255) DEFAULT NULL COMMENT 'front, database... free text',
                             PRIMARY KEY  (`id`),
                             KEY `plugin_manageentities_dats_id` (`plugin_manageentities_dats_id`),
@@ -82,6 +84,23 @@ class DatServer extends CommonDBChild
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
             $DB->doQuery($query);
+        }
+
+        // Upgrade: internal name of the server, added after the first release of the DAT
+        if (!$DB->fieldExists($table, 'internal_name')) {
+            $migration->addField($table, 'internal_name', 'string', [
+                'after'   => 'name',
+                'comment' => 'internal host name, the HOTE A row of the DNS table',
+            ]);
+            $migration->migrationOneTable($table);
+        }
+        // Upgrade: operating system of the server, which picks the model of the sections
+        if (!$DB->fieldExists($table, 'os')) {
+            $migration->addField($table, 'os', "varchar(50) NOT NULL DEFAULT ''", [
+                'after'   => 'ip',
+                'comment' => 'operating system, a DatOsTemplate::OS_* model',
+            ]);
+            $migration->migrationOneTable($table);
         }
     }
 

@@ -78,6 +78,16 @@ class DatConfig extends CommonGLPI
                 'uploaded' => PresaleTemplate::isUploaded(PresaleTemplate::DAT),
                 'url'      => PresaleTemplate::getDownloadUrl(PresaleTemplate::DAT),
             ],
+            'systems'  => DatOsTemplate::getSystems(),
+            'models'   => DatOsTemplate::getAll(),
+            'sections' => array_map(
+                static fn(string $placeholder): array => [
+                    'key'   => $placeholder,
+                    'label' => DatWizard::getSectionLabels()[$placeholder],
+                    'kind'  => DatWizard::getSectionKind($placeholder),
+                ],
+                DatOsTemplate::getPlaceholders(),
+            ),
         ]);
     }
 

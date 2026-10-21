@@ -1014,8 +1014,6 @@ class Entity extends CommonGLPI
 
     public function showReferences($instID)
     {
-        self::showManageentitiesHeader(__('References', 'manageentities'));
-
         TemplateRenderer::getInstance()->display('@manageentities/entity/references.html.twig', [
             'years'      => self::getReferences(),
             'export_url' => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php?export=references',

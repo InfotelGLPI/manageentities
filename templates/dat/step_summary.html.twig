@@ -28,7 +28,7 @@
 {# Step 8 — summary of the DAT before its generation.
  #
  # client, author, dat_date, version - general information
- # servers        - [{name, ip, role}]
+ # servers        - [{name, internal_name, ip, role}]
  # section_steps  - {step: [{label, kind, value}]}
  # step_labels    - {step: label}
  # template_ready - whether the Word template is uploaded
@@ -78,13 +78,14 @@
             <thead>
                 <tr>
                     <th>{{ __('DNS name', 'manageentities') }}</th>
+                    <th>{{ __('Internal name', 'manageentities') }}</th>
                     <th>{{ __('IP address') }}</th>
                     <th>{{ __('Role') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for server in servers %}
-                    <tr><td>{{ server.name }}</td><td>{{ server.ip }}</td><td>{{ server.role }}</td></tr>
+                    <tr><td>{{ server.name }}</td><td>{{ server.internal_name }}</td><td>{{ server.ip }}</td><td>{{ server.role }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

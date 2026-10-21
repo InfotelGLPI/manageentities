@@ -33,6 +33,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Manageentities\Dat;
+use GlpiPlugin\Manageentities\DatOsTemplate;
 use GlpiPlugin\Manageentities\DatServer;
 use GlpiPlugin\Manageentities\DatWizard;
 use GlpiPlugin\Manageentities\Profile;
@@ -117,9 +118,9 @@ class DatWizardTest extends DbTestCase
 
         $result = DatWizard::saveSystem($dat, [
             'servers'  => [
-                ['id' => 0, 'name' => 'front.example.com', 'ip' => '10.0.0.1', 'role' => 'Front'],
-                ['id' => 0, 'name' => '', 'ip' => '', 'role' => ''], // empty row, dropped
-                ['id' => 0, 'name' => 'db.example.com', 'ip' => '10.0.0.2', 'role' => 'Database'],
+                ['id' => 0, 'name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'os' => 'debian', 'role' => 'Front'],
+                ['id' => 0, 'name' => '', 'internal_name' => '', 'ip' => '', 'role' => ''], // empty row, dropped
+                ['id' => 0, 'name' => 'db.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.2', 'os' => 'debian', 'role' => 'Database'],
             ],
             'sections' => ['SYSTEM_INFORMATIONS' => '<p>Debian 12</p>', 'APACHE_INFORMATIONS' => 'not this step'],
         ]);
@@ -137,7 +138,7 @@ class DatWizardTest extends DbTestCase
         // Reordered, one removed: the kept server is updated, not recreated
         $db_id = (int) $servers[1]['id'];
         DatWizard::saveSystem($dat, [
-            'servers' => [['id' => $db_id, 'name' => 'db.example.com', 'ip' => '10.0.0.3', 'role' => 'Database']],
+            'servers' => [['id' => $db_id, 'name' => 'db.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.3', 'os' => 'debian', 'role' => 'Database']],
         ]);
         $servers = DatServer::getForDat($dat->getID());
         $this->assertCount(1, $servers);
@@ -154,9 +155,9 @@ class DatWizardTest extends DbTestCase
         $this->assertArrayHasKey('servers', $result['errors']);
 
         $result = DatWizard::saveSystem($dat, [
-            'servers' => [['name' => 'not a host!', 'ip' => '999.1.1.1']],
+            'servers' => [['name' => 'not a host!', 'internal_name' => 'not internal!', 'ip' => '999.1.1.1']],
         ]);
-        $this->assertSame(['servers.0.name', 'servers.0.ip'], array_keys($result['errors']));
+        $this->assertSame(['servers.0.name', 'servers.0.internal_name', 'servers.0.ip', 'servers.0.os'], array_keys($result['errors']));
         $this->assertSame([], DatServer::getForDat($dat->getID()));
     }
 
@@ -164,12 +165,12 @@ class DatWizardTest extends DbTestCase
     {
         $this->login();
         $other = $this->createDat($this->createEntity());
-        DatWizard::saveSystem($other, ['servers' => [['name' => 'other.example.com', 'ip' => '10.1.1.1']]]);
+        DatWizard::saveSystem($other, ['servers' => [['name' => 'other.example.com', 'internal_name' => 'srv01', 'ip' => '10.1.1.1', 'os' => 'debian']]]);
         $other_server = DatServer::getForDat($other->getID())[0];
 
         $dat = $this->createDat($this->createEntity());
         DatWizard::saveSystem($dat, [
-            'servers' => [['id' => $other_server['id'], 'name' => 'mine.example.com', 'ip' => '10.2.2.2']],
+            'servers' => [['id' => $other_server['id'], 'name' => 'mine.example.com', 'internal_name' => 'srv01', 'ip' => '10.2.2.2', 'os' => 'debian']],
         ]);
 
         // The other DAT keeps its server; this one gets a new one
@@ -237,7 +238,7 @@ class DatWizardTest extends DbTestCase
         $this->assertStringContainsString('name="client"', $html);
 
         $dat = $this->createDat($entities_id);
-        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'ip' => '10.0.0.1']]]);
+        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'os' => 'debian']]]);
         $dat->update(['id' => $dat->getID(), 'step' => DatWizard::STEP_SSO]);
 
         foreach (array_keys(DatWizard::getSteps()) as $step) {
@@ -345,12 +346,42 @@ class DatWizardTest extends DbTestCase
         $this->login();
         $entities_id = $this->createEntity();
         $dat         = $this->createDat($entities_id);
-        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'ip' => '10.0.0.1']]]);
+        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'os' => 'debian']]]);
         $dat->update(['id' => $dat->getID(), 'step' => DatWizard::STEP_SSO]);
 
         $html = $this->renderStep($entities_id, DatWizard::STEP_SUMMARY);
         $this->assertStringContainsString('name="generate"', $html);
         // The generated document is not offered before the first generation
         $this->assertStringNotContainsString('ti-file-check', $html);
+    }
+
+    public function testOsModelPrefillsTheEmptySections(): void
+    {
+        $this->login();
+        DatOsTemplate::saveAll([
+            DatOsTemplate::OS_WINDOWS => ['APACHE_INSTALLATION' => 'net start Apache2.4', 'APACHE_INFORMATIONS' => ''],
+            'unknown'                 => ['APACHE_INSTALLATION' => 'dropped'],
+        ]);
+        $this->assertSame('net start Apache2.4', DatOsTemplate::getSectionsFor(DatOsTemplate::OS_WINDOWS)['APACHE_INSTALLATION']);
+        $this->assertSame([], DatOsTemplate::getSectionsFor('unknown'));
+
+        $entities_id = $this->createEntity();
+        $dat         = $this->createDat($entities_id);
+        // A server without system is refused
+        $result = DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1']]]);
+        $this->assertArrayHasKey('servers.0.os', $result['errors']);
+        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'os' => DatOsTemplate::OS_WINDOWS]]]);
+        $this->assertSame(DatOsTemplate::OS_WINDOWS, DatServer::getForDat($dat->getID())[0]['os']);
+
+        // Empty section: shown with the text of the model, nothing saved yet
+        $html = $this->renderStep($entities_id, DatWizard::STEP_WEB);
+        $this->assertStringContainsString('net start Apache2.4', $html);
+        $this->assertStringContainsString('name="apply_model"', $html);
+
+        // A section typed by the user is kept
+        DatWizard::saveSections($dat, DatWizard::STEP_WEB, ['sections' => ['APACHE_INSTALLATION' => 'typed by hand']]);
+        $html = $this->renderStep($entities_id, DatWizard::STEP_WEB);
+        $this->assertStringContainsString('typed by hand', $html);
+        $this->assertStringNotContainsString('net start Apache2.4', $html);
     }
 }

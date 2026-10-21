@@ -109,7 +109,7 @@ class DatGeneratorTest extends DbTestCase
         $table->addRow();
         $table->addCell(2000)->addText('HOTE A');
         $table->addCell(2000)->addText('{{IP}}');
-        $table->addCell(2000)->addText('N/A');
+        $table->addCell(2000)->addText('{{NOM_INTERNE}}');
         $table->addRow();
         $table->addCell(2000)->addText('CNAME');
         $table->addCell(2000)->addText('{{IP}}');
@@ -141,8 +141,8 @@ class DatGeneratorTest extends DbTestCase
         $dat = Dat::getForEntity($entities_id);
         DatWizard::saveSystem($dat, [
             'servers'  => [
-                ['name' => 'front.acme.fr', 'ip' => '10.0.0.1', 'role' => 'Front'],
-                ['name' => 'db.acme.fr', 'ip' => '10.0.0.2', 'role' => 'Database'],
+                ['name' => 'front.acme.fr', 'internal_name' => 'srv-front01', 'ip' => '10.0.0.1', 'os' => 'debian', 'role' => 'Front'],
+                ['name' => 'db.acme.fr', 'internal_name' => 'srv-db01', 'ip' => '10.0.0.2', 'os' => 'debian', 'role' => 'Database'],
             ],
             'sections' => [
                 'SYSTEM_INFORMATIONS'  => '<p>Debian <strong>12</strong></p>',
@@ -225,8 +225,8 @@ class DatGeneratorTest extends DbTestCase
         $this->assertSame(['IP|10.0.0.1', 'IP|10.0.0.2'], $rows[0]);
         $this->assertSame([
             'TYPE|IP|NOM',
-            'HOTE A|10.0.0.1|N/A',
-            'HOTE A|10.0.0.2|N/A',
+            'HOTE A|10.0.0.1|srv-front01',
+            'HOTE A|10.0.0.2|srv-db01',
             'CNAME|10.0.0.1|front.acme.fr',
             'CNAME|10.0.0.2|db.acme.fr',
         ], $rows[1]);

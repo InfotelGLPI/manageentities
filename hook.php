@@ -40,6 +40,7 @@ use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\CriTechnician;
 use GlpiPlugin\Manageentities\CriType;
 use GlpiPlugin\Manageentities\Dat;
+use GlpiPlugin\Manageentities\DatOsTemplate;
 use GlpiPlugin\Manageentities\DatServer;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
@@ -425,6 +426,7 @@ function plugin_manageentities_install()
     $dat_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
     Dat::install($dat_migration);
     DatServer::install($dat_migration);
+    DatOsTemplate::install($dat_migration);
     Config::installDatFields($dat_migration);
 
     // Leads of Kiflo, shared by the publisher. Idempotent, as above.
@@ -519,6 +521,7 @@ function plugin_manageentities_uninstall()
     NotificationTargetPresaleProposal::uninstall();
     Dat::uninstall();
     DatServer::uninstall();
+    DatOsTemplate::uninstall();
     KifloLead::uninstall();
 
     // Entity owns no table, so it is absent from the list above: only its notification
