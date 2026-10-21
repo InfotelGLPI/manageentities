@@ -27,7 +27,8 @@
 
 {# Step 1 — general information of the DAT.
  #
- # general     - client, author_users_id, dat_date
+ # general     - client, author_users_id, dat_date, os
+ # systems     - {os: label} DatOsTemplate::getSystems()
  # version     - version the next generation will get
  # logo_url    - logo of the client printed in the header, empty when none
  # entities_id - client entity
@@ -70,6 +71,19 @@
                        class="form-control{{ errors.dat_date is defined ? ' is-invalid' : '' }}"
                        value="{{ general.dat_date }}">
                 {% if errors.dat_date is defined %}<div class="invalid-feedback">{{ errors.dat_date }}</div>{% endif %}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold" for="dat_os">
+                    {{ __('Operating system', 'manageentities') }} <span class="text-danger">*</span>
+                </label>
+                <select id="dat_os" name="os" class="form-select{{ errors.os is defined ? ' is-invalid' : '' }}">
+                    <option value="">{{ constant('Dropdown::EMPTY_VALUE') }}</option>
+                    {% for os, label in systems %}
+                        <option value="{{ os }}" {{ general.os == os ? 'selected' : '' }}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if errors.os is defined %}<div class="invalid-feedback">{{ errors.os }}</div>{% endif %}
+                <div class="form-text">{{ __('Its model prefills the empty sections of the next steps.', 'manageentities') }}</div>
             </div>
             <div class="col-sm-3">
                 <label class="col-form-label fw-bold" for="dat_version">{{ __('Version', 'manageentities') }}</label>

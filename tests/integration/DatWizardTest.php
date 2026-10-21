@@ -66,6 +66,7 @@ class DatWizardTest extends DbTestCase
             'client'          => 'ACME',
             'author_users_id' => \Session::getLoginUserID(),
             'dat_date'        => '2031-05-12',
+            'os'              => DatOsTemplate::OS_DEBIAN,
         ]);
         $this->assertSame([], $result['errors']);
 
@@ -90,6 +91,7 @@ class DatWizardTest extends DbTestCase
             'client'          => 'ACME Corp',
             'author_users_id' => \Session::getLoginUserID(),
             'dat_date'        => '2031-05-13',
+            'os'              => DatOsTemplate::OS_DEBIAN,
         ]);
         $this->assertSame(1, countElementsInTable(Dat::getTable(), ['entities_id' => $entities_id]));
         $dat = Dat::getForEntity($entities_id);
@@ -106,6 +108,7 @@ class DatWizardTest extends DbTestCase
             'client'          => ' ',
             'author_users_id' => 0,
             'dat_date'        => '2031-02-30',
+            'os'              => DatOsTemplate::OS_DEBIAN,
         ]);
         $this->assertSame(['client', 'author_users_id', 'dat_date'], array_keys($result['errors']));
         $this->assertNull(Dat::getForEntity($entities_id));
@@ -118,9 +121,9 @@ class DatWizardTest extends DbTestCase
 
         $result = DatWizard::saveSystem($dat, [
             'servers'  => [
-                ['id' => 0, 'name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'os' => 'debian', 'role' => 'Front'],
+                ['id' => 0, 'name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'role' => 'Front'],
                 ['id' => 0, 'name' => '', 'internal_name' => '', 'ip' => '', 'role' => ''], // empty row, dropped
-                ['id' => 0, 'name' => 'db.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.2', 'os' => 'debian', 'role' => 'Database'],
+                ['id' => 0, 'name' => 'db.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.2', 'role' => 'Database'],
             ],
             'sections' => ['SYSTEM_INFORMATIONS' => '<p>Debian 12</p>', 'APACHE_INFORMATIONS' => 'not this step'],
         ]);
@@ -138,7 +141,7 @@ class DatWizardTest extends DbTestCase
         // Reordered, one removed: the kept server is updated, not recreated
         $db_id = (int) $servers[1]['id'];
         DatWizard::saveSystem($dat, [
-            'servers' => [['id' => $db_id, 'name' => 'db.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.3', 'os' => 'debian', 'role' => 'Database']],
+            'servers' => [['id' => $db_id, 'name' => 'db.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.3', 'role' => 'Database']],
         ]);
         $servers = DatServer::getForDat($dat->getID());
         $this->assertCount(1, $servers);
@@ -157,7 +160,7 @@ class DatWizardTest extends DbTestCase
         $result = DatWizard::saveSystem($dat, [
             'servers' => [['name' => 'not a host!', 'internal_name' => 'not internal!', 'ip' => '999.1.1.1']],
         ]);
-        $this->assertSame(['servers.0.name', 'servers.0.internal_name', 'servers.0.ip', 'servers.0.os'], array_keys($result['errors']));
+        $this->assertSame(['servers.0.name', 'servers.0.internal_name', 'servers.0.ip'], array_keys($result['errors']));
         $this->assertSame([], DatServer::getForDat($dat->getID()));
     }
 
@@ -165,12 +168,12 @@ class DatWizardTest extends DbTestCase
     {
         $this->login();
         $other = $this->createDat($this->createEntity());
-        DatWizard::saveSystem($other, ['servers' => [['name' => 'other.example.com', 'internal_name' => 'srv01', 'ip' => '10.1.1.1', 'os' => 'debian']]]);
+        DatWizard::saveSystem($other, ['servers' => [['name' => 'other.example.com', 'internal_name' => 'srv01', 'ip' => '10.1.1.1']]]);
         $other_server = DatServer::getForDat($other->getID())[0];
 
         $dat = $this->createDat($this->createEntity());
         DatWizard::saveSystem($dat, [
-            'servers' => [['id' => $other_server['id'], 'name' => 'mine.example.com', 'internal_name' => 'srv01', 'ip' => '10.2.2.2', 'os' => 'debian']],
+            'servers' => [['id' => $other_server['id'], 'name' => 'mine.example.com', 'internal_name' => 'srv01', 'ip' => '10.2.2.2']],
         ]);
 
         // The other DAT keeps its server; this one gets a new one
@@ -238,7 +241,7 @@ class DatWizardTest extends DbTestCase
         $this->assertStringContainsString('name="client"', $html);
 
         $dat = $this->createDat($entities_id);
-        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'os' => 'debian']]]);
+        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1']]]);
         $dat->update(['id' => $dat->getID(), 'step' => DatWizard::STEP_SSO]);
 
         foreach (array_keys(DatWizard::getSteps()) as $step) {
@@ -338,6 +341,7 @@ class DatWizardTest extends DbTestCase
             'client'          => 'Changed',
             'author_users_id' => \Session::getLoginUserID(),
             'dat_date'        => '2031-05-12',
+            'os'              => DatOsTemplate::OS_DEBIAN,
         ]);
     }
 
@@ -346,7 +350,7 @@ class DatWizardTest extends DbTestCase
         $this->login();
         $entities_id = $this->createEntity();
         $dat         = $this->createDat($entities_id);
-        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'os' => 'debian']]]);
+        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1']]]);
         $dat->update(['id' => $dat->getID(), 'step' => DatWizard::STEP_SSO]);
 
         $html = $this->renderStep($entities_id, DatWizard::STEP_SUMMARY);
@@ -366,12 +370,23 @@ class DatWizardTest extends DbTestCase
         $this->assertSame([], DatOsTemplate::getSectionsFor('unknown'));
 
         $entities_id = $this->createEntity();
-        $dat         = $this->createDat($entities_id);
-        // A server without system is refused
-        $result = DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1']]]);
-        $this->assertArrayHasKey('servers.0.os', $result['errors']);
-        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1', 'os' => DatOsTemplate::OS_WINDOWS]]]);
-        $this->assertSame(DatOsTemplate::OS_WINDOWS, DatServer::getForDat($dat->getID())[0]['os']);
+        // The system is chosen once for the DAT, at step 1, and is mandatory
+        $result = DatWizard::saveGeneral($entities_id, [
+            'client'          => 'ACME',
+            'author_users_id' => \Session::getLoginUserID(),
+            'dat_date'        => '2031-05-12',
+            'os'              => 'unknown',
+        ]);
+        $this->assertArrayHasKey('os', $result['errors']);
+        DatWizard::saveGeneral($entities_id, [
+            'client'          => 'ACME',
+            'author_users_id' => \Session::getLoginUserID(),
+            'dat_date'        => '2031-05-12',
+            'os'              => DatOsTemplate::OS_WINDOWS,
+        ]);
+        $dat = Dat::getForEntity($entities_id);
+        $this->assertSame(DatOsTemplate::OS_WINDOWS, $dat->fields['os']);
+        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1']]]);
 
         // Empty section: shown with the text of the model, nothing saved yet
         $html = $this->renderStep($entities_id, DatWizard::STEP_WEB);
@@ -383,5 +398,25 @@ class DatWizardTest extends DbTestCase
         $html = $this->renderStep($entities_id, DatWizard::STEP_WEB);
         $this->assertStringContainsString('typed by hand', $html);
         $this->assertStringNotContainsString('net start Apache2.4', $html);
+    }
+
+    public function testOnlyADraftNeverGeneratedCanBeDeleted(): void
+    {
+        $this->login();
+        $dat = $this->createDat($this->createEntity());
+        DatWizard::saveSystem($dat, ['servers' => [['name' => 'front.example.com', 'internal_name' => 'srv01', 'ip' => '10.0.0.1']]]);
+        $dat->getFromDB($dat->getID());
+        $this->assertTrue(DatWizard::canDeleteDraft($dat));
+
+        // Generated once: its sections feed the next version, it is kept
+        $dat->update(['id' => $dat->getID(), 'version' => 1, 'status' => Dat::STATUS_DRAFT]);
+        $dat->getFromDB($dat->getID());
+        $this->assertFalse(DatWizard::canDeleteDraft($dat));
+        $this->assertFalse(DatWizard::canDeleteDraft(null));
+
+        // Purged with its servers
+        $dat->update(['id' => $dat->getID(), 'version' => 0]);
+        $this->assertTrue($dat->delete(['id' => $dat->getID()], true));
+        $this->assertSame([], DatServer::getForDat($dat->getID()));
     }
 }

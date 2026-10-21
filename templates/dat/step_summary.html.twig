@@ -27,7 +27,7 @@
 
 {# Step 8 — summary of the DAT before its generation.
  #
- # client, author, dat_date, version - general information
+ # client, author, dat_date, os, version - general information (os: label of the system)
  # servers        - [{name, internal_name, ip, role}]
  # section_steps  - {step: [{label, kind, value}]}
  # step_labels    - {step: label}
@@ -64,6 +64,7 @@
             <dt class="col-sm-3">{{ __('Client', 'manageentities') }}</dt><dd class="col-sm-9">{{ client }}</dd>
             <dt class="col-sm-3">{{ __('Author', 'manageentities') }}</dt><dd class="col-sm-9">{{ author }}</dd>
             <dt class="col-sm-3">{{ __('Date') }}</dt><dd class="col-sm-9">{{ dat_date|formatted_date }}</dd>
+            <dt class="col-sm-3">{{ __('Operating system', 'manageentities') }}</dt><dd class="col-sm-9">{{ os ?: '—' }}</dd>
             <dt class="col-sm-3">{{ __('Version', 'manageentities') }}</dt><dd class="col-sm-9">{{ version }}</dd>
         </dl>
     </div>

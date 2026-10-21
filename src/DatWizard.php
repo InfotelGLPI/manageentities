@@ -289,15 +289,18 @@ class DatWizard
                 'client'          => $dat->getSections()['CLIENT'],
                 'author_users_id' => (int) $dat->fields['author_users_id'],
                 'dat_date'        => (string) $dat->fields['dat_date'],
+                'os'              => (string) $dat->fields['os'],
             ]
             : [
                 'client'          => $entity->fields['name'],
                 'author_users_id' => Session::getLoginUserID(),
                 'dat_date'        => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+                'os'              => '',
             ]);
 
         return [
             'general'     => $general,
+            'systems'     => DatOsTemplate::getSystems(),
             // The version is set by the generation: the next one is shown
             'version'     => ($dat !== null ? (int) $dat->fields['version'] : 0) + 1,
             'logo_url'    => self::getLogoUrl((int) $entity->getID()),
@@ -326,8 +329,8 @@ class DatWizard
         $stored   = $dat?->getSections() ?? array_fill_keys(Dat::SECTIONS, '');
         $labels   = self::getSectionLabels();
         $servers  = $dat !== null ? DatServer::getForDat($dat->getID()) : [];
-        // Model of the system of the first server: it fills the sections left empty
-        $os       = self::getDatOs($servers);
+        // Model of the system of the DAT (step 1): it fills the sections left empty
+        $os       = (string) ($dat?->fields['os'] ?? '');
         $model    = DatOsTemplate::getSectionsFor($os);
         $sections = [];
         foreach (self::getStepSections()[$step] ?? [] as $placeholder) {
@@ -351,29 +354,18 @@ class DatWizard
         ];
         if ($step === self::STEP_SYSTEM) {
             $vars['servers'] = $values['servers'] ?? $servers;
-            $vars['systems'] = DatOsTemplate::getSystems();
         }
 
         return $vars;
     }
 
     /**
-     * System of a DAT: the one of its first server, the sections being shared by all of them
-     *
-     * @param list<array<string, mixed>> $servers in their order
-     */
-    private static function getDatOs(array $servers): string
-    {
-        return (string) ($servers[0]['os'] ?? '');
-    }
-
-    /**
      * "Apply the model": every section of the step replaced by the model of the system of the
-     * DAT, after the step was saved (its servers included, for the System step)
+     * DAT, after the step was saved
      */
     private static function applyModel(Dat $dat, int $step): void
     {
-        $model = DatOsTemplate::getSectionsFor(self::getDatOs(DatServer::getForDat($dat->getID())));
+        $model = DatOsTemplate::getSectionsFor((string) $dat->fields['os']);
         if ($model === []) {
             return;
         }
@@ -409,6 +401,7 @@ class DatWizard
             'client'          => $sections['CLIENT'],
             'author'          => $dat !== null ? getUserName((int) $dat->fields['author_users_id']) : '',
             'dat_date'        => $dat?->fields['dat_date'] ?? '',
+            'os'              => DatOsTemplate::getSystems()[(string) ($dat?->fields['os'] ?? '')] ?? '',
             'version'         => ($dat !== null ? (int) $dat->fields['version'] : 0) + 1,
             'servers'         => $dat !== null ? DatServer::getForDat($dat->getID()) : [],
             'section_steps'   => $steps,
@@ -532,6 +525,10 @@ class DatWizard
             'versions'    => self::getVersions($entities_id),
             'can_create'  => $can_create,
             'can_update'  => $can_update,
+            // A draft never generated can be dropped (DatWizard::deleteDraft())
+            'can_delete'  => self::canDeleteDraft($dat),
+            'form_url'    => self::getFormUrl(),
+            'entities_id' => $entities_id,
             'create_url'  => self::getStepUrl($entities_id, self::STEP_GENERAL),
             // Resumes the draft where it was left; a generated DAT reopens on its summary
             'resume_url'  => self::getStepUrl($entities_id, min($reached + 1, self::LAST_STEP)),
@@ -557,6 +554,9 @@ class DatWizard
 
         if (isset($input['generate'])) {
             self::generate($entities_id);
+        }
+        if (isset($input['delete_draft'])) {
+            self::deleteDraft($entities_id);
         }
 
         if ($step === self::STEP_GENERAL) {
@@ -588,6 +588,30 @@ class DatWizard
 
         $next = isset($input['previous']) ? max(self::STEP_GENERAL, $step - 1) : min($step + 1, self::LAST_STEP);
         Html::redirect(self::getStepUrl($entities_id, $next));
+    }
+
+    /**
+     * A draft never generated is removed with its servers, then back to the customer sheet.
+     * Once generated, a DAT is kept: its sections feed the next version.
+     */
+    public static function canDeleteDraft(?Dat $dat): bool
+    {
+        return $dat !== null
+            && (int) $dat->fields['version'] === 0
+            && (int) $dat->fields['status'] === Dat::STATUS_DRAFT
+            && $dat->can($dat->getID(), PURGE);
+    }
+
+    private static function deleteDraft(int $entities_id): never
+    {
+        $dat = self::loadDat($entities_id, READ);
+        if (!self::canDeleteDraft($dat)) {
+            throw new AccessDeniedHttpException();
+        }
+        if ($dat->delete(['id' => $dat->getID()], true)) {
+            Session::addMessageAfterRedirect(__('The draft of the technical architecture document has been deleted.', 'manageentities'));
+        }
+        Html::redirect(\Entity::getFormURLWithID($entities_id));
     }
 
     /**
@@ -636,6 +660,7 @@ class DatWizard
             'client'          => trim((string) ($input['client'] ?? '')),
             'author_users_id' => (int) ($input['author_users_id'] ?? 0),
             'dat_date'        => trim((string) ($input['dat_date'] ?? '')),
+            'os'              => (string) ($input['os'] ?? ''),
         ];
 
         $errors = [];
@@ -649,6 +674,10 @@ class DatWizard
         if ($date === false || $date->format('Y-m-d') !== $values['dat_date']) {
             $errors['dat_date'] = sprintf(__('%s is mandatory', 'manageentities'), __('Date'));
         }
+        // System of every server of the DAT: its model prefills the sections of the next steps
+        if (!isset(DatOsTemplate::getSystems()[$values['os']])) {
+            $errors['os'] = sprintf(__('%s is mandatory', 'manageentities'), __('Operating system', 'manageentities'));
+        }
         if ($errors !== []) {
             return ['errors' => $errors, 'values' => $values];
         }
@@ -656,6 +685,7 @@ class DatWizard
         $fields = [
             'author_users_id' => $values['author_users_id'],
             'dat_date'        => $values['dat_date'],
+            'os'              => $values['os'],
             'sections'        => ['CLIENT' => $values['client']],
         ];
 
@@ -697,7 +727,7 @@ class DatWizard
     /**
      * Server rows posted under servers[], in their order; the fully empty ones are dropped
      *
-     * @return list<array{id: int, name: string, internal_name: string, ip: string, os: string, role: string}>
+     * @return list<array{id: int, name: string, internal_name: string, ip: string, role: string}>
      */
     private static function readServers(array $input): array
     {
@@ -711,7 +741,6 @@ class DatWizard
                 'name'          => trim((string) ($row['name'] ?? '')),
                 'internal_name' => trim((string) ($row['internal_name'] ?? '')),
                 'ip'            => trim((string) ($row['ip'] ?? '')),
-                'os'            => isset(DatOsTemplate::getSystems()[(string) ($row['os'] ?? '')]) ? (string) $row['os'] : '',
                 'role'          => trim((string) ($row['role'] ?? '')),
             ];
             if ($server['name'] === '' && $server['internal_name'] === '' && $server['ip'] === '' && $server['role'] === '') {
@@ -726,7 +755,7 @@ class DatWizard
     /**
      * At least one server, each one with a DNS name, an internal name and a valid IP address
      *
-     * @param list<array{id: int, name: string, internal_name: string, ip: string, os: string, role: string}> $servers
+     * @param list<array{id: int, name: string, internal_name: string, ip: string, role: string}> $servers
      *
      * @return array<string, string>
      */
@@ -748,9 +777,6 @@ class DatWizard
             if (filter_var($server['ip'], FILTER_VALIDATE_IP) === false) {
                 $errors["servers.$index.ip"] = sprintf(__('Server %d: the IP address is not valid.', 'manageentities'), $number);
             }
-            if ($server['os'] === '') {
-                $errors["servers.$index.os"] = sprintf(__('Server %d: choose its operating system.', 'manageentities'), $number);
-            }
         }
 
         return $errors;
@@ -760,7 +786,7 @@ class DatWizard
      * Replaces the servers of the DAT with the posted ones: the posted ids are only trusted when
      * they belong to this DAT, the others become new servers
      *
-     * @param list<array{id: int, name: string, internal_name: string, ip: string, os: string, role: string}> $servers
+     * @param list<array{id: int, name: string, internal_name: string, ip: string, role: string}> $servers
      */
     private static function saveServers(Dat $dat, array $servers): void
     {
@@ -774,7 +800,6 @@ class DatWizard
                 'name'               => $row['name'],
                 'internal_name'      => $row['internal_name'],
                 'ip'                 => $row['ip'],
-                'os'                 => $row['os'],
                 'role'               => $row['role'],
             ];
             if (isset($existing[$row['id']])) {

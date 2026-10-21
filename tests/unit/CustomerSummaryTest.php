@@ -50,7 +50,7 @@ class CustomerSummaryTest extends TestCase
         $this->assertSame('red', CustomerSummary::getSubscriptionColor('2026-10-17 00:00:00', '2026-10-18'));
         $this->assertSame('green', CustomerSummary::getSubscriptionColor('2026-10-18', '2026-10-18'));
         $this->assertSame('green', CustomerSummary::getSubscriptionColor('', '2026-10-18'));
-        $this->assertSame('secondary', CustomerSummary::getSubscriptionColor(null, '2026-10-18'));
+        $this->assertSame('red', CustomerSummary::getSubscriptionColor(null, '2026-10-18'));
     }
 
     public function testUnbilledIsRedBeyondThreeHours(): void

@@ -38,6 +38,29 @@
             {# Left column: alert 1 (no subscription) + alert 2 (expired) #}
             <div class="col-8 col-lg-6 d-flex flex-column gap-3">
 
+                {# No client in the perimeter (e.g. an entity outside the customers): nothing to check #}
+                {% if concerned_count == 0 %}
+                <div class="alert alert-info d-flex align-items-center gap-2 mb-0" role="alert">
+                    <i class="ti ti-info-circle flex-shrink-0"></i>
+                    {{ __('No client in the current perimeter.', 'manageentities') }}
+                </div>
+                {% endif %}
+
+                {# Clients with neither an active contract nor a subscription #}
+                {% if no_contract_no_subscription|length > 0 %}
+                <div class="alert alert-danger d-flex align-items-start gap-2 mb-0" role="alert">
+                    <i class="ti ti-file-off flex-shrink-0 mt-1"></i>
+                    <div>
+                        <strong>{{ __('Entities with neither an active contract nor a publisher subscription:', 'manageentities') }}</strong>
+                        <ul class="mb-0 mt-1">
+                            {% for name in no_contract_no_subscription %}
+                                <li>{{ name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
                 {# Alert 1: entities with active contract but no subscription #}
                 {% if no_subscription|length > 0 %}
                 <div class="alert alert-danger d-flex align-items-start gap-2 mb-0" role="alert">
@@ -51,10 +74,15 @@
                         </ul>
                     </div>
                 </div>
-                {% else %}
+                {% elseif active_contract_count > 0 %}
                 <div class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
                     <i class="ti ti-circle-check flex-shrink-0"></i>
                     {{ __('All entities with an active contract have a publisher subscription.', 'manageentities') }}
+                </div>
+                {% elseif concerned_count > 0 %}
+                <div class="alert alert-danger d-flex align-items-center gap-2 mb-0" role="alert">
+                    <i class="ti ti-file-off flex-shrink-0"></i>
+                    {{ __('No entity with an active contract.', 'manageentities') }}
                 </div>
                 {% endif %}
 
@@ -89,10 +117,15 @@
                         </div>
                     </div>
                 </div>
-                {% else %}
+                {% elseif subscription_count > 0 %}
                 <div class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
                     <i class="ti ti-circle-check flex-shrink-0"></i>
                     {{ __('No expired publisher subscription.', 'manageentities') }}
+                </div>
+                {% elseif concerned_count > 0 %}
+                <div class="alert alert-danger d-flex align-items-center gap-2 mb-0" role="alert">
+                    <i class="ti ti-certificate-off flex-shrink-0"></i>
+                    {{ __('No entity with a publisher subscription.', 'manageentities') }}
                 </div>
                 {% endif %}
 
@@ -137,7 +170,7 @@
                         </div>
                     </div>
                 </div>
-                {% else %}
+                {% elseif subscription_count > 0 %}
                 <div class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
                     <i class="ti ti-circle-check flex-shrink-0"></i>
                     {{ __('All entities with a publisher subscription have an active contract.', 'manageentities') }}

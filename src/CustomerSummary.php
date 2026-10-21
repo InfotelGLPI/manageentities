@@ -60,12 +60,12 @@ class CustomerSummary
     }
 
     /**
-     * Badge colour of the subscription: red once expired, green while running, grey without one
+     * Badge colour of the subscription: red once expired or without one, green while running
      */
     public static function getSubscriptionColor(?string $end_date, string $today): string
     {
         if ($end_date === null) {
-            return 'secondary';
+            return 'red';
         }
         if ($end_date === '') {
             // No end date: running

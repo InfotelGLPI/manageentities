@@ -362,6 +362,22 @@ class EditorSubscription extends CommonDBTM
             }
         }
 
+        // Clients with neither an active contract nor a subscription: none of the alerts below
+        // concerns them, which made them look in order
+        $ids_nothing = array_values(array_diff($concerned_ids, $with_active_contract, $with_subscription));
+        $no_contract_no_subscription = [];
+        if (!empty($ids_nothing)) {
+            $iter = $DB->request([
+                'SELECT' => ['completename'],
+                'FROM'   => 'glpi_entities',
+                'WHERE'  => ['id' => $ids_nothing],
+                'ORDER'  => ['completename ASC'],
+            ]);
+            foreach ($iter as $row) {
+                $no_contract_no_subscription[] = $row['completename'];
+            }
+        }
+
         // Alert 2: subscription but no active contract, split by history
         $ids_no_contract = array_values(array_diff($with_subscription, $with_active_contract));
         $no_contract = ['had_contract' => [], 'never_contract' => []];
@@ -480,7 +496,12 @@ class EditorSubscription extends CommonDBTM
             [
                 'no_subscription'      => $no_subscription,
                 'no_contract'          => $no_contract,
+                'no_contract_no_subscription' => $no_contract_no_subscription,
                 'expired_subscription' => $expired_subscription,
+                // A check only holds when something is checked: counts of the perimeter
+                'concerned_count'      => count($concerned_ids),
+                'active_contract_count' => count($with_active_contract),
+                'subscription_count'   => count($with_subscription),
                 'level_counts'         => $level_counts,
                 'type_counts'          => $type_counts,
             ],

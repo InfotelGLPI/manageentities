@@ -76,7 +76,6 @@ class DatServer extends CommonDBChild
                             `name` varchar(255) DEFAULT NULL COMMENT 'DNS name',
                             `internal_name` varchar(255) DEFAULT NULL COMMENT 'internal host name, the HOTE A row of the DNS table',
                             `ip` varchar(255) DEFAULT NULL,
-                            `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'operating system, a DatOsTemplate::OS_* model',
                             `role` varchar(255) DEFAULT NULL COMMENT 'front, database... free text',
                             PRIMARY KEY  (`id`),
                             KEY `plugin_manageentities_dats_id` (`plugin_manageentities_dats_id`),
@@ -94,12 +93,10 @@ class DatServer extends CommonDBChild
             ]);
             $migration->migrationOneTable($table);
         }
-        // Upgrade: operating system of the server, which picks the model of the sections
-        if (!$DB->fieldExists($table, 'os')) {
-            $migration->addField($table, 'os', "varchar(50) NOT NULL DEFAULT ''", [
-                'after'   => 'ip',
-                'comment' => 'operating system, a DatOsTemplate::OS_* model',
-            ]);
+        // The operating system moved to the DAT itself (Dat::install(), run before, takes the one
+        // of the first server over): the column of the servers goes
+        if ($DB->fieldExists($table, 'os')) {
+            $migration->dropField($table, 'os');
             $migration->migrationOneTable($table);
         }
     }

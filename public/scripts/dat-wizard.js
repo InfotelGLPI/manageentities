@@ -104,9 +104,10 @@ document.addEventListener('click', (event) => {
     }
 });
 
-// Leaving the wizard without saving the current page
+// Leaving the wizard without saving the current page, applying a model, or deleting a draft from
+// the DAT card of the customer sheet
 document.addEventListener('click', (event) => {
-    const link = event.target.closest('#dat-wizard [data-dat-confirm]');
+    const link = event.target.closest('#dat-wizard [data-dat-confirm], [data-dat-card] [data-dat-confirm]');
     if (link !== null && !window.confirm(link.dataset.datConfirm)) {
         event.preventDefault();
         event.stopImmediatePropagation();

@@ -194,6 +194,7 @@ class Dat extends CommonDBTM
                             `step` tinyint NOT NULL DEFAULT '0' COMMENT 'last validated step of the wizard',
                             `author_users_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id) — author printed in the document',
                             `dat_date` date DEFAULT NULL,
+                            `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'operating system, a DatOsTemplate::OS_* model prefilling the sections',
                             `documents_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documents (id) — last generated version',
                             `sections` mediumtext COMMENT 'JSON text of each section, by placeholder',
                             `users_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id) — creator',
@@ -210,6 +211,32 @@ class Dat extends CommonDBTM
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
             $DB->doQuery($query);
+        }
+
+        // Upgrade: operating system of the DAT, chosen once for all its servers; it first lived
+        // on each server (DatServer.os), the system of the first server is taken over
+        if (!$DB->fieldExists($table, 'os')) {
+            $migration->addField($table, 'os', "varchar(50) NOT NULL DEFAULT ''", [
+                'after'   => 'dat_date',
+                'comment' => 'operating system, a DatOsTemplate::OS_* model prefilling the sections',
+            ]);
+            $migration->migrationOneTable($table);
+
+            $servers = DatServer::getTable();
+            if ($DB->fieldExists($servers, 'os')) {
+                foreach ($DB->request(['FROM' => $table, 'SELECT' => ['id']]) as $row) {
+                    $first = $DB->request([
+                        'SELECT' => ['os'],
+                        'FROM'   => $servers,
+                        'WHERE'  => [DatServer::$items_id => $row['id'], 'NOT' => ['os' => '']],
+                        'ORDER'  => ['rank', 'id'],
+                        'LIMIT'  => 1,
+                    ])->current();
+                    if ($first !== null) {
+                        $DB->update($table, ['os' => $first['os']], ['id' => $row['id']]);
+                    }
+                }
+            }
         }
     }
 

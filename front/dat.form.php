@@ -37,7 +37,8 @@ if (!Plugin::isPluginActive('manageentities') || !DatWizard::canUse()) {
 }
 
 // Each step posts here (CSRF checked by the core listener): saved, then redirected
-if (isset($_POST['save_step']) || isset($_POST['previous']) || isset($_POST['generate']) || isset($_POST['apply_model'])) {
+if (isset($_POST['save_step']) || isset($_POST['previous']) || isset($_POST['generate']) || isset($_POST['apply_model'])
+    || isset($_POST['delete_draft'])) {
     DatWizard::handlePost($_POST);
 }
 

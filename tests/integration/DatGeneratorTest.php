@@ -137,12 +137,13 @@ class DatGeneratorTest extends DbTestCase
             'client'          => 'ACME & Co',
             'author_users_id' => \Session::getLoginUserID(),
             'dat_date'        => '2031-05-12',
+            'os'              => DatOsTemplate::OS_DEBIAN,
         ]);
         $dat = Dat::getForEntity($entities_id);
         DatWizard::saveSystem($dat, [
             'servers'  => [
-                ['name' => 'front.acme.fr', 'internal_name' => 'srv-front01', 'ip' => '10.0.0.1', 'os' => 'debian', 'role' => 'Front'],
-                ['name' => 'db.acme.fr', 'internal_name' => 'srv-db01', 'ip' => '10.0.0.2', 'os' => 'debian', 'role' => 'Database'],
+                ['name' => 'front.acme.fr', 'internal_name' => 'srv-front01', 'ip' => '10.0.0.1', 'role' => 'Front'],
+                ['name' => 'db.acme.fr', 'internal_name' => 'srv-db01', 'ip' => '10.0.0.2', 'role' => 'Database'],
             ],
             'sections' => [
                 'SYSTEM_INFORMATIONS'  => '<p>Debian <strong>12</strong></p>',
