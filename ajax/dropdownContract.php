@@ -35,7 +35,6 @@ use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\ContractState;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\EditorSubscription;
-use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\Cri;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -45,7 +44,7 @@ Html::header_nocache();
 // CRI generation page). The payloads below are contractual data - contract comment, end date and
 // status, subscription flags, remaining days - so the entry right is the one actually carried by
 // the calling page, and no longer the far broader "may create a ticket".
-if (!Session::haveRight(Contract::$rightname, READ)
+if (!Session::haveRight(PluginContract::$rightname, READ)
     && !Session::haveRight(Cri::$rightname, READ)) {
     throw new AccessDeniedHttpException();
 }
@@ -55,7 +54,8 @@ if (!isset($_POST["contracts_id"])) {
 }
 
 if (isset($_POST["contracts_id"])) {
-    $contract = new Contract();
+    // The core contract: the id posted is the one of glpi_contracts, not of the plugin row
+    $contract = new \Contract();
     if (
         !$contract->getFromDB((int) $_POST["contracts_id"])
         || !Session::haveAccessToEntity($contract->fields['entities_id'])

@@ -49,7 +49,8 @@ use Toolbox;
  */
 class KifloLead extends CommonDBTM
 {
-    public static string $rightname = 'plugin_manageentities';
+    /** Leads feed the proposals: same right as them (PresaleProposal) */
+    public static string $rightname = 'plugin_manageentities_presale';
 
     /** Statuses of a lead still to be worked on */
     public const OPEN_STATUSES = ['Pending', 'Accepted', 'Unassigned', 'Reassigned'];
