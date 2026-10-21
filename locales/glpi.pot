@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 12:06+0000\n"
+"POT-Creation-Date: 2026-10-21 15:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,7 +86,7 @@ msgstr[1] ""
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
 
-#: src/EditorSubscription.php:1151
+#: src/EditorSubscription.php:1172
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
@@ -122,8 +122,8 @@ msgstr ""
 msgid "%s client(s) able to open tickets"
 msgstr ""
 
-#: src/DatWizard.php:643 src/DatWizard.php:646 src/DatWizard.php:650
-#: src/PresaleWizard.php:1020
+#: src/DatWizard.php:668 src/DatWizard.php:671 src/DatWizard.php:675
+#: src/DatWizard.php:679 src/PresaleWizard.php:1020
 #, php-format
 msgid "%s is mandatory"
 msgstr ""
@@ -217,11 +217,11 @@ msgstr ""
 msgid "A contract with this number already exists"
 msgstr ""
 
-#: ⁨standard input⁩:79
+#: ⁨standard input⁩:80
 msgid "A draft is in progress, not generated yet."
 msgstr ""
 
-#: ⁨standard input⁩:78
+#: ⁨standard input⁩:79
 msgid "A draft of the next version is in progress."
 msgstr ""
 
@@ -298,7 +298,7 @@ msgstr ""
 msgid "Add a new price"
 msgstr ""
 
-#: ⁨standard input⁩:115
+#: ⁨standard input⁩:104
 msgid "Add a server"
 msgstr ""
 
@@ -322,7 +322,7 @@ msgstr ""
 msgid "Add an unbilled intervention"
 msgstr ""
 
-#: src/DatWizard.php:736
+#: src/DatWizard.php:765
 msgid "Add at least one server."
 msgstr ""
 
@@ -373,11 +373,11 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: ⁨standard input⁩:143
+#: ⁨standard input⁩:176
 msgid "All entities with a publisher subscription have an active contract."
 msgstr ""
 
-#: ⁨standard input⁩:57
+#: ⁨standard input⁩:80
 msgid "All entities with an active contract have a publisher subscription."
 msgstr ""
 
@@ -599,9 +599,9 @@ msgstr ""
 msgid "Attach documents"
 msgstr ""
 
-#: src/NotificationTargetPresaleProposal.php:68 src/DatWizard.php:646
+#: src/NotificationTargetPresaleProposal.php:68 src/DatWizard.php:671
 #: src/NotificationTargetEntity.php:84 src/NotificationTargetEntity.php:109
-#: ⁨standard input⁩:54 ⁨standard input⁩:65
+#: ⁨standard input⁩:55 ⁨standard input⁩:65
 msgid "Author"
 msgstr ""
 
@@ -736,12 +736,12 @@ msgstr ""
 msgid "Clear the key"
 msgstr ""
 
-#: src/Entity.php:1065 src/DatWizard.php:643 src/DirectHelpdesk.php:728
+#: src/Entity.php:1065 src/DatWizard.php:668 src/DirectHelpdesk.php:728
 #: src/Dashboard.php:256 src/Dashboard.php:320 src/Dashboard.php:375
 #: src/Monthly.php:425 src/Followup.php:745 src/Followup.php:979
-#: ⁨standard input⁩:45 ⁨standard input⁩:64 ⁨standard input⁩:46 ⁨standard input⁩:126
-#: ⁨standard input⁩:141 ⁨standard input⁩:38 ⁨standard input⁩:175 ⁨standard input⁩:48
-#: ⁨standard input⁩:120 ⁨standard input⁩:165 ⁨standard input⁩:82
+#: ⁨standard input⁩:46 ⁨standard input⁩:64 ⁨standard input⁩:126 ⁨standard input⁩:141
+#: ⁨standard input⁩:38 ⁨standard input⁩:175 ⁨standard input⁩:48 ⁨standard input⁩:120
+#: ⁨standard input⁩:165 ⁨standard input⁩:82
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] ""
@@ -794,14 +794,14 @@ msgstr ""
 msgid "Closed contract period state"
 msgstr ""
 
-#: src/PresaleConversion.php:229 src/SubscriptionLevel.php:71 ⁨standard input⁩:71
-#: ⁨standard input⁩:158 ⁨standard input⁩:162 ⁨standard input⁩:121
+#: src/PresaleConversion.php:229 src/SubscriptionLevel.php:71 ⁨standard input⁩:99
+#: ⁨standard input⁩:191 ⁨standard input⁩:162 ⁨standard input⁩:121
 msgid "Cloud"
 msgstr ""
 
 #: hook.php:1036 src/NotificationTargetEditorSubscription.php:120
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
-#: src/EditorSubscription.php:791 ⁨standard input⁩:93 ⁨standard input⁩:70
+#: src/EditorSubscription.php:812 ⁨standard input⁩:93 ⁨standard input⁩:70
 #: ⁨standard input⁩:58
 msgid "Cloud client"
 msgstr ""
@@ -1004,7 +1004,7 @@ msgstr ""
 msgid "Create subscription"
 msgstr ""
 
-#: ⁨standard input⁩:90
+#: ⁨standard input⁩:91
 msgid "Create the DAT"
 msgstr ""
 
@@ -1104,7 +1104,13 @@ msgstr ""
 msgid "DAT"
 msgstr ""
 
-#: ⁨standard input⁩:44 ⁨standard input⁩:94 ⁨standard input⁩:80
+#: src/DatOsTemplate.php:53
+msgid "DAT model"
+msgid_plural "DAT models"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ⁨standard input⁩:43 ⁨standard input⁩:84 ⁨standard input⁩:81
 msgid "DNS name"
 msgstr ""
 
@@ -1134,8 +1140,8 @@ msgstr ""
 msgid "Database installation"
 msgstr ""
 
-#: ⁨standard input⁩:46 ⁨standard input⁩:35 ⁨standard input⁩:72 ⁨standard input⁩:67
-#: ⁨standard input⁩:66 ⁨standard input⁩:96 ⁨standard input⁩:39 ⁨standard input⁩:54
+#: ⁨standard input⁩:46 ⁨standard input⁩:35 ⁨standard input⁩:72 ⁨standard input⁩:68
+#: ⁨standard input⁩:66 ⁨standard input⁩:96 ⁨standard input⁩:39 ⁨standard input⁩:55
 #: ⁨standard input⁩:251 ⁨standard input⁩:78
 msgid "Date"
 msgstr ""
@@ -1259,7 +1265,7 @@ msgstr ""
 
 #: ⁨standard input⁩:93 ⁨standard input⁩:88 ⁨standard input⁩:102 ⁨standard input⁩:236
 #: ⁨standard input⁩:61 ⁨standard input⁩:66 ⁨standard input⁩:107 ⁨standard input⁩:65
-#: ⁨standard input⁩:77 ⁨standard input⁩:42 ⁨standard input⁩:60
+#: ⁨standard input⁩:67 ⁨standard input⁩:42 ⁨standard input⁩:60
 msgid "Delete"
 msgstr ""
 
@@ -1276,6 +1282,14 @@ msgstr ""
 #: ⁨standard input⁩:100 ⁨standard input⁩:106 ⁨standard input⁩:60 ⁨standard input⁩:50
 msgctxt "button"
 msgid "Delete permanently"
+msgstr ""
+
+#: ⁨standard input⁩:105
+msgid "Delete the draft"
+msgstr ""
+
+#: ⁨standard input⁩:104
+msgid "Delete this draft? Everything typed in it is lost."
 msgstr ""
 
 #: ⁨standard input⁩:59
@@ -1337,7 +1351,7 @@ msgid ""
 "management and on the dashboard."
 msgstr ""
 
-#: ⁨standard input⁩:53
+#: ⁨standard input⁩:54
 msgid "Document"
 msgid_plural "Documents"
 msgstr[0] ""
@@ -1418,7 +1432,7 @@ msgid "Editor"
 msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:121
-#: src/EditorSubscription.php:159 src/EditorSubscription.php:783
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:804
 #: ⁨standard input⁩:95 ⁨standard input⁩:62 ⁨standard input⁩:60
 msgid "Editor subscription"
 msgstr ""
@@ -1482,16 +1496,20 @@ msgstr ""
 msgid "Entities portal"
 msgstr ""
 
-#: ⁨standard input⁩:115
+#: ⁨standard input⁩:148
 msgid "Entities with a publisher subscription but no active contract:"
 msgstr ""
 
-#: ⁨standard input⁩:46
+#: ⁨standard input⁩:69
 msgid "Entities with an active contract but no publisher subscription:"
 msgstr ""
 
-#: ⁨standard input⁩:67
+#: ⁨standard input⁩:95
 msgid "Entities with an expired publisher subscription:"
+msgstr ""
+
+#: ⁨standard input⁩:54
+msgid "Entities with neither an active contract nor a publisher subscription:"
 msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:104
@@ -1723,7 +1741,7 @@ msgstr ""
 msgid "General follow-up"
 msgstr ""
 
-#: src/DatWizard.php:73 ⁨standard input⁩:56 ⁨standard input⁩:39
+#: src/DatWizard.php:73 ⁨standard input⁩:56 ⁨standard input⁩:40
 msgid "General information"
 msgstr ""
 
@@ -1772,7 +1790,7 @@ msgstr ""
 msgid "Guaranteed package"
 msgstr ""
 
-#: ⁨standard input⁩:95
+#: ⁨standard input⁩:85
 msgid "HOTE A row of the DNS entries"
 msgstr ""
 
@@ -1807,7 +1825,7 @@ msgstr ""
 msgid "Hourly rate"
 msgstr ""
 
-#: ⁨standard input⁩:54 ⁨standard input⁩:96 ⁨standard input⁩:82
+#: ⁨standard input⁩:53 ⁨standard input⁩:86 ⁨standard input⁩:83
 msgid "IP address"
 msgstr ""
 
@@ -1835,7 +1853,7 @@ msgstr ""
 msgid "In progress"
 msgstr ""
 
-#: ⁨standard input⁩:117
+#: ⁨standard input⁩:106
 msgid "In the tables of the document, one row per server, in this order."
 msgstr ""
 
@@ -1873,12 +1891,12 @@ msgstr ""
 msgid "Internal label"
 msgstr ""
 
-#: src/PresaleAnnexType.php:105 src/PresaleAnnexType.php:456 ⁨standard input⁩:49
-#: ⁨standard input⁩:95 ⁨standard input⁩:81
+#: src/PresaleAnnexType.php:105 src/PresaleAnnexType.php:456 ⁨standard input⁩:48
+#: ⁨standard input⁩:85 ⁨standard input⁩:82
 msgid "Internal name"
 msgstr ""
 
-#: hook.php:1049 src/EditorSubscription.php:185 src/EditorSubscription.php:799
+#: hook.php:1049 src/EditorSubscription.php:185 src/EditorSubscription.php:820
 #: ⁨standard input⁩:55 ⁨standard input⁩:78 ⁨standard input⁩:83
 msgid "Internet publication"
 msgstr ""
@@ -1967,6 +1985,10 @@ msgstr ""
 msgid "Is default"
 msgstr ""
 
+#: ⁨standard input⁩:86
+msgid "Its model prefills the empty sections of the next steps."
+msgstr ""
+
 #: ⁨standard input⁩:72
 msgid "Kept on the proposal, for the statistics."
 msgstr ""
@@ -2040,7 +2062,7 @@ msgstr ""
 msgid "Last visit"
 msgstr ""
 
-#: ⁨standard input⁩:149 ⁨standard input⁩:62
+#: ⁨standard input⁩:149 ⁨standard input⁩:63
 msgid "Latest"
 msgstr ""
 
@@ -2106,7 +2128,7 @@ msgstr ""
 msgid "Load (man-days)"
 msgstr ""
 
-#: src/EntityLogo.php:180 ⁨standard input⁩:80 ⁨standard input⁩:82
+#: src/EntityLogo.php:180 ⁨standard input⁩:94 ⁨standard input⁩:96
 #: ⁨standard input⁩:172
 msgid "Logo"
 msgstr ""
@@ -2286,11 +2308,11 @@ msgstr ""
 msgid "More than %d months"
 msgstr ""
 
-#: ⁨standard input⁩:233 ⁨standard input⁩:60 ⁨standard input⁩:106 ⁨standard input⁩:74
+#: ⁨standard input⁩:233 ⁨standard input⁩:60 ⁨standard input⁩:106 ⁨standard input⁩:64
 msgid "Move down"
 msgstr ""
 
-#: ⁨standard input⁩:230 ⁨standard input⁩:59 ⁨standard input⁩:105 ⁨standard input⁩:71
+#: ⁨standard input⁩:230 ⁨standard input⁩:59 ⁨standard input⁩:105 ⁨standard input⁩:61
 msgid "Move up"
 msgstr ""
 
@@ -2321,7 +2343,7 @@ msgid ""
 "name of the model."
 msgstr ""
 
-#: ⁨standard input⁩:129
+#: ⁨standard input⁩:162
 msgid "Never had a contract"
 msgstr ""
 
@@ -2354,7 +2376,7 @@ msgstr ""
 msgid "New subscription"
 msgstr ""
 
-#: ⁨standard input⁩:99
+#: ⁨standard input⁩:112
 msgid "New version"
 msgstr ""
 
@@ -2367,7 +2389,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: src/DatWizard.php:606 ⁨standard input⁩:51
+#: src/DatWizard.php:630 ⁨standard input⁩:51
 msgid ""
 "No Word template uploaded in the configuration (DAT tab): the document "
 "cannot be generated."
@@ -2406,6 +2428,10 @@ msgstr ""
 msgid "No client has users with a simplified interface profile"
 msgstr ""
 
+#: ⁨standard input⁩:45
+msgid "No client in the current perimeter."
+msgstr ""
+
 #: ⁨standard input⁩:96 ⁨standard input⁩:273
 msgid "No contact"
 msgstr ""
@@ -2438,7 +2464,15 @@ msgstr ""
 msgid "No entity selected."
 msgstr ""
 
-#: ⁨standard input⁩:95
+#: ⁨standard input⁩:128
+msgid "No entity with a publisher subscription."
+msgstr ""
+
+#: ⁨standard input⁩:85
+msgid "No entity with an active contract."
+msgstr ""
+
+#: ⁨standard input⁩:123
 msgid "No expired publisher subscription."
 msgstr ""
 
@@ -2463,11 +2497,11 @@ msgstr ""
 msgid "No lead"
 msgstr ""
 
-#: src/EditorSubscription.php:455
+#: src/EditorSubscription.php:471
 msgid "No level"
 msgstr ""
 
-#: ⁨standard input⁩:84
+#: ⁨standard input⁩:98
 msgid ""
 "No logo: the header of the document will have none. Add it from the customer "
 "sheet."
@@ -2579,7 +2613,7 @@ msgstr ""
 msgid "No subscription in this wizard"
 msgstr ""
 
-#: ⁨standard input⁩:191
+#: ⁨standard input⁩:224
 msgid "No subscription recorded."
 msgstr ""
 
@@ -2591,7 +2625,7 @@ msgstr ""
 msgid "No tech lead"
 msgstr ""
 
-#: ⁨standard input⁩:73
+#: ⁨standard input⁩:74
 msgid "No technical architecture document yet."
 msgstr ""
 
@@ -2643,7 +2677,7 @@ msgid_plural "Not billed interventions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ⁨standard input⁩:104
+#: ⁨standard input⁩:105
 msgid "Not filled in"
 msgstr ""
 
@@ -2712,7 +2746,7 @@ msgstr ""
 msgid "On premise"
 msgstr ""
 
-#: ⁨standard input⁩:81 ⁨standard input⁩:166
+#: ⁨standard input⁩:109 ⁨standard input⁩:199
 msgid "On-premise"
 msgstr ""
 
@@ -2802,7 +2836,7 @@ msgstr ""
 msgid "Opening date"
 msgstr ""
 
-#: ⁨standard input⁩:57 ⁨standard input⁩:97
+#: src/DatWizard.php:679 ⁨standard input⁩:77 ⁨standard input⁩:67
 msgid "Operating system"
 msgstr ""
 
@@ -3071,7 +3105,7 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-#: ⁨standard input⁩:119
+#: ⁨standard input⁩:152
 msgid "Previously had a contract"
 msgstr ""
 
@@ -3179,7 +3213,7 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:105
 #: src/NotificationTargetEditorSubscription.php:142
-#: src/EditorSubscription.php:178 src/EditorSubscription.php:768
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:789
 #: ⁨standard input⁩:99 ⁨standard input⁩:41 ⁨standard input⁩:66
 msgid "Publisher customer account ID"
 msgstr ""
@@ -3214,7 +3248,7 @@ msgstr ""
 msgid "Publisher subscriptions"
 msgstr ""
 
-#: src/EditorSubscription.php:649
+#: src/EditorSubscription.php:670
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr ""
 
@@ -3373,7 +3407,7 @@ msgstr ""
 msgid "Request the estimate again"
 msgstr ""
 
-#: ⁨standard input⁩:94
+#: ⁨standard input⁩:95
 msgid "Resume the draft"
 msgstr ""
 
@@ -3392,7 +3426,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/PresaleConversion.php:651 ⁨standard input⁩:107 ⁨standard input⁩:84
-#: ⁨standard input⁩:94 ⁨standard input⁩:68 ⁨standard input⁩:98 ⁨standard input⁩:83
+#: ⁨standard input⁩:94 ⁨standard input⁩:58 ⁨standard input⁩:87
 msgid "Role"
 msgstr ""
 
@@ -3499,32 +3533,27 @@ msgstr ""
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 
-#: src/EditorSubscription.php:1079
+#: src/EditorSubscription.php:1100
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
-#: src/DatServer.php:49 ⁨standard input⁩:86 ⁨standard input⁩:74
+#: src/DatServer.php:49 ⁨standard input⁩:76 ⁨standard input⁩:75
 msgid "Server"
 msgid_plural "Servers"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/DatWizard.php:752
-#, php-format
-msgid "Server %d: choose its operating system."
-msgstr ""
-
-#: src/DatWizard.php:743
+#: src/DatWizard.php:772
 #, php-format
 msgid "Server %d: the DNS name is not valid."
 msgstr ""
 
-#: src/DatWizard.php:749
+#: src/DatWizard.php:778
 #, php-format
 msgid "Server %d: the IP address is not valid."
 msgstr ""
 
-#: src/DatWizard.php:746
+#: src/DatWizard.php:775
 #, php-format
 msgid "Server %d: the internal name is not valid."
 msgstr ""
@@ -3545,7 +3574,7 @@ msgstr ""
 msgid "Set at the first generation"
 msgstr ""
 
-#: ⁨standard input⁩:77
+#: ⁨standard input⁩:91
 msgid "Set by the generation."
 msgstr ""
 
@@ -3674,8 +3703,8 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
-#: src/EditorSubscription.php:182 src/EditorSubscription.php:775
-#: src/EditorSubscription.php:830 src/SubscriptionLevel.php:47
+#: src/EditorSubscription.php:182 src/EditorSubscription.php:796
+#: src/EditorSubscription.php:851 src/SubscriptionLevel.php:47
 #: ⁨standard input⁩:150 ⁨standard input⁩:103 ⁨standard input⁩:90 ⁨standard input⁩:78
 msgid "Subscription level"
 msgid_plural "Subscription levels"
@@ -3702,11 +3731,11 @@ msgstr ""
 msgid "Subscriptions"
 msgstr ""
 
-#: ⁨standard input⁩:177
+#: ⁨standard input⁩:210
 msgid "Subscriptions by level"
 msgstr ""
 
-#: ⁨standard input⁩:151
+#: ⁨standard input⁩:184
 msgid "Subscriptions by type"
 msgstr ""
 
@@ -3719,7 +3748,7 @@ msgid "Suggested queries"
 msgstr ""
 
 #: src/Entity.php:258 src/DatWizard.php:80 ⁨standard input⁩:106
-#: ⁨standard input⁩:120 ⁨standard input⁩:55 ⁨standard input⁩:102
+#: ⁨standard input⁩:120 ⁨standard input⁩:55 ⁨standard input⁩:115
 msgid "Summary"
 msgstr ""
 
@@ -3802,7 +3831,7 @@ msgstr ""
 msgid "Technical Assistance"
 msgstr ""
 
-#: src/Dat.php:73 ⁨standard input⁩:52 ⁨standard input⁩:39
+#: src/Dat.php:73 ⁨standard input⁩:52 ⁨standard input⁩:40
 msgid "Technical architecture document"
 msgid_plural "Technical architecture documents"
 msgstr[0] ""
@@ -3948,6 +3977,10 @@ msgstr ""
 msgid "The document could not be stored."
 msgstr ""
 
+#: src/DatWizard.php:612
+msgid "The draft of the technical architecture document has been deleted."
+msgstr ""
+
 #: src/WizardController.php:2181
 #, php-format
 msgid ""
@@ -4001,7 +4034,7 @@ msgstr ""
 msgid "The format of the image must be in JPG or JPEG"
 msgstr ""
 
-#: ⁨standard input⁩:83
+#: ⁨standard input⁩:84
 msgid "The generated versions are no longer in the documents of the client."
 msgstr ""
 
@@ -4011,7 +4044,7 @@ msgid ""
 "configuration."
 msgstr ""
 
-#: src/DatWizard.php:620
+#: src/DatWizard.php:644
 msgid ""
 "The generation of the technical architecture document failed. Check the Word "
 "template of the configuration."
@@ -4043,12 +4076,6 @@ msgstr ""
 
 #: src/PresaleConversion.php:404
 msgid "The logo of the prospect could not be copied to the customer."
-msgstr ""
-
-#: ⁨standard input⁩:97
-msgid ""
-"The model of the system of the first server prefills the sections of the "
-"document"
 msgstr ""
 
 #: ⁨standard input⁩:118
@@ -4179,11 +4206,11 @@ msgstr ""
 msgid "The target entity must not have a publisher subscription yet."
 msgstr ""
 
-#: src/DatWizard.php:673 src/DatWizard.php:812
+#: src/DatWizard.php:703 src/DatWizard.php:837
 msgid "The technical architecture document could not be saved."
 msgstr ""
 
-#: src/DatWizard.php:615
+#: src/DatWizard.php:639
 msgid "The technical architecture document has been generated."
 msgstr ""
 
@@ -4617,7 +4644,7 @@ msgstr ""
 msgid "Validated by %s"
 msgstr ""
 
-#: ⁨standard input⁩:115 ⁨standard input⁩:75 ⁨standard input⁩:67
+#: ⁨standard input⁩:115 ⁨standard input⁩:89 ⁨standard input⁩:68
 msgid "Version"
 msgstr ""
 
@@ -4774,7 +4801,7 @@ msgstr ""
 msgid "e.g. Expertise, Support, Project"
 msgstr ""
 
-#: ⁨standard input⁩:68
+#: ⁨standard input⁩:58
 msgid "e.g. Front, Database"
 msgstr ""
 
