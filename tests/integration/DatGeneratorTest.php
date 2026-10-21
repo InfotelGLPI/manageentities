@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities\Tests\Integration;
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Manageentities\Dat;
 use GlpiPlugin\Manageentities\DatGenerator;
+use GlpiPlugin\Manageentities\DatOsTemplate;
 use GlpiPlugin\Manageentities\DatWizard;
 use GlpiPlugin\Manageentities\PresaleTemplate;
 use GlpiPlugin\Manageentities\Profile;
