@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20 11:42+0000\n"
+"POT-Creation-Date: 2026-10-21 11:05+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Emperium <real.emperium@gmail.com>, 2019\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/infotelGLPI/"
@@ -237,11 +237,11 @@ msgstr ""
 msgid "API key"
 msgstr ""
 
-#: src/KifloLead.php:107
+#: src/KifloLead.php:108
 msgid "Abandoned"
 msgstr ""
 
-#: src/KifloLead.php:102
+#: src/KifloLead.php:103
 msgid "Accepted"
 msgstr ""
 
@@ -268,7 +268,7 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: ⁨standard input⁩:39 ⁨standard input⁩:119 ⁨standard input⁩:122 ⁨standard input⁩:88
+#: ⁨standard input⁩:39 ⁨standard input⁩:128 ⁨standard input⁩:131 ⁨standard input⁩:88
 #: ⁨standard input⁩:110
 msgctxt "button"
 msgid "Add"
@@ -559,7 +559,7 @@ msgstr "Associar a um contrato "
 msgid "Associate with the ticket"
 msgstr ""
 
-#: ⁨standard input⁩:32
+#: ⁨standard input⁩:33
 msgid "Associated assistance contracts"
 msgstr "Contratos de assistência associados "
 
@@ -739,9 +739,9 @@ msgstr ""
 #: src/Entity.php:1067 src/DatWizard.php:595 src/DirectHelpdesk.php:728
 #: src/Dashboard.php:256 src/Dashboard.php:320 src/Dashboard.php:375
 #: src/Monthly.php:425 src/Followup.php:745 src/Followup.php:979
-#: ⁨standard input⁩:45 ⁨standard input⁩:64 ⁨standard input⁩:126 ⁨standard input⁩:141
-#: ⁨standard input⁩:38 ⁨standard input⁩:175 ⁨standard input⁩:48 ⁨standard input⁩:120
-#: ⁨standard input⁩:165 ⁨standard input⁩:82
+#: ⁨standard input⁩:45 ⁨standard input⁩:64 ⁨standard input⁩:46 ⁨standard input⁩:126
+#: ⁨standard input⁩:141 ⁨standard input⁩:38 ⁨standard input⁩:175 ⁨standard input⁩:48
+#: ⁨standard input⁩:120 ⁨standard input⁩:165 ⁨standard input⁩:82
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] "Cliente "
@@ -828,7 +828,7 @@ msgstr[1] ""
 msgid "Comment of the project manager"
 msgstr ""
 
-#: ⁨standard input⁩:157 ⁨standard input⁩:261 ⁨standard input⁩:75 ⁨standard input⁩:56
+#: ⁨standard input⁩:157 ⁨standard input⁩:261 ⁨standard input⁩:75 ⁨standard input⁩:65
 #: ⁨standard input⁩:77 ⁨standard input⁩:98 ⁨standard input⁩:111 ⁨standard input⁩:99
 #: ⁨standard input⁩:121 ⁨standard input⁩:136
 msgid "Comments"
@@ -962,7 +962,7 @@ msgstr ""
 msgid "Contractual follow-up"
 msgstr ""
 
-#: src/KifloLead.php:106
+#: src/KifloLead.php:107
 msgid "Converted"
 msgstr ""
 
@@ -1269,7 +1269,7 @@ msgstr ""
 msgid "Delete permanently"
 msgstr ""
 
-#: ⁨standard input⁩:91 ⁨standard input⁩:106 ⁨standard input⁩:60 ⁨standard input⁩:50
+#: ⁨standard input⁩:100 ⁨standard input⁩:106 ⁨standard input⁩:60 ⁨standard input⁩:50
 msgctxt "button"
 msgid "Delete permanently"
 msgstr ""
@@ -1444,7 +1444,7 @@ msgstr ""
 #: src/NotificationTargetEditorSubscription.php:147
 #: src/EditorSubscription.php:187 ⁨standard input⁩:75 ⁨standard input⁩:80
 #: ⁨standard input⁩:50 ⁨standard input⁩:40 ⁨standard input⁩:41 ⁨standard input⁩:142
-#: ⁨standard input⁩:195 ⁨standard input⁩:55 ⁨standard input⁩:151 ⁨standard input⁩:79
+#: ⁨standard input⁩:195 ⁨standard input⁩:64 ⁨standard input⁩:151 ⁨standard input⁩:79
 #: ⁨standard input⁩:33 ⁨standard input⁩:69 ⁨standard input⁩:65 ⁨standard input⁩:120
 #: ⁨standard input⁩:99
 msgid "End date"
@@ -1496,7 +1496,7 @@ msgstr ""
 #: src/NotificationTargetContract.php:151 src/NotificationTargetEntity.php:83
 #: src/NotificationTargetEntity.php:108 ⁨standard input⁩:48 ⁨standard input⁩:34
 #: ⁨standard input⁩:45 ⁨standard input⁩:70 ⁨standard input⁩:58 ⁨standard input⁩:68
-#: ⁨standard input⁩:51 ⁨standard input⁩:147 ⁨standard input⁩:203 ⁨standard input⁩:72
+#: ⁨standard input⁩:60 ⁨standard input⁩:147 ⁨standard input⁩:203 ⁨standard input⁩:72
 #: ⁨standard input⁩:30 ⁨standard input⁩:50 ⁨standard input⁩:37 ⁨standard input⁩:43
 #: ⁨standard input⁩:38 ⁨standard input⁩:247 ⁨standard input⁩:40 ⁨standard input⁩:94
 #: ⁨standard input⁩:95
@@ -1661,11 +1661,11 @@ msgstr ""
 msgid "File modifications"
 msgstr ""
 
-#: ⁨standard input⁩:38
+#: ⁨standard input⁩:39
 msgid "Filtered"
 msgstr ""
 
-#: ⁨standard input⁩:37
+#: ⁨standard input⁩:38
 msgid "Filtered by default state list"
 msgstr ""
 
@@ -1980,7 +1980,7 @@ msgstr ""
 msgid "Kiflo ID"
 msgstr ""
 
-#: src/KifloLead.php:59 ⁨standard input⁩:41
+#: src/KifloLead.php:60 ⁨standard input⁩:41
 msgid "Kiflo lead"
 msgid_plural "Kiflo leads"
 msgstr[0] ""
@@ -2219,7 +2219,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/Monthly.php:429 src/Followup.php:884 ⁨standard input⁩:58 ⁨standard input⁩:63
+#: src/Monthly.php:429 src/Followup.php:884 ⁨standard input⁩:67 ⁨standard input⁩:63
 #: ⁨standard input⁩:141
 msgid "Mode of management"
 msgstr "Modo de gestão "
@@ -2281,7 +2281,7 @@ msgid "Moving report"
 msgstr ""
 
 #: ⁨standard input⁩:134 ⁨standard input⁩:77 ⁨standard input⁩:93 ⁨standard input⁩:47
-#: ⁨standard input⁩:50 ⁨standard input⁩:102 ⁨standard input⁩:41 ⁨standard input⁩:44
+#: ⁨standard input⁩:59 ⁨standard input⁩:102 ⁨standard input⁩:41 ⁨standard input⁩:44
 #: ⁨standard input⁩:57 ⁨standard input⁩:222 ⁨standard input⁩:309 ⁨standard input⁩:55
 #: ⁨standard input⁩:65 ⁨standard input⁩:45
 msgid "Name"
@@ -2392,7 +2392,7 @@ msgstr ""
 msgid "No contact."
 msgstr ""
 
-#: ⁨standard input⁩:104
+#: ⁨standard input⁩:113
 msgid "No contract found"
 msgstr ""
 
@@ -2653,7 +2653,7 @@ msgstr ""
 msgid "Number"
 msgstr ""
 
-#: ⁨standard input⁩:52
+#: ⁨standard input⁩:61
 msgctxt "phone"
 msgid "Number"
 msgstr ""
@@ -2857,7 +2857,7 @@ msgstr ""
 msgid "Partner API access token, generated in Kiflo. Stored encrypted."
 msgstr ""
 
-#: src/KifloLead.php:101
+#: src/KifloLead.php:102
 msgid "Pending"
 msgstr ""
 
@@ -3212,7 +3212,7 @@ msgstr ""
 msgid "Reactivate"
 msgstr ""
 
-#: src/KifloLead.php:104
+#: src/KifloLead.php:105
 msgid "Reassigned"
 msgstr ""
 
@@ -3248,7 +3248,7 @@ msgstr "Referências "
 msgid "Referent contact"
 msgstr ""
 
-#: src/KifloLead.php:105
+#: src/KifloLead.php:106
 msgid "Refused"
 msgstr ""
 
@@ -3268,7 +3268,7 @@ msgstr ""
 msgid "Remaining"
 msgstr ""
 
-#: ⁨standard input⁩:42 ⁨standard input⁩:54 ⁨standard input⁩:208
+#: ⁨standard input⁩:42 ⁨standard input⁩:63 ⁨standard input⁩:208
 msgid "Remaining days"
 msgstr ""
 
@@ -3276,7 +3276,7 @@ msgstr ""
 msgid "Remaining days number by opened client contracts"
 msgstr ""
 
-#: ⁨standard input⁩:42 ⁨standard input⁩:54
+#: ⁨standard input⁩:42 ⁨standard input⁩:63
 msgid "Remaining hours"
 msgstr ""
 
@@ -3424,7 +3424,7 @@ msgstr "Intervenção agendada "
 msgid "Schema check"
 msgstr ""
 
-#: ⁨standard input⁩:48 ⁨standard input⁩:127
+#: ⁨standard input⁩:47 ⁨standard input⁩:48 ⁨standard input⁩:127
 msgid "Search"
 msgstr ""
 
@@ -3603,7 +3603,7 @@ msgstr "Estado da intervenção "
 msgid "State of ticket created"
 msgstr ""
 
-#: ⁨standard input⁩:49 ⁨standard input⁩:53 ⁨standard input⁩:88 ⁨standard input⁩:42
+#: ⁨standard input⁩:49 ⁨standard input⁩:62 ⁨standard input⁩:88 ⁨standard input⁩:42
 #: ⁨standard input⁩:248 ⁨standard input⁩:81 ⁨standard input⁩:89
 msgid "Status"
 msgstr ""
@@ -3691,7 +3691,7 @@ msgstr ""
 msgid "Synchronize now"
 msgstr ""
 
-#: src/KifloLead.php:380
+#: src/KifloLead.php:381
 msgid "Synchronize the leads of Kiflo"
 msgstr ""
 
@@ -4367,7 +4367,7 @@ msgstr ""
 msgid "Unarchive and continue"
 msgstr ""
 
-#: src/KifloLead.php:103
+#: src/KifloLead.php:104
 msgid "Unassigned"
 msgstr ""
 
@@ -4816,7 +4816,7 @@ msgstr ""
 msgid "the templates folder could not be created."
 msgstr ""
 
-#: ⁨standard input⁩:106
+#: ⁨standard input⁩:115
 msgid "try adjusting the default state filter in configuration"
 msgstr ""
 
