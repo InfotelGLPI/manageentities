@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonDropdown;
 use DBConnection;
+use Glpi\Application\View\TemplateRenderer;
 use Migration;
 use Session;
 
@@ -145,11 +146,9 @@ class SubscriptionLevel extends CommonDropdown
             ]);
         } elseif ($field['type'] === 'price_per_user') {
             $price = $this->fields['price_per_user'] ?? null;
-            echo \Html::input('price_per_user', [
-                'value'     => $price !== null ? str_replace('.', ',', (string) (float) $price) : '',
-                'inputmode' => 'decimal',
+            TemplateRenderer::getInstance()->display('@manageentities/subscriptionlevel_price_field.html.twig', [
+                'value' => $price !== null ? str_replace('.', ',', (string) (float) $price) : '',
             ]);
-            echo '<div class="form-text">' . htmlescape(__('Cloud levels only. Used by the annexes of the cloud subscriptions.', 'manageentities')) . '</div>';
         }
     }
 

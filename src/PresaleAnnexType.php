@@ -162,12 +162,9 @@ class PresaleAnnexType extends CommonDropdown
     public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
         if ($field['type'] === 'vat_rate') {
-            echo \Html::input('default_vat', [
+            TemplateRenderer::getInstance()->display('@manageentities/presale/annextype_field.html.twig', [
+                'type'  => 'vat_rate',
                 'value' => $this->fields['default_vat'] ?? Config::getDefaultPresaleVat(),
-                'type'  => 'number',
-                'min'   => 0,
-                'max'   => 100,
-                'step'  => '0.01',
             ]);
         } elseif ($field['type'] === 'default_lines') {
             TemplateRenderer::getInstance()->display('@manageentities/presale/annextype_default_lines.html.twig', [
@@ -177,9 +174,10 @@ class PresaleAnnexType extends CommonDropdown
                 'level_price' => $this->isNewItem() ? null : self::getCloudPrice($this->fields),
             ]);
         } elseif ($field['type'] === 'export_json') {
-            echo '<a class="btn btn-sm btn-outline-secondary" href="'
-                . htmlescape(PresaleAnnexTypeTransfer::getExportUrl([(int) $ID])) . '">'
-                . '<i class="ti ti-file-export me-1"></i>' . __s('Export as JSON', 'manageentities') . '</a>';
+            TemplateRenderer::getInstance()->display('@manageentities/presale/annextype_field.html.twig', [
+                'type'       => 'export_json',
+                'export_url' => PresaleAnnexTypeTransfer::getExportUrl([(int) $ID]),
+            ]);
         } elseif ($field['type'] === 'default_estimate') {
             $rows = PresaleEstimate::decode($this->fields['default_estimate'] ?? null);
             TemplateRenderer::getInstance()->display('@manageentities/presale/estimate_table.html.twig', [
@@ -231,12 +229,10 @@ class PresaleAnnexType extends CommonDropdown
     {
         if ($ma->getAction() === 'export_json') {
             $ids = array_keys($ma->getItems()[self::class] ?? []);
-            echo '<a class="btn btn-primary" href="' . htmlescape(PresaleAnnexTypeTransfer::getExportUrl($ids)) . '">'
-                . '<i class="ti ti-download me-1"></i>' . __s('Download the JSON file', 'manageentities') . '</a>';
-            if (static::canCreate()) {
-                echo ' <a class="btn btn-ghost-secondary" href="' . htmlescape(PresaleAnnexTypeTransfer::getImportUrl()) . '">'
-                    . '<i class="ti ti-file-import me-1"></i>' . __s('Import annex models', 'manageentities') . '</a>';
-            }
+            TemplateRenderer::getInstance()->display('@manageentities/presale/annextype_export_subform.html.twig', [
+                'export_url' => PresaleAnnexTypeTransfer::getExportUrl($ids),
+                'import_url' => static::canCreate() ? PresaleAnnexTypeTransfer::getImportUrl() : null,
+            ]);
             return true;
         }
 

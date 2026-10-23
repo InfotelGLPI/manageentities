@@ -46,7 +46,7 @@ if (isset($_POST['user_id_tech']) && (int) $_POST['user_id_tech'] > 0) {
     // caller enumerate the whole user directory across entities.
     $visible = countElementsInTable(
         'glpi_profiles_users',
-        ['users_id' => $user_id] + getEntitiesRestrictCriteria('glpi_profiles_users'),
+        ['users_id' => $user_id] + getEntitiesRestrictCriteria('glpi_profiles_users', '', '', true),
     );
     if ($visible > 0) {
         echo json_encode(getUserName($user_id));

@@ -87,7 +87,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                 // field (see ajax/getUserTechName.php).
                 if (countElementsInTable(
                     'glpi_profiles_users',
-                    ['users_id' => $idUser] + getEntitiesRestrictCriteria('glpi_profiles_users'),
+                    ['users_id' => $idUser] + getEntitiesRestrictCriteria('glpi_profiles_users', '', '', true),
                 ) === 0) {
                     throw new AccessDeniedHttpException();
                 }

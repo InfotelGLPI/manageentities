@@ -1385,7 +1385,7 @@ class WizardController
         // (same check as ajax/interventionstakeholderactions.php).
         if (countElementsInTable(
             'glpi_profiles_users',
-            ['users_id' => $users_id] + getEntitiesRestrictCriteria('glpi_profiles_users'),
+            ['users_id' => $users_id] + getEntitiesRestrictCriteria('glpi_profiles_users', '', '', true),
         ) === 0) {
             throw new AccessDeniedHttpException();
         }
@@ -2781,8 +2781,37 @@ class WizardController
                 'rand'   => $rand,
                 'entity' => $entities_id,
                 'right'  => 'all',
+                'value'  => self::getDefaultStakeholder($entities_id, $stakeholders),
             ]),
         ];
+    }
+
+    /**
+     * Stakeholder suggested for a new intervention: the main tech lead of the customer, as
+     * long as this user is not a stakeholder of the intervention yet
+     *
+     * @param int                              $entities_id  customer entity (0 for a new one)
+     * @param array<int, array<string, mixed>> $stakeholders stakeholders already added
+     *
+     * @return int user id, 0 for none
+     */
+    private static function getDefaultStakeholder(int $entities_id, array $stakeholders): int
+    {
+        // A new customer has no entity, hence no tech lead, before the end of the wizard
+        if ($entities_id <= 0) {
+            return 0;
+        }
+
+        $techleads = TechLead::getTechLeadsByEntity([$entities_id])[$entities_id] ?? [];
+        $assigned  = array_map('intval', array_column($stakeholders, 'users_id'));
+        foreach ($techleads as $techlead) {
+            // Main one first (getTechLeadsByEntity() order)
+            if (!in_array($techlead['users_id'], $assigned, true)) {
+                return $techlead['users_id'];
+            }
+        }
+
+        return 0;
     }
 
     // -------------------------------------------------------------------------

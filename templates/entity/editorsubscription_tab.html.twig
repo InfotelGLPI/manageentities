@@ -69,6 +69,7 @@
         {'key': 'current', 'count': current_rows|length, 'color': 'green', 'icon': 'ti ti-certificate', 'label': __('Subscriptions in progress', 'manageentities')},
         {'key': 'onpremise', 'count': current_rows|filter(r => not r.cloud_client)|length, 'color': 'teal', 'icon': 'ti ti-server', 'label': __('On-premise subscriptions in progress', 'manageentities')},
         {'key': 'cloud', 'count': current_rows|filter(r => r.cloud_client)|length, 'color': 'cyan', 'icon': 'ti ti-cloud', 'label': __('Cloud subscriptions in progress', 'manageentities')},
+        {'key': 'internet', 'count': current_rows|filter(r => r.internet_publication)|length, 'color': 'indigo', 'icon': 'ti ti-world', 'label': __('Internet publication', 'manageentities')},
         {'key': 'expired', 'count': expired_rows|length, 'color': 'red', 'icon': 'ti ti-clock-exclamation', 'label': __('Expired subscriptions', 'manageentities')},
     ] %}
     {% if use_presale %}
@@ -110,7 +111,7 @@
                     {% for row in rows %}
                     {% set filters = row.end_date_expired
                         ? ['expired']|merge(use_presale and not row.proposal ? ['noproposal'] : [])
-                        : ['current', row.cloud_client ? 'cloud' : 'onpremise'] %}
+                        : ['current', row.cloud_client ? 'cloud' : 'onpremise']|merge(row.internet_publication ? ['internet'] : []) %}
                     <tr data-me-sub-filters="{{ filters|join(' ') }}">
                         <td>{{ row.entity_completename ?: '—' }}</td>
                         <td>{{ row.customer_account_id ?: '—' }}</td>
@@ -121,6 +122,9 @@
                                 <span class="badge bg-info-lt"><i class="ti ti-cloud me-1"></i>{{ __('Cloud', 'manageentities') }}</span>
                             {% else %}
                                 <span class="badge bg-success-lt"><i class="ti ti-certificate me-1"></i>{{ __('Editor', 'manageentities') }}</span>
+                            {% endif %}
+                            {% if row.internet_publication %}
+                                <span class="badge bg-indigo-lt" title="{{ __('Internet publication', 'manageentities') }}"><i class="ti ti-world me-1"></i>{{ __('Internet publication', 'manageentities') }}</span>
                             {% endif %}
                         </td>
                         <td>{{ row.level_name ?: '—' }}</td>
