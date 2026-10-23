@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-21 15:07+0000\n"
+"POT-Creation-Date: 2026-10-23 14:24+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/teams/"
@@ -828,8 +828,8 @@ msgstr ""
 msgid "Closed contract period state"
 msgstr ""
 
-#: src/PresaleConversion.php:229 src/SubscriptionLevel.php:71 ⁨standard input⁩:99
-#: ⁨standard input⁩:191 ⁨standard input⁩:162 ⁨standard input⁩:121
+#: src/PresaleConversion.php:229 src/SubscriptionLevel.php:72 ⁨standard input⁩:99
+#: ⁨standard input⁩:191 ⁨standard input⁩:162 ⁨standard input⁩:122
 msgid "Cloud"
 msgstr ""
 
@@ -840,7 +840,7 @@ msgstr ""
 msgid "Cloud client"
 msgstr ""
 
-#: src/SubscriptionLevel.php:152
+#: ⁨standard input⁩:30
 msgid "Cloud levels only. Used by the annexes of the cloud subscriptions."
 msgstr ""
 
@@ -1272,7 +1272,7 @@ msgstr ""
 msgid "Default intervention type"
 msgstr ""
 
-#: src/PresaleAnnexType.php:329
+#: src/PresaleAnnexType.php:325
 #, php-format
 msgid "Default line \"%s\": invalid number"
 msgstr ""
@@ -1413,7 +1413,7 @@ msgstr[3] ""
 msgid "Download"
 msgstr ""
 
-#: src/PresaleAnnexType.php:235
+#: ⁨standard input⁩:30
 msgid "Download the JSON file"
 msgstr ""
 
@@ -1471,7 +1471,7 @@ msgid ""
 "\"%2$s\" and not yet assigned to a technician"
 msgstr ""
 
-#: ⁨standard input⁩:149 ⁨standard input⁩:47
+#: ⁨standard input⁩:153 ⁨standard input⁩:47
 msgid "Edit"
 msgstr ""
 
@@ -1479,7 +1479,7 @@ msgstr ""
 msgid "Edit in the wizard"
 msgstr ""
 
-#: src/PresaleConversion.php:229 ⁨standard input⁩:164 ⁨standard input⁩:123
+#: src/PresaleConversion.php:229 ⁨standard input⁩:164 ⁨standard input⁩:124
 msgid "Editor"
 msgstr ""
 
@@ -1516,7 +1516,7 @@ msgstr ""
 #: src/NotificationTargetEditorSubscription.php:147
 #: src/EditorSubscription.php:187 ⁨standard input⁩:75 ⁨standard input⁩:80
 #: ⁨standard input⁩:50 ⁨standard input⁩:40 ⁨standard input⁩:41 ⁨standard input⁩:142
-#: ⁨standard input⁩:195 ⁨standard input⁩:64 ⁨standard input⁩:151 ⁨standard input⁩:105
+#: ⁨standard input⁩:195 ⁨standard input⁩:64 ⁨standard input⁩:151 ⁨standard input⁩:106
 #: ⁨standard input⁩:33 ⁨standard input⁩:69 ⁨standard input⁩:65 ⁨standard input⁩:120
 #: ⁨standard input⁩:99
 msgid "End date"
@@ -1572,7 +1572,7 @@ msgstr ""
 #: src/NotificationTargetContract.php:151 src/NotificationTargetEntity.php:83
 #: src/NotificationTargetEntity.php:108 ⁨standard input⁩:48 ⁨standard input⁩:34
 #: ⁨standard input⁩:45 ⁨standard input⁩:70 ⁨standard input⁩:58 ⁨standard input⁩:68
-#: ⁨standard input⁩:60 ⁨standard input⁩:147 ⁨standard input⁩:203 ⁨standard input⁩:98
+#: ⁨standard input⁩:60 ⁨standard input⁩:147 ⁨standard input⁩:203 ⁨standard input⁩:99
 #: ⁨standard input⁩:30 ⁨standard input⁩:50 ⁨standard input⁩:37 ⁨standard input⁩:43
 #: ⁨standard input⁩:38 ⁨standard input⁩:247 ⁨standard input⁩:40 ⁨standard input⁩:94
 #: ⁨standard input⁩:95
@@ -1633,7 +1633,7 @@ msgstr ""
 msgid "Estimate by the project manager"
 msgstr ""
 
-#: src/PresaleAnnexType.php:189
+#: src/PresaleAnnexType.php:187
 msgid ""
 "Estimate of a new annex of this model in the pre-sales wizard, where it can "
 "be changed. Printed under the purpose (placeholder {{CHIFFRAGE}} of the "
@@ -1695,7 +1695,7 @@ msgstr ""
 msgid "Expired publisher subscriptions"
 msgstr ""
 
-#: ⁨standard input⁩:42 ⁨standard input⁩:72
+#: ⁨standard input⁩:42 ⁨standard input⁩:73
 msgid "Expired subscriptions"
 msgstr ""
 
@@ -1703,7 +1703,7 @@ msgstr ""
 msgid "Expired subscriptions to renew"
 msgstr ""
 
-#: ⁨standard input⁩:76
+#: ⁨standard input⁩:77
 msgid "Expired subscriptions without any proposal"
 msgstr ""
 
@@ -1719,7 +1719,7 @@ msgstr ""
 msgid "Export all the references"
 msgstr ""
 
-#: src/PresaleAnnexType.php:182 src/PresaleAnnexType.php:220
+#: src/PresaleAnnexType.php:218 ⁨standard input⁩:33
 msgid "Export as JSON"
 msgstr ""
 
@@ -1897,7 +1897,7 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: src/PresaleAnnexType.php:238 ⁨standard input⁩:220 ⁨standard input⁩:39
+#: ⁨standard input⁩:220 ⁨standard input⁩:34 ⁨standard input⁩:39
 msgid "Import annex models"
 msgstr ""
 
@@ -1951,13 +1951,14 @@ msgstr ""
 msgid "Internal label"
 msgstr ""
 
-#: src/PresaleAnnexType.php:105 src/PresaleAnnexType.php:456 ⁨standard input⁩:48
+#: src/PresaleAnnexType.php:105 src/PresaleAnnexType.php:452 ⁨standard input⁩:48
 #: ⁨standard input⁩:85 ⁨standard input⁩:82
 msgid "Internal name"
 msgstr ""
 
 #: hook.php:1049 src/EditorSubscription.php:185 src/EditorSubscription.php:820
-#: ⁨standard input⁩:55 ⁨standard input⁩:78 ⁨standard input⁩:83
+#: ⁨standard input⁩:55 ⁨standard input⁩:72 ⁨standard input⁩:127 ⁨standard input⁩:78
+#: ⁨standard input⁩:83
 msgid "Internet publication"
 msgstr ""
 
@@ -2108,7 +2109,7 @@ msgstr ""
 msgid "Last generated version: %s"
 msgstr ""
 
-#: src/EditorSubscription.php:180 ⁨standard input⁩:101
+#: src/EditorSubscription.php:180 ⁨standard input⁩:102
 msgid "Last intervention"
 msgstr ""
 
@@ -2364,7 +2365,7 @@ msgstr ""
 msgid "Monthly price per subscription excl. VAT"
 msgstr ""
 
-#: src/SubscriptionLevel.php:86 src/SubscriptionLevel.php:170
+#: src/SubscriptionLevel.php:87 src/SubscriptionLevel.php:169
 msgid "Monthly price per user excl. VAT"
 msgstr ""
 
@@ -2442,7 +2443,7 @@ msgid "New intervention"
 msgstr "Новое вмешательство"
 
 #: ⁨standard input⁩:55 ⁨standard input⁩:61 ⁨standard input⁩:125 ⁨standard input⁩:53
-#: ⁨standard input⁩:172 ⁨standard input⁩:224 ⁨standard input⁩:143
+#: ⁨standard input⁩:172 ⁨standard input⁩:224 ⁨standard input⁩:147
 msgid "New proposal"
 msgstr ""
 
@@ -2631,7 +2632,7 @@ msgstr ""
 msgid "No publisher subscription"
 msgstr ""
 
-#: ⁨standard input⁩:162
+#: ⁨standard input⁩:166
 msgid "No publisher subscription recorded for this entity."
 msgstr ""
 
@@ -2818,7 +2819,7 @@ msgstr ""
 msgid "Oldest intervention"
 msgstr ""
 
-#: src/SubscriptionLevel.php:70
+#: src/SubscriptionLevel.php:71
 msgid "On premise"
 msgstr ""
 
@@ -3248,7 +3249,7 @@ msgstr[3] ""
 msgid "Proposal"
 msgstr ""
 
-#: ⁨standard input⁩:136
+#: ⁨standard input⁩:140
 msgid "Proposal created"
 msgstr ""
 
@@ -3306,7 +3307,7 @@ msgstr ""
 #: src/NotificationTargetEditorSubscription.php:105
 #: src/NotificationTargetEditorSubscription.php:142
 #: src/EditorSubscription.php:178 src/EditorSubscription.php:789
-#: ⁨standard input⁩:99 ⁨standard input⁩:41 ⁨standard input⁩:66
+#: ⁨standard input⁩:100 ⁨standard input⁩:41 ⁨standard input⁩:66
 msgid "Publisher customer account ID"
 msgstr ""
 
@@ -3322,7 +3323,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/PresaleAnnexType.php:86 src/PresaleAnnexType.php:477
+#: src/PresaleAnnexType.php:86 src/PresaleAnnexType.php:473
 msgid "Publisher subscription annex"
 msgstr ""
 
@@ -3393,7 +3394,7 @@ msgstr ""
 
 #: src/NotificationTargetEditorSubscription.php:106
 #: src/NotificationTargetEditorSubscription.php:143
-#: src/EditorSubscription.php:179 ⁨standard input⁩:148 ⁨standard input⁩:100
+#: src/EditorSubscription.php:179 ⁨standard input⁩:148 ⁨standard input⁩:101
 #: ⁨standard input⁩:34 ⁨standard input⁩:72
 msgid "Referenced name at the publisher"
 msgstr ""
@@ -3723,7 +3724,7 @@ msgstr ""
 msgid "Society name"
 msgstr "Название компании"
 
-#: ⁨standard input⁩:105
+#: ⁨standard input⁩:106
 msgid "Sorted by oldest end date first"
 msgstr ""
 
@@ -3742,7 +3743,7 @@ msgstr ""
 #: src/NotificationTargetEditorSubscription.php:109
 #: src/NotificationTargetEditorSubscription.php:146
 #: src/EditorSubscription.php:186 ⁨standard input⁩:39 ⁨standard input⁩:40
-#: ⁨standard input⁩:206 ⁨standard input⁩:104 ⁨standard input⁩:75 ⁨standard input⁩:111
+#: ⁨standard input⁩:206 ⁨standard input⁩:105 ⁨standard input⁩:75 ⁨standard input⁩:111
 #: ⁨standard input⁩:192 ⁨standard input⁩:93
 msgid "Start date"
 msgstr ""
@@ -3804,8 +3805,8 @@ msgstr ""
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
 #: src/EditorSubscription.php:182 src/EditorSubscription.php:796
-#: src/EditorSubscription.php:851 src/SubscriptionLevel.php:47
-#: ⁨standard input⁩:150 ⁨standard input⁩:103 ⁨standard input⁩:90 ⁨standard input⁩:78
+#: src/EditorSubscription.php:851 src/SubscriptionLevel.php:48
+#: ⁨standard input⁩:150 ⁨standard input⁩:104 ⁨standard input⁩:90 ⁨standard input⁩:78
 msgid "Subscription level"
 msgid_plural "Subscription levels"
 msgstr[0] ""
@@ -3821,7 +3822,7 @@ msgstr ""
 msgid "Subscription level is required."
 msgstr ""
 
-#: src/SubscriptionLevel.php:80 src/SubscriptionLevel.php:163 ⁨standard input⁩:52
+#: src/SubscriptionLevel.php:81 src/SubscriptionLevel.php:162 ⁨standard input⁩:52
 msgid "Subscription type"
 msgstr ""
 
@@ -3991,7 +3992,7 @@ msgstr ""
 msgid "The Kiflo partner program does not grant access to this resource (403)."
 msgstr ""
 
-#: src/PresaleAnnexType.php:397
+#: src/PresaleAnnexType.php:393
 msgid "The VAT rate must be between 0 and 100."
 msgstr ""
 
@@ -4206,7 +4207,7 @@ msgstr ""
 msgid "The plugin schema is good"
 msgstr ""
 
-#: src/SubscriptionLevel.php:120
+#: src/SubscriptionLevel.php:121
 msgid "The price per user must be a positive number."
 msgstr ""
 
@@ -4512,7 +4513,7 @@ msgstr "Путешествие (в днях)"
 #: src/NotificationTargetEditorSubscription.php:107
 #: src/NotificationTargetEditorSubscription.php:144
 #: src/EditorSubscription.php:181 ⁨standard input⁩:149 ⁨standard input⁩:45
-#: ⁨standard input⁩:102 ⁨standard input⁩:226 ⁨standard input⁩:116 ⁨standard input⁩:90
+#: ⁨standard input⁩:103 ⁨standard input⁩:226 ⁨standard input⁩:116 ⁨standard input⁩:90
 #: ⁨standard input⁩:60 ⁨standard input⁩:55
 msgid "Type"
 msgid_plural "Types"
@@ -4742,7 +4743,7 @@ msgstr ""
 msgid "VAT not applicable: amounts excluding taxes."
 msgstr ""
 
-#: src/PresaleAnnexType.php:127 src/PresaleAnnexType.php:463 ⁨standard input⁩:254
+#: src/PresaleAnnexType.php:127 src/PresaleAnnexType.php:459 ⁨standard input⁩:254
 #: ⁨standard input⁩:138
 msgid "VAT rate (%)"
 msgstr ""
