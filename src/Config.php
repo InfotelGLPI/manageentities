@@ -97,6 +97,7 @@ class Config extends CommonDBTM
         $this->addStandardTab(CriDetail::class, $ong, $options);
         $this->addStandardTab(PresaleConfig::class, $ong, $options);
         $this->addStandardTab(DatConfig::class, $ong, $options);
+        $this->addStandardTab(DexConfig::class, $ong, $options);
         $this->addStandardTab(KifloConfig::class, $ong, $options);
         $this->addStandardTab(Company::class, $ong, $options);
         $this->addStandardTab(CheckSchema::class, $ong, $options);
@@ -402,6 +403,7 @@ class Config extends CommonDBTM
 
         self::installPresaleFields($migration);
         self::installDatFields($migration);
+        self::installDexFields($migration);
         self::installKifloFields($migration);
     }
 
@@ -453,6 +455,27 @@ class Config extends CommonDBTM
         if (!$DB->fieldExists($table, 'dat_documentcategories_id')) {
             $migration->addField($table, 'dat_documentcategories_id', 'fkey', [
                 'comment' => 'RELATION to glpi_documentcategories (id) — category of the generated DAT',
+            ]);
+            $migration->migrationOneTable($table);
+        }
+    }
+
+    /**
+     * Settings of the operating documents (DEX). Idempotent, as installPresaleFields().
+     *
+     * @param Migration $migration
+     *
+     * @return void
+     */
+    public static function installDexFields(Migration $migration): void
+    {
+        global $DB;
+
+        $table = self::getTable();
+        if (!$DB->fieldExists($table, 'dex_documentcategories_id')) {
+            $migration->addField($table, 'dex_documentcategories_id', 'fkey', [
+                'after'   => 'dat_documentcategories_id',
+                'comment' => 'RELATION to glpi_documentcategories (id) — category of the generated DEX',
             ]);
             $migration->migrationOneTable($table);
         }

@@ -127,6 +127,12 @@ class Profile extends \Profile
                 'label' => Dat::getTypeName(1),
                 'field' => 'plugin_manageentities_dat',
             ],
+            [
+                // Operating documents of the clients
+                'itemtype' => Dex::class,
+                'label' => Dex::getTypeName(1),
+                'field' => 'plugin_manageentities_dex',
+            ],
         ];
 
         return $rights;
@@ -246,9 +252,9 @@ class Profile extends \Profile
                     }
                 }
 
-                // The DAT right goes to the profiles that can change the configuration of the
-                // plugin (Config::canUpdate()), where its Word template is uploaded
-                if ($data['field'] === 'plugin_manageentities_dat') {
+                // The DAT and DEX rights go to the profiles that can change the configuration of
+                // the plugin (Config::canUpdate()), where their Word templates are uploaded
+                if (in_array($data['field'], ['plugin_manageentities_dat', 'plugin_manageentities_dex'], true)) {
                     foreach ($DB->request([
                         'FROM'  => 'glpi_profilerights',
                         'WHERE' => ['name' => 'plugin_manageentities'],
@@ -296,6 +302,7 @@ class Profile extends \Profile
                 'plugin_manageentities_directhelpdesk' => CREATE | READ | UPDATE | PURGE,
                 'plugin_manageentities_presale' => CREATE | READ | UPDATE | PURGE,
                 'plugin_manageentities_dat' => CREATE | READ | UPDATE | PURGE,
+                'plugin_manageentities_dex' => CREATE | READ | UPDATE | PURGE,
             ],
             true,
         );

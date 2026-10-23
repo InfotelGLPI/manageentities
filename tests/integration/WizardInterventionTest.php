@@ -30,6 +30,7 @@
 namespace GlpiPlugin\Manageentities\Tests\Integration;
 
 use Glpi\Tests\DbTestCase;
+use GlpiPlugin\Manageentities\TechLead;
 use GlpiPlugin\Manageentities\WizardController;
 
 class WizardInterventionTest extends DbTestCase
@@ -260,6 +261,80 @@ class WizardInterventionTest extends DbTestCase
         ]);
         $this->assertTrue($r['success'], 'Should allow any days when nbday = 0');
         $this->assertNull($r['remaining_days'], 'remaining_days should be null when no limit');
+    }
+
+    /**
+     * A user whose only authorization is recursive on a parent entity is listed by the user
+     * dropdown of the step: adding this user must not be refused (HTTP 403 before)
+     */
+    public function testStakeholderWithRecursiveProfileOnParentEntityIsAccepted(): void
+    {
+        $this->login();
+        $this->setupSessionData();
+
+        WizardController::saveInterventionsAndReturn([
+            'interventions' => [
+                1 => [
+                    'name'                                    => 'Period ' . $this->getUniqueString(),
+                    'begin_date'                              => '2026-01-01',
+                    'end_date'                                => '2026-12-31',
+                    'nbday'                                   => 0,
+                    'plugin_manageentities_contractstates_id' => $this->contractstate_id,
+                ],
+            ],
+        ]);
+
+        $user = $this->createItem(\User::class, ['name' => 'sh-recursive-' . $this->getUniqueString()]);
+        // Only authorization: recursive, on the root entity, above the active entities
+        (new \Profile_User())->deleteByCriteria(['users_id' => $user->getID()], true);
+        $this->createItem(\Profile_User::class, [
+            'users_id'     => $user->getID(),
+            'profiles_id'  => getItemByTypeName(\Profile::class, 'Technician', true),
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        // Session restricted to a child entity, as on a customer
+        $this->setEntity('_test_root_entity', true);
+
+        $r = WizardController::addStakeholderAndReturn([
+            'intervention_idx'     => 1,
+            'users_id'             => $user->getID(),
+            'number_affected_days' => 1,
+        ]);
+        $this->assertTrue($r['success'], json_encode($r));
+    }
+
+    public function testMainTechLeadIsSuggestedAsStakeholder(): void
+    {
+        $this->login();
+        $entities_id = $this->wizardParentEntity();
+
+        $lead   = $this->createItem(\User::class, ['name' => 'lead-' . $this->getUniqueString()]);
+        $backup = $this->createItem(\User::class, ['name' => 'backup-' . $this->getUniqueString()]);
+        foreach ([$lead, $backup] as $user) {
+            $this->createItem(\Profile_User::class, [
+                'users_id'    => $user->getID(),
+                'profiles_id' => getItemByTypeName(\Profile::class, 'Technician', true),
+                'entities_id' => $entities_id,
+            ]);
+        }
+        $this->createItem(TechLead::class, ['entities_id' => $entities_id, 'users_id' => $backup->getID()]);
+        $main = $this->createItem(TechLead::class, ['entities_id' => $entities_id, 'users_id' => $lead->getID()]);
+        (new TechLead())->setAsDefault($main->getID());
+
+        $suggest = fn(array $stakeholders) => $this->callPrivateMethod(
+            new WizardController(),
+            'getDefaultStakeholder',
+            $entities_id,
+            $stakeholders,
+        );
+
+        // Main tech lead first, then the next one once the main one is a stakeholder
+        $this->assertSame($lead->getID(), $suggest([]));
+        $this->assertSame($backup->getID(), $suggest([['users_id' => $lead->getID()]]));
+        $this->assertSame(0, $suggest([['users_id' => $lead->getID()], ['users_id' => $backup->getID()]]));
+        // New customer: no entity yet, nothing to suggest
+        $this->assertSame(0, $this->callPrivateMethod(new WizardController(), 'getDefaultStakeholder', 0, []));
     }
 
     public function testCommitCreatesInterventionAndCripriceInDb(): void

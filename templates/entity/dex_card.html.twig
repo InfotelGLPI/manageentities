@@ -1,0 +1,121 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Operating document of the client (DexWizard::getCardData()): its generated
+ # versions, latest first, and the way into its wizard.
+ #
+ # dex - exists, status, is_draft, version, date_mod, versions [{name, url, date}],
+ #       can_create, can_update, can_delete, create_url, resume_url, new_url, summary_url,
+ #       form_url, entities_id
+ #}
+<div class="col">
+<div class="card h-100">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="ti ti-file-power me-1"></i>
+            {{ __('Operating document', 'manageentities') }}
+        </h3>
+        {% if dex.exists %}
+            <div class="card-actions">
+                <span class="badge {{ dex.is_draft ? 'bg-orange-lt' : 'bg-green-lt' }}">{{ dex.status }}</span>
+            </div>
+        {% endif %}
+    </div>
+    <div class="card-body p-0">
+        {% if dex.versions is not empty %}
+            <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ _n('Document', 'Documents', 1) }}</th>
+                            <th class="text-nowrap">{{ __('Date') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for version in dex.versions %}
+                        <tr>
+                            <td>
+                                <a href="{{ version.url }}"><i class="ti ti-download me-1"></i>{{ version.name }}</a>
+                                {% if loop.first %}<span class="badge bg-blue-lt ms-1">{{ __('Latest', 'manageentities') }}</span>{% endif %}
+                            </td>
+                            <td class="text-nowrap">{{ version.date|formatted_datetime }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if not dex.exists %}
+            <p class="text-muted text-center py-3 mb-0">{{ __('No operating document yet.', 'manageentities') }}</p>
+        {% elseif dex.is_draft %}
+            <p class="text-muted px-3 py-2 mb-0">
+                <i class="ti ti-pencil me-1"></i>
+                {{ dex.version > 0
+                    ? __('A draft of the next version is in progress.', 'manageentities')
+                    : __('A draft is in progress, not generated yet.', 'manageentities') }}
+                {% if dex.date_mod %}({{ dex.date_mod|formatted_datetime }}){% endif %}
+            </p>
+        {% elseif dex.versions is empty %}
+            <p class="text-muted text-center py-3 mb-0">{{ __('The generated versions are no longer in the documents of the client.', 'manageentities') }}</p>
+        {% endif %}
+    </div>
+    {% if dex.can_create or dex.can_update %}
+        <div class="card-footer d-flex flex-wrap gap-2">
+            {% if dex.can_create %}
+                <a href="{{ dex.create_url }}" class="btn btn-sm btn-primary">
+                    <i class="ti ti-plus me-1"></i>{{ __('Create the DEX', 'manageentities') }}
+                </a>
+            {% elseif dex.is_draft %}
+                <a href="{{ dex.resume_url }}" class="btn btn-sm btn-primary">
+                    <i class="ti ti-player-play me-1"></i>{{ __('Resume the draft', 'manageentities') }}
+                </a>
+                {% if dex.can_delete %}
+                    {# A draft never generated only: once generated, the DEX feeds the next version #}
+                    <form method="post" action="{{ dex.form_url }}" class="d-inline ms-auto" data-dex-card>
+                        <input type="hidden" name="entities_id" value="{{ dex.entities_id }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        {# Confirmation: public/scripts/dat-wizard.js #}
+                        <button type="submit" name="delete_draft" value="1" class="btn btn-sm btn-ghost-danger"
+                                data-dat-confirm="{{ __('Delete this draft? Everything typed in it is lost.', 'manageentities') }}">
+                            <i class="ti ti-trash me-1"></i>{{ __('Delete the draft', 'manageentities') }}
+                        </button>
+                    </form>
+                {% endif %}
+            {% else %}
+                {# Every section of the last version is kept: the next generation increments the version #}
+                <a href="{{ dex.new_url }}" class="btn btn-sm btn-primary">
+                    <i class="ti ti-copy-plus me-1"></i>{{ __('New version', 'manageentities') }}
+                </a>
+                <a href="{{ dex.summary_url }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="ti ti-list-details me-1"></i>{{ __('Summary', 'manageentities') }}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+</div>{# /col #}

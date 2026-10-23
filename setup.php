@@ -223,7 +223,7 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/wizard.js';
             // Contact blocks and user prefill of the pre-sales wizard (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/presale-wizard.js';
-            // Server rows of the DAT wizard (native ES module, no-op elsewhere)
+            // Server rows of the DAT and DEX wizards (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/dat-wizard.js';
             // Stakeholders tab of a contract day (native ES module, no jQuery)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/interventionstakeholder.js';

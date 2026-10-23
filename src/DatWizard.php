@@ -311,7 +311,7 @@ class DatWizard
     /**
      * Logo of the client (EntityLogo), printed in the header of the document; '' when none
      */
-    private static function getLogoUrl(int $entities_id): string
+    public static function getLogoUrl(int $entities_id): string
     {
         $logo = (new EntityLogo())->find(['entities_id' => $entities_id], [], 1);
         if ($logo === []) {
@@ -729,7 +729,7 @@ class DatWizard
      *
      * @return list<array{id: int, name: string, internal_name: string, ip: string, role: string}>
      */
-    private static function readServers(array $input): array
+    public static function readServers(array $input): array
     {
         $servers = [];
         foreach ((array) ($input['servers'] ?? []) as $row) {
@@ -759,7 +759,7 @@ class DatWizard
      *
      * @return array<string, string>
      */
-    private static function validateServers(array $servers): array
+    public static function validateServers(array $servers): array
     {
         if ($servers === []) {
             return ['servers' => __('Add at least one server.', 'manageentities')];

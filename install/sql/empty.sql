@@ -123,6 +123,7 @@ CREATE TABLE `glpi_plugin_manageentities_configs` (
    `presale_documentcategories_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id) — category of the generated proposals',
    `presale_default_vat` decimal(5,2) NOT NULL DEFAULT '20.00',
    `dat_documentcategories_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id) — category of the generated DAT',
+   `dex_documentcategories_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documentcategories (id) — category of the generated DEX',
    `use_kiflo` tinyint NOT NULL DEFAULT '0',
    `kiflo_url` varchar(255) NOT NULL DEFAULT 'https://api.kiflo.com/v3',
    `kiflo_token` text COMMENT 'encrypted with GLPIKey',
@@ -604,6 +605,54 @@ CREATE TABLE `glpi_plugin_manageentities_datservers` (
 
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_datostemplates`;
 CREATE TABLE `glpi_plugin_manageentities_datostemplates` (
+   `id` int unsigned NOT NULL auto_increment,
+   `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'debian, ubuntu, redhat, windows',
+   `sections` mediumtext COMMENT 'JSON text of each section, by placeholder',
+   PRIMARY KEY  (`id`),
+   UNIQUE KEY `os` (`os`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_dexes`;
+CREATE TABLE `glpi_plugin_manageentities_dexes` (
+   `id` int unsigned NOT NULL auto_increment,
+   `entities_id` int unsigned NOT NULL DEFAULT '0',
+   `version` int NOT NULL DEFAULT '0' COMMENT 'last generated version',
+   `status` tinyint NOT NULL DEFAULT '1' COMMENT '1=draft, 2=generated',
+   `step` tinyint NOT NULL DEFAULT '0' COMMENT 'last validated step of the wizard',
+   `author_users_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id) — author printed in the document',
+   `dex_date` date DEFAULT NULL,
+   `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'operating system, a DexOsTemplate model prefilling the sections',
+   `documents_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documents (id) — last generated version',
+   `sections` mediumtext COMMENT 'JSON text of each section, by placeholder',
+   `users_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id) — creator',
+   `date_creation` timestamp NULL DEFAULT NULL,
+   `date_mod` timestamp NULL DEFAULT NULL,
+   PRIMARY KEY  (`id`),
+   UNIQUE KEY `entities_id` (`entities_id`),
+   KEY `status` (`status`),
+   KEY `author_users_id` (`author_users_id`),
+   KEY `documents_id` (`documents_id`),
+   KEY `users_id` (`users_id`),
+   KEY `date_creation` (`date_creation`),
+   KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_dexservers`;
+CREATE TABLE `glpi_plugin_manageentities_dexservers` (
+   `id` int unsigned NOT NULL auto_increment,
+   `plugin_manageentities_dexes_id` int unsigned NOT NULL DEFAULT '0',
+   `rank` int NOT NULL DEFAULT '0',
+   `name` varchar(255) DEFAULT NULL COMMENT 'DNS name',
+   `internal_name` varchar(255) DEFAULT NULL COMMENT 'internal host name, the HOTE A row of the DNS table',
+   `ip` varchar(255) DEFAULT NULL,
+   `role` varchar(255) DEFAULT NULL COMMENT 'front, database... free text',
+   PRIMARY KEY  (`id`),
+   KEY `plugin_manageentities_dexes_id` (`plugin_manageentities_dexes_id`),
+   KEY `rank` (`rank`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_plugin_manageentities_dexostemplates`;
+CREATE TABLE `glpi_plugin_manageentities_dexostemplates` (
    `id` int unsigned NOT NULL auto_increment,
    `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'debian, ubuntu, redhat, windows',
    `sections` mediumtext COMMENT 'JSON text of each section, by placeholder',

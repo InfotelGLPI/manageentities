@@ -42,6 +42,9 @@ use GlpiPlugin\Manageentities\CriType;
 use GlpiPlugin\Manageentities\Dat;
 use GlpiPlugin\Manageentities\DatOsTemplate;
 use GlpiPlugin\Manageentities\DatServer;
+use GlpiPlugin\Manageentities\Dex;
+use GlpiPlugin\Manageentities\DexOsTemplate;
+use GlpiPlugin\Manageentities\DexServer;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\DirectHelpdeskInjection;
@@ -429,6 +432,13 @@ function plugin_manageentities_install()
     DatOsTemplate::install($dat_migration);
     Config::installDatFields($dat_migration);
 
+    // Operating documents (DEX) of the clients, built as the DAT. Idempotent, as above.
+    $dex_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+    Dex::install($dex_migration);
+    DexServer::install($dex_migration);
+    DexOsTemplate::install($dex_migration);
+    Config::installDexFields($dex_migration);
+
     // Leads of Kiflo, shared by the publisher. Idempotent, as above.
     $kiflo_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
     Config::installKifloFields($kiflo_migration);
@@ -522,6 +532,9 @@ function plugin_manageentities_uninstall()
     Dat::uninstall();
     DatServer::uninstall();
     DatOsTemplate::uninstall();
+    Dex::uninstall();
+    DexServer::uninstall();
+    DexOsTemplate::uninstall();
     KifloLead::uninstall();
 
     // Entity owns no table, so it is absent from the list above: only its notification
@@ -568,6 +581,8 @@ function plugin_manageentities_uninstall()
         CriType::class,
         Dat::class,
         DatServer::class,
+        Dex::class,
+        DexServer::class,
         DirectHelpdesk::class,
         DirectHelpdesk_Ticket::class,
         EditorSubscription::class,
