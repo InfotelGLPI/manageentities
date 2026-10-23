@@ -40,11 +40,11 @@ use ZipArchive;
 
 /**
  * Word templates of the pre-sales documents (the proposal and the three kinds of annexes) and
- * of the technical architecture documents (DAT).
+ * of the technical architecture documents (DAT) and of the operating documents (DEX).
  *
  * No template is shipped with the plugin: each one is uploaded in the configuration and stored
  * in files/_plugins/manageentities/presale, under the name of its kind (annex.docx...). The
- * placeholders they can hold are listed in docs/avant-vente.md and docs/dat.md. The files are not GLPI
+ * placeholders they can hold are listed in docs/avant-vente.md, docs/dat.md and docs/dex.md. The files are not GLPI
  * documents: they are only read by the generator and downloaded from the configuration.
  */
 class PresaleTemplate
@@ -60,6 +60,7 @@ class PresaleTemplate
     public const SUBSCRIPTION_ANNEX = 'subscription_annex';
     public const CLOUD_ANNEX        = 'subscription_cloud_annex';
     public const DAT                = 'dat';
+    public const DEX                = 'dex';
 
     /**
      * @return array<string, string> label of each kind of pre-sales template, uploaded in the
@@ -91,12 +92,13 @@ class PresaleTemplate
     }
 
     /**
-     * @return array<string, string> label of every kind of template: pre-sales and DAT
+     * @return array<string, string> label of every kind of template: pre-sales, DAT and DEX
      */
     public static function getAllKinds(): array
     {
         return self::getKinds() + [
             self::DAT => __('Word template of the technical architecture documents', 'manageentities'),
+            self::DEX => __('Word template of the operating documents', 'manageentities'),
         ];
     }
 
@@ -119,6 +121,7 @@ class PresaleTemplate
             self::SUBSCRIPTION_ANNEX => 'subscription_annex.docx',
             self::CLOUD_ANNEX        => 'subscription_cloud_annex.docx',
             self::DAT                => 'dat.docx',
+            self::DEX                => 'dex.docx',
             default                  => throw new RuntimeException('Unknown kind of template'),
         };
 
@@ -139,9 +142,11 @@ class PresaleTemplate
     {
         if (!self::isUploaded($kind)) {
             throw new RuntimeException(sprintf(
-                $kind === self::DAT
-                    ? __('%s: no template uploaded in the configuration (DAT tab).', 'manageentities')
-                    : __('%s: no template uploaded in the configuration (Pre-sales tab).', 'manageentities'),
+                match ($kind) {
+                    self::DAT => __('%s: no template uploaded in the configuration (DAT tab).', 'manageentities'),
+                    self::DEX => __('%s: no template uploaded in the configuration (DEX tab).', 'manageentities'),
+                    default   => __('%s: no template uploaded in the configuration (Pre-sales tab).', 'manageentities'),
+                },
                 self::getAllKinds()[$kind] ?? $kind,
             ));
         }
@@ -171,7 +176,7 @@ class PresaleTemplate
     /**
      * Stores the templates uploaded with the configuration form ($_FILES['presale_template'])
      * and removes the ones asked for ($input['presale_template_delete'][kind]). Shared by the
-     * Pre-sales and DAT tabs: only the kinds posted are handled
+     * Pre-sales, DAT and DEX tabs: only the kinds posted are handled
      *
      * @param array $files $_FILES
      * @param array $input $_POST

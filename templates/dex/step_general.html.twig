@@ -1,0 +1,110 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Step 1 — general information of the DEX.
+ #
+ # general     - client, author_users_id, dex_date, os
+ # systems     - {os: label} DatOsTemplate::getSystems()
+ # version     - version the next generation will get
+ # logo_url    - logo of the client printed in the header, empty when none
+ # entities_id - client entity
+ # from_dat    - whether a new DEX takes the servers and the system of the DAT of the client over
+ # errors      - {field: message}
+ #}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-info-circle me-1"></i>{{ __('General information', 'manageentities') }}</h3>
+    </div>
+    <div class="card-body">
+        {% if from_dat %}
+            <div class="alert alert-info">
+                <i class="ti ti-file-settings me-1"></i>
+                {{ __('This client has a technical architecture document: its servers, its system and its system information are taken over by the operating document when it is created, then can be changed in it.', 'manageentities') }}
+            </div>
+        {% endif %}
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold" for="dex_client">
+                    {{ __('Client', 'manageentities') }} <span class="text-danger">*</span>
+                </label>
+                <input type="text" id="dex_client" name="client" maxlength="255"
+                       class="form-control{{ errors.client is defined ? ' is-invalid' : '' }}"
+                       value="{{ general.client }}">
+                {% if errors.client is defined %}<div class="invalid-feedback">{{ errors.client }}</div>{% endif %}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold" for="dropdown_author_users_iddex_author">
+                    {{ __('Author', 'manageentities') }} <span class="text-danger">*</span>
+                </label>
+                {{ 'User'|itemtype_dropdown({
+                    'name': 'author_users_id',
+                    'value': general.author_users_id,
+                    'right': 'interface',
+                    'width': '100%',
+                    'rand': 'dex_author',
+                }) }}
+                {% if errors.author_users_id is defined %}<div class="text-danger small mt-1">{{ errors.author_users_id }}</div>{% endif %}
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold" for="dex_date">
+                    {{ __('Date') }} <span class="text-danger">*</span>
+                </label>
+                <input type="date" id="dex_date" name="dex_date"
+                       class="form-control{{ errors.dex_date is defined ? ' is-invalid' : '' }}"
+                       value="{{ general.dex_date }}">
+                {% if errors.dex_date is defined %}<div class="invalid-feedback">{{ errors.dex_date }}</div>{% endif %}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold" for="dex_os">
+                    {{ __('Operating system', 'manageentities') }} <span class="text-danger">*</span>
+                </label>
+                <select id="dex_os" name="os" class="form-select{{ errors.os is defined ? ' is-invalid' : '' }}">
+                    <option value="">{{ constant('Dropdown::EMPTY_VALUE') }}</option>
+                    {% for os, label in systems %}
+                        <option value="{{ os }}" {{ general.os == os ? 'selected' : '' }}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if errors.os is defined %}<div class="invalid-feedback">{{ errors.os }}</div>{% endif %}
+                <div class="form-text">{{ __('Its model prefills the empty sections of the next steps.', 'manageentities') }}</div>
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold" for="dex_version">{{ __('Version', 'manageentities') }}</label>
+                <input type="text" id="dex_version" class="form-control" value="{{ version }}" readonly disabled>
+                <div class="form-text">{{ __('Set by the generation.', 'manageentities') }}</div>
+            </div>
+            <div class="col-sm-6">
+                <span class="col-form-label fw-bold d-block">{{ __('Logo', 'manageentities') }}</span>
+                {% if logo_url is not empty %}
+                    <img src="{{ logo_url }}" alt="{{ __('Logo', 'manageentities') }}" class="border rounded p-1" style="max-height:80px; max-width:100%;">
+                {% else %}
+                    <span class="badge bg-orange-lt">{{ __('No logo: the header of the document will have none. Add it from the customer sheet.', 'manageentities') }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

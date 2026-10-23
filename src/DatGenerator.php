@@ -83,11 +83,13 @@ class DatGenerator
         $documents_id = $this->storeDocument($output, $version);
 
         $this->dat->update([
-            'id'           => $this->dat->getID(),
-            'version'      => $version,
-            'documents_id' => $documents_id,
-            'status'       => Dat::STATUS_GENERATED,
-            'step'         => DatWizard::STEP_SUMMARY,
+            'id'                 => $this->dat->getID(),
+            'version'            => $version,
+            'documents_id'       => $documents_id,
+            'status'             => Dat::STATUS_GENERATED,
+            'step'               => DatWizard::STEP_SUMMARY,
+            // What the document prints, to discard a draft of the next version (DatWizard)
+            'generated_snapshot' => $this->dat->buildGeneratedSnapshot(),
         ]);
 
         return $documents_id;

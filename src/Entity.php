@@ -841,6 +841,10 @@ class Entity extends CommonGLPI
                 'dat'                  => $is_single && $interface !== 'helpdesk'
                     ? DatWizard::getCardData((int) reset($entities))
                     : null,
+                // Operating document: one per client, provider-side, as the DAT
+                'dex'                  => $is_single && $interface !== 'helpdesk'
+                    ? DexWizard::getCardData((int) reset($entities))
+                    : null,
             ],
         );
     }

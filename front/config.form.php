@@ -31,6 +31,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\DatOsTemplate;
+use GlpiPlugin\Manageentities\DexOsTemplate;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\KifloConfig;
@@ -52,6 +53,10 @@ if (Plugin::isPluginActive("manageentities")) {
             // Models of the DAT sections, posted by the DAT tab only
             if (isset($_POST['dat_models']) && is_array($_POST['dat_models'])) {
                 DatOsTemplate::saveAll($_POST['dat_models']);
+            }
+            // Models of the DEX sections, posted by the DEX tab only
+            if (isset($_POST['dex_models']) && is_array($_POST['dex_models'])) {
+                DexOsTemplate::saveAll($_POST['dex_models']);
             }
             Html::back();
         } elseif (isset($_POST["kiflo_test"])) {

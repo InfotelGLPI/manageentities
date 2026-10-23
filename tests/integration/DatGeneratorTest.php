@@ -29,10 +29,12 @@
 
 namespace GlpiPlugin\Manageentities\Tests\Integration;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Manageentities\Dat;
 use GlpiPlugin\Manageentities\DatGenerator;
 use GlpiPlugin\Manageentities\DatOsTemplate;
+use GlpiPlugin\Manageentities\DatServer;
 use GlpiPlugin\Manageentities\DatWizard;
 use GlpiPlugin\Manageentities\PresaleTemplate;
 use GlpiPlugin\Manageentities\Profile;
@@ -304,5 +306,86 @@ class DatGeneratorTest extends DbTestCase
         foreach (['ACME & Co', '10.0.0.1', '10.0.0.2', 'db.acme.fr', 'Debian'] as $expected) {
             $this->assertStringContainsString($expected, $body);
         }
+    }
+
+    /**
+     * Servers of a DAT as the snapshot keeps them
+     *
+     * @return list<array<string, mixed>>
+     */
+    private static function servers(Dat $dat): array
+    {
+        return array_map(
+            static fn(array $row): array => array_intersect_key($row, array_flip(['rank', 'name', 'internal_name', 'ip', 'role'])),
+            DatServer::getForDat($dat->getID()),
+        );
+    }
+
+    public function testDiscardingTheDraftRestoresTheLastGeneration(): void
+    {
+        $dat = $this->createDat();
+        $documents_id = (new DatGenerator($dat))->generate();
+        $dat->getFromDB($dat->getID());
+        $this->assertNotNull($dat->getGeneratedSnapshot());
+        $generated = [
+            'sections'        => $dat->getSections(),
+            'servers'         => self::servers($dat),
+            'author_users_id' => (int) $dat->fields['author_users_id'],
+            'dat_date'        => $dat->fields['dat_date'],
+            'os'              => $dat->fields['os'],
+        ];
+        // Generated: nothing to discard
+        $this->assertFalse(DatWizard::canDiscardDraft($dat));
+
+        // Draft of the next version: every kind of change
+        DatWizard::saveGeneral((int) $dat->fields['entities_id'], [
+            'client'          => 'Other client',
+            'author_users_id' => getItemByTypeName(\User::class, 'tech', true),
+            'dat_date'        => '2032-01-01',
+            'os'              => DatOsTemplate::OS_WINDOWS,
+        ]);
+        $dat->getFromDB($dat->getID());
+        DatWizard::saveSystem($dat, [
+            'servers'  => [
+                ['name' => 'new.acme.fr', 'internal_name' => 'srv-new01', 'ip' => '10.0.0.9', 'role' => 'New'],
+            ],
+            'sections' => ['SYSTEM_INFORMATIONS' => '<p>Changed</p>'],
+        ]);
+        DatWizard::saveSections($dat, DatWizard::STEP_SSO, ['sections' => ['SSO_TECHNOLOGY' => 'SAML']]);
+        $dat->getFromDB($dat->getID());
+        $this->assertSame(Dat::STATUS_DRAFT, (int) $dat->fields['status']);
+        $this->assertTrue(DatWizard::canDiscardDraft($dat));
+        $this->assertTrue(DatWizard::getCardData((int) $dat->fields['entities_id'])['can_discard']);
+        $this->assertFalse(DatWizard::canDeleteDraft($dat));
+
+        $this->assertTrue(DatWizard::discardDraft($dat));
+        $dat->getFromDB($dat->getID());
+        $this->assertSame($generated, [
+            'sections'        => $dat->getSections(),
+            'servers'         => self::servers($dat),
+            'author_users_id' => (int) $dat->fields['author_users_id'],
+            'dat_date'        => $dat->fields['dat_date'],
+            'os'              => $dat->fields['os'],
+        ]);
+        $this->assertSame(Dat::STATUS_GENERATED, (int) $dat->fields['status']);
+        $this->assertSame(DatWizard::STEP_SUMMARY, (int) $dat->fields['step']);
+        $this->assertSame(1, (int) $dat->fields['version']);
+        $this->assertSame($documents_id, (int) $dat->fields['documents_id']);
+        $this->assertFalse(DatWizard::canDiscardDraft($dat));
+    }
+
+    public function testDiscardingTheDraftNeedsThePurgeRight(): void
+    {
+        $dat = $this->createDat();
+        (new DatGenerator($dat))->generate();
+        $dat->getFromDB($dat->getID());
+        DatWizard::saveSections($dat, DatWizard::STEP_SSO, ['sections' => ['SSO_TECHNOLOGY' => 'SAML']]);
+        $dat->getFromDB($dat->getID());
+
+        $_SESSION['glpiactiveprofile'][Dat::$rightname] = READ | CREATE | UPDATE;
+        $this->assertFalse(DatWizard::canDiscardDraft($dat));
+        $this->assertFalse(DatWizard::getCardData((int) $dat->fields['entities_id'])['can_discard']);
+        $this->expectException(AccessDeniedHttpException::class);
+        DatWizard::discardDraft($dat);
     }
 }

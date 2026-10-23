@@ -1,0 +1,138 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# "DEX" tab of the configuration (DexConfig).
+ #
+ # config   - row of glpi_plugin_manageentities_configs
+ # template - {kind, label, uploaded, url} Word template of the DEX (PresaleTemplate::DEX)
+ # systems  - {os: label} DatOsTemplate::getSystems()
+ # models   - {os: {placeholder: text}} DexOsTemplate::getAll()
+ # sections - [{key, label, kind}] sections a model fills, in the order of the wizard
+ #}
+
+{% set row = {'field_class': 'col-12', 'label_class': 'col-sm-4', 'input_class': 'col-sm-8', 'align_label_right': false} %}
+
+<form name="form" method="post" action="{{ form_url }}" enctype="multipart/form-data">
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-file-power"></i>
+            <strong>{{ __('Operating documents', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            {{ fields.dropdownField('DocumentCategory', 'dex_documentcategories_id', config.dex_documentcategories_id|default(0), __('Category of the generated DEX', 'manageentities'), row) }}
+
+            {# Word template: not shipped with the plugin, uploaded here and stored in
+               files/_plugins/manageentities/presale #}
+            <div class="alert alert-info">
+                <i class="ti ti-info-circle me-1"></i>
+                {{ __('Upload the Word template of the operating documents: no template is shipped with the plugin. The placeholders it can hold are listed in the documentation of the plugin.', 'manageentities') }}
+            </div>
+            {% set field %}
+                <input type="file" class="form-control" name="presale_template[{{ template.kind }}]" id="presale_template_{{ template.kind }}"
+                       accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                <div class="d-flex align-items-center flex-wrap gap-2 mt-1 small">
+                    {% if template.uploaded %}
+                        <span class="badge bg-green-lt">{{ __('Uploaded template', 'manageentities') }}</span>
+                        <a href="{{ template.url }}"><i class="ti ti-download me-1"></i>{{ __('Download') }}</a>
+                        <label class="form-check form-check-inline mb-0 ms-2">
+                            <input type="checkbox" class="form-check-input" name="presale_template_delete[{{ template.kind }}]" value="1">
+                            <span class="form-check-label">{{ __('Delete') }}</span>
+                        </label>
+                    {% else %}
+                        <span class="badge bg-orange-lt">{{ __('No template: the DEX cannot be generated', 'manageentities') }}</span>
+                    {% endif %}
+                </div>
+            {% endset %}
+            {{ fields.field('presale_template[' ~ template.kind ~ ']', field, template.label, row|merge({
+                'id': 'presale_template_' ~ template.kind,
+            })) }}
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <input type="hidden" name="id" value="1">
+            <button type="submit" name="update_config" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>
+                {{ _x('button', 'Save') }}
+            </button>
+        </div>
+    </div>
+
+    {# Models of the sections by operating system: the wizard prefills the empty sections of a
+       DEX with the model of its system #}
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-template"></i>
+            <strong>{{ __('Models of the sections by operating system', 'manageentities') }}</strong>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs mb-3" role="tablist">
+                {% for os, label in systems %}
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link {{ loop.first ? 'active' : '' }}" data-bs-toggle="tab"
+                                data-bs-target="#dex_model_{{ os }}" role="tab">{{ label }}</button>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="tab-content">
+                {% for os, label in systems %}
+                    <div class="tab-pane {{ loop.first ? 'show active' : '' }}" id="dex_model_{{ os }}" role="tabpanel">
+                        {% for section in sections %}
+                            {% set name = 'dex_models[' ~ os ~ '][' ~ section.key ~ ']' %}
+                            {% set value = models[os][section.key]|default('') %}
+                            <div class="mb-3">
+                                <label class="form-label" for="dex_model_{{ os }}_{{ section.key|lower }}">{{ section.label }}</label>
+                                {% if section.kind == 'richtext' %}
+                                    {{ fields.textareaField(name, value, section.label, {
+                                        'full_width': true,
+                                        'is_horizontal': false,
+                                        'no_label': true,
+                                        'enable_richtext': true,
+                                        'enable_images': false,
+                                        'id': 'dex_model_' ~ os ~ '_' ~ section.key|lower,
+                                    }) }}
+                                {% elseif section.kind == 'code' %}
+                                    <textarea name="{{ name }}" id="dex_model_{{ os }}_{{ section.key|lower }}" rows="5"
+                                              class="form-control font-monospace" spellcheck="false">{{ value }}</textarea>
+                                {% else %}
+                                    <input type="text" name="{{ name }}" id="dex_model_{{ os }}_{{ section.key|lower }}"
+                                           maxlength="255" class="form-control" value="{{ value }}">
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" name="update_config" class="btn btn-primary">
+                <i class="ti ti-device-floppy me-1"></i>
+                {{ _x('button', 'Save') }}
+            </button>
+        </div>
+    </div>
+</form>

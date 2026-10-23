@@ -25,9 +25,13 @@
  * --------------------------------------------------------------------------
  */
 
-// DAT wizard (templates/dat/*). The steps are plain forms posted to front/dat.form.php: this
-// module adds, removes and moves the server rows of step 2, keeping their posted indexes
-// contiguous, and confirms leaving the wizard. No-op outside #dat-wizard.
+// DAT and DEX wizards (templates/dat/*, templates/dex/*). The steps are plain forms posted to
+// front/dat.form.php or front/dex.form.php: this module adds, removes and moves the server rows of
+// step 2 (shared template dat/step_system.html.twig), keeping their posted indexes contiguous, and
+// confirms leaving the wizard. No-op outside #dat-wizard and #dex-wizard.
+
+// The wizards this module drives
+const WIZARDS = '#dat-wizard, #dex-wizard';
 
 // Index of a row in the field names: a number, or the placeholder of the <template>
 const SERVER_INDEX = /servers\[(?:\d+|__IDX__)\]/;
@@ -84,7 +88,7 @@ function removeServer(button) {
 
 document.addEventListener('click', (event) => {
     const button = event.target.closest('[data-dat-action]');
-    const wizard = button?.closest('#dat-wizard');
+    const wizard = button?.closest(WIZARDS);
     if (button === null || wizard === null) {
         return;
     }
@@ -105,18 +109,20 @@ document.addEventListener('click', (event) => {
 });
 
 // Leaving the wizard without saving the current page, applying a model, or deleting a draft from
-// the DAT card of the customer sheet
+// the DAT or DEX card of the customer sheet
 document.addEventListener('click', (event) => {
-    const link = event.target.closest('#dat-wizard [data-dat-confirm], [data-dat-card] [data-dat-confirm]');
+    const link = event.target.closest(
+        '#dat-wizard [data-dat-confirm], #dex-wizard [data-dat-confirm], [data-dat-card] [data-dat-confirm], [data-dex-card] [data-dat-confirm]',
+    );
     if (link !== null && !window.confirm(link.dataset.datConfirm)) {
         event.preventDefault();
         event.stopImmediatePropagation();
     }
 }, true);
 
-// A new DAT starts with one empty server row
+// A new DAT or DEX without server starts with one empty server row
 function init() {
-    const wizard = document.getElementById('dat-wizard');
+    const wizard = document.querySelector(WIZARDS);
     const container = wizard?.querySelector('[data-dat-servers]');
     if (container && container.querySelector('[data-dat-server]') === null) {
         addServer(wizard);

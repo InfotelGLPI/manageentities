@@ -1,0 +1,122 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Frame of a step of the DEX wizard (DexWizard::renderStep()), as the DAT one.
+ #
+ # steps         - {number: label}
+ # step          - current step
+ # last_step     - summary step
+ # reached       - last step saved (0 before the DEX exists)
+ # entities_id   - client entity
+ # client_name   - name of the entity
+ # dex           - fields of the DEX, null before the first step is saved
+ # statuses      - {status: label}
+ # form_url      - front controller the steps post to
+ # step_url      - link to a step, the step number appended
+ # cancel_url    - client entity, where the wizard is opened from
+ # errors        - {field: message} of the last failed post
+ # step_template - template of the step, included with step_vars
+ #}
+
+<div id="dex-wizard" class="container-fluid">
+
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+        <a href="{{ cancel_url }}" class="btn btn-sm btn-ghost-secondary">
+            <i class="ti ti-arrow-left me-1"></i>{{ client_name }}
+        </a>
+        <h2 class="mb-0 ms-2">
+            <i class="ti ti-file-power me-1"></i>{{ __('Operating document', 'manageentities') }}
+        </h2>
+        {% if dex %}
+            <span class="badge {{ dex.status == 2 ? 'bg-green-lt' : 'bg-orange-lt' }} ms-2">{{ statuses[dex.status] }}</span>
+            {% if dex.version > 0 %}
+                <span class="badge bg-blue-lt">{{ __('Version %s', 'manageentities')|format(dex.version) }}</span>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {# Progress: the steps already saved are links #}
+    <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
+        {% for n, label in steps %}
+            {% set state = n < step ? 'bg-success-lt' : (n == step ? 'bg-primary-lt' : 'bg-secondary-lt') %}
+            {% if n != step and n <= reached + 1 %}
+                <a href="{{ step_url ~ n }}" class="badge fs-6 px-3 py-2 text-decoration-none {{ state }}">{{ n }}. {{ label }}</a>
+            {% else %}
+                <span class="badge fs-6 px-3 py-2 {{ state }}">{{ n }}. {{ label }}</span>
+            {% endif %}
+            {% if not loop.last %}
+                <i class="ti ti-chevron-right text-muted"></i>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if errors is not empty %}
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                {% for message in errors %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="post" action="{{ form_url }}">
+        <input type="hidden" name="entities_id" value="{{ entities_id }}">
+        <input type="hidden" name="step" value="{{ step }}">
+
+        {% include step_template with step_vars|merge({'errors': errors}) %}
+
+        <div class="d-flex gap-2 justify-content-end mt-3">
+            {# Leaves the wizard without saving this page: the steps saved before stay in the draft #}
+            <a href="{{ cancel_url }}" class="btn btn-ghost-secondary me-auto"
+               {% if step != last_step %}data-dat-confirm="{{ __('Leave the wizard without saving this page?', 'manageentities') }}"{% endif %}>
+                <i class="ti ti-x me-1"></i>{{ __('Cancel') }}
+            </a>
+            {% if step == last_step %}
+                {# The summary has nothing to save: it generates a new version of the document #}
+                <a href="{{ step_url ~ (step - 1) }}" class="btn btn-outline-secondary">
+                    <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
+                </a>
+                {% if step_vars.can_generate %}
+                    <button type="submit" name="generate" value="1" class="btn btn-primary" {{ step_vars.template_ready ? '' : 'disabled' }}>
+                        <i class="ti ti-file-export me-1"></i>{{ __('Generate the document', 'manageentities') }}
+                    </button>
+                {% endif %}
+            {% else %}
+                {% if step > 1 %}
+                    {# Saves the step too, so that nothing typed is lost #}
+                    <button type="submit" name="previous" value="1" class="btn btn-outline-secondary">
+                        <i class="ti ti-arrow-left me-1"></i>{{ __('Previous') }}
+                    </button>
+                {% endif %}
+                <button type="submit" name="save_step" value="1" class="btn btn-primary">
+                    {{ __('Next') }}<i class="ti ti-arrow-right ms-1"></i>
+                </button>
+            {% endif %}
+        </div>
+    </form>
+</div>
