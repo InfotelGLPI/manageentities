@@ -1,0 +1,36 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Sub-form of the "Export as JSON" massive action of the annex models: a download, not an action applied to each item #}
+<a class="btn btn-primary" href="{{ export_url }}">
+   <i class="ti ti-download me-1"></i>{{ __('Download the JSON file', 'manageentities') }}
+</a>
+{% if import_url %}
+   <a class="btn btn-ghost-secondary" href="{{ import_url }}">
+      <i class="ti ti-file-import me-1"></i>{{ __('Import annex models', 'manageentities') }}
+   </a>
+{% endif %}

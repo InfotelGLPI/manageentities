@@ -55,7 +55,7 @@ $assertUserVisible = static function (int $users_id): void {
     if ($users_id <= 0
         || countElementsInTable(
             'glpi_profiles_users',
-            ['users_id' => $users_id] + getEntitiesRestrictCriteria('glpi_profiles_users'),
+            ['users_id' => $users_id] + getEntitiesRestrictCriteria('glpi_profiles_users', '', '', true),
         ) === 0) {
         throw new AccessDeniedHttpException();
     }

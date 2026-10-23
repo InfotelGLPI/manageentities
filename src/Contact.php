@@ -106,6 +106,7 @@ class Contact extends CommonDBTM
         $iterator = $DB->request([
             'SELECT'   => [
                 'glpi_contacts.*',
+                $this->getTable() . '.id AS link_id',
                 $this->getTable() . '.contacts_id',
                 $this->getTable() . '.is_default',
             ],
@@ -128,7 +129,9 @@ class Contact extends CommonDBTM
         $contacts = [];
         foreach ($iterator as $data) {
             $contacts[] = [
-                'link_id'      => $data['contacts_id'],
+                // Row of the link (Manager / delete buttons), not the GLPI contact
+                'link_id'      => (int) $data['link_id'],
+                'contacts_id'  => (int) $data['contacts_id'],
                 'url'          => $root_doc . '/front/contact.form.php?id=' . $data['id'],
                 'name'         => htmlspecialchars($data['name']),
                 'firstname'    => htmlspecialchars($data['firstname']),
@@ -185,7 +188,8 @@ class Contact extends CommonDBTM
                         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                         `is_default` tinyint NOT NULL DEFAULT '0',
                         PRIMARY KEY  (`id`),
-                        UNIQUE KEY `unicity` (`entities_id`),
+                        UNIQUE KEY `unicity` (`contacts_id`,`entities_id`),
+                        KEY `contacts_id` (`contacts_id`),
                         KEY `entities_id` (`entities_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 

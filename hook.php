@@ -39,6 +39,9 @@ use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\CriTechnician;
 use GlpiPlugin\Manageentities\CriType;
+use GlpiPlugin\Manageentities\Dat;
+use GlpiPlugin\Manageentities\DatOsTemplate;
+use GlpiPlugin\Manageentities\DatServer;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\DirectHelpdeskInjection;
@@ -48,9 +51,22 @@ use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\EntityLogo;
 use GlpiPlugin\Manageentities\Followup;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
+use GlpiPlugin\Manageentities\KifloLead;
 use GlpiPlugin\Manageentities\Monthly;
 use GlpiPlugin\Manageentities\Preference;
+use GlpiPlugin\Manageentities\PresaleAnnexLine;
+use GlpiPlugin\Manageentities\PresaleAnnexType;
+use GlpiPlugin\Manageentities\PresaleOrigin;
+use GlpiPlugin\Manageentities\PresaleClient;
+use GlpiPlugin\Manageentities\PresaleContact;
+use GlpiPlugin\Manageentities\PresaleCounter;
+use GlpiPlugin\Manageentities\PresaleProposal;
+use GlpiPlugin\Manageentities\PresaleProposal_Annex;
+use GlpiPlugin\Manageentities\PresaleTemplate;
+use GlpiPlugin\Manageentities\NotificationTargetPresaleProposal;
+use GlpiPlugin\Manageentities\PresaleUser;
 use GlpiPlugin\Manageentities\Profile;
+use GlpiPlugin\Manageentities\ProjectManager;
 use GlpiPlugin\Manageentities\SubscriptionLevel;
 use GlpiPlugin\Manageentities\TaskCategory;
 use GlpiPlugin\Manageentities\TechLead;
@@ -388,6 +404,36 @@ function plugin_manageentities_install()
     //version 4.2.20 : tabs of the client management dashboard in the preferences (idempotent)
     Preference::install(new Migration(PLUGIN_MANAGEENTITIES_VERSION));
 
+    // Pre-sales section and project managers of the clients. Every install() is idempotent:
+    // called on fresh installs and upgrades alike, whatever the version number.
+    $presale_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+    ProjectManager::install($presale_migration);
+    PresaleUser::install($presale_migration);
+    PresaleAnnexType::install($presale_migration);
+    PresaleOrigin::install($presale_migration);
+    PresaleClient::install($presale_migration);
+    PresaleContact::install($presale_migration);
+    PresaleProposal::install($presale_migration);
+    PresaleProposal_Annex::install($presale_migration);
+    PresaleAnnexLine::install($presale_migration);
+    PresaleCounter::install($presale_migration);
+    Config::installPresaleFields($presale_migration);
+    NotificationTargetPresaleProposal::install($presale_migration);
+    // After installPresaleFields(): copies the templates chosen as GLPI documents, drops their fields
+    PresaleTemplate::install($presale_migration);
+
+    // Technical architecture documents (DAT) of the clients. Idempotent, as above.
+    $dat_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+    Dat::install($dat_migration);
+    DatServer::install($dat_migration);
+    DatOsTemplate::install($dat_migration);
+    Config::installDatFields($dat_migration);
+
+    // Leads of Kiflo, shared by the publisher. Idempotent, as above.
+    $kiflo_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+    Config::installKifloFields($kiflo_migration);
+    KifloLead::install($kiflo_migration);
+
 
     include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");
     if (!$DB->fieldExists("glpi_plugin_manageentities_contracts", "remaining_days")) {
@@ -461,6 +507,22 @@ function plugin_manageentities_uninstall()
     SubscriptionLevel::uninstall();
     EditorSubscription::uninstall();
     TechLead::uninstall();
+    ProjectManager::uninstall();
+    PresaleUser::uninstall();
+    PresaleAnnexType::uninstall();
+    PresaleOrigin::uninstall();
+    PresaleClient::uninstall();
+    PresaleContact::uninstall();
+    PresaleProposal::uninstall();
+    PresaleProposal_Annex::uninstall();
+    PresaleAnnexLine::uninstall();
+    PresaleCounter::uninstall();
+    PresaleTemplate::uninstall();
+    NotificationTargetPresaleProposal::uninstall();
+    Dat::uninstall();
+    DatServer::uninstall();
+    DatOsTemplate::uninstall();
+    KifloLead::uninstall();
 
     // Entity owns no table, so it is absent from the list above: only its notification
     // chain has to be removed.
@@ -504,12 +566,24 @@ function plugin_manageentities_uninstall()
         CriPrice::class,
         CriTechnician::class,
         CriType::class,
+        Dat::class,
+        DatServer::class,
         DirectHelpdesk::class,
         DirectHelpdesk_Ticket::class,
         EditorSubscription::class,
         EntityLogo::class,
         InterventionStakeholder::class,
+        KifloLead::class,
         Preference::class,
+        PresaleAnnexLine::class,
+        PresaleAnnexType::class,
+        PresaleOrigin::class,
+        PresaleClient::class,
+        PresaleContact::class,
+        PresaleProposal::class,
+        PresaleProposal_Annex::class,
+        PresaleUser::class,
+        ProjectManager::class,
         SubscriptionLevel::class,
         TaskCategory::class,
     ];
@@ -523,6 +597,8 @@ function plugin_manageentities_uninstall()
 
     $DB->delete('glpi_displaypreferences', ['itemtype' => $itemtypes]);
     $DB->delete('glpi_logs', ['itemtype' => $itemtypes]);
+    // Generated proposals and prospect logos are linked to the proposals and prospects
+    $DB->delete('glpi_documents_items', ['itemtype' => $itemtypes]);
     // CronTask::unregister() matches no namespaced itemtype: delete the automatic actions
     // (Contract, EditorSubscription) by their exact class names instead
     $DB->delete('glpi_crontasks', ['itemtype' => $itemtypes]);
@@ -569,6 +645,21 @@ function plugin_manageentities_forceGroupBy($type)
             return true;
     }
     return false;
+}
+
+/**
+ * Search criteria the search engine cannot build from a column value: the "In progress" pseudo
+ * status of the pre-sales proposals
+ */
+function plugin_manageentities_addWhere($link, $nott, $type, $ID, $val, $searchtype)
+{
+    if ($type === PresaleProposal::class && (int) $ID === 5) {
+        $criteria = PresaleProposal::getStatusCriteria((bool) $nott, (string) $searchtype, $val);
+        if ($criteria !== []) {
+            return $criteria;
+        }
+    }
+    return '';
 }
 
 function plugin_manageentities_giveItem($type, $ID, $data, $num)
@@ -659,6 +750,8 @@ function plugin_pre_item_purge_manageentities($item)
             break;
         case 'User':
             TechLead::removeUserLinks($item);
+            ProjectManager::removeUserLinks($item);
+            PresaleUser::removeUserLinks($item);
             break;
         case 'TaskCategory':
             $temp = new TaskCategory();
@@ -836,7 +929,9 @@ function plugin_manageentities_getDropdown()
     if (Plugin::isPluginActive("manageentities")) {
         return [CriType::class       => CriType::getTypeName(1),
             ContractState::class => ContractState::getTypeName(1),
-            SubscriptionLevel::class => SubscriptionLevel::getTypeName(1)];
+            SubscriptionLevel::class => SubscriptionLevel::getTypeName(1),
+            PresaleAnnexType::class => PresaleAnnexType::getTypeName(1),
+            PresaleOrigin::class => PresaleOrigin::getTypeName(1)];
     } else {
         return [];
     }
@@ -869,7 +964,7 @@ function plugin_manageentities_getAddSearchOptions($itemtype)
     $sopt = [];
 
     if ($itemtype == "Ticket") {
-        if (Session::haveRight("plugin_manageentities", READ)) {
+        if (Session::haveRight(Contract::$rightname, READ)) {
             $sopt[4455]['table']         = 'glpi_contracts';
             $sopt[4455]['field']         = 'name';
             $sopt[4455]['linkfield']     = 'contracts_id';
@@ -906,7 +1001,7 @@ function plugin_manageentities_getAddSearchOptionsNew($itemtype)
 {
     $options = [];
 
-    if ($itemtype === 'Contract' && Session::haveRight('plugin_manageentities', READ)) {
+    if ($itemtype === 'Contract' && Session::haveRight(Contract::$rightname, READ)) {
         $options[] = [
             'id'             => '4460',
             'table'          => 'glpi_plugin_manageentities_contracts',

@@ -574,6 +574,17 @@ class TicketOverview
      *
      * @return array<string, mixed>
      */
+    /**
+     * Counter of the tab of the clients management: the open tickets of the "open tickets by
+     * technician" card, every type
+     *
+     * @param array<int|string> $entities active entities
+     */
+    public static function countOpenTickets(array $entities): int
+    {
+        return count(self::getOpenTickets(self::getCustomerEntities($entities), self::ALL_TYPES));
+    }
+
     public static function getOverview(array $entities, int $weeks, int $type = self::ALL_TYPES): array
     {
         $tickets   = self::getOpenTickets(self::getCustomerEntities($entities), $type);

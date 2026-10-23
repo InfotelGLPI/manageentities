@@ -27,7 +27,7 @@
  * --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.25');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.2.26');
 
 global $CFG_GLPI;
 
@@ -43,13 +43,16 @@ use GlpiPlugin\Manageentities\DirectHelpdesk_Ticket;
 use GlpiPlugin\Manageentities\GenerateCRI;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
 use GlpiPlugin\Manageentities\Preference;
+use GlpiPlugin\Manageentities\PresaleAnnexType;
+use GlpiPlugin\Manageentities\PresaleOrigin;
+use GlpiPlugin\Manageentities\PresaleClient;
+use GlpiPlugin\Manageentities\PresaleProposal;
 use GlpiPlugin\Manageentities\Profile;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Servicecatalog;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\SubscriptionLevel;
 use GlpiPlugin\Manageentities\TaskCategory;
-use GlpiPlugin\Manageentities\TechLead;
 use GlpiPlugin\Manageentities\TicketTask;
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
@@ -97,8 +100,9 @@ function plugin_init_manageentities()
     $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['Ticket']      = [TicketTask::class, 'refreshTicketRemainingDays'];
     $PLUGIN_HOOKS[Hooks::ITEM_RESTORE]['manageentities']['Ticket']     = [TicketTask::class, 'refreshTicketRemainingDays'];
 
-    // A user sent to the trash stops being the tech lead of its clients
-    $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['User']        = [TechLead::class, 'removeUserLinks'];
+    // A user sent to the trash stops being the tech lead or project manager of its clients,
+    // and is no longer offered by the pre-sales wizard
+    $PLUGIN_HOOKS[Hooks::ITEM_DELETE]['manageentities']['User']        = 'plugin_pre_item_purge_manageentities';
 
     $PLUGIN_HOOKS[Hooks::ITEM_TRANSFER]['manageentities'] = 'plugin_item_transfer_manageentities';
 
@@ -111,6 +115,11 @@ function plugin_init_manageentities()
         // notification template is selectable in Configuration > Notifications.
         Plugin::registerClass(Entity::class, ['notificationtemplates_types' => true]);
         Plugin::registerClass(SubscriptionLevel::class);
+        Plugin::registerClass(PresaleAnnexType::class);
+        Plugin::registerClass(PresaleOrigin::class);
+        // Generated proposals and prospect logos are GLPI documents linked to these items
+        Plugin::registerClass(PresaleProposal::class, ['document_types' => true, 'notificationtemplates_types' => true]);
+        Plugin::registerClass(PresaleClient::class, ['document_types' => true]);
         Plugin::registerClass(CustomerSheet::class, ['addtabon' => 'Entity']);
         Plugin::registerClass(Profile::class, ['addtabon' => 'Profile']);
         Plugin::registerClass(Contract::class, [
@@ -133,7 +142,7 @@ function plugin_init_manageentities()
         if (Plugin::isPluginActive('servicecatalog')) {
             $PLUGIN_HOOKS['servicecatalog']['manageentities'] = [Servicecatalog::class];
         }
-        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
+        if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])) {
             $PLUGIN_HOOKS[Hooks::MENU_TOADD]['manageentities'] = [
                 'helpdesk' => [
                     GenerateCRI::class,
@@ -141,12 +150,12 @@ function plugin_init_manageentities()
                 ],
             ];
         }
-        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
+        if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])
             && !Plugin::isPluginActive('servicecatalog')) {
             $PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY]['manageentities'] = PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php";
             $PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY_ICON]['manageentities'] = Entity::getIcon();
         }
-        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
+        if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])) {
             Plugin::registerClass(Preference::class, ['addtabon' => 'Preference']); //See #413
             $PLUGIN_HOOKS[Hooks::MENU_TOADD]['manageentities']['management'] = Entity::class;
 
@@ -169,11 +178,14 @@ function plugin_init_manageentities()
         }
 
         // Same pair of rights as front/config.form.php requires
-        if (Session::haveRight("plugin_manageentities", UPDATE) && Session::haveRight("config", UPDATE)) {
+        if (Session::haveRight(Contract::$rightname, UPDATE) && Session::haveRight(\Config::$rightname, UPDATE)) {
             $PLUGIN_HOOKS[Hooks::CONFIG_PAGE]['manageentities'] = 'front/config.form.php';
         }
 
         $PLUGIN_HOOKS['mydashboard']['manageentities'] = [Dashboard::class];
+
+        // Kiflo API key, encrypted in the configuration
+        $PLUGIN_HOOKS[Hooks::SECURED_FIELDS]['manageentities'] = ['glpi_plugin_manageentities_configs.kiflo_token'];
 
         $PLUGIN_HOOKS[Hooks::PRE_ITEM_ADD]['manageentities'] = [
             'TicketTask' => [TicketTask::class, 'preItemAdd'],
@@ -194,6 +206,8 @@ function plugin_init_manageentities()
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/directhelpdesk-filters.js';
         // "Associate to a contract" card of the CRI detail (native ES module, no-op elsewhere)
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/cridetail-contract.js';
+        // Order of the tabs of the clients management in the preferences (native ES module, no-op elsewhere)
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/preference-tabs-order.js';
         // Prices of a contract period and their edition form (native ES module, no-op elsewhere)
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/criprice.js';
 
@@ -207,10 +221,16 @@ function plugin_init_manageentities()
             );
             // Entity creation wizard (native ES module, delegated listeners, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/wizard.js';
+            // Contact blocks and user prefill of the pre-sales wizard (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/presale-wizard.js';
+            // Server rows of the DAT wizard (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/dat-wizard.js';
             // Stakeholders tab of a contract day (native ES module, no jQuery)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/interventionstakeholder.js';
             // "+ 12 months" button of the contract form (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/contract-add-months.js';
+            // Price per user of the cloud subscription levels (native ES module, no-op elsewhere)
+            $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/subscriptionlevel.js';
             // Daily/hourly switch of the plugin setup form (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/config-hourorday.js';
             // "Duplicate" button under the ticket tasks (native ES module, no-op elsewhere)
@@ -221,7 +241,7 @@ function plugin_init_manageentities()
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/editorsubscription-fields.js';
             // Search and filter of the publisher subscriptions tab (native ES module, no-op elsewhere)
             $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/editorsubscription-tab.js';
-            if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])) {
+            if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])) {
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['manageentities'][] = 'scripts/script-directhelpdesk.js';
                 // Contract alert of the unbilled intervention modal (native ES module)
                 $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/directhelpdesk-modal.js';
@@ -235,7 +255,7 @@ function plugin_init_manageentities()
 
         $PLUGIN_HOOKS[Hooks::USE_MASSIVE_ACTION]['manageentities'] = true;
         $PLUGIN_HOOKS[Hooks::POST_INIT]['manageentities'] = 'plugin_manageentities_postinit';
-        if (Session::haveRightsOr('plugin_manageentities', [READ, UPDATE])
+        if (Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
             $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['manageentities'] = 'plugin_manageentities_pre_item_form';

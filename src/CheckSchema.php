@@ -134,7 +134,7 @@ class CheckSchema extends CommonDBTM
     ): bool {
         global $DB;
 
-        Session::checkRight('plugin_manageentities', UPDATE);
+        Session::checkRight(Contract::$rightname, UPDATE);
 
         $schemaFile = $this->getSchemaPath($version);
 

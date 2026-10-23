@@ -69,7 +69,7 @@ class CriDetail extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == 'Ticket'
-            && Session::haveRight("plugin_manageentities_cri_create", READ)) {
+            && Session::haveRight(Cri::$rightname, READ)) {
             $config    = Config::getInstance();
             $parent_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
             if ($parent_id > 0) {
@@ -587,14 +587,14 @@ class CriDetail extends CommonDBTM
 
         $generation_ok = false;
         if (Session::haveRight(
-            "plugin_manageentities_cri_create",
+            Cri::$rightname,
             UPDATE,
         ) && (empty($cridetail) || ($cridetail['documents_id'] ?? 0) == 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
             $generation_ok = true;
         }
         //switch withoutcontract
         if (Session::haveRight(
-            "plugin_manageentities_cri_create",
+            Cri::$rightname,
             UPDATE,
         ) && (empty($cridetail) || ($cridetail['documents_id'] ?? 0) == 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
             $generation_ok = true;
@@ -602,14 +602,14 @@ class CriDetail extends CommonDBTM
 
         $regeneration_ok = false;
         if (Session::haveRight(
-            "plugin_manageentities_cri_create",
+            Cri::$rightname,
             UPDATE,
         ) && (!empty($cridetail) || ($cridetail['documents_id'] ?? 0) != 0) && !empty($cridetail['contracts_id']) && !empty($cridetail['plugin_manageentities_contractdays_id'])) {
             $regeneration_ok = true;
         }
         //switch withoutcontract
         if (Session::haveRight(
-            "plugin_manageentities_cri_create",
+            Cri::$rightname,
             UPDATE,
         ) && (!empty($cridetail) || ($cridetail['documents_id'] ?? 0) != 0) && (isset($cridetail['withcontract']) ? !$cridetail['withcontract'] : true)) {
             $regeneration_ok = true;
@@ -639,7 +639,7 @@ class CriDetail extends CommonDBTM
             ];
         }
 
-        $show_delete = Session::haveRight("plugin_manageentities_cri_create", UPDATE)
+        $show_delete = Session::haveRight(Cri::$rightname, UPDATE)
                        && ($cridetail['documents_id'] ?? 0) != 0;
 
         return TemplateRenderer::getInstance()->render('@manageentities/cridetail_add_reports.html.twig', [
@@ -731,7 +731,7 @@ class CriDetail extends CommonDBTM
             $iterator = $DB->request($criteria);
 
             $use_price = ($config->fields['useprice'] == Config::PRICE);
-            $can_read_doc = Session::haveRight("document", READ);
+            $can_read_doc = Session::haveRight(\Document::$rightname, READ);
 
             $entries    = [];
             $columns    = [];
@@ -1612,7 +1612,7 @@ class CriDetail extends CommonDBTM
      * @param array|false $cridetail   current CRI detail, [] or false when there is none
      * @param int|array   $entities_id
      * @param string      $type        'ticket' (dropdowns) or 'cri' (read-only names)
-     * @param string      $layout      'table' (own table) or 'rows' (bare row of a 4-column table)
+     * @param string      $layout      'table' (own table) or 'rows' (Bootstrap form rows of a card)
      *
      * @return array{contractSelected: int, contractdaySelected: int, is_contract: int}
      */

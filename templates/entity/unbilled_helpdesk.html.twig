@@ -1,0 +1,46 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# "Unbilled interventions" tab of the helpdesk interface (Entity::TAB_HELPDESK_UNBILLED): the
+   gauges above the list of the unbilled interventions, from DirectHelpdesk::getDashboardData()
+   and DirectHelpdesk_Ticket::getTicketSelectData().
+ #
+ # directhelpdesk_gauges - gauges, null when there is none to draw
+ # directhelpdesk_select - list of the unbilled interventions, null when there is none
+ #}
+<div class="card">
+    <div class="card-body">
+        {% if directhelpdesk_gauges is not null %}
+            {{ include('@manageentities/directhelpdesk_dashboard.html.twig', directhelpdesk_gauges|merge({'col_class': 'col-12 col-md-6 col-xxl-4'}), with_context = false) }}
+        {% endif %}
+        {% if directhelpdesk_select is not null %}
+            {{ include('@manageentities/entity/directhelpdesk_ticket_select.html.twig', directhelpdesk_select, with_context = false) }}
+        {% else %}
+            <div class="text-muted">{{ __('No unbilled intervention', 'manageentities') }}</div>
+        {% endif %}
+    </div>
+</div>

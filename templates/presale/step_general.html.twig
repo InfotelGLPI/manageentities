@@ -1,0 +1,113 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# Step 4 — general information of the proposal.
+ #
+ # general    - proposal_type, proposal_date, name, summary
+ # deduced    - proposal_type and name given by the annexes of step 3: prefilled by the server while
+ #              they are not typed, a button puts them back
+ # reference  - reference of the proposal, empty until the first generation
+ # recipients - {id: label} contacts of the prospect
+ # recipient  - contact receiving the proposal
+ # errors     - {field: message}
+ #}
+
+{% set row = {'full_width': true, 'is_horizontal': false} %}
+
+{# Value given by the annexes, offered when the field differs from it #}
+{% macro deduced(target, value, current) %}
+    {% if value is not empty and value != current %}
+        <div class="form-text">
+            {{ __('Deduced from the annexes:', 'manageentities') }}
+            <button type="button" class="btn btn-link btn-sm p-0 align-baseline" data-presale-action="use-deduced"
+                    data-target="{{ target }}" data-value="{{ value }}">{{ value }}</button>
+        </div>
+    {% endif %}
+{% endmacro %}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-file-text me-1"></i>{{ __('General information', 'manageentities') }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold" for="presale_proposal_type">
+                    {{ __('Type of contract', 'manageentities') }} <span class="text-danger">*</span>
+                </label>
+                <input type="text" id="presale_proposal_type" name="proposal_type"
+                       class="form-control{{ errors.proposal_type is defined ? ' is-invalid' : '' }}"
+                       value="{{ general.proposal_type }}" placeholder="{{ __('e.g. Expertise, Support, Project', 'manageentities') }}">
+                {% if errors.proposal_type is defined %}<div class="invalid-feedback">{{ errors.proposal_type }}</div>{% endif %}
+                {{ _self.deduced('presale_proposal_type', deduced.proposal_type, general.proposal_type) }}
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold" for="presale_proposal_date">
+                    {{ __('Date of the contract', 'manageentities') }} <span class="text-danger">*</span>
+                </label>
+                <input type="date" id="presale_proposal_date" name="proposal_date"
+                       class="form-control{{ errors.proposal_date is defined ? ' is-invalid' : '' }}"
+                       value="{{ general.proposal_date }}">
+                {% if errors.proposal_date is defined %}<div class="invalid-feedback">{{ errors.proposal_date }}</div>{% endif %}
+            </div>
+            <div class="col-sm-3">
+                <label class="col-form-label fw-bold">{{ __('Reference', 'manageentities') }}</label>
+                <input type="text" class="form-control" value="{{ reference ?: __('Set at the first generation', 'manageentities') }}" readonly disabled>
+            </div>
+
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold" for="presale_name">{{ __('Internal label', 'manageentities') }}</label>
+                <input type="text" id="presale_name" name="name" class="form-control" value="{{ general.name }}">
+                <div class="form-text">{{ __('Shown in the lists only. Deduced from the client and the annexes when empty.', 'manageentities') }}</div>
+                {{ _self.deduced('presale_name', deduced.name, general.name) }}
+            </div>
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold" for="presale_recipient">
+                    {{ __('Recipient', 'manageentities') }} <span class="text-danger">*</span>
+                </label>
+                {{ call('Dropdown::showFromArray', ['plugin_manageentities_presalecontacts_id', recipients, {
+                    'value': recipient,
+                    'display': false,
+                    'width': '100%',
+                    'display_emptychoice': true,
+                }])|raw }}
+                {% if errors.plugin_manageentities_presalecontacts_id is defined %}
+                    <div class="text-danger small mt-1">{{ errors.plugin_manageentities_presalecontacts_id }}</div>
+                {% endif %}
+            </div>
+
+            <div class="col-sm-12">
+                {{ fields.textareaField('summary', general.summary, __('Summary', 'manageentities'), row|merge({
+                    'enable_richtext': true,
+                    'enable_images': false,
+                })) }}
+            </div>
+        </div>
+    </div>
+</div>

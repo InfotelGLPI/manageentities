@@ -35,7 +35,7 @@ use GlpiPlugin\Servicecatalog\Main;
 // Search::show() runs its own right check, so enforce the read right up-front — otherwise
 // an authenticated user without plugin_manageentities_directhelpdesk could read the
 // dashboard before the later 403 (same guard as front/company.php).
-Session::checkRight('plugin_manageentities_directhelpdesk', READ);
+Session::checkRight(DirectHelpdesk::$rightname, READ);
 
 if (Session::getCurrentInterface() == 'central') {
     Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", DirectHelpdesk::class);

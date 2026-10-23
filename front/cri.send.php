@@ -53,7 +53,7 @@ if (isset($_GET["file"])) { // for other file
             && strpbrk($filename, "/\\") === false
             && strpos($filename, "..") === false
             && isset($previews[$filename])
-            && Session::haveRight("plugin_manageentities_cri_create", READ)
+            && Session::haveRight(Cri::$rightname, READ)
         ) {
             $base      = GLPI_DOC_DIR . "/_plugins/manageentities";
             $candidate = $base . "/" . $filename;

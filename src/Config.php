@@ -33,6 +33,7 @@ use CommonDBTM;
 use CommonGLPI;
 use ContactType;
 use DBConnection;
+use GLPIKey;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Migration;
@@ -63,12 +64,12 @@ class Config extends CommonDBTM
 
     public static function canView(): bool
     {
-        return Session::haveRight('plugin_manageentities', READ);
+        return Session::haveRight(Contract::$rightname, READ);
     }
 
     public static function canCreate(): bool
     {
-        return Session::haveRight('plugin_manageentities', UPDATE);
+        return Session::haveRight(Contract::$rightname, UPDATE);
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -94,6 +95,9 @@ class Config extends CommonDBTM
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
         $this->addStandardTab(CriDetail::class, $ong, $options);
+        $this->addStandardTab(PresaleConfig::class, $ong, $options);
+        $this->addStandardTab(DatConfig::class, $ong, $options);
+        $this->addStandardTab(KifloConfig::class, $ong, $options);
         $this->addStandardTab(Company::class, $ong, $options);
         $this->addStandardTab(CheckSchema::class, $ong, $options);
         return $ong;
@@ -162,6 +166,32 @@ class Config extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        // The Kiflo API key is stored encrypted and never sent back to the form: an empty
+        // field keeps the current key, the "clear" checkbox removes it
+        if (!empty($input['_blank_kiflo_token'])) {
+            $input['kiflo_token'] = '';
+        } elseif (array_key_exists('kiflo_token', $input)) {
+            if (trim((string) $input['kiflo_token']) === '') {
+                unset($input['kiflo_token']);
+            } else {
+                $input['kiflo_token'] = (new GLPIKey())->encrypt(trim((string) $input['kiflo_token']));
+            }
+        }
+        if (array_key_exists('kiflo_url', $input)) {
+            $input['kiflo_url'] = rtrim(trim((string) $input['kiflo_url']), '/');
+            if ($input['kiflo_url'] === '') {
+                $input['kiflo_url'] = KifloClient::DEFAULT_URL;
+            } elseif (!preg_match('#^https://#i', $input['kiflo_url'])) {
+                // The key travels in a header of every request: never over plain HTTP
+                Session::addMessageAfterRedirect(
+                    __s('The Kiflo API URL must start with https://.', 'manageentities'),
+                    false,
+                    ERROR,
+                );
+                unset($input['kiflo_url']);
+            }
+        }
+
         // The two lists of the follow-up defaults are stored as JSON. Only encode them when the
         // form actually posts them - the CRI tab saves the same row without these fields - and
         // drop the empty value of the hidden input the core emits before a multiple select,
@@ -233,6 +263,74 @@ class Config extends CommonDBTM
         return (bool) (self::getInstance()->fields['use_editorsubscriptions'] ?? 1);
     }
 
+    /**
+     * Whether the pre-sales section (financial proposals) is enabled. Off by default.
+     */
+    public static function usePresale(): bool
+    {
+        return (bool) (self::getInstance()->fields['use_presale'] ?? 0);
+    }
+
+    /**
+     * Whether the Kiflo integration (leads shared by the publisher) is enabled. Off by default.
+     */
+    public static function useKiflo(): bool
+    {
+        return (bool) (self::getInstance()->fields['use_kiflo'] ?? 0);
+    }
+
+    public static function getKifloUrl(): string
+    {
+        $url = trim((string) (self::getInstance()->fields['kiflo_url'] ?? ''));
+
+        return $url !== '' ? $url : KifloClient::DEFAULT_URL;
+    }
+
+    /**
+     * Decrypted Kiflo API key, empty when not set
+     */
+    public static function getKifloToken(): string
+    {
+        $token = (string) (self::getInstance()->fields['kiflo_token'] ?? '');
+
+        return $token !== '' ? (string) (new GLPIKey())->decrypt($token) : '';
+    }
+
+    /**
+     * Stores the outcome of the last Kiflo synchronization: its date on success, the error
+     * otherwise (the date of the last success is kept)
+     */
+    public static function setKifloSyncResult(string $error = ''): void
+    {
+        global $DB;
+
+        $values = ['kiflo_last_error' => $error];
+        if ($error === '') {
+            $values['kiflo_last_sync'] = $_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s');
+        }
+        $DB->update(self::getTable(), $values, ['id' => 1]);
+
+        // Keep the cached instance in line with the database
+        $config = self::getInstance();
+        $config->fields = $values + $config->fields;
+    }
+
+    /**
+     * Rights of front/config.form.php: plugin UPDATE and GLPI config UPDATE
+     */
+    public static function canManageConfig(): bool
+    {
+        return Session::haveRight(Contract::$rightname, UPDATE) && Session::haveRight(\Config::$rightname, UPDATE);
+    }
+
+    /**
+     * VAT rate proposed for a new annex model or annex of a proposal
+     */
+    public static function getDefaultPresaleVat(): float
+    {
+        return (float) (self::getInstance()->fields['presale_default_vat'] ?? 20);
+    }
+
     public static function install(Migration $migration)
     {
         global $DB;
@@ -299,6 +397,94 @@ class Config extends CommonDBTM
                 'bool',
                 ['value' => 1, 'after' => 'allow_same_periods'],
             );
+            $migration->migrationOneTable($table);
+        }
+
+        self::installPresaleFields($migration);
+        self::installDatFields($migration);
+        self::installKifloFields($migration);
+    }
+
+    /**
+     * Settings of the Kiflo integration. Idempotent, as installPresaleFields().
+     *
+     * @param Migration $migration
+     *
+     * @return void
+     */
+    public static function installKifloFields(Migration $migration): void
+    {
+        global $DB;
+
+        $table  = self::getTable();
+        $fields = [
+            'use_kiflo'        => ['bool', ['value' => '0']],
+            'kiflo_url'        => ['string', ['value' => KifloClient::DEFAULT_URL]],
+            'kiflo_token'      => ['text', ['comment' => 'encrypted with GLPIKey']],
+            'kiflo_last_sync'  => ['timestamp', ['comment' => 'last successful synchronization']],
+            'kiflo_last_error' => ['text', ['comment' => 'error of the last synchronization, empty when it succeeded']],
+        ];
+
+        $changed = false;
+        foreach ($fields as $name => [$type, $options]) {
+            if (!$DB->fieldExists($table, $name)) {
+                $migration->addField($table, $name, $type, $options);
+                $changed = true;
+            }
+        }
+        if ($changed) {
+            $migration->migrationOneTable($table);
+        }
+    }
+
+    /**
+     * Settings of the technical architecture documents (DAT). Idempotent, as
+     * installPresaleFields().
+     *
+     * @param Migration $migration
+     *
+     * @return void
+     */
+    public static function installDatFields(Migration $migration): void
+    {
+        global $DB;
+
+        $table = self::getTable();
+        if (!$DB->fieldExists($table, 'dat_documentcategories_id')) {
+            $migration->addField($table, 'dat_documentcategories_id', 'fkey', [
+                'comment' => 'RELATION to glpi_documentcategories (id) — category of the generated DAT',
+            ]);
+            $migration->migrationOneTable($table);
+        }
+    }
+
+    /**
+     * Settings of the pre-sales section. Idempotent: also called on every upgrade, install()
+     * only running on a fresh installation.
+     *
+     * @param Migration $migration
+     *
+     * @return void
+     */
+    public static function installPresaleFields(Migration $migration): void
+    {
+        global $DB;
+
+        $table  = self::getTable();
+        $fields = [
+            'use_presale'                         => ['bool', ['value' => '0']],
+            'presale_documentcategories_id'       => ['fkey', ['comment' => 'RELATION to glpi_documentcategories (id) — category of the generated proposals']],
+            'presale_default_vat'                 => ['decimal(5,2) NOT NULL DEFAULT \'20.00\'', []],
+        ];
+
+        $changed = false;
+        foreach ($fields as $name => [$type, $options]) {
+            if (!$DB->fieldExists($table, $name)) {
+                $migration->addField($table, $name, $type, $options);
+                $changed = true;
+            }
+        }
+        if ($changed) {
             $migration->migrationOneTable($table);
         }
     }

@@ -36,7 +36,7 @@ use GlpiPlugin\Manageentities\Report;
 // used to be emitted first, leaking the page chrome to users without the right
 // (aligned with report.form.php).
 $Entity = new Entity();
-if (!$Entity->canView() && !Session::haveRight("config", UPDATE)) {
+if (!$Entity->canView() && !Session::haveRight(\Config::$rightname, UPDATE)) {
     throw new AccessDeniedHttpException();
 }
 

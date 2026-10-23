@@ -29,6 +29,8 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\CriDetail;
+use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\Cri;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -37,8 +39,8 @@ Html::header_nocache();
 // CRI generation page). The payloads below are contractual data - contract comment, end date and
 // status, subscription flags, remaining days - so the entry right is the one actually carried by
 // the calling page, and no longer the far broader "may create a ticket".
-if (!Session::haveRight('plugin_manageentities', READ)
-    && !Session::haveRight('plugin_manageentities_cri_create', READ)) {
+if (!Session::haveRight(Contract::$rightname, READ)
+    && !Session::haveRight(Cri::$rightname, READ)) {
     throw new AccessDeniedHttpException();
 }
 

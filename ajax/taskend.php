@@ -26,6 +26,7 @@
  * along with manageentities. If not, see <http://www.gnu.org/licenses/>.
  * --------------------------------------------------------------------------
  */
+use GlpiPlugin\Manageentities\Contract;
 
 $AJAX_INCLUDE = 1;
 
@@ -35,7 +36,7 @@ Html::header_nocache();
 
 // Align this endpoint on its AJAX peers: require the plugin READ right so a
 // minimal self-service account cannot reach it (it is only used by the CRI wizard).
-Session::checkRight('plugin_manageentities', READ);
+Session::checkRight(Contract::$rightname, READ);
 
 if (isset($_POST['duration']) && ($_POST['duration'] == 0)
    && isset($_POST['name'])) {

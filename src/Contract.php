@@ -309,17 +309,15 @@ class Contract extends CommonDBTM
         ]);
     }
 
-    public function showContracts($instID)
+    /**
+     * Contract states listed by the contracts tab: those of the preferences of the user, else
+     * those of the configuration, none meaning all of them
+     *
+     * @return array<int|string>
+     */
+    private static function getTabContractStates(): array
     {
-        global $DB, $CFG_GLPI;
-
-        $this->displayAlertforEntity($instID);
-
-        $config    = Config::getInstance();
-        $is_single = (count($instID) === 1);
-        $can_edit  = $this->canCreate() && $is_single;
-
-        // Resolve contract_states filter: user preferences → global config
+        $config         = Config::getInstance();
         $allowed_states = [];
         $users_id       = \Session::getLoginUserID();
         $pref_id        = Preference::checkIfPreferenceExists($users_id);
@@ -338,11 +336,33 @@ class Contract extends CommonDBTM
             }
         }
 
+        return $allowed_states;
+    }
+
+    /**
+     * Contracts of the tab of the clients management: not deleted, of the active entities, in
+     * the contract states of the preferences of the user, else of the configuration
+     *
+     * @param array<int|string> $instID active entities
+     */
+    private function getEntityTabCriteria(array $instID): array
+    {
+        global $DB;
+
+        $allowed_states = self::getTabContractStates();
+
         // Build query — filter by states via contractdays sub-query when states are configured
         $where = [
             'glpi_contracts.is_deleted'              => 0,
             $this->getTable() . '.entities_id'       => $instID,
         ];
+
+        // Archived customers (subtree of the archive entity of the configuration) are left out,
+        // as the subscriptions tab and the status overview do
+        $archive_entities_id = (int) (Config::getInstance()->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive_entities_id > 0) {
+            $where[] = ['NOT' => [$this->getTable() . '.entities_id' => array_keys(getSonsOf('glpi_entities', $archive_entities_id))]];
+        }
 
         if (!empty($allowed_states)) {
             $states_in = implode(',', array_map('intval', $allowed_states));
@@ -355,6 +375,59 @@ class Contract extends CommonDBTM
             );
         }
 
+        return $where;
+    }
+
+    /**
+     * Counter of the tab of the clients management: the contracts it lists
+     *
+     * @param array<int|string> $instID active entities
+     */
+    public function countForEntities(array $instID): int
+    {
+        global $DB;
+
+        return (int) $DB->request([
+            'COUNT'     => 'cpt',
+            'FROM'      => $this->getTable(),
+            'LEFT JOIN' => [
+                'glpi_contracts' => [
+                    'ON' => [
+                        $this->getTable() => 'contracts_id',
+                        'glpi_contracts'  => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'     => $this->getEntityTabCriteria($instID),
+        ])->current()['cpt'];
+    }
+
+    /**
+     * End date of a GLPI contract: its start date + its duration in months, the day before, as
+     * Infocom::getWarrantyExpir() (GANTT, contract form) computes it. Empty without either.
+     */
+    public static function getEndDate(?string $begin_date, int $duration): string
+    {
+        if (empty($begin_date) || $duration <= 0) {
+            return '';
+        }
+        $end = strtotime(substr($begin_date, 0, 10) . ' +' . $duration . ' months -1 day');
+
+        return $end === false ? '' : date('Y-m-d', $end);
+    }
+
+    public function showContracts($instID)
+    {
+        global $DB, $CFG_GLPI;
+
+        $this->displayAlertforEntity($instID);
+
+        $config    = Config::getInstance();
+        $is_single = (count($instID) === 1);
+        $can_edit  = $this->canCreate() && $is_single;
+
+        $where = $this->getEntityTabCriteria($instID);
+
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_contracts.*',
@@ -363,6 +436,7 @@ class Contract extends CommonDBTM
                 $this->getTable() . '.management',
                 $this->getTable() . '.contract_type',
                 $this->getTable() . '.is_default',
+                $this->getTable() . '.remaining_days',
                 $this->getTable() . '.id as myid',
             ],
             'FROM'     => $this->getTable(),
@@ -416,6 +490,9 @@ class Contract extends CommonDBTM
                 'management'    => $show_management ? self::getContractManagement($data['management']) : '',
                 'contract_type' => $show_type ? self::getContractType($data['contract_type']) : '',
                 'is_default'    => (bool) $data['is_default'],
+                // Denormalized by updateRemainingDays(), kept in line with the ticket tasks
+                'remaining_days' => (float) $data['remaining_days'],
+                'end_date'      => self::getEndDate($data['begin_date'] ?? null, (int) ($data['duration'] ?? 0)),
                 'default_label' => $is_single
                     ? ($data['is_default'] ? __('Yes') : '')
                     : \Dropdown::getYesNo($data['is_default']),
@@ -429,9 +506,10 @@ class Contract extends CommonDBTM
             'is_single'        => $is_single,
             'show_management'  => $show_management,
             'show_type'        => $show_type,
+            'is_day'           => (int) $config->fields['hourorday'] === Config::DAY,
             'used'             => $used,
             'entity_url'       => PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php',
-            'allowed_states'   => $allowed_states,
+            'allowed_states'   => self::getTabContractStates(),
             'rand'             => mt_rand(),
         ]);
     }
@@ -943,9 +1021,9 @@ class Contract extends CommonDBTM
         // not only to those allowed to manage the contracts
         if (isset($entities_id, $item)
             && $item->getType() == 'Ticket'
-            && !Session::haveRight('plugin_manageentities', UPDATE)
+            && !Session::haveRight(Contract::$rightname, UPDATE)
             && Session::getCurrentInterface() == 'central'
-            && Session::haveRight('plugin_manageentities', READ)) {
+            && Session::haveRight(Contract::$rightname, READ)) {
             $alerts = array_filter([
                 (new Contract())->displayRemainingForEntity((int) $entities_id),
                 DirectHelpdesk::getUnbilledAlert((int) $entities_id),
@@ -961,7 +1039,7 @@ class Contract extends CommonDBTM
 
         if (isset($entities_id)
             && $_SESSION['glpiactiveprofile']['interface'] == 'central'
-            && Session::haveRight('plugin_manageentities', UPDATE)) {
+            && Session::haveRight(Contract::$rightname, UPDATE)) {
             $contract = new Contract();
             $alerts   = [$contract->displayAlertforEntity($entities_id)];
             $is_ticket = isset($params['item']) && $item->getType() == 'Ticket';
@@ -1346,11 +1424,48 @@ class Contract extends CommonDBTM
      */
     public static function cronLowRemainingDaysContracts($task = null)
     {
-        global $DB, $CFG_GLPI;
+        global $CFG_GLPI;
 
         if (!$CFG_GLPI['notifications_mailing']) {
             return 0;
         }
+
+        $contracts = self::getLowRemainingDaysContracts();
+        if (empty($contracts)) {
+            return 0;
+        }
+
+        NotificationEvent::raiseEvent(
+            NotificationTargetContract::LowRemainingDaysContracts,
+            new self(),
+            [
+                'entities_id' => 0,
+                'contracts'   => $contracts,
+            ],
+        );
+
+        if ($task instanceof CronTask) {
+            $task->addVolume(count($contracts));
+            $task->log(sprintf(__('%d contracts running out of remaining days notified', 'manageentities'), count($contracts)));
+        }
+
+        return 1;
+    }
+
+    /**
+     * Contracts running out of remaining days, on the rules described on
+     * cronLowRemainingDaysContracts(): the list of its mail, also shown in the "Proposals in
+     * progress" tab (PresaleRenewal) so that both never disagree.
+     *
+     * @param array<int>|null $entities restricted to these entities, all of them when null (cron)
+     *
+     * @return list<array{contracts_id: int, name: string, num: string, begin_date: ?string,
+     *                    entities_id: int, entity_completename: string, remaining_days: float,
+     *                    prestations: string}>
+     */
+    public static function getLowRemainingDaysContracts(?array $entities = null): array
+    {
+        global $DB;
 
         $config               = Config::getInstance();
         $closed_glpi_state_id = (int) ($config->fields['closed_glpi_state_id'] ?? 0);
@@ -1371,6 +1486,10 @@ class Contract extends CommonDBTM
             if (!empty($archive_ids)) {
                 $where[] = ['NOT' => ['glpi_contracts.entities_id' => $archive_ids]];
             }
+        }
+        // Whole customers only: the decision is taken per entity, all its contracts summed
+        if ($entities !== null) {
+            $where['glpi_contracts.entities_id'] = $entities === [] ? [-1] : array_values(array_map('intval', $entities));
         }
 
         $iterator = $DB->request([
@@ -1441,25 +1560,7 @@ class Contract extends CommonDBTM
             $contracts[] = $contract;
         }
 
-        if (empty($contracts)) {
-            return 0;
-        }
-
-        NotificationEvent::raiseEvent(
-            NotificationTargetContract::LowRemainingDaysContracts,
-            new self(),
-            [
-                'entities_id' => 0,
-                'contracts'   => $contracts,
-            ],
-        );
-
-        if ($task instanceof CronTask) {
-            $task->addVolume(count($contracts));
-            $task->log(sprintf(__('%d contracts running out of remaining days notified', 'manageentities'), count($contracts)));
-        }
-
-        return 1;
+        return $contracts;
     }
 
     /**

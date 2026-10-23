@@ -30,6 +30,9 @@
 {#
  Step 1 (existing_entity mode) — Select an existing entity
  Variables: entity_select_field, rand, wizard_url
+            customer_changes - PresaleConversion::getCustomerChanges(): details and contacts of the
+                               won proposal differing from the customer, empty out of a proposal
+            kept_changes     - the ones checked already (entity: fields, contacts: ids)
  #}
 
 <div class="card">
@@ -47,6 +50,79 @@
                 {{ wizard_fields.field(entity_select_field) }}
             </div>
         </div>
+
+        {% set changes = customer_changes|default({'entity': [], 'contacts': []}) %}
+        {% if changes.entity|length > 0 or changes.contacts|length > 0 %}
+            <div class="alert alert-warning mt-4 mb-2">
+                <i class="ti ti-arrows-diff me-1"></i>
+                {{ __('The proposal holds details that differ from the customer: check the ones to apply to it.', 'manageentities') }}
+            </div>
+
+            {% if changes.entity|length > 0 %}
+                <h4 class="mt-3">{{ __('Administrative data', 'manageentities') }}</h4>
+                <table class="table table-sm table-vcenter">
+                    <thead>
+                        <tr>
+                            <th class="w-1"></th>
+                            <th>{{ __('Field') }}</th>
+                            <th>{{ __('Customer', 'manageentities') }}</th>
+                            <th>{{ __('Proposal', 'manageentities') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for change in changes.entity %}
+                            {% set id = 'me_apply_entity_' ~ change.field ~ '_' ~ rand %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="form-check-input" id="{{ id }}"
+                                           name="apply_entity[{{ change.field }}]" value="1"
+                                           {{ change.field in kept_changes.entity ? 'checked' : '' }}>
+                                </td>
+                                <td><label for="{{ id }}">{{ change.label }}</label></td>
+                                <td class="text-muted">{{ change.current ?: '—' }}</td>
+                                <td class="fw-bold">{{ change.proposed }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            {% if changes.contacts|length > 0 %}
+                <h4 class="mt-3">{{ __('Contacts', 'manageentities') }}</h4>
+                <table class="table table-sm table-vcenter">
+                    <tbody>
+                        {% for contact in changes.contacts %}
+                            {% set id = 'me_apply_contact_' ~ contact.presale_contacts_id ~ '_' ~ rand %}
+                            <tr>
+                                <td class="w-1">
+                                    <input type="checkbox" class="form-check-input" id="{{ id }}"
+                                           name="apply_contacts[{{ contact.presale_contacts_id }}]" value="1"
+                                           {{ contact.presale_contacts_id in kept_changes.contacts ? 'checked' : '' }}>
+                                </td>
+                                <td>
+                                    <label for="{{ id }}" class="fw-bold">{{ contact.label }}</label>
+                                    {% if contact.contacts_id > 0 %}
+                                        <span class="badge bg-blue-lt ms-1">{{ __('Update') }}</span>
+                                        <ul class="list-unstyled small mb-0 mt-1">
+                                            {% for diff in contact.changes %}
+                                                <li>
+                                                    {{ diff.label }} :
+                                                    <span class="text-muted">{{ diff.current ?: '—' }}</span>
+                                                    <i class="ti ti-arrow-right mx-1"></i>
+                                                    <span class="fw-bold">{{ diff.proposed }}</span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <span class="badge bg-green-lt ms-1">{{ __('New contact', 'manageentities') }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endif %}
     </div>
     <div class="card-footer d-flex gap-2 justify-content-end">
         <button type="button" class="btn btn-primary" data-me-wizard-action="save-step" data-step="1">

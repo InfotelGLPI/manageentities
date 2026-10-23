@@ -1,0 +1,65 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Lost / Won buttons of an open proposal, posted to PresaleWizard::handleAction(): used by the
+ # list of the proposals in progress and by the summary of a proposal (the last step has its own, in the
+ # form of the step).
+ #
+ # id           - proposal
+ # action_url   - target of the actions
+ # can_win      - a document was generated at least once
+ # modified     - changed since the last generation: winning asks for a confirmation
+ # back_to_home - back to the landing page of the section after the action
+ # size         - btn-sm for the list
+ # can_delete   - offers the deletion of the proposal (list of the proposals in progress)
+ #}
+{% macro buttons(id, action_url, can_win, modified, back_to_home = false, size = '', can_delete = false) %}
+    <form method="post" action="{{ action_url }}" class="d-inline-flex gap-1">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="id" value="{{ id }}">
+        {% if back_to_home %}<input type="hidden" name="back_to_home" value="1">{% endif %}
+        <button type="submit" name="presale_action" value="lost" class="btn btn-outline-danger {{ size }}"
+                title="{{ __('Lost', 'manageentities') }}"
+                data-presale-confirm="{{ __('Archive this proposal as lost? It can be reactivated later.', 'manageentities') }}">
+            <i class="ti ti-archive{{ size ? '' : ' me-1' }}"></i>{% if not size %}{{ __('Lost', 'manageentities') }}{% endif %}
+        </button>
+        {% if can_win %}
+            <button type="submit" name="presale_action" value="won" class="btn btn-success {{ size }}"
+                    title="{{ __('Won', 'manageentities') }}"
+                    {% if modified %}data-presale-confirm="{{ __('The proposal was modified after its last generation. Mark it as won on the last generated version?', 'manageentities') }}"{% endif %}>
+                <i class="ti ti-trophy{{ size ? '' : ' me-1' }}"></i>{% if not size %}{{ __('Won', 'manageentities') }}{% endif %}
+            </button>
+        {% endif %}
+        {% if can_delete %}
+            <button type="submit" name="presale_action" value="delete" class="btn btn-ghost-danger {{ size }}"
+                    title="{{ __('Delete permanently') }}"
+                    data-presale-confirm="{{ __('Delete this proposal permanently, with its annexes? The generated documents are kept.', 'manageentities') }}">
+                <i class="ti ti-trash"></i>
+            </button>
+        {% endif %}
+    </form>
+{% endmacro %}

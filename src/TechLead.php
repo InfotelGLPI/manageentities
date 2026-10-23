@@ -464,6 +464,42 @@ class TechLead extends CommonDBTM
      *
      * @return array
      */
+    /**
+     * Counter of the tab of the clients management: the clients of the perimeter having a main
+     * tech lead, that is 1 on a single client that has one
+     *
+     * @param array<int|string> $entities active entities
+     */
+    public static function countClientsWithMainTechLead(array $entities): int
+    {
+        global $DB;
+
+        $entities = self::filterActiveCustomers($entities);
+        if ($entities === []) {
+            return 0;
+        }
+
+        $table = self::getTable();
+
+        return (int) $DB->request([
+            'SELECT'     => [QueryFunction::count($table . '.entities_id', true, 'cpt')],
+            'FROM'       => $table,
+            'INNER JOIN' => [
+                'glpi_users' => [
+                    'ON' => [
+                        $table       => 'users_id',
+                        'glpi_users' => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'      => [
+                $table . '.entities_id' => $entities,
+                $table . '.is_default'  => 1,
+                'glpi_users.is_deleted' => 0,
+            ],
+        ])->current()['cpt'];
+    }
+
     public static function getClientsWithoutMainTechLead(array $entities): array
     {
         global $DB;

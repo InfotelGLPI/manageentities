@@ -400,7 +400,7 @@ class ContractDay extends CommonDBTM
         }
 
         $add_form = [];
-        if ($canCreate && Session::haveRight('plugin_manageentities', UPDATE)) {
+        if ($canCreate && Session::haveRight(Contract::$rightname, UPDATE)) {
             $add_form = [
                 'add_rand'    => mt_rand(),
                 'add_url'     => Toolbox::getItemTypeFormURL(ContractDay::class) . '?contract_id=' . (int) $contract->fields['id'],
@@ -416,7 +416,7 @@ class ContractDay extends CommonDBTM
         $restrict_days = [
             "`entities_id`"  => $contract->fields['entities_id'],
             "`contracts_id`" => $contract->fields['id'],
-            'ORDER'          => '`begin_date` ASC, `name`',
+            'ORDER'          => ['begin_date ASC', 'name'],
         ];
 
         $dbu             = new DbUtils();
@@ -566,11 +566,13 @@ class ContractDay extends CommonDBTM
                     ],
                 ],
             ],
+            // Interventions of the active entities only: the monthly follow-up and the dashboard
+            // widget listed those of the whole base, whatever the customer displayed
             'WHERE' => [
                 'glpi_tickets.is_deleted' => 0,
                 'glpi_plugin_manageentities_contractdays.end_date' => ['<=', $date],
                 'glpi_plugin_manageentities_cridetails.date' => ['>', $date],
-            ],
+            ] + getEntitiesRestrictCriteria('glpi_plugin_manageentities_cridetails'),
         ];
 
         return $criteria;

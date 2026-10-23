@@ -31,9 +31,10 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\EditorSubscriptionWizard;
 use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\Contract;
 
 if (!Plugin::isPluginActive('manageentities')
-    || !Session::haveRightsOr('plugin_manageentities', [CREATE, UPDATE])) {
+    || !Session::haveRightsOr(Contract::$rightname, [CREATE, UPDATE])) {
     throw new AccessDeniedHttpException();
 }
 
@@ -84,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($action === 'delete') {
-        if (!Session::haveRight('plugin_manageentities', DELETE)) {
+        if (!Session::haveRight(Contract::$rightname, DELETE)) {
             Session::addMessageAfterRedirect(__("You don't have permission to perform this action."), true, ERROR);
             Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . '/front/entity.php');
         }

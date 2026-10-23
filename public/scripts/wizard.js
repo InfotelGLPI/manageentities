@@ -25,7 +25,7 @@
  * --------------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, bootstrap */
+/* global bootstrap */
 
 // Navigation and dynamic blocks of the AddElements wizard (templates/wizard/*). Buttons carry a
 // data-me-wizard-action attribute, dispatched by a single delegated click listener, plus the
@@ -56,6 +56,9 @@ function wizardConfig() {
         mode: config.mode || '',
         id: config.id || '',
         use_subscriptions: config.use_subscriptions !== false,
+        // Existing customer: the subscription step of a won proposal only
+        has_subscription: config.has_subscription === true,
+        subscription_only: config.subscription_only === true,
     };
 }
 
@@ -209,6 +212,7 @@ function saveStep(step, url) {
     if (config.mode === 'existing_entity') {
         action_map = {
             1: 'save_entity',
+            3: 'save_subscription',
             4: 'save_contract',
             5: 'save_management_type',
             6: 'save_interventions',
@@ -369,13 +373,32 @@ function back(step, url) {
     const config = wizardConfig();
     let sequence;
     if (config.mode === 'existing_entity') {
-        sequence = [1, 4, 5, 6];
+        sequence = config.has_subscription ? [1, 3, 4, 5, 6] : [1, 4, 5, 6];
     } else {
         sequence = config.use_subscriptions ? [1, 2, 3, 4, 5, 6] : [1, 2, 4, 5, 6];
     }
     const idx = sequence.indexOf(step);
     reloadStep(idx > 0 ? sequence[idx - 1] : sequence[0], url);
 }
+
+// Won proposal with several subscription annexes: the chosen one reloads step 3 with its values
+document.addEventListener('change', (event) => {
+    const select = event.target.closest('[data-me-wizard-subscription-choice]');
+    const url = wizardConfig().url;
+    if (select === null || url === '') {
+        return;
+    }
+    wizardFetch(url, { action: 'save_subscription', change_choice: '1', subscription_choice: select.value })
+        .then((r) => r.json())
+        .then((res) => {
+            if (res.success) {
+                reloadStep(3, url);
+            } else {
+                showStepErrors(3, res.errors || res.message || 'Error');
+            }
+        })
+        .catch((err) => showStepErrors(3, networkErrMsg(err)));
+});
 
 function chooseMode(mode, url) {
     wizardFetch(url, { action: 'choose_mode', wizard_mode: mode })

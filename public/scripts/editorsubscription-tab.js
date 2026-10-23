@@ -26,23 +26,28 @@
  */
 
 
-// Search box and "Expired only" filter of the publisher subscriptions tab of an entity
+// Search box and badge filters of the publisher subscriptions tab of an entity
 // (templates/entity/editorsubscription_tab.html.twig). The search box alone is reused by the
+// contracts tab (templates/entity/contracts_tab.html.twig) and by the
 // unbilled interventions table of the dashboard (templates/entity/unbilled_tab.html.twig). The tab is loaded asynchronously, hence the
-// delegated listeners; the filter state lives in the aria-pressed attribute of its button. The CSV
-// export link follows the filter: its data-me-sub-export attribute carries both URLs as { all, expired }.
+// delegated listeners. A badge (data-me-sub-badge) keeps the rows whose data-me-sub-filters list
+// its key; one badge at a time, its state in aria-pressed. The CSV export link follows the
+// expired badges: its data-me-sub-export attribute carries both URLs as { all, expired }.
+
+const EXPIRED_BADGES = ['expired', 'noproposal'];
 
 function applyFilters(card) {
     const search_box = card.querySelector('[data-me-sub-search]');
-    const expired_button = card.querySelector('[data-me-sub-expired]');
     const search = search_box !== null ? search_box.value.trim().toLowerCase() : '';
-    const expired_only = expired_button?.getAttribute('aria-pressed') === 'true';
+    const badge = card.querySelector('[data-me-sub-badge][aria-pressed="true"]')?.dataset.meSubBadge ?? '';
 
     for (const row of card.querySelectorAll('tbody tr')) {
-        const matches_expired = !expired_only || row.dataset.expired === '1';
+        const filters = (row.dataset.meSubFilters ?? '').split(' ');
+        const matches_badge = badge === '' || filters.includes(badge);
         const matches_search = search === '' || row.textContent.toLowerCase().includes(search);
-        row.hidden = !(matches_expired && matches_search);
+        row.hidden = !(matches_badge && matches_search);
     }
+    const expired_only = EXPIRED_BADGES.includes(badge);
 
     const export_link = card.querySelector('[data-me-sub-export]');
     if (export_link !== null) {
@@ -67,14 +72,17 @@ document.addEventListener('input', (event) => {
 });
 
 document.addEventListener('click', (event) => {
-    const button = event.target.closest?.('[data-me-sub-expired]');
+    const button = event.target.closest?.('[data-me-sub-badge]');
     const card = button?.closest('[data-me-sub-tab]');
     if (!card) {
         return;
     }
-    const expired_only = button.getAttribute('aria-pressed') !== 'true';
-    button.setAttribute('aria-pressed', expired_only ? 'true' : 'false');
-    button.classList.toggle('btn-outline-warning', !expired_only);
-    button.classList.toggle('btn-warning', expired_only);
+    // A second click on the active badge clears the filter
+    const active = button.getAttribute('aria-pressed') !== 'true';
+    for (const badge of card.querySelectorAll('[data-me-sub-badge]')) {
+        const pressed = active && badge === button;
+        badge.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+        badge.classList.toggle('border-primary', pressed);
+    }
     applyFilters(card);
 });

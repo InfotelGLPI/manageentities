@@ -362,6 +362,22 @@ class EditorSubscription extends CommonDBTM
             }
         }
 
+        // Clients with neither an active contract nor a subscription: none of the alerts below
+        // concerns them, which made them look in order
+        $ids_nothing = array_values(array_diff($concerned_ids, $with_active_contract, $with_subscription));
+        $no_contract_no_subscription = [];
+        if (!empty($ids_nothing)) {
+            $iter = $DB->request([
+                'SELECT' => ['completename'],
+                'FROM'   => 'glpi_entities',
+                'WHERE'  => ['id' => $ids_nothing],
+                'ORDER'  => ['completename ASC'],
+            ]);
+            foreach ($iter as $row) {
+                $no_contract_no_subscription[] = $row['completename'];
+            }
+        }
+
         // Alert 2: subscription but no active contract, split by history
         $ids_no_contract = array_values(array_diff($with_subscription, $with_active_contract));
         $no_contract = ['had_contract' => [], 'never_contract' => []];
@@ -480,7 +496,12 @@ class EditorSubscription extends CommonDBTM
             [
                 'no_subscription'      => $no_subscription,
                 'no_contract'          => $no_contract,
+                'no_contract_no_subscription' => $no_contract_no_subscription,
                 'expired_subscription' => $expired_subscription,
+                // A check only holds when something is checked: counts of the perimeter
+                'concerned_count'      => count($concerned_ids),
+                'active_contract_count' => count($with_active_contract),
+                'subscription_count'   => count($with_subscription),
                 'level_counts'         => $level_counts,
                 'type_counts'          => $type_counts,
             ],
@@ -535,13 +556,13 @@ class EditorSubscription extends CommonDBTM
     // Display
     // -----------------------------------------------------------------------
 
-    public static function showForEntity(array $instID): void
+    /**
+     * Subscriptions of the tab of the clients management, on the table aliased "s"
+     *
+     * @param array<int|string> $instID active entities
+     */
+    private static function getEntityTabCriteria(array $instID): array
     {
-        global $DB;
-
-        $can_edit = Session::getCurrentInterface() !== 'helpdesk'
-            && Session::haveRightsOr(self::$rightname, [CREATE, UPDATE]);
-
         // Scope to the entity (or entities, if displayed recursively) currently active
         $where = !empty($instID) ? ['s.entities_id' => $instID] : [];
 
@@ -556,6 +577,34 @@ class EditorSubscription extends CommonDBTM
                 $where[] = ['NOT' => ['s.entities_id' => array_keys($archive_sons)]];
             }
         }
+
+        return $where;
+    }
+
+    /**
+     * Counter of the tab of the clients management: the subscriptions it lists
+     *
+     * @param array<int|string> $instID active entities
+     */
+    public static function countForEntity(array $instID): int
+    {
+        global $DB;
+
+        return (int) $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => self::getTable() . ' AS s',
+            'WHERE' => self::getEntityTabCriteria($instID),
+        ])->current()['cpt'];
+    }
+
+    public static function showForEntity(array $instID): void
+    {
+        global $DB;
+
+        $can_edit = Session::getCurrentInterface() !== 'helpdesk'
+            && Session::haveRightsOr(self::$rightname, [CREATE, UPDATE]);
+
+        $where = self::getEntityTabCriteria($instID);
 
         $now  = date('Y-m-d');
         $rows = [];
@@ -578,9 +627,20 @@ class EditorSubscription extends CommonDBTM
             $rows[]                  = $row;
         }
 
+        // Expired and not followed by a proposal yet: a new proposal renews it (PresaleRenewal)
+        $renewals = Config::usePresale() && Session::getCurrentInterface() === 'central'
+            ? array_column(PresaleRenewal::getExpiredSubscriptions(array_column($rows, 'entities_id')), 'new_url', 'id')
+            : [];
+        // Proposal already started from the subscription, shown next to the "New proposal" button
+        $proposals = Config::usePresale() && Session::getCurrentInterface() === 'central'
+            ? PresaleRenewal::getSubscriptionProposals(array_map('intval', array_column($rows, 'id')))
+            : [];
+
         $last_interventions = self::getLastInterventionDates(array_column($rows, 'entities_id'));
         foreach ($rows as &$row) {
             $row['last_intervention'] = $last_interventions[(int) $row['entities_id']] ?? null;
+            $row['proposal_url']      = $renewals[(int) $row['id']] ?? '';
+            $row['proposal']          = $proposals[(int) $row['id']] ?? null;
         }
         unset($row);
 
@@ -590,10 +650,11 @@ class EditorSubscription extends CommonDBTM
         TemplateRenderer::getInstance()->display(
             '@manageentities/entity/editorsubscription_tab.html.twig',
             [
-                'rows'       => $rows,
-                'can_edit'   => $can_edit,
-                'wizard_url' => $wizard_url,
-                'export_url' => $export_url,
+                'rows'        => $rows,
+                'can_edit'    => $can_edit,
+                'wizard_url'  => $wizard_url,
+                'export_url'  => $export_url,
+                'use_presale' => Config::usePresale() && Session::getCurrentInterface() === 'central',
             ],
         );
     }

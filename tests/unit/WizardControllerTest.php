@@ -197,4 +197,45 @@ class WizardControllerTest extends TestCase
         $this->assertFalse($result['valid']);
         $this->assertArrayHasKey('plugin_manageentities_contractstates_id', $result['errors']);
     }
+
+    public function testATemplateOnlyFillsTheEmptyFieldsOfTheContract(): void
+    {
+        $template = [
+            "name"             => "Template name",
+            "num"              => "TPL-001",
+            "begin_date"       => "2026-01-01",
+            "duration"         => 24,
+            "contracttypes_id" => 3,
+            "states_id"        => 2,
+            "comment"          => "Template comment",
+        ];
+        // Prefilled from a won proposal: name, number, start date, comment
+        $current = [
+            "name"       => "Expertise & Souscription",
+            "num"        => "SOC261019",
+            "begin_date" => "2026-11-01",
+            "comment"    => "From the proposal SOC261019",
+            "duration"   => 0,
+            "states_id"  => "",
+        ];
+
+        $merged = WizardController::mergeTemplateIntoContract($template, $current);
+
+        // What the wizard defined is kept
+        $this->assertSame("Expertise & Souscription", $merged["name"]);
+        $this->assertSame("SOC261019", $merged["num"]);
+        $this->assertSame("2026-11-01", $merged["begin_date"]);
+        $this->assertSame("From the proposal SOC261019", $merged["comment"]);
+        // The template fills what is still empty
+        $this->assertSame(24, $merged["duration"]);
+        $this->assertSame(3, $merged["contracttypes_id"]);
+        $this->assertSame(2, $merged["states_id"]);
+    }
+
+    public function testATemplateFillsEverythingOnAnEmptyContract(): void
+    {
+        $template = ["name" => "Template name", "duration" => 12];
+
+        $this->assertSame($template, WizardController::mergeTemplateIntoContract($template, []));
+    }
 }

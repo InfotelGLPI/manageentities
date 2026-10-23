@@ -108,6 +108,50 @@ class Preference extends CommonDBTM
     }
 
     /**
+     * Order of the tabs of the client management dashboard chosen by the user, empty for the
+     * default order
+     *
+     * @return int[] tab numbers
+     */
+    public static function getDashboardTabsOrder(int $users_id): array
+    {
+        /** @var array<int, int[]> $cache */
+        static $cache = [];
+
+        if (!isset($cache[$users_id])) {
+            $self    = new self();
+            $decoded = $self->getFromDBByCrit(['users_id' => $users_id])
+                ? json_decode((string) ($self->fields['dashboard_tabs_order'] ?? ''), true)
+                : null;
+            $cache[$users_id] = is_array($decoded) ? array_map('intval', $decoded) : [];
+        }
+
+        return $cache[$users_id];
+    }
+
+    /**
+     * Tabs in the order of the user: the ordered ones first, then those it does not know yet
+     * (added by a later version) in their default order
+     *
+     * @template T
+     * @param array<int, T> $tabs  by tab number
+     * @param int[]         $order tab numbers
+     *
+     * @return array<int, T>
+     */
+    public static function sortDashboardTabs(array $tabs, array $order): array
+    {
+        $sorted = [];
+        foreach ($order as $tab) {
+            if (array_key_exists($tab, $tabs)) {
+                $sorted[$tab] = $tabs[$tab];
+            }
+        }
+
+        return $sorted + $tabs;
+    }
+
+    /**
      * Tabs of the client management dashboard the user chose not to display.
      *
      * @return int[]
@@ -198,6 +242,11 @@ class Preference extends CommonDBTM
 
         TemplateRenderer::getInstance()->display('@manageentities/preference_form.html.twig', [
             'dashboard_tabs'     => $dashboard_tabs,
+            // Every tab, in the order of the user, for the drag and drop list
+            'tabs_ordered'       => self::sortDashboardTabs(
+                $dashboard_tabs,
+                self::getDashboardTabsOrder((int) $self->fields['users_id']),
+            ),
             'tabs_selected'      => $tabs_selected,
             'form_url'           => $target,
             'plugin_title'       => $data['name'],
@@ -242,6 +291,17 @@ class Preference extends CommonDBTM
         }
         unset($input['dashboard_tabs']);
 
+        // Order of the drag and drop list: known tab numbers only, each one once
+        if (array_key_exists('dashboard_tabs_order', $input)) {
+            $known = array_keys(Entity::getDashboardTabLabels());
+            $order = array_values(array_unique(array_filter(
+                array_map('intval', array_filter(explode(',', (string) $input['dashboard_tabs_order']), 'is_numeric')),
+                static fn(int $tab): bool => in_array($tab, $known, true),
+            )));
+            // [] keeps the default order
+            $input['dashboard_tabs_order'] = json_encode($order);
+        }
+
         return $input;
     }
 
@@ -263,6 +323,7 @@ class Preference extends CommonDBTM
                             `business_id` text DEFAULT NULL,
                             `companies_id` text DEFAULT NULL,
                             `hidden_dashboard_tabs` text DEFAULT NULL,
+                            `dashboard_tabs_order` text DEFAULT NULL COMMENT 'JSON tab numbers of the clients management, in the order of the user',
                             PRIMARY KEY  (`id`),
                             KEY `users_id` (`users_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
@@ -277,6 +338,15 @@ class Preference extends CommonDBTM
             $migration->addField($table, 'hidden_dashboard_tabs', 'text', ['after' => 'companies_id']);
             $migration->migrationOneTable($table);
             $DB->update($table, ['hidden_dashboard_tabs' => '[]'], ['hidden_dashboard_tabs' => null]);
+        }
+
+        // Order of the tabs of the client management dashboard, NULL keeping the default one
+        if (!$DB->fieldExists($table, 'dashboard_tabs_order')) {
+            $migration->addField($table, 'dashboard_tabs_order', 'text', [
+                'after'   => 'hidden_dashboard_tabs',
+                'comment' => 'JSON tab numbers of the clients management, in the order of the user',
+            ]);
+            $migration->migrationOneTable($table);
         }
     }
 

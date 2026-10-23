@@ -26,15 +26,20 @@
  #}
 
 {# Read-only display filter: the checkboxes reload the page via GET (public/scripts/directhelpdesk-filters.js), no form submit. #}
-<div class="center d-flex justify-content-center gap-3" style="margin-top: 10px; margin-bottom: 20px;">
-    <label class="form-check-label d-inline-flex align-items-center gap-1">
-        <input type="checkbox" class="form-check-input mt-0" id="checkbox2"
-               data-me-dh-filter="checkbox2"{{ checkbox2 ? ' checked' : '' }}>
-        {{ __('2 hours minimum', 'manageentities') }}
-    </label>
-    <label class="form-check-label d-inline-flex align-items-center gap-1">
-        <input type="checkbox" class="form-check-input mt-0" id="checkbox3"
-               data-me-dh-filter="checkbox3"{{ checkbox3 ? ' checked' : '' }}>
-        {{ __('3 hours minimum', 'manageentities') }}
-    </label>
+<div class="container-fluid px-0 my-3">
+    <div class="card">
+        <div class="card-body d-flex flex-wrap align-items-center gap-4">
+            <i class="ti ti-filter text-secondary fs-2" aria-hidden="true"></i>
+            <label class="form-check form-switch mb-0">
+                <input type="checkbox" class="form-check-input" id="checkbox2"
+                       data-me-dh-filter="checkbox2"{{ checkbox2 ? ' checked' : '' }}>
+                <span class="form-check-label">{{ __('2 hours minimum', 'manageentities') }}</span>
+            </label>
+            <label class="form-check form-switch mb-0">
+                <input type="checkbox" class="form-check-input" id="checkbox3"
+                       data-me-dh-filter="checkbox3"{{ checkbox3 ? ' checked' : '' }}>
+                <span class="form-check-label">{{ __('3 hours minimum', 'manageentities') }}</span>
+            </label>
+        </div>
+    </div>
 </div>

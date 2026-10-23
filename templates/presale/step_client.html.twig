@@ -1,0 +1,292 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Step 1 — client (prospect) and its contacts.
+ #
+ # client    - fields of the prospect, or the submitted values after an error
+ # contacts  - list of contacts (id, name, firstname, role, email, phone, mobile, is_default)
+ # prospects - {id: name} prospects able to receive a new proposal (new proposal only)
+ # customers - {id: name} customer entities (new proposal only)
+ # prospect  - prospect chosen in that list
+ # customer  - customer entity chosen in that list
+ # missing   - labels of the details missing on the chosen customer, to fill in
+ # entity_name, entity_url - customer entity of the prospect, empty when none
+ # step_url  - step 1 of a new proposal, the chosen source appended by the script
+ # logo_url  - current logo of the prospect, empty when none
+ # origins   - {id: name} active origins of the requests (PresaleOrigin)
+ # origin    - origin of the proposal, the default of the existing customers for a customer
+ # errors    - {field: message}
+ #
+ # Contacts: the blocks are numbered from 0; public/scripts/presale-wizard.js clones the
+ # <template> below to add one, and renumbers the blocks when one is removed. The main contact is
+ # the radio "is_default", valued with the index of its block. A contact prefilled from the
+ # customer entity keeps its GLPI contact (contacts_id).
+ #}
+
+{% macro input(name, label, client, errors, options = {}) %}
+    <label class="col-form-label fw-bold" for="presale_{{ name }}">
+        {{ label }}{% if options.required ?? false %} <span class="text-danger">*</span>{% endif %}
+    </label>
+    <input type="{{ options.type ?? 'text' }}" id="presale_{{ name }}" name="{{ name }}"
+           class="form-control{{ errors[name] is defined ? ' is-invalid' : '' }}"
+           value="{{ client[name] ?? '' }}"
+           {% if options.format is defined %}data-me-wizard-format="{{ options.format }}"{% endif %}
+           {% if options.required ?? false %}required{% endif %}>
+    {% if errors[name] is defined %}<div class="invalid-feedback">{{ errors[name] }}</div>{% endif %}
+{% endmacro %}
+
+{% macro origin(origins, origin, errors) %}
+    <label class="col-form-label fw-bold" for="dropdown_plugin_manageentities_presaleorigins_id">{{ __('Origin of the request', 'manageentities') }}</label>
+    {{ call('Dropdown::showFromArray', ['plugin_manageentities_presaleorigins_id', origins, {
+        'value': origin,
+        'display': false,
+        'width': '100%',
+        'display_emptychoice': true,
+        'rand': '',
+    }])|raw }}
+    {% if errors.plugin_manageentities_presaleorigins_id is defined %}<div class="text-danger small">{{ errors.plugin_manageentities_presaleorigins_id }}</div>{% endif %}
+    <div class="form-text">{{ __('Kept on the proposal, for the statistics.', 'manageentities') }}</div>
+{% endmacro %}
+
+{% macro block(idx, contact) %}
+    <div class="card mb-3" data-presale-contact>
+        <div class="card-header d-flex align-items-center gap-2">
+            <i class="ti ti-user"></i>
+            <h4 class="card-title mb-0 text-nowrap">{{ _n('Contact', 'Contacts', 1) }} <span data-presale-contact-number>{{ idx is same as('__IDX__') ? '' : idx + 1 }}</span></h4>
+            <div class="form-check form-check-inline ms-3 mb-0">
+                <input type="radio" class="form-check-input" name="is_default" value="{{ idx }}"
+                       id="presale_default_{{ idx }}" {{ (contact.is_default ?? false) ? 'checked' : '' }}>
+                <label class="form-check-label" for="presale_default_{{ idx }}">
+                    {{ __('Main contact (recipient and signatory)', 'manageentities') }}
+                </label>
+            </div>
+            <button type="button" class="btn btn-sm btn-ghost-danger ms-auto" data-presale-action="remove-contact"
+                    title="{{ __('Delete') }}">
+                <i class="ti ti-trash"></i>
+            </button>
+        </div>
+        <div class="card-body">
+            <input type="hidden" name="contacts[{{ idx }}][id]" value="{{ contact.id ?? 0 }}">
+            <input type="hidden" name="contacts[{{ idx }}][contacts_id]" value="{{ contact.contacts_id ?? 0 }}">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold">{{ __('Last name') }} <span class="text-danger">*</span></label>
+                    <input type="text" name="contacts[{{ idx }}][name]" class="form-control" data-me-wizard-format="lastname"
+                           value="{{ contact.name ?? '' }}">
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold">{{ __('First name') }}</label>
+                    <input type="text" name="contacts[{{ idx }}][firstname]" class="form-control" data-me-wizard-format="firstname"
+                           value="{{ contact.firstname ?? '' }}">
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold">{{ __('Role', 'manageentities') }}</label>
+                    <input type="text" name="contacts[{{ idx }}][role]" class="form-control"
+                           value="{{ contact.role ?? '' }}">
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold">{{ __('Email') }}</label>
+                    <input type="email" name="contacts[{{ idx }}][email]" class="form-control" data-me-wizard-format="email"
+                           value="{{ contact.email ?? '' }}">
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold">{{ __('Phone') }}</label>
+                    <input type="text" name="contacts[{{ idx }}][phone]" class="form-control" data-me-wizard-format="phone"
+                           value="{{ contact.phone ?? '' }}">
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label fw-bold">{{ __('Mobile') }}</label>
+                    <input type="text" name="contacts[{{ idx }}][mobile]" class="form-control" data-me-wizard-format="phone"
+                           value="{{ contact.mobile ?? '' }}">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% set has_source = prospects is not empty or customers is not empty %}
+{# Prospect, customer and origin side by side: the origin is chosen with the client #}
+{% set source_col = prospects is not empty and customers is not empty and origins is not empty ? 'col-md-4' : 'col-md-6' %}
+{% if has_source %}
+{# New proposal: choosing a known prospect or a customer reloads the step with its details and
+   contacts, editable (public/scripts/presale-wizard.js) #}
+<div class="card mb-3" data-presale-source="{{ step_url }}">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-history me-1"></i>{{ __('Client of the proposal', 'manageentities') }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            {% if prospects is not empty %}
+                <div class="{{ source_col }}">
+                    <label class="col-form-label fw-bold" for="dropdown_prospects_id">{{ __('Prospect already known', 'manageentities') }}</label>
+                    {{ call('Dropdown::showFromArray', ['prospects_id', prospects, {
+                        'value': prospect,
+                        'display': false,
+                        'width': '100%',
+                        'display_emptychoice': true,
+                        'emptylabel': __('No, a new prospect', 'manageentities'),
+                        'rand': '',
+                    }])|raw }}
+                </div>
+            {% endif %}
+            {% if customers is not empty %}
+                <div class="{{ source_col }}">
+                    <label class="col-form-label fw-bold" for="dropdown_customer_entities_id">{{ __('Existing customer', 'manageentities') }}</label>
+                    {{ call('Dropdown::showFromArray', ['customer_entities_id', customers, {
+                        'value': customer,
+                        'display': false,
+                        'width': '100%',
+                        'display_emptychoice': true,
+                        'emptylabel': __('No, a new client', 'manageentities'),
+                        'rand': '',
+                    }])|raw }}
+                </div>
+            {% endif %}
+            {% if origins is not empty %}
+                <div class="{{ source_col }}">{{ _self.origin(origins, origin, errors) }}</div>
+            {% endif %}
+        </div>
+        <div class="form-text">
+            {{ __('Choose a known prospect or an existing customer: its details and contacts are filled in below, and can be changed.', 'manageentities') }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# Proposal started from a subscription or a contract to renew (PresaleRenewal) #}
+{% for field, value in renewal ?? {} %}
+    {% if value %}<input type="hidden" name="{{ field }}" value="{{ value }}">{% endif %}
+{% endfor %}
+{% if renewal_label ?? '' %}
+    <div class="alert alert-info">
+        <i class="ti ti-refresh me-1"></i>{{ renewal_label }}
+    </div>
+{% endif %}
+
+{% if entity_name %}
+    <div class="alert alert-info">
+        <i class="ti ti-building me-1"></i>
+        {{ __('Existing customer:', 'manageentities') }}
+        <a href="{{ entity_url }}" target="_blank">{{ entity_name }}</a>.
+        {{ __('The details below are the ones of the proposals: the entity itself is not changed.', 'manageentities') }}
+    </div>
+{% endif %}
+{% if missing is not empty %}
+    <div class="alert alert-warning">
+        <i class="ti ti-alert-triangle me-1"></i>
+        {{ __('Missing on the customer, to fill in:', 'manageentities') }} {{ missing|join(', ') }}
+    </div>
+{% endif %}
+
+<div data-presale-client-details>
+<div class="row g-3">
+<div class="col-lg-6">
+<div class="card h-100">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-building-store me-1"></i>{{ __('Client details', 'manageentities') }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-sm-6">
+                {{ _self.input('name', __('Company name', 'manageentities'), client, errors, {'required': true}) }}
+            </div>
+            <div class="col-sm-6">
+                {{ _self.input('website', __('Website'), client, errors, {'format': 'website'}) }}
+            </div>
+            {% if origins is not empty and not has_source %}
+                <div class="col-sm-12">{{ _self.origin(origins, origin, errors) }}</div>
+            {% endif %}
+
+            <div class="col-sm-12">
+                {{ _self.input('address', __('Address'), client, errors, {'required': true}) }}
+            </div>
+            <div class="col-sm-4">
+                {{ _self.input('postcode', __('Postal code'), client, errors, {'required': true}) }}
+            </div>
+            <div class="col-sm-8">
+                {{ _self.input('town', __('City'), client, errors, {'required': true}) }}
+            </div>
+            <div class="col-sm-6">
+                {{ _self.input('state', __('State'), client, errors) }}
+            </div>
+            <div class="col-sm-6">
+                {{ _self.input('country', __('Country'), client, errors) }}
+            </div>
+
+            <div class="col-sm-6">
+                {{ _self.input('phonenumber', __('Phone'), client, errors, {'format': 'phone'}) }}
+            </div>
+            <div class="col-sm-6">
+                {{ _self.input('email', __('Email'), client, errors, {'type': 'email', 'format': 'email'}) }}
+            </div>
+
+            <div class="col-sm-6">
+                <label class="col-form-label fw-bold" for="presale_logo">{{ __('Logo of the client', 'manageentities') }}</label>
+                <input type="file" id="presale_logo" name="logo" accept="image/png,image/jpeg"
+                       class="form-control{{ errors.logo is defined ? ' is-invalid' : '' }}">
+                {% if errors.logo is defined %}<div class="invalid-feedback">{{ errors.logo }}</div>{% endif %}
+                <div class="form-text">{{ __('PNG or JPEG, 2 MB at most. Printed on the cover and in the header of the proposal.', 'manageentities') }}</div>
+            </div>
+            <div class="col-sm-6 d-flex align-items-end">
+                {% if logo_url %}
+                    <img src="{{ logo_url }}" alt="" class="border rounded p-1" style="max-height:70px; max-width:100%">
+                {% endif %}
+            </div>
+
+            <div class="col-sm-12">
+                <label class="col-form-label fw-bold" for="presale_comment">{{ __('Comments') }}</label>
+                <textarea id="presale_comment" name="comment" class="form-control" rows="3">{{ client.comment ?? '' }}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="card h-100">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-users me-1"></i>{{ _n('Contact', 'Contacts', 2) }}</h3>
+    </div>
+    <div class="card-body">
+        <div data-presale-contacts>
+            {% for contact in contacts %}
+                {{ _self.block(loop.index0, contact) }}
+            {% endfor %}
+        </div>
+
+        <template data-presale-contact-template>
+            {{ _self.block('__IDX__', {}) }}
+        </template>
+
+        <button type="button" class="btn btn-outline-primary" data-presale-action="add-contact">
+            <i class="ti ti-user-plus me-1"></i>{{ __('Add a contact', 'manageentities') }}
+        </button>
+    </div>
+</div>
+</div>
+</div>
+</div>

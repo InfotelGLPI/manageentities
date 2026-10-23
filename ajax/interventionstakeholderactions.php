@@ -30,11 +30,12 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
+use GlpiPlugin\Manageentities\Contract;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight('plugin_manageentities', UPDATE);
+Session::checkRight(Contract::$rightname, UPDATE);
 $interventionStakeholder = new InterventionStakeholder();
 
 /**
@@ -86,7 +87,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                 // field (see ajax/getUserTechName.php).
                 if (countElementsInTable(
                     'glpi_profiles_users',
-                    ['users_id' => $idUser] + getEntitiesRestrictCriteria('glpi_profiles_users'),
+                    ['users_id' => $idUser] + getEntitiesRestrictCriteria('glpi_profiles_users', '', '', true),
                 ) === 0) {
                     throw new AccessDeniedHttpException();
                 }

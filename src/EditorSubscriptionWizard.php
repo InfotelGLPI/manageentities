@@ -179,7 +179,7 @@ class EditorSubscriptionWizard
 
         // The controller accepts CREATE or UPDATE: require the right matching the
         // operation, so CREATE alone cannot overwrite an existing subscription
-        if (!Session::haveRight('plugin_manageentities', !empty($existing) ? UPDATE : CREATE)) {
+        if (!Session::haveRight(Contract::$rightname, !empty($existing) ? UPDATE : CREATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -256,8 +256,8 @@ class EditorSubscriptionWizard
      */
     public static function canTransfer(): bool
     {
-        return Session::haveRight('plugin_manageentities', UPDATE)
-            && Session::haveRight('transfer', READ);
+        return Session::haveRight(Contract::$rightname, UPDATE)
+            && Session::haveRight(\Transfer::$rightname, READ);
     }
 
     /**

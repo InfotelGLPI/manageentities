@@ -33,7 +33,7 @@ use GlpiPlugin\Manageentities\Contract;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight('plugin_manageentities', READ);
+Session::checkRight(Contract::$rightname, READ);
 
 if (isset($_POST["entities_id"])) {
     $entities_id = (int) $_POST['entities_id'];

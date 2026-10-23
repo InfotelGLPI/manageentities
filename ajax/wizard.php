@@ -28,8 +28,9 @@
  */
 
 use GlpiPlugin\Manageentities\WizardController;
+use GlpiPlugin\Manageentities\Contract;
 
-Session::checkRight('plugin_manageentities', UPDATE);
+Session::checkRight(Contract::$rightname, UPDATE);
 
 $action = $_POST['action'] ?? '';
 

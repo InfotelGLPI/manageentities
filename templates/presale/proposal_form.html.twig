@@ -1,0 +1,176 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Main tab of a proposal (PresaleProposal::showForm()): a read-only summary, everything being
+ # edited through the wizard.
+ #
+ # proposal  - fields of the proposal
+ # status    - label of its status
+ # client    - fields of the prospect
+ # recipient - name of the contact receiving the proposal
+ # steps     - {number: label} of the wizard
+ # last_step - last step available in this version
+ # edit_url  - wizard on the first step, empty when the proposal cannot be modified
+ # can_outcome - an open proposal the user can update: Lost / Won buttons
+ # can_duplicate - the user can create proposals: Duplicate button
+ # customer_url - won proposal: the customer wizard prefilled from it, empty otherwise
+ # renewal   - renewed subscription or contract (PresaleRenewal::getSourceLabel()), empty when none
+ #}
+
+{% import '@manageentities/presale/outcome_buttons.html.twig' as outcome %}
+
+{% macro row(label, value) %}
+    <div class="col-sm-6 col-lg-4">
+        <div class="text-muted small">{{ label }}</div>
+        <div class="fw-bold">{{ value is empty ? '-' : value }}</div>
+    </div>
+{% endmacro %}
+
+<div class="container-fluid py-3">
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+        <span class="badge bg-secondary-lt fs-6">{{ status }}</span>
+        {% if proposal.reference %}<span class="badge bg-blue-lt fs-6">{{ proposal.reference }}</span>{% endif %}
+        <span class="text-muted">{{ __('Progress', 'manageentities') }} : {{ proposal.step }} / {{ steps|length }}</span>
+        <div class="ms-auto d-flex gap-2">
+            {% if document_url %}
+                <a href="{{ document_url }}" class="btn btn-outline-primary btn-sm">
+                    <i class="ti ti-download me-1"></i>{{ __('Download the proposal', 'manageentities') }}
+                </a>
+            {% endif %}
+            {% if edit_url %}
+                <a href="{{ edit_url }}" class="btn btn-primary btn-sm">
+                    <i class="ti ti-pencil me-1"></i>{{ __('Edit in the wizard', 'manageentities') }}
+                </a>
+            {% endif %}
+            {% if can_outcome %}
+                {{ outcome.buttons(proposal.id, action_url, proposal.version > 0, proposal.status == 1 and proposal.version > 0, false, 'btn-sm') }}
+            {% endif %}
+            {% if can_reactivate %}
+                <form method="post" action="{{ action_url }}" class="d-inline">
+                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="id" value="{{ proposal.id }}">
+                    <button type="submit" name="presale_action" value="reactivate" class="btn btn-outline-secondary btn-sm">
+                        <i class="ti ti-archive-off me-1"></i>{{ __('Reactivate', 'manageentities') }}
+                    </button>
+                </form>
+            {% endif %}
+            {% if customer_url %}
+                <a href="{{ customer_url }}" class="btn btn-success btn-sm">
+                    <i class="ti ti-building-plus me-1"></i>{{ __('Create the customer', 'manageentities') }}
+                </a>
+            {% endif %}
+            {% if can_duplicate %}
+                <form method="post" action="{{ action_url }}" class="d-inline">
+                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="id" value="{{ proposal.id }}">
+                    <button type="submit" name="presale_action" value="duplicate" class="btn btn-outline-secondary btn-sm"
+                            title="{{ __('A new draft with the same client, team and annexes', 'manageentities') }}">
+                        <i class="ti ti-copy me-1"></i>{{ __('Duplicate', 'manageentities') }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="card-title"><i class="ti ti-building-store me-1"></i>{{ _n('Prospect', 'Prospects', 1, 'manageentities') }}</h3></div>
+        <div class="card-body row g-3">
+            {{ _self.row(__('Company name', 'manageentities'), client.name ?? '') }}
+            {{ _self.row(__('Address'), [client.address ?? '', [client.postcode ?? '', client.town ?? '']|join(' ')|trim]|filter(v => v is not empty)|join(', ')) }}
+            {{ _self.row(__('Recipient', 'manageentities'), recipient) }}
+            {{ _self.row(origin_label, origin) }}
+            {% if renewal %}
+                {{ _self.row(__('Renewal'), renewal) }}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="card-title"><i class="ti ti-file-text me-1"></i>{{ __('Proposal', 'manageentities') }}</h3></div>
+        <div class="card-body row g-3">
+            {{ _self.row(__('Type of contract', 'manageentities'), proposal.proposal_type) }}
+            {{ _self.row(__('Date of the contract', 'manageentities'), proposal.proposal_date ? proposal.proposal_date|formatted_date : '') }}
+            {{ _self.row(__('Version'), proposal.version) }}
+            {{ _self.row(__('Sales representative', 'manageentities'), [proposal.sales_name, proposal.sales_role]|filter(v => v is not empty)|join(' — ')) }}
+            {{ _self.row(_n('Project manager', 'Project managers', 1, 'manageentities'), [proposal.pm_name, proposal.pm_role]|filter(v => v is not empty)|join(' — ')) }}
+            {% if proposal.summary %}
+                <div class="col-12">
+                    <div class="text-muted small">{{ __('Summary', 'manageentities') }}</div>
+                    <div class="rich_text_container">{{ proposal.summary|safe_html }}</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="card-title"><i class="ti ti-file-description me-1"></i>{{ _n('Annex', 'Annexes', 2, 'manageentities') }}</h3></div>
+        {% if annexes is empty %}
+            <div class="card-body text-muted">{{ __('No annex retained yet.', 'manageentities') }}</div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-sm card-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ __('Title') }}</th>
+                            <th class="text-end">{{ _n('Line', 'Lines', 2, 'manageentities') }}</th>
+                            <th class="text-end">{{ __('VAT rate (%)', 'manageentities') }}</th>
+                            <th class="text-end">{{ __('Total excl. VAT', 'manageentities') }}</th>
+                            <th class="text-end">{{ __('VAT', 'manageentities') }}</th>
+                            <th class="text-end">{{ __('Total incl. VAT', 'manageentities') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for annex in annexes %}
+                            <tr>
+                                <td>{{ annex.title }}</td>
+                                <td class="text-end">{{ annex.nb_lines }}</td>
+                                {% if annex.vat_rate > 0 %}
+                                    <td class="text-end">{{ annex.vat_rate|formatted_number }}</td>
+                                    <td class="text-end">{{ annex.ht|formatted_number }}</td>
+                                    <td class="text-end">{{ annex.vat|formatted_number }}</td>
+                                    <td class="text-end">{{ annex.ttc|formatted_number }}</td>
+                                {% else %}
+                                    <td class="text-end text-muted">-</td>
+                                    <td class="text-end">{{ annex.ht|formatted_number }}</td>
+                                    <td class="text-muted text-end" colspan="2">{{ __('VAT not applicable', 'manageentities') }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="fw-bold">
+                            <td colspan="3">{{ __('Total') }}</td>
+                            <td class="text-end">{{ proposal.total_ht|formatted_number }}</td>
+                            <td class="text-end">{{ proposal.total_vat|formatted_number }}</td>
+                            <td class="text-end">{{ proposal.total_ttc|formatted_number }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>

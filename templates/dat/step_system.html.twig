@@ -1,0 +1,110 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Step 2 — servers of the DAT, then the System sections. The server rows are added, removed and
+ # moved by public/scripts/dat-wizard.js; their order is the order of the document.
+ #
+ # servers  - [{id, name, internal_name, ip, role}]
+ # sections - [{key, label, kind, value}] see step_sections.html.twig
+ # errors   - {field: message}, the server fields under servers.<index>.<field>
+ #}
+
+{% macro server_row(index, server, errors) %}
+    <tr data-dat-server>
+        <td class="text-muted" data-dat-server-number>{{ index is same as('__IDX__') ? '' : index + 1 }}</td>
+        <td>
+            <input type="hidden" name="servers[{{ index }}][id]" value="{{ server.id|default(0) }}">
+            <input type="text" name="servers[{{ index }}][name]" value="{{ server.name|default('') }}" maxlength="255"
+                   class="form-control form-control-sm{{ errors['servers.' ~ index ~ '.name'] is defined ? ' is-invalid' : '' }}"
+                   placeholder="glpi.example.com" aria-label="{{ __('DNS name', 'manageentities') }}">
+        </td>
+        <td>
+            <input type="text" name="servers[{{ index }}][internal_name]" value="{{ server.internal_name|default('') }}" maxlength="255"
+                   class="form-control form-control-sm{{ errors['servers.' ~ index ~ '.internal_name'] is defined ? ' is-invalid' : '' }}"
+                   placeholder="srv-glpi01" aria-label="{{ __('Internal name', 'manageentities') }}">
+        </td>
+        <td>
+            <input type="text" name="servers[{{ index }}][ip]" value="{{ server.ip|default('') }}" maxlength="255"
+                   class="form-control form-control-sm{{ errors['servers.' ~ index ~ '.ip'] is defined ? ' is-invalid' : '' }}"
+                   placeholder="10.0.0.1" aria-label="{{ __('IP address') }}">
+        </td>
+        <td>
+            <input type="text" name="servers[{{ index }}][role]" value="{{ server.role|default('') }}" maxlength="255"
+                   class="form-control form-control-sm"
+                   placeholder="{{ __('e.g. Front, Database', 'manageentities') }}" aria-label="{{ __('Role') }}">
+        </td>
+        <td class="text-nowrap text-end">
+            <button type="button" class="btn btn-sm btn-ghost-secondary" data-dat-action="server-up" title="{{ __('Move up', 'manageentities') }}">
+                <i class="ti ti-arrow-up"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-ghost-secondary" data-dat-action="server-down" title="{{ __('Move down', 'manageentities') }}">
+                <i class="ti ti-arrow-down"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-ghost-danger" data-dat-action="server-remove" title="{{ __('Delete') }}">
+                <i class="ti ti-trash"></i>
+            </button>
+        </td>
+    </tr>
+{% endmacro %}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h3 class="card-title"><i class="ti ti-server me-1"></i>{{ _n('Server', 'Servers', 2, 'manageentities') }}</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-vcenter mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 3rem">#</th>
+                        <th>{{ __('DNS name', 'manageentities') }} <span class="text-danger">*</span></th>
+                        <th title="{{ __('HOTE A row of the DNS entries', 'manageentities') }}">{{ __('Internal name', 'manageentities') }} <span class="text-danger">*</span></th>
+                        <th>{{ __('IP address') }} <span class="text-danger">*</span></th>
+                        <th>{{ __('Role') }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody data-dat-servers>
+                    {% for server in servers %}
+                        {{ _self.server_row(loop.index0, server, errors) }}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <template data-dat-server-template>
+            {{ _self.server_row('__IDX__', {}, {}) }}
+        </template>
+    </div>
+    <div class="card-footer">
+        <button type="button" class="btn btn-sm btn-outline-primary" data-dat-action="server-add">
+            <i class="ti ti-plus me-1"></i>{{ __('Add a server', 'manageentities') }}
+        </button>
+        <div class="form-text">{{ __('In the tables of the document, one row per server, in this order.', 'manageentities') }}</div>
+    </div>
+</div>
+
+{% include '@manageentities/dat/step_sections.html.twig' %}

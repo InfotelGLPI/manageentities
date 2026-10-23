@@ -39,7 +39,7 @@ use GlpiPlugin\Manageentities\Entity;
 // profile setting an administrator edits to grant or revoke them has to be the one that
 // actually governs the screen. The "config" UPDATE fallback is kept deliberately, so that a
 // technical administration profile keeps its access to the reporting screens.
-if (!Session::haveRight(Entity::$rightname, READ) && !Session::haveRight("config", UPDATE)) {
+if (!Session::haveRight(Entity::$rightname, READ) && !Session::haveRight(\Config::$rightname, UPDATE)) {
     throw new AccessDeniedHttpException();
 }
 

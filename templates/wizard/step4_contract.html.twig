@@ -30,7 +30,8 @@
 {#
  Step 3 — Contract GLPI + PDF upload
  Variables: contract_fields, contracttype_field, state_field, duration_field,
-            entity_field, template_field, existing_docs, rand, rand_tpl, wizard_url, step
+            entity_field, template_field, existing_docs, rand, rand_tpl, wizard_url, step,
+            proposal_doc ({name, filename, url} document of the won proposal, linked by default)
  #}
 
 <div class="card">
@@ -113,6 +114,17 @@
                 <i class="ti ti-plus me-1"></i>{{ __('Add a document', 'manageentities') }}
             </button>
         </div>
+        {# Won proposal: its generated document, linked to the contract by default #}
+        {% if proposal_doc %}
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                <i class="ti ti-link text-success"></i>
+                <a href="{{ proposal_doc.url }}" class="badge bg-green-lt text-decoration-none">
+                    <i class="ti ti-file-text me-1"></i>{{ proposal_doc.name }}
+                </a>
+                <span class="text-muted small">{{ __('Generated proposal: linked to the contract', 'manageentities') }}</span>
+            </div>
+        {% endif %}
+
         <div id="documents-container">
             {# Documents already uploaded, shown again on Back navigation #}
             {% for doc in existing_docs %}

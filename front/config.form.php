@@ -30,16 +30,54 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Config;
+use GlpiPlugin\Manageentities\DatOsTemplate;
 use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\KifloConfig;
+use GlpiPlugin\Manageentities\PresaleTemplate;
+use GlpiPlugin\Manageentities\PresaleUser;
 
 if (Plugin::isPluginActive("manageentities")) {
     // Saving has always required config UPDATE on top of the plugin right: require it to
     // display the form too, instead of showing a form whose submission is then refused.
-    if (Session::haveRight("plugin_manageentities", UPDATE) && Session::haveRight("config", UPDATE)) {
+    if (Config::canManageConfig()) {
         $config = new Config();
+
+        $presale_user = new PresaleUser();
 
         if (isset($_POST["update_config"])) {
             $config->update($_POST);
+            // Word templates of the pre-sales tab, stored in files/_plugins/manageentities/presale
+            PresaleTemplate::handleUpload($_FILES, $_POST);
+            // Models of the DAT sections, posted by the DAT tab only
+            if (isset($_POST['dat_models']) && is_array($_POST['dat_models'])) {
+                DatOsTemplate::saveAll($_POST['dat_models']);
+            }
+            Html::back();
+        } elseif (isset($_POST["kiflo_test"])) {
+            KifloConfig::testConnection();
+            Html::back();
+        } elseif (isset($_POST["kiflo_sync"])) {
+            KifloConfig::synchronize();
+            Html::back();
+        } elseif (isset($_POST["add_presaleuser"])) {
+            $presale_user->add([
+                'users_id' => (int) ($_POST['users_id'] ?? 0),
+                'type'     => (int) ($_POST['type'] ?? 0),
+            ]);
+            Html::back();
+        } elseif (isset($_POST["update_presaleuser"])) {
+            $presale_user->update([
+                'id'         => (int) ($_POST['presaleuser_id'] ?? 0),
+                'role_label' => $_POST['role_label'] ?? '',
+                'phone'      => $_POST['phone'] ?? '',
+            ]);
+            Html::back();
+        } elseif (isset($_POST["default_presaleuser"])) {
+            $presale_user->setAsDefault((int) ($_POST['presaleuser_id'] ?? 0));
+            Html::back();
+        } elseif (isset($_POST["delete_presaleuser"])) {
+            $presale_user->delete(['id' => (int) ($_POST['presaleuser_id'] ?? 0)], true);
             Html::back();
         } else {
             Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);

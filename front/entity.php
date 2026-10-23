@@ -36,6 +36,8 @@ use GlpiPlugin\Manageentities\Contact;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
 use GlpiPlugin\Manageentities\EditorSubscription;
 use GlpiPlugin\Manageentities\Entity;
+use GlpiPlugin\Manageentities\PresaleWizard;
+use GlpiPlugin\Manageentities\ProjectManager;
 use GlpiPlugin\Manageentities\TechLead;
 use GlpiPlugin\Manageentities\TicketOverview;
 
@@ -43,6 +45,11 @@ use GlpiPlugin\Manageentities\TicketOverview;
 if (isset($_GET['export']) && $_GET['export'] === 'subscriptions') {
     EditorSubscription::exportCsv();
     // exportCsv() calls exit — code below never reached
+}
+if (isset($_GET['export']) && $_GET['export'] === 'references') {
+    // All the references, or those of one year (a 4-digit year, anything else is all of them)
+    $year = isset($_GET['year']) && preg_match('/^\d{4}$/', (string) $_GET['year']) ? (int) $_GET['year'] : null;
+    return Entity::getReferencesCsvResponse($year);
 }
 if (isset($_GET['export']) && $_GET['export'] === 'unbilled') {
     DirectHelpdesk::exportUnbilledCsv();
@@ -54,6 +61,7 @@ $Contact         = new Contact();
 $ManageentitiesEntity          = new Entity();
 $BusinessContact = new BusinessContact();
 $TechLead        = new TechLead();
+$ProjectManager  = new ProjectManager();
 
 if (!isset($_POST["entities_id"])) {
     $_POST["entities_id"] = "";
@@ -70,7 +78,13 @@ if (Session::getCurrentInterface() == 'central') {
 }
 
 if ($ManageentitiesEntity->canView()
-    || Session::haveRight("config", UPDATE)) {
+    || Session::haveRight(\Config::$rightname, UPDATE)) {
+
+    // The forms of the tabs post here and come back with Html::back(): their tab stays open.
+    // The customer selector is the exception: a new customer opens on the first tab.
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['choose_client'])) {
+        Entity::keepTab();
+    }
 
     if (isset($_POST["addcontracts"])) {
         // can(-1, CREATE, $input) enforces the CREATE right AND the target entity from
@@ -156,6 +170,26 @@ if ($ManageentitiesEntity->canView()
         }
         Html::back();
 
+    } elseif (isset($_POST["addprojectmanager"])) {
+        if ($ProjectManager->can(-1, CREATE, $_POST)) {
+            $ProjectManager->add($_POST);
+        }
+        Html::back();
+
+    } elseif (isset($_POST["deleteprojectmanager"])) {
+        // Same right as the tech leads: PURGE is only granted to the full profile
+        if ($ProjectManager->can((int) $_POST["id"], DELETE)) {
+            $ProjectManager->delete(['id' => (int) $_POST["id"]], true);
+        }
+        Html::back();
+
+    } elseif (isset($_POST["projectmanagerbydefault"])) {
+        // can($id, UPDATE) reloads the row and enforces entity access on it
+        if ($ProjectManager->can((int) $_POST["id"], UPDATE)) {
+            $ProjectManager->setAsDefault((int) $_POST["id"]);
+        }
+        Html::back();
+
     } elseif (isset($_POST["contactbydefault"])) {
         // Align with the sibling branches: canCreate() is entity-agnostic. Enforce access to
         // the posted entity AND reload the target row via can($id, UPDATE) before flipping the
@@ -173,7 +207,22 @@ if ($ManageentitiesEntity->canView()
         // used to be delegated to a ?active_entity= GET, which the CSRF listener never
         // validates, so a link or an image pointing at it moved the active entity of whoever
         // opened it. changeActiveEntities() refuses an entity outside the caller's scope.
-        if (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
+        if (isset($_POST["choose_client"])) {
+            // Selector above the tabs: a customer of the list, or all of them (0), that is the
+            // customers entity and its sons. changeActiveEntities() checks the scope again.
+            $active_entity = (int) $_POST["entities_id"];
+            if ($active_entity > 0 && !array_key_exists($active_entity, Entity::getSelectableClients())) {
+                throw new AccessDeniedHttpException();
+            }
+            $changed = $active_entity > 0
+                ? Session::changeActiveEntities($active_entity)
+                : Session::changeActiveEntities(PresaleWizard::getTargetEntity(), true);
+            if (!$changed) {
+                throw new AccessDeniedHttpException();
+            }
+            Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php");
+
+        } elseif (isset($_POST["choice_entity"]) && $_POST["entities_id"] != 0) {
             $active_entity = (int) $_POST["entities_id"];
             if ($active_entity <= 0) {
                 throw new BadRequestHttpException();
@@ -184,11 +233,6 @@ if ($ManageentitiesEntity->canView()
             Html::redirect(PLUGIN_MANAGEENTITIES_WEBDIR . "/front/entity.php");
 
         } else {
-            if (Session::getCurrentInterface() == 'central') {
-                $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 1));
-            } else {
-                $dateYear = date("Y-m-d", mktime(0, 0, 0, date("m"), 1, date("Y") - 10));
-            }
             $lastday = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
 
             if (date("d") == $lastday) {
@@ -200,7 +244,8 @@ if ($ManageentitiesEntity->canView()
                 $dateMonthend   = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, $lastday, date("Y")));
                 $dateMonthbegin = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, 1, date("Y")));
             }
-            $options = ["begin_date_after"  => isset($_POST['begin_date_after']) ? $_POST['begin_date_after'] : $dateYear,
+            // No lower bound on the start of the periods by default: every ongoing one is listed
+            $options = ["begin_date_after"  => isset($_POST['begin_date_after']) ? $_POST['begin_date_after'] : "",
                 "begin_date_before" => isset($_POST['begin_date_before']) ? $_POST['begin_date_before'] : "",
                 "begin_date"        => isset($_POST['begin_date']) ? $_POST['begin_date'] : $dateMonthbegin,
                 "end_date"          => isset($_POST['end_date']) ? $_POST['end_date'] : $dateMonthend,
@@ -212,10 +257,22 @@ if ($ManageentitiesEntity->canView()
                 "company_id"        => isset($_POST['company_id']) ? $_POST['company_id'] : 0,
                 "year_current"      => isset($_POST['year_current']) ? $_POST['year_current'] : 0,
                 "stale_weeks"       => TicketOverview::sanitizeStaleWeeks($_POST['stale_weeks'] ?? TicketOverview::DEFAULT_STALE_WEEKS),
-                "ticket_type"       => TicketOverview::sanitizeType($_POST['ticket_type'] ?? TicketOverview::ALL_TYPES)];
+                "ticket_type"       => TicketOverview::sanitizeType($_POST['ticket_type'] ?? TicketOverview::ALL_TYPES),
+                "kiflo_all"         => !empty($_POST['kiflo_all'])];
 
+            // A new visit opens on the first tab, in the order of the user, instead of the tab
+            // left open last time. The page reloaded after a form of a tab (Entity::keepTab()),
+            // a filter posted by a tab or a forcetab keep the current tab.
+            if ($_SERVER['REQUEST_METHOD'] === 'GET' && !isset($_GET['forcetab']) && !Entity::consumeKeepTab()) {
+                Session::setActiveTab(Entity::class, '');
+            }
+
+            Entity::showClientSelector();
             $entity = new Entity();
+            // .me-portal scopes the layout of the tabs, on the right (manageentities.css)
+            echo "<div class='me-portal'>";
             $entity->display($options);
+            echo "</div>";
         }
     }
 

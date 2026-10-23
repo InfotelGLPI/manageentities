@@ -115,6 +115,18 @@ class Profile extends \Profile
                 'label' => __('Direct helpdesk', 'manageentities'),
                 'field' => 'plugin_manageentities_directhelpdesk',
             ],
+            [
+                // Pre-sales section: prospects and financial proposals
+                'itemtype' => PresaleProposal::class,
+                'label' => __('Pre-sales', 'manageentities'),
+                'field' => 'plugin_manageentities_presale',
+            ],
+            [
+                // Technical architecture documents of the clients
+                'itemtype' => Dat::class,
+                'label' => Dat::getTypeName(1),
+                'field' => 'plugin_manageentities_dat',
+            ],
         ];
 
         return $rights;
@@ -215,7 +227,9 @@ class Profile extends \Profile
                 // existing generic value (masked to the four exposed bits) so profiles
                 // that could already use the feature keep their access after the split
                 // instead of silently losing it on update.
-                if ($data['field'] === 'plugin_manageentities_directhelpdesk') {
+                // Same for the pre-sales right: the profiles managing the entities portal keep
+                // the new section available
+                if (in_array($data['field'], ['plugin_manageentities_directhelpdesk', 'plugin_manageentities_presale'], true)) {
                     $seed_mask = CREATE | READ | UPDATE | PURGE;
                     foreach ($DB->request([
                         'FROM'  => 'glpi_profilerights',
@@ -225,7 +239,28 @@ class Profile extends \Profile
                             'glpi_profilerights',
                             ['rights' => ((int) $row['rights']) & $seed_mask],
                             [
-                                'name'        => 'plugin_manageentities_directhelpdesk',
+                                'name'        => $data['field'],
+                                'profiles_id' => $row['profiles_id'],
+                            ],
+                        );
+                    }
+                }
+
+                // The DAT right goes to the profiles that can change the configuration of the
+                // plugin (Config::canUpdate()), where its Word template is uploaded
+                if ($data['field'] === 'plugin_manageentities_dat') {
+                    foreach ($DB->request([
+                        'FROM'  => 'glpi_profilerights',
+                        'WHERE' => ['name' => 'plugin_manageentities'],
+                    ]) as $row) {
+                        if ((((int) $row['rights']) & UPDATE) === 0) {
+                            continue;
+                        }
+                        $DB->update(
+                            'glpi_profilerights',
+                            ['rights' => CREATE | READ | UPDATE | PURGE],
+                            [
+                                'name'        => $data['field'],
                                 'profiles_id' => $row['profiles_id'],
                             ],
                         );
@@ -259,6 +294,8 @@ class Profile extends \Profile
                 'plugin_manageentities' => ALLSTANDARDRIGHT,
                 'plugin_manageentities_cri_create' => ALLSTANDARDRIGHT,
                 'plugin_manageentities_directhelpdesk' => CREATE | READ | UPDATE | PURGE,
+                'plugin_manageentities_presale' => CREATE | READ | UPDATE | PURGE,
+                'plugin_manageentities_dat' => CREATE | READ | UPDATE | PURGE,
             ],
             true,
         );

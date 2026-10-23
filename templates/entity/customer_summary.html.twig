@@ -1,0 +1,154 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{# Summary card of the customer, first tab of the simplified interface (CustomerSummary::show()).
+ #
+ # entity        - row of glpi_entities
+ # logo          - URL of the logo, empty without one
+ # contact       - main contact (Contact::buildContactsForTemplate() row), null without any
+ # contract      - {count, remaining, is_day, color} ongoing contracts and what is left on them
+ # subscription  - {exists, end_date, level, color}, null when the subscriptions are disabled
+ # unbilled      - {count, man_days, color} unbilled interventions
+ # alert_hours   - unbilled hours beyond which the badge is red
+ # low_remaining - remaining days below which the contract badge is red
+ #}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row g-4 align-items-start">
+            {% if logo %}
+                <div class="col-12 col-md-auto text-center">
+                    <img src="{{ logo }}" alt="{{ __('Picture') }}" class="border rounded p-2" style="max-height: 110px; max-width: 220px;">
+                </div>
+            {% endif %}
+
+            <div class="col">
+                <h2 class="mb-1">{{ entity.name }}</h2>
+                <div class="text-muted">
+                    {% set address = [entity.address, [entity.postcode, entity.town]|filter(v => v)|join(' '), entity.country]|filter(v => v) %}
+                    {% if address is not empty %}
+                        <div><i class="ti ti-map-pin me-1"></i>{{ address|join(', ') }}</div>
+                    {% endif %}
+                    {% if entity.phonenumber %}
+                        <div><i class="ti ti-phone me-1"></i>{{ entity.phonenumber }}</div>
+                    {% endif %}
+                    {% if entity.email %}
+                        <div><i class="ti ti-mail me-1"></i><a href="mailto:{{ entity.email }}">{{ entity.email }}</a></div>
+                    {% endif %}
+                    {% if entity.website %}
+                        <div><i class="ti ti-world me-1"></i>{{ entity.website }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="text-muted small fw-semibold mb-1">
+                    <i class="ti ti-user-star me-1"></i>{{ __('Referent contact', 'manageentities') }}
+                </div>
+                {% if contact %}
+                    <div class="fw-bold">{{ contact.firstname }} {{ contact.name }}</div>
+                    {% if contact.contact_type %}<div class="text-muted small">{{ contact.contact_type }}</div>{% endif %}
+                    {% if contact.phone or contact.mobile %}
+                        <div><i class="ti ti-phone me-1"></i>{{ contact.phone ?: contact.mobile }}</div>
+                    {% endif %}
+                    {% if contact.email %}
+                        <div><i class="ti ti-mail me-1"></i><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-muted">-</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <div class="row g-3">
+            {# Ongoing contracts: red below the threshold of days left, or without any #}
+            <div class="col-12 col-md">
+                <div class="card card-sm border-{{ contract.color }} border-2 h-100">
+                    <div class="card-body">
+                        <div class="text-muted small"><i class="ti ti-file-contract me-1"></i>{{ __('Ongoing contract', 'manageentities') }}</div>
+                        {% if contract.count > 0 %}
+                            <div class="h2 mb-0 text-{{ contract.color }}">
+                                {{ contract.remaining|formatted_number }}
+                                <span class="fs-5">{{ contract.is_day ? __('days left', 'manageentities') : __('hours left', 'manageentities') }}</span>
+                            </div>
+                            {% if contract.remaining < low_remaining %}
+                                <div class="text-red small"><i class="ti ti-alert-triangle me-1"></i>{{ __('Credit almost used up', 'manageentities') }}</div>
+                            {% endif %}
+                        {% else %}
+                            <div class="h3 mb-0 text-red">{{ __('No ongoing contract', 'manageentities') }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {# Subscription: red once expired #}
+            {% if subscription is not null %}
+                <div class="col-12 col-md">
+                    <div class="card card-sm border-{{ subscription.color }} border-2 h-100">
+                        <div class="card-body">
+                            <div class="text-muted small"><i class="ti ti-certificate me-1"></i>{{ _n('Publisher subscription', 'Publisher subscriptions', 1, 'manageentities') }}</div>
+                            {% if subscription.exists %}
+                                <div class="h3 mb-0 text-{{ subscription.color }}">
+                                    {{ subscription.level ?: __('Active', 'manageentities') }}
+                                </div>
+                                {% if subscription.end_date %}
+                                    <div class="small {{ subscription.color == 'red' ? 'text-red' : 'text-muted' }}">
+                                        {% if subscription.color == 'red' %}<i class="ti ti-alert-triangle me-1"></i>{{ __('Expired on', 'manageentities') }}{% else %}{{ __('Until', 'manageentities') }}{% endif %}
+                                        {{ subscription.end_date|formatted_date }}
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="h3 mb-0 text-red">{{ __('No subscription', 'manageentities') }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Unbilled interventions, in man-days: red beyond the threshold of hours #}
+            <div class="col-12 col-md">
+                <div class="card card-sm border-{{ unbilled.color }} border-2 h-100">
+                    <div class="card-body">
+                        <div class="text-muted small"><i class="ti ti-receipt-off me-1"></i>{{ __('Unbilled interventions', 'manageentities') }}</div>
+                        <div class="h2 mb-0 text-{{ unbilled.color }}">
+                            {{ unbilled.man_days|formatted_number }}
+                            <span class="fs-5">{{ __('man-days', 'manageentities') }}</span>
+                        </div>
+                        <div class="small text-muted">
+                            {{ _n('%d intervention', '%d interventions', unbilled.count, 'manageentities')|format(unbilled.count) }}
+                            {% if unbilled.color == 'red' %}
+                                <span class="text-red ms-1"><i class="ti ti-alert-triangle me-1"></i>{{ __('More than %d hours', 'manageentities')|format(alert_hours) }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

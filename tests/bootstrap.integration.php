@@ -36,12 +36,20 @@ $loader->addPsr4('GlpiPlugin\\Manageentities\\', dirname(__DIR__) . '/src/');
 $loader->addPsr4('GlpiPlugin\\Manageentities\\Tests\\', dirname(__DIR__) . '/tests/');
 $loader->addPsr4('GlpiPlugin\\Manageentities\\Tests\\Integration\\', dirname(__DIR__) . '/tests/integration/');
 
-// Install plugin tables in the test DB if they do not yet exist
+// The test environment only looks for plugins under tests/fixtures: Plugin::getPhpDir() does not
+// find this one, so its directory is set before setup.php defines it from there
+if (!defined('PLUGIN_MANAGEENTITIES_DIR')) {
+    define('PLUGIN_MANAGEENTITIES_DIR', str_replace('\\', '/', dirname(__DIR__)));
+}
+if (!defined('PLUGIN_MANAGEENTITIES_WEBDIR')) {
+    define('PLUGIN_MANAGEENTITIES_WEBDIR', '/plugins/manageentities');
+}
+
+// Install the plugin in the test DB, or bring it up to date: plugin_manageentities_install() is
+// idempotent and replays every migration, so the test DB always matches the code under test
+// (a check on the newest table or field missed the migrations of existing rows).
 if (!defined('PLUGIN_MANAGEENTITIES_VERSION')) {
     require_once dirname(__DIR__) . '/setup.php';
 }
-global $DB;
-if (!$DB->tableExists('glpi_plugin_manageentities_contracts')) {
-    require_once dirname(__DIR__) . '/hook.php';
-    plugin_manageentities_install();
-}
+require_once dirname(__DIR__) . '/hook.php';
+plugin_manageentities_install();

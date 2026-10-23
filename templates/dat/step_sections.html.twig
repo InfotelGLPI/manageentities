@@ -1,0 +1,81 @@
+{#
+ # -------------------------------------------------------------------------
+ # manageentities plugin for GLPI
+ # Copyright (C) 2017-2026 by the manageentities Development Team.
+ #
+ # https://github.com/InfotelGLPI/manageentities
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of manageentities.
+ #
+ # manageentities is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # manageentities is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with manageentities. If not, see <http://www.gnu.org/licenses/>.
+ # --------------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# Sections of a step: rich text for *_INFORMATIONS, block of commands for *_INSTALLATION
+ # (one line of the "Code" paragraph of the template per line), plain text otherwise.
+ #
+ # sections - [{key, label, kind, value, prefilled}] prefilled: empty section filled by the model
+ # model    - name of the system whose model can replace the sections of the step, empty if none
+ #}
+
+{% if model %}
+    <div class="alert alert-info d-flex align-items-center flex-wrap gap-2">
+        <i class="ti ti-template"></i>
+        <span class="me-auto">
+            {{ __('Model %s: the empty sections are prefilled from it.', 'manageentities')|format(model) }}
+        </span>
+        <button type="submit" name="apply_model" value="1" class="btn btn-sm btn-outline-primary"
+                data-dat-confirm="{{ __('Replace every section of this page by the model?', 'manageentities') }}">
+            <i class="ti ti-replace me-1"></i>{{ __('Apply the model', 'manageentities') }}
+        </button>
+    </div>
+{% endif %}
+
+{% for section in sections %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="ti {{ section.kind == 'code' ? 'ti-terminal-2' : 'ti-file-text' }} me-1"></i>{{ section.label }}
+            </h3>
+            {% if section.prefilled %}
+                <span class="badge bg-info-lt ms-2">{{ __('From the model', 'manageentities') }}</span>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {% if section.kind == 'richtext' %}
+                {{ fields.textareaField('sections[' ~ section.key ~ ']', section.value, section.label, {
+                    'full_width': true,
+                    'is_horizontal': false,
+                    'no_label': true,
+                    'enable_richtext': true,
+                    'enable_images': false,
+                    'id': 'dat_' ~ section.key|lower,
+                }) }}
+            {% elseif section.kind == 'code' %}
+                <textarea name="sections[{{ section.key }}]" id="dat_{{ section.key|lower }}" rows="8"
+                          class="form-control font-monospace" spellcheck="false"
+                          aria-label="{{ section.label }}">{{ section.value }}</textarea>
+                <div class="form-text">{{ __('One command per line: the lines are kept as typed in the document.', 'manageentities') }}</div>
+            {% else %}
+                <input type="text" name="sections[{{ section.key }}]" id="dat_{{ section.key|lower }}" maxlength="255"
+                       class="form-control" value="{{ section.value }}" aria-label="{{ section.label }}">
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

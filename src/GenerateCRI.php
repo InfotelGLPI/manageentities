@@ -203,8 +203,6 @@ class GenerateCRI extends CommonGLPI
             $options['_predefined_fields'] = [];
         }
 
-        Entity::showManageentitiesHeader(__('Generate Intervention report', 'manageentities'));
-
         // Predefined + hidden template fields, posted back as hidden inputs
         $hidden_inputs     = [];
         $predefined_fields = [];
@@ -384,7 +382,7 @@ class GenerateCRI extends CommonGLPI
             $tasks_stamp .= '.' . filemtime($tasks_js);
         }
         echo Html::script(
-            'plugins/manageentities/scripts/generatecri-tasks.js',
+            PLUGIN_MANAGEENTITIES_WEBDIR . '/scripts/generatecri-tasks.js',
             ['version' => $tasks_stamp],
             false,
         );
