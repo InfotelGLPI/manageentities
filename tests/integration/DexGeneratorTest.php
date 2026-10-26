@@ -29,12 +29,14 @@
 
 namespace GlpiPlugin\Manageentities\Tests\Integration;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Manageentities\Dat;
 use GlpiPlugin\Manageentities\DatOsTemplate;
 use GlpiPlugin\Manageentities\DatWizard;
 use GlpiPlugin\Manageentities\Dex;
 use GlpiPlugin\Manageentities\DexGenerator;
+use GlpiPlugin\Manageentities\DexServer;
 use GlpiPlugin\Manageentities\DexWizard;
 use GlpiPlugin\Manageentities\PresaleTemplate;
 use GlpiPlugin\Manageentities\Profile;
@@ -327,5 +329,86 @@ class DexGeneratorTest extends DbTestCase
         foreach (['ACME & Co', '10.0.0.1', '10.0.0.2', 'srv-db01', 'db.acme.fr', 'Debian', 'Processes of GLPI', 'mariadbd', 'Disable the mail collectors'] as $expected) {
             $this->assertStringContainsString($expected, $body);
         }
+    }
+
+    /**
+     * Servers of a DEX as the snapshot keeps them
+     *
+     * @return list<array<string, mixed>>
+     */
+    private static function servers(Dex $dex): array
+    {
+        return array_map(
+            static fn(array $row): array => array_intersect_key($row, array_flip(['rank', 'name', 'internal_name', 'ip', 'role'])),
+            DexServer::getForDex($dex->getID()),
+        );
+    }
+
+    public function testDiscardingTheDraftRestoresTheLastGeneration(): void
+    {
+        $dex = $this->createDex();
+        $documents_id = (new DexGenerator($dex))->generate();
+        $dex->getFromDB($dex->getID());
+        $this->assertNotNull($dex->getGeneratedSnapshot());
+        $generated = [
+            'sections'        => $dex->getSections(),
+            'servers'         => self::servers($dex),
+            'author_users_id' => (int) $dex->fields['author_users_id'],
+            'dex_date'        => $dex->fields['dex_date'],
+            'os'              => $dex->fields['os'],
+        ];
+        $this->assertCount(2, $generated['servers']);
+        $this->assertFalse(DexWizard::canDiscardDraft($dex));
+
+        // Draft of the next version: every kind of change
+        DexWizard::saveGeneral((int) $dex->fields['entities_id'], [
+            'client'          => 'Other client',
+            'author_users_id' => getItemByTypeName(\User::class, 'tech', true),
+            'dex_date'        => '2032-01-01',
+            'os'              => DatOsTemplate::OS_WINDOWS,
+        ]);
+        $dex->getFromDB($dex->getID());
+        DexWizard::saveSystem($dex, [
+            'servers'  => [
+                ['name' => 'new.acme.fr', 'internal_name' => 'srv-new01', 'ip' => '10.0.0.9', 'role' => 'New'],
+            ],
+            'sections' => ['SYSTEM_INFORMATIONS' => '<p>Changed</p>'],
+        ]);
+        DexWizard::saveSections($dex, DexWizard::STEP_BACKUPS, ['sections' => ['TEXT_BACKUPS' => '<p>Weekly</p>']]);
+        $dex->getFromDB($dex->getID());
+        $this->assertSame(Dex::STATUS_DRAFT, (int) $dex->fields['status']);
+        $this->assertTrue(DexWizard::canDiscardDraft($dex));
+        $this->assertTrue(DexWizard::getCardData((int) $dex->fields['entities_id'])['can_discard']);
+        $this->assertFalse(DexWizard::canDeleteDraft($dex));
+
+        $this->assertTrue(DexWizard::discardDraft($dex));
+        $dex->getFromDB($dex->getID());
+        $this->assertSame($generated, [
+            'sections'        => $dex->getSections(),
+            'servers'         => self::servers($dex),
+            'author_users_id' => (int) $dex->fields['author_users_id'],
+            'dex_date'        => $dex->fields['dex_date'],
+            'os'              => $dex->fields['os'],
+        ]);
+        $this->assertSame(Dex::STATUS_GENERATED, (int) $dex->fields['status']);
+        $this->assertSame(DexWizard::STEP_SUMMARY, (int) $dex->fields['step']);
+        $this->assertSame(1, (int) $dex->fields['version']);
+        $this->assertSame($documents_id, (int) $dex->fields['documents_id']);
+        $this->assertFalse(DexWizard::canDiscardDraft($dex));
+    }
+
+    public function testDiscardingTheDraftNeedsThePurgeRight(): void
+    {
+        $dex = $this->createDex();
+        (new DexGenerator($dex))->generate();
+        $dex->getFromDB($dex->getID());
+        DexWizard::saveSections($dex, DexWizard::STEP_BACKUPS, ['sections' => ['TEXT_BACKUPS' => '<p>Weekly</p>']]);
+        $dex->getFromDB($dex->getID());
+
+        $_SESSION['glpiactiveprofile'][Dex::$rightname] = READ | CREATE | UPDATE;
+        $this->assertFalse(DexWizard::canDiscardDraft($dex));
+        $this->assertFalse(DexWizard::getCardData((int) $dex->fields['entities_id'])['can_discard']);
+        $this->expectException(AccessDeniedHttpException::class);
+        DexWizard::discardDraft($dex);
     }
 }

@@ -35,8 +35,8 @@ use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Summary card of a customer, first tab of the clients management on the simplified interface:
- * logo, administrative data, main contact, and a badge per follow-up (ongoing contract,
- * subscription, unbilled interventions)
+ * logo, administrative data, main contact, a badge per follow-up (ongoing contract,
+ * subscription, unbilled interventions) and the last generated DAT / DEX
  */
 class CustomerSummary
 {
@@ -168,6 +168,8 @@ class CustomerSummary
                 'man_days' => self::toManDays($unbilled['seconds'], $hours_per_day),
                 'color'    => self::getUnbilledColor($unbilled['seconds']),
             ],
+            // Last generated DAT / DEX, empty without any or without the right
+            'documents'     => GeneratedDocument::getBadges($entities_id),
             'alert_hours'   => self::UNBILLED_ALERT_HOURS,
             'low_remaining' => self::LOW_REMAINING_DAYS,
         ]);

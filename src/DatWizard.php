@@ -527,6 +527,8 @@ class DatWizard
             'can_update'  => $can_update,
             // A draft never generated can be dropped (DatWizard::deleteDraft())
             'can_delete'  => self::canDeleteDraft($dat),
+            // A draft of the next version goes back to the last generation (DatWizard::discardDraft())
+            'can_discard' => self::canDiscardDraft($dat),
             'form_url'    => self::getFormUrl(),
             'entities_id' => $entities_id,
             'create_url'  => self::getStepUrl($entities_id, self::STEP_GENERAL),
@@ -557,6 +559,9 @@ class DatWizard
         }
         if (isset($input['delete_draft'])) {
             self::deleteDraft($entities_id);
+        }
+        if (isset($input['discard_draft'])) {
+            self::handleDiscardDraft($entities_id);
         }
 
         if ($step === self::STEP_GENERAL) {
@@ -610,6 +615,44 @@ class DatWizard
         }
         if ($dat->delete(['id' => $dat->getID()], true)) {
             Session::addMessageAfterRedirect(__('The draft of the technical architecture document has been deleted.', 'manageentities'));
+        }
+        Html::redirect(\Entity::getFormURLWithID($entities_id));
+    }
+
+    /**
+     * A draft of the next version of a generated DAT can be discarded: the DAT goes back to its
+     * last generation, from the snapshot taken then (none for a DAT generated before the snapshot
+     * existed). Same right as the deletion of a draft never generated: the purge.
+     */
+    public static function canDiscardDraft(?Dat $dat): bool
+    {
+        return $dat !== null
+            && (int) $dat->fields['version'] > 0
+            && (int) $dat->fields['status'] === Dat::STATUS_DRAFT
+            && $dat->getGeneratedSnapshot() !== null
+            && $dat->can($dat->getID(), PURGE);
+    }
+
+    /**
+     * Discards the draft (see canDiscardDraft())
+     */
+    public static function discardDraft(Dat $dat): bool
+    {
+        if (!self::canDiscardDraft($dat)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $dat->restoreGeneratedSnapshot(self::STEP_SUMMARY);
+    }
+
+    private static function handleDiscardDraft(int $entities_id): never
+    {
+        $dat = self::loadDat($entities_id, READ);
+        if ($dat === null) {
+            throw new AccessDeniedHttpException();
+        }
+        if (self::discardDraft($dat)) {
+            Session::addMessageAfterRedirect(__('The changes of the draft have been discarded: the last generated version is restored.', 'manageentities'));
         }
         Html::redirect(\Entity::getFormURLWithID($entities_id));
     }

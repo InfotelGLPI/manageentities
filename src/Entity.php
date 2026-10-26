@@ -661,7 +661,7 @@ class Entity extends CommonGLPI
 
     /**
      * Customers offered by the selector of the dashboard: the entities under the customers
-     * entity of the configuration, archived customers excluded, the user can reach
+     * entity of the configuration, archived customers and parent entities excluded, the user can reach
      *
      * @return array<int, string> {entities_id: name}
      */
@@ -677,6 +677,23 @@ class Entity extends CommonGLPI
             $ids = array_diff($ids, array_keys(getSonsOf('glpi_entities', $archive)));
         }
         $ids = array_values(array_filter($ids, static fn($id) => Session::haveAccessToEntity((int) $id)));
+        if ($ids === []) {
+            return [];
+        }
+
+        // Parent entities (a group of customers...) are not customers: only the leaves are offered
+        $parents = [];
+        foreach (
+            $DB->request([
+                'SELECT'   => ['entities_id'],
+                'DISTINCT' => true,
+                'FROM'     => 'glpi_entities',
+                'WHERE'    => ['entities_id' => $ids],
+            ]) as $data
+        ) {
+            $parents[] = (int) $data['entities_id'];
+        }
+        $ids = array_values(array_diff($ids, $parents));
         if ($ids === []) {
             return [];
         }

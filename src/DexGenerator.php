@@ -84,11 +84,13 @@ class DexGenerator
         $documents_id = $this->storeDocument($output, $version);
 
         $this->dex->update([
-            'id'           => $this->dex->getID(),
-            'version'      => $version,
-            'documents_id' => $documents_id,
-            'status'       => Dex::STATUS_GENERATED,
-            'step'         => DexWizard::STEP_SUMMARY,
+            'id'                 => $this->dex->getID(),
+            'version'            => $version,
+            'documents_id'       => $documents_id,
+            'status'             => Dex::STATUS_GENERATED,
+            'step'               => DexWizard::STEP_SUMMARY,
+            // What the document prints, to discard a draft of the next version (DexWizard)
+            'generated_snapshot' => $this->dex->buildGeneratedSnapshot(),
         ]);
 
         return $documents_id;

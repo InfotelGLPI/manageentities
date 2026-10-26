@@ -29,6 +29,7 @@
 
 namespace GlpiPlugin\Manageentities;
 
+use CommonDBChild;
 use CommonDBTM;
 use DBConnection;
 use Migration;
@@ -41,9 +42,14 @@ use Session;
  */
 class Dat extends CommonDBTM
 {
+    use GeneratedSnapshotTrait;
+
     public static $rightname = 'plugin_manageentities_dat';
 
     public $dohistory = true;
+
+    /** The snapshot of the last generation is technical: not in the history */
+    public $history_blacklist = ['generated_snapshot'];
 
     public const STATUS_DRAFT     = 1;
     public const STATUS_GENERATED = 2;
@@ -87,6 +93,16 @@ class Dat extends CommonDBTM
             self::STATUS_DRAFT     => __('Draft', 'manageentities'),
             self::STATUS_GENERATED => __('Generated', 'manageentities'),
         ];
+    }
+
+    protected static function newServer(): CommonDBChild
+    {
+        return new DatServer();
+    }
+
+    protected static function getDateField(): string
+    {
+        return 'dat_date';
     }
 
     public function cleanDBonPurge()
@@ -197,6 +213,7 @@ class Dat extends CommonDBTM
                             `os` varchar(50) NOT NULL DEFAULT '' COMMENT 'operating system, a DatOsTemplate::OS_* model prefilling the sections',
                             `documents_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_documents (id) — last generated version',
                             `sections` mediumtext COMMENT 'JSON text of each section, by placeholder',
+                            `generated_snapshot` mediumtext COMMENT 'JSON snapshot of the last generation: author, date, os, sections, servers',
                             `users_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_users (id) — creator',
                             `date_creation` timestamp NULL DEFAULT NULL,
                             `date_mod` timestamp NULL DEFAULT NULL,
@@ -238,6 +255,8 @@ class Dat extends CommonDBTM
                 }
             }
         }
+
+        self::installGeneratedSnapshot($migration);
     }
 
     public static function uninstall()

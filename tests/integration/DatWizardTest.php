@@ -413,10 +413,49 @@ class DatWizardTest extends DbTestCase
         $dat->getFromDB($dat->getID());
         $this->assertFalse(DatWizard::canDeleteDraft($dat));
         $this->assertFalse(DatWizard::canDeleteDraft(null));
+        // A draft never generated has nothing to go back to
+        $this->assertFalse(DatWizard::canDiscardDraft(null));
 
         // Purged with its servers
         $dat->update(['id' => $dat->getID(), 'version' => 0]);
         $this->assertTrue($dat->delete(['id' => $dat->getID()], true));
         $this->assertSame([], DatServer::getForDat($dat->getID()));
+    }
+
+    public function testDraftNeverGeneratedCannotBeDiscarded(): void
+    {
+        $this->login();
+        $dat = $this->createDat($this->createEntity());
+        $this->assertTrue(DatWizard::canDeleteDraft($dat));
+        $this->assertFalse(DatWizard::canDiscardDraft($dat));
+        $card = DatWizard::getCardData((int) $dat->fields['entities_id']);
+        $this->assertTrue($card['can_delete']);
+        $this->assertFalse($card['can_discard']);
+    }
+
+    public function testDatGeneratedWithoutSnapshotCannotBeDiscarded(): void
+    {
+        $this->login();
+        $dat = $this->createDat($this->createEntity());
+        // Generated before the snapshot existed: version 3, no generated_snapshot
+        $dat->update(['id' => $dat->getID(), 'version' => 3, 'status' => Dat::STATUS_DRAFT]);
+        $dat->getFromDB($dat->getID());
+        $this->assertNull($dat->fields['generated_snapshot']);
+        $this->assertNull($dat->getGeneratedSnapshot());
+        $this->assertFalse(DatWizard::canDiscardDraft($dat));
+        $this->assertFalse(DatWizard::canDeleteDraft($dat));
+        $this->assertFalse(DatWizard::getCardData((int) $dat->fields['entities_id'])['can_discard']);
+        $this->assertFalse($dat->restoreGeneratedSnapshot(DatWizard::STEP_SUMMARY));
+
+        $this->expectException(AccessDeniedHttpException::class);
+        DatWizard::discardDraft($dat);
+    }
+
+    public function testDeletingADraftNeedsThePurgeRight(): void
+    {
+        $this->login();
+        $dat = $this->createDat($this->createEntity());
+        $_SESSION['glpiactiveprofile'][Dat::$rightname] = READ | CREATE | UPDATE;
+        $this->assertFalse(DatWizard::canDeleteDraft($dat));
     }
 }

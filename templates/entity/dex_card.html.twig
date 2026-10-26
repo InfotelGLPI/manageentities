@@ -29,7 +29,7 @@
  # versions, latest first, and the way into its wizard.
  #
  # dex - exists, status, is_draft, version, date_mod, versions [{name, url, date}],
- #       can_create, can_update, can_delete, create_url, resume_url, new_url, summary_url,
+ #       can_create, can_update, can_delete, can_discard, create_url, resume_url, new_url, summary_url,
  #       form_url, entities_id
  #}
 <div class="col">
@@ -103,6 +103,18 @@
                         <button type="submit" name="delete_draft" value="1" class="btn btn-sm btn-ghost-danger"
                                 data-dat-confirm="{{ __('Delete this draft? Everything typed in it is lost.', 'manageentities') }}">
                             <i class="ti ti-trash me-1"></i>{{ __('Delete the draft', 'manageentities') }}
+                        </button>
+                    </form>
+                {% endif %}
+                {% if dex.can_discard %}
+                    {# A draft of the next version: back to the last generated version, from its snapshot #}
+                    <form method="post" action="{{ dex.form_url }}" class="d-inline ms-auto" data-dex-card>
+                        <input type="hidden" name="entities_id" value="{{ dex.entities_id }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        {# Confirmation: public/scripts/dat-wizard.js #}
+                        <button type="submit" name="discard_draft" value="1" class="btn btn-sm btn-ghost-danger"
+                                data-dat-confirm="{{ __('Discard every change made since the last generated version?', 'manageentities') }}">
+                            <i class="ti ti-arrow-back-up me-1"></i>{{ __('Discard the changes of the draft', 'manageentities') }}
                         </button>
                     </form>
                 {% endif %}

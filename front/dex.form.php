@@ -38,7 +38,7 @@ if (!Plugin::isPluginActive('manageentities') || !DexWizard::canUse()) {
 
 // Each step posts here (CSRF checked by the core listener): saved, then redirected
 if (isset($_POST['save_step']) || isset($_POST['previous']) || isset($_POST['generate']) || isset($_POST['apply_model'])
-    || isset($_POST['delete_draft'])) {
+    || isset($_POST['delete_draft']) || isset($_POST['discard_draft'])) {
     DexWizard::handlePost($_POST);
 }
 

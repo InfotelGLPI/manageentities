@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 17:27+0200\n"
+"POT-Creation-Date: 2026-10-23 18:40+0200\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Emperium <real.emperium@gmail.com>, 2019\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/infotelGLPI/"
@@ -95,7 +95,7 @@ msgstr ""
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:144
+#: templates/entity/customer_summary.html.twig:146
 #, php-format
 msgid "%d intervention"
 msgid_plural "%d interventions"
@@ -126,9 +126,9 @@ msgstr ""
 msgid "%s client(s) able to open tickets"
 msgstr ""
 
-#: src/DatWizard.php:668 src/DatWizard.php:671 src/DatWizard.php:675
-#: src/DatWizard.php:679 src/DexWizard.php:670 src/DexWizard.php:673
-#: src/DexWizard.php:677 src/DexWizard.php:681 src/PresaleWizard.php:1020
+#: src/DatWizard.php:711 src/DatWizard.php:714 src/DatWizard.php:718
+#: src/DatWizard.php:722 src/DexWizard.php:713 src/DexWizard.php:716
+#: src/DexWizard.php:720 src/DexWizard.php:724 src/PresaleWizard.php:1020
 #, php-format
 msgid "%s is mandatory"
 msgstr ""
@@ -261,7 +261,7 @@ msgstr ""
 msgid "Accomplished tasks informations"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:118
+#: templates/entity/customer_summary.html.twig:120
 #: templates/techlead/assignment_rules.html.twig:111
 msgid "Active"
 msgstr ""
@@ -353,7 +353,7 @@ msgstr ""
 msgid "Add an unbilled intervention"
 msgstr ""
 
-#: src/DatWizard.php:765
+#: src/DatWizard.php:808
 msgid "Add at least one server."
 msgstr ""
 
@@ -645,7 +645,7 @@ msgstr ""
 msgid "Attach documents"
 msgstr ""
 
-#: src/DatWizard.php:671 src/DexWizard.php:673
+#: src/DatWizard.php:714 src/DexWizard.php:716
 #: src/NotificationTargetEntity.php:84 src/NotificationTargetEntity.php:109
 #: src/NotificationTargetPresaleProposal.php:68
 #: templates/dat/step_general.html.twig:55
@@ -814,7 +814,7 @@ msgid "Clear the key"
 msgstr ""
 
 #: src/Dashboard.php:256 src/Dashboard.php:320 src/Dashboard.php:375
-#: src/DatWizard.php:668 src/DexWizard.php:670 src/DirectHelpdesk.php:728
+#: src/DatWizard.php:711 src/DexWizard.php:713 src/DirectHelpdesk.php:728
 #: src/Entity.php:1069 src/Followup.php:745 src/Followup.php:979
 #: src/Monthly.php:425 templates/dat/step_general.html.twig:46
 #: templates/dat/step_summary.html.twig:64
@@ -1185,7 +1185,7 @@ msgstr "Criado por "
 msgid "Creation date"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:101
+#: templates/entity/customer_summary.html.twig:103
 msgid "Credit almost used up"
 msgstr ""
 
@@ -1561,6 +1561,16 @@ msgstr ""
 msgid "Disable creation date in header of PDF"
 msgstr ""
 
+#: templates/entity/dat_card.html.twig:116
+#: templates/entity/dex_card.html.twig:116
+msgid "Discard every change made since the last generated version?"
+msgstr ""
+
+#: templates/entity/dat_card.html.twig:117
+#: templates/entity/dex_card.html.twig:117
+msgid "Discard the changes of the draft"
+msgstr ""
+
 #: templates/config_cri_form.html.twig:48
 msgid "Display PDF"
 msgstr ""
@@ -1592,11 +1602,16 @@ msgstr ""
 msgid "Download the JSON file"
 msgstr ""
 
+#: src/GeneratedDocument.php:192
+#, php-format
+msgid "Download the last generated version: %s"
+msgstr ""
+
 #: templates/presale/proposal_form.html.twig:61
 msgid "Download the proposal"
 msgstr ""
 
-#: src/Dat.php:87 src/Dex.php:96 src/PresaleProposal.php:75
+#: src/Dat.php:93 src/Dex.php:102 src/PresaleProposal.php:75
 msgid "Draft"
 msgstr ""
 
@@ -1910,7 +1925,7 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:122
+#: templates/entity/customer_summary.html.twig:124
 msgid "Expired on"
 msgstr ""
 
@@ -2064,12 +2079,16 @@ msgstr ""
 msgid "Generate the proposal"
 msgstr ""
 
-#: src/Dat.php:88 src/Dex.php:97 src/PresaleProposal.php:76
+#: src/Dat.php:94 src/Dex.php:103 src/PresaleProposal.php:76
 msgid "Generated"
 msgstr ""
 
 #: src/TechLeadRule.php:280
 msgid "Generated from the clients management portal"
+msgstr ""
+
+#: templates/entity/customer_summary.html.twig:166
+msgid "Generated on"
 msgstr ""
 
 #: templates/wizard/step4_contract.html.twig:124
@@ -2671,7 +2690,7 @@ msgstr ""
 msgid "Months"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:146
+#: templates/entity/customer_summary.html.twig:148
 #, php-format
 msgid "More than %d hours"
 msgstr ""
@@ -2772,8 +2791,8 @@ msgstr ""
 msgid "New subscription"
 msgstr ""
 
-#: templates/entity/dat_card.html.twig:112
-#: templates/entity/dex_card.html.twig:112
+#: templates/entity/dat_card.html.twig:124
+#: templates/entity/dex_card.html.twig:124
 msgid "New version"
 msgstr ""
 
@@ -2794,13 +2813,13 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: src/DatWizard.php:630 templates/dat/step_summary.html.twig:51
+#: src/DatWizard.php:673 templates/dat/step_summary.html.twig:51
 msgid ""
 "No Word template uploaded in the configuration (DAT tab): the document "
 "cannot be generated."
 msgstr ""
 
-#: src/DexWizard.php:632 templates/dex/step_summary.html.twig:51
+#: src/DexWizard.php:675 templates/dex/step_summary.html.twig:51
 msgid ""
 "No Word template uploaded in the configuration (DEX tab): the document "
 "cannot be generated."
@@ -2931,7 +2950,7 @@ msgstr ""
 msgid "No note."
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:104
+#: templates/entity/customer_summary.html.twig:106
 msgid "No ongoing contract"
 msgstr ""
 
@@ -3026,7 +3045,7 @@ msgstr ""
 msgid "No stakeholders have been affected yet."
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:127
+#: templates/entity/customer_summary.html.twig:129
 msgid "No subscription"
 msgstr ""
 
@@ -3193,7 +3212,7 @@ msgstr ""
 msgid "One command per line: the lines are kept as typed in the document."
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:94
+#: templates/entity/customer_summary.html.twig:96
 msgid "Ongoing contract"
 msgstr ""
 
@@ -3276,7 +3295,7 @@ msgstr ""
 msgid "Opening date"
 msgstr ""
 
-#: src/Dex.php:82 templates/dex/layout.html.twig:52
+#: src/Dex.php:88 templates/dex/layout.html.twig:52
 #: templates/entity/dex_card.html.twig:40
 msgid "Operating document"
 msgid_plural "Operating documents"
@@ -3287,7 +3306,7 @@ msgstr[1] ""
 msgid "Operating documents"
 msgstr ""
 
-#: src/DatWizard.php:679 src/DexWizard.php:681
+#: src/DatWizard.php:722 src/DexWizard.php:724
 #: templates/dat/step_general.html.twig:77
 #: templates/dat/step_summary.html.twig:67
 #: templates/dex/step_general.html.twig:84
@@ -3448,7 +3467,7 @@ msgid "Phone 2"
 msgstr ""
 
 #: templates/company_form.html.twig:78 templates/company_form.html.twig:79
-#: templates/entity/customer_summary.html.twig:45
+#: templates/entity/customer_summary.html.twig:47
 #: templates/entity/description.html.twig:176
 #: templates/entity/references.html.twig:62
 msgid "Picture"
@@ -3745,7 +3764,7 @@ msgstr ""
 #: templates/contract_detail_form.html.twig:42
 #: templates/cridetail_for_ticket.html.twig:84
 #: templates/editorsubscription_transfer.html.twig:44
-#: templates/entity/customer_summary.html.twig:115
+#: templates/entity/customer_summary.html.twig:117
 #: templates/presale/estimate_form.html.twig:103
 #: templates/presale/step_annexes.html.twig:223
 #: templates/wizard/step3_subscription.html.twig:39
@@ -3848,7 +3867,7 @@ msgstr ""
 msgid "References"
 msgstr "Referências "
 
-#: templates/entity/customer_summary.html.twig:70
+#: templates/entity/customer_summary.html.twig:72
 msgid "Referent contact"
 msgstr ""
 
@@ -4123,17 +4142,17 @@ msgid_plural "Servers"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/DatWizard.php:772
+#: src/DatWizard.php:815
 #, php-format
 msgid "Server %d: the DNS name is not valid."
 msgstr ""
 
-#: src/DatWizard.php:778
+#: src/DatWizard.php:821
 #, php-format
 msgid "Server %d: the IP address is not valid."
 msgstr ""
 
-#: src/DatWizard.php:775
+#: src/DatWizard.php:818
 #, php-format
 msgid "Server %d: the internal name is not valid."
 msgstr ""
@@ -4366,8 +4385,8 @@ msgid "Suggested queries"
 msgstr ""
 
 #: src/DatWizard.php:80 src/DexWizard.php:76 src/Entity.php:258
-#: templates/entity/dat_card.html.twig:115
-#: templates/entity/dex_card.html.twig:115
+#: templates/entity/dat_card.html.twig:127
+#: templates/entity/dex_card.html.twig:127
 #: templates/presale/proposal_form.html.twig:122
 #: templates/presale/step_general.html.twig:106
 #: templates/presale/step_generate.html.twig:55
@@ -4463,7 +4482,7 @@ msgstr ""
 msgid "Technical Assistance"
 msgstr "Assistência técnica "
 
-#: src/Dat.php:73 templates/dat/layout.html.twig:52
+#: src/Dat.php:79 templates/dat/layout.html.twig:52
 #: templates/entity/dat_card.html.twig:40
 msgid "Technical architecture document"
 msgid_plural "Technical architecture documents"
@@ -4536,6 +4555,12 @@ msgstr ""
 msgid ""
 "The annexes are saved first. The project manager sets the days, and can add "
 "or remove annexes."
+msgstr ""
+
+#: src/DatWizard.php:655 src/DexWizard.php:657
+msgid ""
+"The changes of the draft have been discarded: the last generated version is "
+"restored."
 msgstr ""
 
 #: templates/presale/annextype_default_lines.html.twig:124
@@ -4611,17 +4636,17 @@ msgid ""
 "changed."
 msgstr ""
 
-#: src/DatGenerator.php:197 src/DatGenerator.php:214 src/DexGenerator.php:191
-#: src/DexGenerator.php:208 src/PresaleGenerator.php:457
+#: src/DatGenerator.php:199 src/DatGenerator.php:216 src/DexGenerator.php:193
+#: src/DexGenerator.php:210 src/PresaleGenerator.php:457
 #: src/PresaleGenerator.php:474
 msgid "The document could not be stored."
 msgstr ""
 
-#: src/DexWizard.php:614
+#: src/DexWizard.php:619
 msgid "The draft of the operating document has been deleted."
 msgstr ""
 
-#: src/DatWizard.php:612
+#: src/DatWizard.php:617
 msgid "The draft of the technical architecture document has been deleted."
 msgstr ""
 
@@ -4683,7 +4708,7 @@ msgstr "O formato da imagem tem que ser JPG ou JPEG"
 msgid "The generated versions are no longer in the documents of the client."
 msgstr ""
 
-#: src/DexWizard.php:645
+#: src/DexWizard.php:688
 msgid ""
 "The generation of the operating document failed. Check the Word template of "
 "the configuration."
@@ -4695,7 +4720,7 @@ msgid ""
 "configuration."
 msgstr ""
 
-#: src/DatWizard.php:644
+#: src/DatWizard.php:687
 msgid ""
 "The generation of the technical architecture document failed. Check the Word "
 "template of the configuration."
@@ -4745,11 +4770,11 @@ msgstr ""
 msgid "The number of days exceeds the remaining days of the intervention (%s)."
 msgstr ""
 
-#: src/DexWizard.php:715 src/DexWizard.php:810
+#: src/DexWizard.php:758 src/DexWizard.php:853
 msgid "The operating document could not be saved."
 msgstr ""
 
-#: src/DexWizard.php:641
+#: src/DexWizard.php:684
 msgid "The operating document has been generated."
 msgstr ""
 
@@ -4866,11 +4891,11 @@ msgstr ""
 msgid "The target entity must not have a publisher subscription yet."
 msgstr ""
 
-#: src/DatWizard.php:703 src/DatWizard.php:837
+#: src/DatWizard.php:746 src/DatWizard.php:880
 msgid "The technical architecture document could not be saved."
 msgstr ""
 
-#: src/DatWizard.php:639
+#: src/DatWizard.php:682
 msgid "The technical architecture document has been generated."
 msgstr ""
 
@@ -4896,11 +4921,11 @@ msgstr ""
 msgid "This action is irreversible. Continue ?"
 msgstr "Esta acção é irreversível. Continuar?"
 
-#: src/Dat.php:148
+#: src/Dat.php:164
 msgid "This client already has a technical architecture document."
 msgstr ""
 
-#: src/Dex.php:157
+#: src/Dex.php:173
 msgid "This client already has an operating document."
 msgstr ""
 
@@ -5159,7 +5184,7 @@ msgid "Unbilled hours by client with an ongoing contract"
 msgstr ""
 
 #: src/Entity.php:95 src/Entity.php:281 src/Entity.php:367
-#: templates/entity/customer_summary.html.twig:138
+#: templates/entity/customer_summary.html.twig:140
 msgid "Unbilled interventions"
 msgstr ""
 
@@ -5203,7 +5228,7 @@ msgstr ""
 msgid "Unplanned interventions"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:122
+#: templates/entity/customer_summary.html.twig:124
 msgid "Until"
 msgstr ""
 
@@ -5538,7 +5563,7 @@ msgstr[1] ""
 msgid "days"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:98
+#: templates/entity/customer_summary.html.twig:100
 msgid "days left"
 msgstr ""
 
@@ -5559,7 +5584,7 @@ msgstr ""
 msgid "hours"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:98
+#: templates/entity/customer_summary.html.twig:100
 msgid "hours left"
 msgstr ""
 
@@ -5567,7 +5592,7 @@ msgstr ""
 msgid "in"
 msgstr ""
 
-#: templates/entity/customer_summary.html.twig:141
+#: templates/entity/customer_summary.html.twig:143
 msgid "man-days"
 msgstr ""
 

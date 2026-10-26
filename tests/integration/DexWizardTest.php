@@ -460,4 +460,42 @@ class DexWizardTest extends DbTestCase
         $this->assertTrue($dex->delete(['id' => $dex->getID()], true));
         $this->assertSame([], DexServer::getForDex($dex->getID()));
     }
+
+    public function testDraftNeverGeneratedCannotBeDiscarded(): void
+    {
+        $this->login();
+        $dex = $this->createDex($this->createEntity());
+        $this->assertTrue(DexWizard::canDeleteDraft($dex));
+        $this->assertFalse(DexWizard::canDiscardDraft($dex));
+        $this->assertFalse(DexWizard::canDiscardDraft(null));
+        $card = DexWizard::getCardData((int) $dex->fields['entities_id']);
+        $this->assertTrue($card['can_delete']);
+        $this->assertFalse($card['can_discard']);
+    }
+
+    public function testDexGeneratedWithoutSnapshotCannotBeDiscarded(): void
+    {
+        $this->login();
+        $dex = $this->createDex($this->createEntity());
+        // Generated before the snapshot existed: version 3, no generated_snapshot
+        $dex->update(['id' => $dex->getID(), 'version' => 3, 'status' => Dex::STATUS_DRAFT]);
+        $dex->getFromDB($dex->getID());
+        $this->assertNull($dex->fields['generated_snapshot']);
+        $this->assertNull($dex->getGeneratedSnapshot());
+        $this->assertFalse(DexWizard::canDiscardDraft($dex));
+        $this->assertFalse(DexWizard::canDeleteDraft($dex));
+        $this->assertFalse(DexWizard::getCardData((int) $dex->fields['entities_id'])['can_discard']);
+        $this->assertFalse($dex->restoreGeneratedSnapshot(DexWizard::STEP_SUMMARY));
+
+        $this->expectException(AccessDeniedHttpException::class);
+        DexWizard::discardDraft($dex);
+    }
+
+    public function testDeletingADraftNeedsThePurgeRight(): void
+    {
+        $this->login();
+        $dex = $this->createDex($this->createEntity());
+        $_SESSION['glpiactiveprofile'][Dex::$rightname] = READ | CREATE | UPDATE;
+        $this->assertFalse(DexWizard::canDeleteDraft($dex));
+    }
 }

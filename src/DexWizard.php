@@ -529,6 +529,8 @@ class DexWizard
             'can_update'  => $can_update,
             // A draft never generated can be dropped (DexWizard::deleteDraft())
             'can_delete'  => self::canDeleteDraft($dex),
+            // A draft of the next version goes back to the last generation (DexWizard::discardDraft())
+            'can_discard' => self::canDiscardDraft($dex),
             'form_url'    => self::getFormUrl(),
             'entities_id' => $entities_id,
             'create_url'  => self::getStepUrl($entities_id, self::STEP_GENERAL),
@@ -559,6 +561,9 @@ class DexWizard
         }
         if (isset($input['delete_draft'])) {
             self::deleteDraft($entities_id);
+        }
+        if (isset($input['discard_draft'])) {
+            self::handleDiscardDraft($entities_id);
         }
 
         if ($step === self::STEP_GENERAL) {
@@ -612,6 +617,44 @@ class DexWizard
         }
         if ($dex->delete(['id' => $dex->getID()], true)) {
             Session::addMessageAfterRedirect(__('The draft of the operating document has been deleted.', 'manageentities'));
+        }
+        Html::redirect(\Entity::getFormURLWithID($entities_id));
+    }
+
+    /**
+     * A draft of the next version of a generated DEX can be discarded: the DEX goes back to its
+     * last generation, from the snapshot taken then (none for a DEX generated before the snapshot
+     * existed). Same right as the deletion of a draft never generated: the purge.
+     */
+    public static function canDiscardDraft(?Dex $dex): bool
+    {
+        return $dex !== null
+            && (int) $dex->fields['version'] > 0
+            && (int) $dex->fields['status'] === Dex::STATUS_DRAFT
+            && $dex->getGeneratedSnapshot() !== null
+            && $dex->can($dex->getID(), PURGE);
+    }
+
+    /**
+     * Discards the draft (see canDiscardDraft())
+     */
+    public static function discardDraft(Dex $dex): bool
+    {
+        if (!self::canDiscardDraft($dex)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $dex->restoreGeneratedSnapshot(self::STEP_SUMMARY);
+    }
+
+    private static function handleDiscardDraft(int $entities_id): never
+    {
+        $dex = self::loadDex($entities_id, READ);
+        if ($dex === null) {
+            throw new AccessDeniedHttpException();
+        }
+        if (self::discardDraft($dex)) {
+            Session::addMessageAfterRedirect(__('The changes of the draft have been discarded: the last generated version is restored.', 'manageentities'));
         }
         Html::redirect(\Entity::getFormURLWithID($entities_id));
     }
