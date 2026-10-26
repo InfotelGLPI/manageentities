@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 14:24+0000\n"
+"POT-Creation-Date: 2026-10-23 15:35+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2018\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/infotelGLPI/"
@@ -126,8 +126,9 @@ msgstr ""
 msgid "%s client(s) able to open tickets"
 msgstr ""
 
-#: src/DatWizard.php:668 src/DatWizard.php:671 src/DatWizard.php:675
-#: src/DatWizard.php:679 src/PresaleWizard.php:1020
+#: src/DatWizard.php:711 src/DatWizard.php:714 src/DatWizard.php:718
+#: src/DatWizard.php:722 src/DexWizard.php:713 src/DexWizard.php:716
+#: src/DexWizard.php:720 src/DexWizard.php:724 src/PresaleWizard.php:1020
 #, php-format
 msgid "%s is mandatory"
 msgstr ""
@@ -147,17 +148,22 @@ msgstr ""
 msgid "%s: at least one line is required"
 msgstr ""
 
-#: src/PresaleTemplate.php:143
+#: src/PresaleTemplate.php:146
 #, php-format
 msgid "%s: no template uploaded in the configuration (DAT tab)."
 msgstr ""
 
-#: src/PresaleTemplate.php:144
+#: src/PresaleTemplate.php:147
+#, php-format
+msgid "%s: no template uploaded in the configuration (DEX tab)."
+msgstr ""
+
+#: src/PresaleTemplate.php:148
 #, php-format
 msgid "%s: no template uploaded in the configuration (Pre-sales tab)."
 msgstr ""
 
-#: src/PresaleTemplate.php:188
+#: src/PresaleTemplate.php:193
 #, php-format
 msgid "%s: template deleted."
 msgstr ""
@@ -257,7 +263,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: hook.php:1023 src/EditorSubscription.php:183
+#: hook.php:1038 src/EditorSubscription.php:183
 msgid "Active editor subscription"
 msgstr ""
 
@@ -326,7 +332,7 @@ msgstr ""
 msgid "Add an unbilled intervention"
 msgstr ""
 
-#: src/DatWizard.php:765
+#: src/DatWizard.php:808
 msgid "Add at least one server."
 msgstr ""
 
@@ -454,19 +460,19 @@ msgid_plural "Annex models"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PresaleTemplate.php:89
+#: src/PresaleTemplate.php:90
 msgid ""
 "Annexes of a cloud subscription: monthly price per subscription, number of "
 "subscriptions, number of months."
 msgstr ""
 
-#: src/PresaleTemplate.php:88
+#: src/PresaleTemplate.php:89
 msgid ""
 "Annexes of an on premise subscription: quantity and price, no daily rate "
 "column."
 msgstr ""
 
-#: src/PresaleTemplate.php:87
+#: src/PresaleTemplate.php:88
 msgid "Annexes priced in days at a daily rate."
 msgstr ""
 
@@ -603,9 +609,10 @@ msgstr ""
 msgid "Attach documents"
 msgstr ""
 
-#: src/NotificationTargetPresaleProposal.php:68 src/DatWizard.php:671
-#: src/NotificationTargetEntity.php:84 src/NotificationTargetEntity.php:109
-#: ⁨standard input⁩:55 ⁨standard input⁩:65
+#: src/NotificationTargetPresaleProposal.php:68 src/DatWizard.php:714
+#: src/DexWizard.php:716 src/NotificationTargetEntity.php:84
+#: src/NotificationTargetEntity.php:109 ⁨standard input⁩:55 ⁨standard input⁩:65
+#: ⁨standard input⁩:62
 msgid "Author"
 msgstr ""
 
@@ -625,6 +632,14 @@ msgstr ""
 
 #: ⁨standard input⁩:115 ⁨standard input⁩:132
 msgid "Back to the proposal"
+msgstr ""
+
+#: src/DexWizard.php:117
+msgid "Backups"
+msgstr ""
+
+#: src/DexWizard.php:73
+msgid "Backups and processes"
 msgstr ""
 
 #: ⁨standard input⁩:64 ⁨standard input⁩:69 ⁨standard input⁩:49 ⁨standard input⁩:180
@@ -693,6 +708,10 @@ msgstr ""
 msgid "Category of the generated DAT"
 msgstr ""
 
+#: ⁨standard input⁩:48
+msgid "Category of the generated DEX"
+msgstr ""
+
 #: ⁨standard input⁩:69
 msgid "Category of the generated proposals"
 msgstr ""
@@ -740,12 +759,12 @@ msgstr ""
 msgid "Clear the key"
 msgstr ""
 
-#: src/Entity.php:1065 src/DatWizard.php:668 src/DirectHelpdesk.php:728
-#: src/Dashboard.php:256 src/Dashboard.php:320 src/Dashboard.php:375
-#: src/Monthly.php:425 src/Followup.php:745 src/Followup.php:979
-#: ⁨standard input⁩:46 ⁨standard input⁩:64 ⁨standard input⁩:126 ⁨standard input⁩:141
-#: ⁨standard input⁩:38 ⁨standard input⁩:175 ⁨standard input⁩:48 ⁨standard input⁩:120
-#: ⁨standard input⁩:165 ⁨standard input⁩:82
+#: src/Entity.php:1069 src/DatWizard.php:711 src/DirectHelpdesk.php:728
+#: src/DexWizard.php:713 src/Dashboard.php:256 src/Dashboard.php:320
+#: src/Dashboard.php:375 src/Monthly.php:425 src/Followup.php:745
+#: src/Followup.php:979 ⁨standard input⁩:46 ⁨standard input⁩:64 ⁨standard input⁩:126
+#: ⁨standard input⁩:141 ⁨standard input⁩:38 ⁨standard input⁩:175 ⁨standard input⁩:53
+#: ⁨standard input⁩:48 ⁨standard input⁩:120 ⁨standard input⁩:165 ⁨standard input⁩:82
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] ""
@@ -803,7 +822,7 @@ msgstr ""
 msgid "Cloud"
 msgstr ""
 
-#: hook.php:1036 src/NotificationTargetEditorSubscription.php:120
+#: hook.php:1051 src/NotificationTargetEditorSubscription.php:120
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
 #: src/EditorSubscription.php:812 ⁨standard input⁩:93 ⁨standard input⁩:70
 #: ⁨standard input⁩:58
@@ -824,6 +843,26 @@ msgstr ""
 
 #: src/ContractState.php:126
 msgid "Color field is not correct"
+msgstr ""
+
+#: src/DexWizard.php:127
+msgid "Commands of the manual backup"
+msgstr ""
+
+#: src/DexWizard.php:119
+msgid "Commands to check the processes"
+msgstr ""
+
+#: src/DexWizard.php:125
+msgid "Commands to launch the scheduled tasks"
+msgstr ""
+
+#: src/DexWizard.php:123
+msgid "Commands to restart the database server"
+msgstr ""
+
+#: src/DexWizard.php:121
+msgid "Commands to restart the web server"
 msgstr ""
 
 #: ⁨standard input⁩:124 ⁨standard input⁩:70
@@ -974,12 +1013,16 @@ msgstr ""
 msgid "Converted"
 msgstr ""
 
+#: src/DexWizard.php:129
+msgid "Copy of the production to the preproduction"
+msgstr ""
+
 #: ⁨standard input⁩:237 ⁨standard input⁩:69 ⁨standard input⁩:81 ⁨standard input⁩:153
 #: ⁨standard input⁩:115
 msgid "Country"
 msgstr ""
 
-#: src/PresaleTemplate.php:86
+#: src/PresaleTemplate.php:87
 msgid "Cover, presentation and signatures of the proposal."
 msgstr ""
 
@@ -1010,6 +1053,10 @@ msgstr ""
 
 #: ⁨standard input⁩:91
 msgid "Create the DAT"
+msgstr ""
+
+#: ⁨standard input⁩:91
+msgid "Create the DEX"
 msgstr ""
 
 #: ⁨standard input⁩:82 ⁨standard input⁩:119
@@ -1114,6 +1161,16 @@ msgid_plural "DAT models"
 msgstr[0] ""
 msgstr[1] ""
 
+#: src/DexConfig.php:46
+msgid "DEX"
+msgstr ""
+
+#: src/DexOsTemplate.php:49
+msgid "DEX model"
+msgid_plural "DEX models"
+msgstr[0] ""
+msgstr[1] ""
+
 #: ⁨standard input⁩:43 ⁨standard input⁩:84 ⁨standard input⁩:81
 msgid "DNS name"
 msgstr ""
@@ -1145,8 +1202,8 @@ msgid "Database installation"
 msgstr ""
 
 #: ⁨standard input⁩:46 ⁨standard input⁩:35 ⁨standard input⁩:72 ⁨standard input⁩:68
-#: ⁨standard input⁩:66 ⁨standard input⁩:96 ⁨standard input⁩:39 ⁨standard input⁩:55
-#: ⁨standard input⁩:251 ⁨standard input⁩:78
+#: ⁨standard input⁩:66 ⁨standard input⁩:96 ⁨standard input⁩:55 ⁨standard input⁩:39
+#: ⁨standard input⁩:251 ⁨standard input⁩:75 ⁨standard input⁩:78
 msgid "Date"
 msgstr ""
 
@@ -1158,7 +1215,7 @@ msgstr ""
 msgid "Date of renewal"
 msgstr ""
 
-#: src/Entity.php:1066 src/Gantt.php:325 src/Followup.php:881 ⁨standard input⁩:53
+#: src/Entity.php:1070 src/Gantt.php:325 src/Followup.php:881 ⁨standard input⁩:53
 #: ⁨standard input⁩:136
 msgid "Date of signature"
 msgstr ""
@@ -1341,6 +1398,14 @@ msgstr ""
 msgid "Disable creation date in header of PDF"
 msgstr ""
 
+#: ⁨standard input⁩:116
+msgid "Discard every change made since the last generated version?"
+msgstr ""
+
+#: ⁨standard input⁩:117
+msgid "Discard the changes of the draft"
+msgstr ""
+
 #: ⁨standard input⁩:47
 msgid "Display PDF"
 msgstr ""
@@ -1373,7 +1438,7 @@ msgstr ""
 msgid "Download the proposal"
 msgstr ""
 
-#: src/Dat.php:87 src/PresaleProposal.php:75
+#: src/Dat.php:93 src/PresaleProposal.php:75 src/Dex.php:102
 msgid "Draft"
 msgstr ""
 
@@ -1492,7 +1557,7 @@ msgstr ""
 #: front/directhelpdesk.php:41 front/directhelpdesk.php:44
 #: front/directhelpdesk.php:46 front/generatecri.form.php:127
 #: front/report_occupation.form.php:43 front/report_moving.form.php:43
-#: front/addelements.form.php:39 front/config.form.php:83
+#: front/addelements.form.php:39 front/config.form.php:88
 #: front/cridetail.form.php:53 front/cridetail.form.php:56
 #: front/cridetail.form.php:58 src/GenerateCRI.php:940 src/Profile.php:51
 #: src/Profile.php:102 src/TaskCategory.php:100 src/Preference.php:191
@@ -1714,6 +1779,10 @@ msgstr ""
 msgid "First name is required"
 msgstr ""
 
+#: src/DexWizard.php:114
+msgid "Folders to watch"
+msgstr ""
+
 #: ⁨standard input⁩:62
 msgid "For a new prospect or a prospect already known."
 msgstr ""
@@ -1745,7 +1814,8 @@ msgstr ""
 msgid "General follow-up"
 msgstr ""
 
-#: src/DatWizard.php:73 ⁨standard input⁩:56 ⁨standard input⁩:40
+#: src/DatWizard.php:73 src/DexWizard.php:70 ⁨standard input⁩:56
+#: ⁨standard input⁩:40 ⁨standard input⁩:41
 msgid "General information"
 msgstr ""
 
@@ -1770,7 +1840,7 @@ msgstr ""
 msgid "Generate the proposal"
 msgstr ""
 
-#: src/Dat.php:88 src/PresaleProposal.php:76
+#: src/Dat.php:94 src/PresaleProposal.php:76 src/Dex.php:103
 msgid "Generated"
 msgstr ""
 
@@ -1820,7 +1890,7 @@ msgstr[1] ""
 msgid "Hour of"
 msgstr ""
 
-#: src/Config.php:229 src/Contract.php:730 src/Contract.php:783
+#: src/Config.php:230 src/Contract.php:730 src/Contract.php:783
 msgid "Hourly"
 msgstr ""
 
@@ -1900,7 +1970,7 @@ msgstr ""
 msgid "Internal name"
 msgstr ""
 
-#: hook.php:1049 src/EditorSubscription.php:185 src/EditorSubscription.php:820
+#: hook.php:1064 src/EditorSubscription.php:185 src/EditorSubscription.php:820
 #: ⁨standard input⁩:55 ⁨standard input⁩:72 ⁨standard input⁩:127 ⁨standard input⁩:78
 #: ⁨standard input⁩:83
 msgid "Internet publication"
@@ -1929,7 +1999,7 @@ msgstr ""
 msgid "Intervention periods of contract"
 msgstr ""
 
-#: setup.php:164 src/Config.php:241 src/Cri.php:56 src/Profile.php:107
+#: setup.php:164 src/Config.php:242 src/Cri.php:56 src/Profile.php:107
 #: ⁨standard input⁩:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -1990,7 +2060,7 @@ msgstr ""
 msgid "Is default"
 msgstr ""
 
-#: ⁨standard input⁩:86
+#: ⁨standard input⁩:86 ⁨standard input⁩:93
 msgid "Its model prefills the empty sections of the next steps."
 msgstr ""
 
@@ -2071,6 +2141,10 @@ msgstr ""
 msgid "Latest"
 msgstr ""
 
+#: src/DexWizard.php:124
+msgid "Launch of the scheduled tasks"
+msgstr ""
+
 #: ⁨standard input⁩:43
 msgid "Launch the plugin Entities portal with GLPI launching"
 msgstr ""
@@ -2125,6 +2199,10 @@ msgid ""
 "entities of this entity will display the intervention report tab."
 msgstr ""
 
+#: src/DexWizard.php:113
+msgid "List of the processes"
+msgstr ""
+
 #: ⁨standard input⁩:57
 msgid "Load"
 msgstr ""
@@ -2134,7 +2212,7 @@ msgid "Load (man-days)"
 msgstr ""
 
 #: src/EntityLogo.php:180 ⁨standard input⁩:94 ⁨standard input⁩:96
-#: ⁨standard input⁩:172
+#: ⁨standard input⁩:172 ⁨standard input⁩:101 ⁨standard input⁩:103
 msgid "Logo"
 msgstr ""
 
@@ -2202,6 +2280,10 @@ msgstr ""
 msgid "Main tech lead of the client"
 msgstr ""
 
+#: src/DexWizard.php:128
+msgid "Maintenance mode"
+msgstr ""
+
 #: ⁨standard input⁩:224
 msgid "Manage the annex models"
 msgstr ""
@@ -2232,6 +2314,10 @@ msgstr ""
 
 #: ⁨standard input⁩:110
 msgid "Manager (main contact)"
+msgstr ""
+
+#: src/DexWizard.php:126
+msgid "Manual backup of the databases"
 msgstr ""
 
 #: ⁨standard input⁩:118
@@ -2381,7 +2467,7 @@ msgstr ""
 msgid "New subscription"
 msgstr ""
 
-#: ⁨standard input⁩:112
+#: ⁨standard input⁩:124
 msgid "New version"
 msgstr ""
 
@@ -2394,9 +2480,15 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: src/DatWizard.php:630 ⁨standard input⁩:51
+#: src/DatWizard.php:673 ⁨standard input⁩:51
 msgid ""
 "No Word template uploaded in the configuration (DAT tab): the document "
+"cannot be generated."
+msgstr ""
+
+#: src/DexWizard.php:675 ⁨standard input⁩:51
+msgid ""
+"No Word template uploaded in the configuration (DEX tab): the document "
 "cannot be generated."
 msgstr ""
 
@@ -2506,7 +2598,7 @@ msgstr ""
 msgid "No level"
 msgstr ""
 
-#: ⁨standard input⁩:98
+#: ⁨standard input⁩:98 ⁨standard input⁩:105
 msgid ""
 "No logo: the header of the document will have none. Add it from the customer "
 "sheet."
@@ -2530,6 +2622,10 @@ msgstr ""
 
 #: ⁨standard input⁩:165
 msgid "No open ticket assigned to a technician"
+msgstr ""
+
+#: ⁨standard input⁩:74
+msgid "No operating document yet."
 msgstr ""
 
 #: ⁨standard input⁩:205 ⁨standard input⁩:223
@@ -2641,6 +2737,10 @@ msgstr ""
 
 #: ⁨standard input⁩:68
 msgid "No template: the DAT cannot be generated"
+msgstr ""
+
+#: ⁨standard input⁩:68
+msgid "No template: the DEX cannot be generated"
 msgstr ""
 
 #: ⁨standard input⁩:96
@@ -2842,7 +2942,18 @@ msgstr ""
 msgid "Opening date"
 msgstr ""
 
-#: src/DatWizard.php:679 ⁨standard input⁩:77 ⁨standard input⁩:67
+#: src/Dex.php:88 ⁨standard input⁩:40 ⁨standard input⁩:52
+msgid "Operating document"
+msgid_plural "Operating documents"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ⁨standard input⁩:45
+msgid "Operating documents"
+msgstr ""
+
+#: src/DatWizard.php:722 src/DexWizard.php:724 ⁨standard input⁩:77
+#: ⁨standard input⁩:67 ⁨standard input⁩:84
 msgid "Operating system"
 msgstr ""
 
@@ -2935,7 +3046,7 @@ msgstr ""
 msgid "Period comment"
 msgstr ""
 
-#: src/Config.php:242 src/Entity.php:411 src/WizardController.php:1934
+#: src/Config.php:243 src/Entity.php:411 src/WizardController.php:1934
 #: src/WizardController.php:2009 src/WizardController.php:2126
 #: src/WizardController.php:2143 src/Followup.php:848 src/ContractDay.php:59
 #: src/ContractDay.php:61 ⁨standard input⁩:52 ⁨standard input⁩:45 ⁨standard input⁩:36
@@ -2950,7 +3061,7 @@ msgstr[1] ""
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: hook.php:983 src/CriDetail.php:828 src/CriDetail.php:1795 ⁨standard input⁩:33
+#: hook.php:998 src/CriDetail.php:828 src/CriDetail.php:1795 ⁨standard input⁩:33
 #: ⁨standard input⁩:66 ⁨standard input⁩:80
 msgid "Periods of contract"
 msgstr ""
@@ -2977,7 +3088,7 @@ msgstr ""
 msgid "Picture"
 msgstr ""
 
-#: front/config.form.php:94
+#: front/config.form.php:99
 msgid "Please activate the plugin"
 msgstr "Por favor ative o complemento "
 
@@ -3145,6 +3256,10 @@ msgstr ""
 msgid "Priority"
 msgstr ""
 
+#: src/DexWizard.php:112
+msgid "Processes used"
+msgstr ""
+
 #: src/Monthly.php:443
 msgid "Production"
 msgstr ""
@@ -3256,6 +3371,10 @@ msgstr ""
 
 #: src/EditorSubscription.php:670
 msgid "Publisher subscriptions cannot be created for the root entity."
+msgstr ""
+
+#: src/DexWizard.php:116
+msgid "Purges to perform"
 msgstr ""
 
 #: src/PresaleAnnexType.php:115 ⁨standard input⁩:188 ⁨standard input⁩:263
@@ -3413,6 +3532,14 @@ msgstr ""
 msgid "Request the estimate again"
 msgstr ""
 
+#: src/DexWizard.php:122
+msgid "Restart of the database server"
+msgstr ""
+
+#: src/DexWizard.php:120
+msgid "Restart of the web server"
+msgstr ""
+
 #: ⁨standard input⁩:95
 msgid "Resume the draft"
 msgstr ""
@@ -3457,7 +3584,7 @@ msgid "SSO technology"
 msgstr ""
 
 #: src/PresaleUser.php:96 src/NotificationTargetPresaleProposal.php:66
-#: src/NotificationTargetPresaleProposal.php:139 src/Entity.php:1069
+#: src/NotificationTargetPresaleProposal.php:139 src/Entity.php:1073
 #: src/PresaleProposal.php:197 ⁨standard input⁩:116 ⁨standard input⁩:48
 #: ⁨standard input⁩:61
 msgid "Sales representative"
@@ -3490,12 +3617,16 @@ msgstr ""
 msgid "Save this period"
 msgstr ""
 
-#: hook.php:121 hook.php:140 src/CriType.php:153
+#: hook.php:124 hook.php:143 src/CriType.php:153
 msgid "Scheduled intervention"
 msgstr "Intervenção programada"
 
 #: src/CheckSchema.php:57
 msgid "Schema check"
+msgstr ""
+
+#: src/DexWizard.php:115
+msgid "Scripts to watch"
 msgstr ""
 
 #: ⁨standard input⁩:47 ⁨standard input⁩:50 ⁨standard input⁩:127
@@ -3543,25 +3674,34 @@ msgstr ""
 msgid "Send the list of expired publisher subscriptions"
 msgstr ""
 
-#: src/DatServer.php:49 ⁨standard input⁩:76 ⁨standard input⁩:75
+#: src/DatServer.php:49 src/DexServer.php:50 ⁨standard input⁩:76
+#: ⁨standard input⁩:75
 msgid "Server"
 msgid_plural "Servers"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/DatWizard.php:772
+#: src/DatWizard.php:815
 #, php-format
 msgid "Server %d: the DNS name is not valid."
 msgstr ""
 
-#: src/DatWizard.php:778
+#: src/DatWizard.php:821
 #, php-format
 msgid "Server %d: the IP address is not valid."
 msgstr ""
 
-#: src/DatWizard.php:775
+#: src/DatWizard.php:818
 #, php-format
 msgid "Server %d: the internal name is not valid."
+msgstr ""
+
+#: src/DexWizard.php:71
+msgid "Servers and system"
+msgstr ""
+
+#: src/DexWizard.php:74
+msgid "Service restarts"
 msgstr ""
 
 #: ⁨standard input⁩:170
@@ -3580,7 +3720,7 @@ msgstr ""
 msgid "Set at the first generation"
 msgstr ""
 
-#: ⁨standard input⁩:91
+#: ⁨standard input⁩:91 ⁨standard input⁩:98
 msgid "Set by the generation."
 msgstr ""
 
@@ -3674,6 +3814,10 @@ msgstr[1] "Estado dos contratos"
 msgid "State of intervention"
 msgstr ""
 
+#: src/DexWizard.php:118
+msgid "State of the processes"
+msgstr ""
+
 #: ⁨standard input⁩:49
 msgid "State of ticket created"
 msgstr ""
@@ -3691,7 +3835,7 @@ msgstr ""
 msgid "Status list contract for the general monitoring"
 msgstr ""
 
-#: hook.php:122 hook.php:141 src/CriType.php:154
+#: hook.php:125 hook.php:144 src/CriType.php:154
 msgid "Study and advice"
 msgstr "Estudar e informar"
 
@@ -3753,13 +3897,17 @@ msgstr ""
 msgid "Suggested queries"
 msgstr ""
 
-#: src/Entity.php:258 src/DatWizard.php:80 ⁨standard input⁩:106
-#: ⁨standard input⁩:120 ⁨standard input⁩:55 ⁨standard input⁩:115
+#: src/Entity.php:258 src/DatWizard.php:80 src/DexWizard.php:76
+#: ⁨standard input⁩:106 ⁨standard input⁩:120 ⁨standard input⁩:55 ⁨standard input⁩:127
 msgid "Summary"
 msgstr ""
 
 #: ⁨standard input⁩:133
 msgid "Summary of created items"
+msgstr ""
+
+#: src/DexWizard.php:72
+msgid "Supervision"
 msgstr ""
 
 #: ⁨standard input⁩:114
@@ -3778,7 +3926,7 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: src/DatWizard.php:109
+#: src/DatWizard.php:109 src/DexWizard.php:111
 msgid "System information"
 msgstr ""
 
@@ -3804,6 +3952,10 @@ msgstr ""
 
 #: src/GenerateCRI.php:366
 msgid "Task category must be defined"
+msgstr ""
+
+#: src/DexWizard.php:75
+msgid "Tasks, backup, maintenance, preproduction"
 msgstr ""
 
 #: src/DatWizard.php:78
@@ -3837,7 +3989,7 @@ msgstr ""
 msgid "Technical Assistance"
 msgstr ""
 
-#: src/Dat.php:73 ⁨standard input⁩:52 ⁨standard input⁩:40
+#: src/Dat.php:79 ⁨standard input⁩:52 ⁨standard input⁩:40
 msgid "Technical architecture document"
 msgid_plural "Technical architecture documents"
 msgstr[0] ""
@@ -3877,7 +4029,7 @@ msgstr ""
 msgid "Thanks to select a intervention type"
 msgstr "Obrigado por selecionar o tipo de intervenção"
 
-#: src/Config.php:187
+#: src/Config.php:188
 msgid "The Kiflo API URL must start with https://."
 msgstr ""
 
@@ -3903,6 +4055,12 @@ msgstr ""
 msgid ""
 "The annexes are saved first. The project manager sets the days, and can add "
 "or remove annexes."
+msgstr ""
+
+#: src/DatWizard.php:655 src/DexWizard.php:657
+msgid ""
+"The changes of the draft have been discarded: the last generated version is "
+"restored."
 msgstr ""
 
 #: ⁨standard input⁩:124
@@ -3978,12 +4136,17 @@ msgid ""
 "changed."
 msgstr ""
 
+#: src/DexGenerator.php:193 src/DexGenerator.php:210
 #: src/PresaleGenerator.php:457 src/PresaleGenerator.php:474
-#: src/DatGenerator.php:197 src/DatGenerator.php:214
+#: src/DatGenerator.php:199 src/DatGenerator.php:216
 msgid "The document could not be stored."
 msgstr ""
 
-#: src/DatWizard.php:612
+#: src/DexWizard.php:619
+msgid "The draft of the operating document has been deleted."
+msgstr ""
+
+#: src/DatWizard.php:617
 msgid "The draft of the technical architecture document has been deleted."
 msgstr ""
 
@@ -4044,13 +4207,19 @@ msgstr ""
 msgid "The generated versions are no longer in the documents of the client."
 msgstr ""
 
+#: src/DexWizard.php:688
+msgid ""
+"The generation of the operating document failed. Check the Word template of "
+"the configuration."
+msgstr ""
+
 #: src/PresaleWizard.php:2150
 msgid ""
 "The generation of the proposal failed. Check the Word templates of the "
 "configuration."
 msgstr ""
 
-#: src/DatWizard.php:644
+#: src/DatWizard.php:687
 msgid ""
 "The generation of the technical architecture document failed. Check the Word "
 "template of the configuration."
@@ -4098,6 +4267,14 @@ msgstr ""
 #: ajax/interventionstakeholderactions.php:76
 #, php-format
 msgid "The number of days exceeds the remaining days of the intervention (%s)."
+msgstr ""
+
+#: src/DexWizard.php:758 src/DexWizard.php:853
+msgid "The operating document could not be saved."
+msgstr ""
+
+#: src/DexWizard.php:684
+msgid "The operating document has been generated."
 msgstr ""
 
 #: ⁨standard input⁩:42
@@ -4212,11 +4389,11 @@ msgstr ""
 msgid "The target entity must not have a publisher subscription yet."
 msgstr ""
 
-#: src/DatWizard.php:703 src/DatWizard.php:837
+#: src/DatWizard.php:746 src/DatWizard.php:880
 msgid "The technical architecture document could not be saved."
 msgstr ""
 
-#: src/DatWizard.php:639
+#: src/DatWizard.php:682
 msgid "The technical architecture document has been generated."
 msgstr ""
 
@@ -4242,8 +4419,19 @@ msgstr ""
 msgid "This action is irreversible. Continue ?"
 msgstr ""
 
-#: src/Dat.php:148
+#: src/Dat.php:164
 msgid "This client already has a technical architecture document."
+msgstr ""
+
+#: src/Dex.php:173
+msgid "This client already has an operating document."
+msgstr ""
+
+#: ⁨standard input⁩:47
+msgid ""
+"This client has a technical architecture document: its servers, its system "
+"and its system information are taken over by the operating document when it "
+"is created, then can be changed in it."
 msgstr ""
 
 #: src/CriDetail.php:255
@@ -4370,7 +4558,7 @@ msgstr ""
 msgid "Total production"
 msgstr ""
 
-#: hook.php:1009 src/NotificationTargetContract.php:120
+#: hook.php:1024 src/NotificationTargetContract.php:120
 #: src/NotificationTargetContract.php:155 src/Dashboard.php:192
 #: src/Dashboard.php:473 src/Followup.php:857 src/ContractDay.php:465
 #: ⁨standard input⁩:122
@@ -4535,8 +4723,15 @@ msgstr ""
 msgid "Update publisher subscription"
 msgstr ""
 
-#: hook.php:1160
+#: hook.php:1175
 msgid "Update subscription fields"
+msgstr ""
+
+#: ⁨standard input⁩:54
+msgid ""
+"Upload the Word template of the operating documents: no template is shipped "
+"with the plugin. The placeholders it can hold are listed in the "
+"documentation of the plugin."
 msgstr ""
 
 #: ⁨standard input⁩:54
@@ -4567,7 +4762,7 @@ msgstr ""
 msgid "Urgency"
 msgstr ""
 
-#: hook.php:120 hook.php:139 src/CriType.php:152
+#: hook.php:123 hook.php:142 src/CriType.php:152
 msgid "Urgent intervention"
 msgstr "Intervenção urgente"
 
@@ -4650,7 +4845,7 @@ msgstr ""
 msgid "Validated by %s"
 msgstr ""
 
-#: ⁨standard input⁩:115 ⁨standard input⁩:89 ⁨standard input⁩:68
+#: ⁨standard input⁩:115 ⁨standard input⁩:89 ⁨standard input⁩:68 ⁨standard input⁩:96
 msgid "Version"
 msgstr ""
 
@@ -4737,23 +4932,27 @@ msgstr ""
 msgid "Word document"
 msgstr ""
 
-#: src/PresaleTemplate.php:72
+#: src/PresaleTemplate.php:73
 msgid "Word template of the annexes"
 msgstr ""
 
-#: src/PresaleTemplate.php:74
+#: src/PresaleTemplate.php:75
 msgid "Word template of the cloud subscription annexes"
 msgstr ""
 
-#: src/PresaleTemplate.php:71
+#: src/PresaleTemplate.php:101
+msgid "Word template of the operating documents"
+msgstr ""
+
+#: src/PresaleTemplate.php:72
 msgid "Word template of the proposals"
 msgstr ""
 
-#: src/PresaleTemplate.php:73
+#: src/PresaleTemplate.php:74
 msgid "Word template of the subscription annexes"
 msgstr ""
 
-#: src/PresaleTemplate.php:99
+#: src/PresaleTemplate.php:100
 msgid "Word template of the technical architecture documents"
 msgstr ""
 
@@ -4761,7 +4960,7 @@ msgstr ""
 msgid "Wording of the activities"
 msgstr ""
 
-#: src/CriPDF.php:418 src/Entity.php:1064
+#: src/CriPDF.php:418 src/Entity.php:1068
 msgid "Year"
 msgstr ""
 
@@ -4847,7 +5046,7 @@ msgstr ""
 msgid "since"
 msgstr ""
 
-#: src/PresaleTemplate.php:210
+#: src/PresaleTemplate.php:215
 msgid "template saved."
 msgstr ""
 
@@ -4859,19 +5058,19 @@ msgstr ""
 msgid "the designation is mandatory"
 msgstr ""
 
-#: src/PresaleTemplate.php:235
+#: src/PresaleTemplate.php:240
 msgid "the file could not be saved."
 msgstr ""
 
-#: src/PresaleTemplate.php:223
+#: src/PresaleTemplate.php:228
 msgid "the file could not be uploaded."
 msgstr ""
 
-#: src/PresaleTemplate.php:229
+#: src/PresaleTemplate.php:234
 msgid "the file is not a Word document (.docx)."
 msgstr ""
 
-#: src/PresaleTemplate.php:226
+#: src/PresaleTemplate.php:231
 msgid "the file is too large (10 MB at most)."
 msgstr ""
 
@@ -4895,7 +5094,7 @@ msgstr ""
 msgid "the quantity must be greater than 0"
 msgstr ""
 
-#: src/PresaleTemplate.php:232
+#: src/PresaleTemplate.php:237
 msgid "the templates folder could not be created."
 msgstr ""
 
