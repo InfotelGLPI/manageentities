@@ -33,6 +33,8 @@
  # contract      - {count, remaining, is_day, color} ongoing contracts and what is left on them
  # subscription  - {exists, end_date, level, color}, null when the subscriptions are disabled
  # unbilled      - {count, man_days, color} unbilled interventions
+ # documents     - GeneratedDocument::getBadges(): {type, label, title, icon, url, date, name} of the last
+ #                 generated DAT / DEX, empty without any
  # alert_hours   - unbilled hours beyond which the badge is red
  # low_remaining - remaining days below which the contract badge is red
  #}
@@ -149,6 +151,24 @@
                     </div>
                 </div>
             </div>
+
+            {# Last generated DAT / DEX, only when there is one: the whole card downloads it #}
+            {% for document in documents %}
+                <div class="col-12 col-md">
+                    <a href="{{ document.url }}" class="card card-sm card-link border-blue border-2 h-100 text-reset text-decoration-none"
+                       title="{{ document.title }}">
+                        <div class="card-body">
+                            <div class="text-muted small"><i class="{{ document.icon }} me-1"></i>{{ document.name }}</div>
+                            <div class="h2 mb-0 text-blue">
+                                {{ document.label }}<i class="ti ti-download fs-3 ms-2"></i>
+                            </div>
+                            {% if document.date %}
+                                <div class="small text-muted">{{ __('Generated on', 'manageentities') }} {{ document.date|formatted_date }}</div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </div>

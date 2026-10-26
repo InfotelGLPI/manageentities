@@ -363,8 +363,13 @@ class EditorSubscription extends CommonDBTM
         }
 
         // Clients with neither an active contract nor a subscription: none of the alerts below
-        // concerns them, which made them look in order
-        $ids_nothing = array_values(array_diff($concerned_ids, $with_active_contract, $with_subscription));
+        // concerns them, which made them look in order. A parent entity whose sub-entities carry
+        // the contract or the subscription is not a client without contract.
+        $covered_ids = array_merge($with_active_contract, $with_subscription);
+        $ids_nothing = array_values(array_filter(
+            array_diff($concerned_ids, $covered_ids),
+            static fn($id) => array_intersect(array_keys(getSonsOf('glpi_entities', (int) $id)), $covered_ids) === [],
+        ));
         $no_contract_no_subscription = [];
         if (!empty($ids_nothing)) {
             $iter = $DB->request([
