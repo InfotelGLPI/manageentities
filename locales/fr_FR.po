@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-23 15:35+0000\n"
+"POT-Creation-Date: 2026-10-26 11:39+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/"
@@ -98,12 +98,12 @@ msgstr[2] "%d modèles d'annexe importés."
 msgid "%d contracts running out of remaining days notified"
 msgstr "%d contrats arrivant à échéance sont notifiés"
 
-#: src/EditorSubscription.php:1172
+#: src/EditorSubscription.php:1177
 #, php-format
 msgid "%d expired publisher subscriptions notified"
 msgstr "%d notifications des souscriptions éditeurs expirées"
 
-#: ⁨standard input⁩:144
+#: ⁨standard input⁩:146
 #, php-format
 msgid "%d intervention"
 msgid_plural "%d interventions"
@@ -275,7 +275,7 @@ msgstr "Accepté le"
 msgid "Accomplished tasks informations"
 msgstr "Informations sur les tâches accomplies"
 
-#: ⁨standard input⁩:118 ⁨standard input⁩:110
+#: ⁨standard input⁩:120 ⁨standard input⁩:110
 msgid "Active"
 msgstr "Active"
 
@@ -420,7 +420,7 @@ msgstr "Tous les champs ne sont pas correctement remplis."
 msgid "All reports"
 msgstr "Liste complète"
 
-#: src/Entity.php:721
+#: src/Entity.php:738
 msgid "All the clients"
 msgstr "Tous les clients"
 
@@ -809,7 +809,7 @@ msgstr "Ville"
 msgid "Clear the key"
 msgstr "Effacer la clé"
 
-#: src/Entity.php:1069 src/DatWizard.php:711 src/DirectHelpdesk.php:728
+#: src/Entity.php:1086 src/DatWizard.php:711 src/DirectHelpdesk.php:728
 #: src/DexWizard.php:713 src/Dashboard.php:256 src/Dashboard.php:320
 #: src/Dashboard.php:375 src/Monthly.php:425 src/Followup.php:745
 #: src/Followup.php:979 ⁨standard input⁩:46 ⁨standard input⁩:64 ⁨standard input⁩:126
@@ -876,7 +876,7 @@ msgstr "Cloud"
 
 #: hook.php:1051 src/NotificationTargetEditorSubscription.php:120
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
-#: src/EditorSubscription.php:812 ⁨standard input⁩:93 ⁨standard input⁩:70
+#: src/EditorSubscription.php:817 ⁨standard input⁩:93 ⁨standard input⁩:70
 #: ⁨standard input⁩:58
 msgid "Cloud client"
 msgstr "Client cloud"
@@ -1141,7 +1141,7 @@ msgstr "Créé le"
 msgid "Creation date"
 msgstr "Date de création"
 
-#: ⁨standard input⁩:101
+#: ⁨standard input⁩:103
 msgid "Credit almost used up"
 msgstr "Crédit presque épuisé"
 
@@ -1279,7 +1279,7 @@ msgstr "Date de"
 msgid "Date of renewal"
 msgstr "Date de reconduction"
 
-#: src/Entity.php:1070 src/Gantt.php:325 src/Followup.php:881 ⁨standard input⁩:53
+#: src/Entity.php:1087 src/Gantt.php:325 src/Followup.php:881 ⁨standard input⁩:53
 #: ⁨standard input⁩:136
 msgid "Date of signature"
 msgstr "Date de signature"
@@ -1504,6 +1504,11 @@ msgstr "Télécharger"
 msgid "Download the JSON file"
 msgstr "Télécharger le fichier JSON"
 
+#: src/GeneratedDocument.php:192
+#, php-format
+msgid "Download the last generated version: %s"
+msgstr ""
+
 #: ⁨standard input⁩:61
 msgid "Download the proposal"
 msgstr "Télécharger la proposition"
@@ -1580,7 +1585,7 @@ msgid "Editor"
 msgstr "Editeur"
 
 #: src/NotificationTargetEditorSubscription.php:121
-#: src/EditorSubscription.php:159 src/EditorSubscription.php:804
+#: src/EditorSubscription.php:159 src/EditorSubscription.php:809
 #: ⁨standard input⁩:95 ⁨standard input⁩:62 ⁨standard input⁩:60
 msgid "Editor subscription"
 msgstr "Souscription Editeur"
@@ -1783,7 +1788,7 @@ msgstr "Client existant :"
 msgid "Expired"
 msgstr "Expirée"
 
-#: ⁨standard input⁩:122
+#: ⁨standard input⁩:124
 msgid "Expired on"
 msgstr "Expiré le"
 
@@ -1937,6 +1942,10 @@ msgstr "Générée"
 msgid "Generated from the clients management portal"
 msgstr "Généré à partir du portail de gestion des clients"
 
+#: ⁨standard input⁩:166
+msgid "Generated on"
+msgstr ""
+
 #: ⁨standard input⁩:124
 msgid "Generated proposal: linked to the contract"
 msgstr "Proposition générée : liée au contrat"
@@ -2060,7 +2069,7 @@ msgstr "Libellé interne"
 msgid "Internal name"
 msgstr "Nom interne"
 
-#: hook.php:1064 src/EditorSubscription.php:185 src/EditorSubscription.php:820
+#: hook.php:1064 src/EditorSubscription.php:185 src/EditorSubscription.php:825
 #: ⁨standard input⁩:55 ⁨standard input⁩:72 ⁨standard input⁩:127 ⁨standard input⁩:78
 #: ⁨standard input⁩:83
 msgid "Internet publication"
@@ -2496,7 +2505,7 @@ msgstr "Prix mensuel HT par utilisateur"
 msgid "Months"
 msgstr "Mois"
 
-#: ⁨standard input⁩:146
+#: ⁨standard input⁩:148
 #, php-format
 msgid "More than %d hours"
 msgstr "Plus de %d heures"
@@ -2711,7 +2720,7 @@ msgstr "Il ne reste plus d'heures sur cette période contractuelle"
 msgid "No lead"
 msgstr "Pas de prospect"
 
-#: src/EditorSubscription.php:471
+#: src/EditorSubscription.php:476
 msgid "No level"
 msgstr "Pas de niveau"
 
@@ -2731,7 +2740,7 @@ msgstr "Pas de tech lead responsable"
 msgid "No note."
 msgstr "Aucune note."
 
-#: ⁨standard input⁩:104
+#: ⁨standard input⁩:106
 msgid "No ongoing contract"
 msgstr "Aucun contrat en cours"
 
@@ -2824,7 +2833,7 @@ msgstr "Pas encore de prestations définies."
 msgid "No stakeholders have been affected yet."
 msgstr "Aucun intervenant n'a encore été ajouté."
 
-#: ⁨standard input⁩:127
+#: ⁨standard input⁩:129
 msgid "No subscription"
 msgstr "Aucune souscription"
 
@@ -2991,7 +3000,7 @@ msgstr ""
 "Une commande par ligne : les lignes sont reprises telles quelles dans le "
 "document."
 
-#: ⁨standard input⁩:94
+#: ⁨standard input⁩:96
 msgid "Ongoing contract"
 msgstr "Contrat en cours"
 
@@ -3218,7 +3227,7 @@ msgstr[2] "Téléphones"
 msgid "Phone 2"
 msgstr "Téléphone 2"
 
-#: ⁨standard input⁩:62 ⁨standard input⁩:45 ⁨standard input⁩:175 ⁨standard input⁩:78
+#: ⁨standard input⁩:62 ⁨standard input⁩:47 ⁨standard input⁩:175 ⁨standard input⁩:78
 #: ⁨standard input⁩:79
 msgid "Picture"
 msgstr "Logo"
@@ -3487,7 +3496,7 @@ msgstr "Éditeur"
 
 #: src/NotificationTargetEditorSubscription.php:105
 #: src/NotificationTargetEditorSubscription.php:142
-#: src/EditorSubscription.php:178 src/EditorSubscription.php:789
+#: src/EditorSubscription.php:178 src/EditorSubscription.php:794
 #: ⁨standard input⁩:100 ⁨standard input⁩:41 ⁨standard input⁩:66
 msgid "Publisher customer account ID"
 msgstr "ID du compte client chez l'éditeur"
@@ -3496,7 +3505,7 @@ msgstr "ID du compte client chez l'éditeur"
 #: src/NotificationTargetPresaleProposal.php:141 src/Entity.php:89
 #: src/Entity.php:297 src/Entity.php:346 src/EditorSubscription.php:55
 #: ⁨standard input⁩:83 ⁨standard input⁩:223 ⁨standard input⁩:102 ⁨standard input⁩:43
-#: ⁨standard input⁩:115 ⁨standard input⁩:39 ⁨standard input⁩:42
+#: ⁨standard input⁩:117 ⁨standard input⁩:39 ⁨standard input⁩:42
 msgid "Publisher subscription"
 msgid_plural "Publisher subscriptions"
 msgstr[0] "Souscription éditeur"
@@ -3523,7 +3532,7 @@ msgstr "Souscription éditeur transférée avec succès."
 msgid "Publisher subscriptions"
 msgstr "Souscriptions éditeurs"
 
-#: src/EditorSubscription.php:670
+#: src/EditorSubscription.php:675
 msgid "Publisher subscriptions cannot be created for the root entity."
 msgstr "La souscription éditeur ne peut pas être créé pour l'entité racine."
 
@@ -3587,7 +3596,7 @@ msgstr "Nom référencé chez l'éditeur"
 msgid "References"
 msgstr "References"
 
-#: ⁨standard input⁩:70
+#: ⁨standard input⁩:72
 msgid "Referent contact"
 msgstr "Contact référent"
 
@@ -3739,7 +3748,7 @@ msgid "SSO technology"
 msgstr "Technologie SSO"
 
 #: src/PresaleUser.php:96 src/NotificationTargetPresaleProposal.php:66
-#: src/NotificationTargetPresaleProposal.php:139 src/Entity.php:1073
+#: src/NotificationTargetPresaleProposal.php:139 src/Entity.php:1090
 #: src/PresaleProposal.php:197 ⁨standard input⁩:116 ⁨standard input⁩:48
 #: ⁨standard input⁩:61
 msgid "Sales representative"
@@ -3827,7 +3836,7 @@ msgstr ""
 "Envoyez la liste des contrats dont le nombre de jours restants arrive à "
 "échéance."
 
-#: src/EditorSubscription.php:1100
+#: src/EditorSubscription.php:1105
 msgid "Send the list of expired publisher subscriptions"
 msgstr "Envoyer la liste des souscriptions éditeurs expirées"
 
@@ -4018,8 +4027,8 @@ msgstr "Annexe de souscription : pas de chiffrage en jours."
 
 #: src/NotificationTargetEditorSubscription.php:108
 #: src/NotificationTargetEditorSubscription.php:145
-#: src/EditorSubscription.php:182 src/EditorSubscription.php:796
-#: src/EditorSubscription.php:851 src/SubscriptionLevel.php:48
+#: src/EditorSubscription.php:182 src/EditorSubscription.php:801
+#: src/EditorSubscription.php:856 src/SubscriptionLevel.php:48
 #: ⁨standard input⁩:150 ⁨standard input⁩:104 ⁨standard input⁩:90 ⁨standard input⁩:78
 msgid "Subscription level"
 msgid_plural "Subscription levels"
@@ -4888,7 +4897,7 @@ msgstr "Heures non facturées"
 msgid "Unbilled hours by client with an ongoing contract"
 msgstr "Heures non facturées par un client ayant un contrat en cours"
 
-#: src/Entity.php:95 src/Entity.php:281 src/Entity.php:367 ⁨standard input⁩:138
+#: src/Entity.php:95 src/Entity.php:281 src/Entity.php:367 ⁨standard input⁩:140
 msgid "Unbilled interventions"
 msgstr "Interventions non facturées"
 
@@ -4932,7 +4941,7 @@ msgstr "Table inconnue"
 msgid "Unplanned interventions"
 msgstr "Interventions non planifiées"
 
-#: ⁨standard input⁩:122
+#: ⁨standard input⁩:124
 msgid "Until"
 msgstr "Jusqu'à"
 
@@ -5220,7 +5229,7 @@ msgstr "Modèle Word des dossiers d'architecture technique"
 msgid "Wording of the activities"
 msgstr "Libellé des activités"
 
-#: src/CriPDF.php:418 src/Entity.php:1068
+#: src/CriPDF.php:418 src/Entity.php:1085
 msgid "Year"
 msgstr "Année"
 
@@ -5259,7 +5268,7 @@ msgstr[2] "jours"
 msgid "days"
 msgstr "jours"
 
-#: ⁨standard input⁩:98
+#: ⁨standard input⁩:100
 msgid "days left"
 msgstr "jours restants"
 
@@ -5279,7 +5288,7 @@ msgstr "ex. Expertise technique GLPI"
 msgid "hours"
 msgstr "heures"
 
-#: ⁨standard input⁩:98
+#: ⁨standard input⁩:100
 msgid "hours left"
 msgstr "heures restantes"
 
@@ -5287,7 +5296,7 @@ msgstr "heures restantes"
 msgid "in"
 msgstr "à"
 
-#: ⁨standard input⁩:141
+#: ⁨standard input⁩:143
 msgid "man-days"
 msgstr "jours-homme"
 
