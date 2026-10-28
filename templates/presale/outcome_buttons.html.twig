@@ -36,11 +36,18 @@
  # back_to_home - back to the landing page of the section after the action
  # size         - btn-sm for the list
  # can_delete   - offers the deletion of the proposal (list of the proposals in progress)
+ # can_send     - generated, not sent yet: offers to mark it as sent
  #}
-{% macro buttons(id, action_url, can_win, modified, back_to_home = false, size = '', can_delete = false) %}
+{% macro buttons(id, action_url, can_win, modified, back_to_home = false, size = '', can_delete = false, can_send = false) %}
     <form method="post" action="{{ action_url }}" class="d-inline-flex gap-1">
         <input type="hidden" name="id" value="{{ id }}">
         {% if back_to_home %}<input type="hidden" name="back_to_home" value="1">{% endif %}
+        {% if can_send %}
+            <button type="submit" name="presale_action" value="sent" class="btn btn-outline-primary {{ size }}"
+                    title="{{ __('Mark as sent', 'manageentities') }}">
+                <i class="ti ti-send{{ size ? '' : ' me-1' }}"></i>{% if not size %}{{ __('Mark as sent', 'manageentities') }}{% endif %}
+            </button>
+        {% endif %}
         <button type="submit" name="presale_action" value="lost" class="btn btn-outline-danger {{ size }}"
                 title="{{ __('Lost', 'manageentities') }}"
                 data-presale-confirm="{{ __('Archive this proposal as lost? It can be reactivated later.', 'manageentities') }}">

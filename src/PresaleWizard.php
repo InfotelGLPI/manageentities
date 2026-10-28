@@ -155,11 +155,7 @@ class PresaleWizard
 
     private static function isEditable(PresaleProposal $proposal): bool
     {
-        return in_array(
-            (int) $proposal->fields['status'],
-            [PresaleProposal::STATUS_DRAFT, PresaleProposal::STATUS_GENERATED],
-            true,
-        );
+        return in_array((int) $proposal->fields['status'], PresaleProposal::getOpenStatuses(), true);
     }
 
     private static function loadClient(PresaleProposal $proposal): PresaleClient
@@ -279,6 +275,9 @@ class PresaleWizard
                 'id'         => (int) $data['id'],
                 // Same rules as the last step: won once generated, the warning when changed since
                 'can_win'    => (int) $data['version'] > 0,
+                // Its last generated version is the one to send
+                'can_send'   => (int) $data['status'] === PresaleProposal::STATUS_GENERATED,
+                'is_sent'    => (int) $data['status'] === PresaleProposal::STATUS_SENT,
                 'modified'   => (int) $data['version'] > 0 && (int) $data['status'] === PresaleProposal::STATUS_DRAFT,
             ];
         }
@@ -2188,6 +2187,16 @@ class PresaleWizard
                 Html::redirect(self::getCustomerWizardPath($id));
 
                 // no break
+            case 'sent':
+                // The document goes out as generated: a change since makes it a draft, to be
+                // generated again first
+                if ($status !== PresaleProposal::STATUS_GENERATED) {
+                    throw new AccessDeniedHttpException();
+                }
+                $proposal->update(['id' => $id, 'status' => PresaleProposal::STATUS_SENT]);
+                Session::addMessageAfterRedirect(__('The proposal is marked as sent.', 'manageentities'));
+                break;
+
             case 'lost':
                 if (!self::isEditable($proposal)) {
                     throw new AccessDeniedHttpException();

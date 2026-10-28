@@ -67,7 +67,7 @@
                 </a>
             {% endif %}
             {% if can_outcome %}
-                {{ outcome.buttons(proposal.id, action_url, proposal.version > 0, proposal.status == 1 and proposal.version > 0, false, 'btn-sm') }}
+                {{ outcome.buttons(proposal.id, action_url, proposal.version > 0, proposal.status == 1 and proposal.version > 0, false, 'btn-sm', false, proposal.status == 2) }}
             {% endif %}
             {% if can_reactivate %}
                 <form method="post" action="{{ action_url }}" class="d-inline">
