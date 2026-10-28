@@ -5953,6 +5953,22 @@ msgstr[0] "Semaine"
 msgstr[1] "Semaines"
 msgstr[2] "Semaines"
 
+#: src/PresaleWizard.php
+msgid "The version has been deleted."
+msgstr "La version a été supprimée."
+
+#: src/PresaleWizard.php
+msgid "The version could not be deleted."
+msgstr "La version n'a pas pu être supprimée."
+
+#: templates/presale/step_generate.html.twig
+msgid "Delete this version"
+msgstr "Supprimer cette version"
+
+#: templates/presale/step_generate.html.twig
+msgid "Delete this version of the proposal? Its document is deleted."
+msgstr "Supprimer cette version de la proposition ? Son document est supprimé."
+
 #~ msgid "Expired only"
 #~ msgstr "Expirés uniquement"
 

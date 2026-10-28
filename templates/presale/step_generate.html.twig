@@ -31,7 +31,8 @@
  # client       - fields of the prospect
  # recipient    - name of the contact receiving the proposal
  # annexes      - PresaleProposal::getAnnexesSummary()
- # versions     - generated documents, newest first: name, date, url, is_last
+ # versions     - generated documents, newest first: id, name, date, url, is_last, is_version
+ # can_delete_version - the proposal is editable: its generated versions can be deleted
  # action_url   - target of the generate / won / lost actions
  # can_generate - the proposal is editable and has at least one annex
  # missing_templates - labels of the Word templates still to upload in the configuration
@@ -148,6 +149,13 @@
                         <a href="{{ version.url }}">{{ version.name }}</a>
                         {% if version.is_last %}<span class="badge bg-green-lt">{{ __('Latest', 'manageentities') }}</span>{% endif %}
                         <span class="text-muted ms-auto small">{{ version.date|formatted_datetime }}</span>
+                        {% if can_delete_version and version.is_version %}
+                            <button type="submit" form="presale-action-form" name="delete_version" value="{{ version.id }}"
+                                    class="btn btn-sm btn-ghost-danger" title="{{ __('Delete this version', 'manageentities') }}"
+                                    data-presale-confirm="{{ __('Delete this version of the proposal? Its document is deleted.', 'manageentities') }}">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>

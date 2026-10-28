@@ -39,8 +39,8 @@ if (isset($_POST['purge'])) {
     $proposal->redirectToList();
 }
 
-// Generate, won, lost, reactivate (step 7 and summary of the proposal)
-if (isset($_POST['presale_action'])) {
+// Generate, won, lost, reactivate, delete a version (step 7 and summary of the proposal)
+if (isset($_POST['presale_action']) || isset($_POST['delete_version'])) {
     PresaleWizard::handleAction($_POST);
 }
 

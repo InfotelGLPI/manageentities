@@ -1840,10 +1840,13 @@ class PresaleWizard
                 continue;
             }
             $versions[] = [
-                'name'    => $document->fields['name'],
-                'date'    => $document->fields['date_creation'],
-                'url'     => self::getDocumentUrl((int) $document->getID(), $proposal->getID()),
-                'is_last' => (int) $document->getID() === (int) $proposal->fields['documents_id'],
+                'id'         => (int) $document->getID(),
+                'name'       => $document->fields['name'],
+                'date'       => $document->fields['date_creation'],
+                'url'        => self::getDocumentUrl((int) $document->getID(), $proposal->getID()),
+                'is_last'    => (int) $document->getID() === (int) $proposal->fields['documents_id'],
+                // Generated versions only can be deleted from here, not the other documents
+                'is_version' => PresaleGenerator::getDocumentVersion((string) $document->fields['name']) !== null,
             ];
         }
 
@@ -1855,6 +1858,7 @@ class PresaleWizard
                 : trim($recipient->fields['firstname'] . ' ' . $recipient->fields['name']),
             'annexes'      => $proposal->getAnnexesSummary(),
             'versions'     => $versions,
+            'can_delete_version' => self::isEditable($proposal) && $proposal->can($proposal->getID(), UPDATE),
             'action_url'   => self::getActionUrl(),
             // Estimate requested from the project manager and not validated yet: shown, not blocking
             'estimate_pending' => (int) $proposal->fields['estimate_status'] === PresaleProposal::ESTIMATE_REQUESTED,
@@ -2110,7 +2114,7 @@ class PresaleWizard
 
     /**
      * Actions of the last step, of the proposal form and of the list: generate, won, lost,
-     * reactivate, delete
+     * reactivate, delete, delete a version
      *
      * @param array $input $_POST
      */
@@ -2120,7 +2124,22 @@ class PresaleWizard
         $id       = $proposal->getID();
         $status   = (int) $proposal->fields['status'];
 
-        switch ($input['presale_action'] ?? '') {
+        // The delete button of a version posts the id of its document
+        $action = isset($input['delete_version']) ? 'delete_version' : ($input['presale_action'] ?? '');
+        switch ($action) {
+            case 'delete_version':
+                if (!self::isEditable($proposal)) {
+                    throw new AccessDeniedHttpException();
+                }
+                if (self::deleteVersion($proposal, (int) $input['delete_version'])) {
+                    Session::addMessageAfterRedirect(__('The version has been deleted.', 'manageentities'));
+                } else {
+                    Session::addMessageAfterRedirect(__('The version could not be deleted.', 'manageentities'), false, ERROR);
+                }
+                Html::redirect(self::getFormUrl() . '?id=' . $id . '&step=' . self::STEP_GENERATE);
+
+                // no break
+
             case 'generate':
                 if (!self::isEditable($proposal)) {
                     throw new AccessDeniedHttpException();
@@ -2230,6 +2249,74 @@ class PresaleWizard
 
         // Back to the list of the section when the action was made from there
         Html::redirect(!empty($input['back_to_home']) ? self::getFormUrl() : PresaleProposal::getFormURLWithID($id));
+    }
+
+    /**
+     * Deletes a generated version of the proposal: its document, or only its link to the
+     * proposal when another item uses it too. The proposal follows its latest remaining
+     * version; deleting the current one makes it a draft again, to be generated or won on
+     * that older version.
+     */
+    private static function deleteVersion(PresaleProposal $proposal, int $documents_id): bool
+    {
+        $id   = $proposal->getID();
+        $link = new \Document_Item();
+        if (
+            !$link->getFromDBByCrit([
+                'documents_id' => $documents_id,
+                'itemtype'     => PresaleProposal::class,
+                'items_id'     => $id,
+            ])
+        ) {
+            return false;
+        }
+        // Generated versions only, not the other documents linked to the proposal
+        $document = new \Document();
+        if (
+            !$document->getFromDB($documents_id)
+            || PresaleGenerator::getDocumentVersion((string) $document->fields['name']) === null
+        ) {
+            return false;
+        }
+
+        if (countElementsInTable(\Document_Item::getTable(), ['documents_id' => $documents_id]) > 1) {
+            if (!$link->can($link->getID(), PURGE) || !$link->delete(['id' => $link->getID()], true)) {
+                return false;
+            }
+        } elseif (!$document->can($documents_id, PURGE) || !$document->delete(['id' => $documents_id], true)) {
+            return false;
+        }
+
+        // Latest remaining version
+        $version = 0;
+        $last_id = 0;
+        foreach (
+            (new \Document_Item())->find([
+                'itemtype' => PresaleProposal::class,
+                'items_id' => $id,
+            ]) as $data
+        ) {
+            $remaining = new \Document();
+            if (!$remaining->getFromDB((int) $data['documents_id'])) {
+                continue;
+            }
+            $number = PresaleGenerator::getDocumentVersion((string) $remaining->fields['name']);
+            if ($number !== null && $number > $version) {
+                $version = $number;
+                $last_id = (int) $remaining->getID();
+            }
+        }
+
+        $input = [
+            'id'           => $id,
+            'version'      => $version,
+            'documents_id' => $last_id,
+        ];
+        if ($documents_id === (int) $proposal->fields['documents_id']) {
+            $input['status'] = PresaleProposal::STATUS_DRAFT;
+        }
+
+        return $proposal->update($input);
     }
 
     /**
