@@ -31,6 +31,9 @@ namespace GlpiPlugin\Manageentities\Tests\Integration;
 
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Manageentities\Config;
+use GlpiPlugin\Manageentities\ContractDay;
+use GlpiPlugin\Manageentities\ContractState;
+use GlpiPlugin\Manageentities\CustomerSummary;
 use GlpiPlugin\Manageentities\Entity;
 use GlpiPlugin\Manageentities\Preference;
 use GlpiPlugin\Manageentities\TechLead;
@@ -182,6 +185,14 @@ class DashboardTabsTest extends DbTestCase
         (new \ReflectionProperty(Config::class, 'instance'))->setValue(null, null);
         $contracts_id = (int) $this->createItem(\Contract::class, ['name' => 'Ongoing', 'entities_id' => $child_1])->getID();
         $DB->insert(\GlpiPlugin\Manageentities\Contract::getTable(), ['contracts_id' => $contracts_id, 'entities_id' => $child_1]);
+        // Ongoing: listed by the contractual follow-up, that is, with a period
+        $this->createItem(ContractDay::class, [
+            'name'                                    => 'Period',
+            'entities_id'                             => $child_1,
+            'contracts_id'                            => $contracts_id,
+            'plugin_manageentities_contractstates_id' => $this->createItem(ContractState::class, ['name' => 'Open', 'is_closed' => 0])->getID(),
+            'nbday'                                   => 5,
+        ]);
         $DB->insert(\GlpiPlugin\Manageentities\DirectHelpdesk::getTable(), [
             'entities_id' => $child_1,
             'name'        => 'Unbilled',
@@ -219,6 +230,63 @@ class DashboardTabsTest extends DbTestCase
             $html = (string) ob_get_clean();
         }
         $this->assertStringContainsString('Unbilled', $html);
+    }
+
+    public function testSimplifiedInterfaceSummaryMatchesTheContractualFollowUp(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entities_id = $this->createItem(\Entity::class, [
+            'name'        => 'Customer ' . $this->getUniqueString(),
+            'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+        ])->getID();
+        $open_state  = $this->createItem(ContractState::class, ['name' => 'Open ' . $this->getUniqueString(), 'is_closed' => 0])->getID();
+        $other_state = $this->createItem(ContractState::class, ['name' => 'Other ' . $this->getUniqueString(), 'is_closed' => 0])->getID();
+        $closed_glpi_state = $this->createItem(\State::class, ['name' => 'Closed ' . $this->getUniqueString()])->getID();
+        $DB->update(Config::getTable(), [
+            'hourorday'                  => Config::DAY,
+            'contract_states'            => json_encode([$open_state]),
+            'closed_glpi_state_id'       => $closed_glpi_state,
+            'wizard_archive_entities_id' => 0,
+        ], ['id' => 1]);
+        (new \ReflectionProperty(Config::class, 'instance'))->setValue(null, null);
+
+        $add_contract = function (string $name, int $states_id, array $periods) use ($DB, $entities_id): void {
+            $contracts_id = $this->createItem(\Contract::class, [
+                'name'        => $name,
+                'entities_id' => $entities_id,
+                'states_id'   => $states_id,
+            ])->getID();
+            $DB->insert(\GlpiPlugin\Manageentities\Contract::getTable(), ['contracts_id' => $contracts_id, 'entities_id' => $entities_id]);
+            foreach ($periods as $contractstates_id => $nbday) {
+                $this->createItem(ContractDay::class, [
+                    'name'                                    => $name . ' ' . $contractstates_id,
+                    'entities_id'                             => $entities_id,
+                    'contracts_id'                            => $contracts_id,
+                    'plugin_manageentities_contractstates_id' => $contractstates_id,
+                    'nbday'                                   => $nbday,
+                ]);
+            }
+        };
+        // Followed: only its period in a configured state counts
+        $add_contract('Followed', 0, [$open_state => 5, $other_state => 30]);
+        // Closed in GLPI: not followed by the customer
+        $add_contract('Closed', $closed_glpi_state, [$open_state => 10]);
+        // Without any period in a configured state: not followed either
+        $add_contract('Other', 0, [$other_state => 8]);
+
+        $this->login('post-only', 'postonly');
+        $_SESSION['glpiactiveentities'] = [$entities_id => $entities_id];
+        $_SESSION['glpiactive_entity']  = $entities_id;
+
+        $list = \GlpiPlugin\Manageentities\Followup::queryFollowUp($entities_id);
+        $this->assertSame(5.0, (float) $list['tot']['tot_reste']);
+
+        // The tab counter and the summary card show what the tab lists
+        $this->assertSame(1, CustomerSummary::countOngoingContracts([$entities_id]));
+        $remaining = (new \ReflectionMethod(CustomerSummary::class, 'getOngoingContractsRemaining'))->invoke(null, $entities_id);
+        $this->assertSame(['count' => 1, 'remaining' => 5.0], $remaining);
     }
 
     public function testReferencesAreGroupedByYearWithTheirDetails(): void

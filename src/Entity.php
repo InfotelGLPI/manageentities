@@ -139,7 +139,8 @@ class Entity extends CommonGLPI
      */
     public static function showOpenProposals(array $entities): void
     {
-        $entities = array_map('intval', $entities);
+        // The active entities are keyed by their id: renumbered
+        $entities = array_values(array_map('intval', $entities));
         // On a single customer, a new proposal starts from it
         $new_url = PresaleWizard::getFormUrl() . '?step=' . PresaleWizard::STEP_CLIENT;
         if (count($entities) === 1 && $entities[0] !== PresaleWizard::getTargetEntity()) {
@@ -490,7 +491,7 @@ class Entity extends CommonGLPI
             }
             switch ($tabnum) {
                 case self::TAB_SUMMARY:
-                    CustomerSummary::show((int) $entities[0]);
+                    CustomerSummary::show((int) reset($entities));
                     break;
                 case self::TAB_HELPDESK_UNBILLED:
                     // Gauges above the list of the unbilled interventions, as the contractual

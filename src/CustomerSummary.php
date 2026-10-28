@@ -31,7 +31,6 @@ namespace GlpiPlugin\Manageentities;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
-use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Summary card of a customer, first tab of the clients management on the simplified interface:
@@ -176,8 +175,12 @@ class CustomerSummary
     }
 
     /**
-     * Ongoing contracts of the customers (not deleted, with an open period) and the days left on
-     * them, from the denormalized remaining_days of the contracts tab
+     * Ongoing contracts of the customers and the days left on them, as the contractual follow-up
+     * tab lists them (Followup::queryFollowUp()): same contracts (closed GLPI state left out,
+     * periods of the configured contract states and contract types only) and same total
+     * remaining. It used to sum the denormalized remaining_days of every contract having one
+     * period in an active state, so with the periods of the other states and the closed
+     * contracts as well: the badge and the tab counter disagreed with the tab.
      *
      * @param int|array<int|string> $entities_id
      *
@@ -185,42 +188,14 @@ class CustomerSummary
      */
     private static function getOngoingContractsRemaining(int|array $entities_id): array
     {
-        global $DB;
+        $list  = Followup::queryFollowUp($entities_id);
+        $total = $list['tot'] ?? [];
+        unset($list['tot']);
 
-        $states = Config::getInstance()->getActiveContractStates();
-        $table  = Contract::getTable();
-        $where  = [
-            $table . '.entities_id'   => $entities_id,
-            'glpi_contracts.is_deleted' => 0,
+        return [
+            'count'     => count($list),
+            'remaining' => (float) ($total['tot_reste'] ?? 0),
         ];
-        if ($states !== []) {
-            $where[] = [
-                $table . '.contracts_id' => new QuerySubQuery([
-                    'SELECT' => 'contracts_id',
-                    'FROM'   => ContractDay::getTable(),
-                    'WHERE'  => ['plugin_manageentities_contractstates_id' => $states],
-                ]),
-            ];
-        }
-
-        $data = $DB->request([
-            'SELECT'    => [
-                QueryFunction::count($table . '.id', false, 'nb'),
-                QueryFunction::sum($table . '.remaining_days', false, 'remaining'),
-            ],
-            'FROM'      => $table,
-            'INNER JOIN' => [
-                'glpi_contracts' => [
-                    'ON' => [
-                        $table           => 'contracts_id',
-                        'glpi_contracts' => 'id',
-                    ],
-                ],
-            ],
-            'WHERE'     => $where,
-        ])->current();
-
-        return ['count' => (int) $data['nb'], 'remaining' => (float) $data['remaining']];
     }
 
     /**
