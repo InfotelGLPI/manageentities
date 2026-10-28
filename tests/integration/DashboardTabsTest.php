@@ -175,6 +175,34 @@ class DashboardTabsTest extends DbTestCase
         $this->assertSame(1, $contract->countForEntities([$child_1, $child_2]));
     }
 
+    public function testContractIsListedInTheEntityOfTheGlpiContract(): void
+    {
+        global $DB;
+
+        $this->login();
+        $root   = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $former = $this->createItem(\Entity::class, ['name' => 'Former ' . $this->getUniqueString(), 'entities_id' => $root])->getID();
+        $actual = $this->createItem(\Entity::class, ['name' => 'Actual ' . $this->getUniqueString(), 'entities_id' => $root])->getID();
+        $DB->update(Config::getTable(), ['contract_states' => null, 'wizard_archive_entities_id' => 0], ['id' => 1]);
+        (new \ReflectionProperty(Config::class, 'instance'))->setValue(null, null);
+
+        // Contract moved to another entity, its plugin row left on the former one
+        $contracts_id = $this->createItem(\Contract::class, ['name' => 'Moved', 'entities_id' => $actual])->getID();
+        $DB->insert(\GlpiPlugin\Manageentities\Contract::getTable(), ['contracts_id' => $contracts_id, 'entities_id' => $former]);
+
+        $contract = new \GlpiPlugin\Manageentities\Contract();
+        $this->assertSame(0, $contract->countForEntities([$former]));
+        $this->assertSame(1, $contract->countForEntities([$actual]));
+
+        ob_start();
+        try {
+            $contract->showContracts([$former]);
+        } finally {
+            $html = (string) ob_get_clean();
+        }
+        $this->assertStringNotContainsString('Moved', $html);
+    }
+
     public function testSimplifiedInterfaceCountsContractsAndHasAnUnbilledTab(): void
     {
         global $DB;
