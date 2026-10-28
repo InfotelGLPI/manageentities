@@ -186,7 +186,7 @@ class Entity extends CommonGLPI
         return [
             [
                 'label' => __('Proposals in progress', 'manageentities'),
-                'count' => $counts[PresaleProposal::STATUS_DRAFT] + $counts[PresaleProposal::STATUS_GENERATED],
+                'count' => array_sum(array_intersect_key($counts, array_flip(PresaleProposal::getOpenStatuses()))),
                 'color' => 'blue',
                 'icon'  => 'ti ti-progress',
                 'url'   => $url('open'),

@@ -105,6 +105,45 @@ class PresaleProposalTest extends DbTestCase
         $this->assertSame(PresaleProposal::STATUS_WON, (int) $proposal->fields['status']);
     }
 
+    public function testAGeneratedProposalCanBeMarkedAsSentAndStaysInProgress(): void
+    {
+        $client   = $this->createPresaleClient();
+        $proposal = $this->createProposal($client, ['status' => PresaleProposal::STATUS_GENERATED, 'version' => 1]);
+        $criteria = [PresaleProposal::getTable() . '.plugin_manageentities_presaleclients_id' => $client->getID()];
+
+        $rows = PresaleWizard::getOpenProposals($criteria);
+        $this->assertTrue($rows[0]['can_send']);
+
+        $this->runAction($proposal, 'sent');
+
+        $proposal->getFromDB($proposal->getID());
+        $this->assertSame(PresaleProposal::STATUS_SENT, (int) $proposal->fields['status']);
+        // Still in progress, without the button any more: it can then be won or lost
+        $rows = PresaleWizard::getOpenProposals($criteria);
+        $this->assertCount(1, $rows);
+        $this->assertFalse($rows[0]['can_send']);
+        $this->assertTrue($rows[0]['is_sent']);
+
+        $this->runAction($proposal, 'won');
+        $proposal->getFromDB($proposal->getID());
+        $this->assertSame(PresaleProposal::STATUS_WON, (int) $proposal->fields['status']);
+    }
+
+    public function testOnlyAGeneratedProposalCanBeMarkedAsSent(): void
+    {
+        foreach ([PresaleProposal::STATUS_DRAFT, PresaleProposal::STATUS_SENT, PresaleProposal::STATUS_WON, PresaleProposal::STATUS_LOST] as $status) {
+            $proposal = $this->createProposal($this->createPresaleClient(), ['status' => $status, 'version' => 1]);
+            try {
+                $this->runAction($proposal, 'sent');
+                $this->fail("A proposal of status $status was marked as sent.");
+            } catch (AccessDeniedHttpException) {
+                // Expected
+            }
+            $proposal->getFromDB($proposal->getID());
+            $this->assertSame($status, (int) $proposal->fields['status']);
+        }
+    }
+
     public function testAWonProposalCanNoLongerBeChanged(): void
     {
         $proposal = $this->createProposal($this->createPresaleClient(), ['status' => PresaleProposal::STATUS_WON, 'version' => 1]);

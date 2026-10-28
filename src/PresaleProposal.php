@@ -50,6 +50,8 @@ class PresaleProposal extends CommonDBTM
     public const STATUS_GENERATED = 2;
     public const STATUS_WON       = 3;
     public const STATUS_LOST      = 4;
+    /** Generated and sent to the prospect, waiting for its answer */
+    public const STATUS_SENT      = 5;
 
     /** Estimate by the project manager (estimate_status) */
     public const ESTIMATE_NONE      = 0;
@@ -74,6 +76,7 @@ class PresaleProposal extends CommonDBTM
         return [
             self::STATUS_DRAFT     => __('Draft', 'manageentities'),
             self::STATUS_GENERATED => __('Generated', 'manageentities'),
+            self::STATUS_SENT      => __('Sent', 'manageentities'),
             self::STATUS_WON       => __('Won', 'manageentities'),
             self::STATUS_LOST      => __('Lost (archived)', 'manageentities'),
         ];
@@ -105,7 +108,7 @@ class PresaleProposal extends CommonDBTM
      */
     public static function getOpenStatuses(): array
     {
-        return [self::STATUS_DRAFT, self::STATUS_GENERATED];
+        return [self::STATUS_DRAFT, self::STATUS_GENERATED, self::STATUS_SENT];
     }
 
     public static function getMenuContent()

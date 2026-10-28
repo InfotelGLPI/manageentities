@@ -5969,6 +5969,18 @@ msgstr "Supprimer cette version"
 msgid "Delete this version of the proposal? Its document is deleted."
 msgstr "Supprimer cette version de la proposition ? Son document est supprimé."
 
+#: src/PresaleProposal.php
+msgid "Sent"
+msgstr "Envoyée"
+
+#: src/PresaleWizard.php
+msgid "The proposal is marked as sent."
+msgstr "La proposition est marquée comme envoyée."
+
+#: templates/presale/outcome_buttons.html.twig
+msgid "Mark as sent"
+msgstr "Marquer comme envoyée"
+
 #~ msgid "Expired only"
 #~ msgstr "Expirés uniquement"
 

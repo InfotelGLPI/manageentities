@@ -59,7 +59,7 @@
                     <td><a href="{{ proposal.url }}">{{ proposal.name }}</a></td>
                     {% if options.show_client %}<td><a href="{{ proposal.client_url }}">{{ proposal.client }}</a></td>{% endif %}
                     <td>
-                        <span class="badge bg-secondary-lt">{{ proposal.status }}</span>
+                        <span class="badge {{ proposal.is_sent ? 'bg-blue-lt' : 'bg-secondary-lt' }}">{{ proposal.status }}</span>
                         {% if proposal.estimate_status == 1 %}
                             <a href="{{ proposal.estimate_url }}" class="badge bg-orange-lt text-decoration-none" title="{{ __('Estimate requested', 'manageentities') }}"><i class="ti ti-calculator"></i></a>
                         {% elseif proposal.estimate_status == 2 %}
@@ -75,7 +75,7 @@
                         {% endif %}
                     </td>
                     {% if options.action_url %}
-                        <td class="text-end">{{ outcome.buttons(proposal.id, options.action_url, proposal.can_win, proposal.modified, true, 'btn-sm', options.can_purge) }}</td>
+                        <td class="text-end">{{ outcome.buttons(proposal.id, options.action_url, proposal.can_win, proposal.modified, true, 'btn-sm', options.can_purge, proposal.can_send) }}</td>
                     {% endif %}
                 </tr>
             {% endfor %}
