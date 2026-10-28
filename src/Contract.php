@@ -351,17 +351,19 @@ class Contract extends CommonDBTM
 
         $allowed_states = self::getTabContractStates();
 
-        // Build query — filter by states via contractdays sub-query when states are configured
+        // Build query — filter by states via contractdays sub-query when states are configured.
+        // The entity is the one of the GLPI contract: the copy kept on the plugin row can lag
+        // behind it (contract moved to another entity), which listed the contract in both.
         $where = [
-            'glpi_contracts.is_deleted'              => 0,
-            $this->getTable() . '.entities_id'       => $instID,
+            'glpi_contracts.is_deleted'  => 0,
+            'glpi_contracts.entities_id' => $instID,
         ];
 
         // Archived customers (subtree of the archive entity of the configuration) are left out,
         // as the subscriptions tab and the status overview do
         $archive_entities_id = (int) (Config::getInstance()->fields['wizard_archive_entities_id'] ?? 0);
         if ($archive_entities_id > 0) {
-            $where[] = ['NOT' => [$this->getTable() . '.entities_id' => array_keys(getSonsOf('glpi_entities', $archive_entities_id))]];
+            $where[] = ['NOT' => ['glpi_contracts.entities_id' => array_keys(getSonsOf('glpi_entities', $archive_entities_id))]];
         }
 
         if (!empty($allowed_states)) {
@@ -432,7 +434,6 @@ class Contract extends CommonDBTM
             'SELECT' => [
                 'glpi_contracts.*',
                 $this->getTable() . '.contracts_id',
-                $this->getTable() . '.entities_id as plugin_entities_id',
                 $this->getTable() . '.management',
                 $this->getTable() . '.contract_type',
                 $this->getTable() . '.is_default',
@@ -449,8 +450,8 @@ class Contract extends CommonDBTM
                 ],
                 'glpi_entities' => [
                     'ON' => [
-                        $this->getTable() => 'entities_id',
-                        'glpi_entities'   => 'id',
+                        'glpi_contracts' => 'entities_id',
+                        'glpi_entities'  => 'id',
                     ],
                 ],
             ],
@@ -481,7 +482,7 @@ class Contract extends CommonDBTM
                 'myid'          => $data['myid'],
                 'label'         => $label,
                 'url'           => $CFG_GLPI['root_doc'] . '/front/contract.form.php?id=' . $data['contracts_id'],
-                'entity_name'   => \Dropdown::getDropdownName('glpi_entities', $data['plugin_entities_id']),
+                'entity_name'   => \Dropdown::getDropdownName('glpi_entities', $data['entities_id']),
                 'num'           => $data['num'],
                 'state'         => \Dropdown::getDropdownName('glpi_states', $data['states_id'] ?? 0),
                 // Escaping is the template's job: nl2br() only inserts <br>, it does not
