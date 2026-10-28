@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 08:29+0000\n"
+"POT-Creation-Date: 2026-10-28 10:31+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Soporte Infraestructura Standby, 2024\n"
 "Language-Team: Spanish (Ecuador) (https://app.transifex.com/infotelGLPI/"
@@ -90,7 +90,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/Contract.php:1449
+#: src/Contract.php:1450
 #, php-format
 msgid "%d contracts running out of remaining days notified"
 msgstr ""
@@ -487,7 +487,7 @@ msgstr ""
 msgid "Annexes priced in days at a daily rate."
 msgstr ""
 
-#: src/Contract.php:693 src/Contract.php:712
+#: src/Contract.php:694 src/Contract.php:713
 msgid "Annual"
 msgstr "Anual"
 
@@ -669,7 +669,7 @@ msgstr ""
 msgid "Build a financial proposal for a prospect or an existing client."
 msgstr ""
 
-#: src/Contract.php:731 src/Contract.php:785
+#: src/Contract.php:732 src/Contract.php:786
 msgid "By intervention"
 msgstr "Por intervención"
 
@@ -1938,7 +1938,7 @@ msgstr[2] ""
 msgid "Hour of"
 msgstr "Hora de"
 
-#: src/Config.php:230 src/Contract.php:730 src/Contract.php:783
+#: src/Config.php:230 src/Contract.php:731 src/Contract.php:784
 msgid "Hourly"
 msgstr "Por hora"
 
@@ -2024,7 +2024,7 @@ msgstr ""
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:730 src/Contract.php:812 ⁨standard input⁩:143
+#: src/DirectHelpdesk.php:730 src/Contract.php:813 ⁨standard input⁩:143
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] "Intervención"
@@ -2462,7 +2462,7 @@ msgstr ""
 msgid "Move up"
 msgstr ""
 
-#: src/Contract.php:1077 ⁨standard input⁩:104 ⁨standard input⁩:178
+#: src/Contract.php:1078 ⁨standard input⁩:104 ⁨standard input⁩:178
 msgid "Movement management"
 msgstr "Gestión de movilización"
 
@@ -3075,7 +3075,7 @@ msgid ""
 "proposal."
 msgstr ""
 
-#: src/Contract.php:739 src/Contract.php:791
+#: src/Contract.php:740 src/Contract.php:792
 msgid "Package"
 msgstr "Paquete"
 
@@ -3451,7 +3451,7 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
-#: src/Contract.php:692 src/Contract.php:710
+#: src/Contract.php:693 src/Contract.php:711
 msgid "Quarterly"
 msgstr "Trimestrales"
 
@@ -3479,7 +3479,7 @@ msgstr ""
 msgid "Recursive"
 msgstr ""
 
-#: src/Contract.php:1078 ⁨standard input⁩:84 ⁨standard input⁩:158
+#: src/Contract.php:1079 ⁨standard input⁩:84 ⁨standard input⁩:158
 msgid "Refacturable costs"
 msgstr "Tarifas Refacturables"
 
@@ -3733,7 +3733,7 @@ msgstr ""
 msgid "Select an existing price"
 msgstr "Seleccionar un precio existente"
 
-#: src/Contract.php:1396
+#: src/Contract.php:1397
 msgid "Send the list of contracts running out of remaining days"
 msgstr ""
 
@@ -3822,7 +3822,7 @@ msgstr ""
 msgid "Show closed leads"
 msgstr ""
 
-#: src/Contract.php:1076 ⁨standard input⁩:76 ⁨standard input⁩:150
+#: src/Contract.php:1077 ⁨standard input⁩:76 ⁨standard input⁩:150
 msgid "Show on GANTT"
 msgstr "Mostrar en GANTT"
 
@@ -4056,7 +4056,7 @@ msgstr ""
 msgid "Tech lead: %s"
 msgstr ""
 
-#: src/Contract.php:738 src/Contract.php:789
+#: src/Contract.php:739 src/Contract.php:790
 msgid "Technical Assistance"
 msgstr "Asistencia Técnica"
 
@@ -4798,7 +4798,7 @@ msgstr ""
 msgid "Update logo"
 msgstr ""
 
-#: src/Contract.php:1066
+#: src/Contract.php:1067
 msgid "Update management fields"
 msgstr ""
 
