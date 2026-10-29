@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 10:31+0000\n"
+"POT-Creation-Date: 2026-10-28 11:57+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/79674/fr_FR/)\n"
@@ -45,7 +45,7 @@ msgstr[0] "%1$s intervention"
 msgstr[1] "%1$s interventions"
 msgstr[2] "%1$s interventions"
 
-#: src/PresaleWizard.php:1703
+#: src/PresaleWizard.php:1702
 #, php-format
 msgid "%1$s, line %2$d: %3$s"
 msgstr "%1$s, ligne %2$d : %3$s"
@@ -61,7 +61,7 @@ msgid "%1$s: subscription level \"%2$s\" unknown here, imported without level."
 msgstr ""
 "%1$s : niveau de souscription « %2$s » inconnu ici, importé sans niveau."
 
-#: src/PresaleWizard.php:1723
+#: src/PresaleWizard.php:1722
 #, php-format
 msgid "%1$s: the priced lines total %2$s days, the estimate %3$s days"
 msgstr ""
@@ -125,7 +125,7 @@ msgstr[0] "%d règle créée"
 msgstr[1] "%d règles créées"
 msgstr[2] "%d règles créées"
 
-#: src/PresaleAnnexTypeTransfer.php:247 src/PresaleWizard.php:2342
+#: src/PresaleAnnexTypeTransfer.php:247 src/PresaleWizard.php:2351
 #, php-format
 msgid "%s (copy)"
 msgstr "%s (copie)"
@@ -137,7 +137,7 @@ msgstr "%s client(s) peuvent ouvrir des tickets"
 
 #: src/DatWizard.php:711 src/DatWizard.php:714 src/DatWizard.php:718
 #: src/DatWizard.php:722 src/DexWizard.php:713 src/DexWizard.php:716
-#: src/DexWizard.php:720 src/DexWizard.php:724 src/PresaleWizard.php:1020
+#: src/DexWizard.php:720 src/DexWizard.php:724 src/PresaleWizard.php:1019
 #, php-format
 msgid "%s is mandatory"
 msgstr "%s est obligatoire"
@@ -147,12 +147,12 @@ msgstr "%s est obligatoire"
 msgid "%s open ticket(s)"
 msgstr "%s ticket(s) ouverts"
 
-#: src/PresaleWizard.php:1590
+#: src/PresaleWizard.php:1589
 #, php-format
 msgid "%s € excl. VAT per subscription per month"
 msgstr "%s € HT par abonnement et par mois"
 
-#: src/PresaleWizard.php:1695
+#: src/PresaleWizard.php:1694
 #, php-format
 msgid "%s: at least one line is required"
 msgstr "%s : au moins une ligne est requise"
@@ -178,7 +178,7 @@ msgstr "%s : aucun modèle déposé dans la configuration (onglet Avant-vente)."
 msgid "%s: template deleted."
 msgstr "%s : modèle supprimé."
 
-#: src/PresaleWizard.php:1674
+#: src/PresaleWizard.php:1673
 #, php-format
 msgid "%s: the VAT rate must be between 0 and 100"
 msgstr "%s : le taux de TVA doit être compris entre 0 et 100"
@@ -531,7 +531,7 @@ msgstr "Appliquer"
 msgid "Apply the model"
 msgstr "Appliquer le modèle"
 
-#: ⁨standard input⁩:46 ⁨standard input⁩:176
+#: ⁨standard input⁩:53 ⁨standard input⁩:176
 msgid "Archive this proposal as lost? It can be reactivated later."
 msgstr ""
 "Archiver cette proposition comme perdue ? Elle pourra être réactivée plus "
@@ -549,7 +549,7 @@ msgstr "Clients archivés avec des heures non facturées :"
 msgid "Archived customer"
 msgstr "Client archivé"
 
-#: src/PresaleProposal.php:229
+#: src/PresaleProposal.php:232
 msgid "Archiving date"
 msgstr "Date d'archivage"
 
@@ -632,7 +632,7 @@ msgstr "Ticket associé"
 msgid "Assumptions, risks, what the estimate does not cover..."
 msgstr "Hypothèses, risques, ce que le chiffrage ne couvre pas..."
 
-#: src/PresaleWizard.php:1160
+#: src/PresaleWizard.php:1159
 msgid "At least one contact is required."
 msgstr "Au moins un contact est requis."
 
@@ -770,7 +770,7 @@ msgstr ""
 "Choisissez un prospect connu ou un client existant : ses coordonnées et ses "
 "contacts sont repris ci-dessous et restent modifiables."
 
-#: src/PresaleWizard.php:2067
+#: src/PresaleWizard.php:2066
 msgid ""
 "Choose a project manager declared in the configuration (step 2) to request "
 "the estimate."
@@ -787,11 +787,11 @@ msgstr ""
 msgid "Choose the JSON file to import."
 msgstr "Choisissez le fichier JSON à importer."
 
-#: src/PresaleWizard.php:1556
+#: src/PresaleWizard.php:1555
 msgid "Choose the annex model to add."
 msgstr "Choisissez le modèle d'annexe à ajouter."
 
-#: src/PresaleWizard.php:1352
+#: src/PresaleWizard.php:1351
 msgid "Choose the recipient of the proposal."
 msgstr "Choisissez le destinataire de la proposition."
 
@@ -947,7 +947,7 @@ msgstr[0] "Société"
 msgstr[1] "Sociétés"
 msgstr[2] "Sociétés"
 
-#: src/PresaleWizard.php:1014 ⁨standard input⁩:215 ⁨standard input⁩:100
+#: src/PresaleWizard.php:1013 ⁨standard input⁩:215 ⁨standard input⁩:100
 #: ⁨standard input⁩:63
 msgid "Company name"
 msgstr "Raison sociale"
@@ -988,12 +988,12 @@ msgstr[0] "Contact"
 msgstr[1] "Contacts"
 msgstr[2] "Contacts"
 
-#: src/PresaleWizard.php:1171
+#: src/PresaleWizard.php:1170
 #, php-format
 msgid "Contact #%d: invalid email address"
 msgstr "Contact n°%d : adresse e-mail invalide"
 
-#: src/PresaleWizard.php:1165
+#: src/PresaleWizard.php:1164
 #, php-format
 msgid "Contact #%d: the last name is mandatory"
 msgstr "Contact n°%d : le nom est obligatoire"
@@ -1295,7 +1295,7 @@ msgstr "Date de signature"
 msgid "Date of signature is required"
 msgstr "La date de signature est obligatoire"
 
-#: src/NotificationTargetPresaleProposal.php:135 src/PresaleProposal.php:190
+#: src/NotificationTargetPresaleProposal.php:135 src/PresaleProposal.php:193
 #: ⁨standard input⁩:72 ⁨standard input⁩:114 ⁨standard input⁩:64
 msgid "Date of the contract"
 msgstr "Date du contrat"
@@ -1408,9 +1408,9 @@ msgstr "Supprimer"
 msgid "Delete and reinitialize"
 msgstr "Supprimer et réinitialiser"
 
-#: ⁨standard input⁩:178 ⁨standard input⁩:273 ⁨standard input⁩:58 ⁨standard
+#: ⁨standard input⁩:178 ⁨standard input⁩:273 ⁨standard input⁩:65 ⁨standard
 #: input⁩:84 ⁨standard input⁩:79 ⁨standard input⁩:261 ⁨standard input⁩:333
-#: ⁨standard input⁩:65 ⁨standard input⁩:209
+#: ⁨standard input⁩:209
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
@@ -1428,7 +1428,7 @@ msgstr "Supprimer le brouillon"
 msgid "Delete this draft? Everything typed in it is lost."
 msgstr "Supprimer ce brouillon ? Tout ce qui y a été saisi est perdu."
 
-#: ⁨standard input⁩:59
+#: ⁨standard input⁩:66
 msgid ""
 "Delete this proposal permanently, with its annexes? The generated documents "
 "are kept."
@@ -1535,7 +1535,7 @@ msgstr "Télécharger la dernière version générée : %s"
 msgid "Download the proposal"
 msgstr "Télécharger la proposition"
 
-#: src/Dat.php:93 src/PresaleProposal.php:75 src/Dex.php:102
+#: src/Dat.php:93 src/PresaleProposal.php:77 src/Dex.php:102
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -1749,7 +1749,7 @@ msgstr "Erreur à la création du type de gestion"
 msgid "Error unarchiving entity"
 msgstr "Erreur au désarchivage de l'entité"
 
-#: front/presaleestimate.form.php:44 src/PresaleProposal.php:237 ⁨standard
+#: front/presaleestimate.form.php:44 src/PresaleProposal.php:240 ⁨standard
 #: input⁩:275 ⁨standard input⁩:51
 msgid "Estimate"
 msgstr "Chiffrage"
@@ -1768,11 +1768,11 @@ msgstr ""
 " où il reste modifiable. Imprimé sous l'objet (balise {{CHIFFRAGE}} du "
 "modèle d'annexe). Non utilisé par les annexes de souscription."
 
-#: src/PresaleProposal.php:89 ⁨standard input⁩:64
+#: src/PresaleProposal.php:92 ⁨standard input⁩:64
 msgid "Estimate requested"
 msgstr "Chiffrage demandé"
 
-#: src/PresaleProposal.php:90 ⁨standard input⁩:66
+#: src/PresaleProposal.php:93 ⁨standard input⁩:66
 msgid "Estimate validated"
 msgstr "Chiffrage validé"
 
@@ -1875,7 +1875,7 @@ msgstr "Filtré"
 msgid "Filtered by default state list"
 msgstr "Liste filtrée par défaut sur le statut"
 
-#: src/PresaleClient.php:134 src/PresaleProposal.php:61 ⁨standard input⁩:70
+#: src/PresaleClient.php:134 src/PresaleProposal.php:63 ⁨standard input⁩:70
 #: ⁨standard input⁩:49
 msgid "Financial proposal"
 msgid_plural "Financial proposals"
@@ -1960,7 +1960,7 @@ msgstr "Générer le document"
 msgid "Generate the proposal"
 msgstr "Générer la proposition"
 
-#: src/Dat.php:94 src/PresaleProposal.php:76 src/Dex.php:103
+#: src/Dat.php:94 src/PresaleProposal.php:78 src/Dex.php:103
 msgid "Generated"
 msgstr "Générée"
 
@@ -2048,7 +2048,7 @@ msgstr "Action impossible car un rapport d'intervention existe"
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr "Génération impossible, aucune tâche planifiée créée"
 
-#: src/PresaleProposal.php:293 src/Monthly.php:350
+#: src/PresaleProposal.php:296 src/Monthly.php:350
 msgid "In progress"
 msgstr "En cours"
 
@@ -2160,16 +2160,16 @@ msgstr "Rapports d'interventions"
 msgid "Interventions with old contract"
 msgstr "Interventions sur des contrats terminés"
 
-#: src/PresaleWizard.php:1349
+#: src/PresaleWizard.php:1348
 msgid "Invalid date of the contract."
 msgstr "Date du contrat invalide."
 
 #: front/entity.form.php:79 src/WizardController.php:247
-#: src/PresaleWizard.php:1027 src/PresaleWizard.php:1289
+#: src/PresaleWizard.php:1026 src/PresaleWizard.php:1288
 msgid "Invalid email address"
 msgstr "Courriel invalide"
 
-#: src/PresaleWizard.php:1024
+#: src/PresaleWizard.php:1023
 msgid "Invalid postal code"
 msgstr "Code postal invalide"
 
@@ -2371,7 +2371,7 @@ msgstr "Logo %d"
 msgid "Logo (format JPG or JPEG)"
 msgstr "Logo (format JPG ou JPEG)"
 
-#: src/PresaleWizard.php:1101
+#: src/PresaleWizard.php:1100
 #, php-format
 msgid "Logo of %s"
 msgstr "Logo de %s"
@@ -2384,11 +2384,11 @@ msgstr "Logo du client"
 msgid "Logs"
 msgstr "Journaux"
 
-#: ⁨standard input⁩:45 ⁨standard input⁩:47 ⁨standard input⁩:177
+#: ⁨standard input⁩:52 ⁨standard input⁩:54 ⁨standard input⁩:177
 msgid "Lost"
 msgstr "Perdue"
 
-#: src/PresaleProposal.php:78
+#: src/PresaleProposal.php:81
 msgid "Lost (archived)"
 msgstr "Perdue (archivée)"
 
@@ -2463,6 +2463,10 @@ msgstr "Responsable (contact principal)"
 #: src/DexWizard.php:126
 msgid "Manual backup of the databases"
 msgstr "Sauvegarde manuelle des bases de données"
+
+#: ⁨standard input⁩:47 ⁨standard input⁩:48
+msgid "Mark as sent"
+msgstr "Marquer comme envoyé"
 
 #: ⁨standard input⁩:118
 msgid "Missing"
@@ -2801,7 +2805,7 @@ msgstr "Pas de période trouvée"
 msgid "No picture uploaded"
 msgstr "Pas d'image téléchargée"
 
-#: src/PresaleWizard.php:759 ⁨standard input⁩:91
+#: src/PresaleWizard.php:758 ⁨standard input⁩:91
 msgid "No project manager"
 msgstr "Aucun chef de projet"
 
@@ -2954,7 +2958,7 @@ msgstr[2] "Interventions non facturées"
 msgid "Not filled in"
 msgstr "Non renseigné"
 
-#: src/PresaleProposal.php:88
+#: src/PresaleProposal.php:91
 msgid "Not requested"
 msgstr "Non demandé"
 
@@ -3468,7 +3472,7 @@ msgstr "Avancement"
 
 #: src/PresaleUser.php:97 src/NotificationTargetPresaleProposal.php:67
 #: src/NotificationTargetPresaleProposal.php:140 src/ProjectManager.php:48
-#: src/PresaleProposal.php:205 ⁨standard input⁩:117 ⁨standard input⁩:48
+#: src/PresaleProposal.php:208 ⁨standard input⁩:117 ⁨standard input⁩:48
 #: ⁨standard input⁩:63 ⁨standard input⁩:35
 msgid "Project manager"
 msgid_plural "Project managers"
@@ -3510,7 +3514,7 @@ msgid "Proposals won"
 msgstr "Propositions gagnées"
 
 #: src/NotificationTargetPresaleProposal.php:134 src/PresaleClient.php:51
-#: src/PresaleProposal.php:166 ⁨standard input⁩:98 ⁨standard input⁩:79
+#: src/PresaleProposal.php:169 ⁨standard input⁩:98 ⁨standard input⁩:79
 #: ⁨standard input⁩:59 ⁨standard input⁩:48 ⁨standard input⁩:103
 msgid "Prospect"
 msgid_plural "Prospects"
@@ -3620,7 +3624,7 @@ msgstr "Sous-entités"
 msgid "Refacturable costs"
 msgstr "Frais refacturables"
 
-#: src/NotificationTargetPresaleProposal.php:133 src/PresaleProposal.php:158
+#: src/NotificationTargetPresaleProposal.php:133 src/PresaleProposal.php:161
 #: ⁨standard input⁩:80
 msgid "Reference"
 msgstr "Référence"
@@ -3751,7 +3755,7 @@ msgstr "Reprendre le brouillon"
 msgid "Retain at least one annex before generating the proposal."
 msgstr "Retenez au moins une annexe avant de générer la proposition."
 
-#: src/PresaleWizard.php:1752 src/PresaleWizard.php:2043
+#: src/PresaleWizard.php:1751 src/PresaleWizard.php:2042
 msgid "Retain at least one annex."
 msgstr "Retenez au moins une annexe."
 
@@ -3789,7 +3793,7 @@ msgstr "Technologie SSO"
 
 #: src/PresaleUser.php:96 src/NotificationTargetPresaleProposal.php:66
 #: src/NotificationTargetPresaleProposal.php:139 src/Entity.php:1091
-#: src/PresaleProposal.php:197 ⁨standard input⁩:116 ⁨standard input⁩:48
+#: src/PresaleProposal.php:200 ⁨standard input⁩:116 ⁨standard input⁩:48
 #: ⁨standard input⁩:62
 msgid "Sales representative"
 msgstr "Commercial"
@@ -3879,6 +3883,10 @@ msgstr ""
 #: src/EditorSubscription.php:1105
 msgid "Send the list of expired publisher subscriptions"
 msgstr "Envoyer la liste des souscriptions éditeurs expirées"
+
+#: src/PresaleProposal.php:79
+msgid "Sent"
+msgstr "Envoyé"
 
 #: src/DatServer.php:49 src/DexServer.php:50 ⁨standard input⁩:76 ⁨standard
 #: input⁩:75
@@ -4403,20 +4411,20 @@ msgstr ""
 "L'entité \"%s\" existe déjà. Souhaitez-vous l'utiliser pour créer un nouveau"
 " contrat ?"
 
-#: src/PresaleWizard.php:2104
+#: src/PresaleWizard.php:2103
 msgid "The estimate has been cancelled."
 msgstr "Le chiffrage a été annulé."
 
-#: src/PresaleWizard.php:1988
+#: src/PresaleWizard.php:1987
 msgid "The estimate has been saved."
 msgstr "Le chiffrage a été enregistré."
 
-#: src/PresaleWizard.php:2080
+#: src/PresaleWizard.php:2079
 #, php-format
 msgid "The estimate is requested from %s."
 msgstr "Le chiffrage est demandé à %s."
 
-#: src/PresaleWizard.php:1985
+#: src/PresaleWizard.php:1984
 msgid ""
 "The estimate is validated: the sales representative can price the proposal."
 msgstr ""
@@ -4469,7 +4477,7 @@ msgstr ""
 "La génération du document d'exploitation a échoué. Vérifiez le modèle Word "
 "de la configuration."
 
-#: src/PresaleWizard.php:2169
+#: src/PresaleWizard.php:2168
 msgid ""
 "The generation of the proposal failed. Check the Word templates of the "
 "configuration."
@@ -4500,16 +4508,16 @@ msgstr ""
 "Les lignes totalisent %1$s jours, le chiffrage %2$s jours : ils doivent être"
 " égaux."
 
-#: src/PresaleWizard.php:1080 src/PresaleWizard.php:1094
-#: src/PresaleWizard.php:1111
+#: src/PresaleWizard.php:1079 src/PresaleWizard.php:1093
+#: src/PresaleWizard.php:1110
 msgid "The logo could not be uploaded."
 msgstr "Le logo n'a pas pu être téléversé."
 
-#: src/PresaleWizard.php:1087
+#: src/PresaleWizard.php:1086
 msgid "The logo must be a PNG or JPEG image."
 msgstr "Le logo doit être une image PNG ou JPEG."
 
-#: src/PresaleWizard.php:1083
+#: src/PresaleWizard.php:1082
 msgid "The logo must not exceed 2 MB."
 msgstr "Le logo ne doit pas dépasser 2 Mo."
 
@@ -4526,7 +4534,7 @@ msgstr ""
 "Le prix mensuel est celui du niveau de souscription (%s € HT), défini dans "
 "sa fiche."
 
-#: src/PresaleWizard.php:1286
+#: src/PresaleWizard.php:1285
 msgid "The name of the sales representative is mandatory."
 msgstr "Le nom du commercial est obligatoire."
 
@@ -4554,19 +4562,19 @@ msgstr "Le schéma du plugin est bon"
 msgid "The price per user must be a positive number."
 msgstr "Le prix par utilisateur doit être un nombre positif."
 
-#: src/PresaleWizard.php:2227
+#: src/PresaleWizard.php:2236
 msgid "The proposal could not be duplicated."
 msgstr "La proposition n'a pas pu être dupliquée."
 
-#: src/PresaleWizard.php:2242
+#: src/PresaleWizard.php:2251
 msgid "The proposal has been deleted."
 msgstr "La proposition a été supprimée."
 
-#: src/PresaleWizard.php:2230
+#: src/PresaleWizard.php:2239
 msgid "The proposal has been duplicated: a new draft."
 msgstr "La proposition a été dupliquée : un nouveau brouillon."
 
-#: src/PresaleWizard.php:2164
+#: src/PresaleWizard.php:2163
 msgid "The proposal has been generated."
 msgstr "La proposition a été générée."
 
@@ -4594,19 +4602,23 @@ msgstr ""
 "La proposition ne contient que des annexes de souscription : aucun contrat "
 "n'est créé, l'assistant se termine avec cette souscription."
 
-#: src/PresaleWizard.php:2217
+#: src/PresaleWizard.php:2226
 msgid "The proposal is back to draft."
 msgstr "La proposition est repassée en brouillon."
 
-#: src/PresaleWizard.php:2203
+#: src/PresaleWizard.php:2212
 msgid "The proposal is lost: it is archived."
 msgstr "La proposition est perdue : elle est archivée."
 
-#: src/PresaleWizard.php:2186
+#: src/PresaleWizard.php:2197
+msgid "The proposal is marked as sent."
+msgstr "La proposition a été marquée comme envoyée."
+
+#: src/PresaleWizard.php:2185
 msgid "The proposal is won: create the customer from it."
 msgstr "La proposition est gagnée : créez le client à partir de celle-ci."
 
-#: ⁨standard input⁩:52 ⁨standard input⁩:181
+#: ⁨standard input⁩:59 ⁨standard input⁩:181
 msgid ""
 "The proposal was modified after its last generation. Mark it as won on the "
 "last generated version?"
@@ -4614,7 +4626,7 @@ msgstr ""
 "La proposition a été modifiée depuis sa dernière génération. La marquer "
 "comme gagnée sur la dernière version générée ?"
 
-#: src/PresaleWizard.php:989
+#: src/PresaleWizard.php:988
 msgid "The prospect could not be saved."
 msgstr "Le prospect n'a pas pu être enregistré."
 
@@ -4687,7 +4699,7 @@ msgstr "Le dossier d'architecture technique n'a pas pu être enregistré."
 msgid "The technical architecture document has been generated."
 msgstr "Le dossier d'architecture technique a été généré."
 
-#: src/PresaleWizard.php:1345
+#: src/PresaleWizard.php:1344
 msgid "The type of contract is mandatory."
 msgstr "Le type de contrat est obligatoire."
 
@@ -4695,11 +4707,11 @@ msgstr "Le type de contrat est obligatoire."
 msgid "The user must hold a central profile on the customers entity."
 msgstr "L'utilisateur doit avoir un profil central sur l'entité des clients."
 
-#: src/PresaleWizard.php:2137
+#: src/PresaleWizard.php:2136
 msgid "The version could not be deleted."
 msgstr "Impossible de supprimer cette version."
 
-#: src/PresaleWizard.php:2135
+#: src/PresaleWizard.php:2134
 msgid "The version has been deleted."
 msgstr "Cette version a été supprimée."
 
@@ -4760,7 +4772,7 @@ msgid "This proposal is won or lost: it can no longer be modified."
 msgstr ""
 "Cette proposition est gagnée ou perdue : elle ne peut plus être modifiée."
 
-#: src/PresaleWizard.php:1283
+#: src/PresaleWizard.php:1282
 msgid "This user is not declared for the pre-sales."
 msgstr "Cet utilisateur n'est pas déclaré pour l'avant-vente."
 
@@ -4849,7 +4861,7 @@ msgstr "Total dépassement"
 msgid "Total excl. VAT"
 msgstr "Total HT"
 
-#: src/NotificationTargetPresaleProposal.php:137 src/PresaleProposal.php:213
+#: src/NotificationTargetPresaleProposal.php:137 src/PresaleProposal.php:216
 #: ⁨standard input⁩:51 ⁨standard input⁩:104
 msgid "Total excluding VAT"
 msgstr "Total HT"
@@ -4913,7 +4925,7 @@ msgstr[0] "Type"
 msgstr[1] "Types"
 msgstr[2] "Types"
 
-#: src/NotificationTargetPresaleProposal.php:136 src/PresaleProposal.php:183
+#: src/NotificationTargetPresaleProposal.php:136 src/PresaleProposal.php:186
 #: src/Monthly.php:430 src/Followup.php:852 ⁨standard input⁩:62 ⁨standard
 #: input⁩:113 ⁨standard input⁩:61
 msgid "Type of contract"
@@ -4981,19 +4993,19 @@ msgstr "Réponse inattendue de l'API Kiflo."
 msgid "Unknown action"
 msgstr "Action inconnue"
 
-#: src/PresaleWizard.php:1663 src/PresaleWizard.php:2016
+#: src/PresaleWizard.php:1662 src/PresaleWizard.php:2015
 msgid "Unknown annex model"
 msgstr "Modèle d'annexe inconnu"
 
-#: src/PresaleWizard.php:944
+#: src/PresaleWizard.php:943
 msgid "Unknown customer"
 msgstr "Client inconnu"
 
-#: src/PresaleWizard.php:951
+#: src/PresaleWizard.php:950
 msgid "Unknown origin"
 msgstr "Origine inconnue"
 
-#: src/PresaleWizard.php:939
+#: src/PresaleWizard.php:938
 msgid "Unknown prospect"
 msgstr "Prospect inconnu"
 
@@ -5068,7 +5080,7 @@ msgstr ""
 "n'est fourni avec le plugin. Les balises utilisables sont listées dans la "
 "documentation du plugin."
 
-#: src/PresaleWizard.php:2152
+#: src/PresaleWizard.php:2151
 #, php-format
 msgid ""
 "Upload these Word templates in the configuration (Pre-sales tab) first: %s."
@@ -5254,7 +5266,7 @@ msgstr "Avec contrat"
 msgid "Wizard defaults"
 msgstr "Paramètres par défaut du wizard"
 
-#: src/PresaleProposal.php:77 ⁨standard input⁩:51 ⁨standard input⁩:53
+#: src/PresaleProposal.php:80 ⁨standard input⁩:58 ⁨standard input⁩:60
 #: ⁨standard input⁩:182
 msgid "Won"
 msgstr "Gagnée"
