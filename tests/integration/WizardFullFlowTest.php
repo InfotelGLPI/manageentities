@@ -138,6 +138,48 @@ class WizardFullFlowTest extends DbTestCase
         $this->assertSame(1, $sessionAfter['step']);
     }
 
+    public function testNewCustomerWithASubscriptionAndNoContract(): void
+    {
+        global $DB;
+
+        $this->login('glpi');
+        $uid = $this->getUniqueString();
+        $DB->update(\GlpiPlugin\Manageentities\Config::getTable(), ['use_editorsubscriptions' => 1], ['id' => 1]);
+        (new \ReflectionProperty(\GlpiPlugin\Manageentities\Config::class, 'instance'))->setValue(null, null);
+
+        $this->assertTrue(WizardController::chooseModeAndReturn(['wizard_mode' => 'new_entity'])['success']);
+        $r1 = WizardController::saveEntityAndReturn([
+            'name'        => "Entity-{$uid}",
+            'entities_id' => $this->wizardParentEntity(),
+            'email'       => "entity-{$uid}@example.com",
+        ]);
+        $this->assertTrue($r1['success'], json_encode($r1));
+        $r2 = WizardController::saveContactsAndReturn(['contacts' => []]);
+        $this->assertTrue($r2['success'], json_encode($r2));
+        $this->assertSame(3, $r2['step'] ?? null, 'The subscription step comes after the contacts');
+
+        // "Finish without contract" of the subscription step
+        $r3 = WizardController::saveSubscriptionAndReturn([
+            'name'                      => "Sub-{$uid}",
+            'active_editor_suscription' => 1,
+            'begin_date'                => '2026-01-01',
+            'end_date'                  => '2026-12-31',
+            'skip_contract'             => 1,
+        ]);
+        $this->assertTrue($r3['success'], json_encode($r3));
+        $summary = WizardController::validateAndSummarize();
+        $this->assertTrue($summary['success'], json_encode($summary));
+
+        $rc = WizardController::commitWizardAndReturn();
+        $this->assertTrue($rc['success'], json_encode($rc));
+
+        $entities_id = (int) getItemByTypeName(\Entity::class, "Entity-{$uid}", true);
+        $this->assertGreaterThan(0, $entities_id);
+        $this->assertSame(1, countElementsInTable(\GlpiPlugin\Manageentities\EditorSubscription::getTable(), ['entities_id' => $entities_id]));
+        $this->assertSame(0, countElementsInTable('glpi_contracts', ['entities_id' => $entities_id]));
+        $this->assertSame(0, countElementsInTable(\GlpiPlugin\Manageentities\ContractDay::getTable(), ['entities_id' => $entities_id]));
+    }
+
     public function testResetClearsSessionWithoutTouchingDb(): void
     {
         $this->login();

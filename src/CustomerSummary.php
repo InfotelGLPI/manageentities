@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Session;
 
 /**
  * Summary card of a customer, first tab of the clients management on the simplified interface:
@@ -182,6 +183,9 @@ class CustomerSummary
      * period in an active state, so with the periods of the other states and the closed
      * contracts as well: the badge and the tab counter disagreed with the tab.
      *
+     * In the simplified interface, the days left on the fixed-price periods are not counted:
+     * a fixed-price contract is not a credit of days for the customer.
+     *
      * @param int|array<int|string> $entities_id
      *
      * @return array{count: int, remaining: float}
@@ -192,9 +196,25 @@ class CustomerSummary
         $total = $list['tot'] ?? [];
         unset($list['tot']);
 
+        $remaining = (float) ($total['tot_reste'] ?? 0);
+        if (Session::getCurrentInterface() == 'helpdesk') {
+            // Same periods as tot_reste, which already leaves the unlimited ones out there
+            $remaining = 0.0;
+            foreach ($list as $contract) {
+                foreach ($contract['days'] ?? [] as $period) {
+                    if (!in_array($period['contract_type'] ?? null, [
+                        Contract::CONTRACT_TYPE_UNLIMITED,
+                        Contract::CONTRACT_TYPE_FORFAIT,
+                    ])) {
+                        $remaining += (float) $period['reste'];
+                    }
+                }
+            }
+        }
+
         return [
             'count'     => count($list),
-            'remaining' => (float) ($total['tot_reste'] ?? 0),
+            'remaining' => $remaining,
         ];
     }
 
