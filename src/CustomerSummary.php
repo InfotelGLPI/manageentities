@@ -154,6 +154,7 @@ class CustomerSummary
                 'remaining' => $remaining['remaining'],
                 'is_day'    => $is_day,
                 'color'     => self::getContractColor($remaining['count'] > 0 ? $remaining['remaining'] : null),
+                'hidden'    => $remaining['only_forfait'],
             ],
             'subscription' => Config::useEditorSubscriptions() ? [
                 'exists'   => $subscription !== [],
@@ -184,11 +185,12 @@ class CustomerSummary
      * contracts as well: the badge and the tab counter disagreed with the tab.
      *
      * In the simplified interface, the days left on the fixed-price periods are not counted:
-     * a fixed-price contract is not a credit of days for the customer.
+     * a fixed-price contract is not a credit of days for the customer. When every ongoing
+     * period is a fixed-price one, only_forfait tells the badge to stay hidden.
      *
      * @param int|array<int|string> $entities_id
      *
-     * @return array{count: int, remaining: float}
+     * @return array{count: int, remaining: float, only_forfait: bool}
      */
     private static function getOngoingContractsRemaining(int|array $entities_id): array
     {
@@ -196,12 +198,19 @@ class CustomerSummary
         $total = $list['tot'] ?? [];
         unset($list['tot']);
 
-        $remaining = (float) ($total['tot_reste'] ?? 0);
+        $remaining    = (float) ($total['tot_reste'] ?? 0);
+        $only_forfait = false;
         if (Session::getCurrentInterface() == 'helpdesk') {
             // Same periods as tot_reste, which already leaves the unlimited ones out there
-            $remaining = 0.0;
+            $remaining  = 0.0;
+            $has_period = false;
+            $has_other  = false;
             foreach ($list as $contract) {
                 foreach ($contract['days'] ?? [] as $period) {
+                    $has_period = true;
+                    if (($period['contract_type'] ?? null) != Contract::CONTRACT_TYPE_FORFAIT) {
+                        $has_other = true;
+                    }
                     if (!in_array($period['contract_type'] ?? null, [
                         Contract::CONTRACT_TYPE_UNLIMITED,
                         Contract::CONTRACT_TYPE_FORFAIT,
@@ -210,11 +219,13 @@ class CustomerSummary
                     }
                 }
             }
+            $only_forfait = $has_period && !$has_other;
         }
 
         return [
-            'count'     => count($list),
-            'remaining' => $remaining,
+            'count'        => count($list),
+            'remaining'    => $remaining,
+            'only_forfait' => $only_forfait,
         ];
     }
 

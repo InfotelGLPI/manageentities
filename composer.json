@@ -4,7 +4,8 @@
     "config": {
         "autoloader-suffix": "PluginManageentities",
         "platform": {
-            "php": "8.3.99"
+            "php": "8.3.99",
+            "ext-gd": "8.3.99"
         },
         "optimize-autoloader": true,
         "platform-check": false,
