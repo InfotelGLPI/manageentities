@@ -5,7 +5,8 @@
         "autoloader-suffix": "PluginManageentities",
         "platform": {
             "php": "8.3.99",
-            "ext-gd": "8.3.99"
+            "ext-gd": "8.3.99",
+            "ext-zip": "1.22.0"
         },
         "optimize-autoloader": true,
         "platform-check": false,
