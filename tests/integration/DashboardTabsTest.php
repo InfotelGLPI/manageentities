@@ -314,7 +314,7 @@ class DashboardTabsTest extends DbTestCase
         // The tab counter and the summary card show what the tab lists
         $this->assertSame(1, CustomerSummary::countOngoingContracts([$entities_id]));
         $remaining = (new \ReflectionMethod(CustomerSummary::class, 'getOngoingContractsRemaining'))->invoke(null, $entities_id);
-        $this->assertSame(['count' => 1, 'remaining' => 5.0], $remaining);
+        $this->assertSame(['count' => 1, 'remaining' => 5.0, 'only_forfait' => false], $remaining);
     }
 
     public function testReferencesAreGroupedByYearWithTheirDetails(): void
