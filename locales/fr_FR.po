@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 07:34+0000\n"
+"POT-Creation-Date: 2026-11-01 18:59+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/"
@@ -103,7 +103,7 @@ msgstr "%d contrats arrivant à échéance sont notifiés"
 msgid "%d expired publisher subscriptions notified"
 msgstr "%d notifications des souscriptions éditeurs expirées"
 
-#: ⁨standard input⁩:146
+#: ⁨standard input⁩:149
 #, php-format
 msgid "%d intervention"
 msgid_plural "%d interventions"
@@ -276,7 +276,7 @@ msgstr "Accepté le"
 msgid "Accomplished tasks informations"
 msgstr "Informations sur les tâches accomplies"
 
-#: ⁨standard input⁩:120 ⁨standard input⁩:110
+#: ⁨standard input⁩:123 ⁨standard input⁩:110
 msgid "Active"
 msgstr "Active"
 
@@ -1141,7 +1141,7 @@ msgstr "Créé le"
 msgid "Creation date"
 msgstr "Date de création"
 
-#: ⁨standard input⁩:103
+#: ⁨standard input⁩:105
 msgid "Credit almost used up"
 msgstr "Crédit presque épuisé"
 
@@ -1798,7 +1798,7 @@ msgstr "Client existant :"
 msgid "Expired"
 msgstr "Expirée"
 
-#: ⁨standard input⁩:124
+#: ⁨standard input⁩:127
 msgid "Expired on"
 msgstr "Expiré le"
 
@@ -1952,7 +1952,7 @@ msgstr "Générée"
 msgid "Generated from the clients management portal"
 msgstr "Généré à partir du portail de gestion des clients"
 
-#: ⁨standard input⁩:166
+#: ⁨standard input⁩:169
 msgid "Generated on"
 msgstr "Généré le"
 
@@ -2519,7 +2519,7 @@ msgstr "Prix mensuel HT par utilisateur"
 msgid "Months"
 msgstr "Mois"
 
-#: ⁨standard input⁩:148
+#: ⁨standard input⁩:151
 #, php-format
 msgid "More than %d hours"
 msgstr "Plus de %d heures"
@@ -2756,7 +2756,7 @@ msgstr "Pas de tech lead responsable"
 msgid "No note."
 msgstr "Aucune note."
 
-#: ⁨standard input⁩:106
+#: ⁨standard input⁩:108
 msgid "No ongoing contract"
 msgstr "Aucun contrat en cours"
 
@@ -2849,7 +2849,7 @@ msgstr "Pas encore de prestations définies."
 msgid "No stakeholders have been affected yet."
 msgstr "Aucun intervenant n'a encore été ajouté."
 
-#: ⁨standard input⁩:129
+#: ⁨standard input⁩:132
 msgid "No subscription"
 msgstr "Aucune souscription"
 
@@ -3016,7 +3016,7 @@ msgstr ""
 "Une commande par ligne : les lignes sont reprises telles quelles dans le "
 "document."
 
-#: ⁨standard input⁩:96
+#: ⁨standard input⁩:98
 msgid "Ongoing contract"
 msgstr "Contrat en cours"
 
@@ -3519,7 +3519,7 @@ msgstr "ID du compte client chez l'éditeur"
 
 #: src/Entity.php:89 src/Entity.php:298 src/Entity.php:347
 #: src/NotificationTargetPresaleProposal.php:141 src/EditorSubscription.php:55
-#: front/editorsubscription.form.php:111 ⁨standard input⁩:42 ⁨standard input⁩:117
+#: front/editorsubscription.form.php:111 ⁨standard input⁩:42 ⁨standard input⁩:120
 #: ⁨standard input⁩:39 ⁨standard input⁩:43 ⁨standard input⁩:83 ⁨standard input⁩:223
 #: ⁨standard input⁩:102
 msgid "Publisher subscription"
@@ -4936,7 +4936,7 @@ msgstr "Heures non facturées"
 msgid "Unbilled hours by client with an ongoing contract"
 msgstr "Heures non facturées par un client ayant un contrat en cours"
 
-#: src/Entity.php:95 src/Entity.php:282 src/Entity.php:368 ⁨standard input⁩:140
+#: src/Entity.php:95 src/Entity.php:282 src/Entity.php:368 ⁨standard input⁩:143
 msgid "Unbilled interventions"
 msgstr "Interventions non facturées"
 
@@ -4980,7 +4980,7 @@ msgstr "Table inconnue"
 msgid "Unplanned interventions"
 msgstr "Interventions non planifiées"
 
-#: ⁨standard input⁩:124
+#: ⁨standard input⁩:127
 msgid "Until"
 msgstr "Jusqu'à"
 
@@ -5310,7 +5310,7 @@ msgstr[2] "jours"
 msgid "days"
 msgstr "jours"
 
-#: ⁨standard input⁩:100
+#: ⁨standard input⁩:102
 msgid "days left"
 msgstr "jours restants"
 
@@ -5330,7 +5330,7 @@ msgstr "ex. Expertise technique GLPI"
 msgid "hours"
 msgstr "heures"
 
-#: ⁨standard input⁩:100
+#: ⁨standard input⁩:102
 msgid "hours left"
 msgstr "heures restantes"
 
@@ -5338,7 +5338,7 @@ msgstr "heures restantes"
 msgid "in"
 msgstr "à"
 
-#: ⁨standard input⁩:143
+#: ⁨standard input⁩:146
 msgid "man-days"
 msgstr "jours-homme"
 

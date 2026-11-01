@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 07:34+0000\n"
+"POT-Creation-Date: 2026-11-01 18:59+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2017\n"
 "Language-Team: Italian (Italy) (https://www.transifex.com/infotelGLPI/teams/"
@@ -95,7 +95,7 @@ msgstr ""
 msgid "%d expired publisher subscriptions notified"
 msgstr ""
 
-#: ⁨standard input⁩:146
+#: ⁨standard input⁩:149
 #, php-format
 msgid "%d intervention"
 msgid_plural "%d interventions"
@@ -259,7 +259,7 @@ msgstr ""
 msgid "Accomplished tasks informations"
 msgstr ""
 
-#: ⁨standard input⁩:120 ⁨standard input⁩:110
+#: ⁨standard input⁩:123 ⁨standard input⁩:110
 msgid "Active"
 msgstr ""
 
@@ -1079,7 +1079,7 @@ msgstr "Creato da"
 msgid "Creation date"
 msgstr ""
 
-#: ⁨standard input⁩:103
+#: ⁨standard input⁩:105
 msgid "Credit almost used up"
 msgstr ""
 
@@ -1710,7 +1710,7 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
-#: ⁨standard input⁩:124
+#: ⁨standard input⁩:127
 msgid "Expired on"
 msgstr ""
 
@@ -1860,7 +1860,7 @@ msgstr ""
 msgid "Generated from the clients management portal"
 msgstr ""
 
-#: ⁨standard input⁩:166
+#: ⁨standard input⁩:169
 msgid "Generated on"
 msgstr ""
 
@@ -2411,7 +2411,7 @@ msgstr ""
 msgid "Months"
 msgstr ""
 
-#: ⁨standard input⁩:148
+#: ⁨standard input⁩:151
 #, php-format
 msgid "More than %d hours"
 msgstr ""
@@ -2634,7 +2634,7 @@ msgstr ""
 msgid "No note."
 msgstr ""
 
-#: ⁨standard input⁩:106
+#: ⁨standard input⁩:108
 msgid "No ongoing contract"
 msgstr ""
 
@@ -2723,7 +2723,7 @@ msgstr ""
 msgid "No stakeholders have been affected yet."
 msgstr ""
 
-#: ⁨standard input⁩:129
+#: ⁨standard input⁩:132
 msgid "No subscription"
 msgstr ""
 
@@ -2885,7 +2885,7 @@ msgstr ""
 msgid "One command per line: the lines are kept as typed in the document."
 msgstr ""
 
-#: ⁨standard input⁩:96
+#: ⁨standard input⁩:98
 msgid "Ongoing contract"
 msgstr ""
 
@@ -3363,7 +3363,7 @@ msgstr ""
 
 #: src/Entity.php:89 src/Entity.php:298 src/Entity.php:347
 #: src/NotificationTargetPresaleProposal.php:141 src/EditorSubscription.php:55
-#: front/editorsubscription.form.php:111 ⁨standard input⁩:42 ⁨standard input⁩:117
+#: front/editorsubscription.form.php:111 ⁨standard input⁩:42 ⁨standard input⁩:120
 #: ⁨standard input⁩:39 ⁨standard input⁩:43 ⁨standard input⁩:83 ⁨standard input⁩:223
 #: ⁨standard input⁩:102
 msgid "Publisher subscription"
@@ -4688,7 +4688,7 @@ msgstr ""
 msgid "Unbilled hours by client with an ongoing contract"
 msgstr ""
 
-#: src/Entity.php:95 src/Entity.php:282 src/Entity.php:368 ⁨standard input⁩:140
+#: src/Entity.php:95 src/Entity.php:282 src/Entity.php:368 ⁨standard input⁩:143
 msgid "Unbilled interventions"
 msgstr ""
 
@@ -4732,7 +4732,7 @@ msgstr ""
 msgid "Unplanned interventions"
 msgstr ""
 
-#: ⁨standard input⁩:124
+#: ⁨standard input⁩:127
 msgid "Until"
 msgstr ""
 
@@ -5038,7 +5038,7 @@ msgstr[1] ""
 msgid "days"
 msgstr ""
 
-#: ⁨standard input⁩:100
+#: ⁨standard input⁩:102
 msgid "days left"
 msgstr ""
 
@@ -5058,7 +5058,7 @@ msgstr ""
 msgid "hours"
 msgstr ""
 
-#: ⁨standard input⁩:100
+#: ⁨standard input⁩:102
 msgid "hours left"
 msgstr ""
 
@@ -5066,7 +5066,7 @@ msgstr ""
 msgid "in"
 msgstr "in"
 
-#: ⁨standard input⁩:143
+#: ⁨standard input⁩:146
 msgid "man-days"
 msgstr ""
 
