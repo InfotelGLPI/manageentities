@@ -101,7 +101,9 @@
                                 {{ contract.remaining|formatted_number }}
                                 <span class="fs-5">{{ contract.is_day ? __('days left', 'manageentities') : __('hours left', 'manageentities') }}</span>
                             </div>
-                            {% if contract.remaining < low_remaining %}
+                            {% if contract.remaining <= 0 %}
+                                <div class="text-red small"><i class="ti ti-alert-triangle me-1"></i>{{ __('Credit used up', 'manageentities') }}</div>
+                            {% elseif contract.remaining < low_remaining %}
                                 <div class="text-red small"><i class="ti ti-alert-triangle me-1"></i>{{ __('Credit almost used up', 'manageentities') }}</div>
                             {% endif %}
                         {% else %}
