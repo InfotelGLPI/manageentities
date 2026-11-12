@@ -780,7 +780,11 @@ class PresaleConversion
     /**
      * Banner of the wizard when it is started from a proposal
      *
-     * @return array{name: string, url: string}|null
+     * archived_entity names the customer when it is still archived (a prospect linked afterwards
+     * to an archived customer, PresaleClient::getLinkableCustomers()): step 1 offers to unarchive
+     * it, the banner says so from the start.
+     *
+     * @return array{name: string, url: string, archived_entity: string}|null
      */
     public static function getBanner(array $session): ?array
     {
@@ -790,9 +794,14 @@ class PresaleConversion
             return null;
         }
 
+        $entities_id = (int) ($session['entities_id'] ?? 0);
+        $archived    = ($session['wizard_mode'] ?? '') === 'existing_entity'
+            && WizardController::isArchivedEntity($entities_id);
+
         return [
-            'name' => (string) ($proposal->fields['reference'] ?: $proposal->fields['name']),
-            'url'  => PresaleProposal::getFormURLWithID($id),
+            'name'            => (string) ($proposal->fields['reference'] ?: $proposal->fields['name']),
+            'url'             => PresaleProposal::getFormURLWithID($id),
+            'archived_entity' => $archived ? \Dropdown::getDropdownName('glpi_entities', $entities_id) : '',
         ];
     }
 }

@@ -217,12 +217,55 @@ class PresaleClient extends CommonDBTM
             'new_url'      => PresaleWizard::canUse() && !$this->fields['is_archived'] ? $new_url : '',
             'entity_name'  => $converted > 0 ? \Dropdown::getDropdownName('glpi_entities', $converted) : '',
             'entity_url'   => $converted > 0 ? \Entity::getFormURLWithID($converted) : '',
+            // Not a customer yet: it can be linked to an existing one (prepareInputForUpdate())
+            'customers'    => $converted === 0 && $this->canUpdateItem() && self::canUpdate()
+                ? self::getLinkableCustomers()
+                : [],
+            // Linked to an archived customer: to unarchive when the customer is generated
+            'entity_archived' => $converted > 0 && WizardController::isArchivedEntity($converted),
             'logo_url'     => !empty($this->fields['logo_documents_id'])
                 ? $CFG_GLPI['root_doc'] . '/front/document.send.php?docid=' . (int) $this->fields['logo_documents_id']
                 : '',
         ]);
 
         return true;
+    }
+
+    /**
+     * Customers a prospect can be linked to: the ones the wizard offers for a new proposal
+     * (PresaleWizard::getCustomerChoices()), and the archived ones -- often the very reason why
+     * the customer was not found when the proposal was made. These are labelled as archived:
+     * the customer wizard offers to unarchive them when the customer is generated from a won
+     * proposal (WizardController::saveSelectEntityAndReturn()).
+     *
+     * @return array<int, string> id => name
+     */
+    public static function getLinkableCustomers(): array
+    {
+        $choices = PresaleWizard::getCustomerChoices();
+
+        $archive = (int) (Config::getInstance()->fields['wizard_archive_entities_id'] ?? 0);
+        if ($archive <= 0) {
+            return $choices;
+        }
+        $archived = getSonsOf('glpi_entities', $archive);
+        unset($archived[$archive]);
+        if ($archived === []) {
+            return $choices;
+        }
+        // Same perimeter as the wizard: the entities where the user holds the pre-sales right
+        $allowed = array_flip(array_map('intval', \Profile_User::getUserEntitiesForRight(
+            \Session::getLoginUserID(),
+            PresaleProposal::$rightname,
+            CREATE | UPDATE,
+        )));
+        foreach ((new \Entity())->find(['id' => array_keys($archived)], ['name']) as $data) {
+            if (isset($allowed[(int) $data['id']])) {
+                $choices[(int) $data['id']] = sprintf(__('%s (archived)', 'manageentities'), $data['name']);
+            }
+        }
+
+        return $choices;
     }
 
     /**
@@ -253,6 +296,22 @@ class PresaleClient extends CommonDBTM
      */
     public function prepareInputForUpdate($input)
     {
+        // Link to an existing customer, for a prospect whose entity was not found when its
+        // proposal was made: only while it is not a customer yet, and only to one of
+        // getLinkableCustomers(). A won proposal then adds its contract to that entity instead
+        // of creating a new one (PresaleConversion::prefill()).
+        if (array_key_exists('converted_entities_id', $input)) {
+            $entities_id = (int) $input['converted_entities_id'];
+            if ($entities_id <= 0 || (int) $this->fields['converted_entities_id'] > 0) {
+                unset($input['converted_entities_id']);
+            } elseif (!isset(self::getLinkableCustomers()[$entities_id])) {
+                \Session::addMessageAfterRedirect(__s('Unknown customer', 'manageentities'), false, ERROR);
+                return false;
+            } else {
+                $input['converted_entities_id'] = $entities_id;
+            }
+        }
+
         $fields = ['name', 'address', 'postcode', 'town', 'state', 'country', 'phonenumber', 'email', 'website'];
         if (array_intersect_key($input, array_flip($fields)) === []) {
             return $input;

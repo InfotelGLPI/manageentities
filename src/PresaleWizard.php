@@ -510,11 +510,13 @@ class PresaleWizard
     }
 
     /**
-     * Customer entities: the children of the customers entity, the archived ones excluded
+     * Customer entities: the children of the customers entity, the archived ones excluded.
+     * Also offered to link a prospect to an existing customer afterwards
+     * (PresaleClient::getLinkableCustomers(), which adds the archived ones).
      *
      * @return array<int, string>
      */
-    private static function getCustomerChoices(): array
+    public static function getCustomerChoices(): array
     {
         $parent = self::getTargetEntity();
         if ($parent <= 0) {
