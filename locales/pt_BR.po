@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-05 08:06+0000\n"
+"POT-Creation-Date: 2026-11-13 10:47+0000\n"
 "PO-Revision-Date: 2017-10-18 16:20+0000\n"
 "Last-Translator: Gustavo Plottier Pilotto <gplottier@gmail.com>, 2018\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/infotelGLPI/"
@@ -44,7 +44,7 @@ msgid_plural "%1$s interventions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PresaleWizard.php:1702
+#: src/PresaleWizard.php:1704
 #, php-format
 msgid "%1$s, line %2$d: %3$s"
 msgstr ""
@@ -59,7 +59,7 @@ msgstr ""
 msgid "%1$s: subscription level \"%2$s\" unknown here, imported without level."
 msgstr ""
 
-#: src/PresaleWizard.php:1722
+#: src/PresaleWizard.php:1724
 #, php-format
 msgid "%1$s: the priced lines total %2$s days, the estimate %3$s days"
 msgstr ""
@@ -116,7 +116,12 @@ msgid_plural "%d rules created"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PresaleWizard.php:2351 src/PresaleAnnexTypeTransfer.php:247
+#: src/PresaleClient.php:264
+#, php-format
+msgid "%s (archived)"
+msgstr ""
+
+#: src/PresaleWizard.php:2353 src/PresaleAnnexTypeTransfer.php:247
 #, php-format
 msgid "%s (copy)"
 msgstr ""
@@ -126,9 +131,9 @@ msgstr ""
 msgid "%s client(s) able to open tickets"
 msgstr ""
 
-#: src/PresaleWizard.php:1019 src/DatWizard.php:711 src/DatWizard.php:714
-#: src/DatWizard.php:718 src/DatWizard.php:722 src/DexWizard.php:713
-#: src/DexWizard.php:716 src/DexWizard.php:720 src/DexWizard.php:724
+#: src/PresaleWizard.php:1021 src/DexWizard.php:713 src/DexWizard.php:716
+#: src/DexWizard.php:720 src/DexWizard.php:724 src/DatWizard.php:711
+#: src/DatWizard.php:714 src/DatWizard.php:718 src/DatWizard.php:722
 #, php-format
 msgid "%s is mandatory"
 msgstr ""
@@ -138,12 +143,12 @@ msgstr ""
 msgid "%s open ticket(s)"
 msgstr ""
 
-#: src/PresaleWizard.php:1589
+#: src/PresaleWizard.php:1591
 #, php-format
 msgid "%s € excl. VAT per subscription per month"
 msgstr ""
 
-#: src/PresaleWizard.php:1694
+#: src/PresaleWizard.php:1696
 #, php-format
 msgid "%s: at least one line is required"
 msgstr ""
@@ -168,7 +173,7 @@ msgstr ""
 msgid "%s: template deleted."
 msgstr ""
 
-#: src/PresaleWizard.php:1673
+#: src/PresaleWizard.php:1675
 #, php-format
 msgid "%s: the VAT rate must be between 0 and 100"
 msgstr ""
@@ -192,7 +197,7 @@ msgstr ""
 msgid "(in hours)"
 msgstr ""
 
-#: src/WizardController.php:1894
+#: src/WizardController.php:1899
 msgid "(no name)"
 msgstr ""
 
@@ -200,7 +205,7 @@ msgstr ""
 msgid "+ 12 months"
 msgstr ""
 
-#: src/WizardController.php:2440
+#: src/WizardController.php:2445
 msgid "-- Select a template --"
 msgstr ""
 
@@ -267,14 +272,14 @@ msgstr ""
 msgid "Active editor subscription"
 msgstr ""
 
-#: ⁨standard input⁩:202 ⁨standard input⁩:281 ⁨standard input⁩:284 ⁨standard input⁩:353
-#: ⁨standard input⁩:356 ⁨standard input⁩:104 ⁨standard input⁩:108 ⁨standard input⁩:99
-#: ⁨standard input⁩:85 ⁨standard input⁩:89 ⁨standard input⁩:196 ⁨standard input⁩:77
-#: ⁨standard input⁩:266 ⁨standard input⁩:161
+#: ⁨standard input⁩:196 ⁨standard input⁩:99 ⁨standard input⁩:104 ⁨standard input⁩:108
+#: ⁨standard input⁩:281 ⁨standard input⁩:284 ⁨standard input⁩:353 ⁨standard input⁩:356
+#: ⁨standard input⁩:85 ⁨standard input⁩:89 ⁨standard input⁩:266 ⁨standard input⁩:161
+#: ⁨standard input⁩:77 ⁨standard input⁩:202
 msgid "Add"
 msgstr ""
 
-#: ⁨standard input⁩:128 ⁨standard input⁩:131 ⁨standard input⁩:88 ⁨standard input⁩:110
+#: ⁨standard input⁩:88 ⁨standard input⁩:110 ⁨standard input⁩:128 ⁨standard input⁩:131
 #: ⁨standard input⁩:39
 msgctxt "button"
 msgid "Add"
@@ -296,7 +301,7 @@ msgstr ""
 msgid "Add a document"
 msgstr ""
 
-#: ⁨standard input⁩:112 ⁨standard input⁩:327 ⁨standard input⁩:95
+#: ⁨standard input⁩:95 ⁨standard input⁩:327 ⁨standard input⁩:112
 msgid "Add a line"
 msgstr ""
 
@@ -312,7 +317,7 @@ msgstr ""
 msgid "Add a server"
 msgstr ""
 
-#: ⁨standard input⁩:35 ⁨standard input⁩:54
+#: ⁨standard input⁩:54 ⁨standard input⁩:35
 msgid "Add a service period"
 msgstr ""
 
@@ -352,8 +357,8 @@ msgstr ""
 msgid "Add user"
 msgstr ""
 
-#: ⁨standard input⁩:63 ⁨standard input⁩:76 ⁨standard input⁩:133 ⁨standard input⁩:95
-#: ⁨standard input⁩:65 ⁨standard input⁩:101 ⁨standard input⁩:225
+#: ⁨standard input⁩:95 ⁨standard input⁩:63 ⁨standard input⁩:76 ⁨standard input⁩:133
+#: ⁨standard input⁩:75 ⁨standard input⁩:101 ⁨standard input⁩:225
 msgid "Address"
 msgstr ""
 
@@ -403,7 +408,7 @@ msgstr ""
 msgid "All the clients"
 msgstr ""
 
-#: ⁨standard input⁩:58
+#: ⁨standard input⁩:68
 msgid ""
 "All the proposals of this prospect are lost: it is archived. Reactivate one "
 "of them to use it again."
@@ -431,12 +436,12 @@ msgstr ""
 msgid "An error happened while saving the data."
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:344 front/editorsubscription.form.php:101
+#: front/editorsubscription.form.php:101 src/EditorSubscriptionWizard.php:344
 msgid "An error occurred while deleting."
 msgstr ""
 
-#: src/EditorSubscriptionWizard.php:195 src/EditorSubscriptionWizard.php:247
 #: front/editorsubscription.form.php:59 front/editorsubscription.form.php:80
+#: src/EditorSubscriptionWizard.php:195 src/EditorSubscriptionWizard.php:247
 msgid "An error occurred while saving."
 msgstr ""
 
@@ -453,8 +458,8 @@ msgid_plural "Annex lines"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PresaleAnnexType.php:54 ⁨standard input⁩:208 ⁨standard input⁩:167
-#: ⁨standard input⁩:53
+#: src/PresaleAnnexType.php:54 ⁨standard input⁩:208 ⁨standard input⁩:53
+#: ⁨standard input⁩:167
 msgid "Annex model"
 msgid_plural "Annex models"
 msgstr[0] ""
@@ -501,7 +506,7 @@ msgstr ""
 msgid "Apply the model"
 msgstr ""
 
-#: ⁨standard input⁩:53 ⁨standard input⁩:176
+#: ⁨standard input⁩:176 ⁨standard input⁩:53
 msgid "Archive this proposal as lost? It can be reactivated later."
 msgstr ""
 
@@ -513,7 +518,7 @@ msgstr ""
 msgid "Archived clients with unbilled hours:"
 msgstr ""
 
-#: ⁨standard input⁩:108
+#: ⁨standard input⁩:115
 msgid "Archived customer"
 msgstr ""
 
@@ -573,13 +578,13 @@ msgstr ""
 msgid "Associated assistance contracts"
 msgstr ""
 
-#: ⁨standard input⁩:300 ⁨standard input⁩:32 ⁨standard input⁩:95
+#: ⁨standard input⁩:95 ⁨standard input⁩:300 ⁨standard input⁩:32
 msgid "Associated commercial"
 msgid_plural "Associated business"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ⁨standard input⁩:213 ⁨standard input⁩:32
+#: ⁨standard input⁩:32 ⁨standard input⁩:213
 msgid "Associated contact"
 msgid_plural "Associated contacts"
 msgstr[0] ""
@@ -597,11 +602,11 @@ msgstr ""
 msgid "Assumptions, risks, what the estimate does not cover..."
 msgstr ""
 
-#: src/PresaleWizard.php:1159
+#: src/PresaleWizard.php:1161
 msgid "At least one contact is required."
 msgstr ""
 
-#: src/WizardController.php:1567 src/WizardController.php:1596
+#: src/WizardController.php:1572 src/WizardController.php:1601
 msgid "At least one service period with a rate is required"
 msgstr ""
 
@@ -609,9 +614,10 @@ msgstr ""
 msgid "Attach documents"
 msgstr ""
 
-#: src/NotificationTargetPresaleProposal.php:68 src/DatWizard.php:714
+#: src/NotificationTargetPresaleProposal.php:68
 #: src/NotificationTargetEntity.php:84 src/NotificationTargetEntity.php:109
-#: src/DexWizard.php:716 ⁨standard input⁩:62 ⁨standard input⁩:65 ⁨standard input⁩:55
+#: src/DexWizard.php:716 src/DatWizard.php:714 ⁨standard input⁩:65
+#: ⁨standard input⁩:62 ⁨standard input⁩:55
 msgid "Author"
 msgstr ""
 
@@ -629,7 +635,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: ⁨standard input⁩:115 ⁨standard input⁩:132
+#: ⁨standard input⁩:132 ⁨standard input⁩:115
 msgid "Back to the proposal"
 msgstr ""
 
@@ -641,13 +647,13 @@ msgstr ""
 msgid "Backups and processes"
 msgstr ""
 
-#: ⁨standard input⁩:64 ⁨standard input⁩:69 ⁨standard input⁩:60 ⁨standard input⁩:180
+#: ⁨standard input⁩:60 ⁨standard input⁩:64 ⁨standard input⁩:69 ⁨standard input⁩:180
 #: ⁨standard input⁩:49
 msgid "Begin date"
 msgstr ""
 
 #: src/WizardController.php:292 src/WizardController.php:325
-#: src/WizardController.php:955 src/EditorSubscriptionWizard.php:157
+#: src/WizardController.php:960 src/EditorSubscriptionWizard.php:157
 msgid "Begin date is required"
 msgstr ""
 
@@ -667,8 +673,8 @@ msgstr ""
 msgid "CSV"
 msgstr ""
 
-#: ⁨standard input⁩:97 ⁨standard input⁩:91 ⁨standard input⁩:117 ⁨standard input⁩:145
-#: ⁨standard input⁩:175 ⁨standard input⁩:100 ⁨standard input⁩:68 ⁨standard input⁩:107
+#: ⁨standard input⁩:98 ⁨standard input⁩:124 ⁨standard input⁩:152 ⁨standard input⁩:182
+#: ⁨standard input⁩:68 ⁨standard input⁩:100 ⁨standard input⁩:97 ⁨standard input⁩:107
 msgid "Cancel"
 msgstr ""
 
@@ -690,7 +696,7 @@ msgstr ""
 msgid "Cancel the request"
 msgstr ""
 
-#: src/WizardController.php:1419
+#: src/WizardController.php:1424
 #, php-format
 msgid "Cannot assign %.2f day(s): only %.2f day(s) remaining out of %.2f"
 msgstr ""
@@ -721,7 +727,7 @@ msgid ""
 "are filled in below, and can be changed."
 msgstr ""
 
-#: src/PresaleWizard.php:2066
+#: src/PresaleWizard.php:2068
 msgid ""
 "Choose a project manager declared in the configuration (step 2) to request "
 "the estimate."
@@ -735,11 +741,11 @@ msgstr ""
 msgid "Choose the JSON file to import."
 msgstr ""
 
-#: src/PresaleWizard.php:1555
+#: src/PresaleWizard.php:1557
 msgid "Choose the annex model to add."
 msgstr ""
 
-#: src/PresaleWizard.php:1351
+#: src/PresaleWizard.php:1353
 msgid "Choose the recipient of the proposal."
 msgstr ""
 
@@ -749,7 +755,7 @@ msgid ""
 "printed in the proposal."
 msgstr ""
 
-#: ⁨standard input⁩:79 ⁨standard input⁩:143 ⁨standard input⁩:105 ⁨standard input⁩:67
+#: ⁨standard input⁩:105 ⁨standard input⁩:79 ⁨standard input⁩:143 ⁨standard input⁩:77
 #: ⁨standard input⁩:231
 msgid "City"
 msgstr ""
@@ -758,12 +764,13 @@ msgstr ""
 msgid "Clear the key"
 msgstr ""
 
-#: src/DirectHelpdesk.php:728 src/Entity.php:1087 src/DatWizard.php:711
-#: src/Followup.php:745 src/Followup.php:979 src/Monthly.php:425
-#: src/Dashboard.php:256 src/Dashboard.php:320 src/Dashboard.php:375
-#: src/DexWizard.php:713 ⁨standard input⁩:46 ⁨standard input⁩:38 ⁨standard input⁩:175
-#: ⁨standard input⁩:126 ⁨standard input⁩:141 ⁨standard input⁩:53 ⁨standard input⁩:64
-#: ⁨standard input⁩:48 ⁨standard input⁩:82 ⁨standard input⁩:120 ⁨standard input⁩:165
+#: src/Monthly.php:425 src/Followup.php:745 src/Followup.php:979
+#: src/Entity.php:1087 src/Dashboard.php:256 src/Dashboard.php:320
+#: src/Dashboard.php:375 src/DirectHelpdesk.php:728 src/DexWizard.php:713
+#: src/DatWizard.php:711 ⁨standard input⁩:126 ⁨standard input⁩:141
+#: ⁨standard input⁩:175 ⁨standard input⁩:38 ⁨standard input⁩:46 ⁨standard input⁩:64
+#: ⁨standard input⁩:53 ⁨standard input⁩:82 ⁨standard input⁩:120 ⁨standard input⁩:165
+#: ⁨standard input⁩:48
 msgid "Client"
 msgid_plural "Clients"
 msgstr[0] ""
@@ -824,7 +831,7 @@ msgstr ""
 #: src/EditorSubscription.php:158 src/EditorSubscription.php:184
 #: src/EditorSubscription.php:817
 #: src/NotificationTargetEditorSubscription.php:120 hook.php:1051
-#: ⁨standard input⁩:58 ⁨standard input⁩:70 ⁨standard input⁩:93
+#: ⁨standard input⁩:70 ⁨standard input⁩:93 ⁨standard input⁩:58
 msgid "Cloud client"
 msgstr ""
 
@@ -864,7 +871,7 @@ msgstr ""
 msgid "Commands to restart the web server"
 msgstr ""
 
-#: ⁨standard input⁩:70 ⁨standard input⁩:124
+#: ⁨standard input⁩:124 ⁨standard input⁩:70
 msgid "Comment"
 msgid_plural "Comments"
 msgstr[0] ""
@@ -874,20 +881,20 @@ msgstr[1] ""
 msgid "Comment of the project manager"
 msgstr ""
 
-#: ⁨standard input⁩:65 ⁨standard input⁩:77 ⁨standard input⁩:98 ⁨standard input⁩:136
-#: ⁨standard input⁩:99 ⁨standard input⁩:121 ⁨standard input⁩:157 ⁨standard input⁩:75
+#: ⁨standard input⁩:99 ⁨standard input⁩:121 ⁨standard input⁩:77 ⁨standard input⁩:98
+#: ⁨standard input⁩:65 ⁨standard input⁩:136 ⁨standard input⁩:157 ⁨standard input⁩:85
 #: ⁨standard input⁩:261 ⁨standard input⁩:111
 msgid "Comments"
 msgstr ""
 
-#: src/Company.php:53 src/Dashboard.php:520 ⁨standard input⁩:43 ⁨standard input⁩:86
-#: ⁨standard input⁩:87 ⁨standard input⁩:49 ⁨standard input⁩:59
+#: src/Dashboard.php:520 src/Company.php:53 ⁨standard input⁩:87 ⁨standard input⁩:43
+#: ⁨standard input⁩:86 ⁨standard input⁩:49 ⁨standard input⁩:59
 msgid "Company"
 msgid_plural "Companies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PresaleWizard.php:1013 ⁨standard input⁩:63 ⁨standard input⁩:100
+#: src/PresaleWizard.php:1015 ⁨standard input⁩:73 ⁨standard input⁩:100
 #: ⁨standard input⁩:215
 msgid "Company name"
 msgstr ""
@@ -900,7 +907,7 @@ msgstr ""
 msgid "Configuring the client side view"
 msgstr ""
 
-#: ⁨standard input⁩:150
+#: ⁨standard input⁩:157
 msgid "Confirm and finish"
 msgstr ""
 
@@ -919,24 +926,24 @@ msgstr ""
 msgid "Consumption summary"
 msgstr ""
 
-#: ⁨standard input⁩:87 ⁨standard input⁩:146 ⁨standard input⁩:36 ⁨standard input⁩:38
-#: ⁨standard input⁩:84 ⁨standard input⁩:79 ⁨standard input⁩:272
+#: ⁨standard input⁩:36 ⁨standard input⁩:38 ⁨standard input⁩:87 ⁨standard input⁩:146
+#: ⁨standard input⁩:109 ⁨standard input⁩:79 ⁨standard input⁩:272
 msgid "Contact"
 msgid_plural "Contacts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PresaleWizard.php:1170
+#: src/PresaleWizard.php:1172
 #, php-format
 msgid "Contact #%d: invalid email address"
 msgstr ""
 
-#: src/PresaleWizard.php:1164
+#: src/PresaleWizard.php:1166
 #, php-format
 msgid "Contact #%d: the last name is mandatory"
 msgstr ""
 
-#: src/WizardController.php:2134 ⁨standard input⁩:91
+#: src/WizardController.php:2139 ⁨standard input⁩:91
 msgid "Contacts"
 msgstr ""
 
@@ -948,9 +955,9 @@ msgstr ""
 msgid "Context, scope, constraints..."
 msgstr ""
 
-#: src/WizardController.php:2124 src/WizardController.php:2141
-#: ⁨standard input⁩:204 ⁨standard input⁩:98 ⁨standard input⁩:40 ⁨standard input⁩:48
-#: ⁨standard input⁩:55 ⁨standard input⁩:46
+#: src/WizardController.php:2129 src/WizardController.php:2146
+#: ⁨standard input⁩:40 ⁨standard input⁩:98 ⁨standard input⁩:204 ⁨standard input⁩:55
+#: ⁨standard input⁩:48 ⁨standard input⁩:46
 msgid "Contract"
 msgid_plural "Contracts"
 msgstr[0] ""
@@ -960,7 +967,7 @@ msgstr[1] ""
 msgid "Contract closure"
 msgstr ""
 
-#: src/WizardController.php:1706
+#: src/WizardController.php:1711
 msgid "Contract data is missing"
 msgstr ""
 
@@ -968,13 +975,13 @@ msgstr ""
 msgid "Contract detail"
 msgstr ""
 
-#: ⁨standard input⁩:167 ⁨standard input⁩:93
+#: ⁨standard input⁩:93 ⁨standard input⁩:167
 msgid "Contract is imported in GLPI"
 msgstr ""
 
-#: src/CriDetail.php:494 src/CriDetail.php:750
+#: src/CriDetail.php:494 src/CriDetail.php:750 src/CriPDF.php:532
 #: src/NotificationTargetContract.php:118
-#: src/NotificationTargetContract.php:153 src/CriPDF.php:532 ⁨standard input⁩:70
+#: src/NotificationTargetContract.php:153 ⁨standard input⁩:70
 msgid "Contract number"
 msgstr ""
 
@@ -1016,7 +1023,7 @@ msgstr ""
 msgid "Copy of the production to the preproduction"
 msgstr ""
 
-#: ⁨standard input⁩:81 ⁨standard input⁩:153 ⁨standard input⁩:115 ⁨standard input⁩:69
+#: ⁨standard input⁩:115 ⁨standard input⁩:81 ⁨standard input⁩:153 ⁨standard input⁩:79
 #: ⁨standard input⁩:237
 msgid "Country"
 msgstr ""
@@ -1178,13 +1185,13 @@ msgstr[1] ""
 msgid "DNS name"
 msgstr ""
 
-#: src/CriPrice.php:54 src/CriPrice.php:91 src/CriPrice.php:178
-#: src/CriPrice.php:324 src/CriType.php:93 src/Monthly.php:436
+#: src/Monthly.php:436 src/CriType.php:93 src/CriPrice.php:54
+#: src/CriPrice.php:91 src/CriPrice.php:178 src/CriPrice.php:324
 #: ⁨standard input⁩:34
 msgid "Daily rate"
 msgstr ""
 
-#: ⁨standard input⁩:88 ⁨standard input⁩:302
+#: ⁨standard input⁩:302 ⁨standard input⁩:88
 msgid "Daily rate excl. VAT"
 msgstr ""
 
@@ -1204,9 +1211,9 @@ msgstr ""
 msgid "Database installation"
 msgstr ""
 
-#: ⁨standard input⁩:78 ⁨standard input⁩:39 ⁨standard input⁩:55 ⁨standard input⁩:75
-#: ⁨standard input⁩:66 ⁨standard input⁩:35 ⁨standard input⁩:72 ⁨standard input⁩:96
-#: ⁨standard input⁩:46 ⁨standard input⁩:68 ⁨standard input⁩:251
+#: ⁨standard input⁩:251 ⁨standard input⁩:78 ⁨standard input⁩:96 ⁨standard input⁩:35
+#: ⁨standard input⁩:72 ⁨standard input⁩:55 ⁨standard input⁩:39 ⁨standard input⁩:66
+#: ⁨standard input⁩:75 ⁨standard input⁩:68 ⁨standard input⁩:46
 msgid "Date"
 msgstr ""
 
@@ -1214,21 +1221,21 @@ msgstr ""
 msgid "Date of"
 msgstr ""
 
-#: src/Gantt.php:329 src/Followup.php:882 ⁨standard input⁩:137 ⁨standard input⁩:57
+#: src/Gantt.php:329 src/Followup.php:882 ⁨standard input⁩:57 ⁨standard input⁩:137
 msgid "Date of renewal"
 msgstr ""
 
-#: src/Gantt.php:325 src/Entity.php:1088 src/Followup.php:881
-#: ⁨standard input⁩:136 ⁨standard input⁩:53
+#: src/Gantt.php:325 src/Followup.php:881 src/Entity.php:1088 ⁨standard input⁩:53
+#: ⁨standard input⁩:136
 msgid "Date of signature"
 msgstr ""
 
-#: src/WizardController.php:1123
+#: src/WizardController.php:1128
 msgid "Date of signature is required"
 msgstr ""
 
-#: src/PresaleProposal.php:193 src/NotificationTargetPresaleProposal.php:135
-#: ⁨standard input⁩:114 ⁨standard input⁩:72 ⁨standard input⁩:64
+#: src/NotificationTargetPresaleProposal.php:135 src/PresaleProposal.php:193
+#: ⁨standard input⁩:114 ⁨standard input⁩:64 ⁨standard input⁩:72
 msgid "Date of the contract"
 msgstr ""
 
@@ -1238,7 +1245,7 @@ msgid_plural "Days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ⁨standard input⁩:68 ⁨standard input⁩:93 ⁨standard input⁩:307
+#: ⁨standard input⁩:68 ⁨standard input⁩:307 ⁨standard input⁩:93
 msgid "Days"
 msgstr ""
 
@@ -1254,7 +1261,7 @@ msgstr ""
 msgid "Deduced from the annexes:"
 msgstr ""
 
-#: ⁨standard input⁩:165 ⁨standard input⁩:44 ⁨standard input⁩:66 ⁨standard input⁩:68
+#: ⁨standard input⁩:44 ⁨standard input⁩:66 ⁨standard input⁩:68 ⁨standard input⁩:165
 msgid "Default"
 msgstr ""
 
@@ -1307,7 +1314,7 @@ msgstr ""
 msgid "Default origin of the requests of existing customers"
 msgstr ""
 
-#: src/WizardController.php:388
+#: src/WizardController.php:393
 msgid "Default parent entity is not configured"
 msgstr ""
 
@@ -1327,22 +1334,22 @@ msgstr ""
 msgid "Default time PM"
 msgstr ""
 
-#: ⁨standard input⁩:42 ⁨standard input⁩:60 ⁨standard input⁩:65 ⁨standard input⁩:93
-#: ⁨standard input⁩:67 ⁨standard input⁩:66 ⁨standard input⁩:88 ⁨standard input⁩:102
-#: ⁨standard input⁩:236 ⁨standard input⁩:107 ⁨standard input⁩:61
+#: ⁨standard input⁩:93 ⁨standard input⁩:65 ⁨standard input⁩:42 ⁨standard input⁩:60
+#: ⁨standard input⁩:67 ⁨standard input⁩:107 ⁨standard input⁩:61 ⁨standard input⁩:88
+#: ⁨standard input⁩:102 ⁨standard input⁩:236 ⁨standard input⁩:66
 msgid "Delete"
 msgstr ""
 
-#: ⁨standard input⁩:180
+#: ⁨standard input⁩:187
 msgid "Delete and reinitialize"
 msgstr ""
 
-#: ⁨standard input⁩:209 ⁨standard input⁩:261 ⁨standard input⁩:333 ⁨standard input⁩:84
-#: ⁨standard input⁩:79 ⁨standard input⁩:65 ⁨standard input⁩:178 ⁨standard input⁩:273
+#: ⁨standard input⁩:178 ⁨standard input⁩:79 ⁨standard input⁩:84 ⁨standard input⁩:261
+#: ⁨standard input⁩:333 ⁨standard input⁩:65 ⁨standard input⁩:273 ⁨standard input⁩:209
 msgid "Delete permanently"
 msgstr ""
 
-#: ⁨standard input⁩:50 ⁨standard input⁩:100 ⁨standard input⁩:60 ⁨standard input⁩:106
+#: ⁨standard input⁩:106 ⁨standard input⁩:100 ⁨standard input⁩:50 ⁨standard input⁩:60
 msgctxt "button"
 msgid "Delete permanently"
 msgstr ""
@@ -1369,18 +1376,18 @@ msgstr ""
 msgid "Delete this version of the proposal? Its document is deleted."
 msgstr ""
 
-#: ⁨standard input⁩:178
+#: ⁨standard input⁩:185
 msgid "Deleting…"
 msgstr ""
 
-#: ⁨standard input⁩:74 ⁨standard input⁩:43 ⁨standard input⁩:101 ⁨standard input⁩:199
-#: ⁨standard input⁩:38 ⁨standard input⁩:75 ⁨standard input⁩:103 ⁨standard input⁩:158
+#: ⁨standard input⁩:74 ⁨standard input⁩:38 ⁨standard input⁩:75 ⁨standard input⁩:101
+#: ⁨standard input⁩:199 ⁨standard input⁩:43 ⁨standard input⁩:103 ⁨standard input⁩:158
 #: ⁨standard input⁩:181 ⁨standard input⁩:252 ⁨standard input⁩:49 ⁨standard input⁩:50
 #: ⁨standard input⁩:70
 msgid "Description"
 msgstr ""
 
-#: ⁨standard input⁩:48 ⁨standard input⁩:86 ⁨standard input⁩:81 ⁨standard input⁩:300
+#: ⁨standard input⁩:81 ⁨standard input⁩:300 ⁨standard input⁩:48 ⁨standard input⁩:86
 msgid "Designation"
 msgstr ""
 
@@ -1436,7 +1443,7 @@ msgid_plural "Documents"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ⁨standard input⁩:62 ⁨standard input⁩:90
+#: ⁨standard input⁩:90 ⁨standard input⁩:62
 msgid "Download"
 msgstr ""
 
@@ -1470,8 +1477,8 @@ msgctxt "button"
 msgid "Duplicate"
 msgstr ""
 
-#: ⁨standard input⁩:83 ⁨standard input⁩:41 ⁨standard input⁩:37 ⁨standard input⁩:74
-#: ⁨standard input⁩:105 ⁨standard input⁩:160 ⁨standard input⁩:196 ⁨standard input⁩:81
+#: ⁨standard input⁩:81 ⁨standard input⁩:83 ⁨standard input⁩:105 ⁨standard input⁩:37
+#: ⁨standard input⁩:74 ⁨standard input⁩:41 ⁨standard input⁩:160 ⁨standard input⁩:196
 msgid "Duration"
 msgstr ""
 
@@ -1479,7 +1486,7 @@ msgstr ""
 msgid "Duration is required"
 msgstr ""
 
-#: ⁨standard input⁩:188 ⁨standard input⁩:116
+#: ⁨standard input⁩:116 ⁨standard input⁩:188
 msgid "Duration of moving"
 msgstr ""
 
@@ -1503,7 +1510,7 @@ msgid ""
 "\"%2$s\" and not yet assigned to a technician"
 msgstr ""
 
-#: ⁨standard input⁩:47 ⁨standard input⁩:153
+#: ⁨standard input⁩:153 ⁨standard input⁩:47
 msgid "Edit"
 msgstr ""
 
@@ -1516,8 +1523,8 @@ msgid "Editor"
 msgstr ""
 
 #: src/EditorSubscription.php:159 src/EditorSubscription.php:809
-#: src/NotificationTargetEditorSubscription.php:121 ⁨standard input⁩:60
-#: ⁨standard input⁩:62 ⁨standard input⁩:95
+#: src/NotificationTargetEditorSubscription.php:121 ⁨standard input⁩:62
+#: ⁨standard input⁩:95 ⁨standard input⁩:60
 msgid "Editor subscription"
 msgstr ""
 
@@ -1526,15 +1533,15 @@ msgstr ""
 msgid "Elements added through the wizard"
 msgstr ""
 
-#: ⁨standard input⁩:149 ⁨standard input⁩:85 ⁨standard input⁩:84 ⁨standard input⁩:71
-#: ⁨standard input⁩:95 ⁨standard input⁩:112 ⁨standard input⁩:244 ⁨standard input⁩:89
+#: ⁨standard input⁩:85 ⁨standard input⁩:84 ⁨standard input⁩:149 ⁨standard input⁩:81
+#: ⁨standard input⁩:120 ⁨standard input⁩:112 ⁨standard input⁩:244 ⁨standard input⁩:89
 msgid "Email"
 msgid_plural "Emails"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ⁨standard input⁩:74 ⁨standard input⁩:124 ⁨standard input⁩:225 ⁨standard input⁩:313
-#: ⁨standard input⁩:44 ⁨standard input⁩:47 ⁨standard input⁩:45
+#: ⁨standard input⁩:47 ⁨standard input⁩:44 ⁨standard input⁩:74 ⁨standard input⁩:124
+#: ⁨standard input⁩:225 ⁨standard input⁩:313 ⁨standard input⁩:45
 msgid "Email address"
 msgstr ""
 
@@ -1544,11 +1551,11 @@ msgstr ""
 
 #: src/EditorSubscription.php:187
 #: src/NotificationTargetEditorSubscription.php:110
-#: src/NotificationTargetEditorSubscription.php:147 ⁨standard input⁩:99
-#: ⁨standard input⁩:106 ⁨standard input⁩:64 ⁨standard input⁩:151 ⁨standard input⁩:41
-#: ⁨standard input⁩:120 ⁨standard input⁩:75 ⁨standard input⁩:80 ⁨standard input⁩:65
-#: ⁨standard input⁩:40 ⁨standard input⁩:142 ⁨standard input⁩:195 ⁨standard input⁩:69
-#: ⁨standard input⁩:50 ⁨standard input⁩:33
+#: src/NotificationTargetEditorSubscription.php:147 ⁨standard input⁩:65
+#: ⁨standard input⁩:40 ⁨standard input⁩:75 ⁨standard input⁩:80 ⁨standard input⁩:106
+#: ⁨standard input⁩:151 ⁨standard input⁩:64 ⁨standard input⁩:41 ⁨standard input⁩:120
+#: ⁨standard input⁩:33 ⁨standard input⁩:142 ⁨standard input⁩:195 ⁨standard input⁩:69
+#: ⁨standard input⁩:50 ⁨standard input⁩:99
 msgid "End date"
 msgstr ""
 
@@ -1556,7 +1563,7 @@ msgstr ""
 msgid "End date cannot be less than begin date"
 msgstr ""
 
-#: src/WizardController.php:328 src/WizardController.php:958
+#: src/WizardController.php:328 src/WizardController.php:963
 #: src/EditorSubscriptionWizard.php:160
 msgid "End date is required"
 msgstr ""
@@ -1565,18 +1572,18 @@ msgstr ""
 msgid "End date must be after the begin date !"
 msgstr ""
 
-#: src/TaskCategory.php:100 src/GenerateCRI.php:940 src/Preference.php:191
-#: src/Profile.php:51 src/Profile.php:102 setup.php:271
-#: front/addelements.form.php:39 front/report_occupation.form.php:43
-#: front/directhelpdesk.php:41 front/directhelpdesk.php:44
-#: front/directhelpdesk.php:46 front/config.form.php:88
 #: front/directhelpdesk.form.php:187 front/directhelpdesk.form.php:190
-#: front/directhelpdesk.form.php:192 front/generatecri.php:35
-#: front/generatecri.php:38 front/generatecri.php:40 front/entity.php:71
-#: front/entity.php:74 front/entity.php:76 front/cridetail.form.php:53
+#: front/directhelpdesk.form.php:192 front/report_moving.form.php:43
+#: front/entity.php:71 front/entity.php:74 front/entity.php:76
+#: front/generatecri.php:35 front/generatecri.php:38 front/generatecri.php:40
+#: front/directhelpdesk.php:41 front/directhelpdesk.php:44
+#: front/directhelpdesk.php:46 front/report_occupation.form.php:43
+#: front/report.form.php:46 front/cridetail.form.php:53
 #: front/cridetail.form.php:56 front/cridetail.form.php:58
-#: front/report_moving.form.php:43 front/report.form.php:46
-#: front/generatecri.form.php:127 ⁨standard input⁩:36
+#: front/generatecri.form.php:127 front/config.form.php:88
+#: front/addelements.form.php:39 setup.php:271 src/Profile.php:51
+#: src/Profile.php:102 src/GenerateCRI.php:940 src/TaskCategory.php:100
+#: src/Preference.php:191 ⁨standard input⁩:36
 msgid "Entities portal"
 msgstr "Portal de entidades"
 
@@ -1596,36 +1603,36 @@ msgstr ""
 msgid "Entities with neither an active contract nor a publisher subscription:"
 msgstr ""
 
-#: src/EditorSubscription.php:177 src/NotificationTargetEntity.php:83
-#: src/NotificationTargetEntity.php:108
+#: src/EditorSubscription.php:177
 #: src/NotificationTargetEditorSubscription.php:104
 #: src/NotificationTargetEditorSubscription.php:141
+#: src/NotificationTargetEntity.php:83 src/NotificationTargetEntity.php:108
 #: src/NotificationTargetContract.php:116
-#: src/NotificationTargetContract.php:151 ⁨standard input⁩:50 ⁨standard input⁩:40
-#: ⁨standard input⁩:99 ⁨standard input⁩:60 ⁨standard input⁩:147 ⁨standard input⁩:203
-#: ⁨standard input⁩:58 ⁨standard input⁩:68 ⁨standard input⁩:48 ⁨standard input⁩:94
-#: ⁨standard input⁩:95 ⁨standard input⁩:34 ⁨standard input⁩:37 ⁨standard input⁩:43
-#: ⁨standard input⁩:45 ⁨standard input⁩:70 ⁨standard input⁩:38 ⁨standard input⁩:247
-#: ⁨standard input⁩:30
+#: src/NotificationTargetContract.php:151 ⁨standard input⁩:94 ⁨standard input⁩:48
+#: ⁨standard input⁩:95 ⁨standard input⁩:38 ⁨standard input⁩:247 ⁨standard input⁩:58
+#: ⁨standard input⁩:68 ⁨standard input⁩:37 ⁨standard input⁩:43 ⁨standard input⁩:50
+#: ⁨standard input⁩:99 ⁨standard input⁩:147 ⁨standard input⁩:203 ⁨standard input⁩:60
+#: ⁨standard input⁩:40 ⁨standard input⁩:30 ⁨standard input⁩:45 ⁨standard input⁩:70
+#: ⁨standard input⁩:34
 msgid "Entity"
 msgid_plural "Entities"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ⁨standard input⁩:82
+#: ⁨standard input⁩:89
 msgid "Entity already exists"
 msgstr ""
 
-#: src/WizardController.php:1557 src/WizardController.php:1604
+#: src/WizardController.php:1562 src/WizardController.php:1609
 msgid "Entity data is missing"
 msgstr ""
 
-#: src/Company.php:224 src/Company.php:266 src/WizardController.php:372
-#: src/WizardController.php:378 src/WizardController.php:393
-#: src/WizardController.php:472 src/WizardController.php:478
-#: src/WizardController.php:574 src/WizardController.php:1021
-#: src/WizardController.php:1609 src/WizardController.php:1625
-#: src/EditorSubscriptionWizard.php:239
+#: src/WizardController.php:377 src/WizardController.php:383
+#: src/WizardController.php:398 src/WizardController.php:477
+#: src/WizardController.php:483 src/WizardController.php:579
+#: src/WizardController.php:1026 src/WizardController.php:1614
+#: src/WizardController.php:1630 src/EditorSubscriptionWizard.php:239
+#: src/Company.php:224 src/Company.php:266
 msgid "Entity not found"
 msgstr ""
 
@@ -1637,24 +1644,24 @@ msgstr ""
 msgid "Entity used to archive customers."
 msgstr ""
 
-#: src/WizardController.php:1723
+#: src/WizardController.php:1728
 msgid "Error creating contract"
 msgstr ""
 
-#: src/WizardController.php:1620
+#: src/WizardController.php:1625
 msgid "Error creating entity"
 msgstr ""
 
-#: src/WizardController.php:1774
+#: src/WizardController.php:1779
 msgid "Error creating management type"
 msgstr ""
 
-#: src/WizardController.php:396
+#: src/WizardController.php:401
 msgid "Error unarchiving entity"
 msgstr ""
 
-#: src/PresaleProposal.php:240 front/presaleestimate.form.php:44
-#: ⁨standard input⁩:275 ⁨standard input⁩:51
+#: front/presaleestimate.form.php:44 src/PresaleProposal.php:240
+#: ⁨standard input⁩:51 ⁨standard input⁩:275
 msgid "Estimate"
 msgstr ""
 
@@ -1702,11 +1709,11 @@ msgstr ""
 msgid "Exceeding"
 msgstr ""
 
-#: src/PresaleClient.php:154 ⁨standard input⁩:158
+#: src/PresaleClient.php:154 ⁨standard input⁩:93 ⁨standard input⁩:158
 msgid "Existing customer"
 msgstr ""
 
-#: ⁨standard input⁩:52 ⁨standard input⁩:193
+#: ⁨standard input⁩:56 ⁨standard input⁩:193
 msgid "Existing customer:"
 msgstr ""
 
@@ -1740,7 +1747,7 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: ⁨standard input⁩:54 ⁨standard input⁩:130
+#: ⁨standard input⁩:130 ⁨standard input⁩:54
 msgid "Export CSV"
 msgstr ""
 
@@ -1756,7 +1763,7 @@ msgstr ""
 msgid "Failed to check the sanity of the tables!"
 msgstr ""
 
-#: ⁨standard input⁩:73 ⁨standard input⁩:108 ⁨standard input⁩:78
+#: ⁨standard input⁩:78 ⁨standard input⁩:73 ⁨standard input⁩:108
 msgid "Fax"
 msgstr ""
 
@@ -1776,7 +1783,7 @@ msgstr ""
 msgid "Filtered by default state list"
 msgstr ""
 
-#: src/PresaleClient.php:134 src/PresaleProposal.php:63 ⁨standard input⁩:49
+#: src/PresaleProposal.php:63 src/PresaleClient.php:134 ⁨standard input⁩:49
 #: ⁨standard input⁩:70
 msgid "Financial proposal"
 msgid_plural "Financial proposals"
@@ -1826,11 +1833,11 @@ msgid ""
 "applied to the contract when all periods are closed."
 msgstr ""
 
-#: src/Entity.php:76 src/Entity.php:273 src/Followup.php:48 ⁨standard input⁩:42
+#: src/Followup.php:48 src/Entity.php:76 src/Entity.php:273 ⁨standard input⁩:42
 msgid "General follow-up"
 msgstr ""
 
-#: src/DatWizard.php:73 src/DexWizard.php:70 ⁨standard input⁩:41
+#: src/DexWizard.php:70 src/DatWizard.php:73 ⁨standard input⁩:41
 #: ⁨standard input⁩:40 ⁨standard input⁩:56
 msgid "General information"
 msgstr ""
@@ -1876,7 +1883,7 @@ msgstr ""
 msgid "Generation"
 msgstr ""
 
-#: src/Cri.php:282 src/CriDetail.php:623 front/cri.form.php:42
+#: front/cri.form.php:42 src/Cri.php:282 src/CriDetail.php:623
 msgid "Generation of the intervention report"
 msgstr "Geração de relatório de intervenção "
 
@@ -1900,7 +1907,7 @@ msgstr ""
 msgid "Helpdesk reports"
 msgstr ""
 
-#: ⁨standard input⁩:57 ⁨standard input⁩:91 ⁨standard input⁩:68
+#: ⁨standard input⁩:68 ⁨standard input⁩:57 ⁨standard input⁩:91
 msgid "Hour"
 msgid_plural "Hours"
 msgstr[0] ""
@@ -1910,12 +1917,12 @@ msgstr[1] ""
 msgid "Hour of"
 msgstr ""
 
-#: src/Contract.php:731 src/Contract.php:784 src/Config.php:230
+#: src/Config.php:230 src/Contract.php:731 src/Contract.php:784
 msgid "Hourly"
 msgstr ""
 
-#: src/CriPrice.php:56 src/CriPrice.php:93 src/CriPrice.php:178
-#: src/CriPrice.php:324 src/Monthly.php:437 ⁨standard input⁩:34
+#: src/Monthly.php:437 src/CriPrice.php:56 src/CriPrice.php:93
+#: src/CriPrice.php:178 src/CriPrice.php:324 ⁨standard input⁩:34
 msgid "Hourly rate"
 msgstr ""
 
@@ -1943,7 +1950,7 @@ msgstr ""
 msgid "Impossible generation, you didn't create a scheduled task"
 msgstr ""
 
-#: src/PresaleProposal.php:296 src/Monthly.php:350
+#: src/Monthly.php:350 src/PresaleProposal.php:296
 msgid "In progress"
 msgstr ""
 
@@ -1951,7 +1958,7 @@ msgstr ""
 msgid "In the tables of the document, one row per server, in this order."
 msgstr ""
 
-#: ⁨standard input⁩:226 ⁨standard input⁩:108
+#: ⁨standard input⁩:108 ⁨standard input⁩:226
 msgid "Inactive"
 msgstr ""
 
@@ -1963,7 +1970,7 @@ msgstr "Informação adicionada com sucesso"
 msgid "Informations successfully deleted."
 msgstr "Informações excluídas com sucesso"
 
-#: src/Gantt.php:400 src/Followup.php:855 src/Monthly.php:431
+#: src/Gantt.php:400 src/Monthly.php:431 src/Followup.php:855
 #: src/ContractDay.php:119 src/ContractDay.php:457 ⁨standard input⁩:71
 #: ⁨standard input⁩:94
 msgid "Initial credit"
@@ -1991,12 +1998,12 @@ msgid "Internal name"
 msgstr ""
 
 #: src/EditorSubscription.php:185 src/EditorSubscription.php:825 hook.php:1064
-#: ⁨standard input⁩:83 ⁨standard input⁩:72 ⁨standard input⁩:127 ⁨standard input⁩:78
-#: ⁨standard input⁩:55
+#: ⁨standard input⁩:72 ⁨standard input⁩:127 ⁨standard input⁩:78 ⁨standard input⁩:55
+#: ⁨standard input⁩:83
 msgid "Internet publication"
 msgstr ""
 
-#: src/DirectHelpdesk.php:730 src/Contract.php:813 ⁨standard input⁩:143
+#: src/Contract.php:813 src/DirectHelpdesk.php:730 ⁨standard input⁩:143
 msgid "Intervention"
 msgid_plural "Interventions"
 msgstr[0] ""
@@ -2006,8 +2013,8 @@ msgstr[1] ""
 msgid "Intervention date"
 msgstr ""
 
-#: src/WizardController.php:1303 src/WizardController.php:1314
-#: src/WizardController.php:1399
+#: src/WizardController.php:1308 src/WizardController.php:1319
+#: src/WizardController.php:1404
 msgid "Intervention not saved yet"
 msgstr ""
 
@@ -2019,7 +2026,7 @@ msgstr ""
 msgid "Intervention periods of contract"
 msgstr ""
 
-#: src/Cri.php:56 src/Profile.php:107 src/Config.php:242 setup.php:164
+#: setup.php:164 src/Config.php:242 src/Profile.php:107 src/Cri.php:56
 #: ⁨standard input⁩:32
 msgid "Intervention report"
 msgid_plural "Intervention reports"
@@ -2051,16 +2058,16 @@ msgstr ""
 msgid "Interventions with old contract"
 msgstr ""
 
-#: src/PresaleWizard.php:1348
+#: src/PresaleWizard.php:1350
 msgid "Invalid date of the contract."
 msgstr ""
 
-#: src/PresaleWizard.php:1026 src/PresaleWizard.php:1288
-#: src/WizardController.php:247 front/entity.form.php:79
+#: front/entity.form.php:79 src/PresaleWizard.php:1028
+#: src/PresaleWizard.php:1290 src/WizardController.php:247
 msgid "Invalid email address"
 msgstr ""
 
-#: src/PresaleWizard.php:1023
+#: src/PresaleWizard.php:1025
 msgid "Invalid postal code"
 msgstr ""
 
@@ -2068,7 +2075,7 @@ msgstr ""
 msgid "Invalid website address"
 msgstr ""
 
-#: src/WizardController.php:438
+#: src/WizardController.php:443
 msgid "Invalid wizard mode"
 msgstr ""
 
@@ -2145,7 +2152,7 @@ msgstr ""
 msgid "Last name is required"
 msgstr ""
 
-#: ⁨standard input⁩:43 ⁨standard input⁩:71
+#: ⁨standard input⁩:71 ⁨standard input⁩:43
 msgid "Last synchronization"
 msgstr ""
 
@@ -2209,6 +2216,14 @@ msgstr ""
 msgid "Linked ticket"
 msgstr ""
 
+#: ⁨standard input⁩:97
+msgid ""
+"Links this prospect to a customer that already exists: a won proposal then "
+"adds its contract to this entity instead of creating a new one. An archived "
+"customer will have to be unarchived when the customer is generated. The link "
+"cannot be changed afterwards."
+msgstr ""
+
 #: ⁨standard input⁩:82
 msgid "List of default statuses for general monitoring"
 msgstr ""
@@ -2249,12 +2264,12 @@ msgstr ""
 msgid "Logo (format JPG or JPEG)"
 msgstr ""
 
-#: src/PresaleWizard.php:1100
+#: src/PresaleWizard.php:1102
 #, php-format
 msgid "Logo of %s"
 msgstr ""
 
-#: ⁨standard input⁩:73 ⁨standard input⁩:248
+#: ⁨standard input⁩:83 ⁨standard input⁩:248
 msgid "Logo of the client"
 msgstr ""
 
@@ -2262,7 +2277,7 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-#: ⁨standard input⁩:52 ⁨standard input⁩:54 ⁨standard input⁩:177
+#: ⁨standard input⁩:177 ⁨standard input⁩:52 ⁨standard input⁩:54
 msgid "Lost"
 msgstr ""
 
@@ -2270,7 +2285,7 @@ msgstr ""
 msgid "Lost (archived)"
 msgstr ""
 
-#: src/PresaleClient.php:121 ⁨standard input⁩:105
+#: src/PresaleClient.php:121 ⁨standard input⁩:130
 msgid "Main contact"
 msgstr ""
 
@@ -2282,7 +2297,7 @@ msgstr ""
 msgid "Main project manager"
 msgstr ""
 
-#: src/DirectHelpdesk.php:729 ⁨standard input⁩:65 ⁨standard input⁩:142
+#: src/DirectHelpdesk.php:729 ⁨standard input⁩:142 ⁨standard input⁩:65
 #: ⁨standard input⁩:84 ⁨standard input⁩:43 ⁨standard input⁩:44 ⁨standard input⁩:121
 msgid "Main tech lead"
 msgstr ""
@@ -2308,11 +2323,11 @@ msgstr ""
 msgid "Manage the annex models"
 msgstr ""
 
-#: src/Servicecatalog.php:74 src/Servicecatalog.php:80
+#: src/Servicecatalog.php:75 src/Servicecatalog.php:81
 msgid "Manage your contracts"
 msgstr ""
 
-#: src/WizardController.php:1762
+#: src/WizardController.php:1767
 msgid "Management data is missing"
 msgstr ""
 
@@ -2322,13 +2337,13 @@ msgid_plural "Management of task categories"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:2125 src/WizardController.php:2142
-#: src/Contract.php:76 ⁨standard input⁩:129 ⁨standard input⁩:42
+#: src/WizardController.php:2130 src/WizardController.php:2147
+#: src/Contract.php:76 ⁨standard input⁩:42 ⁨standard input⁩:129
 msgid "Management type"
 msgstr ""
 
-#: ⁨standard input⁩:245 ⁨standard input⁩:250 ⁨standard input⁩:254 ⁨standard input⁩:66
-#: ⁨standard input⁩:72 ⁨standard input⁩:77
+#: ⁨standard input⁩:66 ⁨standard input⁩:72 ⁨standard input⁩:77 ⁨standard input⁩:245
+#: ⁨standard input⁩:250 ⁨standard input⁩:254
 msgid "Manager"
 msgstr ""
 
@@ -2352,7 +2367,7 @@ msgstr ""
 msgid "Missing on the customer, to fill in:"
 msgstr ""
 
-#: src/WizardController.php:1379
+#: src/WizardController.php:1384
 msgid "Missing required fields"
 msgstr ""
 
@@ -2360,17 +2375,17 @@ msgstr ""
 msgid "Missing table"
 msgstr ""
 
-#: ⁨standard input⁩:79 ⁨standard input⁩:97 ⁨standard input⁩:122
+#: ⁨standard input⁩:79 ⁨standard input⁩:122
 msgid "Mobile"
 msgstr ""
 
-#: ⁨standard input⁩:224 ⁨standard input⁩:312 ⁨standard input⁩:43 ⁨standard input⁩:46
+#: ⁨standard input⁩:46 ⁨standard input⁩:43 ⁨standard input⁩:224 ⁨standard input⁩:312
 #: ⁨standard input⁩:44
 msgid "Mobile phone"
 msgstr ""
 
-#: src/Followup.php:884 src/Monthly.php:429 ⁨standard input⁩:141
-#: ⁨standard input⁩:67 ⁨standard input⁩:63
+#: src/Monthly.php:429 src/Followup.php:884 ⁨standard input⁩:63 ⁨standard input⁩:67
+#: ⁨standard input⁩:141
 msgid "Mode of management"
 msgstr ""
 
@@ -2388,11 +2403,11 @@ msgstr ""
 msgid "Models of the sections by operating system"
 msgstr ""
 
-#: ⁨standard input⁩:74 ⁨standard input⁩:172
+#: ⁨standard input⁩:172 ⁨standard input⁩:74
 msgid "Modified since the last generation"
 msgstr ""
 
-#: src/Entity.php:77 src/Entity.php:291 src/Monthly.php:53 ⁨standard input⁩:34
+#: src/Monthly.php:53 src/Entity.php:77 src/Entity.php:291 ⁨standard input⁩:34
 #: ⁨standard input⁩:42
 msgid "Monthly follow-up"
 msgstr ""
@@ -2401,7 +2416,7 @@ msgstr ""
 msgid "Monthly price of the subscription level"
 msgstr ""
 
-#: ⁨standard input⁩:90 ⁨standard input⁩:304
+#: ⁨standard input⁩:304 ⁨standard input⁩:90
 msgid "Monthly price per subscription excl. VAT"
 msgstr ""
 
@@ -2409,7 +2424,7 @@ msgstr ""
 msgid "Monthly price per user excl. VAT"
 msgstr ""
 
-#: ⁨standard input⁩:97 ⁨standard input⁩:311
+#: ⁨standard input⁩:311 ⁨standard input⁩:97
 msgid "Months"
 msgstr ""
 
@@ -2423,15 +2438,15 @@ msgstr ""
 msgid "More than %d months"
 msgstr ""
 
-#: ⁨standard input⁩:64 ⁨standard input⁩:233 ⁨standard input⁩:106 ⁨standard input⁩:60
+#: ⁨standard input⁩:64 ⁨standard input⁩:106 ⁨standard input⁩:60 ⁨standard input⁩:233
 msgid "Move down"
 msgstr ""
 
-#: ⁨standard input⁩:61 ⁨standard input⁩:230 ⁨standard input⁩:105 ⁨standard input⁩:59
+#: ⁨standard input⁩:61 ⁨standard input⁩:105 ⁨standard input⁩:59 ⁨standard input⁩:230
 msgid "Move up"
 msgstr ""
 
-#: src/Contract.php:1078 ⁨standard input⁩:178 ⁨standard input⁩:104
+#: src/Contract.php:1078 ⁨standard input⁩:104 ⁨standard input⁩:178
 msgid "Movement management"
 msgstr ""
 
@@ -2439,10 +2454,10 @@ msgstr ""
 msgid "Moving report"
 msgstr ""
 
-#: ⁨standard input⁩:59 ⁨standard input⁩:102 ⁨standard input⁩:57 ⁨standard input⁩:222
-#: ⁨standard input⁩:309 ⁨standard input⁩:41 ⁨standard input⁩:44 ⁨standard input⁩:134
-#: ⁨standard input⁩:55 ⁨standard input⁩:65 ⁨standard input⁩:45 ⁨standard input⁩:93
-#: ⁨standard input⁩:77 ⁨standard input⁩:47
+#: ⁨standard input⁩:65 ⁨standard input⁩:55 ⁨standard input⁩:45 ⁨standard input⁩:134
+#: ⁨standard input⁩:44 ⁨standard input⁩:41 ⁨standard input⁩:102 ⁨standard input⁩:57
+#: ⁨standard input⁩:222 ⁨standard input⁩:309 ⁨standard input⁩:59 ⁨standard input⁩:118
+#: ⁨standard input⁩:47 ⁨standard input⁩:77
 msgid "Name"
 msgstr ""
 
@@ -2483,7 +2498,7 @@ msgid "New intervention"
 msgstr ""
 
 #: ⁨standard input⁩:147 ⁨standard input⁩:53 ⁨standard input⁩:172 ⁨standard input⁩:224
-#: ⁨standard input⁩:55 ⁨standard input⁩:125 ⁨standard input⁩:61
+#: ⁨standard input⁩:150 ⁨standard input⁩:55 ⁨standard input⁩:61
 msgid "New proposal"
 msgstr ""
 
@@ -2495,12 +2510,12 @@ msgstr ""
 msgid "New version"
 msgstr ""
 
-#: ⁨standard input⁩:117 ⁨standard input⁩:130 ⁨standard input⁩:152 ⁨standard input⁩:60
-#: ⁨standard input⁩:129 ⁨standard input⁩:99 ⁨standard input⁩:125
+#: ⁨standard input⁩:152 ⁨standard input⁩:129 ⁨standard input⁩:99 ⁨standard input⁩:60
+#: ⁨standard input⁩:130 ⁨standard input⁩:117 ⁨standard input⁩:125
 msgid "Next"
 msgstr ""
 
-#: ⁨standard input⁩:88 ⁨standard input⁩:139 ⁨standard input⁩:145
+#: ⁨standard input⁩:139 ⁨standard input⁩:145 ⁨standard input⁩:88
 msgid "No"
 msgstr ""
 
@@ -2553,11 +2568,11 @@ msgstr ""
 msgid "No client in the current perimeter."
 msgstr ""
 
-#: ⁨standard input⁩:273 ⁨standard input⁩:96
+#: ⁨standard input⁩:96 ⁨standard input⁩:273
 msgid "No contact"
 msgstr ""
 
-#: ⁨standard input⁩:87
+#: ⁨standard input⁩:112
 msgid "No contact."
 msgstr ""
 
@@ -2664,7 +2679,7 @@ msgstr ""
 msgid "No picture uploaded"
 msgstr "Figura não subida "
 
-#: src/PresaleWizard.php:758 ⁨standard input⁩:91
+#: src/PresaleWizard.php:760 ⁨standard input⁩:91
 msgid "No project manager"
 msgstr ""
 
@@ -2674,7 +2689,7 @@ msgid ""
 "the details below, or leave them empty."
 msgstr ""
 
-#: ⁨standard input⁩:83 ⁨standard input⁩:130
+#: ⁨standard input⁩:83 ⁨standard input⁩:155
 msgid "No proposal in progress."
 msgstr ""
 
@@ -2698,11 +2713,11 @@ msgstr ""
 msgid "No rate found"
 msgstr ""
 
-#: ⁨standard input⁩:59 ⁨standard input⁩:69
+#: ⁨standard input⁩:69 ⁨standard input⁩:59
 msgid "No reports found"
 msgstr ""
 
-#: ⁨standard input⁩:39 ⁨standard input⁩:98 ⁨standard input⁩:56 ⁨standard input⁩:152
+#: ⁨standard input⁩:56 ⁨standard input⁩:39 ⁨standard input⁩:98 ⁨standard input⁩:152
 #: ⁨standard input⁩:69
 msgid "No results found"
 msgstr ""
@@ -2734,7 +2749,7 @@ msgstr ""
 msgid "No subscription found."
 msgstr ""
 
-#: src/WizardController.php:906
+#: src/WizardController.php:911
 msgid "No subscription in this wizard"
 msgstr ""
 
@@ -2799,8 +2814,8 @@ msgstr ""
 msgid "None declared yet"
 msgstr ""
 
-#: src/DirectHelpdesk.php:64 src/DirectHelpdesk_Ticket.php:49
-#: src/DirectHelpdesk_Ticket.php:86
+#: src/DirectHelpdesk_Ticket.php:49 src/DirectHelpdesk_Ticket.php:86
+#: src/DirectHelpdesk.php:64
 msgid "Not billed intervention"
 msgid_plural "Not billed interventions"
 msgstr[0] ""
@@ -2830,7 +2845,7 @@ msgstr ""
 msgid "Nothing to display"
 msgstr ""
 
-#: src/WizardController.php:2180
+#: src/WizardController.php:2185
 msgid "Nothing to display."
 msgstr ""
 
@@ -2843,7 +2858,7 @@ msgctxt "phone"
 msgid "Number"
 msgstr ""
 
-#: src/WizardController.php:1393
+#: src/WizardController.php:1398
 msgid "Number of days must be greater than 0"
 msgstr ""
 
@@ -2851,7 +2866,7 @@ msgstr ""
 msgid "Number of hours by day"
 msgstr "Número de horas por dia "
 
-#: ⁨standard input⁩:62 ⁨standard input⁩:98
+#: ⁨standard input⁩:98 ⁨standard input⁩:62
 msgid "Number of months"
 msgstr ""
 
@@ -2899,7 +2914,7 @@ msgstr ""
 msgid "Only a won proposal can create a customer."
 msgstr ""
 
-#: src/WizardController.php:1321
+#: src/WizardController.php:1326
 msgid "Only one rate is allowed per service period"
 msgstr ""
 
@@ -2976,8 +2991,8 @@ msgstr[1] ""
 msgid "Operating documents"
 msgstr ""
 
-#: src/DatWizard.php:722 src/DexWizard.php:724 ⁨standard input⁩:84
-#: ⁨standard input⁩:67 ⁨standard input⁩:77
+#: src/DexWizard.php:724 src/DatWizard.php:722 ⁨standard input⁩:67
+#: ⁨standard input⁩:84 ⁨standard input⁩:77
 msgid "Operating system"
 msgstr ""
 
@@ -3008,7 +3023,7 @@ msgstr[1] ""
 msgid "Out of contract"
 msgstr ""
 
-#: ⁨standard input⁩:53 ⁨standard input⁩:169
+#: ⁨standard input⁩:169 ⁨standard input⁩:53
 msgid "Outcome of the proposal"
 msgstr ""
 
@@ -3070,23 +3085,23 @@ msgstr ""
 msgid "Period comment"
 msgstr ""
 
-#: src/Entity.php:412 src/Followup.php:848 src/WizardController.php:1934
-#: src/WizardController.php:2009 src/WizardController.php:2126
-#: src/WizardController.php:2143 src/ContractDay.php:59 src/ContractDay.php:61
-#: src/Config.php:243 ⁨standard input⁩:45 ⁨standard input⁩:35 ⁨standard input⁩:36
-#: ⁨standard input⁩:52
+#: src/Config.php:243 src/Followup.php:848 src/Entity.php:412
+#: src/WizardController.php:1939 src/WizardController.php:2014
+#: src/WizardController.php:2131 src/WizardController.php:2148
+#: src/ContractDay.php:59 src/ContractDay.php:61 ⁨standard input⁩:36
+#: ⁨standard input⁩:35 ⁨standard input⁩:45 ⁨standard input⁩:52
 msgid "Period of contract"
 msgid_plural "Periods of contract"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1573
+#: src/WizardController.php:1578
 #, php-format
 msgid "Period of contract \"%s\" requires at least one rate"
 msgstr ""
 
-#: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:998 ⁨standard input⁩:66
-#: ⁨standard input⁩:80 ⁨standard input⁩:33
+#: src/CriDetail.php:828 src/CriDetail.php:1795 hook.php:998 ⁨standard input⁩:33
+#: ⁨standard input⁩:66 ⁨standard input⁩:80
 msgid "Periods of contract"
 msgstr ""
 
@@ -3094,10 +3109,10 @@ msgstr ""
 msgid "Person in charge"
 msgstr ""
 
+#: ⁨standard input⁩:69 ⁨standard input⁩:73 ⁨standard input⁩:45 ⁨standard input⁩:42
 #: ⁨standard input⁩:154 ⁨standard input⁩:72 ⁨standard input⁩:103 ⁨standard input⁩:223
-#: ⁨standard input⁩:310 ⁨standard input⁩:311 ⁨standard input⁩:42 ⁨standard input⁩:45
-#: ⁨standard input⁩:43 ⁨standard input⁩:69 ⁨standard input⁩:73 ⁨standard input⁩:70
-#: ⁨standard input⁩:96 ⁨standard input⁩:117 ⁨standard input⁩:241 ⁨standard input⁩:95
+#: ⁨standard input⁩:310 ⁨standard input⁩:311 ⁨standard input⁩:43 ⁨standard input⁩:80
+#: ⁨standard input⁩:121 ⁨standard input⁩:117 ⁨standard input⁩:241 ⁨standard input⁩:95
 msgid "Phone"
 msgid_plural "Phones"
 msgstr[0] ""
@@ -3146,11 +3161,11 @@ msgstr ""
 msgid "Please note that there are unbilled interventions for this customer."
 msgstr ""
 
-#: src/WizardController.php:496
+#: src/WizardController.php:501
 msgid "Please select a child entity"
 msgstr ""
 
-#: src/WizardController.php:368 src/WizardController.php:468
+#: src/WizardController.php:373 src/WizardController.php:473
 msgid "Please select an entity"
 msgstr ""
 
@@ -3171,13 +3186,13 @@ msgstr ""
 msgid "Portrait PDF"
 msgstr ""
 
-#: ⁨standard input⁩:107 ⁨standard input⁩:97 ⁨standard input⁩:71 ⁨standard input⁩:52
-#: ⁨standard input⁩:53 ⁨standard input⁩:69
+#: ⁨standard input⁩:69 ⁨standard input⁩:107 ⁨standard input⁩:71 ⁨standard input⁩:52
+#: ⁨standard input⁩:53 ⁨standard input⁩:97
 msgctxt "button"
 msgid "Post"
 msgstr ""
 
-#: ⁨standard input⁩:78 ⁨standard input⁩:138 ⁨standard input⁩:100 ⁨standard input⁩:66
+#: ⁨standard input⁩:100 ⁨standard input⁩:78 ⁨standard input⁩:138 ⁨standard input⁩:76
 #: ⁨standard input⁩:228
 msgid "Postal code"
 msgstr ""
@@ -3191,8 +3206,8 @@ msgstr ""
 msgid "Pre-fill from a contract template"
 msgstr ""
 
-#: src/Profile.php:121 src/PresaleConfig.php:46 front/presale.form.php:43
-#: ⁨standard input⁩:51 ⁨standard input⁩:49 ⁨standard input⁩:48 ⁨standard input⁩:46
+#: front/presale.form.php:43 src/Profile.php:121 src/PresaleConfig.php:46
+#: ⁨standard input⁩:49 ⁨standard input⁩:51 ⁨standard input⁩:48 ⁨standard input⁩:46
 msgid "Pre-sales"
 msgstr ""
 
@@ -3233,15 +3248,14 @@ msgstr ""
 msgid "Predefined task informations"
 msgstr ""
 
-#: src/NotificationTargetContract.php:121
-#: src/NotificationTargetContract.php:156 src/Dashboard.php:191
-#: src/Dashboard.php:322 src/Dashboard.php:377 src/Dashboard.php:472
-#: ⁨standard input⁩:207
+#: src/Dashboard.php:191 src/Dashboard.php:322 src/Dashboard.php:377
+#: src/Dashboard.php:472 src/NotificationTargetContract.php:121
+#: src/NotificationTargetContract.php:156 ⁨standard input⁩:207
 msgid "Prestation"
 msgstr ""
 
-#: ⁨standard input⁩:102 ⁨standard input⁩:113 ⁨standard input⁩:126 ⁨standard input⁩:148
-#: ⁨standard input⁩:56 ⁨standard input⁩:86 ⁨standard input⁩:60 ⁨standard input⁩:112
+#: ⁨standard input⁩:148 ⁨standard input⁩:60 ⁨standard input⁩:86 ⁨standard input⁩:56
+#: ⁨standard input⁩:126 ⁨standard input⁩:102 ⁨standard input⁩:113 ⁨standard input⁩:112
 #: ⁨standard input⁩:121
 msgid "Previous"
 msgstr ""
@@ -3254,11 +3268,11 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: ⁨standard input⁩:53 ⁨standard input⁩:89 ⁨standard input⁩:88 ⁨standard input⁩:303
+#: ⁨standard input⁩:88 ⁨standard input⁩:303 ⁨standard input⁩:53 ⁨standard input⁩:89
 msgid "Price excl. VAT"
 msgstr ""
 
-#: src/WizardController.php:1308
+#: src/WizardController.php:1313
 msgid "Price must be greater than 0"
 msgstr ""
 
@@ -3292,10 +3306,10 @@ msgstr ""
 msgid "Progress"
 msgstr ""
 
-#: src/PresaleProposal.php:208 src/PresaleUser.php:97
 #: src/NotificationTargetPresaleProposal.php:67
-#: src/NotificationTargetPresaleProposal.php:140 src/ProjectManager.php:48
-#: ⁨standard input⁩:35 ⁨standard input⁩:117 ⁨standard input⁩:48 ⁨standard input⁩:63
+#: src/NotificationTargetPresaleProposal.php:140 src/PresaleUser.php:97
+#: src/PresaleProposal.php:208 src/ProjectManager.php:48 ⁨standard input⁩:35
+#: ⁨standard input⁩:117 ⁨standard input⁩:63 ⁨standard input⁩:48
 msgid "Project manager"
 msgid_plural "Project managers"
 msgstr[0] ""
@@ -3322,7 +3336,7 @@ msgid "Proposal won"
 msgstr ""
 
 #: src/Entity.php:85 src/Entity.php:188 src/Entity.php:331 ⁨standard input⁩:47
-#: ⁨standard input⁩:122 ⁨standard input⁩:100
+#: ⁨standard input⁩:147 ⁨standard input⁩:100
 msgid "Proposals in progress"
 msgstr ""
 
@@ -3334,9 +3348,9 @@ msgstr ""
 msgid "Proposals won"
 msgstr ""
 
-#: src/PresaleClient.php:51 src/PresaleProposal.php:169
-#: src/NotificationTargetPresaleProposal.php:134 ⁨standard input⁩:103
-#: ⁨standard input⁩:98 ⁨standard input⁩:48 ⁨standard input⁩:59 ⁨standard input⁩:79
+#: src/NotificationTargetPresaleProposal.php:134 src/PresaleProposal.php:169
+#: src/PresaleClient.php:51 ⁨standard input⁩:103 ⁨standard input⁩:98
+#: ⁨standard input⁩:59 ⁨standard input⁩:48 ⁨standard input⁩:79
 msgid "Prospect"
 msgid_plural "Prospects"
 msgstr[0] ""
@@ -3358,16 +3372,16 @@ msgstr ""
 
 #: src/EditorSubscription.php:178 src/EditorSubscription.php:794
 #: src/NotificationTargetEditorSubscription.php:105
-#: src/NotificationTargetEditorSubscription.php:142 ⁨standard input⁩:66
-#: ⁨standard input⁩:100 ⁨standard input⁩:41
+#: src/NotificationTargetEditorSubscription.php:142 ⁨standard input⁩:100
+#: ⁨standard input⁩:41 ⁨standard input⁩:66
 msgid "Publisher customer account ID"
 msgstr ""
 
-#: src/Entity.php:89 src/Entity.php:298 src/Entity.php:347
+#: front/editorsubscription.form.php:111
 #: src/NotificationTargetPresaleProposal.php:141 src/EditorSubscription.php:55
-#: front/editorsubscription.form.php:111 ⁨standard input⁩:42 ⁨standard input⁩:122
-#: ⁨standard input⁩:39 ⁨standard input⁩:43 ⁨standard input⁩:83 ⁨standard input⁩:223
-#: ⁨standard input⁩:102
+#: src/Entity.php:89 src/Entity.php:298 src/Entity.php:347 ⁨standard input⁩:39
+#: ⁨standard input⁩:43 ⁨standard input⁩:122 ⁨standard input⁩:83 ⁨standard input⁩:102
+#: ⁨standard input⁩:223 ⁨standard input⁩:42
 msgid "Publisher subscription"
 msgid_plural "Publisher subscriptions"
 msgstr[0] ""
@@ -3405,7 +3419,7 @@ msgstr ""
 msgid "Purpose"
 msgstr ""
 
-#: ⁨standard input⁩:58 ⁨standard input⁩:94 ⁨standard input⁩:93 ⁨standard input⁩:308
+#: ⁨standard input⁩:93 ⁨standard input⁩:308 ⁨standard input⁩:58 ⁨standard input⁩:94
 msgid "Quantity"
 msgstr ""
 
@@ -3429,7 +3443,7 @@ msgstr ""
 msgid "Reassigned"
 msgstr ""
 
-#: ⁨standard input⁩:102 ⁨standard input⁩:92 ⁨standard input⁩:60
+#: ⁨standard input⁩:102 ⁨standard input⁩:60 ⁨standard input⁩:92
 msgid "Recipient"
 msgstr ""
 
@@ -3437,19 +3451,19 @@ msgstr ""
 msgid "Recursive"
 msgstr ""
 
-#: src/Contract.php:1079 ⁨standard input⁩:158 ⁨standard input⁩:84
+#: src/Contract.php:1079 ⁨standard input⁩:84 ⁨standard input⁩:158
 msgid "Refacturable costs"
 msgstr ""
 
-#: src/PresaleProposal.php:161 src/NotificationTargetPresaleProposal.php:133
+#: src/NotificationTargetPresaleProposal.php:133 src/PresaleProposal.php:161
 #: ⁨standard input⁩:80
 msgid "Reference"
 msgstr ""
 
 #: src/EditorSubscription.php:179
 #: src/NotificationTargetEditorSubscription.php:106
-#: src/NotificationTargetEditorSubscription.php:143 ⁨standard input⁩:72
-#: ⁨standard input⁩:101 ⁨standard input⁩:148 ⁨standard input⁩:34
+#: src/NotificationTargetEditorSubscription.php:143 ⁨standard input⁩:101
+#: ⁨standard input⁩:148 ⁨standard input⁩:34 ⁨standard input⁩:72
 msgid "Referenced name at the publisher"
 msgstr ""
 
@@ -3469,11 +3483,11 @@ msgstr ""
 msgid "Regenerate the intervention report"
 msgstr ""
 
-#: ⁨standard input⁩:64
+#: ⁨standard input⁩:71
 msgid "Reinitialize"
 msgstr ""
 
-#: ⁨standard input⁩:163
+#: ⁨standard input⁩:170
 msgid "Reinitialize wizard"
 msgstr ""
 
@@ -3481,7 +3495,7 @@ msgstr ""
 msgid "Remaining"
 msgstr ""
 
-#: ⁨standard input⁩:63 ⁨standard input⁩:208 ⁨standard input⁩:42
+#: ⁨standard input⁩:208 ⁨standard input⁩:63 ⁨standard input⁩:42
 msgid "Remaining days"
 msgstr ""
 
@@ -3506,7 +3520,7 @@ msgstr ""
 msgid "Remaining total (amount)"
 msgstr ""
 
-#: ⁨standard input⁩:237 ⁨standard input⁩:108
+#: ⁨standard input⁩:108 ⁨standard input⁩:237
 msgid "Remove this annex from the proposal?"
 msgstr ""
 
@@ -3572,7 +3586,7 @@ msgstr ""
 msgid "Retain at least one annex before generating the proposal."
 msgstr ""
 
-#: src/PresaleWizard.php:1751 src/PresaleWizard.php:2042
+#: src/PresaleWizard.php:1753 src/PresaleWizard.php:2044
 msgid "Retain at least one annex."
 msgstr ""
 
@@ -3583,7 +3597,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/PresaleConversion.php:651 ⁨standard input⁩:84 ⁨standard input⁩:58
-#: ⁨standard input⁩:87 ⁨standard input⁩:94 ⁨standard input⁩:107
+#: ⁨standard input⁩:87 ⁨standard input⁩:119 ⁨standard input⁩:107
 msgid "Role"
 msgstr ""
 
@@ -3607,10 +3621,10 @@ msgstr ""
 msgid "SSO technology"
 msgstr ""
 
-#: src/PresaleProposal.php:200 src/PresaleUser.php:96 src/Entity.php:1091
 #: src/NotificationTargetPresaleProposal.php:66
-#: src/NotificationTargetPresaleProposal.php:139 ⁨standard input⁩:116
-#: ⁨standard input⁩:48 ⁨standard input⁩:62
+#: src/NotificationTargetPresaleProposal.php:139 src/Entity.php:1091
+#: src/PresaleUser.php:96 src/PresaleProposal.php:200 ⁨standard input⁩:116
+#: ⁨standard input⁩:62 ⁨standard input⁩:48
 msgid "Sales representative"
 msgstr ""
 
@@ -3618,9 +3632,9 @@ msgstr ""
 msgid "Sales representative and project manager"
 msgstr ""
 
-#: ⁨standard input⁩:49 ⁨standard input⁩:156 ⁨standard input⁩:80 ⁨standard input⁩:134
-#: ⁨standard input⁩:110 ⁨standard input⁩:158 ⁨standard input⁩:72 ⁨standard input⁩:34
-#: ⁨standard input⁩:141 ⁨standard input⁩:94
+#: ⁨standard input⁩:49 ⁨standard input⁩:110 ⁨standard input⁩:158 ⁨standard input⁩:34
+#: ⁨standard input⁩:94 ⁨standard input⁩:80 ⁨standard input⁩:134 ⁨standard input⁩:156
+#: ⁨standard input⁩:72 ⁨standard input⁩:141
 msgctxt "button"
 msgid "Save"
 msgstr ""
@@ -3653,7 +3667,7 @@ msgstr ""
 msgid "Scripts to watch"
 msgstr ""
 
-#: ⁨standard input⁩:50 ⁨standard input⁩:47 ⁨standard input⁩:127
+#: ⁨standard input⁩:127 ⁨standard input⁩:50 ⁨standard input⁩:47
 msgid "Search"
 msgstr ""
 
@@ -3674,7 +3688,7 @@ msgstr ""
 msgid "See the unbilled interventions"
 msgstr ""
 
-#: ⁨standard input⁩:36 ⁨standard input⁩:70
+#: ⁨standard input⁩:70 ⁨standard input⁩:36
 msgid "Select"
 msgstr ""
 
@@ -3702,7 +3716,7 @@ msgstr ""
 msgid "Sent"
 msgstr ""
 
-#: src/DatServer.php:49 src/DexServer.php:50 ⁨standard input⁩:75
+#: src/DexServer.php:50 src/DatServer.php:49 ⁨standard input⁩:75
 #: ⁨standard input⁩:76
 msgid "Server"
 msgid_plural "Servers"
@@ -3782,7 +3796,7 @@ msgstr ""
 msgid "Show closed leads"
 msgstr ""
 
-#: src/Contract.php:1077 ⁨standard input⁩:150 ⁨standard input⁩:76
+#: src/Contract.php:1077 ⁨standard input⁩:76 ⁨standard input⁩:150
 msgid "Show on GANTT"
 msgstr ""
 
@@ -3817,13 +3831,13 @@ msgstr ""
 
 #: src/EditorSubscription.php:186
 #: src/NotificationTargetEditorSubscription.php:109
-#: src/NotificationTargetEditorSubscription.php:146 ⁨standard input⁩:93
-#: ⁨standard input⁩:105 ⁨standard input⁩:206 ⁨standard input⁩:40 ⁨standard input⁩:111
-#: ⁨standard input⁩:192 ⁨standard input⁩:75 ⁨standard input⁩:39
+#: src/NotificationTargetEditorSubscription.php:146 ⁨standard input⁩:75
+#: ⁨standard input⁩:39 ⁨standard input⁩:105 ⁨standard input⁩:206 ⁨standard input⁩:40
+#: ⁨standard input⁩:111 ⁨standard input⁩:192 ⁨standard input⁩:93
 msgid "Start date"
 msgstr ""
 
-#: ⁨standard input⁩:80 ⁨standard input⁩:148 ⁨standard input⁩:110 ⁨standard input⁩:68
+#: ⁨standard input⁩:110 ⁨standard input⁩:80 ⁨standard input⁩:148 ⁨standard input⁩:78
 #: ⁨standard input⁩:234
 msgid "State"
 msgstr ""
@@ -3850,8 +3864,8 @@ msgstr ""
 msgid "State of ticket created"
 msgstr ""
 
-#: ⁨standard input⁩:62 ⁨standard input⁩:88 ⁨standard input⁩:81 ⁨standard input⁩:89
-#: ⁨standard input⁩:49 ⁨standard input⁩:42 ⁨standard input⁩:248
+#: ⁨standard input⁩:89 ⁨standard input⁩:81 ⁨standard input⁩:42 ⁨standard input⁩:248
+#: ⁨standard input⁩:88 ⁨standard input⁩:62 ⁨standard input⁩:49
 msgid "Status"
 msgstr ""
 
@@ -3867,7 +3881,7 @@ msgstr ""
 msgid "Study and advice"
 msgstr "Estudar e informar"
 
-#: src/WizardController.php:2121 src/WizardController.php:2137
+#: src/WizardController.php:2126 src/WizardController.php:2142
 msgid "Subscription"
 msgstr ""
 
@@ -3879,11 +3893,12 @@ msgstr ""
 msgid "Subscription annex: no estimate in days."
 msgstr ""
 
-#: src/SubscriptionLevel.php:48 src/EditorSubscription.php:182
-#: src/EditorSubscription.php:801 src/EditorSubscription.php:856
+#: src/EditorSubscription.php:182 src/EditorSubscription.php:801
+#: src/EditorSubscription.php:856
 #: src/NotificationTargetEditorSubscription.php:108
-#: src/NotificationTargetEditorSubscription.php:145 ⁨standard input⁩:78
-#: ⁨standard input⁩:104 ⁨standard input⁩:150 ⁨standard input⁩:90
+#: src/NotificationTargetEditorSubscription.php:145
+#: src/SubscriptionLevel.php:48 ⁨standard input⁩:104 ⁨standard input⁩:150
+#: ⁨standard input⁩:90 ⁨standard input⁩:78
 msgid "Subscription level"
 msgid_plural "Subscription levels"
 msgstr[0] ""
@@ -3905,7 +3920,7 @@ msgstr ""
 msgid "Subscription type is required"
 msgstr ""
 
-#: ⁨standard input⁩:95 ⁨standard input⁩:309
+#: ⁨standard input⁩:309 ⁨standard input⁩:95
 msgid "Subscriptions"
 msgstr ""
 
@@ -3925,12 +3940,12 @@ msgstr ""
 msgid "Suggested queries"
 msgstr ""
 
-#: src/Entity.php:259 src/DatWizard.php:80 src/DexWizard.php:76
-#: ⁨standard input⁩:127 ⁨standard input⁩:120 ⁨standard input⁩:106 ⁨standard input⁩:56
+#: src/Entity.php:259 src/DexWizard.php:76 src/DatWizard.php:80
+#: ⁨standard input⁩:127 ⁨standard input⁩:120 ⁨standard input⁩:56 ⁨standard input⁩:106
 msgid "Summary"
 msgstr ""
 
-#: ⁨standard input⁩:133
+#: ⁨standard input⁩:140
 msgid "Summary of created items"
 msgstr ""
 
@@ -3942,7 +3957,7 @@ msgstr ""
 msgid "Surname"
 msgstr ""
 
-#: ⁨standard input⁩:56 ⁨standard input⁩:88
+#: ⁨standard input⁩:88 ⁨standard input⁩:56
 msgid "Synchronize now"
 msgstr ""
 
@@ -3954,7 +3969,7 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: src/DatWizard.php:109 src/DexWizard.php:111
+#: src/DexWizard.php:111 src/DatWizard.php:109
 msgid "System information"
 msgstr ""
 
@@ -4027,9 +4042,9 @@ msgstr[1] ""
 msgid "Technical architecture documents"
 msgstr ""
 
-#: src/CriPDF.php:395 ⁨standard input⁩:40 ⁨standard input⁩:45 ⁨standard input⁩:36
-#: ⁨standard input⁩:73 ⁨standard input⁩:138 ⁨standard input⁩:215 ⁨standard input⁩:164
-#: ⁨standard input⁩:249
+#: src/CriPDF.php:395 ⁨standard input⁩:249 ⁨standard input⁩:36 ⁨standard input⁩:73
+#: ⁨standard input⁩:40 ⁨standard input⁩:45 ⁨standard input⁩:164 ⁨standard input⁩:138
+#: ⁨standard input⁩:215
 msgid "Technician"
 msgid_plural "Technicians"
 msgstr[0] ""
@@ -4044,8 +4059,8 @@ msgid "Technician group"
 msgstr ""
 
 #: src/CriDetail.php:488 src/CriDetail.php:741 src/CriDetail.php:834
-#: src/CriDetail.php:1345 src/CriDetail.php:1354 ⁨standard input⁩:53
-#: ⁨standard input⁩:42
+#: src/CriDetail.php:1345 src/CriDetail.php:1354 ⁨standard input⁩:42
+#: ⁨standard input⁩:53
 msgid "Technicians"
 msgstr ""
 
@@ -4085,7 +4100,7 @@ msgid ""
 "or remove annexes."
 msgstr ""
 
-#: src/DatWizard.php:655 src/DexWizard.php:657
+#: src/DexWizard.php:657 src/DatWizard.php:655
 msgid ""
 "The changes of the draft have been discarded: the last generated version is "
 "restored."
@@ -4095,7 +4110,7 @@ msgstr ""
 msgid "The columns follow the kind of annex: save the model after changing it."
 msgstr ""
 
-#: ⁨standard input⁩:116
+#: ⁨standard input⁩:141
 msgid "The contacts are changed at step 1 of a proposal."
 msgstr ""
 
@@ -4111,7 +4126,14 @@ msgid ""
 "prepare a proposal for a new contract."
 msgstr ""
 
-#: src/WizardController.php:2182
+#: ⁨standard input⁩:51
+#, php-format
+msgid ""
+"The customer \"%s\" is archived: going on from step 1 will offer to "
+"unarchive it, that is to move it back under the default parent entity."
+msgstr ""
+
+#: src/WizardController.php:2187
 #, php-format
 msgid ""
 "The customer \"%s\" is currently archived. Do you want to unarchive it and "
@@ -4134,7 +4156,7 @@ msgstr ""
 msgid "The customer has been updated from the proposal %s."
 msgstr ""
 
-#: src/WizardController.php:504
+#: src/WizardController.php:509
 msgid "The customer of the proposal cannot be changed."
 msgstr ""
 
@@ -4164,9 +4186,9 @@ msgid ""
 "changed."
 msgstr ""
 
-#: src/DatGenerator.php:199 src/DatGenerator.php:216
-#: src/PresaleGenerator.php:457 src/PresaleGenerator.php:474
-#: src/DexGenerator.php:193 src/DexGenerator.php:210
+#: src/DatGenerator.php:199 src/DatGenerator.php:216 src/DexGenerator.php:193
+#: src/DexGenerator.php:210 src/PresaleGenerator.php:457
+#: src/PresaleGenerator.php:474
 msgid "The document could not be stored."
 msgstr ""
 
@@ -4178,27 +4200,27 @@ msgstr ""
 msgid "The draft of the technical architecture document has been deleted."
 msgstr ""
 
-#: src/WizardController.php:2181
+#: src/WizardController.php:2186
 #, php-format
 msgid ""
 "The entity \"%s\" already exists. Do you want to use it to create a new "
 "contract?"
 msgstr ""
 
-#: src/PresaleWizard.php:2103
+#: src/PresaleWizard.php:2105
 msgid "The estimate has been cancelled."
 msgstr ""
 
-#: src/PresaleWizard.php:1987
+#: src/PresaleWizard.php:1989
 msgid "The estimate has been saved."
 msgstr ""
 
-#: src/PresaleWizard.php:2079
+#: src/PresaleWizard.php:2081
 #, php-format
 msgid "The estimate is requested from %s."
 msgstr ""
 
-#: src/PresaleWizard.php:1984
+#: src/PresaleWizard.php:1986
 msgid ""
 "The estimate is validated: the sales representative can price the proposal."
 msgstr ""
@@ -4211,7 +4233,7 @@ msgstr ""
 msgid "The file is too large (5 MB at most)."
 msgstr ""
 
-#: ⁨standard input⁩:138
+#: ⁨standard input⁩:145
 msgid "The following items will be saved. Please review before confirming."
 msgstr ""
 
@@ -4222,12 +4244,12 @@ msgid ""
 "plugin or by a custom development before running them."
 msgstr ""
 
-#: ⁨standard input⁩:168
+#: ⁨standard input⁩:175
 msgid "The following unsaved data from this wizard will be lost:"
 msgstr ""
 
-#: src/Company.php:238 src/Company.php:276 src/Company.php:341
-#: src/EntityLogo.php:70 src/EntityLogo.php:84
+#: src/EntityLogo.php:70 src/EntityLogo.php:84 src/Company.php:238
+#: src/Company.php:276 src/Company.php:341
 msgid "The format of the image must be in JPG or JPEG"
 msgstr ""
 
@@ -4241,7 +4263,7 @@ msgid ""
 "the configuration."
 msgstr ""
 
-#: src/PresaleWizard.php:2168
+#: src/PresaleWizard.php:2170
 msgid ""
 "The generation of the proposal failed. Check the Word templates of the "
 "configuration."
@@ -4264,16 +4286,16 @@ msgstr ""
 msgid "The lines total %1$s days, the estimate %2$s days: they must be equal."
 msgstr ""
 
-#: src/PresaleWizard.php:1079 src/PresaleWizard.php:1093
-#: src/PresaleWizard.php:1110
+#: src/PresaleWizard.php:1081 src/PresaleWizard.php:1095
+#: src/PresaleWizard.php:1112
 msgid "The logo could not be uploaded."
 msgstr ""
 
-#: src/PresaleWizard.php:1086
+#: src/PresaleWizard.php:1088
 msgid "The logo must be a PNG or JPEG image."
 msgstr ""
 
-#: src/PresaleWizard.php:1082
+#: src/PresaleWizard.php:1084
 msgid "The logo must not exceed 2 MB."
 msgstr ""
 
@@ -4288,7 +4310,7 @@ msgid ""
 "in its form."
 msgstr ""
 
-#: src/PresaleWizard.php:1285
+#: src/PresaleWizard.php:1287
 msgid "The name of the sales representative is mandatory."
 msgstr ""
 
@@ -4313,19 +4335,19 @@ msgstr ""
 msgid "The price per user must be a positive number."
 msgstr ""
 
-#: src/PresaleWizard.php:2236
+#: src/PresaleWizard.php:2238
 msgid "The proposal could not be duplicated."
 msgstr ""
 
-#: src/PresaleWizard.php:2251
+#: src/PresaleWizard.php:2253
 msgid "The proposal has been deleted."
 msgstr ""
 
-#: src/PresaleWizard.php:2239
+#: src/PresaleWizard.php:2241
 msgid "The proposal has been duplicated: a new draft."
 msgstr ""
 
-#: src/PresaleWizard.php:2163
+#: src/PresaleWizard.php:2165
 msgid "The proposal has been generated."
 msgstr ""
 
@@ -4347,29 +4369,29 @@ msgid ""
 "wizard ends with this subscription."
 msgstr ""
 
-#: src/PresaleWizard.php:2226
+#: src/PresaleWizard.php:2228
 msgid "The proposal is back to draft."
 msgstr ""
 
-#: src/PresaleWizard.php:2212
+#: src/PresaleWizard.php:2214
 msgid "The proposal is lost: it is archived."
 msgstr ""
 
-#: src/PresaleWizard.php:2197
+#: src/PresaleWizard.php:2199
 msgid "The proposal is marked as sent."
 msgstr ""
 
-#: src/PresaleWizard.php:2185
+#: src/PresaleWizard.php:2187
 msgid "The proposal is won: create the customer from it."
 msgstr ""
 
-#: ⁨standard input⁩:59 ⁨standard input⁩:181
+#: ⁨standard input⁩:181 ⁨standard input⁩:59
 msgid ""
 "The proposal was modified after its last generation. Mark it as won on the "
 "last generated version?"
 msgstr ""
 
-#: src/PresaleWizard.php:988
+#: src/PresaleWizard.php:990
 msgid "The prospect could not be saved."
 msgstr ""
 
@@ -4429,7 +4451,7 @@ msgstr ""
 msgid "The technical architecture document has been generated."
 msgstr ""
 
-#: src/PresaleWizard.php:1344
+#: src/PresaleWizard.php:1346
 msgid "The type of contract is mandatory."
 msgstr ""
 
@@ -4437,11 +4459,11 @@ msgstr ""
 msgid "The user must hold a central profile on the customers entity."
 msgstr ""
 
-#: src/PresaleWizard.php:2136
+#: src/PresaleWizard.php:2138
 msgid "The version could not be deleted."
 msgstr ""
 
-#: src/PresaleWizard.php:2134
+#: src/PresaleWizard.php:2136
 msgid "The version has been deleted."
 msgstr ""
 
@@ -4478,6 +4500,13 @@ msgstr ""
 msgid "This contract is not available for the entity of the ticket"
 msgstr ""
 
+#: ⁨standard input⁩:61
+msgid ""
+"This customer is archived: it will have to be unarchived (moved back under "
+"the default parent entity) when the customer is generated from a won "
+"proposal."
+msgstr ""
+
 #: src/PresaleAnnexTypeTransfer.php:179
 msgid "This file comes from a more recent version of the plugin."
 msgstr ""
@@ -4494,11 +4523,11 @@ msgstr ""
 msgid "This proposal is won or lost: it can no longer be modified."
 msgstr ""
 
-#: src/PresaleWizard.php:1282
+#: src/PresaleWizard.php:1284
 msgid "This user is not declared for the pre-sales."
 msgstr ""
 
-#: ⁨standard input⁩:33 ⁨standard input⁩:37 ⁨standard input⁩:246
+#: ⁨standard input⁩:37 ⁨standard input⁩:246 ⁨standard input⁩:33
 msgid "Ticket"
 msgid_plural "Tickets"
 msgstr[0] ""
@@ -4525,8 +4554,8 @@ msgstr ""
 msgid "Time justified"
 msgstr ""
 
-#: ⁨standard input⁩:60 ⁨standard input⁩:38 ⁨standard input⁩:34 ⁨standard input⁩:71
-#: ⁨standard input⁩:114 ⁨standard input⁩:89 ⁨standard input⁩:64 ⁨standard input⁩:136
+#: ⁨standard input⁩:64 ⁨standard input⁩:60 ⁨standard input⁩:114 ⁨standard input⁩:34
+#: ⁨standard input⁩:71 ⁨standard input⁩:38 ⁨standard input⁩:89 ⁨standard input⁩:136
 #: ⁨standard input⁩:247
 msgid "Title"
 msgstr ""
@@ -4548,7 +4577,7 @@ msgstr ""
 msgid "Too many requests sent to Kiflo (429): try again later."
 msgstr ""
 
-#: ⁨standard input⁩:43 ⁨standard input⁩:175 ⁨standard input⁩:50 ⁨standard input⁩:71
+#: ⁨standard input⁩:71 ⁨standard input⁩:175 ⁨standard input⁩:43 ⁨standard input⁩:50
 #: ⁨standard input⁩:164 ⁨standard input⁩:94 ⁨standard input⁩:82
 msgid "Total"
 msgstr ""
@@ -4570,23 +4599,23 @@ msgstr ""
 msgid "Total duration"
 msgstr ""
 
-#: src/Followup.php:859 src/Monthly.php:450 src/ContractDay.php:466
+#: src/Monthly.php:450 src/Followup.php:859 src/ContractDay.php:466
 #: ⁨standard input⁩:123
 msgid "Total exceeding"
 msgstr ""
 
-#: ⁨standard input⁩:98 ⁨standard input⁩:139 ⁨standard input⁩:312 ⁨standard input⁩:344
-#: ⁨standard input⁩:71
+#: ⁨standard input⁩:139 ⁨standard input⁩:71 ⁨standard input⁩:312 ⁨standard input⁩:344
+#: ⁨standard input⁩:98
 msgid "Total excl. VAT"
 msgstr ""
 
-#: src/PresaleProposal.php:216 src/NotificationTargetPresaleProposal.php:137
+#: src/NotificationTargetPresaleProposal.php:137 src/PresaleProposal.php:216
 #: ⁨standard input⁩:104 ⁨standard input⁩:51
 msgid "Total excluding VAT"
 msgstr ""
 
 #: src/NotificationTargetPresaleProposal.php:138 ⁨standard input⁩:141
-#: ⁨standard input⁩:346 ⁨standard input⁩:73
+#: ⁨standard input⁩:73 ⁨standard input⁩:346
 msgid "Total incl. VAT"
 msgstr ""
 
@@ -4598,10 +4627,10 @@ msgstr ""
 msgid "Total production"
 msgstr ""
 
-#: src/Followup.php:857 src/ContractDay.php:465
+#: src/Followup.php:857 src/Dashboard.php:192 src/Dashboard.php:473
 #: src/NotificationTargetContract.php:120
-#: src/NotificationTargetContract.php:155 src/Dashboard.php:192
-#: src/Dashboard.php:473 hook.php:1024 ⁨standard input⁩:122
+#: src/NotificationTargetContract.php:155 src/ContractDay.php:465 hook.php:1024
+#: ⁨standard input⁩:122
 msgid "Total remaining"
 msgstr ""
 
@@ -4613,7 +4642,7 @@ msgstr ""
 msgid "Total yearly consumption"
 msgstr ""
 
-#: ⁨standard input⁩:76 ⁨standard input⁩:71
+#: ⁨standard input⁩:71 ⁨standard input⁩:76
 msgid "Transfer"
 msgstr ""
 
@@ -4635,22 +4664,22 @@ msgstr ""
 
 #: src/EditorSubscription.php:181
 #: src/NotificationTargetEditorSubscription.php:107
-#: src/NotificationTargetEditorSubscription.php:144 ⁨standard input⁩:55
-#: ⁨standard input⁩:103 ⁨standard input⁩:149 ⁨standard input⁩:226 ⁨standard input⁩:45
-#: ⁨standard input⁩:60 ⁨standard input⁩:90 ⁨standard input⁩:116
+#: src/NotificationTargetEditorSubscription.php:144 ⁨standard input⁩:90
+#: ⁨standard input⁩:116 ⁨standard input⁩:45 ⁨standard input⁩:103 ⁨standard input⁩:149
+#: ⁨standard input⁩:226 ⁨standard input⁩:60 ⁨standard input⁩:55
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PresaleProposal.php:186 src/NotificationTargetPresaleProposal.php:136
-#: src/Followup.php:852 src/Monthly.php:430 ⁨standard input⁩:113
-#: ⁨standard input⁩:62 ⁨standard input⁩:61
+#: src/NotificationTargetPresaleProposal.php:136 src/Monthly.php:430
+#: src/Followup.php:852 src/PresaleProposal.php:186 ⁨standard input⁩:113
+#: ⁨standard input⁩:61 ⁨standard input⁩:62
 msgid "Type of contract"
 msgstr ""
 
 #: src/Followup.php:886 src/ContractDay.php:161 src/ContractDay.php:797
-#: ⁨standard input⁩:142 ⁨standard input⁩:67 ⁨standard input⁩:58
+#: ⁨standard input⁩:67 ⁨standard input⁩:58 ⁨standard input⁩:142
 msgid "Type of service contract"
 msgstr ""
 
@@ -4674,7 +4703,7 @@ msgstr ""
 msgid "URL of the proposal"
 msgstr ""
 
-#: src/WizardController.php:2183
+#: src/WizardController.php:2188
 msgid "Unarchive and continue"
 msgstr ""
 
@@ -4710,19 +4739,19 @@ msgstr ""
 msgid "Unknown action"
 msgstr ""
 
-#: src/PresaleWizard.php:1662 src/PresaleWizard.php:2015
+#: src/PresaleWizard.php:1664 src/PresaleWizard.php:2017
 msgid "Unknown annex model"
 msgstr ""
 
-#: src/PresaleWizard.php:943
+#: src/PresaleWizard.php:945 src/PresaleClient.php:308
 msgid "Unknown customer"
 msgstr ""
 
-#: src/PresaleWizard.php:950
+#: src/PresaleWizard.php:952
 msgid "Unknown origin"
 msgstr ""
 
-#: src/PresaleWizard.php:938
+#: src/PresaleWizard.php:940
 msgid "Unknown prospect"
 msgstr ""
 
@@ -4738,11 +4767,11 @@ msgstr ""
 msgid "Until"
 msgstr ""
 
-#: ⁨standard input⁩:206 ⁨standard input⁩:105 ⁨standard input⁩:270
+#: ⁨standard input⁩:105 ⁨standard input⁩:270 ⁨standard input⁩:206
 msgid "Update"
 msgstr ""
 
-#: ⁨standard input⁩:38 ⁨standard input⁩:89 ⁨standard input⁩:110
+#: ⁨standard input⁩:89 ⁨standard input⁩:110 ⁨standard input⁩:38
 msgctxt "button"
 msgid "Update"
 msgstr ""
@@ -4788,13 +4817,13 @@ msgid ""
 "documentation of the plugin."
 msgstr ""
 
-#: src/PresaleWizard.php:2151
+#: src/PresaleWizard.php:2153
 #, php-format
 msgid ""
 "Upload these Word templates in the configuration (Pre-sales tab) first: %s."
 msgstr ""
 
-#: ⁨standard input⁩:61 ⁨standard input⁩:89
+#: ⁨standard input⁩:89 ⁨standard input⁩:61
 msgid "Uploaded template"
 msgstr ""
 
@@ -4830,24 +4859,24 @@ msgstr ""
 msgid "Use the pre-sales section"
 msgstr ""
 
-#: ⁨standard input⁩:94 ⁨standard input⁩:95
+#: ⁨standard input⁩:101 ⁨standard input⁩:102
 msgid "Use this entity"
 msgstr ""
 
-#: ⁨standard input⁩:46 ⁨standard input⁩:41 ⁨standard input⁩:54 ⁨standard input⁩:36
+#: ⁨standard input⁩:54 ⁨standard input⁩:46 ⁨standard input⁩:36 ⁨standard input⁩:41
 msgid "User"
 msgid_plural "Users"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/InterventionStakeholder.php:52 src/WizardController.php:1950
+#: src/WizardController.php:1955 src/InterventionStakeholder.php:52
 #: ⁨standard input⁩:36
 msgid "User affected"
 msgid_plural "Users affected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1410
+#: src/WizardController.php:1415
 msgid "User already added"
 msgstr ""
 
@@ -4855,7 +4884,7 @@ msgstr ""
 msgid "Users holding a central profile on the customers entity."
 msgstr ""
 
-#: ⁨standard input⁩:140 ⁨standard input⁩:182 ⁨standard input⁩:345 ⁨standard input⁩:72
+#: ⁨standard input⁩:140 ⁨standard input⁩:72 ⁨standard input⁩:182 ⁨standard input⁩:345
 msgid "VAT"
 msgstr ""
 
@@ -4885,7 +4914,7 @@ msgstr ""
 msgid "Validated by %s"
 msgstr ""
 
-#: ⁨standard input⁩:96 ⁨standard input⁩:68 ⁨standard input⁩:89 ⁨standard input⁩:115
+#: ⁨standard input⁩:68 ⁨standard input⁩:96 ⁨standard input⁩:89 ⁨standard input⁩:115
 msgid "Version"
 msgstr ""
 
@@ -4924,8 +4953,8 @@ msgstr ""
 msgid "Web server installation"
 msgstr ""
 
-#: src/PresaleOrigin.php:192 ⁨standard input⁩:75 ⁨standard input⁩:113
-#: ⁨standard input⁩:89 ⁨standard input⁩:64 ⁨standard input⁩:218
+#: src/PresaleOrigin.php:192 ⁨standard input⁩:89 ⁨standard input⁩:75
+#: ⁨standard input⁩:113 ⁨standard input⁩:74 ⁨standard input⁩:218
 msgid "Website"
 msgstr ""
 
@@ -4955,12 +4984,12 @@ msgstr ""
 msgid "Wizard defaults"
 msgstr ""
 
-#: src/PresaleProposal.php:80 ⁨standard input⁩:58 ⁨standard input⁩:60
-#: ⁨standard input⁩:182
+#: src/PresaleProposal.php:80 ⁨standard input⁩:182 ⁨standard input⁩:58
+#: ⁨standard input⁩:60
 msgid "Won"
 msgstr ""
 
-#: ⁨standard input⁩:139
+#: ⁨standard input⁩:164
 msgid "Won and lost proposals"
 msgstr ""
 
@@ -5004,7 +5033,7 @@ msgstr ""
 msgid "Year"
 msgstr ""
 
-#: ⁨standard input⁩:86 ⁨standard input⁩:139 ⁨standard input⁩:145
+#: ⁨standard input⁩:139 ⁨standard input⁩:145 ⁨standard input⁩:86
 msgid "Yes"
 msgstr ""
 
@@ -5028,13 +5057,13 @@ msgstr ""
 msgid "before"
 msgstr ""
 
-#: ⁨standard input⁩:55 ⁨standard input⁩:89 ⁨standard input⁩:52
+#: ⁨standard input⁩:52 ⁨standard input⁩:55 ⁨standard input⁩:89
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WizardController.php:1877 ⁨standard input⁩:30
+#: src/WizardController.php:1882 ⁨standard input⁩:30
 msgid "days"
 msgstr ""
 
@@ -5054,7 +5083,7 @@ msgstr ""
 msgid "e.g. GLPI technical expertise"
 msgstr ""
 
-#: src/WizardController.php:1876 ⁨standard input⁩:30
+#: src/WizardController.php:1881 ⁨standard input⁩:30
 msgid "hours"
 msgstr ""
 
