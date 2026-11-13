@@ -121,8 +121,14 @@ if ($ManageentitiesEntity->canView()
         Html::back();
 
     } elseif (isset($_POST["deletecontacts"])) {
-        if ($Contact->can((int) $_POST["id"], DELETE)) {
-            $Contact->delete(['id' => (int) $_POST["id"]]);
+        // The links of the customer sheet (contacts, sales representatives, tech leads, project
+        // managers) have no trash bin: removing one purges it. PURGE is also the only removal
+        // right the profile form offers for this right (Entity::getRights()): DELETE was checked
+        // here before, which no profile could hold, so the removal silently did nothing.
+        if ($Contact->can((int) $_POST["id"], PURGE)) {
+            $Contact->delete(['id' => (int) $_POST["id"]], true);
+        } else {
+            Session::addMessageAfterRedirect(__s("You don't have permission to perform this action."), false, ERROR);
         }
         Html::back();
 
@@ -133,8 +139,11 @@ if ($ManageentitiesEntity->canView()
         Html::back();
 
     } elseif (isset($_POST["deletebusiness"])) {
-        if ($BusinessContact->can((int) $_POST["id"], DELETE)) {
-            $BusinessContact->delete(['id' => (int) $_POST["id"]]);
+        // Same right as the contacts above: PURGE
+        if ($BusinessContact->can((int) $_POST["id"], PURGE)) {
+            $BusinessContact->delete(['id' => (int) $_POST["id"]], true);
+        } else {
+            Session::addMessageAfterRedirect(__s("You don't have permission to perform this action."), false, ERROR);
         }
         Html::back();
 
@@ -145,9 +154,11 @@ if ($ManageentitiesEntity->canView()
         Html::back();
 
     } elseif (isset($_POST["deletetechlead"])) {
-        // Same right as the business contacts: PURGE is only granted to the full profile
-        if ($TechLead->can((int) $_POST["id"], DELETE)) {
+        // Same right as the contacts above: PURGE
+        if ($TechLead->can((int) $_POST["id"], PURGE)) {
             $TechLead->delete(['id' => (int) $_POST["id"]], true);
+        } else {
+            Session::addMessageAfterRedirect(__s("You don't have permission to perform this action."), false, ERROR);
         }
         Html::back();
 
@@ -177,9 +188,11 @@ if ($ManageentitiesEntity->canView()
         Html::back();
 
     } elseif (isset($_POST["deleteprojectmanager"])) {
-        // Same right as the tech leads: PURGE is only granted to the full profile
-        if ($ProjectManager->can((int) $_POST["id"], DELETE)) {
+        // Same right as the contacts above: PURGE
+        if ($ProjectManager->can((int) $_POST["id"], PURGE)) {
             $ProjectManager->delete(['id' => (int) $_POST["id"]], true);
+        } else {
+            Session::addMessageAfterRedirect(__s("You don't have permission to perform this action."), false, ERROR);
         }
         Html::back();
 

@@ -39,6 +39,10 @@
  # can_purge   - offers the deletion of a proposal
  # new_url     - new proposal for this prospect, empty when not allowed
  # entity_name, entity_url - its customer entity, empty when it is not a customer yet
+ # customers   - id => name of the customer entities it can be linked to, archived ones
+ #               included (PresaleClient::getLinkableCustomers()), empty once it is a customer or
+ #               without the right to update it
+ # entity_archived - its customer entity sits under the archive entity of the configuration
  # logo_url    - its logo, empty when none
  #}
 
@@ -51,6 +55,12 @@
                 <i class="ti ti-building me-1"></i>
                 {{ __('Existing customer:', 'manageentities') }} <a href="{{ entity_url }}">{{ entity_name }}</a>
             </div>
+            {% if entity_archived %}
+                <div class="alert alert-warning">
+                    <i class="ti ti-archive me-1"></i>
+                    {{ __('This customer is archived: it will have to be unarchived (moved back under the default parent entity) when the customer is generated from a won proposal.', 'manageentities') }}
+                </div>
+            {% endif %}
         {% endif %}
         {% if item.fields['is_archived'] %}
             <div class="alert alert-secondary">
@@ -73,6 +83,21 @@
                 {{ fields.htmlField('', '<img src="' ~ logo_url|e('html_attr') ~ '" alt="" style="max-height:50px">', __('Logo of the client', 'manageentities')) }}
             {% endif %}
             {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), {'enable_richtext': false, 'rows': 3, 'full_width': true}) }}
+
+            {# The entity was not found when the proposal was made: link it now #}
+            {% if customers is not empty %}
+                {{ fields.dropdownArrayField(
+                    'converted_entities_id',
+                    0,
+                    customers,
+                    __('Existing customer', 'manageentities'),
+                    {
+                        'display_emptychoice': true,
+                        'full_width': true,
+                        'helper': __('Links this prospect to a customer that already exists: a won proposal then adds its contract to this entity instead of creating a new one. An archived customer will have to be unarchived when the customer is generated. The link cannot be changed afterwards.', 'manageentities'),
+                    }
+                ) }}
+            {% endif %}
         </div>
     </div>
 

@@ -31,6 +31,7 @@ namespace GlpiPlugin\Manageentities;
 
 use CommonGLPI;
 use GlpiPlugin\Manageentities\Entity;
+use Session;
 
 class Servicecatalog extends CommonGLPI
 {
@@ -88,5 +89,22 @@ class Servicecatalog extends CommonGLPI
     public static function getList()
     {
         return "";
+    }
+
+    /**
+     * Top of the service catalog home page, above its widgets (called by the service catalog
+     * through this hook, only when canUse() allows it).
+     *
+     * On the simplified interface, the summary card of the customer, as the first tab of the
+     * clients management shows it: the card alone, without the other tabs.
+     */
+    public static function showDashboardHeader(): void
+    {
+        if (Session::getCurrentInterface() !== 'helpdesk') {
+            return;
+        }
+
+        // Same entity as the summary tab of the simplified interface (Entity::displayTabContentForItem())
+        CustomerSummary::show((int) $_SESSION['glpiactive_entity']);
     }
 }

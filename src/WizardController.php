@@ -340,7 +340,12 @@ class WizardController
     // Archive helpers
     // -------------------------------------------------------------------------
 
-    private static function isArchivedEntity(int $entities_id): bool
+    /**
+     * Customer under the archive entity of the configuration (the archive root excluded). Also
+     * used by the pre-sales: a prospect may be linked to an archived customer, to unarchive
+     * when the customer is generated from a won proposal.
+     */
+    public static function isArchivedEntity(int $entities_id): bool
     {
         $config = Config::getInstance();
         $archive_entities_id = (int) ($config->fields['wizard_archive_entities_id'] ?? 0);
