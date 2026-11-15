@@ -30,7 +30,8 @@
 // attribute of #tasks. Task blocks are built with DOM nodes: the description and the
 // technician name are never parsed as HTML in the page.
 //
-// removeBlockTask() and addTaskOnView() stay global: they are called from onclick attributes.
+// removeBlockTask() and addTaskOnView() stay global. The "Add this Task" button, marked
+// data-manageentities-add-task, is bound at the end of this file (no inline handler: CSP).
 
 function generateCriConfig() {
     const container = document.getElementById('tasks');
@@ -238,6 +239,12 @@ function getUserName(userIdTech, taskCount) {
         },
     });
 }
+
+document.addEventListener('click', function (event) {
+    if (event.target instanceof Element && event.target.closest('[data-manageentities-add-task]') !== null) {
+        addTaskOnView(false);
+    }
+});
 
 $(function () {
     const config = generateCriConfig();

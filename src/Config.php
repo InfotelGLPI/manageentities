@@ -160,7 +160,7 @@ class Config extends CommonDBTM
                 'users'                     => $users,
                 'business_selected'         => $business_selected,
                 'glpi_state_condition'      => (new \Contract())->getStateVisibilityCriteria(),
-                'change_event_js'           => CriDetail::CHANGE_EVENT_JS,
+                'change_event_data'         => CriDetail::CHANGE_EVENT_DATA,
             ],
         );
     }

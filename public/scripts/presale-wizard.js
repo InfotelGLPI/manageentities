@@ -493,7 +493,7 @@ function showModelSummary(select) {
 }
 
 // Annex model form: the default estimate is for the regular annexes only. The yes / no select
-// is a select2 widget: its on_change relays "manageentities:change" (CriDetail::CHANGE_EVENT_JS).
+// is a select2 widget: csp-handlers.js relays its change as "manageentities:change" (CriDetail::CHANGE_EVENT_DATA).
 document.addEventListener('manageentities:change', (event) => {
     const select = event.target;
     if (!(select instanceof HTMLSelectElement) || select.name !== 'is_subscription' || select.form === null) {

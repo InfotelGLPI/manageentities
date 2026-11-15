@@ -210,6 +210,8 @@ function plugin_init_manageentities()
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/preference-tabs-order.js';
         // Prices of a contract period and their edition form (native ES module, no-op elsewhere)
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/criprice.js';
+        // Delegated listeners replacing the inline event handlers (CSP), in both interfaces
+        $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]['manageentities'][] = 'scripts/csp-handlers.js';
 
         if (isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
@@ -274,6 +276,9 @@ function plugin_version_manageentities()
         'author' => "<a href='https://blogglpi.infotel.com'>Infotel</a>, Xavier CAILLAUD",
         'license' => 'GPLv3+',
         'homepage' => 'https://github.com/InfotelGLPI/manageentities',
+        // No inline event handler, javascript: URL nor script without nonce: the plugin works
+        // under the Content Security Policy of GLPI (public/scripts/csp-handlers.js)
+        'csp_compliant' => true,
         'requirements' => [
             'glpi' => [
                 'min' => '11.0.99',

@@ -55,8 +55,8 @@
                     {% if is_task_list %}
                         {% for tech in technicians %}
                             {{ tech.name }}
-                            {% if tech.delete_onclick is not empty %}
-                                &nbsp;<a class="pointer" name="deleteTech{{ loop.index }}_{{ add_tech_rand }}" onclick="{{ tech.delete_onclick }}">
+                            {% if tech.delete_args is not empty %}
+                                &nbsp;<a class="pointer" name="deleteTech{{ loop.index }}_{{ add_tech_rand }}" data-manageentities-load-cri-form="{{ tech.delete_args }}">
                                     <i class="ti ti-trash" title="{{ _x('button', 'Delete permanently') }}"></i>
                                 </a>
                             {% endif %}
@@ -74,7 +74,7 @@
                         'right': 'all',
                         'width': width,
                     }) }}
-                    &nbsp;<a class="pointer" name="add_tech{{ add_tech_rand }}" onclick="{{ add_tech_onclick }}">
+                    &nbsp;<a class="pointer" name="add_tech{{ add_tech_rand }}" data-manageentities-load-cri-form="{{ add_tech_args }}">
                         <i class="ti ti-plus" title="{{ __('Add a technician', 'manageentities') }}"></i>
                     </a>
                 </td>
@@ -123,7 +123,7 @@
                         <tr class="tab_bg_2">
                             <td class="center" colspan="3">
                                 <button type="button" name="{{ generate_button.name }}" class="submit btn btn-primary manageentities_button"
-                                        onclick="{{ generate_button.onclick }}">
+                                        data-manageentities-load-cri-form="{{ generate_button.args }}">
                                     {{ generate_button.label }}
                                 </button>
                             </td>

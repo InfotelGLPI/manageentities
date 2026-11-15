@@ -27,8 +27,8 @@
 
 // Subscription level form (SubscriptionLevel): the monthly price per user only applies to the
 // cloud levels. Its row, marked data-me-cloud-only, follows the subscription type; the server
-// empties the price of the other levels on save. The dropdown is a select2 widget: its
-// on_change relays a native "manageentities:change" event (CriDetail::CHANGE_EVENT_JS).
+// empties the price of the other levels on save. The dropdown is a select2 widget: csp-handlers.js
+// relays its change as a native "manageentities:change" event (CriDetail::CHANGE_EVENT_DATA).
 
 // SubscriptionLevel::TYPE_CLOUD
 const TYPE_CLOUD = '2';

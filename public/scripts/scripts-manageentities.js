@@ -110,6 +110,36 @@ function manageentities_loadCriForm(action, modal, params) {
     });
 }
 
+/**
+ * Buttons and links of the intervention report forms (templates/cri_form, cri_preview and
+ * cridetail_add_reports.html.twig): their data-manageentities-load-cri-form attribute carries
+ * the arguments of manageentities_loadCriForm() as a JSON array, built by
+ * Cri::getLoadCriFormArgs(). No inline handler (Content Security Policy); the listener is
+ * delegated from the document because these forms are loaded over AJAX, in modals.
+ */
+document.addEventListener('click', function (event) {
+    if (!(event.target instanceof Element)) {
+        return;
+    }
+
+    const control = event.target.closest('[data-manageentities-load-cri-form]');
+    if (control === null) {
+        return;
+    }
+
+    let args;
+    try {
+        args = JSON.parse(control.dataset.manageentitiesLoadCriForm);
+    } catch (e) {
+        return;
+    }
+    if (!Array.isArray(args)) {
+        return;
+    }
+
+    manageentities_loadCriForm(args[0], args[1], args[2]);
+});
+
 function getManageentitiesFormData(form) {
     var unindexed_array = form.serialize();
     var indexed_array = {};

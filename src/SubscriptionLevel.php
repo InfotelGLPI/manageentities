@@ -142,7 +142,7 @@ class SubscriptionLevel extends CommonDropdown
             $current = (int) ($this->fields['subscription_type'] ?? self::TYPE_ALL);
             \Dropdown::showFromArray('subscription_type', self::getTypes(), [
                 'value'     => $current,
-                'on_change' => CriDetail::CHANGE_EVENT_JS,
+                'add_data_attributes' => CriDetail::CHANGE_EVENT_DATA,
             ]);
         } elseif ($field['type'] === 'price_per_user') {
             $price = $this->fields['price_per_user'] ?? null;

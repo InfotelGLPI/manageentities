@@ -32,7 +32,7 @@
     {% endfor %}
     <p>
         <input type="button" name="save_cri" value="{{ __('Save the intervention report', 'manageentities') }}"
-               class="submit btn btn-primary manageentities_button" onclick="{{ save_onclick }}">
+               class="submit btn btn-primary manageentities_button" data-manageentities-load-cri-form="{{ save_args }}">
     </p>
     <iframe style="width:500px;height:700px" src="{{ preview_url }}" scrolling="no" frameborder="1"></iframe>
 </form>

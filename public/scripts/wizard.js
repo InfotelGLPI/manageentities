@@ -70,6 +70,12 @@ function execScripts(container) {
         Array.from(old_script.attributes).forEach((attr) => {
             new_script.setAttribute(attr.name, attr.value);
         });
+        // Content Security Policy: the nonce attribute reads empty once the script is in the
+        // document (nonce hiding), only the property keeps it. Without it, the copy is blocked.
+        const nonce = old_script.nonce || window.CFG_GLPI?.csp_nonce;
+        if (nonce) {
+            new_script.nonce = nonce;
+        }
         new_script.textContent = old_script.textContent;
         old_script.replaceWith(new_script);
     });

@@ -171,6 +171,7 @@ class CriPrice extends CommonDBTM
                 $options['parent']->getField('entities_id'),
             ),
             'change_event_js'    => CriDetail::CHANGE_EVENT_JS,
+            'change_event_data'  => CriDetail::CHANGE_EVENT_DATA,
             'price'              => Html::formatNumber($this->fields['price']),
             'ajax_url'           => $ajax_url,
             'entities_id'        => $options['parent']->getField('entities_id'),
@@ -193,7 +194,7 @@ class CriPrice extends CommonDBTM
         \Dropdown::showFromArray(
             'select_critype',
             $this->getSelectPriceChoices($critypes_id, $entities_id),
-            ['on_change' => CriDetail::CHANGE_EVENT_JS],
+            ['add_data_attributes' => CriDetail::CHANGE_EVENT_DATA],
         );
     }
 
