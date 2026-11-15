@@ -53,7 +53,7 @@
             {{ fields.dropdownYesNo('useprice', config.useprice, __('Use of price', 'manageentities'), row) }}
 
             {{ fields.dropdownArrayField('hourorday', config.hourorday, hourorday_types, __('Configuration daily or hourly', 'manageentities'), row|merge({
-                'on_change': change_event_js,
+                'add_data_attributes': change_event_data,
             })) }}
 
             <div data-me-hourorday="{{ hourorday_modes.day }}"{{ is_hour ? ' class="d-none"' : '' }}>

@@ -53,8 +53,19 @@ class CriDetail extends CommonDBTM
     /**
      * on_change of the contract dropdowns: select2 only fires jQuery events, relayed here as a
      * native one for public/scripts/cridetail-contract.js
+     *
+     * Only for the AJAX dropdowns (Dropdown::show() and the like), which run it through eval():
+     * on a dropdown built on Dropdown::showFromArray() it becomes an inline onchange handler,
+     * blocked by the Content Security Policy. Those take CHANGE_EVENT_DATA instead.
      */
     public const CHANGE_EVENT_JS = "this.dispatchEvent(new Event('manageentities:change', {bubbles: true}));";
+
+    /**
+     * add_data_attributes of the dropdowns built on Dropdown::showFromArray() (showYesNo(),
+     * fields.dropdownArrayField()...): public/scripts/csp-handlers.js relays their change as the
+     * same native event as CHANGE_EVENT_JS
+     */
+    public const CHANGE_EVENT_DATA = ['manageentities-change-event' => ''];
 
     public static function getTypeName($nb = 0)
     {
@@ -1507,7 +1518,7 @@ class CriDetail extends CommonDBTM
             [0 => __('Out of contract', 'manageentities'), 1 => __('With contrat', 'manageentities')],
             [
                 'value'     => ($cridetail) ? $cridetail['withcontract'] : 1,
-                'on_change' => self::CHANGE_EVENT_JS,
+                'add_data_attributes' => self::CHANGE_EVENT_DATA,
                 'rand'      => $rand,
                 'display'   => false,
             ],

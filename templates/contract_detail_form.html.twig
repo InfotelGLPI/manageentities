@@ -180,7 +180,7 @@
                 <div class="form-check form-switch mt-2">
                     <input type="checkbox" name="moving_management" id="moving_management_{{ rand }}" class="form-check-input"
                         {% if moving_management %}checked{% endif %}
-                        onchange="document.getElementById('movement_block_{{ rand }}').style.display = this.checked ? '' : 'none'">
+                        data-manageentities-toggle-display="movement_block_{{ rand }}">
                 </div>
             </div>
 

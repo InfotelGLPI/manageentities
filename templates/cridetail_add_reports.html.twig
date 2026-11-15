@@ -37,7 +37,7 @@
 
                 {% if show_action %}
                     <button type="button" name="showCriForm" class="btn btn-primary"
-                            onclick="manageentities_loadCriForm('showCriForm', '{{ modal }}', {{ params|json_encode }});">
+                            data-manageentities-load-cri-form="{{ ['showCriForm', modal, params]|json_encode }}">
                         {{ title }}
                     </button>
                 {% endif %}

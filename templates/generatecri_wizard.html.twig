@@ -60,9 +60,10 @@
                 <div class="row mb-3 align-items-center">
                     <label class="col-12 col-md-3 col-form-label">{{ __('Type') }}</label>
                     <div class="col-12 col-md-9">
+                        {# Submitted on change by public/scripts/csp-handlers.js (no inline handler: CSP) #}
                         {% do call('Ticket::dropdownType', ['type', {
                             'rand': type_rand,
-                            'on_change': 'this.form.submit()',
+                            'add_data_attributes': {'manageentities-submit-on-change': ''},
                             'value': values.type,
                         }]) %}
                         {% do call('Ajax::updateItemOnSelectEvent', [
@@ -230,7 +231,7 @@
                     </div>
                 </div>
                 <div class="text-end mt-3">
-                    <button type="button" class="btn btn-outline-primary" id="img_add_cci" onclick="addTaskOnView(false);">
+                    <button type="button" class="btn btn-outline-primary" id="img_add_cci" data-manageentities-add-task>
                         <i class="ti ti-circle-plus me-1"></i>{{ __('Add this Task', 'manageentities') }}
                     </button>
                 </div>

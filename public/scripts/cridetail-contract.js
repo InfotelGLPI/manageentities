@@ -33,9 +33,10 @@
 //   details of the contract as JSON in data-me-contract-info (templates/contract_info.html.twig);
 // - the remaining days of the selected period come from ajax/getRemainingDays.php.
 //
-// The dropdowns are select2 widgets, which only fire jQuery events: their on_change relays a
-// native "manageentities:change" event (CriDetail::CHANGE_EVENT_JS). Every value coming from the
-// server is displayed through textContent, never as HTML.
+// The dropdowns are select2 widgets, which only fire jQuery events: their change is relayed as a
+// native "manageentities:change" event (CriDetail::CHANGE_EVENT_JS for the AJAX dropdowns,
+// CriDetail::CHANGE_EVENT_DATA and csp-handlers.js for the "With contract" switch). Every value
+// coming from the server is displayed through textContent, never as HTML.
 //
 // The card is loaded in a ticket tab, after this module ran: it is looked up when an event
 // occurs, and the #show_contractdays refreshes are caught by an observer on the document.

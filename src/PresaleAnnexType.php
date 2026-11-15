@@ -87,7 +87,7 @@ class PresaleAnnexType extends CommonDropdown
                 'type'        => 'bool',
                 'list'        => true,
                 // Shows or hides the default estimate (public/scripts/presale-wizard.js)
-                'form_params' => ['on_change' => CriDetail::CHANGE_EVENT_JS],
+                'form_params' => ['add_data_attributes' => CriDetail::CHANGE_EVENT_DATA],
             ];
             $fields[] = [
                 'name'  => 'plugin_manageentities_subscriptionlevels_id',

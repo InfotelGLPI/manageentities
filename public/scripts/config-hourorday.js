@@ -28,8 +28,8 @@
 // "Configuration daily or hourly" setting (templates/config_options_form.html.twig): each mode
 // has its dependent field in a block marked data-me-hourorday="<mode>". Selecting a mode shows
 // its block and disables the fields of the other one, so that only the visible block is posted.
-// The dropdown is a select2 widget: its on_change relays a native "manageentities:change" event
-// (CriDetail::CHANGE_EVENT_JS). The listener is delegated, so it is a no-op on any other page.
+// The dropdown is a select2 widget: csp-handlers.js relays its change as a native "manageentities:change"
+// event (CriDetail::CHANGE_EVENT_DATA). The listener is delegated, so it is a no-op on any other page.
 
 document.addEventListener('manageentities:change', (event) => {
     const select = event.target;

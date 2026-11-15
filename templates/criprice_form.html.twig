@@ -60,7 +60,7 @@
                 {% set select_price_with_div %}
                     <div data-me-criprice-prices>
                         {% do call('Dropdown::showFromArray', ['select_critype', select_prices, {
-                            'on_change': change_event_js,
+                            'add_data_attributes': change_event_data,
                         }]) %}
                     </div>
                 {% endset %}

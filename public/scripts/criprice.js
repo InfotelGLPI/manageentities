@@ -34,7 +34,8 @@
 //
 // Both responses are GLPI forms built by the server (select2 widgets and their init scripts):
 // they are inserted through a contextual fragment, which runs those scripts. The dropdowns
-// relay a native "manageentities:change" event (CriDetail::CHANGE_EVENT_JS).
+// relay a native "manageentities:change" event (CriDetail::CHANGE_EVENT_JS for the intervention
+// type, CriDetail::CHANGE_EVENT_DATA and csp-handlers.js for the existing prices).
 //
 // The lists are loaded in tabs, after this module ran: every lookup happens when an event occurs.
 

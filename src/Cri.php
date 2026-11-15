@@ -62,14 +62,13 @@ class Cri extends CommonDBTM
     }
 
     /**
-     * The manageentities_loadCriForm() call, not yet escaped for HTML: meant for a Twig
-     * attribute, where the auto-escaping adds the HTML layer.
+     * The arguments of a manageentities_loadCriForm() call, as JSON, not yet escaped for HTML:
+     * meant for the data-manageentities-load-cri-form attribute of a Twig template, where the
+     * auto-escaping adds the HTML layer. public/scripts/scripts-manageentities.js makes the call
+     * on click (no inline handler: Content Security Policy).
      *
-     * Two nested contexts for one value: a JavaScript call inside an HTML attribute. The browser
-     * decodes the entities of the attribute before handing the content to the JavaScript parser,
-     * so escaping for HTML alone would be undone; the arguments have to be valid JS literals
-     * first. Both the modal name and the DOM id to refresh come straight from the request, so a
-     * quote in either used to close the attribute.
+     * The value is data, never JavaScript code: the modal name and the DOM id to refresh come
+     * straight from the request.
      *
      * @param string               $action the manageentities_loadCriForm action
      * @param string               $modal  the modal to close, as posted
@@ -77,16 +76,9 @@ class Cri extends CommonDBTM
      *
      * @return string
      */
-    private static function getLoadCriFormCall(string $action, string $modal, array $params): string
+    private static function getLoadCriFormArgs(string $action, string $modal, array $params): string
     {
-        // JSON_HEX_QUOT is wanted here, unlike in the plain JS string sinks: json_encode() emits
-        // the delimiters of the literals itself, so nothing of ours depends on a raw quote.
-        $flags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
-
-        return "manageentities_loadCriForm("
-            . json_encode($action, $flags) . ", "
-            . json_encode($modal, $flags) . ", "
-            . json_encode($params, $flags) . ");";
+        return (string) json_encode([$action, $modal, $params]);
     }
 
     public function showForm($ID, $options = [])
@@ -152,15 +144,15 @@ class Cri extends CommonDBTM
         if ($is_task) {
             foreach ($technicians_id as $remove => $data) {
                 foreach ($data as $users_id => $users_name) {
-                    $delete_onclick = '';
+                    $delete_args = '';
                     if ($remove == 'remove') {
                         $tech_params = $params;
                         $tech_params['tech_id'] = $users_id;
-                        $delete_onclick = self::getLoadCriFormCall('deleteTech', $modal, $tech_params);
+                        $delete_args = self::getLoadCriFormArgs('deleteTech', $modal, $tech_params);
                     }
                     $technicians[] = [
-                        'name'           => (string) $users_name,
-                        'delete_onclick' => $delete_onclick,
+                        'name'        => (string) $users_name,
+                        'delete_args' => $delete_args,
                     ];
                 }
             }
@@ -176,7 +168,7 @@ class Cri extends CommonDBTM
             }
         }
         $rand = mt_rand();
-        $add_tech_onclick = self::getLoadCriFormCall('addTech', $modal, $params);
+        $add_tech_args = self::getLoadCriFormArgs('addTech', $modal, $params);
 
         // Hidden contract fields + optional CRI-type / moving-number dropdowns.
         $contract_id       = 0;
@@ -280,7 +272,7 @@ class Cri extends CommonDBTM
                         $generate_button = [
                             'name'    => 'add_cri',
                             'label'   => __('Generation of the intervention report', 'manageentities'),
-                            'onclick' => self::getLoadCriFormCall('addCri', $modal, $params),
+                            'args'    => self::getLoadCriFormArgs('addCri', $modal, $params),
                         ];
                     }
                     // action not empty : update cri
@@ -289,7 +281,7 @@ class Cri extends CommonDBTM
                         $generate_button = [
                             'name'    => 'update_cri',
                             'label'   => __('Regenerate the intervention report', 'manageentities'),
-                            'onclick' => self::getLoadCriFormCall('updateCri', $modal, $params),
+                            'args'    => self::getLoadCriFormArgs('updateCri', $modal, $params),
                         ];
                     }
                 }
@@ -317,7 +309,7 @@ class Cri extends CommonDBTM
             'entities_id'          => $job->fields['entities_id'],
             'used_technicians'     => $used,
             'width'                => $width,
-            'add_tech_onclick'     => $add_tech_onclick,
+            'add_tech_args'        => $add_tech_args,
             'add_tech_rand'        => $rand,
             'critypes'             => $critypes_data,
             'critype_default'      => $critypes_default,
@@ -1101,7 +1093,7 @@ class Cri extends CommonDBTM
                 ];
                 TemplateRenderer::getInstance()->display('@manageentities/cri_preview.html.twig', [
                     'hidden_fields' => $hidden_fields,
-                    'save_onclick'  => self::getLoadCriFormCall('saveCri', (string) $options['modal'], $params),
+                    'save_args'     => self::getLoadCriFormArgs('saveCri', (string) $options['modal'], $params),
                     'preview_url'   => PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/" . rawurlencode($seefilename),
                 ]);
             }

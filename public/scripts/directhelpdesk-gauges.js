@@ -54,6 +54,10 @@ function loadManageentitiesEcharts() {
 
     var root   = (typeof CFG_GLPI !== 'undefined' && CFG_GLPI.root_doc) ? CFG_GLPI.root_doc : '';
     var script = document.createElement('script');
+    // Content Security Policy: a script created here only runs with the nonce of the page
+    if (typeof CFG_GLPI !== 'undefined' && CFG_GLPI.csp_nonce) {
+        script.nonce = CFG_GLPI.csp_nonce;
+    }
     script.src = root + '/lib/echarts.js';
     script.onload  = tryManageentitiesGauges;
     script.onerror = function () {
