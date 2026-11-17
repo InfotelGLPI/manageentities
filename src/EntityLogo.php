@@ -233,7 +233,7 @@ class EntityLogo extends CommonDBTM
      *
      * @param $entities_id
      *
-     * @return boolean
+     * @return string|false path of the logo document, relative to GLPI_DOC_DIR; false without one
      */
     public function getLogo($entities_id)
     {

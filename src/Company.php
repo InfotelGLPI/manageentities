@@ -521,7 +521,7 @@ class Company extends CommonDBTM
      *
      * @param  $obj
      *
-     * @return array|mixed[]
+     * @return string|null comment of the company of the entity (or of a recursive parent one)
      */
     public static function getComment($obj)
     {
