@@ -164,12 +164,8 @@ class DatOsTemplate extends CommonDBTM
             $DB->doQuery($query);
         }
 
-        // Default content, only for a system without a model yet: an edited model is kept
-        foreach (self::getDefaults() as $os => $sections) {
-            if (countElementsInTable($table, ['os' => $os]) === 0) {
-                $DB->insert($table, ['os' => $os, 'sections' => json_encode($sections)]);
-            }
-        }
+        // No model is created: the installation ships no prefilled content, each model is
+        // written in the DAT tab of the configuration
     }
 
     public static function uninstall()
@@ -177,74 +173,5 @@ class DatOsTemplate extends CommonDBTM
         global $DB;
 
         $DB->dropTable(self::getTable(), true);
-    }
-
-    /**
-     * Content of the models at installation, to be adjusted in the configuration
-     *
-     * @return array<string, array<string, string>>
-     */
-    private static function getDefaults(): array
-    {
-        $debian = static fn(string $system, string $php_fpm): array => [
-            'SYSTEM_INFORMATIONS'  => '<p>' . $system . ' (64 bits)</p>',
-            'PAQUETS_INSTALLATION' => "apt update && apt full-upgrade -y\napt install -y apache2 mariadb-server php php-fpm php-cli php-mysql php-ldap php-imap php-curl php-gd php-intl php-mbstring php-xml php-zip php-bz2 php-apcu php-bcmath",
-            'APACHE_INFORMATIONS'  => '<p>Apache 2.4, PHP en PHP-FPM, virtual host dédié à GLPI (racine : /var/www/glpi/public).</p>',
-            'APACHE_INSTALLATION'  => "a2enmod rewrite proxy_fcgi setenvif\na2enconf {$php_fpm}\nvi /etc/apache2/sites-available/glpi.conf\na2ensite glpi.conf\na2dissite 000-default.conf\nsystemctl restart apache2",
-            'PHP_INFORMATIONS'     => '<p>PHP-FPM, configuration dans /etc/php/&lt;version&gt;/fpm/php.ini.</p>',
-            'PHP_INSTALLATION'     => "memory_limit = 256M\nupload_max_filesize = 20M\npost_max_size = 20M\nmax_execution_time = 600\nsession.cookie_httponly = On\nsession.cookie_secure = On\ndate.timezone = Europe/Paris",
-            'MYSQL_INFORMATIONS'   => '<p>MariaDB, base glpi en utf8mb4, utilisateur dédié.</p>',
-            'MYSQL_INSTALLATION'   => "mysql_secure_installation\nmysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql\nmysql -u root -e \"CREATE DATABASE glpi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\"\nmysql -u root -e \"CREATE USER 'glpi'@'localhost' IDENTIFIED BY '********';\"\nmysql -u root -e \"GRANT ALL PRIVILEGES ON glpi.* TO 'glpi'@'localhost'; GRANT SELECT ON mysql.time_zone_name TO 'glpi'@'localhost';\"",
-            'CRON_INSTALLATION'    => '* * * * * www-data /usr/bin/php /var/www/glpi/front/cron.php &>/dev/null',
-            'LOGS_INSTALLATION'    => "/var/log/apache2/\n/var/www/glpi/files/_log/",
-            'HTTPS_INSTALLATION'   => "a2enmod ssl\nvi /etc/apache2/sites-available/glpi-ssl.conf\na2ensite glpi-ssl.conf\nsystemctl reload apache2",
-            'NTP_INSTALLATION'     => "apt install -y systemd-timesyncd\nvi /etc/systemd/timesyncd.conf\ntimedatectl set-ntp true\ntimedatectl status",
-            'FILES_INSTALLATION'   => "vi /etc/php/<version>/fpm/php.ini\nvi /etc/apache2/sites-available/glpi.conf",
-            'SSO_TECHNOLOGY'       => '',
-            'SSO_INSTALLATION'     => '',
-        ];
-
-        $redhat = [
-            'SYSTEM_INFORMATIONS'  => '<p>Red Hat Enterprise Linux (64 bits), SELinux actif.</p>',
-            'PAQUETS_INSTALLATION' => "dnf update -y\ndnf install -y httpd mariadb-server php php-fpm php-cli php-mysqlnd php-ldap php-imap php-gd php-intl php-mbstring php-xml php-zip php-bcmath php-pecl-apcu php-sodium",
-            'APACHE_INFORMATIONS'  => '<p>Apache 2.4 (httpd), PHP en PHP-FPM, virtual host dédié à GLPI (racine : /var/www/glpi/public).</p>',
-            'APACHE_INSTALLATION'  => "vi /etc/httpd/conf.d/glpi.conf\nsystemctl enable --now httpd php-fpm\nfirewall-cmd --permanent --add-service=http --add-service=https\nfirewall-cmd --reload\nsetsebool -P httpd_can_network_connect on\nsetsebool -P httpd_can_network_connect_db on\nsemanage fcontext -a -t httpd_sys_rw_content_t \"/var/www/glpi/files(/.*)?\"\nrestorecon -Rv /var/www/glpi",
-            'PHP_INFORMATIONS'     => '<p>PHP-FPM, configuration dans /etc/php.ini.</p>',
-            'PHP_INSTALLATION'     => "memory_limit = 256M\nupload_max_filesize = 20M\npost_max_size = 20M\nmax_execution_time = 600\nsession.cookie_httponly = On\nsession.cookie_secure = On\ndate.timezone = Europe/Paris",
-            'MYSQL_INFORMATIONS'   => '<p>MariaDB, base glpi en utf8mb4, utilisateur dédié.</p>',
-            'MYSQL_INSTALLATION'   => "systemctl enable --now mariadb\nmysql_secure_installation\nmysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql\nmysql -u root -e \"CREATE DATABASE glpi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\"\nmysql -u root -e \"CREATE USER 'glpi'@'localhost' IDENTIFIED BY '********';\"\nmysql -u root -e \"GRANT ALL PRIVILEGES ON glpi.* TO 'glpi'@'localhost'; GRANT SELECT ON mysql.time_zone_name TO 'glpi'@'localhost';\"",
-            'CRON_INSTALLATION'    => '* * * * * apache /usr/bin/php /var/www/glpi/front/cron.php &>/dev/null',
-            'LOGS_INSTALLATION'    => "/var/log/httpd/\n/var/www/glpi/files/_log/",
-            'HTTPS_INSTALLATION'   => "dnf install -y mod_ssl\nvi /etc/httpd/conf.d/ssl.conf\nsystemctl reload httpd",
-            'NTP_INSTALLATION'     => "dnf install -y chrony\nvi /etc/chrony.conf\nsystemctl enable --now chronyd\nchronyc sources",
-            'FILES_INSTALLATION'   => "vi /etc/php.ini\nvi /etc/httpd/conf.d/glpi.conf",
-            'SSO_TECHNOLOGY'       => '',
-            'SSO_INSTALLATION'     => '',
-        ];
-
-        $windows = [
-            'SYSTEM_INFORMATIONS'  => '<p>Windows Server (64 bits).</p>',
-            'PAQUETS_INSTALLATION' => "Apache Lounge (httpd 2.4, VS17) : C:\\Apache24\nPHP thread safe (VS17 x64) : C:\\php\nMariaDB (installeur MSI) : C:\\Program Files\\MariaDB\nVisual C++ Redistributable",
-            'APACHE_INFORMATIONS'  => '<p>Apache 2.4 installé en service Windows, virtual host dédié à GLPI (racine : C:\\Apache24\\htdocs\\glpi\\public).</p>',
-            'APACHE_INSTALLATION'  => "notepad C:\\Apache24\\conf\\httpd.conf\nnotepad C:\\Apache24\\conf\\extra\\httpd-vhosts.conf\nC:\\Apache24\\bin\\httpd.exe -k install\nnet start Apache2.4",
-            'PHP_INFORMATIONS'     => '<p>PHP chargé par Apache (php8apache2_4.dll), configuration dans C:\\php\\php.ini.</p>',
-            'PHP_INSTALLATION'     => "memory_limit = 256M\nupload_max_filesize = 20M\npost_max_size = 20M\nmax_execution_time = 600\nsession.cookie_httponly = On\nsession.cookie_secure = On\ndate.timezone = Europe/Paris\nextension=curl, fileinfo, gd, intl, ldap, mbstring, mysqli, openssl, zip, bz2, sodium",
-            'MYSQL_INFORMATIONS'   => '<p>MariaDB installé en service Windows, base glpi en utf8mb4, utilisateur dédié.</p>',
-            'MYSQL_INSTALLATION'   => "mysql -u root -p -e \"CREATE DATABASE glpi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\"\nmysql -u root -p -e \"CREATE USER 'glpi'@'localhost' IDENTIFIED BY '********';\"\nmysql -u root -p -e \"GRANT ALL PRIVILEGES ON glpi.* TO 'glpi'@'localhost';\"",
-            'CRON_INSTALLATION'    => "schtasks /create /tn \"GLPI cron\" /sc minute /mo 1 /ru SYSTEM /tr \"C:\\php\\php.exe C:\\Apache24\\htdocs\\glpi\\front\\cron.php\"",
-            'LOGS_INSTALLATION'    => "C:\\Apache24\\logs\\\nC:\\Apache24\\htdocs\\glpi\\files\\_log\\",
-            'HTTPS_INSTALLATION'   => "notepad C:\\Apache24\\conf\\extra\\httpd-ssl.conf\nLoadModule ssl_module modules/mod_ssl.so\nInclude conf/extra/httpd-ssl.conf\nnet stop Apache2.4 && net start Apache2.4",
-            'NTP_INSTALLATION'     => "w32tm /config /manualpeerlist:\"pool.ntp.org\" /syncfromflags:manual /update\nw32tm /resync\nw32tm /query /status",
-            'FILES_INSTALLATION'   => "notepad C:\\php\\php.ini\nnotepad C:\\Apache24\\conf\\extra\\httpd-vhosts.conf",
-            'SSO_TECHNOLOGY'       => '',
-            'SSO_INSTALLATION'     => '',
-        ];
-
-        return [
-            self::OS_DEBIAN  => $debian('Debian 12 (Bookworm)', 'php8.2-fpm'),
-            self::OS_UBUNTU  => $debian('Ubuntu Server 24.04 LTS', 'php8.3-fpm'),
-            self::OS_REDHAT  => $redhat,
-            self::OS_WINDOWS => $windows,
-        ];
     }
 }

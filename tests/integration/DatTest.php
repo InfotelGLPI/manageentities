@@ -29,9 +29,11 @@
 
 namespace GlpiPlugin\Manageentities\Tests\Integration;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Manageentities\Dat;
+use GlpiPlugin\Manageentities\DatOsTemplate;
 use GlpiPlugin\Manageentities\DatServer;
 use GlpiPlugin\Manageentities\PresaleTemplate;
 use GlpiPlugin\Manageentities\Profile;
@@ -55,6 +57,23 @@ class DatTest extends DbTestCase
         $this->assertArrayNotHasKey(Dat::getTable(), $differences);
         $this->assertArrayNotHasKey(DatServer::getTable(), $differences);
         $this->assertTrue($DB->fieldExists('glpi_plugin_manageentities_configs', 'dat_documentcategories_id'));
+    }
+
+    public function testInstallCreatesNoModel(): void
+    {
+        global $DB;
+
+        // The installation ships no prefilled content (no "Debian 12 (Bookworm)"…): every model
+        // starts empty, to be written in the DAT tab of the configuration
+        $DB->delete(DatOsTemplate::getTable(), [new QueryExpression('true')]);
+        DatOsTemplate::install(new \Migration(PLUGIN_MANAGEENTITIES_VERSION));
+        $this->assertSame(0, countElementsInTable(DatOsTemplate::getTable()));
+
+        foreach (array_keys(DatOsTemplate::getSystems()) as $os) {
+            $sections = DatOsTemplate::getSectionsFor($os);
+            $this->assertSame(DatOsTemplate::getPlaceholders(), array_keys($sections), $os);
+            $this->assertSame([''], array_values(array_unique($sections)), $os);
+        }
     }
 
     public function testRightIsDeclared(): void

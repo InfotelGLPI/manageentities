@@ -195,6 +195,22 @@ class Contact extends CommonDBTM
 
             $DB->doQuery($query);
         }
+
+        // Upgrade: up to 4.3.0 the unicity was on the entity alone, one contact per client. It
+        // is on the contact + entity pair now; the pairs of the existing rows are unique already.
+        $unicity = [];
+        foreach ($DB->doQuery("SHOW INDEX FROM `$table` WHERE `Key_name` = 'unicity'") as $index) {
+            $unicity[] = $index['Column_name'];
+        }
+        if (!in_array('contacts_id', $unicity, true)) {
+            if ($unicity !== []) {
+                $migration->dropKey($table, 'unicity');
+                $migration->migrationOneTable($table);
+            }
+            $migration->addKey($table, ['contacts_id', 'entities_id'], 'unicity', 'UNIQUE');
+        }
+        $migration->addKey($table, 'contacts_id');
+        $migration->migrationOneTable($table);
     }
 
     public static function uninstall()

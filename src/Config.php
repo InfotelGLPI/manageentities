@@ -390,21 +390,35 @@ class Config extends CommonDBTM
             );
         }
 
-        // Upgrade: add publisher subscriptions toggle on existing installations
+        self::installEditorSubscriptionsField($migration);
+        self::installPresaleFields($migration);
+        self::installDatFields($migration);
+        self::installDexFields($migration);
+        self::installKifloFields($migration);
+    }
+
+    /**
+     * Publisher subscriptions toggle. Idempotent: also called on upgrades by
+     * plugin_manageentities_install(), install() only runs on a fresh install.
+     */
+    public static function installEditorSubscriptionsField(Migration $migration)
+    {
+        global $DB;
+
+        $table = self::getTable();
         if (!$DB->fieldExists($table, 'use_editorsubscriptions')) {
             $migration->addField(
                 $table,
                 'use_editorsubscriptions',
                 'bool',
-                ['value' => 1, 'after' => 'allow_same_periods'],
+                [
+                    'value'   => 1,
+                    'after'   => 'allow_same_periods',
+                    'comment' => 'display and manage publisher (editor) subscriptions',
+                ],
             );
             $migration->migrationOneTable($table);
         }
-
-        self::installPresaleFields($migration);
-        self::installDatFields($migration);
-        self::installDexFields($migration);
-        self::installKifloFields($migration);
     }
 
     /**
