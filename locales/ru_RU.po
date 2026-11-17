@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Manageentities plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 07:44+0000\n"
+"POT-Creation-Date: 2026-11-17 08:36+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Kim Timur, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/infotelGLPI/teams/"
@@ -205,11 +205,11 @@ msgstr ""
 msgid "%s: the model could not be imported."
 msgstr ""
 
-#: src/CriPDF.php:608
+#: src/CriPDF.php:644
 msgid "(in days)"
 msgstr "(в днях)"
 
-#: src/CriPDF.php:610
+#: src/CriPDF.php:646
 msgid "(in hours)"
 msgstr "(в часах)"
 
@@ -592,7 +592,7 @@ msgstr ""
 msgid "Associate to a contract"
 msgstr "Привязать к контракту"
 
-#: ⁨standard input⁩:96
+#: ⁨standard input⁩:95
 msgid "Associate with the ticket"
 msgstr ""
 
@@ -1019,7 +1019,7 @@ msgstr "Детали контракта"
 msgid "Contract is imported in GLPI"
 msgstr "Контракт импортирован в GLPI"
 
-#: src/CriDetail.php:505 src/CriDetail.php:761 src/CriPDF.php:532
+#: src/CriDetail.php:505 src/CriDetail.php:761 src/CriPDF.php:568
 #: src/NotificationTargetContract.php:118
 #: src/NotificationTargetContract.php:153 ⁨standard input⁩:70
 msgid "Contract number"
@@ -1118,7 +1118,7 @@ msgctxt "button"
 msgid "Create the rule"
 msgstr ""
 
-#: src/CriPDF.php:289 src/CriPDF.php:305
+#: src/CriPDF.php:325 src/CriPDF.php:341
 msgid "Created by"
 msgstr "Создано"
 
@@ -1138,12 +1138,12 @@ msgstr "Остаток кредита"
 msgid "Credit used up"
 msgstr ""
 
-#: src/CriPDF.php:582
+#: src/CriPDF.php:618
 msgid "Crossed time"
 msgstr "Пересеченное время"
 
 #: src/CriDetail.php:503 src/CriDetail.php:756 src/CriDetail.php:844
-#: src/CriDetail.php:1344 src/CriPDF.php:562
+#: src/CriDetail.php:1344 src/CriPDF.php:598
 msgid "Crossed time (itinerary including)"
 msgstr "Пересеченное время (включая маршрут)"
 
@@ -1171,7 +1171,7 @@ msgstr[3] "Текущих заинтересованных лиц"
 msgid "Customer"
 msgstr ""
 
-#: src/CriPDF.php:937
+#: src/CriPDF.php:974
 msgid "Customer Visa"
 msgstr "Виза клиента"
 
@@ -1179,7 +1179,7 @@ msgstr "Виза клиента"
 msgid "Customer archiving entity"
 msgstr ""
 
-#: src/CriPDF.php:813
+#: src/CriPDF.php:849
 msgid "Customer comments"
 msgstr "Комментарии клиента"
 
@@ -1199,7 +1199,7 @@ msgstr ""
 msgid "Customer sheet"
 msgstr ""
 
-#: src/CriPDF.php:930
+#: src/CriPDF.php:967
 msgid "Customer stamp"
 msgstr "Штамп клиента"
 
@@ -1258,12 +1258,12 @@ msgid "Database installation"
 msgstr ""
 
 #: ⁨standard input⁩:251 ⁨standard input⁩:78 ⁨standard input⁩:96 ⁨standard input⁩:35
-#: ⁨standard input⁩:72 ⁨standard input⁩:55 ⁨standard input⁩:39 ⁨standard input⁩:66
+#: ⁨standard input⁩:71 ⁨standard input⁩:55 ⁨standard input⁩:39 ⁨standard input⁩:66
 #: ⁨standard input⁩:75 ⁨standard input⁩:68 ⁨standard input⁩:46
 msgid "Date"
 msgstr ""
 
-#: src/CriPDF.php:571 src/CriPDF.php:575
+#: src/CriPDF.php:607 src/CriPDF.php:611
 msgid "Date of"
 msgstr "Дата"
 
@@ -1402,11 +1402,11 @@ msgctxt "button"
 msgid "Delete permanently"
 msgstr ""
 
-#: ⁨standard input⁩:105
+#: ⁨standard input⁩:104
 msgid "Delete the draft"
 msgstr ""
 
-#: ⁨standard input⁩:104
+#: ⁨standard input⁩:103
 msgid "Delete this draft? Everything typed in it is lost."
 msgstr ""
 
@@ -1428,10 +1428,9 @@ msgstr ""
 msgid "Deleting…"
 msgstr ""
 
-#: ⁨standard input⁩:74 ⁨standard input⁩:38 ⁨standard input⁩:75 ⁨standard input⁩:101
-#: ⁨standard input⁩:199 ⁨standard input⁩:43 ⁨standard input⁩:104 ⁨standard input⁩:159
-#: ⁨standard input⁩:182 ⁨standard input⁩:253 ⁨standard input⁩:49 ⁨standard input⁩:50
-#: ⁨standard input⁩:70
+#: ⁨standard input⁩:74 ⁨standard input⁩:38 ⁨standard input⁩:101 ⁨standard input⁩:199
+#: ⁨standard input⁩:43 ⁨standard input⁩:104 ⁨standard input⁩:159 ⁨standard input⁩:182
+#: ⁨standard input⁩:253 ⁨standard input⁩:49 ⁨standard input⁩:50 ⁨standard input⁩:70
 msgid "Description"
 msgstr "Описание"
 
@@ -1447,7 +1446,7 @@ msgstr ""
 msgid "Detail of the realized works"
 msgstr "Детали выполненных работ"
 
-#: src/CriPDF.php:740
+#: src/CriPDF.php:776
 msgid "Detail of work done"
 msgstr "Детали выполненной работы"
 
@@ -1463,11 +1462,11 @@ msgstr ""
 msgid "Disable creation date in header of PDF"
 msgstr "Отключить дату создания в заголовке PDF"
 
-#: ⁨standard input⁩:116
+#: ⁨standard input⁩:114
 msgid "Discard every change made since the last generated version?"
 msgstr ""
 
-#: ⁨standard input⁩:117
+#: ⁨standard input⁩:115
 msgid "Discard the changes of the draft"
 msgstr ""
 
@@ -1528,7 +1527,7 @@ msgid "Duplicate"
 msgstr ""
 
 #: ⁨standard input⁩:81 ⁨standard input⁩:83 ⁨standard input⁩:105 ⁨standard input⁩:37
-#: ⁨standard input⁩:74 ⁨standard input⁩:41 ⁨standard input⁩:161 ⁨standard input⁩:197
+#: ⁨standard input⁩:73 ⁨standard input⁩:41 ⁨standard input⁩:161 ⁨standard input⁩:197
 msgid "Duration"
 msgstr ""
 
@@ -1866,7 +1865,7 @@ msgstr ""
 msgid "For a new prospect or a prospect already known."
 msgstr ""
 
-#: src/CriPDF.php:432
+#: src/CriPDF.php:468
 msgid "From"
 msgstr "С"
 
@@ -1955,7 +1954,7 @@ msgstr ""
 msgid "HTTPS certificate"
 msgstr ""
 
-#: src/CriPDF.php:529
+#: src/CriPDF.php:565
 msgid "Help on contract"
 msgstr "Помощь по контракту"
 
@@ -1971,7 +1970,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/CriPDF.php:573 src/CriPDF.php:577
+#: src/CriPDF.php:609 src/CriPDF.php:613
 msgid "Hour of"
 msgstr "Час"
 
@@ -2069,7 +2068,7 @@ msgstr[1] "Вмешательства"
 msgstr[2] "Вмешательств"
 msgstr[3] "Вмешательств"
 
-#: src/CriPDF.php:415
+#: src/CriPDF.php:451
 msgid "Intervention date"
 msgstr "Дата вмешательства"
 
@@ -2578,7 +2577,7 @@ msgstr ""
 msgid "New subscription"
 msgstr ""
 
-#: ⁨standard input⁩:124
+#: ⁨standard input⁩:122
 msgid "New version"
 msgstr ""
 
@@ -3095,7 +3094,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: src/CriDetail.php:1518 src/CriPDF.php:543 ⁨standard input⁩:59
+#: src/CriDetail.php:1518 src/CriPDF.php:579 ⁨standard input⁩:59
 #: ⁨standard input⁩:74
 msgid "Out of contract"
 msgstr "Вне контракта"
@@ -3138,7 +3137,7 @@ msgstr ""
 msgid "Package"
 msgstr "Пакет"
 
-#: src/CriPDF.php:976
+#: src/CriPDF.php:1013
 msgid "Page"
 msgstr "Страница"
 
@@ -3184,7 +3183,7 @@ msgstr ""
 msgid "Periods of contract"
 msgstr "Периоды контракта"
 
-#: src/CriPDF.php:488
+#: src/CriPDF.php:524
 msgid "Person in charge"
 msgstr "Ответственное лицо"
 
@@ -3643,7 +3642,7 @@ msgstr "Отчет, касающийся занятий техперсонала
 msgid "Report on the movement of technicians"
 msgstr "Отчет о перемещении техперсонала"
 
-#: src/CriPDF.php:375
+#: src/CriPDF.php:411
 msgid "Request number of associated help"
 msgstr "Номер запроса связанной помощи"
 
@@ -3742,7 +3741,7 @@ msgstr ""
 msgid "Save reports in glpi"
 msgstr "Сохранять отчеты в glpi"
 
-#: ⁨standard input⁩:34
+#: ⁨standard input⁩:36
 msgid "Save the intervention report"
 msgstr "Сохранить отчет о вмешательстве"
 
@@ -3783,7 +3782,7 @@ msgstr ""
 msgid "See the unbilled interventions"
 msgstr ""
 
-#: ⁨standard input⁩:70 ⁨standard input⁩:36
+#: ⁨standard input⁩:69 ⁨standard input⁩:36
 msgid "Select"
 msgstr "Выбрать"
 
@@ -3906,7 +3905,7 @@ msgstr ""
 msgid "Simplified interface users"
 msgstr ""
 
-#: src/CriPDF.php:470
+#: src/CriPDF.php:506
 msgid "Society name"
 msgstr "Название компании"
 
@@ -4042,7 +4041,7 @@ msgid "Suggested queries"
 msgstr ""
 
 #: src/Entity.php:259 src/DexWizard.php:76 src/DatWizard.php:80
-#: ⁨standard input⁩:127 ⁨standard input⁩:120 ⁨standard input⁩:56 ⁨standard input⁩:106
+#: ⁨standard input⁩:125 ⁨standard input⁩:120 ⁨standard input⁩:56 ⁨standard input⁩:106
 msgid "Summary"
 msgstr ""
 
@@ -4147,7 +4146,7 @@ msgstr[3] ""
 msgid "Technical architecture documents"
 msgstr ""
 
-#: src/CriPDF.php:395 ⁨standard input⁩:249 ⁨standard input⁩:36 ⁨standard input⁩:73
+#: src/CriPDF.php:431 ⁨standard input⁩:249 ⁨standard input⁩:36 ⁨standard input⁩:72
 #: ⁨standard input⁩:40 ⁨standard input⁩:45 ⁨standard input⁩:164 ⁨standard input⁩:139
 #: ⁨standard input⁩:216
 msgid "Technician"
@@ -4664,12 +4663,12 @@ msgid "Time justified"
 msgstr "Оправданное время"
 
 #: ⁨standard input⁩:64 ⁨standard input⁩:60 ⁨standard input⁩:114 ⁨standard input⁩:34
-#: ⁨standard input⁩:71 ⁨standard input⁩:38 ⁨standard input⁩:90 ⁨standard input⁩:136
+#: ⁨standard input⁩:70 ⁨standard input⁩:38 ⁨standard input⁩:90 ⁨standard input⁩:136
 #: ⁨standard input⁩:247
 msgid "Title"
 msgstr ""
 
-#: src/CriPDF.php:436
+#: src/CriPDF.php:472
 msgid "To"
 msgstr "По"
 
@@ -4691,11 +4690,11 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: src/CriPDF.php:676
+#: src/CriPDF.php:712
 msgid "Total (in days)"
 msgstr "Итого (в днях)"
 
-#: src/CriPDF.php:678
+#: src/CriPDF.php:714
 msgid "Total (in hours)"
 msgstr "Итого (в часах)"
 
@@ -4763,11 +4762,11 @@ msgstr ""
 msgid "Transfer this subscription to the selected entity?"
 msgstr ""
 
-#: src/CriPDF.php:662
+#: src/CriPDF.php:698
 msgid "Travel"
 msgstr "Путешествие"
 
-#: src/CriPDF.php:660
+#: src/CriPDF.php:696
 msgid "Travel (in days)"
 msgstr "Путешествие (в днях)"
 
@@ -5144,11 +5143,11 @@ msgstr ""
 msgid "Word template of the technical architecture documents"
 msgstr ""
 
-#: src/CriPDF.php:569
+#: src/CriPDF.php:605
 msgid "Wording of the activities"
 msgstr "Формулировка действий"
 
-#: src/Entity.php:1086 src/CriPDF.php:418
+#: src/Entity.php:1086 src/CriPDF.php:454
 msgid "Year"
 msgstr "Год"
 
@@ -5212,7 +5211,7 @@ msgstr ""
 msgid "hours left"
 msgstr ""
 
-#: src/CriPDF.php:290 src/CriPDF.php:318
+#: src/CriPDF.php:326 src/CriPDF.php:354
 msgid "in"
 msgstr "в"
 
@@ -5224,11 +5223,11 @@ msgstr ""
 msgid "of period of contract"
 msgstr "периода контракта"
 
-#: src/CriDetail.php:1345 src/CriPDF.php:245 src/CriPDF.php:601
+#: src/CriDetail.php:1345 src/CriPDF.php:282 src/CriPDF.php:637
 msgid "of this intervention"
 msgstr "этого вмешательства"
 
-#: src/CriPDF.php:977
+#: src/CriPDF.php:1014
 msgid "on"
 msgstr "на"
 
