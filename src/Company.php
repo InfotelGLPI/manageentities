@@ -322,9 +322,13 @@ class Company extends CommonDBTM
         ];
         $options = array_merge($default_options, $options);
 
+        // Unlike CommonDBTM::addFiles(), this override returns the documents it added, keyed by
+        // their id: post_addItem() / post_updateItem() store that key as logo_id. Without a file
+        // nothing is added; handing back the input made them write its keys ("entities_id"…)
+        // into the integer logo_id column, which a strict SQL mode rejects.
         if (!isset($input['_filename'])
             || (count($input['_filename']) == 0)) {
-            return $input;
+            return [];
         }
         $docadded = [];
         $donotif = isset($input['_donotif']) ? $input['_donotif'] : 0;

@@ -177,7 +177,11 @@ function plugin_manageentities_install()
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.0.0.sql");
     }
 
-    if ($DB->tableExists("glpi_plugin_manageentities_configs") && !$DB->fieldExists("glpi_plugin_manageentities_configs", "company_address")) {
+    // Only on a configuration older than 2.0.1: company_address moved to the companies table in
+    // 2.1.1 (update_210_211.php), so a fresh install, which has no such column, re-created it here
+    if ($DB->tableExists("glpi_plugin_manageentities_configs")
+        && !$DB->fieldExists("glpi_plugin_manageentities_configs", "company_address")
+        && !$DB->tableExists("glpi_plugin_manageentities_companies")) {
         $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-2.0.1.sql");
     }
 
@@ -412,6 +416,9 @@ function plugin_manageentities_install()
     $presale_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
     ProjectManager::install($presale_migration);
     PresaleUser::install($presale_migration);
+    // Before the annex types, which point to the levels: adds price_per_user on upgrades (the
+    // fresh-install batch above is the only other caller)
+    SubscriptionLevel::install($presale_migration);
     PresaleAnnexType::install($presale_migration);
     PresaleOrigin::install($presale_migration);
     PresaleClient::install($presale_migration);
@@ -443,6 +450,26 @@ function plugin_manageentities_install()
     $kiflo_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
     Config::installKifloFields($kiflo_migration);
     KifloLead::install($kiflo_migration);
+
+    // Upgrades of tables created by the fresh-install batch above, which only runs on a brand
+    // new install. Idempotent, as above: several contacts per client (unique contact + entity)
+    // and the publisher subscriptions toggle of the configuration.
+    $upgrade_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
+    Contact::install($upgrade_migration);
+    Config::installEditorSubscriptionsField($upgrade_migration);
+
+    // company_address left behind by the fresh installs that replayed update-2.0.1.sql (see
+    // above): the addresses live in the companies table since 2.1.1, update_210_211.php moved
+    // them there. Dropped only when it holds nothing, so that no address can be lost.
+    if ($DB->tableExists('glpi_plugin_manageentities_companies')
+        && $DB->fieldExists('glpi_plugin_manageentities_configs', 'company_address')
+        && countElementsInTable('glpi_plugin_manageentities_configs', [
+            'NOT' => ['company_address' => null],
+            ['NOT' => ['company_address' => '']],
+        ]) === 0) {
+        $upgrade_migration->dropField('glpi_plugin_manageentities_configs', 'company_address');
+        $upgrade_migration->migrationOneTable('glpi_plugin_manageentities_configs');
+    }
 
 
     include_once(PLUGIN_MANAGEENTITIES_DIR . "/install/update_remaining_days.php");

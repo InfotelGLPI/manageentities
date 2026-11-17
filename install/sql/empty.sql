@@ -39,7 +39,7 @@ CREATE TABLE `glpi_plugin_manageentities_contracts` (
    `show_on_global_gantt` tinyint NOT NULL DEFAULT '0',
    `refacturable_costs` tinyint NOT NULL DEFAULT '0',
    `moving_management` tinyint NOT NULL DEFAULT '0',
-   `duration_moving` decimal(20,2) NOT NULL DEFAULT '0' COMMENT 'Duration of moving',
+   `duration_moving` decimal(20,2) NOT NULL DEFAULT '0.00' COMMENT 'Duration of moving',
    `remaining_days` decimal(10,2) NOT NULL DEFAULT '0.00',
    `active_editor_suscription` tinyint NOT NULL DEFAULT '0',
    `cloud_client` tinyint NOT NULL DEFAULT '0',
@@ -99,6 +99,7 @@ CREATE TABLE `glpi_plugin_manageentities_configs` (
    `needvalidationforcri` tinyint NOT NULL DEFAULT '0' COMMENT 'only CRI with validated ticket are taking into account for consumption calculation',
    `use_publictask` tinyint NOT NULL DEFAULT '0' COMMENT 'DEFAULT for no',
    `allow_same_periods` tinyint NOT NULL DEFAULT '0' COMMENT 'allow interventions on the same interval of dates',
+   `use_editorsubscriptions` tinyint NOT NULL DEFAULT '1' COMMENT 'display and manage publisher (editor) subscriptions',
    `contract_states` text DEFAULT NULL,
    `business_id` text DEFAULT NULL,
    `choice_intervention` int unsigned DEFAULT NULL,
@@ -500,7 +501,7 @@ CREATE TABLE `glpi_plugin_manageentities_presaleproposals` (
    `date_creation` timestamp NULL DEFAULT NULL,
    `date_mod` timestamp NULL DEFAULT NULL,
    PRIMARY KEY  (`id`),
-   UNIQUE KEY `reference` (`reference`),
+   KEY `reference` (`reference`),
    KEY `name` (`name`),
    KEY `entities_id` (`entities_id`),
    KEY `is_recursive` (`is_recursive`),
@@ -552,16 +553,6 @@ CREATE TABLE `glpi_plugin_manageentities_presaleannexlines` (
    PRIMARY KEY  (`id`),
    KEY `plugin_manageentities_presaleproposals_annexes_id` (`plugin_manageentities_presaleproposals_annexes_id`),
    KEY `rank` (`rank`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-DROP TABLE IF EXISTS `glpi_plugin_manageentities_presalecounters`;
-CREATE TABLE `glpi_plugin_manageentities_presalecounters` (
-   `id` int unsigned NOT NULL auto_increment,
-   `prefix` varchar(3) NOT NULL DEFAULT '',
-   `period` char(4) NOT NULL DEFAULT '' COMMENT 'YYMM',
-   `sequence` int NOT NULL DEFAULT '0',
-   PRIMARY KEY  (`id`),
-   UNIQUE KEY `unicity` (`prefix`,`period`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_dats`;

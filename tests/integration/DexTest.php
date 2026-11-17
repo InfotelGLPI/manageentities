@@ -29,6 +29,7 @@
 
 namespace GlpiPlugin\Manageentities\Tests\Integration;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Manageentities\DatOsTemplate;
@@ -168,25 +169,20 @@ class DexTest extends DbTestCase
         $this->assertSame(DexOsTemplate::getPlaceholders(), array_keys(DexWizard::getSectionLabels()));
     }
 
-    public function testDefaultModelsCoverEverySystem(): void
+    public function testInstallCreatesNoModel(): void
     {
+        global $DB;
+
+        // The installation ships no prefilled content: every model starts empty, to be written
+        // in the DEX tab of the configuration
+        $DB->delete(DexOsTemplate::getTable(), [new QueryExpression('true')]);
+        DexOsTemplate::install(new \Migration(PLUGIN_MANAGEENTITIES_VERSION));
+        $this->assertSame(0, countElementsInTable(DexOsTemplate::getTable()));
+
         foreach (array_keys(DatOsTemplate::getSystems()) as $os) {
             $sections = DexOsTemplate::getSectionsFor($os);
             $this->assertSame(DexOsTemplate::getPlaceholders(), array_keys($sections), $os);
-        }
-        // Restart commands of each system, and the GLPI-specific points of the defaults
-        $this->assertStringContainsString('systemctl restart apache2', DexOsTemplate::getSectionsFor(DatOsTemplate::OS_DEBIAN)['COMMAND_RESTART_APACHE']);
-        $this->assertStringContainsString('systemctl restart httpd', DexOsTemplate::getSectionsFor(DatOsTemplate::OS_REDHAT)['COMMAND_RESTART_APACHE']);
-        $windows = DexOsTemplate::getSectionsFor(DatOsTemplate::OS_WINDOWS);
-        $this->assertStringContainsString('net start Apache2.4', $windows['COMMAND_RESTART_APACHE']);
-        $this->assertStringContainsString('Get-Service', $windows['COMMAND_CHECK_PROCESSUS']);
-        foreach (array_keys(DatOsTemplate::getSystems()) as $os) {
-            $sections = DexOsTemplate::getSectionsFor($os);
-            $this->assertStringContainsString('glpicrypt.key', $sections['TEXT_BACKUPS'], $os);
-            $this->assertStringContainsString('maintenance:enable', $sections['TEXT_LAUNCH_MAINTENANCE_MODE'], $os);
-            $this->assertStringContainsString('collecteurs', $sections['TEXT_PREPROD_COPY_DATAS'], $os);
-            $this->assertStringContainsString('front', $sections['COMMAND_LAUNCH_CRON'], $os);
-            $this->assertStringContainsString('mysqldump', $sections['COMMAND_LAUNCH_BACKUP'], $os);
+            $this->assertSame([''], array_values(array_unique($sections)), $os);
         }
     }
 }
