@@ -25,14 +25,17 @@
  # --------------------------------------------------------------------------
  #}
 
-{# Preview of the generated intervention report, and the button saving it (manageentities_loadCriForm) #}
+{# Preview of the generated intervention report, and the button saving it (manageentities_loadCriForm).
+   Without save_args (reports not saved in GLPI), the preview alone. #}
 <form method="post" name="formReport">
-    {% for name, value in hidden_fields %}
-        <input type="hidden" name="{{ name }}" value="{{ value }}">
-    {% endfor %}
-    <p>
-        <input type="button" name="save_cri" value="{{ __('Save the intervention report', 'manageentities') }}"
-               class="submit btn btn-primary manageentities_button" data-manageentities-load-cri-form="{{ save_args }}">
-    </p>
+    {% if save_args %}
+        {% for name, value in hidden_fields %}
+            <input type="hidden" name="{{ name }}" value="{{ value }}">
+        {% endfor %}
+        <p>
+            <input type="button" name="save_cri" value="{{ __('Save the intervention report', 'manageentities') }}"
+                   class="submit btn btn-primary manageentities_button" data-manageentities-load-cri-form="{{ save_args }}">
+        </p>
+    {% endif %}
     <iframe style="width:500px;height:700px" src="{{ preview_url }}" scrolling="no" frameborder="1"></iframe>
 </form>

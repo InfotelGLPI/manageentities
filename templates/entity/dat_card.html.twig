@@ -98,7 +98,6 @@
                     {# A draft never generated only: once generated, the DAT feeds the next version #}
                     <form method="post" action="{{ dat.form_url }}" class="d-inline ms-auto" data-dat-card>
                         <input type="hidden" name="entities_id" value="{{ dat.entities_id }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         {# Confirmation: public/scripts/dat-wizard.js #}
                         <button type="submit" name="delete_draft" value="1" class="btn btn-sm btn-ghost-danger"
                                 data-dat-confirm="{{ __('Delete this draft? Everything typed in it is lost.', 'manageentities') }}">
@@ -110,7 +109,6 @@
                     {# A draft of the next version: back to the last generated version, from its snapshot #}
                     <form method="post" action="{{ dat.form_url }}" class="d-inline ms-auto" data-dat-card>
                         <input type="hidden" name="entities_id" value="{{ dat.entities_id }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         {# Confirmation: public/scripts/dat-wizard.js #}
                         <button type="submit" name="discard_draft" value="1" class="btn btn-sm btn-ghost-danger"
                                 data-dat-confirm="{{ __('Discard every change made since the last generated version?', 'manageentities') }}">
