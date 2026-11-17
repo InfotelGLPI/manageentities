@@ -96,6 +96,43 @@ class CriPDF extends \TCPDF
         $this->setCellPaddings(1, 0, 1, 0);
     }
 
+    /**
+     * Logo of the client entity, relative to GLPI_DOC_DIR; null without one
+     */
+    private function getClientLogo(): ?string
+    {
+        if (empty($this->entite[0]->fields["id"])) {
+            return null; // no entity set yet (SetEntite())
+        }
+        $client_logo = (new EntityLogo())->getLogo($this->entite[0]->fields["id"]);
+
+        return $client_logo != null && file_exists(GLPI_DOC_DIR . "/" . $client_logo) ? $client_logo : null;
+    }
+
+    /**
+     * Bottom of the header drawn by Header(), where the body of each page starts: the logo and
+     * title block (4 lines, the date block beside it), a date line under it with a client logo,
+     * then the report number.
+     */
+    private function getHeaderBottom(): float
+    {
+        $lines = 4 + ($this->getClientLogo() !== null ? 1 : 0) + 1;
+
+        return $this->marge_haut + $lines * $this->line_height;
+    }
+
+    /**
+     * The top margin is set to the bottom of the header before the page starts. TCPDF 6 runs
+     * Header() at page start, which raised the margin itself (SetTopMargin() at its end); TCPDF 7
+     * draws the header when the page is closed and starts the body at the top margin already set:
+     * the body was drawn over the header.
+     */
+    public function AddPage($orientation = '', $format = '', $keepmargins = false, $tocpage = false)
+    {
+        $this->SetTopMargin($this->getHeaderBottom());
+        parent::AddPage($orientation, $format, $keepmargins, $tocpage);
+    }
+
     /* ********************** */
     /* Generic layout methods. */
     /* ********************** */
@@ -250,10 +287,9 @@ class CriPDF extends \TCPDF
         $this->SetY($this->GetY() - $this->line_height * 2);
         $this->SetX($largeur_titre + $largeur_logo + $this->marge_gauche);
 
-        $client = new EntityLogo();
-        $client_logo = $client->getLogo($this->entite[0]->fields["id"]);
+        $client_logo = $this->getClientLogo();
 
-        if ($client_logo != null && file_exists(GLPI_DOC_DIR . "/" . $client_logo)) {
+        if ($client_logo !== null) {
             $size = self::fctaffichimage(GLPI_DOC_DIR . "/" . $client_logo, 40, 18);
             if ($size[1] < 15) {
                 $this->Image(
@@ -875,7 +911,8 @@ class CriPDF extends \TCPDF
         $this->DetailCommentaires();
 
         $decoupage1 = [];
-        $tok = strtok($comment, "\n");
+        // No comment without a company (null): no line, as strtok('') says
+        $tok = strtok((string) $comment, "\n");
         while ($tok !== false) {
             $decoupage1[] = $tok;
             $tok = strtok("\n");

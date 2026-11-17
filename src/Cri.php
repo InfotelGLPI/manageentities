@@ -1096,6 +1096,15 @@ class Cri extends CommonDBTM
                     'save_args'     => self::getLoadCriFormArgs('saveCri', (string) $options['modal'], $params),
                     'preview_url'   => PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/" . rawurlencode($seefilename),
                 ]);
+            } else {
+                // Reports are not saved in GLPI ("Save reports in glpi" off, the default): the
+                // generated PDF is shown alone, without the button saving it. Nothing at all was
+                // sent back before, so the generation button seemed to do nothing.
+                TemplateRenderer::getInstance()->display('@manageentities/cri_preview.html.twig', [
+                    'hidden_fields' => [],
+                    'save_args'     => null,
+                    'preview_url'   => PLUGIN_MANAGEENTITIES_WEBDIR . "/front/cri.send.php?file=_plugins/manageentities/" . rawurlencode($seefilename),
+                ]);
             }
 
 
