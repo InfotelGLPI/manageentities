@@ -484,7 +484,7 @@ class Company extends CommonDBTM
      *
      * @param $obj
      *
-     * @return array|mixed[]
+     * @return string|null file path of the logo, relative to GLPI_DOC_DIR
      */
     public static function getLogo($obj)
     {

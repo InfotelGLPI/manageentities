@@ -97,6 +97,21 @@ class CriPDF extends \TCPDF
     }
 
     /**
+     * Image of GLPI_DOC_DIR as TCPDF data ('@' followed by its content), null when it cannot
+     * be read: TCPDF 7 (GLPI 12) only reads the local files of an allowlist the document
+     * directory is not part of, while every version accepts data.
+     *
+     * @param string $filepath path relative to GLPI_DOC_DIR
+     */
+    private static function getDocumentImageData(string $filepath): ?string
+    {
+        $path = GLPI_DOC_DIR . '/' . $filepath;
+        $data = is_readable($path) ? file_get_contents($path) : false;
+
+        return $data === false ? null : '@' . $data;
+    }
+
+    /**
      * Logo of the client entity, relative to GLPI_DOC_DIR; null without one
      */
     private function getClientLogo(): ?string
@@ -257,8 +272,9 @@ class CriPDF extends \TCPDF
         $plugin_company = new Company();
         $filepath_logo = $plugin_company->getLogo($this);
         /* Logo. */
-        if ($filepath_logo != null && file_exists(GLPI_DOC_DIR . "/" . $filepath_logo)) {
-            $this->Image(GLPI_DOC_DIR . "/" . $filepath_logo, 17, 10, 35, 10);
+        $logo_data = is_string($filepath_logo) && $filepath_logo !== '' ? self::getDocumentImageData($filepath_logo) : null;
+        if ($logo_data !== null) {
+            $this->Image($logo_data, 17, 10, 35, 10);
         }
 
         $this->Cell($largeur_logo, 20, '', 1, 0, 'C');
@@ -289,11 +305,12 @@ class CriPDF extends \TCPDF
 
         $client_logo = $this->getClientLogo();
 
-        if ($client_logo !== null) {
+        $client_logo_data = $client_logo !== null ? self::getDocumentImageData($client_logo) : null;
+        if ($client_logo !== null && $client_logo_data !== null) {
             $size = self::fctaffichimage(GLPI_DOC_DIR . "/" . $client_logo, 40, 18);
             if ($size[1] < 15) {
                 $this->Image(
-                    GLPI_DOC_DIR . "/" . $client_logo,
+                    $client_logo_data,
                     $largeur_titre + $largeur_logo + 15,
                     $this->line_height * 2,
                     $size[0],
@@ -301,7 +318,7 @@ class CriPDF extends \TCPDF
                 );
             } elseif ($size[0] > 20) {
                 $this->Image(
-                    GLPI_DOC_DIR . "/" . $client_logo,
+                    $client_logo_data,
                     $largeur_titre + $largeur_logo + 15,
                     $this->line_height + 1,
                     $size[0],
@@ -309,7 +326,7 @@ class CriPDF extends \TCPDF
                 );
             } else {
                 $this->Image(
-                    GLPI_DOC_DIR . "/" . $client_logo,
+                    $client_logo_data,
                     $largeur_titre + $largeur_logo + 25,
                     $this->line_height + 1,
                     $size[0],
@@ -1046,6 +1063,9 @@ class CriPDF extends \TCPDF
     public function DrawCri()
     {
         // No AliasNbPages() call: TCPDF resolves the {nb} total-pages placeholder automatically.
+        // The report number, before the header is drawn: TCPDF 7 (GLPI 12) draws the headers
+        // when the document is output, after Cri.php has named the file after this number
+        $this->GetNoCri(getdate());
         $this->AddPage(); // First page.
 
         $this->InfosGenerales();
