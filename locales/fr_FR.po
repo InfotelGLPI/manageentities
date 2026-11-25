@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 08:36+0000\n"
+"POT-Creation-Date: 2026-11-20 07:18+0000\n"
 "PO-Revision-Date: 2020-11-02 16:08+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/"
@@ -203,11 +203,11 @@ msgstr ""
 msgid "%s: the model could not be imported."
 msgstr "%s : le modèle n'a pas pu être importé."
 
-#: src/CriPDF.php:644
+#: src/CriPDF.php:661
 msgid "(in days)"
 msgstr "(en jours)"
 
-#: src/CriPDF.php:646
+#: src/CriPDF.php:663
 msgid "(in hours)"
 msgstr "(en heures)"
 
@@ -1039,7 +1039,7 @@ msgstr "Détail du contrat"
 msgid "Contract is imported in GLPI"
 msgstr "Le contrat est importé dans GLPI"
 
-#: src/CriDetail.php:505 src/CriDetail.php:761 src/CriPDF.php:568
+#: src/CriDetail.php:505 src/CriDetail.php:761 src/CriPDF.php:585
 #: src/NotificationTargetContract.php:118
 #: src/NotificationTargetContract.php:153 ⁨standard input⁩:70
 msgid "Contract number"
@@ -1140,7 +1140,7 @@ msgctxt "button"
 msgid "Create the rule"
 msgstr "Créer la règle"
 
-#: src/CriPDF.php:325 src/CriPDF.php:341
+#: src/CriPDF.php:342 src/CriPDF.php:358
 msgid "Created by"
 msgstr "Créé le"
 
@@ -1160,12 +1160,12 @@ msgstr "Crédit restant"
 msgid "Credit used up"
 msgstr "Crédit épuisé"
 
-#: src/CriPDF.php:618
+#: src/CriPDF.php:635
 msgid "Crossed time"
 msgstr "Temps passé"
 
 #: src/CriDetail.php:503 src/CriDetail.php:756 src/CriDetail.php:844
-#: src/CriDetail.php:1344 src/CriPDF.php:598
+#: src/CriDetail.php:1344 src/CriPDF.php:615
 msgid "Crossed time (itinerary including)"
 msgstr "Temps passé (trajet inclus)"
 
@@ -1192,7 +1192,7 @@ msgstr[2] "Intervenants actuels"
 msgid "Customer"
 msgstr "Client"
 
-#: src/CriPDF.php:974
+#: src/CriPDF.php:991
 msgid "Customer Visa"
 msgstr "Visa client"
 
@@ -1200,7 +1200,7 @@ msgstr "Visa client"
 msgid "Customer archiving entity"
 msgstr "Entité d'archivage client"
 
-#: src/CriPDF.php:849
+#: src/CriPDF.php:866
 msgid "Customer comments"
 msgstr "Observations du client"
 
@@ -1220,7 +1220,7 @@ msgstr "Suivi client"
 msgid "Customer sheet"
 msgstr "Fiche client"
 
-#: src/CriPDF.php:967
+#: src/CriPDF.php:984
 msgid "Customer stamp"
 msgstr "Cachet client"
 
@@ -1282,7 +1282,7 @@ msgstr "Installation de la base de données"
 msgid "Date"
 msgstr "Date"
 
-#: src/CriPDF.php:607 src/CriPDF.php:611
+#: src/CriPDF.php:624 src/CriPDF.php:628
 msgid "Date of"
 msgstr "Date de"
 
@@ -1466,7 +1466,7 @@ msgstr "Requêtes destructives"
 msgid "Detail of the realized works"
 msgstr "Détail des travaux réalisés"
 
-#: src/CriPDF.php:776
+#: src/CriPDF.php:793
 msgid "Detail of work done"
 msgstr "Détail des travaux réalisés"
 
@@ -1898,7 +1898,7 @@ msgstr "Dossiers à superviser"
 msgid "For a new prospect or a prospect already known."
 msgstr "Pour un nouveau prospect ou un prospect déjà connu."
 
-#: src/CriPDF.php:468
+#: src/CriPDF.php:485
 msgid "From"
 msgstr "du"
 
@@ -1990,7 +1990,7 @@ msgstr "HOTE A des entrées DNS"
 msgid "HTTPS certificate"
 msgstr "Certificat HTTPS"
 
-#: src/CriPDF.php:565
+#: src/CriPDF.php:582
 msgid "Help on contract"
 msgstr "Assistance sur contrat"
 
@@ -2005,7 +2005,7 @@ msgstr[0] "Heure"
 msgstr[1] "Heures"
 msgstr[2] "Heures"
 
-#: src/CriPDF.php:609 src/CriPDF.php:613
+#: src/CriPDF.php:626 src/CriPDF.php:630
 msgid "Hour of"
 msgstr "Heure de"
 
@@ -2102,7 +2102,7 @@ msgstr[0] "Intervention"
 msgstr[1] "Interventions"
 msgstr[2] "Interventions"
 
-#: src/CriPDF.php:451
+#: src/CriPDF.php:468
 msgid "Intervention date"
 msgstr "Date d'intervention"
 
@@ -3157,7 +3157,7 @@ msgstr[0] "Origine de la demande"
 msgstr[1] "Origines des demandes"
 msgstr[2] "Origines des demandes"
 
-#: src/CriDetail.php:1518 src/CriPDF.php:579 ⁨standard input⁩:59
+#: src/CriDetail.php:1518 src/CriPDF.php:596 ⁨standard input⁩:59
 #: ⁨standard input⁩:74
 msgid "Out of contract"
 msgstr "Hors contrat"
@@ -3202,7 +3202,7 @@ msgstr ""
 msgid "Package"
 msgstr "Forfait"
 
-#: src/CriPDF.php:1013
+#: src/CriPDF.php:1030
 msgid "Page"
 msgstr "Page"
 
@@ -3247,7 +3247,7 @@ msgstr "La prestation du contrat \"%s\" nécessite au moins un tarif"
 msgid "Periods of contract"
 msgstr "Prestations du contrat"
 
-#: src/CriPDF.php:524
+#: src/CriPDF.php:541
 msgid "Person in charge"
 msgstr "Responsable"
 
@@ -3712,7 +3712,7 @@ msgstr "Rapport concernant les déplacements des techniciens"
 msgid "Report on the movement of technicians"
 msgstr "Rapport concernant l'occupation des techniciens"
 
-#: src/CriPDF.php:411
+#: src/CriPDF.php:428
 msgid "Request number of associated help"
 msgstr "N° de demande de support associée"
 
@@ -3979,7 +3979,7 @@ msgstr ""
 msgid "Simplified interface users"
 msgstr "Utilisateurs d'interface simplifiée"
 
-#: src/CriPDF.php:506
+#: src/CriPDF.php:523
 msgid "Society name"
 msgstr "Nom de la société"
 
@@ -4218,7 +4218,7 @@ msgstr[2] "Dossiers d'architecture technique"
 msgid "Technical architecture documents"
 msgstr "Dossiers d'architecture technique"
 
-#: src/CriPDF.php:431 ⁨standard input⁩:249 ⁨standard input⁩:36 ⁨standard input⁩:72
+#: src/CriPDF.php:448 ⁨standard input⁩:249 ⁨standard input⁩:36 ⁨standard input⁩:72
 #: ⁨standard input⁩:40 ⁨standard input⁩:45 ⁨standard input⁩:164 ⁨standard input⁩:139
 #: ⁨standard input⁩:216
 msgid "Technician"
@@ -4817,7 +4817,7 @@ msgstr "Temps justifé"
 msgid "Title"
 msgstr "Titre"
 
-#: src/CriPDF.php:472
+#: src/CriPDF.php:489
 msgid "To"
 msgstr "au"
 
@@ -4840,11 +4840,11 @@ msgstr ""
 msgid "Total"
 msgstr "Total"
 
-#: src/CriPDF.php:712
+#: src/CriPDF.php:729
 msgid "Total (in days)"
 msgstr "Total (en jours)"
 
-#: src/CriPDF.php:714
+#: src/CriPDF.php:731
 msgid "Total (in hours)"
 msgstr "Total (en heures)"
 
@@ -4912,11 +4912,11 @@ msgstr "Transférer la souscription"
 msgid "Transfer this subscription to the selected entity?"
 msgstr "Transférer cette souscription dans l'entité sélectionnée ?"
 
-#: src/CriPDF.php:698
+#: src/CriPDF.php:715
 msgid "Travel"
 msgstr "Déplacement"
 
-#: src/CriPDF.php:696
+#: src/CriPDF.php:713
 msgid "Travel (in days)"
 msgstr "Déplacement (en jours)"
 
@@ -5309,11 +5309,11 @@ msgstr "Modèle Word des annexes de souscription"
 msgid "Word template of the technical architecture documents"
 msgstr "Modèle Word des dossiers d'architecture technique"
 
-#: src/CriPDF.php:605
+#: src/CriPDF.php:622
 msgid "Wording of the activities"
 msgstr "Libellé des activités"
 
-#: src/Entity.php:1086 src/CriPDF.php:454
+#: src/Entity.php:1086 src/CriPDF.php:471
 msgid "Year"
 msgstr "Année"
 
@@ -5376,7 +5376,7 @@ msgstr "heures"
 msgid "hours left"
 msgstr "heures restantes"
 
-#: src/CriPDF.php:326 src/CriPDF.php:354
+#: src/CriPDF.php:343 src/CriPDF.php:371
 msgid "in"
 msgstr "à"
 
@@ -5388,11 +5388,11 @@ msgstr "jours-homme"
 msgid "of period of contract"
 msgstr "de la prestation de contrat"
 
-#: src/CriDetail.php:1345 src/CriPDF.php:282 src/CriPDF.php:637
+#: src/CriDetail.php:1345 src/CriPDF.php:298 src/CriPDF.php:654
 msgid "of this intervention"
 msgstr "d'intervention"
 
-#: src/CriPDF.php:1014
+#: src/CriPDF.php:1031
 msgid "on"
 msgstr "sur"
 
