@@ -29,7 +29,6 @@
 
 namespace GlpiPlugin\Manageentities;
 
-use Document;
 use Document_Item;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Session;
@@ -377,12 +376,13 @@ class PresaleConversion
             ]);
         }
 
-        Session::addMessageAfterRedirect(sprintf(
+        // The messages are displayed as HTML: the name of the proposal is text
+        Session::addMessageAfterRedirect(htmlescape(sprintf(
             $session['wizard_mode'] === 'existing_entity'
                 ? __('The customer has been updated from the proposal %s.', 'manageentities')
                 : __('The customer has been created from the proposal %s.', 'manageentities'),
             (string) ($proposal->fields['reference'] ?: $proposal->fields['name']),
-        ));
+        )));
     }
 
     /**
@@ -391,11 +391,9 @@ class PresaleConversion
      */
     private static function copyLogo(PresaleClient $client, int $entities_id): void
     {
-        $document = new Document();
-        if (
-            (int) $client->fields['logo_documents_id'] <= 0
-            || !$document->getFromDB((int) $client->fields['logo_documents_id'])
-        ) {
+        // Only a logo of the prospect (PresaleClient::isOwnLogo()), not any document
+        $document = $client->getLogoDocument();
+        if ($document === null) {
             return;
         }
         $source = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
@@ -412,7 +410,7 @@ class PresaleConversion
             return;
         }
         $logo = new EntityLogo();
-        if ($logo->can(-1, CREATE)) {
+        if (EntityLogo::canCreate()) {
             $logo->addLogo(['entities_id' => $entities_id, '_filename' => [$name]]);
         }
         @unlink(GLPI_TMP_DIR . '/' . $name);
@@ -657,7 +655,14 @@ class PresaleConversion
             $label   = trim($row['firstname'] . ' ' . $row['name']);
             $contact = new \Contact();
             $contacts_id = (int) $row['contacts_id'];
-            if ($contacts_id <= 0 || !$contact->getFromDB($contacts_id) || $contact->fields['is_deleted']) {
+            // Only a contact of the customer entity the session may read: its current values
+            // are shown next to the ones of the proposal
+            if (
+                $contacts_id <= 0
+                || !$contact->can($contacts_id, READ)
+                || $contact->fields['is_deleted']
+                || countElementsInTable(Contact::getTable(), ['contacts_id' => $contacts_id, 'entities_id' => $entities_id]) === 0
+            ) {
                 $changes['contacts'][] = [
                     'presale_contacts_id' => (int) $row['id'],
                     'contacts_id'         => 0,

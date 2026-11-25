@@ -44,6 +44,35 @@ class DatServer extends CommonDBChild
     public static $itemtype = Dat::class;
     public static $items_id = 'plugin_manageentities_dats_id';
 
+    /**
+     * Rows of a document without entity of their own: read and written by the wizard, which
+     * checks the document, never through the generic endpoints (search, API, massive actions)
+     */
+    public static function canView(): bool
+    {
+        return false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canUpdate(): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(): bool
+    {
+        return false;
+    }
+
+    public static function canPurge(): bool
+    {
+        return false;
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Server', 'Servers', $nb, 'manageentities');

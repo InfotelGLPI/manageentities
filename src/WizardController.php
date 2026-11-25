@@ -306,7 +306,12 @@ class WizardController
 
         $num = trim($input['num'] ?? '');
         if ($num !== '' && $DB !== null) {
-            $exists = countElementsInTable(\Contract::getTable(), ['num' => $num]) > 0;
+            // Among the contracts of the session: the wizard does not tell what numbers the other
+            // clients use
+            $exists = countElementsInTable(
+                \Contract::getTable(),
+                ['num' => $num] + getEntitiesRestrictCriteria(\Contract::getTable(), '', '', true),
+            ) > 0;
             if ($exists) {
                 $errors['num'] = __('A contract with this number already exists', 'manageentities');
             }
@@ -599,6 +604,11 @@ class WizardController
         $existing = $entity->find(['name' => $entity_data['name'], 'entities_id' => $entity_data['entities_id']], [], 1);
         if (!empty($existing)) {
             $existing_entity = reset($existing);
+            // Only an entity of the session is designated: of another one, the name is refused
+            // without its id
+            if (!Session::haveAccessToEntity((int) $existing_entity['id'])) {
+                return ['success' => false, 'errors' => ['name' => __('This name is not available', 'manageentities')]];
+            }
             return [
                 'success'       => false,
                 'entity_exists' => true,
@@ -617,6 +627,9 @@ class WizardController
                 $archived = $entity->find(['name' => $entity_data['name'], 'id' => array_keys($archived_sons)], [], 1);
                 if (!empty($archived)) {
                     $archived_row = reset($archived);
+                    if (!Session::haveAccessToEntity((int) $archived_row['id'])) {
+                        return ['success' => false, 'errors' => ['name' => __('This name is not available', 'manageentities')]];
+                    }
                     return [
                         'success'          => false,
                         'entity_archived'  => true,
@@ -1773,8 +1786,11 @@ class WizardController
                 $management_data[$df] = 'NULL';
             }
         }
+        // The rows below are built here from the contract and the entity just created and
+        // checked by the wizard (canCreateUnderEntity()): the session may not list the new
+        // entity yet, so the parent checks of the models are not replayed
         $pluginContract = new Contract();
-        $plugin_contract_id = (int) $pluginContract->add($management_data);
+        $plugin_contract_id = (int) Entity::runInternalWrite(static fn() => $pluginContract->add($management_data));
         if (!$plugin_contract_id) {
             return ['success' => false, 'errors' => ['global' => __('Error creating management type', 'manageentities')]];
         }
@@ -1789,7 +1805,7 @@ class WizardController
             }
 
             $contractDay = new ContractDay();
-            $contractday_id = (int) $contractDay->add($fields);
+            $contractday_id = (int) Entity::runInternalWrite(static fn() => $contractDay->add($fields));
             if (!$contractday_id) {
                 continue;
             }
@@ -1797,13 +1813,13 @@ class WizardController
             // CriPrices
             foreach (($iv['criprices'] ?? []) as $cp) {
                 $criPrice = new CriPrice();
-                $criPrice->add([
+                Entity::runInternalWrite(static fn() => $criPrice->add([
                     'plugin_manageentities_contractdays_id' => $contractday_id,
                     'entities_id'                           => $entities_id,
                     'plugin_manageentities_critypes_id'     => (int) ($cp['plugin_manageentities_critypes_id'] ?? 0),
                     'price'                                 => (float) ($cp['price'] ?? 0),
                     'is_default'                            => (int) ($cp['is_default'] ?? 0),
-                ]);
+                ]));
             }
 
             // Stakeholders
@@ -2259,7 +2275,9 @@ class WizardController
 
         // Suggestions datalist
         $entity = new \Entity();
-        $criteria = $forced_entities_id > 0 ? ['entities_id' => $forced_entities_id] : [];
+        // Names of the entities of the session only
+        $criteria = ($forced_entities_id > 0 ? ['entities_id' => $forced_entities_id] : [])
+            + getEntitiesRestrictCriteria(\Entity::getTable(), '', '', true);
         $rows = $entity->find($criteria, ['name ASC'], 500);
         $name_suggestions = array_column($rows, 'name');
 

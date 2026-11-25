@@ -27,7 +27,6 @@
  * --------------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Contract;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\Entity;
@@ -48,34 +47,21 @@ if (isset($_POST["addcontract"])) {
     // Separation of duties: the row is really removed from the table (no is_deleted column),
     // so evaluate the PURGE bit - the deletion bit exposed by the rights matrix of
     // 'plugin_manageentities' - and not UPDATE, which an administrator may want to grant alone.
-    $contract->check($_POST["id"], PURGE);
-    $contract->delete($_POST);
+    $id = Entity::getPostedId($_POST["id"] ?? null);
+    $contract->check($id, PURGE);
+    $contract->delete(['id' => $id]);
     Html::back();
 
 } elseif (isset($_POST["updatecontract"])) {
-    $contract->check($_POST["id"], UPDATE);
+    $id = Entity::getPostedId($_POST["id"] ?? null);
+    $contract->check($id, UPDATE);
     // check() validates the stored row only: pin the ownership columns to it, so the
     // posted body cannot move the details to another entity or core contract
     $input                 = $_POST;
+    $input['id']           = $id;
     $input['entities_id']  = (int) $contract->fields['entities_id'];
     $input['contracts_id'] = (int) $contract->fields['contracts_id'];
     $contract->update($input);
-    Html::back();
-
-} elseif (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
-    Session::checkRight(\Contract::$rightname, UPDATE);
-    // addNbDay() writes contracts_id/entities_id straight from the POST body: enforce access
-    // to the target entity and that the contract really belongs to it before inserting (IDOR).
-    $entities_id  = (int) ($_POST['entities_id'] ?? -1);
-    $coreContract = new \Contract();
-    if (
-        !Session::haveAccessToEntity($entities_id)
-        || !$coreContract->getFromDB((int) ($_POST['contracts_id'] ?? 0))
-        || (int) $coreContract->fields['entities_id'] !== $entities_id
-    ) {
-        throw new AccessDeniedHttpException();
-    }
-    $contractday->addNbDay($_POST);
     Html::back();
 
 } elseif (isset($_POST["delete_nbday"])) {

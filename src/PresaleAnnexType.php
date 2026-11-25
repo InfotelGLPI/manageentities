@@ -59,14 +59,34 @@ class PresaleAnnexType extends CommonDropdown
         return 'ti ti-file-description';
     }
 
+    /*
+     * The annex models are the catalogue of the pre-sales: the pre-sales right, or the
+     * configuration of the plugin - never the customer portal right the class is declared with,
+     * which the simplified interface profiles hold.
+     */
     public static function canView(): bool
     {
-        return Session::haveRight(self::$rightname, READ);
+        return Session::haveRight(PresaleProposal::$rightname, READ) || Config::canManageConfig();
     }
 
     public static function canCreate(): bool
     {
-        return Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, DELETE]);
+        return Session::haveRightsOr(PresaleProposal::$rightname, [CREATE, UPDATE]) || Config::canManageConfig();
+    }
+
+    public static function canUpdate(): bool
+    {
+        return Session::haveRight(PresaleProposal::$rightname, UPDATE) || Config::canManageConfig();
+    }
+
+    public static function canDelete(): bool
+    {
+        return Session::haveRightsOr(PresaleProposal::$rightname, [DELETE, PURGE]) || Config::canManageConfig();
+    }
+
+    public static function canPurge(): bool
+    {
+        return Session::haveRightsOr(PresaleProposal::$rightname, [DELETE, PURGE]) || Config::canManageConfig();
     }
 
     public function getAdditionalFields(): array
@@ -322,7 +342,7 @@ class PresaleAnnexType extends CommonDropdown
                 }
                 if ($line[$amount] !== '' && PresalePricing::parseNumber($line[$amount]) === null) {
                     Session::addMessageAfterRedirect(
-                        sprintf(__('Default line "%s": invalid number', 'manageentities'), $line['designation']),
+                        htmlescape(sprintf(__('Default line "%s": invalid number', 'manageentities'), $line['designation'])),
                         false,
                         ERROR,
                     );
@@ -364,7 +384,8 @@ class PresaleAnnexType extends CommonDropdown
         $checked = PresaleEstimate::validate($input['default_estimate']);
         if ($checked['errors'] !== []) {
             foreach ($checked['errors'] as $message) {
-                Session::addMessageAfterRedirect($message, false, ERROR);
+                // The messages name the lines of the estimate: text, not HTML
+                Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
             }
             return false;
         }

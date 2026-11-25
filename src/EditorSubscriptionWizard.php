@@ -243,7 +243,7 @@ class EditorSubscriptionWizard
         }
 
         // post_updateItem() propagates the subscription flags to the contracts of the new entity
-        if (!$sub->update(['id' => $sub_id, 'entities_id' => $target_id])) {
+        if (!Entity::runInternalWrite(static fn() => $sub->update(['id' => $sub_id, 'entities_id' => $target_id]))) {
             return ['success' => false, 'message' => __('An error occurred while saving.', 'manageentities')];
         }
 

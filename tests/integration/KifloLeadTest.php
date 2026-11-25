@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities\Tests\Integration;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Tests\DbTestCase;
+use GlpiPlugin\Manageentities\CheckSchema;
 use GlpiPlugin\Manageentities\Config;
 use GlpiPlugin\Manageentities\KifloClient;
 use GlpiPlugin\Manageentities\KifloConfig;
@@ -67,11 +68,11 @@ class KifloLeadTest extends DbTestCase
 
         $this->login();
         $config = new Config();
-        $this->assertTrue($config->update(['id' => 1, 'use_kiflo' => 1, 'kiflo_token' => ' my-key ', 'kiflo_url' => 'https://api.kiflo.test/v3/']));
+        $this->assertTrue($config->update(['id' => 1, 'use_kiflo' => 1, 'kiflo_token' => ' my-key ', 'kiflo_url' => 'https://api.kiflo.com/v3/']));
 
         $stored = $DB->request(['FROM' => Config::getTable(), 'WHERE' => ['id' => 1]])->current();
         $this->assertNotSame('my-key', $stored['kiflo_token']);
-        $this->assertSame('https://api.kiflo.test/v3', $stored['kiflo_url']);
+        $this->assertSame('https://api.kiflo.com/v3', $stored['kiflo_url']);
         $this->resetConfigInstance();
         $this->assertSame('my-key', Config::getKifloToken());
 
@@ -81,15 +82,56 @@ class KifloLeadTest extends DbTestCase
         $this->assertSame('my-key', Config::getKifloToken());
 
         // Plain HTTP is refused, the URL is kept
-        $config->update(['id' => 1, 'kiflo_url' => 'http://api.kiflo.test']);
+        $config->update(['id' => 1, 'kiflo_url' => 'http://api.kiflo.com']);
         $this->hasSessionMessages(ERROR, ['The Kiflo API URL must start with https://.']);
         $this->resetConfigInstance();
-        $this->assertSame('https://api.kiflo.test/v3', Config::getKifloUrl());
+        $this->assertSame('https://api.kiflo.com/v3', Config::getKifloUrl());
 
         // Clear checkbox
         $this->assertTrue($config->update(['id' => 1, '_blank_kiflo_token' => 1, 'kiflo_token' => '']));
         $this->resetConfigInstance();
         $this->assertSame('', Config::getKifloToken());
+
+        // A host other than Kiflo is refused, the URL and the key are kept
+        $this->assertTrue($config->update(['id' => 1, 'kiflo_token' => 'my-key']));
+        $config->update(['id' => 1, 'kiflo_url' => 'https://attacker.example/v3']);
+        $this->hasSessionMessages(ERROR, ['The Kiflo API URL must point to a kiflo.com host.']);
+        $this->resetConfigInstance();
+        $this->assertSame('https://api.kiflo.com/v3', Config::getKifloUrl());
+        $this->assertSame('my-key', Config::getKifloToken());
+
+        // Another Kiflo host without typing the key again: the key does not follow the URL
+        $this->assertTrue($config->update(['id' => 1, 'kiflo_url' => 'https://sandbox.kiflo.com/v3', 'kiflo_token' => '']));
+        $this->hasSessionMessages(WARNING, ['The Kiflo API key was removed because the API URL changed: enter it again.']);
+        $this->resetConfigInstance();
+        $this->assertSame('https://sandbox.kiflo.com/v3', Config::getKifloUrl());
+        $this->assertSame('', Config::getKifloToken());
+
+        // Same change with the key typed again: the new key is kept
+        $this->assertTrue($config->update(['id' => 1, 'kiflo_url' => 'https://api.kiflo.com/v3', 'kiflo_token' => 'new-key']));
+        $this->resetConfigInstance();
+        $this->assertSame('new-key', Config::getKifloToken());
+    }
+
+    public function testConfigurationRowIsReservedToTheConfigurationAdministrators(): void
+    {
+        $this->login();
+        $_SESSION['glpiactiveprofile']['plugin_manageentities'] = ALLSTANDARDRIGHT;
+        $_SESSION['glpiactiveprofile']['config'] = READ | UPDATE;
+        $this->assertTrue(Config::canView());
+        $this->assertTrue(Config::canUpdate());
+        $this->assertFalse(Config::canCreate());
+        $this->assertFalse(Config::canPurge());
+
+        // The schema check tab has no table: nothing can be read or written through it
+        $this->assertNotInstanceOf(\CommonDBTM::class, new CheckSchema());
+        $this->assertFalse(CheckSchema::canUpdate());
+
+        // Plugin rights without the GLPI configuration right
+        $_SESSION['glpiactiveprofile']['config'] = READ;
+        $this->assertFalse(Config::canView());
+        $this->assertFalse(Config::canUpdate());
+        $this->assertFalse(CheckSchema::canView());
     }
 
     public function testSynchronizationUpsertsAndFlagsTheMissingLeads(): void
@@ -104,14 +146,14 @@ class KifloLeadTest extends DbTestCase
             'properties'   => ['companyName' => 'Company ' . $id, 'commentaires' => "Line 1\n<b>Line 2</b>"],
         ];
 
-        $client = new KifloClient('https://api.kiflo.test/v3', 'key', new MockHttpClient(
+        $client = new KifloClient('https://api.kiflo.com/v3', 'key', new MockHttpClient(
             new MockResponse(json_encode(['items' => [$lead(1, 'Pending'), $lead(2, 'Accepted')], 'totalCount' => 2])),
         ));
         $this->assertSame(2, KifloLead::synchronize($client));
         $this->assertSame(2, countElementsInTable(KifloLead::getTable(), ['is_deleted_kiflo' => 0]));
 
         // Lead 1 changes status, lead 2 is no longer returned
-        $client = new KifloClient('https://api.kiflo.test/v3', 'key', new MockHttpClient(
+        $client = new KifloClient('https://api.kiflo.com/v3', 'key', new MockHttpClient(
             new MockResponse(json_encode(['items' => [$lead(1, 'Converted')], 'totalCount' => 1])),
         ));
         $this->assertSame(1, KifloLead::synchronize($client));
@@ -135,12 +177,12 @@ class KifloLeadTest extends DbTestCase
     public function testFailedSynchronizationKeepsTheLeadsAndStoresTheError(): void
     {
         $this->login();
-        $client = new KifloClient('https://api.kiflo.test/v3', 'key', new MockHttpClient(
+        $client = new KifloClient('https://api.kiflo.com/v3', 'key', new MockHttpClient(
             new MockResponse(json_encode(['items' => [['id' => 7, 'status' => 'Pending']], 'totalCount' => 1])),
         ));
         KifloLead::synchronize($client);
 
-        $client = new KifloClient('https://api.kiflo.test/v3', 'key', new MockHttpClient(
+        $client = new KifloClient('https://api.kiflo.com/v3', 'key', new MockHttpClient(
             new MockResponse('', ['http_code' => 401]),
         ));
         try {
@@ -159,7 +201,7 @@ class KifloLeadTest extends DbTestCase
     {
         $this->login();
         $this->enableKiflo();
-        $client = new KifloClient('https://api.kiflo.test/v3', 'key', new MockHttpClient(
+        $client = new KifloClient('https://api.kiflo.com/v3', 'key', new MockHttpClient(
             new MockResponse(json_encode(['items' => [[
                 'id'         => 42,
                 'status'     => 'Pending',

@@ -35,6 +35,7 @@ use DBConnection;
 use DbUtils;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
 use Migration;
 use Session;
@@ -66,9 +67,49 @@ class DirectHelpdesk_Ticket extends CommonDBTM
         );
     }
 
+    /**
+     * A link is the intervention billed on a ticket of its own entity: the ticket readable by the
+     * session and the intervention writable by it (Entity::runInternalWrite() aside)
+     */
+    public function prepareInputForAdd($input)
+    {
+        $tickets_id         = (int) ($input['tickets_id'] ?? 0);
+        $directhelpdesks_id = (int) ($input['plugin_manageentities_directhelpdesks_id'] ?? 0);
+        $ticket             = new Ticket();
+        $direct             = new DirectHelpdesk();
+        if (
+            $tickets_id <= 0
+            || !$ticket->getFromDB($tickets_id)
+            || !$direct->getFromDB($directhelpdesks_id)
+            || (int) $ticket->fields['entities_id'] !== (int) $direct->fields['entities_id']
+        ) {
+            return false;
+        }
+        if (
+            !Entity::isInternalWrite()
+            && (!$ticket->can($tickets_id, READ) || !$direct->can($directhelpdesks_id, UPDATE))
+        ) {
+            return false;
+        }
+        $input['tickets_id']                               = $tickets_id;
+        $input['plugin_manageentities_directhelpdesks_id'] = $directhelpdesks_id;
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // A link is replaced (DirectHelpdesk::post_updateItem()), never re-pointed
+        return false;
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        // The interventions of the plugin right, on an existing ticket: on a ticket being
+        // created, the links "to no ticket" would be listed
         if ($item->getType() == 'Ticket'
+            && !$item->isNewItem()
+            && Session::haveRight(self::$rightname, READ)
             && isset($_SESSION['glpiactiveprofile']['interface'])
             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
             $config    = Config::getInstance();
@@ -101,13 +142,22 @@ class DirectHelpdesk_Ticket extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        // The core tab loader does not check that the tab was offered: same conditions, plus the
+        // ticket itself
+        if (
+            !$item instanceof Ticket
+            || (string) (new self())->getTabNameForItem($item, $withtemplate) === ''
+            || !$item->can($item->getID(), READ)
+        ) {
+            throw new AccessDeniedHttpException();
+        }
 
         $rows = [];
         if ($item->getType() == 'Ticket' && self::countForTicket($item) > 0) {
             $self = new self();
             foreach ($self->find(['tickets_id' => $item->getID()]) as $link) {
                 $direct = new DirectHelpdesk();
-                if (!$direct->getFromDB($link['plugin_manageentities_directhelpdesks_id'])) {
+                if (!$direct->can((int) $link['plugin_manageentities_directhelpdesks_id'], READ)) {
                     continue;
                 }
                 $rows[] = [
@@ -124,9 +174,8 @@ class DirectHelpdesk_Ticket extends CommonDBTM
         // the ticket), offered to be associated with it
         $unbilled   = [];
         $tickets_id = 0;
-        if ($item instanceof Ticket
-            && Session::haveRight(self::$rightname, UPDATE)
-            && $item->can($item->getID(), READ)) {
+        // The ticket was checked above
+        if (Session::haveRight(self::$rightname, UPDATE)) {
             $tickets_id = $item->getID();
             $unbilled   = self::getTicketSelectData((int) $item->fields['entities_id'])['rows'] ?? [];
         }

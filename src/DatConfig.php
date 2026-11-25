@@ -53,7 +53,8 @@ class DatConfig extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (!$withtemplate && $item->getType() === Config::class) {
+        // Same rights as the configuration form (front/config.form.php)
+        if (!$withtemplate && $item->getType() === Config::class && Config::canManageConfig()) {
             return self::createTabEntry(self::getTypeName(), 0, $item::class, self::getIcon());
         }
         return '';
@@ -61,7 +62,7 @@ class DatConfig extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() === Config::class) {
+        if ($item->getType() === Config::class && Config::canManageConfig()) {
             self::showForm();
         }
         return true;

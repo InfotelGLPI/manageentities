@@ -29,6 +29,7 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 use Ramsey\Uuid\Uuid;
 
 Html::header_nocache();
@@ -37,7 +38,8 @@ header("Content-Type: text/html; charset=UTF-8");
 
 $tickettask = new TicketTask();
 
-if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettask->getFromDB($_POST['tickettasks_id'])) {
+if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id'])
+    && $tickettask->getFromDB(PortalEntity::getPostedId($_POST['tickettasks_id']))) {
 
     // Access control: the only live action below creates a task, so the gate has to be a write
     // gate. The global 'task' CREATE right says nothing about WHICH ticket may receive the task,
@@ -46,7 +48,8 @@ if (isset($_POST['tickets_id']) && isset($_POST['tickettasks_id']) && $tickettas
     // that go with them. can($id, UPDATE) carries the object right and the entity boundary.
     Session::checkRight(\TicketTask::$rightname, CREATE);
     $ticket = new Ticket();
-    if (!$ticket->can((int) $_POST['tickets_id'], UPDATE)
+    $_POST['tickets_id'] = PortalEntity::getPostedId($_POST['tickets_id']);
+    if (!$ticket->can($_POST['tickets_id'], UPDATE)
         || (int) $tickettask->fields['tickets_id'] !== (int) $_POST['tickets_id']) {
         throw new AccessDeniedHttpException();
     }

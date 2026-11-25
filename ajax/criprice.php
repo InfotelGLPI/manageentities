@@ -29,12 +29,12 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\CriPrice;
-use GlpiPlugin\Manageentities\Contract;
 
 Html::header_nocache();
 
-// Authorization: plugin access or ticket-creation rights (shared by admin pages and the CRI generation page)
-if (!Session::haveRight(Contract::$rightname, READ) && !Session::haveRight(\Ticket::$rightname, CREATE)) {
+// Authorization: the rights of its only caller, the rate form (CriPrice::showForm()): the
+// right to create a ticket says nothing about the rate grids of the clients
+if (!CriPrice::canView() || !CriPrice::canCreate()) {
     throw new AccessDeniedHttpException();
 }
 

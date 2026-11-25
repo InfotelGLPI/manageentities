@@ -265,9 +265,9 @@ class PresaleGenerator
             $template->setRows('DESIGNATION', $rows);
         }
         $template
-            ->setHtml('OBJET', (string) $annex['fields']['objet'], null, self::resolveImage(...))
+            ->setHtml('OBJET', (string) $annex['fields']['objet'], null, $this->resolveImage(...))
             // Left aligned whatever the template: its paragraph style may be justified
-            ->setHtml('DESCRIPTION', (string) $annex['fields']['description'], 'left', self::resolveImage(...))
+            ->setHtml('DESCRIPTION', (string) $annex['fields']['description'], 'left', $this->resolveImage(...))
             // Estimate of a regular annex: removed with its placeholder when empty
             ->setTable('CHIFFRAGE', self::estimateHtml(PresaleEstimate::decode($annex['fields']['estimate'] ?? null)), [75, 25])
             ->setTexts([
@@ -332,12 +332,9 @@ class PresaleGenerator
      */
     private function getLogoFile(): ?string
     {
-        $documents_id = (int) $this->client->fields['logo_documents_id'];
-        if ($documents_id <= 0) {
-            return null;
-        }
-        $document = new Document();
-        if (!$document->getFromDB($documents_id)) {
+        // Only a logo of the prospect (PresaleClient::isOwnLogo()), not any document
+        $document = $this->client->getLogoDocument();
+        if ($document === null) {
             return null;
         }
         $file = GLPI_DOC_DIR . '/' . $document->fields['filepath'];
@@ -501,9 +498,12 @@ class PresaleGenerator
 
     /**
      * Local file of an image of a rich text: a GLPI document (document.send.php?docid=N, the
-     * link TinyMCE inserts) the user can see. Any other source is left out of the document.
+     * link TinyMCE inserts) the user can see, and which belongs to the texts of the proposal -
+     * linked to an annex model (where the images of the texts are uploaded), to the proposal or
+     * to one of its annexes. The texts are written by other users than the one generating the
+     * proposal: any other document is left out of the document.
      */
-    private static function resolveImage(string $src): ?string
+    private function resolveImage(string $src): ?string
     {
         $query = (string) parse_url(html_entity_decode($src, ENT_QUOTES | ENT_HTML5, 'UTF-8'), PHP_URL_QUERY);
         if (!str_contains($src, '/front/document.send.php')) {
@@ -513,6 +513,19 @@ class PresaleGenerator
         $documents_id = (int) ($params['docid'] ?? 0);
         $document     = new Document();
         if ($documents_id <= 0 || !$document->getFromDB($documents_id)) {
+            return null;
+        }
+        $annexes_ids = array_keys((new PresaleProposal_Annex())->find([
+            'plugin_manageentities_presaleproposals_id' => $this->proposal->getID(),
+        ]));
+        $links = [
+            ['itemtype' => PresaleAnnexType::class],
+            ['itemtype' => PresaleProposal::class, 'items_id' => $this->proposal->getID()],
+        ];
+        if ($annexes_ids !== []) {
+            $links[] = ['itemtype' => PresaleProposal_Annex::class, 'items_id' => $annexes_ids];
+        }
+        if (countElementsInTable(Document_Item::getTable(), ['documents_id' => $documents_id, 'OR' => $links]) === 0) {
             return null;
         }
         $options = isset($params['itemtype'], $params['items_id'])

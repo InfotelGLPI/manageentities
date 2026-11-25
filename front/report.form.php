@@ -45,10 +45,17 @@ if (!Session::haveRight(Entity::$rightname, READ) && !Session::haveRight(\Config
 
 Html::header(__('Entities portal', 'manageentities'), '', "management", Entity::class);
 
-if (!isset($_POST["tech_num"]) || empty($_POST["tech_num"])) {
+// The technician is a posted id, displayed with its user card: only a user with a profile in
+// the active entities (same rule as ajax/getUserTechName.php), otherwise the current user
+$owner = (int) ($_POST["tech_num"] ?? 0);
+if (
+    $owner <= 0
+    || countElementsInTable(
+        'glpi_profiles_users',
+        ['users_id' => $owner] + getEntitiesRestrictCriteria('glpi_profiles_users', '', '', true),
+    ) === 0
+) {
     $owner = Session::getLoginUserID();
-} else {
-    $owner = (int) $_POST["tech_num"];
 }
 if (!isset($_GET["usertype"])) {
     $_GET["usertype"] = "user";

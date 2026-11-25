@@ -245,7 +245,7 @@ CREATE TABLE `glpi_plugin_manageentities_taskcategories` (
    `taskcategories_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to  glpi_taskcategories (id)',
    `is_usedforcount` tinyint NOT NULL DEFAULT '0',
    PRIMARY KEY  (`id`),
-   KEY `taskcategories_id` (`taskcategories_id`)
+   UNIQUE KEY `taskcategories_id` (`taskcategories_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_plugin_manageentities_companies`;

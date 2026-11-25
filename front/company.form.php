@@ -43,13 +43,14 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } elseif (isset($_POST["update"])) {
-    $company->check($_POST["id"], UPDATE);
-    $company->update($_POST);
+    $id = Entity::getPostedId($_POST["id"] ?? null);
+    $company->check($id, UPDATE);
+    $company->update(['id' => $id] + $_POST);
     Html::back();
 } elseif (isset($_POST["purge"])) {
-    $company_id = $_POST["id"];
-    $company->check($_POST["id"], PURGE);
-    $company->delete($_POST, 1);
+    $id = Entity::getPostedId($_POST["id"] ?? null);
+    $company->check($id, PURGE);
+    $company->delete(['id' => $id], 1);
     $company->redirectToList();
 } else {
     Html::header(Company::getTypeName(2), '', "management", Entity::class, "company");

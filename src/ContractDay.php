@@ -33,6 +33,7 @@ use CommonDBTM;
 use DBConnection;
 use DbUtils;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Html;
 use Migration;
 use Session;
@@ -233,33 +234,6 @@ class ContractDay extends CommonDBTM
 
 
     /**
-     * Add number day in contractday
-     *
-     * @param $values
-     */
-    public function addNbDay($values)
-    {
-        if ($this->getFromDBByCrit([
-            'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
-            'contracts_id' => $values["contracts_id"],
-            'entities_id' => $values["entities_id"],
-        ])) {
-            $this->update([
-                'id' => $this->fields['id'],
-                'nbday' => $values["nbday"],
-                'entities_id' => $values["entities_id"],
-            ]);
-        } else {
-            $this->add([
-                'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
-                'contracts_id' => $values["contracts_id"],
-                'nbday' => $values["nbday"],
-                'entities_id' => $values["entities_id"],
-            ]);
-        }
-    }
-
-    /**
      * Display the contractday form
      *
      * @param $ID integer ID of the item
@@ -291,9 +265,17 @@ class ContractDay extends CommonDBTM
             $contract_id = $this->fields["contracts_id"];
             $contract->getFromDB($contract_id);
         } else {
-            $input = ['contract_id' => $contract_id];
-            $this->check(-1, UPDATE, $input);
-            $contract->getFromDB($contract_id);
+            // The parent contract comes from the request: only one the session may read, and
+            // the new period is checked in the entity of that contract
+            if (!$contract->can((int) $contract_id, READ)) {
+                throw new AccessDeniedHttpException();
+            }
+            $contract_id = (int) $contract->getID();
+            $check_input = [
+                'entities_id'  => (int) $contract->fields['entities_id'],
+                'contracts_id' => $contract_id,
+            ];
+            $this->check(-1, UPDATE, $check_input);
             $options['entities_id'] = $contract->fields['entities_id'];
         }
 
@@ -657,7 +639,17 @@ class ContractDay extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        (isset($input['charged']) && $input['charged'] == true) ? $input['charged'] = 1 : $input['charged'] = 0;
+        // The form posts 0 when unchecked: a partial update (transfer, API) keeps the value
+        if (array_key_exists('charged', $input)) {
+            $input['charged'] = $input['charged'] == true ? 1 : 0;
+        }
+
+        // A period belongs to the contract and the entity it was created for (checkPeriod()
+        // reads both)
+        if (!Entity::isInternalWrite()) {
+            $input['entities_id']  = (int) $this->fields['entities_id'];
+            $input['contracts_id'] = (int) $this->fields['contracts_id'];
+        }
 
         if (!$this->checkPeriod($input)) {
             return false;
@@ -675,6 +667,17 @@ class ContractDay extends CommonDBTM
         // (massive actions, data injection, other plugins): the entity carried by the input is
         // the one the row will land in, so it has to belong to the caller perimeter. The table
         // has no is_recursive column, hence the single-argument call.
+        if (!Entity::isInternalWrite()) {
+            // The parent contract has to be readable by the session, and the period lands in
+            // its entity: the balances of a contract are summed over its periods only
+            $contract     = new \Contract();
+            $contracts_id = (int) ($input['contracts_id'] ?? 0);
+            if ($contracts_id <= 0 || !$contract->can($contracts_id, READ)) {
+                return false;
+            }
+            $input['contracts_id'] = $contracts_id;
+            $input['entities_id']  = (int) $contract->fields['entities_id'];
+        }
         if (!Session::haveAccessToEntity((int) ($input['entities_id'] ?? 0))) {
             return false;
         }

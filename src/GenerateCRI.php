@@ -690,6 +690,13 @@ class GenerateCRI extends CommonGLPI
      */
     public static function createTasks($inputs, $ticket_id)
     {
+        // The tasks and the assignments of the technicians are part of the report: the CRI
+        // creation right (checked by front/generatecri.form.php) is the deliberate grant of that
+        // capability, for the ticket the wizard just created. Nothing is written without it.
+        if (!Cri::canCreate()) {
+            return false;
+        }
+
         // The template id reaches this method through a hidden field of the wizard form, and its
         // content, duration, technician and group are copied verbatim into the task below. Check
         // it is a template the caller may actually read instead of loading it by id.

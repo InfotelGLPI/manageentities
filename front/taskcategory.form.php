@@ -28,6 +28,7 @@
  */
 
 use GlpiPlugin\Manageentities\TaskCategory;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 
 // This is a write endpoint: require the UPDATE right, not READ. update() itself enforces
 // no right, so a read-only "dropdown" right would otherwise be enough to write.
@@ -38,7 +39,7 @@ $taskCategory = new TaskCategory();
 //Save profile
 if (isset($_POST['update'])) {
     // check() replays UPDATE on the core task category the row extends (entity included)
-    $taskCategory->check((int) $_POST['id'], UPDATE);
+    $taskCategory->check(PortalEntity::getPostedId($_POST['id'] ?? null), UPDATE);
     // The form only edits the flag: the link to the core category is not a posted value
     $taskCategory->update([
         'id'              => $taskCategory->getID(),

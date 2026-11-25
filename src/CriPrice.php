@@ -242,7 +242,9 @@ class CriPrice extends CommonDBTM
 
         $canedit = $item->can($item->fields['id'], UPDATE);
 
-        $data = $this->getItems(0, $item->getField('id'));
+        // The types of intervention are global: the rates listed are those of the entities of
+        // the session only
+        $data = $this->getItems(0, $item->getField('id'), getEntitiesRestrictCriteria(self::getTable()));
         if (!empty($data) && $canedit) {
             $rows = [];
             foreach ($data as $value) {
@@ -381,7 +383,7 @@ class CriPrice extends CommonDBTM
      *
      * @param int $contractdays_id
      * @param int $cri_types_id
-     * @param string $condition
+     * @param array<mixed> $condition criteria added to the WHERE clause
      *
      * @return type
      * @global type $DB
@@ -458,57 +460,23 @@ class CriPrice extends CommonDBTM
     }
 
     /**
-     * Add cri price
-     *
-     * @param $values
+     * A single default rate per contract period: the others of the period of this row are no
+     * longer the default one. Runs once the row is saved, so only after its input was checked.
      */
-    public function addCriPrice($values)
+    private function demoteOtherDefaults(): void
     {
-        if ($this->getFromDBByCrit([
-            'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
-            'entities_id' => $values["entities_id"],
-        ])) {
-            $this->update([
-                'id' => $this->fields['id'],
-                'price' => $values["price"],
-            ]);
-        } else {
-            $this->add([
-                'plugin_manageentities_critypes_id' => $values["plugin_manageentities_critypes_id"],
-                'price' => $values["price"],
-            ]);
+        $contractdays_id = (int) ($this->fields['plugin_manageentities_contractdays_id'] ?? 0);
+        if ((int) ($this->fields['is_default'] ?? 0) !== 1 || $contractdays_id <= 0) {
+            return;
         }
-    }
-
-    /**
-     * Set default price for contract days
-     *
-     * @param $input
-     *
-     * @return type
-     * @global type $DB
-     *
-     */
-    public function setDefault($input)
-    {
-        if (isset($input['is_default']) && $input['is_default']) {
-            $data = $this->getItems($input['plugin_manageentities_contractdays_id']);
-            $items_id = array_keys($data);
-
-            if (isset($input['id'])) {
-                foreach ($items_id as $key => $val) {
-                    if ($input['id'] == $val) {
-                        unset($items_id[$key]);
-                    }
-                }
-            }
-
-            foreach ($items_id as $key => $val) {
-                $this->update(['is_default' => 0, 'id' => $val]);
-            }
+        $other = new self();
+        foreach ($this->find([
+            'plugin_manageentities_contractdays_id' => $contractdays_id,
+            'is_default'                            => 1,
+            ['NOT' => ['id' => $this->getID()]],
+        ]) as $row) {
+            $other->update(['id' => $row['id'], 'is_default' => 0]);
         }
-
-        return $input;
     }
 
     public function prepareInputForUpdate($input)
@@ -517,7 +485,10 @@ class CriPrice extends CommonDBTM
             return false;
         }
 
-        $this->setDefault($input);
+        // A rate belongs to the period it was created for, in the entity of that period
+        if (!Entity::isInternalWrite()) {
+            unset($input['entities_id'], $input['plugin_manageentities_contractdays_id']);
+        }
 
         return $input;
     }
@@ -528,9 +499,36 @@ class CriPrice extends CommonDBTM
             return false;
         }
 
-        $this->setDefault($input);
+        // The contract period is the parent of the rate: it has to exist and be writable by the
+        // session, and it gives the entity of the rate - never the request
+        if (!Entity::isInternalWrite()) {
+            $period          = new ContractDay();
+            $contractdays_id = (int) ($input['plugin_manageentities_contractdays_id'] ?? 0);
+            if ($contractdays_id <= 0 || !$period->can($contractdays_id, UPDATE)) {
+                Session::addMessageAfterRedirect(
+                    __s('The period of contract is not accessible.', 'manageentities'),
+                    false,
+                    ERROR,
+                );
+                return false;
+            }
+            $input['plugin_manageentities_contractdays_id'] = $contractdays_id;
+            $input['entities_id']                           = (int) $period->fields['entities_id'];
+        }
 
         return $input;
+    }
+
+    public function post_addItem()
+    {
+        $this->demoteOtherDefaults();
+    }
+
+    public function post_updateItem($history = true)
+    {
+        if (in_array('is_default', $this->updates, true)) {
+            $this->demoteOtherDefaults();
+        }
     }
 
     /**

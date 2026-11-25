@@ -65,15 +65,29 @@ if (isset($_POST["contracts_id"])) {
         throw new AccessDeniedHttpException();
     }
 
+    // Every query below uses the id of the contract checked above, never the posted one
+    $contracts_id = (int) $contract->getID();
+
+    // The period to preselect comes from the request: only a period of this very contract,
+    // in an entity of the session, otherwise none (its name and comment are displayed)
     $contractdays_id = 0;
-    if ($_POST["current_contracts_id"] == $_POST["contracts_id"]) {
-        $contractdays_id = $_POST["contractdays_id"];
+    if ((int) ($_POST["current_contracts_id"] ?? 0) === $contracts_id) {
+        $posted_period = (int) ($_POST["contractdays_id"] ?? 0);
+        $period        = new ContractDay();
+        if (
+            $posted_period > 0
+            && $period->getFromDB($posted_period)
+            && (int) $period->fields['contracts_id'] === $contracts_id
+            && Session::haveAccessToEntity($period->fields['entities_id'])
+        ) {
+            $contractdays_id = $posted_period;
+        }
     }
 
     if ($contractdays_id == 0) {
         $contractday = new ContractDay();
         $restrict    = ['entities_id'  => $contract->fields['entities_id'],
-            'contracts_id' => $_POST["contracts_id"],
+            'contracts_id' => $contracts_id,
             [
                 'OR' => [
                     ['plugin_manageentities_contractstates_id' => ContractState::getOpenedStates()],
@@ -104,7 +118,7 @@ if (isset($_POST["contracts_id"])) {
         ],
     ]);
     $restrict = ['entities_id'  => $contract->fields['entities_id'],
-        'contracts_id' => $_POST["contracts_id"],
+        'contracts_id' => $contracts_id,
         [
             'OR' => [
                 ['plugin_manageentities_contractstates_id' => ContractState::getOpenedStates()],

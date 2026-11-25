@@ -32,6 +32,7 @@ namespace GlpiPlugin\Manageentities;
 use CommonDBTM;
 use DbUtils;
 use Document;
+use Document_Item;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
@@ -419,6 +420,7 @@ class Cri extends CommonDBTM
     {
         global $PDF, $DB, $CFG_GLPI;
 
+        $p['REPORT_ID'] = 0;
         $p['CONTRACTDAY'] = 0;
         $p['WITHOUTCONTRACT'] = 0;
         $p['CONTRAT'] = 0;
@@ -434,6 +436,18 @@ class Cri extends CommonDBTM
             }
         }
 
+        // One integer ticket id for every query below, and only a ticket the session may read:
+        // the method does not rely on its callers for that (ajax/cri.php, GenerateCRI)
+        $report_id = $p['REPORT_ID'];
+        $tickets_id = is_int($report_id) || (is_string($report_id) && ctype_digit($report_id) && $report_id[0] !== '0')
+            ? (int) $report_id
+            : 0;
+        $ticket_check = new Ticket();
+        if ($tickets_id <= 0 || !$ticket_check->can($tickets_id, READ)) {
+            return false;
+        }
+        $p['REPORT_ID'] = $tickets_id;
+
         // The loop above copies the posted payload verbatim, documents_id included, and that value
         // used to reach Document::update() further down without a single right check: any document
         // of the instance could be overwritten by pointing this key at its id. The identifier has
@@ -441,7 +455,7 @@ class Cri extends CommonDBTM
         // which is what the "updateCri" action of ajax/cri.php reloads before calling this method,
         // while "saveCri" did not. Resolve it here so that every caller is covered.
         $p['documents_id'] = 0;
-        $reportCriDetails  = (new CriDetail())->find(['tickets_id' => (int) ($p['REPORT_ID'] ?? 0)]);
+        $reportCriDetails  = (new CriDetail())->find(['tickets_id' => $p['REPORT_ID']]);
         $reportCriDetail   = reset($reportCriDetails);
         if (is_array($reportCriDetail)) {
             $p['documents_id'] = (int) $reportCriDetail['documents_id'];
@@ -992,6 +1006,18 @@ class Cri extends CommonDBTM
             $input["tickets_id"] = $p['REPORT_ID'];
 
             $doc = new Document();
+            // The report document is replaced only when it really is a document of this ticket:
+            // the id stored on the report line is not trusted to designate one
+            if (
+                !empty($p['documents_id'])
+                && countElementsInTable(Document_Item::getTable(), [
+                    'documents_id' => (int) $p['documents_id'],
+                    'itemtype'     => Ticket::class,
+                    'items_id'     => (int) $p['REPORT_ID'],
+                ]) === 0
+            ) {
+                $p['documents_id'] = 0;
+            }
             if (empty($p['documents_id'])) {
                 $newdoc = $doc->add($input);
             } else {
@@ -1029,13 +1055,17 @@ class Cri extends CommonDBTM
             $cridetails = $dbu->getAllDataFromTable("glpi_plugin_manageentities_cridetails", $restrict);
             $cridetail = reset($cridetails);
 
+            // The report line gets its document, ticket and totals from the generation only:
+            // those columns are frozen for every other writer
             $CriDetail = new CriDetail();
-            if (empty($cridetail)) {
-                $newID = $CriDetail->add($values);
-            } else {
-                $values["id"] = $cridetail['id'];
-                $CriDetail->update($values);
-            }
+            Entity::runInternalWrite(static function () use ($CriDetail, $cridetail, $values): void {
+                if (empty($cridetail)) {
+                    $CriDetail->add($values);
+                } else {
+                    $values["id"] = $cridetail['id'];
+                    $CriDetail->update($values);
+                }
+            });
 
 
             $this->CleanFiles($seepath);

@@ -186,7 +186,7 @@ class EditorSubscription extends CommonDBTM
             __('Start date', 'manageentities'),
             __('End date', 'manageentities'),
             __('Comments'),
-        ], ';');
+        ], ';', '"', '');
 
         // Neutralize CSV formula injection: a spreadsheet interprets a cell starting with
         // =, +, -, @, TAB or CR as a formula. Prefix such user-controlled values with an
@@ -213,7 +213,7 @@ class EditorSubscription extends CommonDBTM
                 !empty($row['begin_date']) ? substr($row['begin_date'], 0, 10) : '',
                 !empty($row['end_date']) ? substr($row['end_date'], 0, 10) : '',
                 $csvSafe($row['comment'] ?? ''),
-            ], ';');
+            ], ';', '"', '');
         }
 
         fclose($out);
@@ -683,6 +683,13 @@ class EditorSubscription extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        // A subscription is moved to another client by EditorSubscriptionWizard only (checked
+        // there, through Entity::runInternalWrite()): its flags are propagated to the
+        // contracts of its entity
+        if (!Entity::isInternalWrite()) {
+            unset($input['entities_id']);
+        }
+
         return $this->prepareInput($input);
     }
 

@@ -101,6 +101,21 @@ class Contract extends CommonDBTM
             return false;
         }
 
+        // The core contract the details belong to has to be readable by the session and be the
+        // contract of the entity (its own one, or a recursive one of an ancestor): its name,
+        // number and comment are shown with the client, and its tickets are counted on it
+        if (!Entity::isInternalWrite() && !self::isContractOfEntity((int) ($input['contracts_id'] ?? 0), (int) $input['entities_id'])) {
+            Session::addMessageAfterRedirect(
+                __s('The contract is not accessible from this entity.', 'manageentities'),
+                false,
+                ERROR,
+            );
+            return false;
+        }
+        $input['contracts_id'] = (int) $input['contracts_id'];
+        // Computed from the periods (updateRemainingDays()), never posted
+        unset($input['remaining_days']);
+
         if (isset($input['date_renewal'])
             && empty($input['date_renewal'])) {
             $input['date_renewal'] = 'NULL';
@@ -134,8 +149,32 @@ class Contract extends CommonDBTM
         return $input;
     }
 
+    /**
+     * Whether a core contract may carry the details of a client: readable by the session, in
+     * the entity or recursive from an ancestor of it
+     */
+    public static function isContractOfEntity(int $contracts_id, int $entities_id): bool
+    {
+        $contract = new \Contract();
+        if ($contracts_id <= 0 || !$contract->can($contracts_id, READ)) {
+            return false;
+        }
+        $contract_entity = (int) $contract->fields['entities_id'];
+
+        return $contract_entity === $entities_id
+            || ($contract->fields['is_recursive']
+                && in_array($contract_entity, array_map('intval', getAncestorsOf('glpi_entities', $entities_id)), true));
+    }
+
     public function prepareInputForUpdate($input)
     {
+        // The details belong to the core contract and the entity they were created for (a
+        // transfer moves them with runInternalWrite()); the remaining days are computed
+        if (!Entity::isInternalWrite()) {
+            unset($input['entities_id'], $input['contracts_id']);
+        }
+        unset($input['remaining_days']);
+
         if (isset($input['date_renewal'])
             && empty($input['date_renewal'])) {
             $input['date_renewal'] = 'NULL';
@@ -145,25 +184,15 @@ class Contract extends CommonDBTM
             $input['date_signature'] = 'NULL';
         }
 
-        if (isset($input['contract_added'])
-            && ($input['contract_added'] === "on"
-                || ($input['contract_added'] && $input['contract_added'] != 0))) {
-            $input['contract_added'] = 1;
-        } else {
-            $input['contract_added'] = 0;
-        }
-        if (isset($input['refacturable_costs'])
-            && ($input['refacturable_costs'] === "on"
-                || ($input['refacturable_costs'] && $input['refacturable_costs'] != 0))) {
-            $input['refacturable_costs'] = 1;
-        } else {
-            $input['refacturable_costs'] = 0;
+        // Only the switches that are posted (the form posts 0 for an unchecked one): a partial
+        // update - massive action, transfer, API - leaves the others as they are
+        foreach (['contract_added', 'refacturable_costs', 'show_on_global_gantt', 'moving_management'] as $field) {
+            if (array_key_exists($field, $input)) {
+                $input[$field] = ($input[$field] === "on" || ($input[$field] && $input[$field] != 0)) ? 1 : 0;
+            }
         }
 
         // active_editor_suscription, cloud_client and internet_publication are managed by EditorSubscription
-        foreach (['show_on_global_gantt', 'moving_management'] as $field) {
-            $input[$field] = (isset($input[$field]) && ($input[$field] === "on" || $input[$field])) ? 1 : 0;
-        }
         unset($input['active_editor_suscription'], $input['cloud_client'], $input['internet_publication']);
 
         return $input;
@@ -171,8 +200,9 @@ class Contract extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item->getType() == 'Contract'
-            && !isset($withtemplate) || empty($withtemplate)) {
+        // Same condition as displayTabContentForItem(): the plugin right, on top of the read
+        // right on the core contract the core tab loader checks
+        if ($item->getType() == 'Contract' && empty($withtemplate) && self::canView()) {
             $dbu = new DbUtils();
             $restrict = [
                 "`entities_id`" => $item->fields['entities_id'],
@@ -664,7 +694,8 @@ class Contract extends CommonDBTM
      * @param  $value
      * @param  $rand
      *
-     * @return boolean
+     * @return int|string|false the random part of the id of the dropdown (Dropdown::showFromArray()),
+     *                          false without any mode of management
      */
     public static function dropdownContractManagement($name, $value = 0, $rand = null)
     {
@@ -1116,7 +1147,19 @@ class Contract extends CommonDBTM
                 return;
             }
 
+            // The core does not check again at this step that the action was offered: the
+            // fields are those of the plugin rows, written with the plugin right
+            if (!self::canUpdate()) {
+                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                return;
+            }
+
             foreach ($ids as $id) {
+                // Only plain positive integers: the row selected below is the one checked here
+                if (!is_int($id) && !(is_string($id) && ctype_digit($id) && $id[0] !== '0')) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                    continue;
+                }
                 // Re-verify per-item right AND entity access on the core Contract before
                 // touching anything. The MassiveAction framework does not filter target
                 // ids for a custom action, so a user with the global Contract/CREATE right
@@ -1128,11 +1171,12 @@ class Contract extends CommonDBTM
                     continue;
                 }
 
-                // $id is a core glpi_contracts.id; find the plugin row by contracts_id
+                // $id is a core glpi_contracts.id; find the plugin row by contracts_id, from the
+                // contract the check above loaded
                 $row = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => self::getTable(),
-                    'WHERE'  => ['contracts_id' => $id],
+                    'WHERE'  => ['contracts_id' => (int) $item->getID()],
                 ])->current();
 
                 if (!$row) {
@@ -1141,7 +1185,11 @@ class Contract extends CommonDBTM
                 }
 
                 $plugin_contract = new self();
-                if ($plugin_contract->update(['id' => $row['id']] + $update)) {
+                if (!$plugin_contract->can((int) $row['id'], UPDATE)) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                    continue;
+                }
+                if ($plugin_contract->update(['id' => (int) $row['id']] + $update)) {
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 } else {
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);

@@ -144,7 +144,7 @@ class DirectHelpdesk extends CommonDBTM
      *
      * @param array $input
      */
-    private function isLinkableTicket(array $input): bool
+    private function isLinkableTicket(array $input, int $entities_id): bool
     {
         $tickets_id = (int) ($input['tickets_id'] ?? 0);
         if ($tickets_id <= 0) {
@@ -153,7 +153,10 @@ class DirectHelpdesk extends CommonDBTM
 
         $ticket = new Ticket();
 
-        return $ticket->getFromDB($tickets_id) && $ticket->can($tickets_id, READ);
+        // The intervention is billed on that ticket: it has to be a ticket of its own entity
+        return $ticket->getFromDB($tickets_id)
+            && (int) $ticket->fields['entities_id'] === $entities_id
+            && $ticket->can($tickets_id, READ);
     }
 
     public function prepareInputForAdd($input)
@@ -162,7 +165,11 @@ class DirectHelpdesk extends CommonDBTM
             return false;
         }
 
-        if (!$this->isLinkableTicket($input)) {
+        // The checked ticket is the stored one
+        if (isset($input['tickets_id'])) {
+            $input['tickets_id'] = (int) $input['tickets_id'];
+        }
+        if (!$this->isLinkableTicket($input, (int) ($input['entities_id'] ?? -1))) {
             Session::addMessageAfterRedirect(__('You are not allowed to do this action'), false, ERROR);
             return false;
         }
@@ -178,7 +185,16 @@ class DirectHelpdesk extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (!$this->isLinkableTicket($input)) {
+        // An intervention stays in the entity it was entered for, whatever the path (generic
+        // form, API, massive action)
+        if (!Entity::isInternalWrite()) {
+            unset($input['entities_id']);
+        }
+        if (isset($input['tickets_id'])) {
+            $input['tickets_id'] = (int) $input['tickets_id'];
+        }
+        $entities_id = (int) ($input['entities_id'] ?? $this->fields['entities_id']);
+        if (!$this->isLinkableTicket($input, $entities_id)) {
             Session::addMessageAfterRedirect(__('You are not allowed to do this action'), false, ERROR);
             return false;
         }
@@ -188,7 +204,9 @@ class DirectHelpdesk extends CommonDBTM
 
     public function post_addItem()
     {
-        if (isset($this->input["tickets_id"])) {
+        // No link without a ticket: a link to ticket 0 would show the intervention in the
+        // tab of any new ticket
+        if ((int) ($this->input["tickets_id"] ?? 0) > 0) {
             $ticket = new DirectHelpdesk_Ticket();
             $input['plugin_manageentities_directhelpdesks_id'] = $this->getID();
             $input['tickets_id'] = $this->input["tickets_id"];
@@ -733,7 +751,7 @@ class DirectHelpdesk extends CommonDBTM
                 : __('Unbilled hours', 'manageentities'),
             __('Oldest intervention', 'manageentities'),
             sprintf(__('More than %d months', 'manageentities'), self::UNBILLED_ALERT_MONTHS),
-        ], ';');
+        ], ';', '"', '');
 
         // Neutralize CSV formula injection: a spreadsheet interprets a cell starting with
         // =, +, -, @, TAB or CR as a formula. Prefix such user-controlled values with an
@@ -757,7 +775,7 @@ class DirectHelpdesk extends CommonDBTM
                 // cannot sort dd/mm/yyyy.
                 !empty($row['oldest_raw']) ? substr((string) $row['oldest_raw'], 0, 10) : '',
                 $row['is_stale'] ? '1' : '0',
-            ], ';');
+            ], ';', '"', '');
         }
 
         fputcsv($out, [
@@ -767,7 +785,7 @@ class DirectHelpdesk extends CommonDBTM
             (string) ($data['is_day_mode'] ? $data['total_days'] : $data['total_hours']),
             '',
             '',
-        ], ';');
+        ], ';', '"', '');
 
         fclose($out);
         exit;

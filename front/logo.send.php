@@ -33,15 +33,27 @@ use GlpiPlugin\Manageentities\EntityLogo;
 
 $docid = (int) ($_GET['docid'] ?? 0);
 
-$entity_logo = new EntityLogo();
-if (!$entity_logo->getFromDBByCrit(['logos_id' => $docid])) {
-    throw new NotFoundHttpException();
-}
-
+// Only a logo row whose document is linked to its entity (Document_Item), as the logo upload
+// does: a row designating any other document serves nothing.
 // Entity logos are meant to be visible to any user with access to the entity,
 // regardless of the generic Document/Entity rights (self-service profiles
 // usually have neither).
-if (!Session::haveAccessToEntity($entity_logo->fields['entities_id'])) {
+$found   = false;
+$allowed = false;
+foreach ((new EntityLogo())->find(['logos_id' => $docid]) as $row) {
+    if (!EntityLogo::isLinkedToEntity($docid, (int) $row['entities_id'])) {
+        continue;
+    }
+    $found = true;
+    if (Session::haveAccessToEntity((int) $row['entities_id'])) {
+        $allowed = true;
+        break;
+    }
+}
+if (!$found) {
+    throw new NotFoundHttpException();
+}
+if (!$allowed) {
     throw new AccessDeniedHttpException();
 }
 

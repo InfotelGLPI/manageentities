@@ -31,6 +31,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\InterventionStakeholder;
 use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -52,6 +53,9 @@ $checkContractDayAccess = static function (): bool {
 };
 
 if (isset($_POST['action']) && $_POST['action'] != "") {
+    // The contract day is normalised once: the entity check, the lookups and the balance sent
+    // back all use this very value, never the raw one
+    $_POST['contractdays_id'] = PortalEntity::getPostedId($_POST['contractdays_id'] ?? null);
     switch ($_POST['action']) {
         case "add_user_datas":
             if (!$checkContractDayAccess()) {
@@ -61,9 +65,8 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
             // whatever is posted here is the value the stakeholder list re-emits into JavaScript.
             // The loose "> 0" test accepted any string starting with a digit, so it is cast first.
             $nbDays = (float) ($_POST['nb_days'] ?? 0);
-            if ((isset($_POST["users_id_tech"]) && $_POST['users_id_tech'] > 0) &&
-                (isset($_POST["contractdays_id"]) && $_POST['contractdays_id'] > 0) &&
-                $nbDays > 0) {
+            // contractdays_id is a positive integer since the top of the file
+            if ((isset($_POST["users_id_tech"]) && $_POST['users_id_tech'] > 0) && $nbDays > 0) {
 
                 $idUser         = (int) $_POST['users_id_tech'];
                 $idContractdays = (int) $_POST['contractdays_id'];
@@ -135,7 +138,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
             }
             if (isset($_POST['stakeholder_id']) && $_POST['stakeholder_id'] > 0) {
                 $interventionStakeholder = new InterventionStakeholder();
-                $interventionStakeholder->getFromDB($_POST['stakeholder_id']);
+                $interventionStakeholder->getFromDB(PortalEntity::getPostedId($_POST['stakeholder_id']));
                 // $checkContractDayAccess() only validated the entity of $_POST['contractdays_id'].
                 // Bind the deletion to that contract-day: the stakeholder row must belong to it,
                 // otherwise a forged stakeholder_id could delete a row from another (unchecked) entity.
@@ -146,7 +149,7 @@ if (isset($_POST['action']) && $_POST['action'] != "") {
                 $intervention = new ContractDay();
                 $intervention->getFromDB($_POST['contractdays_id']);
 
-                if ($interventionStakeholder->delete($interventionStakeholder->fields)) {
+                if ($interventionStakeholder->delete(['id' => $interventionStakeholder->getID()])) {
                     $nbDaysAfter                                   = $interventionStakeholder->getNbAvailiableDay($_POST['contractdays_id']);
                     $_SESSION['glpi_plugin_manageentities_nbdays'] -= $nbDaysAfter;
                     $interventionStakeholder->showMessage(__("Informations successfully deleted.", "manageentities"), INFO);

@@ -138,7 +138,7 @@ class PresaleAnnexTypeTransfer
     {
         $data = self::read($file);
         if (is_string($data)) {
-            Session::addMessageAfterRedirect($data, false, ERROR);
+            Session::addMessageAfterRedirect(htmlescape($data), false, ERROR);
             return;
         }
 
@@ -212,25 +212,26 @@ class PresaleAnnexTypeTransfer
             if ($level !== []) {
                 $input['plugin_manageentities_subscriptionlevels_id'] = (int) array_key_first($level);
             } else {
-                Session::addMessageAfterRedirect(sprintf(
+                // Values of the imported file in the messages: text, never HTML
+                Session::addMessageAfterRedirect(htmlescape(sprintf(
                     __('%1$s: subscription level "%2$s" unknown here, imported without level.', 'manageentities'),
                     $label,
                     $level_name,
-                ), false, WARNING);
+                )), false, WARNING);
             }
         }
 
         $item = new PresaleAnnexType();
         if (!$item->can(-1, CREATE, $input) || !$item->add($input)) {
-            Session::addMessageAfterRedirect(sprintf(__('%s: the model could not be imported.', 'manageentities'), $label), false, ERROR);
+            Session::addMessageAfterRedirect(htmlescape(sprintf(__('%s: the model could not be imported.', 'manageentities'), $label)), false, ERROR);
             return false;
         }
         if ($input['name'] !== $name) {
-            Session::addMessageAfterRedirect(sprintf(
+            Session::addMessageAfterRedirect(htmlescape(sprintf(
                 __('%1$s: a model of this name exists, imported as "%2$s".', 'manageentities'),
                 $label,
                 $input['name'],
-            ), false, INFO);
+            )), false, INFO);
         }
 
         return true;
@@ -259,10 +260,10 @@ class PresaleAnnexTypeTransfer
         if (stripos($html, '<img') === false) {
             return $html;
         }
-        Session::addMessageAfterRedirect(sprintf(
+        Session::addMessageAfterRedirect(htmlescape(sprintf(
             __('%s: the images of the texts are not imported, add them again in the model.', 'manageentities'),
             $label,
-        ), false, WARNING);
+        )), false, WARNING);
 
         return (string) preg_replace(['#<a\b[^>]*>\s*<img\b[^>]*>\s*</a>#i', '#<img\b[^>]*>#i'], '', $html);
     }
