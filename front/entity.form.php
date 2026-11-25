@@ -42,7 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 global $CFG_GLPI;
 
 if (isset($_POST["add"])) {
-    $logo->check(-1, CREATE);
+    // Global right here, entity in addLogo(): the item itself refuses the generic endpoints
+    Session::checkRight(EntityLogo::$rightname, CREATE);
 
     if (isset($_POST["_filename"]) && count($_POST["_filename"]) > 0) {
         $logo->addLogo($_POST);

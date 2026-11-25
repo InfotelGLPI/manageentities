@@ -48,7 +48,9 @@ Session::checkRight(\Ticket::$rightname, READ);
 // entity selector of the core covers it.
 
 if (isset($_POST['generatecri'])) {
-    if (Session::haveRight(\Ticket::$rightname, CREATE)) {
+    // The wizard writes the report, its tasks and assignments: the CRI creation right of the
+    // plugin, on top of the right to create the ticket
+    if (Session::haveRight(\Ticket::$rightname, CREATE) && Cri::canCreate()) {
 
         $ko = $GenerateCri->checkMandatoryFields($_POST);
         if (!$ko) {
@@ -123,6 +125,9 @@ if (isset($_POST['generatecri'])) {
     // rewritten on the way. The check comes before Html::header() so a refusal does not ship a
     // rendered page shell.
     Session::checkRight(\Ticket::$rightname, CREATE);
+    if (!Cri::canCreate()) {
+        throw new AccessDeniedHttpException();
+    }
 
     Html::header(__('Entities portal', 'manageentities'), '', "helpdesk", GenerateCri::class);
     $ticket->fields['itilcategories_id'] = $_POST['itilcategories_id'] ?? 0;

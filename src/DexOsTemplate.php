@@ -44,6 +44,35 @@ class DexOsTemplate extends CommonDBTM
 {
     public static string $rightname = 'plugin_manageentities';
 
+    /**
+     * The models are part of the configuration: read with its rights, written by saveAll()
+     * from the configuration form only, never through the generic endpoints
+     */
+    public static function canView(): bool
+    {
+        return Config::canManageConfig();
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canUpdate(): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(): bool
+    {
+        return false;
+    }
+
+    public static function canPurge(): bool
+    {
+        return false;
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('DEX model', 'DEX models', $nb, 'manageentities');

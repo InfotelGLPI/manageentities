@@ -62,14 +62,35 @@ class Config extends CommonDBTM
         return "ti ti-settings";
     }
 
+    /**
+     * The single configuration row holds the Kiflo key and the billing settings: only the
+     * configuration administrators of front/config.form.php may read or change it, whatever
+     * the endpoint (generic form, API, massive action). It is created by the installation
+     * and never deleted.
+     */
     public static function canView(): bool
     {
-        return Session::haveRight(Contract::$rightname, READ);
+        return self::canManageConfig();
     }
 
     public static function canCreate(): bool
     {
-        return Session::haveRight(Contract::$rightname, UPDATE);
+        return false;
+    }
+
+    public static function canUpdate(): bool
+    {
+        return self::canManageConfig();
+    }
+
+    public static function canDelete(): bool
+    {
+        return false;
+    }
+
+    public static function canPurge(): bool
+    {
+        return false;
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -190,6 +211,34 @@ class Config extends CommonDBTM
                     ERROR,
                 );
                 unset($input['kiflo_url']);
+            } elseif (!KifloClient::isAllowedUrl($input['kiflo_url'])) {
+                // The key is a partner secret of Kiflo: it is only ever sent to a Kiflo host
+                Session::addMessageAfterRedirect(
+                    __s('The Kiflo API URL must point to a kiflo.com host.', 'manageentities'),
+                    false,
+                    ERROR,
+                );
+                unset($input['kiflo_url']);
+            }
+
+            // The stored key was entered for the current host: it never follows the URL to
+            // another one, the key must be typed again in the same save
+            $current_url = rtrim(trim((string) ($this->fields['kiflo_url'] ?? '')), '/');
+            if ($current_url === '') {
+                $current_url = KifloClient::DEFAULT_URL;
+            }
+            if (
+                isset($input['kiflo_url'])
+                && strcasecmp($input['kiflo_url'], $current_url) !== 0
+                && !isset($input['kiflo_token'])
+                && (string) ($this->fields['kiflo_token'] ?? '') !== ''
+            ) {
+                $input['kiflo_token'] = '';
+                Session::addMessageAfterRedirect(
+                    __s('The Kiflo API key was removed because the API URL changed: enter it again.', 'manageentities'),
+                    false,
+                    WARNING,
+                );
             }
         }
 

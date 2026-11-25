@@ -34,7 +34,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Html;
 use Session;
-use User;
 
 /**
  * Wizard of the operating document (DEX) of a client, built as the DAT one (DatWizard): one step
@@ -295,7 +294,8 @@ class DexWizard
      */
     private static function buildGeneralVars(\Entity $entity, ?Dex $dex, ?array $values): array
     {
-        $dat = $dex === null ? Dat::getForEntity((int) $entity->getID()) : null;
+        // The DAT is only taken over when the session may read it
+        $dat = $dex === null ? Dat::getReadableForEntity((int) $entity->getID()) : null;
 
         $general = $values ?? ($dex !== null
             ? [
@@ -712,7 +712,9 @@ class DexWizard
         if ($values['client'] === '') {
             $errors['client'] = sprintf(__('%s is mandatory', 'manageentities'), __('Client', 'manageentities'));
         }
-        if ($values['author_users_id'] <= 0 || !(new User())->getFromDB($values['author_users_id'])) {
+        // Only a user of the picker (central user of the entities of the session): the name of
+        // the author is printed in the document
+        if ($values['author_users_id'] <= 0 || !BusinessContact::isCentralUserOfActiveEntities($values['author_users_id'])) {
             $errors['author_users_id'] = sprintf(__('%s is mandatory', 'manageentities'), __('Author', 'manageentities'));
         }
         $date = \DateTime::createFromFormat('!Y-m-d', $values['dex_date']);
@@ -737,7 +739,7 @@ class DexWizard
         $dex = self::loadDex($entities_id, UPDATE);
         if ($dex === null) {
             $dex = new Dex();
-            $dat = Dat::getForEntity($entities_id);
+            $dat = Dat::getReadableForEntity($entities_id);
             // The system information of the DAT is a default, the steps of the DEX may change it
             $system = $dat?->getSections()['SYSTEM_INFORMATIONS'] ?? '';
             if ($system !== '') {

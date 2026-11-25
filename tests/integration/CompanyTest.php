@@ -82,4 +82,75 @@ class CompanyTest extends DbTestCase
         $this->assertSame(0, (int) $company->fields['logo_id']);
         $this->assertSame('Updated without a logo', $company->fields['comment']);
     }
+
+    /**
+     * logo_id is not a field of the form: posting it designated any document, purged by the
+     * next logo upload and printed in the CRI header
+     */
+    public function testTheLogoIsNeverTakenFromTheInput(): void
+    {
+        $this->login();
+        $entities_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $unrelated   = $this->createItem(\Document::class, ['name' => 'Unrelated', 'entities_id' => $entities_id]);
+
+        $company = new Company();
+        $id = $company->add([
+            'name'        => 'Company with a posted logo',
+            'entities_id' => $entities_id,
+            'logo_id'     => $unrelated->getID(),
+        ]);
+        $this->assertGreaterThan(0, $id);
+        $this->assertSame(0, (int) $company->fields['logo_id']);
+
+        $this->assertTrue($company->update(['id' => $id, 'logo_id' => $unrelated->getID()]));
+        $this->assertTrue($company->getFromDB($id));
+        $this->assertSame(0, (int) $company->fields['logo_id']);
+    }
+
+    public function testReplacingTheLogoRemovesOnlyItsOwnDocument(): void
+    {
+        global $DB;
+
+        $this->login();
+        $entities_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+
+        $company = new Company();
+        $id = $company->add([
+            'name'        => 'Company with a logo',
+            'entities_id' => $entities_id,
+            '_filename'   => [$this->createJpeg(40)],
+        ]);
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($company->getFromDB($id));
+        $first = (int) $company->fields['logo_id'];
+        $this->assertGreaterThan(0, $first);
+
+        // A new upload replaces the logo and removes the previous document
+        $this->assertTrue($company->update(['id' => $id, '_filename' => [$this->createJpeg(120)]]));
+        $this->assertTrue($company->getFromDB($id));
+        $second = (int) $company->fields['logo_id'];
+        $this->assertGreaterThan(0, $second);
+        $this->assertNotSame($first, $second);
+        $this->assertFalse((new \Document())->getFromDB($first));
+
+        // A row designating a document that is not its logo (written before the fix): the
+        // document is neither purged nor used
+        $unrelated = $this->createItem(\Document::class, ['name' => 'Unrelated', 'entities_id' => $entities_id]);
+        $DB->update(Company::getTable(), ['logo_id' => $unrelated->getID()], ['id' => $id]);
+        $this->assertTrue($company->update(['id' => $id, '_filename' => [$this->createJpeg(200)]]));
+        $this->assertTrue((new \Document())->getFromDB($unrelated->getID()));
+    }
+
+    /**
+     * JPEG of a plain colour in GLPI_TMP_DIR, as an upload leaves it
+     */
+    private function createJpeg(int $red): string
+    {
+        $name  = uniqid('logo_', true) . '.jpg';
+        $image = imagecreatetruecolor(20, 20);
+        imagefill($image, 0, 0, (int) imagecolorallocate($image, $red, 10, 10));
+        imagejpeg($image, GLPI_TMP_DIR . '/' . $name);
+
+        return $name;
+    }
 }

@@ -31,6 +31,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\Cri;
 use GlpiPlugin\Manageentities\CriDetail;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 
 if (!isset($_POST["cri"])) {
     $_POST["cri"] = "";
@@ -83,7 +84,7 @@ if (isset($_POST["addcridetail"])) {
     if ($Cri->canCreate()) {
         // IDOR: canCreate() is a global cri-create right. Reload the targeted row and enforce
         // access to its entity before updating, so a forged id cannot edit another entity's line.
-        if (!$criDetail->getFromDB((int) $_POST['id'])
+        if (!$criDetail->getFromDB(PortalEntity::getPostedId($_POST['id'] ?? null))
             || !Session::haveAccessToEntity($criDetail->fields['entities_id'])) {
             throw new AccessDeniedHttpException();
         }
@@ -118,11 +119,12 @@ if (isset($_POST["addcridetail"])) {
 } elseif (isset($_POST["delcridetail"])) {
     if ($Cri->canCreate()) {
         // Same IDOR guard as updatecridetail: enforce entity access on the targeted row.
-        if (!$criDetail->getFromDB((int) $_POST['id'])
+        if (!$criDetail->getFromDB(PortalEntity::getPostedId($_POST['id'] ?? null))
             || !Session::haveAccessToEntity($criDetail->fields['entities_id'])) {
             throw new AccessDeniedHttpException();
         }
-        $criDetail->delete($_POST);
+        // The row checked above, never the raw body: the marker is what pre_deleteItem() needs
+        $criDetail->delete(['id' => $criDetail->getID(), 'delcridetail' => 1]);
     }
     Html::back();
 

@@ -192,6 +192,17 @@ class Dat extends CommonDBTM
         return $dat->getFromDBByCrit(['entities_id' => $entities_id]) ? $dat : null;
     }
 
+    /**
+     * DAT of the client when the session may read it (right and entity), null otherwise: what
+     * other documents may take over from it (the DEX wizard)
+     */
+    public static function getReadableForEntity(int $entities_id): ?self
+    {
+        $dat = self::getForEntity($entities_id);
+
+        return $dat !== null && $dat->can($dat->getID(), READ) ? $dat : null;
+    }
+
     public static function install(Migration $migration)
     {
         global $DB;

@@ -112,6 +112,42 @@ class EntityLogoTest extends DbTestCase
     }
 
     /**
+     * The generic endpoints (form, API) used to accept a logo row designating any document,
+     * then served by logo.send.php and purged by the next upload
+     */
+    public function testALogoRowOnlyDesignatesADocumentLinkedToItsEntity(): void
+    {
+        global $DB;
+
+        $this->login();
+        $this->bootPurgeHook();
+        $_SESSION['glpiactiveprofile']['plugin_manageentities'] = ALLSTANDARDRIGHT;
+        $entities_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+        $unrelated   = $this->createItem(\Document::class, ['name' => 'Unrelated', 'entities_id' => $entities_id]);
+
+        $logo  = new EntityLogo();
+        $input = ['entities_id' => $entities_id, 'logos_id' => $unrelated->getID()];
+        $this->assertTrue(EntityLogo::canCreate());
+        $this->assertFalse($logo->can(-1, CREATE, $input));
+        $this->assertFalse($logo->add($input));
+
+        // A row written before the fix: not served, not purged by the next upload
+        $DB->delete(EntityLogo::getTable(), ['entities_id' => $entities_id]);
+        $DB->insert(EntityLogo::getTable(), $input);
+        $this->assertNull(EntityLogo::getLogoDocument($entities_id));
+        $this->addLogo($entities_id, 60);
+        $this->assertTrue((new \Document())->getFromDB($unrelated->getID()));
+        $this->assertNotNull(EntityLogo::getLogoDocument($entities_id));
+
+        // The uploaded row cannot be re-pointed nor removed through the generic endpoints
+        $row = (new EntityLogo())->find(['entities_id' => $entities_id]);
+        $this->assertTrue($logo->getFromDB((int) reset($row)['id']));
+        $this->assertFalse($logo->can($logo->getID(), UPDATE));
+        $this->assertFalse($logo->can($logo->getID(), PURGE));
+        $this->assertFalse($logo->update(['id' => $logo->getID(), 'logos_id' => $unrelated->getID()]));
+    }
+
+    /**
      * Uploads a JPEG logo of a plain colour
      */
     private function addLogo(int $entities_id, int $red): void

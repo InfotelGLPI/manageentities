@@ -32,6 +32,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use GlpiPlugin\Manageentities\ContractDay;
 use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -57,14 +58,14 @@ if (($item = $dbu->getItemForItemtype($_POST['type']))
     && ($parent = $dbu->getItemForItemtype($_POST['parenttype']))) {
     if (isset($_POST[$parent->getForeignKeyField()])
         && isset($_POST["id"])
-        && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
+        && $parent->getFromDB(PortalEntity::getPostedId($_POST[$parent->getForeignKeyField()]))) {
         // Enforce entity scope on the loaded parent before rendering the sub-item form,
         // so a user cannot read a CriPrice/ContractDay outside their entity perimeter.
         if (isset($parent->fields['entities_id'])
             && !Session::haveAccessToEntity($parent->fields['entities_id'])) {
             throw new AccessDeniedHttpException();
         }
-        $item->showForm($_POST["id"], ['parent' => $parent]);
+        $item->showForm((int) $_POST["id"], ['parent' => $parent]);
 
     } else {
         throw new AccessDeniedHttpException();

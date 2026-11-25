@@ -29,7 +29,6 @@
 
 namespace GlpiPlugin\Manageentities;
 
-use CommonDBTM;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
@@ -37,12 +36,14 @@ use Plugin;
 use Session;
 
 /**
+ * Schema check tab of the configuration.
  *
+ * Not a CommonDBTM: it has no table of its own, and mapping it onto the configuration table
+ * exposed that row to the generic form and API endpoints with the plugin right only.
  */
-class CheckSchema extends CommonDBTM
+class CheckSchema extends CommonGLPI
 {
     public static string $rightname = 'plugin_manageentities';
-    private $table = "";
 
     /**
      * functions mandatory
@@ -62,9 +63,32 @@ class CheckSchema extends CommonDBTM
         return "ti ti-check";
     }
 
-    public static function getTable($classname = null)
+    /**
+     * Same rights as the configuration page that hosts the tab
+     */
+    public static function canView(): bool
     {
-        return "glpi_plugin_manageentities_configs";
+        return Config::canManageConfig();
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canUpdate(): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(): bool
+    {
+        return false;
+    }
+
+    public static function canPurge(): bool
+    {
+        return false;
     }
 
     /**
@@ -76,7 +100,7 @@ class CheckSchema extends CommonDBTM
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item->getType() == Config::class) {
+        if ($item->getType() == Config::class && self::canView()) {
             return self::createTabEntry(self::getTypeName());
         }
         return '';
@@ -92,7 +116,7 @@ class CheckSchema extends CommonDBTM
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == Config::class) {
+        if ($item->getType() == Config::class && self::canView()) {
             $self = new self();
             $self->checkSchema(PLUGIN_MANAGEENTITIES_VERSION);
         }

@@ -79,7 +79,10 @@ class CriDetail extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        // Not on a ticket being created: the reports of a ticket that does not exist yet would
+        // be those of no ticket at all
         if ($item->getType() == 'Ticket'
+            && !$item->isNewItem()
             && Session::haveRight(Cri::$rightname, READ)) {
             $config    = Config::getInstance();
             $parent_id = (int) ($config->fields['wizard_default_entities_id'] ?? 0);
@@ -127,11 +130,12 @@ class CriDetail extends CommonDBTM
         }
 
         if ($item->getType() == 'Ticket') {
+            if (!$item instanceof Ticket || $item->isNewItem() || !$item->can($item->getID(), READ)) {
+                throw new AccessDeniedHttpException();
+            }
             if (Session::getCurrentInterface() == 'central') {
                 // Billing information: the customer still has interventions to be billed
-                if ($item instanceof Ticket) {
-                    DirectHelpdesk::showUnbilledAlert((int) $item->fields['entities_id']);
-                }
+                DirectHelpdesk::showUnbilledAlert((int) $item->fields['entities_id']);
                 self::showForTicket($item);
             }
             self::showReports($item, $item->getField('id'));
@@ -204,18 +208,35 @@ class CriDetail extends CommonDBTM
         ) > 0;
     }
 
+    /**
+     * Columns written by the generation of the report only (Cri::generatePdf(), through
+     * Entity::runInternalWrite()), or fixed on creation for the ticket and its entity
+     */
+    private const GENERATED_FIELDS = ['documents_id', 'realtime', 'technicians', 'number_moving'];
+
     public function prepareInputForUpdate($input)
     {
-        // A detail linked to a report document cannot be updated from the ticket form (showForTicket())
-        if (isset($input['updatecridetail'])) {
-            $criDetail = new CriDetail();
-            $criDetail->getFromDB($input['id']);
+        if (!Entity::isInternalWrite()) {
+            // A line belongs to the ticket and the entity it was created for, and the report
+            // data come from the generation: none of them is taken from a request
+            foreach (array_merge(['entities_id', 'tickets_id'], self::GENERATED_FIELDS) as $field) {
+                unset($input[$field]);
+            }
 
-            if ($criDetail->fields['documents_id'] != 0 && $criDetail->fields['contracts_id'] != $input['contracts_id']) {
+            // A detail linked to a report document keeps its contract, whatever the path
+            // (ticket form, generic form, API)
+            if (
+                (int) $this->fields['documents_id'] !== 0
+                && (
+                    (isset($input['contracts_id']) && (int) $input['contracts_id'] !== (int) $this->fields['contracts_id'])
+                    || (isset($input['plugin_manageentities_contractdays_id'])
+                        && (int) $input['plugin_manageentities_contractdays_id'] !== (int) $this->fields['plugin_manageentities_contractdays_id'])
+                )
+            ) {
                 Session::addMessageAfterRedirect(
-                    __('Impossible action as an intervention report exists', 'manageentities'),
+                    __s('Impossible action as an intervention report exists', 'manageentities'),
+                    false,
                     ERROR,
-                    true,
                 );
                 return false;
             }
@@ -229,6 +250,10 @@ class CriDetail extends CommonDBTM
             return false;
         }
 
+        if (!$this->checkContractDay($input, $this->fields)) {
+            return false;
+        }
+
         return $input;
     }
 
@@ -238,11 +263,66 @@ class CriDetail extends CommonDBTM
             return false;
         }
 
+        if (!Entity::isInternalWrite()) {
+            // The line hangs off a ticket the session may read, in the entity of that ticket;
+            // the report data are left to the generation
+            $ticket     = new \Ticket();
+            $tickets_id = (int) ($input['tickets_id'] ?? 0);
+            if ($tickets_id <= 0 || !$ticket->can($tickets_id, READ)) {
+                return false;
+            }
+            $input['tickets_id']  = $tickets_id;
+            $input['entities_id'] = (int) $ticket->fields['entities_id'];
+            foreach (self::GENERATED_FIELDS as $field) {
+                unset($input[$field]);
+            }
+        }
+
         if (!$this->checkContractPair($input, [])) {
             return false;
         }
 
+        if (!$this->checkContractDay($input, [])) {
+            return false;
+        }
+
         return $input;
+    }
+
+    /**
+     * Refuse a period of contract that is not one of the contract of the line (that contract
+     * being checked against the entity of the ticket by checkContractPair()): the period
+     * (dates, comment, balance) is displayed with the line
+     *
+     * @param array<string, mixed> $input   the submitted values
+     * @param array<string, mixed> $current the values already stored, for a partial update
+     *
+     * @return bool
+     */
+    private function checkContractDay(array $input, array $current): bool
+    {
+        $contractdays_id = (int) ($input['plugin_manageentities_contractdays_id'] ?? $current['plugin_manageentities_contractdays_id'] ?? 0);
+        if ($contractdays_id <= 0) {
+            return true;
+        }
+        $contracts_id = (int) ($input['contracts_id'] ?? $current['contracts_id'] ?? 0);
+
+        $period = new ContractDay();
+        if (
+            $contracts_id > 0
+            && $period->getFromDB($contractdays_id)
+            && (int) $period->fields['contracts_id'] === $contracts_id
+        ) {
+            return true;
+        }
+
+        Session::addMessageAfterRedirect(
+            __s('This period of contract is not available for the contract of the ticket', 'manageentities'),
+            false,
+            ERROR,
+        );
+
+        return false;
     }
 
     /**
@@ -378,20 +458,23 @@ class CriDetail extends CommonDBTM
             return;
         }
 
+        // Values read from the database after the core added the link (also from automatic
+        // actions, without session)
         $cridetail = new self();
-        $cridetail->add([
+        Entity::runInternalWrite(static fn() => $cridetail->add([
             'entities_id' => $ticket->fields['entities_id'],
             'tickets_id' => $tickets_id,
             'contracts_id' => $contracts_id,
             'plugin_manageentities_contractdays_id' => $contractday_id,
             'withcontract' => 1,
-        ]);
+        ]));
     }
 
     public function pre_deleteItem()
     {
-        // A detail linked to a report document cannot be deleted from the ticket form (showForTicket())
-        if (isset($this->input['delcridetail'])) {
+        // A detail linked to a report document cannot be deleted, whatever the path (ticket
+        // form, generic form, API): only the purge of its ticket, entity or contract removes it
+        if (!Entity::isInternalWrite()) {
             if ($this->fields['documents_id'] != '0') {
                 Session::addMessageAfterRedirect(
                     __('Impossible action as an intervention report exists', 'manageentities'),
@@ -671,6 +754,12 @@ class CriDetail extends CommonDBTM
     public static function showReports($item, $instID, $entity = -1, $condition = [])
     {
         global $DB, $CFG_GLPI;
+
+        // Either the reports of a ticket or those of entities: without both, the query would list
+        // the last reports of the whole instance
+        if ((int) $instID <= 0 && $entity == -1) {
+            return;
+        }
 
         $config = new Config();
         $ticket = new Ticket();
@@ -1985,7 +2074,13 @@ class CriDetail extends CommonDBTM
         ]);
 
         if (count($iterator) > 0) {
+            $task = new \TicketTask();
             foreach ($iterator as $data) {
+                // Same check as the core planning of the tasks: a private task, or a task of a
+                // ticket the session cannot read, is not shown
+                if (!$task->can((int) $data["id"], READ)) {
+                    continue;
+                }
                 $key = $data["begin"] . "$$" . CriDetail::class . $data["id"];
 
                 $interv[$key]['color'] = $options['color'];
@@ -2023,9 +2118,7 @@ class CriDetail extends CommonDBTM
                     . "&parentid=" . $data['tickets_id']
                     . "&id=" . $data['id']
                     . "&url=" . $interv[$key]["url"];
-                $cri = new \TicketTask();
-                $cri->getFromDB($data["id"]);
-                $interv[$key]["editable"] = $cri->canUpdateItem();
+                $interv[$key]["editable"] = $task->canUpdateItem();
             }
         }
 

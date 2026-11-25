@@ -627,18 +627,13 @@ class PresaleWizard
      */
     private static function getEntityLogo(int $entities_id): int
     {
-        $logo = (new EntityLogo())->find(['entities_id' => $entities_id], [], 1);
-        $documents_id = (int) (reset($logo)['logos_id'] ?? 0);
-        $document     = new \Document();
-        if (
-            $documents_id <= 0
-            || !$document->getFromDB($documents_id)
-            || !str_starts_with((string) $document->fields['mime'], 'image/')
-        ) {
+        // Only a document linked to the entity by the logo upload
+        $document = EntityLogo::getLogoDocument($entities_id);
+        if ($document === null || !str_starts_with((string) $document->fields['mime'], 'image/')) {
             return 0;
         }
 
-        return $documents_id;
+        return $document->getID();
     }
 
     /**
@@ -1189,6 +1184,13 @@ class PresaleWizard
         $clients_id = (int) $proposal->fields['plugin_manageentities_presaleclients_id'];
         $link       = new PresaleContact();
         $existing   = $link->find(['plugin_manageentities_presaleclients_id' => $clients_id]);
+        // GLPI contacts a prospect contact may come from: those the wizard offers, of the
+        // customer entity of the prospect
+        $client           = new PresaleClient();
+        $customer_id      = $client->getFromDB($clients_id) ? (int) $client->fields['converted_entities_id'] : 0;
+        $offered_contacts = $customer_id > 0
+            ? array_map('intval', array_column(self::getEntityContacts($customer_id), 'contacts_id'))
+            : [];
         $kept       = [];
         $default_id = 0;
         foreach ($values['contacts'] as $idx => $contact) {
@@ -1201,11 +1203,20 @@ class PresaleWizard
                 'mobile'     => WizardController::formatPhoneNumber($contact['mobile']),
                 'is_default' => $idx === $values['is_default'] ? 1 : 0,
             ];
-            // Contact of the customer entity it was prefilled from (GLPI contact)
-            if ((int) ($contact['contacts_id'] ?? 0) > 0) {
-                $data['contacts_id'] = (int) $contact['contacts_id'];
+            // Contact of the customer entity it was prefilled from (GLPI contact): one offered by
+            // the wizard and readable, or the one the row already had - any other is ignored
+            $contacts_id    = (int) $contact['id'];
+            $posted_contact = (int) ($contact['contacts_id'] ?? 0);
+            $current        = (int) ($existing[$contacts_id]['contacts_id'] ?? 0);
+            if (
+                $posted_contact > 0
+                && (
+                    $posted_contact === $current
+                    || (in_array($posted_contact, $offered_contacts, true) && (new \Contact())->can($posted_contact, READ))
+                )
+            ) {
+                $data['contacts_id'] = $posted_contact;
             }
-            $contacts_id = (int) $contact['id'];
             // Only a contact of this prospect is updated: any other posted id creates a new one
             if ($contacts_id > 0 && isset($existing[$contacts_id])) {
                 $link->update(['id' => $contacts_id] + $data);
@@ -2077,10 +2088,11 @@ class PresaleWizard
             'estimate_brief'  => trim((string) ($input['estimate_brief'] ?? '')),
             'estimate_date'   => $_SESSION['glpi_currenttime'],
         ]);
-        Session::addMessageAfterRedirect(sprintf(
+        // The messages are displayed as HTML: the name of the project manager is text
+        Session::addMessageAfterRedirect(htmlescape(sprintf(
             __('The estimate is requested from %s.', 'manageentities'),
             (string) $proposal->fields['pm_name'],
-        ));
+        )));
     }
 
     /**
@@ -2149,10 +2161,10 @@ class PresaleWizard
                 $missing   = $generator->getMissingTemplates();
                 if ($missing !== []) {
                     Session::addMessageAfterRedirect(
-                        sprintf(
+                        htmlescape(sprintf(
                             __('Upload these Word templates in the configuration (Pre-sales tab) first: %s.', 'manageentities'),
                             implode(', ', $missing),
-                        ),
+                        )),
                         false,
                         ERROR,
                     );

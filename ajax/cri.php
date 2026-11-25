@@ -32,6 +32,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use GlpiPlugin\Manageentities\Cri;
 use GlpiPlugin\Manageentities\CriDetail;
 use GlpiPlugin\Manageentities\CriTechnician;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 
 Html::header_nocache();
 
@@ -67,10 +68,22 @@ $assertUserVisible = static function (int $users_id): void {
 $action = $_POST['action'] ?? '';
 if (!is_string($action)
     || !is_array($_POST['params'] ?? null)
-    || !is_numeric($_POST['params']['job'] ?? null)
     || !isset($_POST['modal'])) {
     throw new BadRequestHttpException();
 }
+// The ticket is normalised once (a plain positive integer, anything else is refused): the checks
+// and the actions below all use this very value, never the raw one
+$_POST['params']['job'] = PortalEntity::getPostedId($_POST['params']['job'] ?? null);
+$tickets_id             = $_POST['params']['job'];
+
+// The report payload designates the same ticket, in the same normalised form
+$normalizeReportId = static function (stdClass $input) use ($tickets_id): void {
+    $report_id = PortalEntity::getPostedId($input->REPORT_ID ?? null);
+    if ($report_id !== $tickets_id) {
+        throw new BadRequestHttpException();
+    }
+    $input->REPORT_ID = $report_id;
+};
 $_POST['params'] += ['pdf_action' => '', 'toupdate' => ''];
 if ($action !== 'showCriForm'
     && !(json_decode((string) ($_POST['formInput'] ?? '')) instanceof stdClass)) {
@@ -145,7 +158,7 @@ switch ($action) {
             $input->REPORT_DESCRIPTION = urldecode($input->REPORT_DESCRIPTION);
             $params                    = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
-            $assertTicketReadable((int) ($input->REPORT_ID ?? 0));
+            $normalizeReportId($input);
             $input->enregistrement     = false;
             if (isset($input->REPORT_ACTIVITE) && $input->REPORT_ACTIVITE) {
                 $input->REPORT_ACTIVITE_ID = $input->REPORT_ACTIVITE;
@@ -176,7 +189,7 @@ switch ($action) {
             $input  = json_decode($_POST["formInput"]);
             $params = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
-            $assertTicketReadable((int) ($input->REPORT_ID ?? 0));
+            $normalizeReportId($input);
 
             $input->enregistrement = false;
             if (isset($input->REPORT_ACTIVITE)) {
@@ -215,7 +228,7 @@ switch ($action) {
             $input                 = json_decode($_POST["formInput"]);
             $params                = $_POST["params"];
             $assertTicketReadable((int) $params["job"]);
-            $assertTicketReadable((int) ($input->REPORT_ID ?? 0));
+            $normalizeReportId($input);
             $input->enregistrement = true;
             if ($input->REPORT_ACTIVITE) {
                 $Cri->generatePdf(

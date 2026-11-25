@@ -34,8 +34,9 @@ use GlpiPlugin\Manageentities\PresaleWizard;
 $proposal = new PresaleProposal();
 
 if (isset($_POST['purge'])) {
-    $proposal->check((int) $_POST['id'], PURGE);
-    $proposal->delete($_POST, true);
+    $id = Entity::getPostedId($_POST['id'] ?? null);
+    $proposal->check($id, PURGE);
+    $proposal->delete(['id' => $id], true);
     $proposal->redirectToList();
 }
 

@@ -156,12 +156,9 @@ class DatGenerator
      */
     private function getLogoFile(): ?string
     {
-        $logo = (new EntityLogo())->find(['entities_id' => (int) $this->dat->fields['entities_id']], [], 1);
-        if ($logo === []) {
-            return null;
-        }
-        $document = new Document();
-        if (!$document->getFromDB((int) reset($logo)['logos_id'])) {
+        // Only a document linked to the entity by the logo upload
+        $document = EntityLogo::getLogoDocument((int) $this->dat->fields['entities_id']);
+        if ($document === null) {
             return null;
         }
         $file = GLPI_DOC_DIR . '/' . $document->fields['filepath'];

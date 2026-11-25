@@ -252,6 +252,13 @@ class Dashboard extends CommonGLPI
                     );
 
                     $widget = Helper::getWidgetsFromDBQuery('table', $criteria);
+                    // The cells are rendered as HTML by the datatable of the widget: the names and
+                    // phones of the contacts are text, as in the other widgets
+                    $datas = [];
+                    foreach ($DB->request($criteria) as $data) {
+                        $datas[] = array_map(static fn($value) => htmlspecialchars((string) $value, ENT_QUOTES), $data);
+                    }
+                    $widget->setTabDatas($datas);
                     $headers = [
                         _n('Client', 'Clients', 1, 'manageentities'),
                         __('First name'),
@@ -310,7 +317,11 @@ class Dashboard extends CommonGLPI
                             'glpi_tickets.is_deleted' => 0,
                             'glpi_plugin_manageentities_cridetails.documents_id' => 0,
                             ['glpi_tickets.status' => ['NOT IN', [CommonITILObject::SOLVED, CommonITILObject::CLOSED]]],
-                        ],
+                        ]
+                            // Active entities of the session, as the other widgets: the line and
+                            // its ticket (title shown) both
+                            + getEntitiesRestrictCriteria('glpi_plugin_manageentities_cridetails')
+                            + getEntitiesRestrictCriteria('glpi_tickets'),
                         'ORDERBY' => ['glpi_tickets.date DESC'],
                     ];
 

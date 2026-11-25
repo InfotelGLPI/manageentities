@@ -34,14 +34,17 @@ use GlpiPlugin\Manageentities\PresaleWizard;
 $client = new PresaleClient();
 
 if (isset($_POST['update'])) {
-    $client->check((int) $_POST['id'], UPDATE);
+    $id = Entity::getPostedId($_POST['id'] ?? null);
+    $client->check($id, UPDATE);
+    $_POST['id'] = $id;
     $client->update($_POST);
     Html::back();
 }
 
 if (isset($_POST['purge'])) {
-    $client->check((int) $_POST['id'], PURGE);
-    $client->delete($_POST, true);
+    $id = Entity::getPostedId($_POST['id'] ?? null);
+    $client->check($id, PURGE);
+    $client->delete(['id' => $id], true);
     $client->redirectToList();
 }
 

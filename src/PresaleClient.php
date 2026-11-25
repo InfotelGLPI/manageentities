@@ -292,10 +292,79 @@ class PresaleClient extends CommonDBTM
     }
 
     /**
+     * Whether a document may be the logo of a prospect: uploaded for it (linked to it by
+     * PresaleWizard::saveLogo()), or the logo of its customer entity
+     */
+    public static function isOwnLogo(int $documents_id, int $clients_id, int $entities_id): bool
+    {
+        if ($documents_id <= 0) {
+            return false;
+        }
+        if (
+            $clients_id > 0
+            && countElementsInTable(\Document_Item::getTable(), [
+                'documents_id' => $documents_id,
+                'itemtype'     => self::class,
+                'items_id'     => $clients_id,
+            ]) > 0
+        ) {
+            return true;
+        }
+        $entity_logo = $entities_id > 0 ? EntityLogo::getLogoDocument($entities_id) : null;
+
+        return $entity_logo !== null && $entity_logo->getID() === $documents_id;
+    }
+
+    /**
+     * Logo of the prospect, null without one or when the stored id is not one of its logos
+     */
+    public function getLogoDocument(): ?\Document
+    {
+        $documents_id = (int) ($this->fields['logo_documents_id'] ?? 0);
+        $document     = new \Document();
+        if (
+            !self::isOwnLogo($documents_id, (int) $this->getID(), (int) ($this->fields['converted_entities_id'] ?? 0))
+            || !$document->getFromDB($documents_id)
+        ) {
+            return null;
+        }
+
+        return $document;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        // The logo is never a posted document: only the logo of the customer entity here
+        if (
+            array_key_exists('logo_documents_id', $input)
+            && (int) $input['logo_documents_id'] !== 0
+            && !self::isOwnLogo((int) $input['logo_documents_id'], 0, (int) ($input['converted_entities_id'] ?? 0))
+        ) {
+            unset($input['logo_documents_id']);
+        }
+
+        return $input;
+    }
+
+    /**
      * The details are typed as in the wizard: same checks, same formatting
      */
     public function prepareInputForUpdate($input)
     {
+        // The logo is one uploaded for the prospect, or the one of its customer entity: never a
+        // document designated by the request (it is printed in the proposals)
+        if (
+            array_key_exists('logo_documents_id', $input)
+            && (int) $input['logo_documents_id'] !== 0
+            && !self::isOwnLogo(
+                (int) $input['logo_documents_id'],
+                (int) $this->getID(),
+                (int) ($input['converted_entities_id'] ?? $this->fields['converted_entities_id'] ?? 0),
+            )
+        ) {
+            unset($input['logo_documents_id']);
+        }
+
         // Link to an existing customer, for a prospect whose entity was not found when its
         // proposal was made: only while it is not a customer yet, and only to one of
         // getLinkableCustomers(). A won proposal then adds its contract to that entity instead

@@ -28,6 +28,7 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use GlpiPlugin\Manageentities\Cri;
 use GlpiPlugin\Manageentities\GenerateCRI;
 use GlpiPlugin\Servicecatalog\Main;
 
@@ -40,7 +41,8 @@ if (Session::getCurrentInterface() == 'central') {
         Html::helpHeader(__('Entities portal', 'manageentities'));
     }
 }
-if (Session::haveRight(\Ticket::$rightname, CREATE)) {
+// Same rights as the wizard submission (generatecri.form.php): ticket creation and CRI creation
+if (Session::haveRight(\Ticket::$rightname, CREATE) && Cri::canCreate()) {
     $generatecri = new GenerateCRI();
     $generatecri->showWizard($ticket = new Ticket(), $_SESSION['glpiactive_entity']);
 } else {

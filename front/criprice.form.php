@@ -30,6 +30,7 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\CriPrice;
 use GlpiPlugin\Manageentities\Contract;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 
 if (Session::haveRight(Contract::$rightname, UPDATE)) {
     $criprice = new CriPrice();
@@ -43,10 +44,12 @@ if (Session::haveRight(Contract::$rightname, UPDATE)) {
         Html::back();
 
     } elseif (isset($_POST["update"])) {
-        $criprice->check($_POST["id"], UPDATE);
+        $id = PortalEntity::getPostedId($_POST["id"] ?? null);
+        $criprice->check($id, UPDATE);
         // check() validates the stored row only: pin the ownership columns to it, so the
         // posted body cannot move the rate to another entity or contract period
         $input                                          = $_POST;
+        $input['id']                                    = $id;
         $input['entities_id']                           = (int) $criprice->fields['entities_id'];
         $input['plugin_manageentities_contractdays_id'] = (int) $criprice->fields['plugin_manageentities_contractdays_id'];
         $criprice->update($input);
@@ -56,8 +59,9 @@ if (Session::haveRight(Contract::$rightname, UPDATE)) {
     } elseif (isset($_POST["delete"])) {
         // Forced purge below: enforce the per-row PURGE right (existence + entity access)
         // instead of the global "contract DELETE" right, mirroring the update branch.
-        $criprice->check((int) $_POST["id"], PURGE);
-        $criprice->delete($_POST, 1);
+        $id = PortalEntity::getPostedId($_POST["id"] ?? null);
+        $criprice->check($id, PURGE);
+        $criprice->delete(['id' => $id], 1);
 
         Html::back();
     }

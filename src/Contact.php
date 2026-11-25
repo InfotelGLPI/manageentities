@@ -99,6 +99,15 @@ class Contact extends CommonDBTM
         return $input;
     }
 
+    public function prepareInputForUpdate($input)
+    {
+        // The entity and the contact are checked on creation only: a link is never re-pointed,
+        // whatever the path (generic form, API, massive action)
+        unset($input['entities_id'], $input['contacts_id']);
+
+        return $input;
+    }
+
     public function buildContactsForTemplate(array $instID, string $root_doc): array
     {
         global $DB;

@@ -29,6 +29,7 @@
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use GlpiPlugin\Manageentities\DirectHelpdesk;
+use GlpiPlugin\Manageentities\Entity as PortalEntity;
 use GlpiPlugin\Servicecatalog\Main;
 
 if (Session::haveRight(DirectHelpdesk::$rightname, UPDATE)) {
@@ -151,12 +152,18 @@ if (Session::haveRight(DirectHelpdesk::$rightname, UPDATE)) {
 
         Html::back();
     } elseif (isset($_POST["update"])) {
-        $direct->check($_POST["id"], UPDATE);
+        $id = PortalEntity::getPostedId($_POST["id"] ?? null);
+        $direct->check($id, UPDATE);
         // check() validates the stored row only: pin the entity to it, and only accept
         // a linked ticket that lives in that entity
         $input                = $_POST;
+        $input['id']          = $id;
         $input['entities_id'] = (int) $direct->fields['entities_id'];
-        if ((int) ($input['tickets_id'] ?? 0) > 0) {
+        if (isset($input['tickets_id'])) {
+            // The checked ticket is the stored one
+            $input['tickets_id'] = (int) $input['tickets_id'];
+        }
+        if (($input['tickets_id'] ?? 0) > 0) {
             $linked = new Ticket();
             if (
                 !$linked->getFromDB((int) $input['tickets_id'])
@@ -172,8 +179,9 @@ if (Session::haveRight(DirectHelpdesk::$rightname, UPDATE)) {
     } elseif (isset($_POST["delete"])) {
         // Forced purge below: enforce the per-row PURGE right (existence + entity access)
         // instead of relying only on the file-wide global UPDATE right.
-        $direct->check((int) $_POST["id"], PURGE);
-        $direct->delete($_POST, 1);
+        $id = PortalEntity::getPostedId($_POST["id"] ?? null);
+        $direct->check($id, PURGE);
+        $direct->delete(['id' => $id], 1);
         Html::back();
     } else {
         // The whole controller is already gated on the plugin UPDATE right (see the

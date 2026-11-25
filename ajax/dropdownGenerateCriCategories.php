@@ -53,6 +53,7 @@ $opt = ['entity' => $_POST["entity_restrict"]];
 $condition  = [];
 
 $currentcateg = new ITILCategory();
+$_POST['value'] = (int) ($_POST['value'] ?? 0);
 $currentcateg->getFromDB($_POST['value']);
 
 if ($_POST["type"]) {

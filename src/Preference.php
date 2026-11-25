@@ -183,11 +183,21 @@ class Preference extends CommonDBTM
         return "ti ti-user-pentagon";
     }
 
+    /**
+     * Who gets the tab: the plugin right the tab is registered with (setup.php), in the
+     * standard interface. The content checks it again: the core tab loader does not
+     * check that a tab was offered.
+     */
+    private static function canSeeTab(): bool
+    {
+        return Session::haveRightsOr(Contract::$rightname, [READ, UPDATE])
+            && isset($_SESSION["glpiactiveprofile"]["interface"])
+            && $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk";
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item->getType() == 'Preference'
-            && isset($_SESSION["glpiactiveprofile"]["interface"])
-            && $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
+        if ($item->getType() == 'Preference' && self::canSeeTab()) {
             return self::createTabEntry(__('Entities portal', 'manageentities'));
         }
         return '';
@@ -197,7 +207,7 @@ class Preference extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        if (get_class($item) == 'Preference') {
+        if (get_class($item) == 'Preference' && self::canSeeTab()) {
             $pref_ID = self::checkIfPreferenceExists(Session::getLoginUserID());
             if (!$pref_ID) {
                 $pref_ID = self::addDefaultPreference(Session::getLoginUserID());
@@ -228,7 +238,7 @@ class Preference extends CommonDBTM
 
         $plugin_company = new Company();
         $company = [];
-        foreach ($plugin_company->find() as $row) {
+        foreach ($plugin_company->find(getEntitiesRestrictCriteria(Company::getTable(), '', '', true)) as $row) {
             $company[$row['id']] = $row['name'];
         }
         $companies_decoded  = json_decode($self->fields['companies_id'] ?? '', true);

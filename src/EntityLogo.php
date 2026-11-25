@@ -97,7 +97,7 @@ class EntityLogo extends CommonDBTM
             // the same picture (its file lost on the server) gives a new document instead of
             // being matched to the broken one by its checksum.
             foreach ($this->find(['entities_id' => $entities_id]) as $row) {
-                (new Document())->delete(['id' => $row['logos_id']], 1);
+                self::removeLogoDocument((int) $row['logos_id'], $entities_id);
             }
             // The purge hook (cleanForItem()) drops the rows of the purged document: the row used
             // to be updated afterwards, which then failed silently and left the entity without
@@ -110,6 +110,96 @@ class EntityLogo extends CommonDBTM
                     'logos_id'    => $logos_id,
                 ]);
             }
+        }
+    }
+
+    /**
+     * Rows are only written by addLogo(), from an upload: the generic endpoints (form, API,
+     * massive actions) cannot create, change or remove them. front/entity.form.php checks the
+     * global right, addLogo() the entity.
+     */
+    public function canCreateItem(): bool
+    {
+        return false;
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return false;
+    }
+
+    public function canDeleteItem(): bool
+    {
+        return false;
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return false;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        // Only a document the logo upload linked to the same entity
+        if (!self::isLinkedToEntity((int) ($input['logos_id'] ?? 0), (int) ($input['entities_id'] ?? -1))) {
+            return false;
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // A logo is replaced by a new row, never re-pointed
+        return false;
+    }
+
+    /**
+     * Whether the document is linked to the entity (Document_Item), as addEntityFiles() does
+     * for every logo it stores
+     */
+    public static function isLinkedToEntity(int $documents_id, int $entities_id): bool
+    {
+        return $documents_id > 0 && $entities_id >= 0 && countElementsInTable(Document_Item::getTable(), [
+            'documents_id' => $documents_id,
+            'itemtype'     => \Entity::class,
+            'items_id'     => $entities_id,
+        ]) > 0;
+    }
+
+    /**
+     * Logo document of the entity, null without one or when the stored row designates a
+     * document that is not linked to the entity
+     */
+    public static function getLogoDocument(int $entities_id): ?Document
+    {
+        $logo = (new self())->find(['entities_id' => $entities_id], [], 1);
+        $documents_id = (int) (reset($logo)['logos_id'] ?? 0);
+        $document = new Document();
+        if (!self::isLinkedToEntity($documents_id, $entities_id) || !$document->getFromDB($documents_id)) {
+            return null;
+        }
+
+        return $document;
+    }
+
+    /**
+     * Removes a logo document of the entity: its link to the entity, and the document itself
+     * when nothing else uses it (addEntityFiles() reuses a document with the same content).
+     * A document that is not linked to the entity is left untouched.
+     */
+    private static function removeLogoDocument(int $documents_id, int $entities_id): void
+    {
+        if (!self::isLinkedToEntity($documents_id, $entities_id)) {
+            return;
+        }
+        (new Document_Item())->deleteByCriteria([
+            'documents_id' => $documents_id,
+            'itemtype'     => \Entity::class,
+            'items_id'     => $entities_id,
+        ], true);
+        if (countElementsInTable(Document_Item::getTable(), ['documents_id' => $documents_id]) === 0) {
+            (new Document())->delete(['id' => $documents_id], 1);
         }
     }
 
@@ -237,15 +327,9 @@ class EntityLogo extends CommonDBTM
      */
     public function getLogo($entities_id)
     {
-        $logo = $this->find(['entities_id' => $entities_id]);
-        $logo = reset($logo);
-        $doc = new Document();
-        if (is_array($logo) && count($logo) > 0) {
-            if ($doc->getFromDB($logo["logos_id"])) {
-                return $doc->fields['filepath'];
-            }
-        }
-        return false;
+        $doc = self::getLogoDocument((int) $entities_id);
+
+        return $doc !== null ? $doc->fields['filepath'] : false;
     }
 
     public static function install(Migration $migration)

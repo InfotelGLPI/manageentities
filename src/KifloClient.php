@@ -68,11 +68,30 @@ class KifloClient
     {
         $this->url   = rtrim(trim($url) !== '' ? trim($url) : self::DEFAULT_URL, '/');
         $this->token = trim($token);
-        // HttpClient of GLPI 12; Guzzle on GLPI 11, where symfony/http-client is a dev dependency only
+        // HttpClient of GLPI 12; Guzzle on GLPI 11, where symfony/http-client is a dev dependency only.
+        // Redirections are not followed: the key must not be sent to another host.
         $this->http  = $http ?? (class_exists(HttpClient::class)
-            ? new HttpClient(Config::class, ['timeout' => 20])
+            ? new HttpClient(Config::class, ['timeout' => 20, 'max_redirects' => 0])
             // @phpstan-ignore staticMethod.notFound (GLPI 11 only, removed in GLPI 12)
-            : Toolbox::getGuzzleClient(['timeout' => 20]));
+            : Toolbox::getGuzzleClient(['timeout' => 20, 'allow_redirects' => false]));
+    }
+
+    /**
+     * Whether the API key may be sent to this URL: https on a kiflo.com host, default port,
+     * no credentials in the URL
+     */
+    public static function isAllowedUrl(string $url): bool
+    {
+        $parts = parse_url(trim($url));
+        if (!is_array($parts) || strtolower($parts['scheme'] ?? '') !== 'https') {
+            return false;
+        }
+        if (isset($parts['user']) || isset($parts['pass']) || (isset($parts['port']) && (int) $parts['port'] !== 443)) {
+            return false;
+        }
+        $host = strtolower(rtrim($parts['host'] ?? '', '.'));
+
+        return $host === 'kiflo.com' || str_ends_with($host, '.kiflo.com');
     }
 
     /**
@@ -138,6 +157,9 @@ class KifloClient
         if ($this->token === '') {
             throw new RuntimeException(__('The Kiflo API key is not set.', 'manageentities'));
         }
+        if (!self::isAllowedUrl($this->url)) {
+            throw new RuntimeException(__('The Kiflo API URL must point to a kiflo.com host.', 'manageentities'));
+        }
 
         try {
             $response = $this->http->request('GET', $this->url . '/' . $resource, [
@@ -151,11 +173,14 @@ class KifloClient
         } catch (HttpExceptionInterface | BadResponseException $e) {
             throw new RuntimeException(self::getHttpErrorMessage($e->getResponse()->getStatusCode()), 0, $e);
         } catch (Throwable $e) {
-            // Transport: DNS, timeout, TLS certificate (e.g. a proxy inspecting the traffic)
-            throw new RuntimeException(sprintf(
-                __('Kiflo API unreachable: %s', 'manageentities'),
-                $e->getMessage(),
-            ), 0, $e);
+            // Transport: DNS, timeout, TLS certificate (e.g. a proxy inspecting the traffic).
+            // The details go to the log only: they describe the network seen from the server.
+            Toolbox::logInFile('manageentities-kiflo', $e->getMessage() . "\n");
+            throw new RuntimeException(
+                __('Kiflo API unreachable (network, DNS, timeout or TLS certificate): see the manageentities-kiflo log.', 'manageentities'),
+                0,
+                $e,
+            );
         }
 
         if (!is_array($data)) {

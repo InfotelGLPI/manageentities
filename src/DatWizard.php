@@ -34,7 +34,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Html;
 use Session;
-use User;
 
 /**
  * Wizard of the technical architecture document (DAT) of a client: one step per section of the
@@ -710,7 +709,9 @@ class DatWizard
         if ($values['client'] === '') {
             $errors['client'] = sprintf(__('%s is mandatory', 'manageentities'), __('Client', 'manageentities'));
         }
-        if ($values['author_users_id'] <= 0 || !(new User())->getFromDB($values['author_users_id'])) {
+        // Only a user of the picker (central user of the entities of the session): the name of
+        // the author is printed in the document
+        if ($values['author_users_id'] <= 0 || !BusinessContact::isCentralUserOfActiveEntities($values['author_users_id'])) {
             $errors['author_users_id'] = sprintf(__('%s is mandatory', 'manageentities'), __('Author', 'manageentities'));
         }
         $date = \DateTime::createFromFormat('!Y-m-d', $values['dat_date']);

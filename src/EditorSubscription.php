@@ -683,6 +683,13 @@ class EditorSubscription extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        // A subscription is moved to another client by EditorSubscriptionWizard only (checked
+        // there, through Entity::runInternalWrite()): its flags are propagated to the
+        // contracts of its entity
+        if (!Entity::isInternalWrite()) {
+            unset($input['entities_id']);
+        }
+
         return $this->prepareInput($input);
     }
 

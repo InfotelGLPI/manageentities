@@ -67,6 +67,51 @@ class InterventionStakeholder extends CommonDBTM
         return "ti ti-user-pentagon";
     }
 
+    /*
+     * The table has no entities_id: the default item rights would only check the global
+     * plugin right. A stakeholder row is part of its contract period, so each item right is the
+     * same right on that period, entity scope included.
+     */
+    private function canOnContractDay(int $right): bool
+    {
+        $contractdays_id = (int) ($this->fields['plugin_manageentities_contractdays_id'] ?? 0);
+
+        return $contractdays_id > 0 && (new ContractDay())->can($contractdays_id, $right);
+    }
+
+    public function canViewItem(): bool
+    {
+        return $this->canOnContractDay(READ);
+    }
+
+    public function canCreateItem(): bool
+    {
+        return $this->canOnContractDay(UPDATE);
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->canOnContractDay(UPDATE);
+    }
+
+    public function canDeleteItem(): bool
+    {
+        return $this->canOnContractDay(UPDATE);
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canOnContractDay(UPDATE);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // A row belongs to the period it was created for
+        unset($input['plugin_manageentities_contractdays_id']);
+
+        return $input;
+    }
+
     public static function countForItem(CommonDBTM $item)
     {
         $dbu = new DbUtils();

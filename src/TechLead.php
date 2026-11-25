@@ -130,6 +130,26 @@ class TechLead extends CommonDBTM
         return (int) ($result['cpt'] ?? 0) > 0;
     }
 
+    public function prepareInputForUpdate($input)
+    {
+        // The entity and the user are checked on creation only: a link is never re-pointed,
+        // whatever the path (generic form, API, massive action)
+        unset($input['entities_id'], $input['users_id']);
+
+        return $input;
+    }
+
+    public function post_updateItem($history = true)
+    {
+        // A client has one main tech lead, whatever the path that flagged this one
+        if (in_array('is_default', $this->updates, true) && (int) $this->fields['is_default'] === 1) {
+            $link = new self();
+            foreach ($this->find(['entities_id' => $this->fields['entities_id'], 'is_default' => 1, ['NOT' => ['id' => $this->getID()]]]) as $data) {
+                $link->update(['id' => $data['id'], 'is_default' => 0]);
+            }
+        }
+    }
+
     public function post_purgeItem()
     {
         // Promote another tech lead when the main one is removed, so a client keeps a main one

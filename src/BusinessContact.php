@@ -68,6 +68,15 @@ class BusinessContact extends CommonDBTM
         return $input;
     }
 
+    public function prepareInputForUpdate($input)
+    {
+        // The entity and the user are checked on creation only: a link is never re-pointed,
+        // whatever the path (generic form, API, massive action)
+        unset($input['entities_id'], $input['users_id']);
+
+        return $input;
+    }
+
     /**
      * Whether a user belongs to the population offered by the business contact picker:
      * an active user holding a central profile covering the entity
@@ -78,6 +87,24 @@ class BusinessContact extends CommonDBTM
      * @return bool
      */
     public static function isCentralUserOfEntity(int $users_id, int $entities_id): bool
+    {
+        return self::isCentralUser($users_id, $entities_id);
+    }
+
+    /**
+     * Whether a user belongs to the population of the user pickers with the "interface" right:
+     * an active user holding a central profile in an active entity of the session
+     */
+    public static function isCentralUserOfActiveEntities(int $users_id): bool
+    {
+        return self::isCentralUser($users_id, '');
+    }
+
+    /**
+     * @param int        $users_id
+     * @param int|string $entities_id an entity, '' for the active entities of the session
+     */
+    private static function isCentralUser(int $users_id, int|string $entities_id): bool
     {
         global $DB;
 
@@ -124,6 +151,8 @@ class BusinessContact extends CommonDBTM
                     ],
                 ],
             ],
+            // Business contacts of the entities of the session only
+            'WHERE'      => getEntitiesRestrictCriteria(self::getTable()),
             'GROUPBY'    => ['glpi_users.id', 'glpi_users.realname', 'glpi_users.firstname'],
             'ORDERBY'    => ['glpi_users.realname', 'glpi_users.firstname'],
         ]);

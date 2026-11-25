@@ -228,11 +228,11 @@ class Company extends CommonDBTM
             return false;
         }
 
-        if (isset($input["_filename"])) {
-            $plugin_company = new Company();
-            $company = $plugin_company->find(['id' => $input['id']]);
-            $company = reset($company);
+        // logo_id is not a field of the form: only the upload below may change it, whatever the
+        // path (form, massive action, API)
+        unset($input['logo_id']);
 
+        if (isset($input["_filename"])) {
             if (!self::isJpegUpload($input["_filename"][0] ?? null)) {
                 Session::addMessageAfterRedirect(
                     __('The format of the image must be in JPG or JPEG', 'manageentities'),
@@ -246,14 +246,55 @@ class Company extends CommonDBTM
                 // null is not false, so the refusal depended on how loosely the core tested the
                 // result. Refuse the update explicitly.
                 return false;
-            } elseif ($company['logo_id'] != 0) {
-                $doc = new Document();
-                $img = $doc->find(['id' => $company["logo_id"]]);
-                $img = reset($img);
-                $doc->delete($img, 1);
             }
+            // The previous logo is the one of the row loaded and checked for this update, never
+            // a row looked up again from the request. post_updateItem() then stores the new one.
+            $this->removeOwnLogo();
+            $input['logo_id'] = 0;
         }
         return $input;
+    }
+
+    /**
+     * Logo document of a company: only a document its own upload linked to it
+     * (Document_Item), never whatever logo_id designates
+     *
+     * @param array<string, mixed> $company row of the company
+     */
+    private static function getOwnLogo(array $company): ?Document
+    {
+        $logo_id = (int) ($company['logo_id'] ?? 0);
+        if ($logo_id <= 0) {
+            return null;
+        }
+        $linked = (new DbUtils())->countElementsInTable(Document_Item::getTable(), [
+            'documents_id' => $logo_id,
+            'itemtype'     => self::class,
+            'items_id'     => (int) ($company['id'] ?? 0),
+        ]);
+        $doc = new Document();
+
+        return $linked > 0 && $doc->getFromDB($logo_id) ? $doc : null;
+    }
+
+    /**
+     * Removes the current logo of the company: its link, and the document itself when nothing
+     * else uses it (addFiles() reuses a document of the entity with the same content)
+     */
+    private function removeOwnLogo(): void
+    {
+        $doc = self::getOwnLogo($this->fields);
+        if ($doc === null) {
+            return;
+        }
+        (new Document_Item())->deleteByCriteria([
+            'documents_id' => $doc->getID(),
+            'itemtype'     => self::class,
+            'items_id'     => $this->getID(),
+        ], true);
+        if ((new DbUtils())->countElementsInTable(Document_Item::getTable(), ['documents_id' => $doc->getID()]) === 0) {
+            $doc->delete(['id' => $doc->getID()], true);
+        }
     }
 
     public function prepareInputForAdd($input)
@@ -269,6 +310,9 @@ class Company extends CommonDBTM
             );
             return false;
         }
+
+        // Set by post_addItem() from the upload only
+        unset($input['logo_id']);
 
         if (isset($input["_filename"])) {
             if (!self::isJpegUpload($input["_filename"][0] ?? null)) {
@@ -491,7 +535,6 @@ class Company extends CommonDBTM
         $plugin_company = new Company();
         $company = $plugin_company->find(['entities_id' => $obj->entite[0]->fields['id']]);
         $company = reset($company);
-        $doc = new Document();
         $dbu = new DbUtils();
         if ($company == false) {
             $companies = $plugin_company->find();
@@ -500,7 +543,8 @@ class Company extends CommonDBTM
                     $sons = $dbu->getSonsOf("glpi_entities", $data['entities_id']);
                     foreach ($sons as $son) {
                         if ($son == $obj->entite[0]->fields['id']) {
-                            if ($doc->getFromDB($data["logo_id"])) {
+                            $doc = self::getOwnLogo($data);
+                            if ($doc !== null) {
                                 return $doc->fields['filepath'];
                             }
                         }
@@ -508,8 +552,8 @@ class Company extends CommonDBTM
                 }
             }
         } else {
-            if ($company["logo_id"] != 0) {
-                $doc->getFromDB($company["logo_id"]);
+            $doc = self::getOwnLogo($company);
+            if ($doc !== null) {
                 return $doc->fields['filepath'];
             }
         }

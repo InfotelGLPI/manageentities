@@ -61,10 +61,12 @@ if (isset($_POST["add"])) {
     Html::back();
 
 } elseif (isset($_POST["update"])) {
-    $contractday->check($_POST["id"], UPDATE);
+    $id = Entity::getPostedId($_POST["id"] ?? null);
+    $contractday->check($id, UPDATE);
     // check() validates the stored row only: pin the ownership columns to it, so the
     // posted body cannot move the period to another entity or contract
     $input                 = $_POST;
+    $input['id']           = $id;
     $input['entities_id']  = (int) $contractday->fields['entities_id'];
     $input['contracts_id'] = (int) $contractday->fields['contracts_id'];
     $contractday->update($input);
@@ -74,27 +76,12 @@ if (isset($_POST["add"])) {
     // Separation of duties: the row is really removed from the table (no is_deleted column),
     // so evaluate the PURGE bit - the deletion bit exposed by the rights matrix of
     // 'plugin_manageentities' - and not UPDATE, which an administrator may want to grant alone.
-    $contractday->check($_POST["id"], PURGE);
+    $id = Entity::getPostedId($_POST["id"] ?? null);
+    $contractday->check($id, PURGE);
     // Redirect to the contract of the loaded row, not to a posted value
     $contracts_id = (int) $contractday->fields['contracts_id'];
-    $contractday->delete($_POST);
+    $contractday->delete(['id' => $id]);
     Html::redirect(Toolbox::getItemTypeFormURL('Contract') . "?id=" . $contracts_id);
-
-} elseif (isset($_POST["add_nbday"]) && isset($_POST['nbday'])) {
-    Session::checkRight(\Contract::$rightname, UPDATE);
-    // addNbDay() writes contracts_id/entities_id straight from the POST body: enforce access
-    // to the target entity and that the contract really belongs to it before inserting (IDOR).
-    $entities_id  = (int) ($_POST['entities_id'] ?? -1);
-    $coreContract = new \Contract();
-    if (
-        !Session::haveAccessToEntity($entities_id)
-        || !$coreContract->getFromDB((int) ($_POST['contracts_id'] ?? 0))
-        || (int) $coreContract->fields['entities_id'] !== $entities_id
-    ) {
-        throw new AccessDeniedHttpException();
-    }
-    $contractday->addNbDay($_POST);
-    Html::back();
 
 } elseif (isset($_POST["delete_nbday"])) {
     // The rows being deleted belong to the plugin, so gate the branch on the plugin right and
@@ -111,11 +98,11 @@ if (isset($_POST["add"])) {
     Html::back();
 
 } elseif (isset($_POST["deleteAll"])) {
-    foreach ($_POST["item"] as $key => $val) {
-        $input = ['id' => $key];
-        if ($val == 1) {
+    foreach ($_POST["item"] ?? [] as $key => $val) {
+        // Canonical integer keys only (PHP turns them into int): the checked row is the deleted one
+        if ($val == 1 && is_int($key) && $key > 0) {
             $contractday->check($key, PURGE);
-            $contractday->delete($input);
+            $contractday->delete(['id' => $key]);
         }
     }
     Html::back();

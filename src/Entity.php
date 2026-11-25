@@ -35,6 +35,7 @@ use Document_Item;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Html;
 use Symfony\Component\HttpFoundation\Response;
 use Migration;
@@ -52,6 +53,62 @@ use GlpiPlugin\Manageentities\EditorSubscription;
 class Entity extends CommonGLPI
 {
     public static string $rightname = 'plugin_manageentities';
+
+    /** Depth of the running internal writes, see runInternalWrite() */
+    private static int $internal_writes = 0;
+
+    /**
+     * Runs plugin code allowed to change the ownership columns of the plugin rows (entity,
+     * parent contract, ticket, document...): the transfer of a contract, the generation of an
+     * intervention report. Those columns are frozen for every other writer - generic form, API,
+     * massive actions -, whatever it posts: the state lives here, not in the input, so a request
+     * cannot claim it.
+     *
+     * @template T
+     *
+     * @param callable(): T $callback
+     *
+     * @return T
+     */
+    public static function runInternalWrite(callable $callback): mixed
+    {
+        self::$internal_writes++;
+        try {
+            return $callback();
+        } finally {
+            self::$internal_writes--;
+        }
+    }
+
+    /**
+     * Whether the current write comes from runInternalWrite()
+     */
+    public static function isInternalWrite(): bool
+    {
+        return self::$internal_writes > 0;
+    }
+
+    /**
+     * Id of an existing item posted by a form or an AJAX call, normalised once: a plain
+     * positive decimal integer, anything else is refused. The right check and the action that
+     * follows must both use this value (or the id of the item the check loaded), never the
+     * raw request value, which the core may read differently.
+     *
+     * @param mixed $id
+     *
+     * @throws BadRequestHttpException
+     */
+    public static function getPostedId(mixed $id): int
+    {
+        $value = is_string($id) || is_int($id)
+            ? filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])
+            : false;
+        if ($value === false || (is_string($id) && $id !== (string) $value)) {
+            throw new BadRequestHttpException();
+        }
+
+        return $value;
+    }
 
     /** Tabs of the clients management in a column, on the right (public/css/manageentities.css) */
     public string $taborientation = self::TAB_VERTICAL;

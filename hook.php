@@ -457,6 +457,13 @@ function plugin_manageentities_install()
     $upgrade_migration = new Migration(PLUGIN_MANAGEENTITIES_VERSION);
     Contact::install($upgrade_migration);
     Config::installEditorSubscriptionsField($upgrade_migration);
+    // One row per core task category (unique key since 4.3.x)
+    TaskCategory::install($upgrade_migration);
+    // Interventions saved without ticket used to get a link to ticket 0, listed in the tab of
+    // any ticket being created: no link without a ticket
+    if ($DB->tableExists(DirectHelpdesk_Ticket::getTable())) {
+        $DB->delete(DirectHelpdesk_Ticket::getTable(), ['tickets_id' => 0]);
+    }
 
     // company_address left behind by the fresh installs that replayed update-2.0.1.sql (see
     // above): the addresses live in the companies table since 2.1.1, update_210_211.php moved
@@ -748,6 +755,13 @@ function plugin_manageentities_giveItem($type, $ID, $data, $num)
 // Hook done on purge item case
 function plugin_pre_item_purge_manageentities($item)
 {
+    // The rows of a purged ticket, entity or contract go with it, report lines included: the
+    // locks of the plugin rows apply to their own writers, not to this cleanup
+    Entity::runInternalWrite(static fn() => plugin_manageentities_purgeLinkedRows($item));
+}
+
+function plugin_manageentities_purgeLinkedRows($item): void
+{
 
     switch (get_class($item)) {
         case 'Entity':
@@ -804,6 +818,13 @@ function plugin_pre_item_purge_manageentities($item)
 
 // Hook done on transfered item case
 function plugin_item_transfer_manageentities($parm)
+{
+    // The transfer moves the plugin rows with their contract: their entity is frozen for every
+    // other writer (see Entity::runInternalWrite())
+    Entity::runInternalWrite(static fn() => plugin_manageentities_transferContractRows($parm));
+}
+
+function plugin_manageentities_transferContractRows($parm): void
 {
     global $DB;
 

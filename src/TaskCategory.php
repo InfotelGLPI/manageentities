@@ -76,6 +76,35 @@ class TaskCategory extends CommonDBTM
         return $this->canOnCoreCategory(READ);
     }
 
+    public function canCreateItem(): bool
+    {
+        return $this->canOnCoreCategory(UPDATE);
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        // One row per core task category: a second one would count the time of its tasks
+        // twice in the consumption of the contracts
+        $taskcategories_id = (int) ($input['taskcategories_id'] ?? 0);
+        if (
+            $taskcategories_id <= 0
+            || countElementsInTable(self::getTable(), ['taskcategories_id' => $taskcategories_id]) > 0
+        ) {
+            return false;
+        }
+        $input['taskcategories_id'] = $taskcategories_id;
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // A row extends the core task category it was created for
+        unset($input['taskcategories_id']);
+
+        return $input;
+    }
+
     public function canUpdateItem(): bool
     {
         return $this->canOnCoreCategory(UPDATE);
@@ -174,11 +203,37 @@ class TaskCategory extends CommonDBTM
                             `taskcategories_id` int {$default_key_sign} NOT NULL DEFAULT '0' COMMENT 'RELATION to  glpi_taskcategories (id)',
                             `is_usedforcount` tinyint NOT NULL DEFAULT '0',
                             PRIMARY KEY  (`id`),
-                            KEY `taskcategories_id` (`taskcategories_id`)
+                            UNIQUE KEY `taskcategories_id` (`taskcategories_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
 
             $DB->doQuery($query);
+            return;
         }
+
+        // Upgrade: one row per core task category. Duplicated rows counted the time of the
+        // tasks several times in the consumption: the first row of each category is kept.
+        $non_unique = false;
+        foreach ($DB->doQuery("SHOW INDEX FROM `$table` WHERE `Key_name` = 'taskcategories_id'") as $index) {
+            $non_unique = (int) $index['Non_unique'] === 1;
+        }
+        if (!$non_unique) {
+            return;
+        }
+        $seen      = [];
+        $to_delete = [];
+        foreach ($DB->request(['SELECT' => ['id', 'taskcategories_id'], 'FROM' => $table, 'ORDER' => 'id']) as $row) {
+            if (isset($seen[$row['taskcategories_id']])) {
+                $to_delete[] = (int) $row['id'];
+            }
+            $seen[$row['taskcategories_id']] = true;
+        }
+        if ($to_delete !== []) {
+            $DB->delete($table, ['id' => $to_delete]);
+        }
+        $migration->dropKey($table, 'taskcategories_id');
+        $migration->migrationOneTable($table);
+        $migration->addKey($table, 'taskcategories_id', 'taskcategories_id', 'UNIQUE');
+        $migration->migrationOneTable($table);
     }
 
     public static function uninstall()

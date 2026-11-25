@@ -54,11 +54,11 @@ class KifloTest extends TestCase
             return new MockResponse(json_encode(array_shift($pages)));
         });
 
-        $leads = (new KifloClient('https://api.kiflo.test/v3/', 'secret', $http))->getLeads();
+        $leads = (new KifloClient('https://api.kiflo.com/v3/', 'secret', $http))->getLeads();
 
         $this->assertCount(KifloClient::PAGE_SIZE + 2, $leads);
         $this->assertCount(2, $requests);
-        $this->assertStringStartsWith('https://api.kiflo.test/v3/leads?', $requests[0]['url']);
+        $this->assertStringStartsWith('https://api.kiflo.com/v3/leads?', $requests[0]['url']);
         $this->assertStringContainsString('offset=' . KifloClient::PAGE_SIZE, $requests[1]['url']);
         $this->assertSame(['Authorization: Bearer secret'], $requests[0]['headers']['authorization']);
     }
@@ -160,6 +160,33 @@ class KifloTest extends TestCase
         $this->assertSame('Camille Martin', KifloLead::toRow(['id' => 1, 'properties' => ['firstName' => 'Camille', 'lastName' => 'Martin']])['name']);
         $this->assertSame('#2', KifloLead::toRow(['id' => 2])['name']);
         $this->assertNull(KifloLead::toRow(['properties' => ['companyName' => 'No id']]));
+    }
+
+    public static function urlProvider(): iterable
+    {
+        yield 'default' => [KifloClient::DEFAULT_URL, true];
+        yield 'kiflo sub-domain' => ['https://sandbox.kiflo.com/v3', true];
+        yield 'plain http' => ['http://api.kiflo.com/v3', false];
+        yield 'other host' => ['https://attacker.example/v3', false];
+        yield 'suffix trick' => ['https://api.kiflo.com.attacker.example/v3', false];
+        yield 'look-alike' => ['https://evilkiflo.com/v3', false];
+        yield 'credentials' => ['https://user@api.kiflo.com/v3', false];
+        yield 'other port' => ['https://api.kiflo.com:8443/v3', false];
+        yield 'internal address' => ['https://127.0.0.1/v3', false];
+    }
+
+    #[DataProvider('urlProvider')]
+    public function testKeyIsOnlySentToAKifloHost(string $url, bool $allowed): void
+    {
+        $this->assertSame($allowed, KifloClient::isAllowedUrl($url));
+
+        if (!$allowed && str_starts_with($url, 'https://')) {
+            $http = new MockHttpClient(function () {
+                $this->fail('No request expected to another host');
+            });
+            $this->expectException(RuntimeException::class);
+            (new KifloClient($url, 'secret', $http))->getLeads();
+        }
     }
 
     public function testUtcDateIsConvertedToTheLocalTimeZone(): void
