@@ -4836,8 +4836,7 @@ msgstr "Ce nom n'est pas disponible"
 #: src/CriDetail.php:320
 msgid ""
 "This period of contract is not available for the contract of the ticket"
-msgstr ""
-"Cette prestation de contrat n'est pas applicable au contrat du ticket."
+msgstr "Cette prestation de contrat n'est pas applicable au contrat du ticket"
 
 #: ⁨standard input⁩:81
 msgid "This proposal is won or lost: it can no longer be modified."
